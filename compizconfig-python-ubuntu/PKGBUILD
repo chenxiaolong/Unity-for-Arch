@@ -1,3 +1,5 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
 pkgname=compizconfig-python-ubuntu
 pkgver=0.9.5.94
 _ubuntu_ver=0ubuntu1

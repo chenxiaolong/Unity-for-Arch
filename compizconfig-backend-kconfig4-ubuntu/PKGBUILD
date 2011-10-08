@@ -1,3 +1,5 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
 pkgname=compizconfig-backend-kconfig4-ubuntu
 pkgver=0.9.2
 _ubuntu_ver=0ubuntu1

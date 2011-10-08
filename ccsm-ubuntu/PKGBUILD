@@ -1,3 +1,5 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
 pkgname=ccsm-ubuntu
 pkgver=0.9.5.92
 _ubuntu_ver=0ubuntu1
