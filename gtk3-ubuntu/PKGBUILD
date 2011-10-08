@@ -1,0 +1,53 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+
+pkgname=gtk3-ubuntu
+pkgver=3.2.0
+pkgrel=1
+_ubuntu_ver=0ubuntu2
+pkgdesc="The GTK+ Toolkit (v3) with Ubuntu's patches"
+arch=('i686' 'x86_64')
+url="http://www.gtk.org/"
+install=gtk3.install
+depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord')
+makedepends=('gobject-introspection')
+provides=("gtk3=${pkgver}")
+conflicts=('gtk3')
+options=('!libtool' '!docs')
+backup=(etc/gtk-3.0/settings.ini)
+license=('LGPL')
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/3.2/gtk+-${pkgver}.tar.xz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+        'settings.ini')
+sha512sums=('e5b50edbb2b9b68880fd8c185f4f9bfdc62ba493e5df1af73d2db2416e87322a88258a477e3c34ce73f0e797eb2cfc7a9d342d93d00964c0a1d64264d136939c'
+            '8983118042dba536c6939bf2c993f8ab6e33b809e2b78822f34ce9e3c66366ca8270b2b8cf84c926f8d03649e73cbe7c9f7bafe1803f0f0250f499367d6faf92'
+            '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
+
+build() {
+  cd "${srcdir}/gtk+-${pkgver}"
+
+  #Apply Ubuntu Patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  automake
+  CXX=/bin/false ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --enable-gtk2-dependency \
+    --disable-schemas-compile \
+    --enable-test-print-backend \
+    --enable-xinput
+  #https://bugzilla.gnome.org/show_bug.cgi?id=655517
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make -j8
+}
+
+package() {
+  cd "${srcdir}/gtk+-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  install -Dm644 "${srcdir}/settings.ini" "${pkgdir}/etc/gtk-3.0/settings.ini"
+}

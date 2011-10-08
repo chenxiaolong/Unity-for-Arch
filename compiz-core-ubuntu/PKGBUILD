@@ -53,19 +53,15 @@ depends=(
   'startup-notification'
   'xorg-server'
 )
-optdepends=(
-  'ccsm-ubuntu: CompizConfig Settings Manager'
-  'compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database'
-  'compiz-plugins-main-ubuntu: Main plugins'
-  'compiz-plugins-extra-ubuntu: Extra plugins'
-)
+optdepends=('ccsm-ubuntu: CompizConfig Settings Manager'
+            'compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database'
+            'compiz-plugins-main-ubuntu: Main plugins'
+            'compiz-plugins-extra-ubuntu: Extra plugins')
 makedepends=('intltool' 'cmake' 'git')
 provides=('compiz-core')
 conflicts=('compiz-core')
-source=(
-  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}.orig.tar.bz2"
-  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz"
-)
+source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
             'a6a111024f5a20f47abbd1b9194224926b556fac5ab1b00f89f07b427e2f5a2531d6a6f96944744e1cb54158dc2528ba422574d4897769c668eae2bbe4305a57')
 

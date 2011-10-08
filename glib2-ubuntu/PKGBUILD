@@ -13,12 +13,10 @@ provides=("glib2=${pkgver}")
 conflicts=('glib2')
 makedepends=('python2' 'pkgconfig')
 options=('!libtool' '!docs' '!emptydirs')
-source=(
-  "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}.orig.tar.bz2"
-  "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
-  "glib2.sh"
-  "glib2.csh"
-)
+source=("http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+        'glib2.sh'
+        'glib2.csh')
 sha512sums=('c967c2ebf888c84ffa37d6ced7d55055511f95ec45759e6dea9a84506cba638cad4ace254b4bf5780169cad7fe6ed7c20531a5e844f864b3c7ce401c8c11642e'
             '510c1212f05a94eefb17beb986b399c93ce29bd550af94a4f37a5ea507dc3f1eea6e16c2b6c55e8e6623312005329cb9e4f5ee8334e21811bce69421a3811f9a'
             'dca2bc74d2013fcb24145ac794eef457aa3213c039e40a1a26ca5017694930768e7c80e334e17a56834549dff6549c781ddd91fae6c7bbb26fdd6a083ad8217a'

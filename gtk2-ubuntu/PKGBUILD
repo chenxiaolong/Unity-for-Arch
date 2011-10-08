@@ -1,5 +1,5 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-# Original maintainer: György Balló <ballogy@freestart.hu>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')

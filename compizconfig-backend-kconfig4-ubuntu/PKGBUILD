@@ -12,14 +12,10 @@ depends=('libcompizconfig-ubuntu' 'kdelibs' 'libxcomposite' 'libxinerama')
 makedepends=('intltool' 'cmake')
 provides=('compizconfig-backend-kconfig4')
 conflicts=('compizconfig-backend-kconfig4')
-source=(
-  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%4*}/${pkgname%4*}_${pkgver}.orig.tar.bz2"
-  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%4*}/${pkgname%4*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
-)
-sha512sums=(
-  '08577238c6518bf858676b5c31223e9e8e0c474a7dd114fc5c1a7e3781af5e3ea0ab469e956bc8444c4f26ca552614ea7b41d61cbee3e0a9824fb907789e5fb8'
-  'c1ad32da1d45ba5302fe981894d9661cd383098aeb89b5eda8938760a57b2d7988dcae1ee0c14ddbe5e53f33c8652acca6e2af6901670a250c3b6936b83fea26'
-)
+source=("http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%4*}/${pkgname%4*}_${pkgver}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%4*}/${pkgname%4*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('08577238c6518bf858676b5c31223e9e8e0c474a7dd114fc5c1a7e3781af5e3ea0ab469e956bc8444c4f26ca552614ea7b41d61cbee3e0a9824fb907789e5fb8'
+            'c1ad32da1d45ba5302fe981894d9661cd383098aeb89b5eda8938760a57b2d7988dcae1ee0c14ddbe5e53f33c8652acca6e2af6901670a250c3b6936b83fea26')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"

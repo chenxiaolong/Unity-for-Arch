@@ -12,10 +12,8 @@ provides=('libcompizconfig')
 conflicts=('libcompizconfig')
 depends=('compiz-core-ubuntu' 'libxml2' 'protobuf')
 makedepends=('intltool' 'pkgconfig' 'cmake')
-source=(
-  "http://archive.ubuntu.com/ubuntu/pool/main/libc/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
-  "http://archive.ubuntu.com/ubuntu/pool/main/libc/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
-)
+source=("http://archive.ubuntu.com/ubuntu/pool/main/libc/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/libc/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('39bceaf3cf319254ce90e892cb27d46c96c85ed4ef8046ef4eb1ad679015f7ceb8358c9f47b8c4d3738ba24889acba6b19f9622583c094c97ec2a6f528b368b3'
             'a9d3c7277e386379812eab0d2ffa102ae94aa0eb8f3b5ca3abc4cfd41cec53ed26d405a6a9c92912a4c0087dbc2a338f5305443c431c725c51341ed36628793a')
 
