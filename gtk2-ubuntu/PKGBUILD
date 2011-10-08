@@ -1,0 +1,79 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original maintainer: György Balló <ballogy@freestart.hu>
+
+pkgbase=gtk2-ubuntu
+pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
+pkgver=2.24.6
+_ubuntu_ver=0ubuntu5
+pkgrel=2
+arch=('i686' 'x86_64')
+url="http://www.gtk.org/"
+makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection')
+options=('!libtool' '!docs')
+license=('LGPL')
+source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+2.0/gtk+2.0_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+        xid-collision-debug.patch)
+sha512sums=('eb3d843a4d4f8032208b414645bc39208ce7cf245e5480647a4448b6cd4923e76c50302c39abb297fec2db0cd93388bf2dcfd43b129891941b6a8dc823231643'
+            'd103016bfdb818fcf298b39d64fcda70492580e6cff8121b2e617e04157c3f69b1ca483dc6c4addd3ddda9211f060e9560fd097376e400b58bd55e6dbc842d2a'
+            '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
+
+build() {
+  cd "${srcdir}/gtk+-${pkgver}"
+
+  patch -Np1 -i "${srcdir}/xid-collision-debug.patch"
+
+  #Apply Ubuntu patches
+
+  #Certain patches should not be used
+    #Multiarch
+      sed -i '/041_ia32-libs.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/098_multiarch_module_path.patch/d' "${srcdir}/debian/patches/series"
+    #Static linking stuff for udebs
+      sed -i '/001_static-linking-dont-query-immodules.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
+
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  automake
+  CXX=/bin/false ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --with-xinput=yes \
+    --enable-test-print-backend
+
+  #https://bugzilla.gnome.org/show_bug.cgi?id=655517
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make -j8
+}
+package_gtk2-ubuntu() {
+    pkgdesc="The GTK+ Toolkit (v2) with Ubuntu's patches"
+    install=gtk2.install
+    depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+    provides=("gtk2=${pkgver}")
+    conflicts=('gtk2')
+    backup=(etc/gtk-2.0/gtkrc)
+
+    cd "${srcdir}/gtk+-${pkgver}"
+
+    make DESTDIR="${pkgdir}" install
+    sed -i "s#env python#env python2#" $pkgdir/usr/bin/gtk-builder-convert
+    echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
+    #split this out to use with gtk3 too
+    rm "${pkgdir}/usr/bin/gtk-update-icon-cache"
+}
+package_gtk-update-icon-cache-ubuntu() {
+    pkgdesc="The GTK+ update icon cache tool with Ubuntu's patches"
+    depends=('gdk-pixbuf2')
+    provides=("gtk-update-icon-cache=${pkgver}")
+    conflicts=('gtk-update-icon-cache')
+
+    cd "${srcdir}/gtk+-${pkgver}/gtk"
+
+    install -D -m755 gtk-update-icon-cache ${pkgdir}/usr/bin/gtk-update-icon-cache
+}
+
