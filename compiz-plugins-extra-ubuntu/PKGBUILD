@@ -1,0 +1,38 @@
+pkgname=compiz-plugins-extra-ubuntu
+pkgver=0.9.5.94
+_ubuntu_ver=0ubuntu1
+pkgrel=1
+pkgdesc="Compiz extra plugins - Ubuntu version"
+url="http://www.compiz.org/"
+license=('GPL' 'LGPL' 'MIT')
+arch=('i686' 'x86_64')
+provides=('compiz-plugins-extra')
+conflicts=('compiz-plugins-extra')
+depends=('compiz-core-ubuntu' 'compiz-plugins-main-ubuntu' 'librsvg' 'cairo' 'libsm' 'dbus' 'libjpeg-turbo' 'libxslt' 'gconf' 'libnotify')
+makedepends=('intltool' 'cmake' 'pkgconfig')
+source=(
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+)
+sha512sums=('b9c9ef6b6143a2173ff2e9e5af07b5714a82f002617c186cef98b1aeb8da9838971b9daac03f523a39c98b8acae55c406e4454e7be8ff494c9a7a55d3d19b566'
+            '8e342c34904632986a837723c398d9c91505305e1024382f3d4d61364a6350d34eee14049c8981e817d364abaf56dcd1d2d49f94f2cba2833ae4fd7e1d0adc0e')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  [[ -d build ]] || mkdir build
+  cd build
+  cmake .. \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DCOMPIZ_PLUGIN_INSTALL_TYPE="compiz" \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd build
+  make DESTDIR="${pkgdir}" install
+}
+

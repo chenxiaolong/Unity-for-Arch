@@ -1,0 +1,37 @@
+pkgname=ccsm-ubuntu
+pkgver=0.9.5.92
+_ubuntu_ver=0ubuntu1
+pkgrel=1
+pkgdesc="Compizconfig Settings Manager in Python - Ubuntu version"
+arch=('any')
+url="http://compiz.org"
+install="ccsm-ubuntu.install"
+license=('GPL')
+provides=('ccsm')
+conflicts=('ccsm')
+depends=('compiz-core-ubuntu' 'compizconfig-python-ubuntu' 'pygtk')
+source=(
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/compizconfig-settings-manager/compizconfig-settings-manager_${pkgver}.orig.tar.gz"
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/compizconfig-settings-manager/compizconfig-settings-manager_${pkgver}-${_ubuntu_ver}.diff.gz"
+  'ccsm-ubuntu.install'
+)
+sha512sums=(
+  '541feec8384540ca011190aceb9596d558ff4b71f03e64b7e8800adcdf942d9a47fe53859820ecad74f7b80d0914c4d7be5bd4499db8551d554701a3edf93802'
+  '678e762edbff4b34511c0e2612f5f45604ea62dca0d277bf13348bb6e32a77a05cbc7e9c8b75f31ea66c79da21e6dec11adb78070150416af3fc11b149af1721'
+  '1a65480d6be555c4524001d60371e1de213f729d0a2b9a351d1d98ce08672f317f12739ac1170ef44e1aa1eeb0b6f6c6a26a2565411b5ce9b268e2577920aac3'
+)
+
+build() {
+  cd "${srcdir}"
+  patch -Np1 -i compizconfig-settings-manager_${pkgver}-${_ubuntu_ver}.diff
+  cd "${pkgname%-*}-${pkgver}"
+  sed -i 's|^\(#!.*python\)$|\12|g' ccsm
+  python2 setup.py build --prefix="/usr"
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  python2 setup.py install --prefix="/usr" --root="${pkgdir}"
+  mkdir -p "${pkgdir}/usr/share/applications"
+  install -m644 "${srcdir}/${pkgname%-*}.desktop" "${pkgdir}/usr/share/applications/"
+}

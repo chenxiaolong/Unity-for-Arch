@@ -1,0 +1,124 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Based on Nathan Hulses's PKGBUILD
+
+pkgname=compiz-core-ubuntu
+pkgver=0.9.6
+_ubuntu_ver2="bzr20110929"
+_ubuntu_ver="0ubuntu1"
+pkgrel=1
+pkgdesc="Compiz core components - Ubuntu version"
+url="http://www.compiz.org/"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=(
+  'automoc4'
+  'boost'
+  'cairo'
+  'dbus'
+  'dbus-glib'
+  'fuse'
+  'gconf'
+  'glib2-ubuntu'
+  'glibmm'
+  'glproto'
+  'gnome-control-center'
+  #'gnome-desktop2'
+  'gtk2'
+  'gtk3-ubuntu'
+  'kdebase-lib'
+  'kdebase-workspace'
+  'libgl'
+  'libice'
+  'libpng'
+  'librsvg'
+  'libsm'
+  'libx11'
+  'libxcb'
+  'libxcomposite'
+  'libxcursor'
+  'libxdamage'
+  'libxext'
+  'libxfixes'
+  'libxinerama'
+  'libxml2'
+  'libxrandr'
+  'libxrender'
+  'libxslt'
+  'libtool'
+  'libwnck'
+  'mesa'
+  'metacity'
+  'pango'
+  'perl-xml-parser'
+  'startup-notification'
+  'xorg-server'
+)
+optdepends=(
+  'ccsm-ubuntu: CompizConfig Settings Manager'
+  'compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database'
+  'compiz-plugins-main-ubuntu: Main plugins'
+  'compiz-plugins-extra-ubuntu: Extra plugins'
+)
+makedepends=('intltool' 'cmake' 'git')
+provides=('compiz-core')
+conflicts=('compiz-core')
+source=(
+  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}.orig.tar.bz2"
+  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz"
+)
+sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
+            'a6a111024f5a20f47abbd1b9194224926b556fac5ab1b00f89f07b427e2f5a2531d6a6f96944744e1cb54158dc2528ba422574d4897769c668eae2bbe4305a57')
+
+build() {
+  cd "${srcdir}/${pkgname%%-*}-${pkgver}"
+
+  for i in $(cat ${srcdir}/debian/patches/series | grep -Ev '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  [[ -d build ]] || mkdir build
+  cd build
+  cmake .. \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCOMPIZ_DESTDIR="${pkgdir}" \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_DEFAULT_PLUGINS="core bailer detection composite opengl decor mousepoll vpswitch regex animation snap expo move compiztoolbox place grid imgpng gnomecompat wall ezoom workarounds staticswitcher resize fade scale session" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DUSE_GSETTINGS=OFF \
+    -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
+    ..
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%%-*}-${pkgver}"
+  cd build
+
+  #unity_window_decorator's CMake install script ignores DESTDIR
+  sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@" unity/unity_window_decorator/src/cmake_install.cmake
+
+  make install
+  make findcompiz_install
+  #cmake_dir=`cmake --system-information 2> /dev/null | grep "^CMAKE_ROOT " | sed -e 's/.*"\(.*\)"/\1/'`
+  #mkdir -p "${pkgdir}${cmake_dir}/Modules"
+  #cp ../cmake/FindCompiz.cmake "${pkgdir}${cmake_dir}/Modules"
+  mkdir -p "${pkgdir}/usr/bin"
+  mkdir -p "${pkgdir}/usr/share/man/man1"
+  mkdir -p "${pkgdir}/etc/X11/xinit/xinitrc.d"
+  mkdir -p "${pkgdir}/etc/compizconfig"
+  mkdir -p "${pkgdir}/usr/share/gconf/defaults"
+  install -m755 "${srcdir}/debian/compiz-decorator" "${pkgdir}/usr/bin/"
+  install -m644 "${srcdir}/debian/compiz.1" "${pkgdir}/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/compiz-decorator.1" "${pkgdir}/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/gtk-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/kde4-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
+  install -m755 "${srcdir}/debian/65compiz_profile-on-session" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -m644 "${srcdir}/debian/unity.ini" "${pkgdir}/etc/compizconfig/"
+  install -m644 "${srcdir}/debian/compiz-gnome.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_compiz-gnome"
+
+  for d in $(find "${pkgdir}" -type f \( -name "*.desktop" -o -name "*.directory" \) ); do
+    sed -ri '/^(Name|GenericName|Comment|X-GNOME-FullName)\[/d' $d
+    echo "X-Ubuntu-Gettext-Domain=compiz" >> $d
+  done
+}

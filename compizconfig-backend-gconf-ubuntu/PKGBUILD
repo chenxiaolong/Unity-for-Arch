@@ -1,0 +1,48 @@
+pkgname=compizconfig-backend-gconf-ubuntu
+pkgver=0.9.5.92
+_ubuntu_ver=0ubuntu2
+pkgrel=1
+pkgdesc="GConf backend for Compiz - Ubuntu version"
+url="http://www.compiz.org/"
+license=('GPL' 'LGPL' 'MIT')
+arch=('i686' 'x86_64')
+depends=('gconf' 'libcompizconfig-ubuntu' 'boost' 'glib2-ubuntu' 'libxslt' 'libxml2')
+makedepends=('intltool' 'cmake' 'libtool' 'pkgconfig')
+provides=('compizconfig-backend-gconf')
+conflicts=('compizconfig-backend-gconf')
+source=(
+  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
+  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.diff.gz"
+)
+sha512sums=(
+  'd03bd33ab21af915825a1f51dbc8411ce3edea5e485ce6f90a6f65cefeb3b1b949254ac93da655f1abb2ec4bc25010ba1c6858f62fa1a8510e05c0a938685f67'
+  'b2e63b04d4c8318a00babec74d0b69539b2297ff8faa983c112b2127327e849fce124e0520bf5d2af4fe0665f9469f21762e768ced1f5cd1acee3d5195aa898e'
+)
+
+build() {
+  cd "${pkgname%-*}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.diff"
+
+  #No patching needed for now
+  #for i in $(cat debian/patches/series | grep -Ev '#'); do
+  #  patch -Np1 -i "debian/patches/${i}"
+  #done
+
+  [[ -d build ]] || mkdir build
+  cd build
+  cmake .. \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCOMPIZ_DESTDIR="${pkgdir}"
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd build
+  make install
+}
+

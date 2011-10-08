@@ -1,0 +1,32 @@
+pkgname=compizconfig-python-ubuntu
+pkgver=0.9.5.94
+_ubuntu_ver=0ubuntu1
+pkgrel=1
+pkgdesc="Compizconfig bindings for python - Ubuntu version"
+arch=('i686' 'x86_64')
+url="http://compiz.org"
+license=('GPL')
+provides=('compizconfig-python')
+conflicts=('compizconfig-python')
+depends=('compiz-core-ubuntu' 'libcompizconfig-ubuntu' 'glib2' 'python2' 'pyrex')
+makedepends=('intltool' 'pkgconfig' 'cython')
+source=(
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
+  "http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.diff.gz"
+)
+sha512sums=('88bb4e9f481351209c2b05d0f921f86ab4c73ed1dc3db47f9f341b408d6327fbc80adc3901c3e8dc0e5272c0b45cead09c50986b264c01eac94067da2ee6b536'
+            '36139abb2bd5759740f2ff5015313e35785ae360e3427a7f34ad615cec1b4674876e7bbeeda2e5c805a628c7605a2900e0d5420c5e9aaa306158fac08189ef92')
+
+build() {
+  cd "${srcdir}"
+  patch -Np1 -i compizconfig-python_${pkgver}-${_ubuntu_ver}.diff
+  cd "${pkgname%-*}-${pkgver}"
+
+  python2 setup.py build
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  python2 setup.py install --prefix="/usr" --root="${pkgdir}"
+}
