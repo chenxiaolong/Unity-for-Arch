@@ -5,8 +5,8 @@
 
 pkgbase=qt-ubuntu
 pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-pkgver=4.7.4
 _ubuntu_ver=0ubuntu8
+pkgver=4.7.4.${_ubuntu_ver}
 pkgrel=3
 arch=('i686' 'x86_64')
 url='http://qt.nokia.com/'
@@ -16,9 +16,9 @@ makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'db
     'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs'
     'mysql' 'unixodbc' 'cups' 'gtk2')
 options=('!libtool')
-_pkgfqn="qt-everywhere-opensource-src-${pkgver}"
+_pkgfqn="qt-everywhere-opensource-src-${pkgver%.*}"
 source=("ftp://ftp.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/q/qt4-x11/qt4-x11_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/q/qt4-x11/qt4-x11_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
         'assistant.desktop' 'designer.desktop' 'linguist.desktop'
         'qtconfig.desktop'
         'blacklist-diginotar-certs.diff')
@@ -121,7 +121,7 @@ package_qt-ubuntu() {
               'libxinerama: Xinerama support'
               'libxcursor: Xcursor support'
               'libxfixes: Xfixes support')
-  provides=("qt=${pkgver}")
+  provides=("qt=${pkgver%.*}")
   conflicts=('qt')
   install='qt.install'
 	
@@ -152,8 +152,8 @@ package_qt-ubuntu() {
 
 package_qt-private-headers-ubuntu(){
   pkgdesc="Qt private headers for development with Ubuntu's patches"
-  depends=("qt-ubuntu=${pkgver}")
-  provides=("qt-private-headers=${pkgver}")
+  depends=("qt-ubuntu=${pkgver%.*}")
+  provides=("qt-private-headers=${pkgver%.*}")
   conflicts=('qt-private-headers')
 
   install -d "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}

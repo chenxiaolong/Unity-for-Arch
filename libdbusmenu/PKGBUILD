@@ -5,7 +5,7 @@
 pkgbase=libdbusmenu
 pkgname=(libdbusmenu libdbusmenu-gtk2 libdbusmenu-gtk3)
 pkgver=0.5.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -19,7 +19,7 @@ sha512sums=('eaecae500728a61c2f3fe6a2f432710e817b4b7a822ffe4fbba6d73f28b2747455e
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
   autoreconf -fi
-  sed -i 's@^#!\(.*python\)$@\12@' tools/dbusmenu-bench
+  sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench
 
   #Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
     # http://packages.ubuntu.com/search?keywords=dbusmenu&searchon=names&suite=oneiric&section=all

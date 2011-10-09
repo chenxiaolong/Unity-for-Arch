@@ -1,20 +1,20 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=glib2-ubuntu
-pkgver=2.30.0
 _ubuntu_ver=0ubuntu4
+pkgver=2.30.0.${_ubuntu_ver}
 pkgrel=2
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
 arch=(i686 x86_64)
 license=('LGPL')
 depends=('pcre' 'libffi')
-provides=("glib2=${pkgver}")
+provides=("glib2=${pkgver%.*}")
 conflicts=('glib2')
 makedepends=('python2' 'pkgconfig')
 options=('!libtool' '!docs' '!emptydirs')
-source=("http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}.orig.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
+source=("http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver%.*}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
 sha512sums=('c967c2ebf888c84ffa37d6ced7d55055511f95ec45759e6dea9a84506cba638cad4ace254b4bf5780169cad7fe6ed7c20531a5e844f864b3c7ce401c8c11642e'
@@ -23,7 +23,7 @@ sha512sums=('c967c2ebf888c84ffa37d6ced7d55055511f95ec45759e6dea9a84506cba638cad4
             'c3899eb7fa5482ce8a35fe02db90fd0f928d50aa7e4365a9529ef35a2dcd1ed86d5a24f6bc5c635ef5b2d95a0ebfebc2bb6bc90404c99f6fb7484ed2fa032c06')
 
 build() {
-  cd "${srcdir}/glib-${pkgver}"
+  cd "${srcdir}/glib-${pkgver%.*}"
 
   #This patch breaks the package in Arch Linux
   sed -i '/gio-modules-multiarch-compat.patch/d' "${srcdir}/debian/patches/series"
@@ -42,7 +42,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/glib-${pkgver}"
+  cd "${srcdir}/glib-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
   install -d "${pkgdir}/etc/profile.d"

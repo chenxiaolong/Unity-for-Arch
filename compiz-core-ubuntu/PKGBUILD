@@ -2,9 +2,9 @@
 # Based on Nathan Hulses's PKGBUILD
 
 pkgname=compiz-core-ubuntu
-pkgver=0.9.6
 _ubuntu_ver2="bzr20110929"
 _ubuntu_ver="0ubuntu1"
+pkgver=0.9.6.${_ubuntu_ver}
 pkgrel=1
 pkgdesc="Compiz core components - Ubuntu version"
 url="http://www.compiz.org/"
@@ -61,13 +61,13 @@ makedepends=('intltool' 'cmake' 'git')
 provides=('compiz-core')
 conflicts=('compiz-core')
 groups=('unity')
-source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}.orig.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
+source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
             'a6a111024f5a20f47abbd1b9194224926b556fac5ab1b00f89f07b427e2f5a2531d6a6f96944744e1cb54158dc2528ba422574d4897769c668eae2bbe4305a57')
 
 build() {
-  cd "${srcdir}/${pkgname%%-*}-${pkgver}"
+  cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
 
   for i in $(cat ${srcdir}/debian/patches/series | grep -Ev '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
@@ -89,7 +89,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%%-*}-${pkgver}"
+  cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
   cd build
 
   #unity_window_decorator's CMake install script ignores DESTDIR

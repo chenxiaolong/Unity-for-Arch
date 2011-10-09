@@ -1,0 +1,72 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=libindicate
+pkgname=(libindicate libindicate-gtk2 libindicate-gtk3)
+pkgver=0.6.1
+pkgrel=1
+pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libindicate"
+license=('LGPL')
+makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgbase}/0.6/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('cd3e075b210af56dd2ad84e121f65b5f246eb9a0771390b039a96b69726ac0b27cb38d2f11a5eeadb95da890f488877fa145f12e40453c55066ffe6e7aa9c70e')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
+  sed -i 's/-lpyglib-2\.0-python$PYTHON_VERSION/-lpyglib-2.0-python2/' configure{,.ac}
+
+  autoreconf -fi
+  export MAKEFLAGS="-j1"
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 PYTHON=python2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 PYTHON=python2
+  make
+  popd
+}
+
+package_libindicate() {
+  depends=('libdbusmenu' 'dbus-glib')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  make -C libindicate DESTDIR="${pkgdir}/" install
+  make -C bindings/mono/indicate DESTDIR="${pkgdir}/" install
+  make -C tests DESTDIR="${pkgdir}/" install
+  make -C docs DESTDIR="${pkgdir}/" install
+}
+
+package_libindicate-gtk2() {
+  pkgdesc+=" (GTK+ 2 library)"
+  depends=("libindicate=${pkgver}" 'gtk2-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  make -C libindicate-gtk DESTDIR="${pkgdir}/" install
+  make -C bindings/python DESTDIR="${pkgdir}/" install
+  make -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}/" install
+  make -C examples DESTDIR="${pkgdir}/" install
+
+  #Ubuntu puts the source headers in the GTK 3 package
+  rm -rvf "${pkgdir}/usr/include/"
+}
+
+package_libindicate-gtk3(){
+  pkgdesc+=" (GTK+ 3 library)"
+  depends=("libindicate=${pkgver}" 'gtk3-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C libindicate-gtk DESTDIR="${pkgdir}/" install
+}

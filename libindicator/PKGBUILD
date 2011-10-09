@@ -12,8 +12,8 @@ url="https://launchpad.net/libindicator"
 license=('GPL')
 mekedepends=('gtk3-unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
 groups=('unity')
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
 sha512sums=('ed4aff3c045fbb43ea3534a9b147577bb4922d31623a08a7b26430accf7d80ba8b2a7eebf52e32776e33e2f0ee00c137b6a1f7d61d01fb8103c5fdee1ff7cf86')
 
 build() {
