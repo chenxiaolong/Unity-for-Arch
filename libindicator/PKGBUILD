@@ -1,0 +1,58 @@
+# Maintainer: Xiao-long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=libindicator
+pkgname=(libindicator libindicator3)
+pkgver=0.4.1
+pkgrel=1
+pkgdesc="A set of symbols and convience functions that all indicators would like to use"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libindicator"
+license=('GPL')
+mekedepends=('gtk3-unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+groups=('unity')
+sha512sums=('ed4aff3c045fbb43ea3534a9b147577bb4922d31623a08a7b26430accf7d80ba8b2a7eebf52e32776e33e2f0ee00c137b6a1f7d61d01fb8103c5fdee1ff7cf86')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3
+  make
+  popd
+}
+
+package_libindicator() {
+  pkgdesc+=" (GTK+ 2 library)"
+  depends=('gtk2-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+package_libindicator3(){
+  pkgdesc+=" (GTK+ 3 library)"
+  depends=('gtk3-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C libindicator DESTDIR="${pkgdir}/" install
+  make -C tools DESTDIR="${pkgdir}/" install
+
+  #Identical in both packages, but Ubuntu puts it in the GTK 2 package
+    #Debug
+      rm -vf  "${pkgdir}/usr/share/libindicator/80indicator-debugging"
+    #Source headers
+      rm -rvf "${pkgdir}/usr/include/"
+}
