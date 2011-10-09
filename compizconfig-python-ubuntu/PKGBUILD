@@ -10,6 +10,7 @@ url="http://compiz.org"
 license=('GPL')
 provides=('compizconfig-python')
 conflicts=('compizconfig-python')
+groups=('unity')
 depends=('compiz-core-ubuntu' 'libcompizconfig-ubuntu' 'glib2' 'python2' 'pyrex')
 makedepends=('intltool' 'pkgconfig' 'cython')
 source=("http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"

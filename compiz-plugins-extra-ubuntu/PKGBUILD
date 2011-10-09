@@ -10,6 +10,7 @@ license=('GPL' 'LGPL' 'MIT')
 arch=('i686' 'x86_64')
 provides=('compiz-plugins-extra')
 conflicts=('compiz-plugins-extra')
+groups=('unity')
 depends=('compiz-core-ubuntu' 'compiz-plugins-main-ubuntu' 'librsvg' 'cairo' 'libsm' 'dbus' 'libjpeg-turbo' 'libxslt' 'gconf' 'libnotify')
 makedepends=('intltool' 'cmake' 'pkgconfig')
 source=("http://archive.ubuntu.com/ubuntu/pool/universe/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"

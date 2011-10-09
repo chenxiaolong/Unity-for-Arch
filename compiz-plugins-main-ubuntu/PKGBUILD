@@ -10,12 +10,11 @@ license=('GPL' 'LGPL' 'MIT')
 arch=('i686' 'x86_64')
 provides=('compiz-plugins-main')
 conflicts=('compiz-plugins-main')
+groups=('unity')
 depends=('compiz-core-ubuntu' 'gconf' 'glib2-ubuntu' 'mesa' 'libjpeg-turbo' 'libxml2' 'libxslt' 'cairo' 'pango' 'librsvg' 'libsm' 'dbus' 'boost')
 makedepends=('intltool' 'cmake' 'pkgconfig' 'libtool')
-source=(
-  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
-  "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz"
-)
+source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('b4b9abb08103e5e6f5df11403480a5bc8a691cc3193cee66db49286e3ce1b4fd391666460f5ecd6825c4107d5c9d6ec0b3a2ad2233aeb9ebca2ffbc562c81839'
             '91040332eb80dbacf23510720a93cfb88bf8d4dae6f8f8e4ff2e24be71f6612582b6308c82378a8653d0cce142ea4bee4d16d673abbdda0654da38fd082f7d70')
 

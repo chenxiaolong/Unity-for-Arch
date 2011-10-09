@@ -12,6 +12,7 @@ depends=('gconf' 'libcompizconfig-ubuntu' 'boost' 'glib2-ubuntu' 'libxslt' 'libx
 makedepends=('intltool' 'cmake' 'libtool' 'pkgconfig')
 provides=('compizconfig-backend-gconf')
 conflicts=('compizconfig-backend-gconf')
+groups=('unity')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}.orig.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver}-${_ubuntu_ver}.diff.gz")
 sha512sums=('d03bd33ab21af915825a1f51dbc8411ce3edea5e485ce6f90a6f65cefeb3b1b949254ac93da655f1abb2ec4bc25010ba1c6858f62fa1a8510e05c0a938685f67'

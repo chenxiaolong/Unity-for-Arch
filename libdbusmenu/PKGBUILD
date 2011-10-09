@@ -1,0 +1,71 @@
+# Maintainer: Xiao-Long Chen
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=libdbusmenu
+pkgname=(libdbusmenu libdbusmenu-gtk2 libdbusmenu-gtk3)
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/dbusmenu"
+license=('LGPL')
+makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gobject-introspection' 'vala' 'python2')
+options=(!libtool)
+source=("http://launchpad.net/dbusmenu/0.5/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+groups=('unity')
+sha512sums=('eaecae500728a61c2f3fe6a2f432710e817b4b7a822ffe4fbba6d73f28b2747455e5017474dd01822858718c5a0215dc5481f33911ed00080b26585dd4a6b959')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  autoreconf -fi
+  sed -i 's@^#!\(.*python\)$@\12@' tools/dbusmenu-bench
+
+  #Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
+    # http://packages.ubuntu.com/search?keywords=dbusmenu&searchon=names&suite=oneiric&section=all
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3
+  make
+  popd
+}
+
+# I've modified thn81's PKGBUILD so that the directory structure of the packages
+#   are identical to Ubuntu's. It should have better compatibility will other
+#   packages that depend on libdbusmenu.
+
+package_libdbusmenu() {
+  depends=('json-glib')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
+  make -C tools DESTDIR="${pkgdir}/" install
+  make -C tests DESTDIR="${pkgdir}/" install
+  make -C docs DESTDIR="${pkgdir}/" install
+  make -C po DESTDIR="${pkgdir}/" install
+}
+
+package_libdbusmenu-gtk2() {
+  pkgdesc+=" (GTK+ 2 library)"
+  depends=('gtk2-ubuntu' "libdbusmenu=${pkgver}")
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  make -C libdbusmenu-gtk DESTDIR="$pkgdir/" install
+}
+
+package_libdbusmenu-gtk3(){
+  pkgdesc+=" (GTK+ 3 library)"
+  depends=('gtk3-ubuntu' "libdbusmenu=${pkgver}")
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
+}

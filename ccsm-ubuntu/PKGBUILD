@@ -11,6 +11,7 @@ install="ccsm-ubuntu.install"
 license=('GPL')
 provides=('ccsm')
 conflicts=('ccsm')
+groups=('unity')
 depends=('compiz-core-ubuntu' 'compizconfig-python-ubuntu' 'pygtk')
 source=("http://archive.ubuntu.com/ubuntu/pool/universe/c/compizconfig-settings-manager/compizconfig-settings-manager_${pkgver}.orig.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/universe/c/compizconfig-settings-manager/compizconfig-settings-manager_${pkgver}-${_ubuntu_ver}.diff.gz"

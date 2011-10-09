@@ -60,6 +60,7 @@ optdepends=('ccsm-ubuntu: CompizConfig Settings Manager'
 makedepends=('intltool' 'cmake' 'git')
 provides=('compiz-core')
 conflicts=('compiz-core')
+groups=('unity')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
