@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=zeitgeist-datahub
+pkgver=0.7.0
+pkgrel=1
+pkgdesc="The datahub provides passive plugins which insert events into Zeitgeist"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/zeitgeist-datahub"
+license=('GPL')
+depends=('libzeitgeist' 'gtk2-ubuntu')
+makedepends=('intltool' 'vala')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('994849bae8e6169aaa247a0d59b817911c82bf9c0a9db5182269de66c6c9c372a7c6e82977155c6cbe65b8940bff8df238d841c08f698c8172db0a9eddf69744')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
