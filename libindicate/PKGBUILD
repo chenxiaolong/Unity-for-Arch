@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=libindicate
-pkgname=(libindicate libindicate-gtk2 libindicate-gtk3)
+pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=0.6.1
 pkgrel=1
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"

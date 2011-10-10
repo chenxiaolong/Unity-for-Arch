@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=libappindicator
-pkgname=(libappindicator libappindicator3)
+pkgname=('libappindicator' 'libappindicator3')
 pkgver=0.4.1
 pkgrel=1
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"

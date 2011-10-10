@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=libindicator
-pkgname=(libindicator libindicator3)
+pkgname=('libindicator' 'libindicator3')
 pkgver=0.4.1
 pkgrel=1
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"

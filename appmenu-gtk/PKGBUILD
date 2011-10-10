@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=appmenu-gtk
-pkgname=(appmenu-gtk2 appmenu-gtk3)
+pkgname=('appmenu-gtk2' 'appmenu-gtk3')
 pkgver=0.3.0
 pkgrel=1
 arch=('i686' 'x86_64')

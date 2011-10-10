@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=libdbusmenu
-pkgname=(libdbusmenu libdbusmenu-gtk2 libdbusmenu-gtk3)
+pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=0.5.0
 pkgrel=2
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
