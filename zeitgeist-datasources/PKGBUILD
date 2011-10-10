@@ -1,0 +1,35 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: twa022 <twa022 at gmail dot com>
+# Contributor: thn81 <root@scrat>
+
+pkgname="zeitgeist-datasources"
+pkgdesc="Zeitgeist Data-Sources"
+pkgver=0.8.0.1
+pkgrel=1
+arch=('x86_64' 'i686')
+url="https://launchpad.net/zeitgeist-datasources"
+license=('GPL3')
+depends=('libzeitgeist' 'firefox')
+makedepends=('xulrunner')
+groups=('unity')
+source=("http://launchpad.net/zeitgeist-datasources/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('4f03d6727d2363355db7d0443a219433c413df7c3b3cf4ee83a718affd55c2b87d5d9320185e99d9155262483449b9ea17f68298612526398b2824353a8c77a5')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  export CXXFLAGS="-std=gnu++0x"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+  #Fix Google Chrome directory
+  mv "${pkgdir}/usr/share/opt/" "${pkgdir}/"
+  #Don't forget Chromium!
+  install -d -m755 "${pkgdir}/usr/lib/chromium/resources/"
+  ln -s "/opt/google/chrome/resources/zeitgeist_plugin" "${pkgdir}/usr/lib/chromium/resources/"
+}
