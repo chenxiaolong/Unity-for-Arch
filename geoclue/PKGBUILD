@@ -1,0 +1,36 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Isaac Dupree <id@isaac.cedarswampstudios.org>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Contributor: Kurama <kurama_luka@yahoo.it>
+# Contributor: thn81 <root@scrat>
+
+pkgname=geoclue
+pkgver=0.12.0
+pkgrel=1
+pkgdesc="Modular geoinformation service built on the D-Bus messaging system."
+arch=('i686' 'x86_64')
+url="http://geoclue.freedesktop.org" #also: https://launchpad.net/geoclue
+license=('LGPL')
+depends=('gconf')
+makedepends=('gtk-doc' 'autoconf' 'automake')
+groups=('unity')
+options=('!libtool')
+source=("http://cgit.freedesktop.org/${pkgname}/snapshot/${pkgname}-${pkgver%.*}.tar.gz")
+sha512sums=('d85699dea48c95d8c08eb358a699f3a95694801ab142b37ef79a38febca631ed4e58a5efbe7dc1941934ed133a89ecc8a5a82f45fc8570516c57d40aed83937b')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  #Do not treat warnings as errors
+  sed -i 's/\-Werror//' configure.ac
+
+  ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname}
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  make DESTDIR=${pkgdir} install
+}
