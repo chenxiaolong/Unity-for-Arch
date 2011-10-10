@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=zeitgeist
+pkgver=0.8.2
+pkgrel=1
+pkgdesc="A service which logs the users's activities and events and makes relevant information available to other applications"
+arch=('any')
+url="http://zeitgeist-project.com/"
+license=('GPL')
+depends=('dbus-python' 'pygobject' 'pyxdg')
+makedepends=('intltool' 'raptor' 'python-rdflib')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/0.8/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('d6a8c87165353d3229d6315a8c69df910a7fd2a47f3839dbf470ed76666119a5358efac56e70c0b54aecf6a3a21bcb8de69b4ac91d062f7bf3a7511e5738ca28')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  #Python 2 fix
+  sed -i 's|^\(#!.*python\)$|\12|g' extra/rdfxml2py
+  sed -i 's|python - 2>/dev/null|$PYTHON - 2>/dev/null|' configure{,.ac}
+
+  ./configure --prefix=/usr PYTHON=python2
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}

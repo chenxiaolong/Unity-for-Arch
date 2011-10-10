@@ -1,0 +1,28 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=python-rdflib
+pkgver=3.1.0
+pkgrel=1
+pkgdesc="A Python library for working with RDF"
+arch=('any')
+url="http://www.rdflib.net/"
+license=('BSD')
+depends=('python2-distribute')
+groups=('unity')
+source=("http://rdflib.googlecode.com/files/${pkgname#*-}-${pkgver}.tar.gz")
+sha512sums=('388bf16e068e31ce14b50d22798f4df24fbdc037f2ea8191608bc763192f0e6ef52d100b06a0701ecae7826732a517247c55b1c01200b5b61ad33c5c84c56256')
+
+build() {
+  cd "${srcdir}/${pkgname#*-}-${pkgver}"
+
+  sed -i 's|^\(#!.*python\)$|\12|g' rdflib/plugins/parsers/{ntriples,notation3}.py
+}
+
+package() {
+  cd "${srcdir}/${pkgname#*-}-${pkgver}"
+
+  python2 setup.py install --root="${pkgdir}/" --optimize=1
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname#*-}/LICENSE"
+}
