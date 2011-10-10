@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=sni-qt
+pkgver=0.2.5
+pkgrel=1
+pkgdesc="A Qt plugin which turns all QSystemTrayIcon into StatusNotifierItems (appindicators)"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/sni-qt"
+license=('GPL')
+depends=('qt-ubuntu' 'libdbusmenu-qt')
+makedepends=('cmake')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
+sha512sums=('37f32c66fbd8e320d202d82d1d1fb39f1aa4761c61180eaa888b7b1f845ddcc7f7c1d81891abee2a1aeb69297eecdb163481f2efa01b261cae462d40dba05bf3')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
