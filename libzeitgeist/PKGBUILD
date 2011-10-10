@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libzeitgeist
+pkgver=0.3.12
+pkgrel=1
+pkgdesc="Provides a client library for applications that want to interact with the Zeitgeist daemon"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libzeitgeist"
+license=('LGPL')
+depends=('glib2')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('a471215afb0b585527474737b764785a40adbe31140a74f1f574d7c74e4677e5195eeb066e0a9116114fd9bdc4752f27d1db432f8aec082d703a42d80e8dfd08')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
