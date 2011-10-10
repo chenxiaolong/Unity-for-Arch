@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libqtbamf
+pkgver=0.2.2
+pkgrel=1
+pkgdesc="Provides a set of Qt bindings for libbamf"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/bamf-qt"
+license=('GPL')
+depends=('qt-ubuntu' 'bamf')
+makedepends=('cmake')
+groups=('unity')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")
+sha512sums=('eff2eecf60e2db4a1d607dec8b06b721cccea7cbf8f296a184accc0a686c035bce7b8bd1610af73a37e78e441ebc1f399c636ed6631f15c4d3057d95473b639a')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
