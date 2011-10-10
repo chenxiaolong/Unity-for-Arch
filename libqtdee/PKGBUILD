@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libqtdee
+pkgver=0.2.3
+pkgrel=1
+pkgdesc="Provides a set of Qt bindings for libdee"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/dee-qt"
+license=('GPL')
+depends=('qt-ubuntu' 'dee')
+makedepends=('cmake')
+groups=('unity')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")
+sha512sums=('59c894de50b84588c333e5d877d276ca09e199d062600a4a0c216f06900fc00c373631740a6324ef4a2c0d0b2bd03b91b065a94d16d9235df36b2269fdf57f3e')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+
+  #Install pkgconfig file
+  install -d -m755 "${pkgdir}/usr/lib/pkgconfig/"
+  install -m644 'libqtdee.pc' "${pkgdir}/usr/lib/pkgconfig/"
+}
