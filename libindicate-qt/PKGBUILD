@@ -1,0 +1,40 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libindicate-qt
+_ubuntu_ver=1ubuntu2
+pkgver=0.2.5.91.${_ubuntu_ver}
+pkgrel=1
+pkgdesc="This project provides a set of Qt bindings for libindicate, the indicator system developed by Canonical Desktop Experience team"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libindicate-qt"
+license=('GPL')
+depends=('qt-ubuntu' 'libindicate')
+makedepends=('cmake')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/${pkgname%-*}-0.5/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/libi/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('62b6ee0a758729f8007d0dfe6c7b9f55264f0bc110cebc8ef9f782c345fb81e45d9b652de45db06105510a232449b2427fb9a8344f86fb911d3fac1d5c552a23'
+            '8d2e07f2e9a88d621bef67cff0944cc24b83b0a770d86de391d023bc5a6af290278569c114b03d1ccebe54eadbf2df71278f526304fd8b859f862d1e63071f7a')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  make DESTDIR="${pkgdir}/" install
+
+  # Not present in Ubuntu packages
+  rm -rvf "${pkgdir}/usr/include/libindicate-qt/CMakeFiles"
+}
