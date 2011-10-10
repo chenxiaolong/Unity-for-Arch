@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=dee
+pkgver=0.5.22
+pkgrel=1
+pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/dee"
+license=('LGPL')
+depends=('glib2')
+makedepends=('python2' 'gobject-introspection' 'gtk-doc' 'vala')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgname}/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('9ce1b558c4bfa372273ebbc1d0c26ba39e374ed1790270351cf771e5167f43cf5462e482fb35341900952136d5c6c0a479cd3c94f99e366528c00a92c8ea9b3d')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr PYTHON=python2
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
