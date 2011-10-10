@@ -1,0 +1,28 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=ido
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="Widgets and other objects used for indicators"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/ido"
+license=('LGPL')
+depends=('gtk3-ubuntu')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgname}/0.3/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('8ddf773f3607d35d779171c41812026b5c09b27aed2592adf10917e87b8bd92395c9ab9e8b088d1833a87f581cd8f7fc6d12775c07b59f036dd054066d8fd1f3')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
