@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=appmenu-qt
+pkgver=0.2.2
+pkgrel=1
+pkgdesc="Adds support for application menu to Qt"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/appmenu-qt"
+license=('GPL')
+depends=('qt-ubuntu' 'libdbusmenu-qt')
+makedepends=('cmake')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
+sha512sums=('99df77aa8bb2dc86db80de90592b953886d32fca4d20e43e93a69c262fc2a5e2fcbb47e3b5c3991edb6e81ec1e8258b16f40a3d27de6b374f3e1fcbf0459320b')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
