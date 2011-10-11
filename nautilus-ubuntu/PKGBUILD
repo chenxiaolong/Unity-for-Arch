@@ -1,0 +1,65 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: thn81 <root@scrat>
+
+pkgname=nautilus-ubuntu
+_ubuntu_ver=0ubuntu5
+pkgver=3.2.0.${_ubuntu_ver}
+pkgrel=2
+pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql')
+makedepends=('intltool' 'gobject-introspection')
+groups=('gnome')
+provides=("nautilus=${pkgver}")
+conflicts=('nautilus')
+url="http://www.gnome.org"
+options=('!libtool' '!emptydirs')
+install=nautilus.install
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/n/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('330ba8a6bd40a1ecda72c3b222cf37698cacc411e46d930f33babda629039157f3f8665ee93bc953a187a70f60995de4b858fd0507193e372a6f977c7a466587'
+            'b278d1bf9f767e94bcd772f5dd40ea39cf603c621fbd6e2a55c73a4f2f550cbc01bd0c6362d3014ec584fc2e0bda1c9e179b7179ac688bddc241b954c984ab24')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -fi
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --disable-static \
+    --libexecdir=/usr/lib/nautilus \
+    --disable-nst-extension \
+    --disable-update-mimedb \
+    --disable-packagekit \
+    --disable-schemas-compile \
+    --disable-appindicator --enable-introspection #From debian/rules
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}" install
+
+  #From debian/rules
+  echo "" > "${pkgdir}/usr/share/nautilus/nautilus.css"
+
+  #Ubuntu specific stuff
+  install -d -m755 "${pkgdir}/usr/share/pixmaps/"
+  install -d -m755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -d -m755 "${pkgdir}/usr/share/applications/"
+  install -d -m755 "${pkgdir}/usr/share/menu/"
+  install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
+  install -m644 "${srcdir}/debian/nautilus.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
+  install -m644 "${srcdir}/debian/nautilus-home.desktop" "${pkgdir}/usr/share/applications/"
+  install -m644 "${srcdir}/debian/mount-archive.desktop" "${pkgdir}/usr/share/applications/"
+  install -m644 "${srcdir}/debian/menu" "${pkgdir}/usr/share/menu/${pkgname%-*}.menu"
+}
