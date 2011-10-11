@@ -1,0 +1,65 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: thn81 <root@scrat>
+
+pkgname=gnome-control-center-ubuntu
+_ubuntu_ver=0ubuntu6
+pkgver=3.2.0.${_ubuntu_ver}
+pkgrel=1
+pkgdesc="The Control Center for GNOME with Ubuntu's patches"
+arch=('i686' 'x86_64')
+depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet')
+optdepends=('mesa-demos: provides glxinfo for graphics information'
+            'apg: adds password generation for user accounts'
+            'gnome-color-manager: for color management tasks')
+makedepends=('gnome-doc-utils' 'intltool')
+groups=('gnome')
+url="http://www.gnome.org"
+provides=("gnome-control-center=${pkgver}")
+conflicts=('gnome-control-center')
+install=gnome-control-center.install
+license=('GPL')
+options=('!libtool' '!emptydirs')
+source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('fae6c250cd7fb1f4b6fca0fc5be731acaa6a0f3b766648b96e6816ee6d25cf81c697dc03891b3245411e84ca4de4bac53032d50229210cdfacf0453acb6d4dc9'
+            '28e792cc938b1a8dafbc76f38c1fe5febc178313a4d0eeddca007f1fc87c744edaa04bb00e3a65e80415a30dd1581f175045471c54a022410a0abe36edc71a51')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -fi
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --disable-static \
+    --disable-scrollkeeper \
+    --disable-update-mimedb
+
+  #https://bugzilla.gnome.org/show_bug.cgi?id=656229
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  make DESTDIR="${pkgdir}" install
+
+  #Ubuntu specific files
+  install -d -m755 "${pkgdir}/usr/share/gnome-control-center/ui/"
+  install -d -m755 "${pkgdir}/usr/share/pixmaps/"
+  install -d -m755 "${pkgdir}/usr/share/indicators/session/applications/"
+  install -d -m755 "${pkgdir}/usr/share/menu/"
+  install -m644 "${srcdir}/debian/UbuntuLogo.png" "${pkgdir}/usr/share/gnome-control-center/ui/"
+  install -m644 "${srcdir}/debian/control-center2.xpm" "${pkgdir}/usr/share/pixmaps/"
+  ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
+  install -m644 "${srcdir}/debian/gnome-control-center.menu" "${pkgdir}/usr/share/menu/"
+}
+
