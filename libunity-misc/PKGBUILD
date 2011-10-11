@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libunity-misc
+pkgver=4.0.4
+pkgrel=1
+pkgdesc="Misc. differently licensed stuff for Unity"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libunity-misc"
+license=('LGPL')
+depends=('gtk3-ubuntu')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('ab85fe10a946e40fef318120b6fd9f657577fa996d437d654f41f88e147c2d191faa440e10961f9e23643b644cb04b1e640fe82281cf657923af7c203b555ea2')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
