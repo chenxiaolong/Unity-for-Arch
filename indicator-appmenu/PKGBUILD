@@ -44,7 +44,7 @@ package_indicator-appmenu() {
 
 package_indicator-appmenu-gtk2() {
   pkgdesc="Indicator for application menus - GTK 2 library"
-  depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'bamf')
+  depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'bamf' 'indicator-appmenu')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   make -C src DESTDIR="${pkgdir}/" install

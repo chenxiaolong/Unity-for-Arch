@@ -1,0 +1,51 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=indicator-messages
+pkgname=('indicator-messages' 'indicator-messages-gtk2')
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="A place on the user's desktop that collects messages that need a response"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-messages"
+license=('GPL')
+depends=('libindicator3' 'libindicate' 'libdbusmenu-gtk3' 'telepathy-glib')
+makedepends=('intltool>=0.35.0')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('ac5f81fff2da77aebff0712debfa783c1b0eeaf07386dfec89c87eff18c10e21aa460dd2bf9e214593f5cb7bd168c63d4e5f02fe546dd8d1d30b19088864f6fd')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=3
+  make
+  popd
+}
+
+package_indicator-messages() {
+  pkgdesc="Indicator that collects messages that need a response - GTK 3 library"
+  depends=('libdbusmenu-gtk3' 'gtk3-ubuntu' 'libindicator3' 'libindicate')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+package_indicator-messages-gtk2() {
+  pkgdesc="Indicator that collects messages that need a response - GTK 2 library"
+  depends=('libdbusmenu-gtk2' 'gtk2-ubuntu' 'libindicator' 'indicator-messages')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
+  install -m755 'src/.libs/libmessaging.so' "${pkgdir}/usr/lib/indicators/6/"
+}
