@@ -1,0 +1,30 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libunity
+pkgver=4.0.6
+pkgrel=2
+pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libunity"
+license=('LGPL')
+depends=('libgee' 'dee' 'libdbusmenu' 'dbus-glib')
+makedepends=('vala' 'python2' 'gobject-introspection')
+groups=('unity')
+options=(!libtool)
+source=("http://launchpad.net/${pkgname}/4.0.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('dbb7718204542db81722c7484bba647a99f808e23de2d09c782527feddc9674ba64ea6bdfa6da027cb53f91106f3d0f971a43f7ec8452036f0bf6664ef0b73c9')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  autoreconf -fi
+  ./configure --prefix=/usr --disable-static PYTHON=python2
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
