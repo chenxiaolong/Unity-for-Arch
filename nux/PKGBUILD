@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=nux
+pkgver=1.14.0
+pkgrel=1
+pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/nux"
+license=('LGPL')
+depends=('gdk-pixbuf2' 'glew' 'pango' 'libsigc++' 'libxcomposite')
+makedepends=('boost' 'glproto' 'dri2proto')
+groups=('unity')
+options=('!libtool')
+install=${pkgname}.install
+source=("http://launchpad.net/${pkgname}/1.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('612a9c127e494427ec4106a3cb1830c439ae058b97e8e823b396691811f5ed3499e70a0a2ed6126cbadedd0d062f964d9532d811c53752722fe860273b9707bd')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./autogen.sh
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
