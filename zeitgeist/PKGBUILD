@@ -22,7 +22,7 @@ build() {
   sed -i 's|^\(#!.*python\)$|\12|g' extra/rdfxml2py
   sed -i 's|python - 2>/dev/null|$PYTHON - 2>/dev/null|' configure{,.ac}
 
-  ./configure --prefix=/usr PYTHON=python2
+  ./configure --prefix=/usr --disable-static PYTHON=python2
   make
 }
 

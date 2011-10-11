@@ -18,7 +18,7 @@ sha512sums=('9ce1b558c4bfa372273ebbc1d0c26ba39e374ed1790270351cf771e5167f43cf546
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr PYTHON=python2
+  ./configure --prefix=/usr --disable-static PYTHON=python2
   make
 }
 

@@ -22,14 +22,14 @@ build() {
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2 --disable-static
   make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   #Documentation will go in the GTK 3 package
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --enable-gtk-doc
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --enable-gtk-doc --disable-static
   make
   popd
 }

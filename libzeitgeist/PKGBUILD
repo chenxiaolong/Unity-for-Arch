@@ -18,7 +18,7 @@ sha512sums=('a471215afb0b585527474737b764785a40adbe31140a74f1f574d7c74e4677e5195
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --disable-static
   make
 }
 

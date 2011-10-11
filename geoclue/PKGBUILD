@@ -24,7 +24,7 @@ build() {
   #Do not treat warnings as errors
   sed -i 's/\-Werror//' configure.ac
 
-  ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname}
+  ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
 
   make
 }

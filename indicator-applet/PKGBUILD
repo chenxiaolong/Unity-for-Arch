@@ -1,0 +1,46 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+# THIS PACKAGE WAS DELETED FROM THE UBUNTU 11.10 REPOSITORY
+#   Source: http://www.ubuntuupdates.org/packages/show/365107
+# This package is probably not required anymore
+
+pkgname=indicator-applet
+pkgver=0.4.12
+pkgrel=2
+pkgdesc="A small applet to display information from various applications consistently in the panel"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-applet"
+license=('GPL')
+depends=('libindicator3' 'xdg-utils' 'gnome-panel')
+makedepends=('intltool')
+optdepends=('indicator-application: take menus from applications and place them in the panel'
+            'indicator-appmenu: host the menus from an application'
+            'indicator-datetime: a very, very simple clock'
+            'indicator-messages: a place on the users desktop that collects messages that need a response'
+            'indicator-power: show the power status of your devices'
+            'indicator-session: change your status, switch users'
+            'indicator-sound: a unified sound menu')
+groups=('unity')
+install=${pkgname}.install
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+        'gnome3.patch')
+sha512sums=('879e8206fcea7c4d11b987819054eb555ee86d53965641de97eba1591b10376f4fa54d048eb23daeeac2a460ed92904dd5314b59be03c1fe395d087dfae4340e'
+            '5685f9cf2cd0dfad541e85b1e6bc93f1e644113f2c05b376bb85392b1cf601b0961824a232cfa52397714baa22b268e27b7c6bda67abaad56e748082c9e68fde')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/gnome3.patch"
+
+  autoreconf -fi
+  export MAKEFLAGS="-j1"
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}

@@ -20,13 +20,13 @@ build() {
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk2
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk2 --disable-static
   make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk3
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk3 --disable-static
   make
   popd
 }
