@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=indicator-datetime
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="A very, very simple clock"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-datetime"
+license=('GPL')
+depends=('libindicator' 'libdbusmenu' 'ido' 'geoclue' 'evolution-data-server' 'gtk3-ubuntu' 'libunique3' 'gnome-control-center-ubuntu')
+makedepends=('intltool')
+groups=('unity')
+options=(!libtool)
+install=${pkgname}.install
+source=("http://launchpad.net/${pkgname}/0.3/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('28ca8969d16eb3250f7ae736be8476e5d5e36d4c435dd45cf4e7e8f45068aca3280db664d64c3f5060931c4b8b30aac645e9af5a521c92d8efe3a0f1f621f59d')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
