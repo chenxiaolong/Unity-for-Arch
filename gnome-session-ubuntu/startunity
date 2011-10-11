@@ -1,0 +1,12 @@
+#!/bin/bash
+export MALLOC_CHECK_=0
+
+/usr/bin/dconf write /org/gnome/desktop/background/show-desktop-icons true
+
+if test -e ${HOME}/.Xmodmap ; then
+    eval '/usr/bin/xmodmap ${HOME}/.Xmodmap'
+fi
+
+/usr/bin/gnome-session --session unity-2d
+
+/usr/bin/dconf write /org/gnome/desktop/background/show-desktop-icons false

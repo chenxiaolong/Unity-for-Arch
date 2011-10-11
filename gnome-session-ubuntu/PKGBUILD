@@ -1,0 +1,78 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: thn81 <root@scrat>
+
+pkgname=gnome-session-ubuntu
+_ubuntu_ver=0ubuntu3
+pkgver=3.2.0.${_ubuntu_ver}
+pkgrel=2
+pkgdesc="The GNOME Session Handler with Ubuntu's patches"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL')
+depends=('upower' 'gtk3' 'gconf' 'startup-notification' 'hicolor-icon-theme' 'libxtst' 'polkit-gnome' 'libgl' 'librsvg' 'gsettings-desktop-schemas' 'consolekit' 'libsm' 'dconf')
+makedepends=('intltool' 'mesa' 'xtrans')
+groups=('gnome')
+provides=("gnome-session=${pkgver}")
+conflicts=('gnome-session')
+options=('!emptydirs')
+install=gnome-session.install
+url="http://www.gnome.org"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
+        'startunity'
+        'unity-3d.desktop'
+        'startunity3d'
+        'unity-2d.desktop')
+sha512sums=('5d24aba5928e5d9d741561fcd380a6b94b7baf325774e52796971a88f58f134908613db6e10c2a8975c525fe0cefbf8beb27b69692f96d1a71f5c1803d065a9a'
+            'f0df4ef7cc0fa7bc9d2aee2845e0fbfd8efe19f780fbddddc0f97221409079c47d06d6645eb9db26b3233f66f89eccb3372dabab902803211901f30a01b16356'
+            '3500184bbf21fe4007e459073f0cf661c4402d328b174bb09aa5614ee4d31d9fe7020a6f18efda3d00864971e36d6e4528a86a41a886d10541aeedbb3e8b7cee'
+            '105c9aa92ca355f367067715528a4b7352dc960c94b6b587794c7210c13dc50186fbb920665eeb5f7a8e6064df966372394ae865d3c89ad63f41b30a9eeb971f'
+            '1c15fb7f7daf8ed3ea5cb0cd6397d7e90b0dd38374ba2fc4226594808377c2d8773285f2bdb2c535aa551273173ec6505724b12e8f50901490d6d53249c7f42c'
+            '713303d71e7c621f24b7c0ed93d91e4929268e17ef723821a6243980fa6cf897de95f3013f371d0109ec3a4dbc5f33510a2f7c8c5321989891ceedb0bd3ea3d4')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -fi
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/gnome-session \
+    --disable-schemas-compile \
+    --enable-ipv6 #From debian/rules
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}" install
+
+  #Install Ubuntu files
+  install -d -m755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -d -m755 "${pkgdir}/usr/bin/"
+  install -d -m755 "${pkgdir}/usr/share/applications/"
+  install -d -m755 "${pkgdir}/etc/gnome/"
+  install -d -m755 "${pkgdir}/usr/share/gnome/applications/"
+  install -d -m755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
+  install -m755 "${srcdir}/debian/scripts/gnome-wm" "${pkgdir}/usr/bin/"
+  install -m644 "${srcdir}/debian/gnome-wm.desktop" "${pkgdir}/usr/share/applications/"
+  install -m644 "${srcdir}/debian/gnome-session-common.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
+  install -m644 "${srcdir}/debian/defaults.list" "${pkgdir}/etc/gnome/"
+  pushd "${pkgdir}/usr/share/gnome/applications/"
+  ln -s ../../../etc/gnome/defaults.list .
+  popd
+
+  #Install thn81's files
+  install -D -m644 "${srcdir}/unity-2d.desktop" "${pkgdir}/usr/share/apps/kdm/sessions/unity-2d.desktop"
+  install -D -m755 "${srcdir}/startunity" "${pkgdir}/usr/bin/startunity"
+  install -D -m644 "${srcdir}/unity-3d.desktop" "${pkgdir}/usr/share/apps/kdm/sessions/unity-3d.desktop"
+  install -D -m755 "${srcdir}/startunity3d" "${pkgdir}/usr/bin/startunity3d"
+}
