@@ -1,0 +1,51 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Balló György <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=indicator-sound
+pkgname=('indicator-sound' 'indicator-sound-gtk2')
+pkgver=0.7.8.0
+pkgrel=1
+pkgdesc="A unified sound menu"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-sound"
+license=('GPL')
+makedepends=('intltool' 'vala')
+groups=('unity')
+options=(!libtool)
+install=${pkgbase}.install
+source=("http://launchpad.net/${pkgbase}/fourth/${pkgver%.*}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('3c6c43f584c02afc9f557513789de98a246362b3bdac889944002b8f3219fb0b4e17c5b5fdd9fd0eae6660626a49f6674735f783494a1239c7f5de9981954cb8')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile --with-gtk=2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile --with-gtk=3
+  make
+  popd
+}
+
+package_indicator-sound() {
+  pkgdesc="A unified sound menu - GTK 3 library"
+  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'gconf' 'dconf')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+package_indicator-sound-gtk2() {
+  pkgdesc="A unified sound menu - GTK 2 library"
+  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'libnotify' 'indicator-sound')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
+  install -m755 'src/.libs/libsoundmenu.so' "${pkgdir}/usr/lib/indicators/6/"
+}
