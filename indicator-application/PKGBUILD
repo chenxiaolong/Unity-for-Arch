@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=indicator-application
+pkgver=0.4.0
+pkgrel=1
+pkgdesc="A library and indicator to take menus from applications and place them in the panel"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-application"
+license=('GPL')
+depends=('dbus-glib' 'libappindicator3')
+groups=('unity')
+options=('!libtool')
+source=("http://launchpad.net/${pkgname}/0.4/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('24d0e88ea98b1661a75e3faf7f54e4d1dfd468d70c11d69ffc59a83632f0b2b46e7da9c0deb4a887ff9312b04b4b80d714fb62862dd61338e55470235b0c83cf')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
