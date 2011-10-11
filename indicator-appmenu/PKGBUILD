@@ -1,0 +1,60 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=indicator-appmenu
+pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-gtk3')
+pkgver=0.3.1
+pkgrel=1
+pkgdesc="An indicator to host the menus from an application"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-appmenu"
+license=('GPL')
+groups=('unity')
+optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
+            'appmenu-gtk3: support for GTK+ 3 apps'
+            'appmenu-qt: support for Qt apps')
+options=(!libtool)
+source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('94500319534c984f3c863a36e1b627c39cd1bbed0b59d00bfd12b4f9b50993e40d43a7e3540525ea8830b2a0c0df188f600afa9ea0fd062b67042f552b16931f')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=2
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=3
+  make
+  popd
+}
+
+package_indicator-appmenu() {
+  pkgdesc="Indicator for application menus - Tools"
+  depends=('indicator-appmenu')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C tools DESTDIR="${pkgdir}/" install
+  install -m644 'scripts/menu-pusher' "${pkgdir}/usr/lib/${pkgbase}/"
+}
+
+package_indicator-appmenu-gtk2() {
+  pkgdesc="Indicator for application menus - GTK 2 library"
+  depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'bamf')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+
+  make -C src DESTDIR="${pkgdir}/" install
+}
+
+package_indicator-appmenu-gtk3() {
+  pkgdesc="Indicator for application menus - GTK 3 library"
+  depends=('gtk3-ubuntu' 'libindicator3' 'libdbusmenu-gtk3' 'bamf')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make -C src DESTDIR="${pkgdir}/" install
+}
