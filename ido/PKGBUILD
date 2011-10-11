@@ -2,7 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgname=ido
+pkgbase=ido
+pkgname=('libido' 'libido3')
 pkgver=0.3.0
 pkgrel=1
 pkgdesc="Widgets and other objects used for indicators"
@@ -12,17 +13,39 @@ license=('LGPL')
 depends=('gtk3-ubuntu')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/0.3/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
 sha512sums=('8ddf773f3607d35d779171c41812026b5c09b27aed2592adf10917e87b8bd92395c9ab9e8b088d1833a87f581cd8f7fc6d12775c07b59f036dd054066d8fd1f3')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --disable-static
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --disable-static --with-gtk=2
   make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --disable-static --with-gtk=3
+  make
+  popd
 }
 
-package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+package_libido3() {
+  pkgdesc="Widgets and other objects used for indicators - GTK 3 library"
+  depends=('gtk3-ubuntu')
+  provides=("ido=${pkgver}")
+  conflicts=('ido')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+package_libido() {
+  pkgdesc="Widgets and other objects used for indicators - GTK 2 library"
+  depends=('gtk2-ubuntu')
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   make DESTDIR="${pkgdir}/" install
 }

@@ -20,9 +20,6 @@ sha512sums=('28ca8969d16eb3250f7ae736be8476e5d5e36d4c435dd45cf4e7e8f45068aca3280
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
-  #Can't find libido-0.1
-  sed -i 's/libido-0.1/libido3-0.1/g' configure{,.ac}
-
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile --with-gtk=2
@@ -38,7 +35,7 @@ build() {
 
 package_indicator-datetime() {
   pkgdesc="A very, very simple clock - GTK 3 library"
-  depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'ido' 'geoclue' 'evolution-data-server' 'libunique3' 'gnome-control-center-ubuntu')
+  depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'libido3' 'geoclue' 'evolution-data-server' 'libunique3' 'gnome-control-center-ubuntu')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
@@ -46,7 +43,7 @@ package_indicator-datetime() {
 
 package_indicator-datetime-gtk2() {
   pkgdesc="A very, very simple clock - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'gtk2-ubuntu' 'ido' 'geoclue' 'indicator-datetime')
+  depends=('libindicator' 'libdbusmenu-gtk2' 'gtk2-ubuntu' 'libido' 'geoclue' 'indicator-datetime')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
