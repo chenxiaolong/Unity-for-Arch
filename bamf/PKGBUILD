@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=bamf
-pkgname=('bamf' 'bamfdaemon' 'libbamf' 'libbamf3')
+pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
 pkgver=0.2.104
 pkgrel=1
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
@@ -34,13 +34,6 @@ build() {
   popd
 }
 
-package_bamf() {
-  pkgdesc="Dummy package for smooth upgrade from unsplit bamf package"
-  provides=("bamf=${pkgver}")
-  conflicts=('bamf')
-  depends=('bamfdaemon' 'libbamf' 'libbamf3')
-}
-
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
   depends=('dbus-glib' 'libwnck3' 'libgtop')
@@ -68,6 +61,8 @@ package_libbamf() {
 package_libbamf3() {
   pkgdesc="Window matching library for GTK 3"
   depends=('bamfdaemon' 'gtk3-ubuntu')
+  provides=("bamf=${pkgver}")
+  conflicts=('bamf')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
