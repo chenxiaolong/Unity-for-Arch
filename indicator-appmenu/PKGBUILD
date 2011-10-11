@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=indicator-appmenu
-pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-gtk3')
+pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2')
 pkgver=0.3.1
 pkgrel=1
 pkgdesc="An indicator to host the menus from an application"
@@ -35,26 +35,17 @@ build() {
 }
 
 package_indicator-appmenu() {
-  pkgdesc="Indicator for application menus - Tools"
-  depends=('indicator-appmenu')
+  pkgdesc="Indicator for application menus - GTK 3 library"
+  depends=('gtk3-ubuntu' 'libindicator3' 'libdbusmenu-gtk3' 'bamf')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  make -C tools DESTDIR="${pkgdir}/" install
-  install -m644 'scripts/menu-pusher' "${pkgdir}/usr/lib/${pkgbase}/"
+  make DESTDIR="${pkgdir}/" install
 }
 
 package_indicator-appmenu-gtk2() {
   pkgdesc="Indicator for application menus - GTK 2 library"
   depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'bamf')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
-
-  make -C src DESTDIR="${pkgdir}/" install
-}
-
-package_indicator-appmenu-gtk3() {
-  pkgdesc="Indicator for application menus - GTK 3 library"
-  depends=('gtk3-ubuntu' 'libindicator3' 'libdbusmenu-gtk3' 'bamf')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make -C src DESTDIR="${pkgdir}/" install
 }
