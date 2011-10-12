@@ -1,0 +1,46 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: twa022 <twa022 at gmail dot com>
+# Contributor: thn81 <root@scrat>
+
+pkgname=xfce4-indicator-plugin
+_ubuntu_ver=1ubuntu3
+pkgver=0.3.1.${_ubuntu_ver}
+pkgrel=1
+pkgdesc="Display indicators in the xfce4 panel"
+arch=('i686' 'x86_64')
+license=('LGPL2.1')
+url="http://goodies.xfce.org/projects/panel-plugins/xfce4-indicator-plugin"
+groups=('xfce4-goodies' 'unity')
+depends=('xfce4-panel' 'libxfce4util' 'libindicator')
+makedepends=('intltool' 'xfce4-dev-tools')
+groups=('unity')
+options=('!libtool')
+source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/universe/x/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('49f980fb2689a4c78318793978f241f471c019ee195de9245dd84edc0ea1bbe39b613bb56eada56d39482d0595015c952b27154c7122f6396b1b559650317653'
+            '27f40c48551fa398cb54caf53489f822e70bf7a681faabea20f964fc0b86941d6c70db8d47c7e0b2144c75ac085a9a5d6773b3dc8b8f040cfa0f2543d4e143be')
+
+build() {
+  cd ${srcdir}/${pkgname}-${pkgver%.*}
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  /usr/bin/xdt-autogen
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libexecdir=/usr/lib/${pkgname} \
+    --localstatedir=/var \
+    --disable-static \
+    --disable-debug
+  make
+}
+
+package() {
+  cd ${srcdir}/${pkgname}-${pkgver%.*}
+  make DESTDIR=${pkgdir} install
+}
+
