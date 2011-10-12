@@ -9,7 +9,7 @@ arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
 depends=('libxext' 'inputproto')
 makedepends=('pkgconfig' 'xorg-util-macros')
-provides=("libxi=${pkgver%.*}")
+provides=("libxi=${pkgver}")
 conflicts=('libxi')
 options=(!libtool)
 license=('custom')
