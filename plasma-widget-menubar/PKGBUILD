@@ -1,0 +1,35 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=plasma-widget-menubar
+pkgver=0.1.16
+pkgrel=1
+pkgdesc="A Plasma widget to display menubar of application windows"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/plasma-widget-menubar"
+license=('GPL')
+depends=('kdelibs' 'qjson')
+makedepends=('cmake' 'automoc4')
+optdepends=('appmenu-gtk: support for GTK+ apps'
+            'appmenu-gtk3: support for GTK+ 3 apps'
+            'appmenu-qt: support for Qt apps')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
+sha512sums=('4991f260debf1b0868194644bcf69eb399a27059f7310a0bf0383a3a50286e95875015f18b031851f3b9450ae4784f8f4f7a2fc7d4277563b7774a5f7ff605a8')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}/build"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
