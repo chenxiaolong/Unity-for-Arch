@@ -52,8 +52,8 @@ package() {
   rm -f "${pkgdir}"/etc/gconf/schemas/*.schemas
 
   #Install Ubuntu stuff
-  install -d -m755 "${pkgdir}/usr/share/sgml/metacity-common"
-  install -d -m755 "${pkgdir}/usr/share/gconf/defaults"
+  install -d -m755 "${pkgdir}/usr/share/sgml/metacity-common/"
+  install -d -m755 "${pkgdir}/usr/share/gconf/defaults/"
   install -m644 "doc/metacity-theme.dtd" "${pkgdir}/usr/share/sgml/metacity-common/"
   install -m644 "${srcdir}/debian/metacity-common.catalog" "${pkgdir}/usr/share/sgml/metacity-common/"
   install -m644 "${srcdir}/debian/metacity-common.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_metacity-common"

@@ -1,0 +1,58 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan "heftig" Steffens <jan.steffens@gmail.com>
+# Original Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Contributor: Michael Kanis <mkanis_at_gmx_dot_de>
+# Contributor: thn81 <root@scrat>
+
+pkgname=mutter-ubuntu
+_ubuntu_ver=0ubuntu2
+pkgver=3.2.0.${_ubuntu_ver}
+pkgrel=1
+pkgdesc="A window manager for GNOME3 with Ubuntu's patches"
+arch=(i686 x86_64)
+license=('GPL')
+depends=('startup-notification' 'gconf' 'zenity' 'libcanberra' 'clutter' 'gobject-introspection')
+makedepends=('intltool' 'gnome-doc-utils')
+groups=('gnome')
+provides=("mutter=${pkgver}")
+conflicts=('mutter')
+url="http://www.gnome.org"
+options=('!libtool' '!emptydirs')
+install=mutter.install
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/universe/m/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+sha512sums=('650e6839ad2fecec428c1e4b8b93438aab11f046e4279afe3def375ab3f9ddbf09856f4a0880f549bb5077e24643a8c24042b20eff2b347a4df26a7664835be2'
+            '5c02158816cc3987fd6198c0b3b7332fcec9cae5eaa71b7a42ac27631cd08b93e4f71a05722457341bbfd1b28c85ce6a5d7d9876782a01f45083713ddd723a89')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -fi
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libexecdir=/usr/lib/mutter \
+    --enable-compiler-warnings=no \
+    --localstatedir=/var \
+    --disable-static \
+    --enable-startup-notification=yes #From debian/rules
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/share/gconf/schemas"
+  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain mutter ${pkgdir}/etc/gconf/schemas/*.schemas
+  rm -f ${pkgdir}/etc/gconf/schemas/*.schemas
+
+  #Install Ubuntu stuff
+  install -d -m755 "${pkgdir}/usr/share/sgml/mutter-common/"
+  install -m644 "${srcdir}/debian/mutter-common.catalog" "${pkgdir}/usr/share/sgml/mutter-common/catalog"
+}
