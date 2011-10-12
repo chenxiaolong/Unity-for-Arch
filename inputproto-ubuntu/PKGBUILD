@@ -9,7 +9,7 @@ arch=('any')
 license=('custom')
 url="http://xorg.freedesktop.org/"
 makedepends=('xorg-util-macros')
-provides=('inputproto')
+provides=("inputproto=${pkgver}")
 conflicts=('inputproto')
 source=("${url}/releases/individual/proto/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/x/x11proto-input/x11proto-input_${pkgver%.*}-${_ubuntu_ver}.diff.gz")
