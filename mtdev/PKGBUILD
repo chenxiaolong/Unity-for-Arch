@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: SpepS <dreamspepser at yahoo dot it>
+# Contributor: thn81 <root@scrat>
+
+pkgname=mtdev
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="A stand-alone library which transforms all variants of kernel MT events to the slotted type B protocol"
+arch=('i686' 'x86_64')
+url="http://bitmath.org/code/mtdev/"
+license=('GPL')
+depends=('glibc')
+groups=('unity')
+options=('!libtool')
+source=("${url}${pkgname}-${pkgver}.tar.bz2")
+sha512sums=('e46c1cdd0543544fd75b0cf7a474ecc06716c5c0f6021027664d7de7343b0bde987358be3744bfe1e95154b4e2b96471277d153e6655a81d2658579d783fae38')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
