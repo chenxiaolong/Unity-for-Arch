@@ -1,0 +1,79 @@
+Special thanks to thn81, L42y, City-Busz, and all of the other AUR maintainers that helped make it possible to run Unity under Arch Linux!
+
+Please make sure you don't already have modified versions of the dependencies installed. For example, qt-ubuntu might fail to compile if there's a modified version of qt already installed.
+
+Packages ending with "-ubuntu" contain Ubuntu patches and REPLACE Arch Linux versions of those packages.
+
+Order to compile/install:
+
+01: glib2-ubuntu                   -> glib 2.0 with Ubuntu patches
+02: libxi-ubuntu                   -> X11 Input library with Ubuntu patches
+03: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
+04: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
+05: qt-ubuntu                      -> Qt framework with Ubuntu patches
+06: libdbusmenu                    -> Library for passing menus over DBus
+07: libindicator                   -> Symbols and functions for indicators
+08: libindicate                    -> Libraries for apps to raise 'flags' on DBus
+09: libindicate-qt                 -> Qt bindings for libindicate
+10: libappindicator                -> Library to export menu bar to Unity
+11: appmenu-gtk                    -> Application menu module for GTK+
+12: appmenu-qt                     -> Application menu support for QT
+13: bamf                           -> Application matching framework
+14: libqtbamf                      -> Qt bindings for bamf
+15: dee                            -> Create Model-View-Controller apps over DBus
+16: libqtdee                       -> Qt binding and QML plugin for Dee
+17: libqtgconf                     -> Qt bindings for GConf
+18: dconf-qt                       -> Qt bindings for DConf
+19: sni-qt                         -> Turns Qt tray icons into appindicators
+20: ido                            -> Widgets and objects used for indicators
+21: libzeitgeist                   -> Client library to interact with Zeitgeist
+22: python-rdflib                  -> A language for representing information
+23: zeitgeist                      -> Service that logs users' activities
+24: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
+25: geoclue                        -> Modular geoinformation service
+26: python-geoclue                 -> Geoclue Python module
+27: python-xapian                  -> Python bindings for Xapian
+28: zeitgeist-extensions           -> Extensions for Zeitgeist
+29: gnome-activity-journal         -> Tool for easily browsing and finding files
+30: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+31: gnome-session-ubuntu           -> GNOME Session Manager
+32: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+33: metacity-ubuntu                -> Lightweight GTK+ window manager
+34: launchpad-integration          -> Launchpad.net integration
+35: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+36: mutter-ubuntu                  -> Lightweight GTK+ window manager
+37: indicator-applet               -> GNOME panel indicator applet
+38: indicator-application          -> Takes menus and puts then in the panel
+39: indicator-appmenu              -> An indicator to host the menus from apps
+40: indicator-datetime             -> A very, very simple clock
+41: indicator-messages             -> Collects messages that need a response
+42: indicator-multiload            -> Port of the GNOME multiload applet
+43: indicator-session              -> Indicator to manage session
+44: indicator-sound                -> A unified sound menu
+45: nux                            -> An OpenGL toolkit
+46: plasma-widget-menubase **      -> KDE Plasma widget to display menubar
+47: xfce4-indicator-plugin &&      -> XFCE panel plugin to display indicators
+48: inputproto-ubuntu              -> X11 input extension wire protocol
+49: xorg-xinput-ubuntu             -> Command line tool to configure input devices
+50: mtdev                          -> Multitouch protocol translation library
+51: utouch-evemu                   -> 
+52: utouch-frame                   ->
+53: utouch-grail                   ->
+54: utouch-geis                    ->
+
+** For KDE users who want a Global menubar
+&& For XFCE users who want Ayatana Indicators in the XFCE panel
+
+All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
+
+Troubleshooting:
+
+Global menus aren't working when logging in with KDM (KDE display manager).
+
+  This happens because previous versions of KDM weren't patched to source the
+  /etc/X11/xinit/xinitrc.d/ directory. This is fixed in kdebase-workspace version
+  4.7.2-1, but requires the KDM configuration files to be regenerated (resetting
+  all KDM configuration options). To regenerate the configuration files, run as root
+
+    # rm -rvf /usr/share/config/kdm
+    # genkdmconf
