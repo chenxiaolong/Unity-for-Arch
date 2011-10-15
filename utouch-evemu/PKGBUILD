@@ -1,0 +1,27 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: thn81 <root@scrat>
+
+pkgname=utouch-evemu
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="Event Emulation for the uTouch Stack"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/utouch-evemu"
+license=('GPL')
+depends=()
+makedepends=()
+source=("http://launchpad.net/${pkgname}/trunk/v${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+options=('!libtool')
+sha512sums=("0609058d7544c15fc948ba1baa52450bf927845efdedb4b4654b254c0787c639ee48da53db1cb60a8e02aecfb2a42b47242dab6ba393348bb7ad982174706b55")
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
