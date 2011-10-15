@@ -58,7 +58,7 @@ Order to compile/install:
 50: mtdev                          -> Multitouch protocol translation library
 51: utouch-evemu                   -> Event emulation for the uTouch stack
 52: utouch-frame                   -> Touch frame library
-53: utouch-grail                   ->
+53: utouch-grail                   -> Gesture recognition and instantiation lib.
 54: utouch-geis                    ->
 
 ** For KDE users who want a Global menubar
