@@ -57,7 +57,7 @@ Order to compile/install:
 49: xorg-xinput-ubuntu             -> Command line tool to configure input devices
 50: mtdev                          -> Multitouch protocol translation library
 51: utouch-evemu                   -> Event emulation for the uTouch stack
-52: utouch-frame                   ->
+52: utouch-frame                   -> Touch frame library
 53: utouch-grail                   ->
 54: utouch-geis                    ->
 

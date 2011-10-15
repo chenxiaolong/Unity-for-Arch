@@ -1,19 +1,19 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: thn81 <root@scrat>
 
-pkgname=utouch-evemu
-pkgver=1.0.6
+pkgname=utouch-frame
+pkgver=1.1.4
 pkgrel=1
-pkgdesc="Event Emulation for the uTouch Stack"
+pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
-url="https://launchpad.net/utouch-evemu"
+url="https://launchpad.net/utouch-frame"
 license=('GPL')
-depends=('glibc')
-makedepends=('xmlto' 'asciidoc')
+depends=('utouch-evemu' 'mtdev')
+makedepends=('asciidoc')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/v${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 options=('!libtool')
-sha512sums=("0609058d7544c15fc948ba1baa52450bf927845efdedb4b4654b254c0787c639ee48da53db1cb60a8e02aecfb2a42b47242dab6ba393348bb7ad982174706b55")
+sha512sums=("ab341e93e4778bb43c7692c33bf6f5c39fe4e42f480313ea0b0816b152acdc27b53f79103c035ddced6953705ee7d8899641ca808d835f1307998a63cf7586b0")
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
