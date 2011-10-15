@@ -55,11 +55,12 @@ Order to compile/install:
 47: xfce4-indicator-plugin &&      -> XFCE panel plugin to display indicators
 48: inputproto-ubuntu              -> X11 input extension wire protocol
 49: xorg-xinput-ubuntu             -> Command line tool to configure input devices
-50: mtdev                          -> Multitouch protocol translation library
-51: utouch-evemu                   -> Event emulation for the uTouch stack
-52: utouch-frame                   -> Touch frame library
-53: utouch-grail                   -> Gesture recognition and instantiation lib.
-54: utouch-geis                    ->
+50: xorg-server-ubuntu #NOT DONE YET!
+51: mtdev                          -> Multitouch protocol translation library
+52: utouch-evemu                   -> Event emulation for the uTouch stack
+53: utouch-frame                   -> Touch frame library
+54: utouch-grail                   -> Gesture recognition and instantiation lib.
+55: utouch-geis                    -> Implementation of the GEIS interface
 
 ** For KDE users who want a Global menubar
 && For XFCE users who want Ayatana Indicators in the XFCE panel
