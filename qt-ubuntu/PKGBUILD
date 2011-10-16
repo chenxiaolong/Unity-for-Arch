@@ -112,7 +112,7 @@ build() {
     -opengl \
     -no-openvg \
     -glib
-  make -j8
+  make
 }
 
 package_qt-ubuntu() {
