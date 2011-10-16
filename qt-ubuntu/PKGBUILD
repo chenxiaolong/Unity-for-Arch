@@ -53,6 +53,9 @@ build() {
       sed -i '/qt-multiarch-plugin-path-compat.diff/d' "${srcdir}/debian/patches/series"
     #No need to append "-qt4" to tools to separate from qt3 since Arch Linux installs qt3 to another prefix (/opt)
       sed -i '/01_debian_append_qt4_suffix.diff/d' "${srcdir}/debian/patches/series"
+      #kubuntu_17_enable_qtwebkit_for_qtassistant.diff depends on that patch, so we
+      #  fix the patch so that it applies correctly
+      sed -i 's/\-qt4//g' "${srcdir}/debian/patches/kubuntu_17_enable_qtwebkit_for_qtassistant.diff"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
