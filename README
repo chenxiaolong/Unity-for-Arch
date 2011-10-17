@@ -8,52 +8,52 @@ Order to compile/install:
 
 01: glib2-ubuntu                   -> glib 2.0 with Ubuntu patches
 02: libxi-ubuntu                   -> X11 Input library with Ubuntu patches
-03: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
-04: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
-05: qt-ubuntu                      -> Qt framework with Ubuntu patches
-06: libdbusmenu                    -> Library for passing menus over DBus
-07: libindicator                   -> Symbols and functions for indicators
-08: libindicate                    -> Libraries for apps to raise 'flags' on DBus
-09: libindicate-qt                 -> Qt bindings for libindicate
-10: libappindicator                -> Library to export menu bar to Unity
-11: appmenu-gtk                    -> Application menu module for GTK+
-12: appmenu-qt                     -> Application menu support for QT
-13: bamf                           -> Application matching framework
-14: libqtbamf                      -> Qt bindings for bamf
-15: dee                            -> Create Model-View-Controller apps over DBus
-16: libqtdee                       -> Qt binding and QML plugin for Dee
-17: libqtgconf                     -> Qt bindings for GConf
-18: dconf-qt                       -> Qt bindings for DConf
-19: sni-qt                         -> Turns Qt tray icons into appindicators
-20: ido                            -> Widgets and objects used for indicators
-21: libzeitgeist                   -> Client library to interact with Zeitgeist
-22: python-rdflib                  -> A language for representing information
-23: zeitgeist                      -> Service that logs users' activities
-24: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-25: geoclue                        -> Modular geoinformation service
-26: python-geoclue                 -> Geoclue Python module
-27: python-xapian                  -> Python bindings for Xapian
-28: zeitgeist-extensions           -> Extensions for Zeitgeist
-29: gnome-activity-journal         -> Tool for easily browsing and finding files
-30: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-31: gnome-session-ubuntu           -> GNOME Session Manager
-32: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-33: metacity-ubuntu                -> Lightweight GTK+ window manager
-34: launchpad-integration          -> Launchpad.net integration
-35: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-36: mutter-ubuntu                  -> Lightweight GTK+ window manager
-37: indicator-applet               -> GNOME panel indicator applet
-38: indicator-application          -> Takes menus and puts then in the panel
-39: indicator-appmenu              -> An indicator to host the menus from apps
-40: indicator-datetime             -> A very, very simple clock
-41: indicator-messages             -> Collects messages that need a response
-42: indicator-multiload            -> Port of the GNOME multiload applet
-43: indicator-session              -> Indicator to manage session
-44: indicator-sound                -> A unified sound menu
-45: nux                            -> An OpenGL toolkit
-46: plasma-widget-menubase **      -> KDE Plasma widget to display menubar
-47: xfce4-indicator-plugin &&      -> XFCE panel plugin to display indicators
-48: inputproto-ubuntu              -> X11 input extension wire protocol
+03: inputproto-ubuntu              -> X11 input extension wire protocol
+04: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
+05: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
+06: qt-ubuntu                      -> Qt framework with Ubuntu patches
+07: libdbusmenu                    -> Library for passing menus over DBus
+08: libindicator                   -> Symbols and functions for indicators
+09: libindicate                    -> Libraries for apps to raise 'flags' on DBus
+10: libindicate-qt                 -> Qt bindings for libindicate
+11: libappindicator                -> Library to export menu bar to Unity
+12: appmenu-gtk                    -> Application menu module for GTK+
+13: appmenu-qt                     -> Application menu support for QT
+14: bamf                           -> Application matching framework
+15: libqtbamf                      -> Qt bindings for bamf
+16: dee                            -> Create Model-View-Controller apps over DBus
+17: libqtdee                       -> Qt binding and QML plugin for Dee
+18: libqtgconf                     -> Qt bindings for GConf
+19: dconf-qt                       -> Qt bindings for DConf
+20: sni-qt                         -> Turns Qt tray icons into appindicators
+21: ido                            -> Widgets and objects used for indicators
+22: libzeitgeist                   -> Client library to interact with Zeitgeist
+23: python-rdflib                  -> A language for representing information
+24: zeitgeist                      -> Service that logs users' activities
+25: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
+26: geoclue                        -> Modular geoinformation service
+27: python-geoclue                 -> Geoclue Python module
+28: python-xapian                  -> Python bindings for Xapian
+29: zeitgeist-extensions           -> Extensions for Zeitgeist
+30: gnome-activity-journal         -> Tool for easily browsing and finding files
+31: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+32: gnome-session-ubuntu           -> GNOME Session Manager
+33: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+34: metacity-ubuntu                -> Lightweight GTK+ window manager
+35: launchpad-integration          -> Launchpad.net integration
+36: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+37: mutter-ubuntu                  -> Lightweight GTK+ window manager
+38: indicator-applet               -> GNOME panel indicator applet
+39: indicator-application          -> Takes menus and puts then in the panel
+40: indicator-appmenu              -> An indicator to host the menus from apps
+41: indicator-datetime             -> A very, very simple clock
+42: indicator-messages             -> Collects messages that need a response
+43: indicator-multiload            -> Port of the GNOME multiload applet
+44: indicator-session              -> Indicator to manage session
+45: indicator-sound                -> A unified sound menu
+46: nux                            -> An OpenGL toolkit
+47: plasma-widget-menubase **      -> KDE Plasma widget to display menubar
+48: xfce4-indicator-plugin &&      -> XFCE panel plugin to display indicators
 49: xorg-xinput-ubuntu             -> Command line tool to configure input devices
 50: xorg-server-ubuntu #NOT DONE YET!
 51: mtdev                          -> Multitouch protocol translation library
