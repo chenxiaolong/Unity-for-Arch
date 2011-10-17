@@ -4,7 +4,7 @@
 
 pkgname=zeitgeist-extensions
 pkgver=0.0.13
-pkgrel=1
+pkgrel=100
 pkgdesc="Extensions to the engine such as Teamgeist, Relevancy Providers and Machine Learning Algorithms"
 arch=('any')
 url="https://launchpad.net/zeitgeist-extensions"

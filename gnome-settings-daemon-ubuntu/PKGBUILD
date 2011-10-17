@@ -5,7 +5,7 @@
 pkgname=gnome-settings-daemon-ubuntu
 _ubuntu_ver=0ubuntu5
 pkgver=3.2.0.${_ubuntu_ver}
-pkgrel=2
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')

@@ -2,7 +2,7 @@
 pkgname=('launchpad-integration' 'liblaunchpad-integration' 'liblaunchpad-integration3' 'python-launchpad-integration')
 pkgbase=launchpad-integration
 pkgver=0.1.54
-pkgrel=1
+pkgrel=100
 pkgdesc="Launchpad integration library to integrate launchpad urls into the menus."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/launchpad-integration"

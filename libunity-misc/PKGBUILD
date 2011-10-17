@@ -4,7 +4,7 @@
 
 pkgname=libunity-misc
 pkgver=4.0.4
-pkgrel=1
+pkgrel=100
 pkgdesc="Misc. differently licensed stuff for Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-misc"

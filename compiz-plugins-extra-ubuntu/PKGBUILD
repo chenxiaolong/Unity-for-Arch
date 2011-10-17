@@ -3,7 +3,7 @@
 pkgname=compiz-plugins-extra-ubuntu
 _ubuntu_ver=0ubuntu1
 pkgver=0.9.5.94.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="Compiz extra plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')

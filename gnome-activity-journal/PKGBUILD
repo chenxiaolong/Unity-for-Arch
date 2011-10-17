@@ -4,7 +4,7 @@
 
 pkgname=gnome-activity-journal
 pkgver=0.8.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A tool for easily browsing and finding files on your computer"
 arch=('any')
 url="https://launchpad.net/gnome-activity-journal"

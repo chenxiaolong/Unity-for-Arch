@@ -4,7 +4,7 @@
 
 pkgname=python-rdflib
 pkgver=3.1.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A Python library for working with RDF"
 arch=('any')
 url="http://www.rdflib.net/"

@@ -4,7 +4,7 @@
 
 pkgname=zeitgeist
 pkgver=0.8.2
-pkgrel=1
+pkgrel=100
 pkgdesc="A service which logs the users's activities and events and makes relevant information available to other applications"
 arch=('any')
 url="http://zeitgeist-project.com/"

@@ -3,7 +3,7 @@
 
 pkgname=utouch-evemu
 pkgver=1.0.6
-pkgrel=1
+pkgrel=100
 pkgdesc="Event Emulation for the uTouch Stack"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-evemu"

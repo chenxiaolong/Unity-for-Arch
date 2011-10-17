@@ -5,7 +5,7 @@
 pkgbase=ido
 pkgname=('libido' 'libido3')
 pkgver=0.3.0
-pkgrel=1
+pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"

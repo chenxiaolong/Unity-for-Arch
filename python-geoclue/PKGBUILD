@@ -4,7 +4,7 @@
 
 pkgname=python-geoclue
 pkgver=0.1.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A Geoclue python module"
 arch=('any')
 url="http://live.gnome.org/gtg/soc/python_geoclue"

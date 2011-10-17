@@ -5,7 +5,7 @@
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
 pkgver=0.7.8.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"

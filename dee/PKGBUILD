@@ -4,7 +4,7 @@
 
 pkgname=dee
 pkgver=0.5.22
-pkgrel=1
+pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dee"

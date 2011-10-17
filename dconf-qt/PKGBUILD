@@ -5,7 +5,7 @@
 pkgname=dconf-qt
 _ubuntu_ver=0ubuntu3
 pkgver=0.0.0.110722.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="Qt and QML bindings for dconf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dconf-qt"

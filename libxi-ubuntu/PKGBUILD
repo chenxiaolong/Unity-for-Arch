@@ -3,7 +3,7 @@
 pkgname=libxi-ubuntu
 _ubuntu_ver=3ubuntu1
 pkgver=1.4.3.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="X11 Input extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"

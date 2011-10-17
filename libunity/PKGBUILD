@@ -4,7 +4,7 @@
 
 pkgname=libunity
 pkgver=4.0.6
-pkgrel=2
+pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"

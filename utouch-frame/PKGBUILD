@@ -3,7 +3,7 @@
 
 pkgname=utouch-frame
 pkgver=1.1.4
-pkgrel=1
+pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-frame"

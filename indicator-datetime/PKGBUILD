@@ -5,7 +5,7 @@
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
 pkgver=0.3.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"

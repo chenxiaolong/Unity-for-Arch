@@ -4,7 +4,7 @@
 
 pkgname=libqtbamf
 pkgver=0.2.2
-pkgrel=1
+pkgrel=100
 pkgdesc="Provides a set of Qt bindings for libbamf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf-qt"

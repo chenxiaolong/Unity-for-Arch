@@ -5,7 +5,7 @@
 pkgname=gnome-control-center-ubuntu
 _ubuntu_ver=0ubuntu6
 pkgver=3.2.0.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet')

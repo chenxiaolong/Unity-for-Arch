@@ -8,7 +8,7 @@
 
 pkgname=indicator-applet
 pkgver=0.4.12
-pkgrel=2
+pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-applet"

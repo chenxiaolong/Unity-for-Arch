@@ -3,7 +3,7 @@
 
 pkgname=utouch-grail
 pkgver=2.0.1
-pkgrel=1
+pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-grail"

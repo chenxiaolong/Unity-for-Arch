@@ -5,7 +5,7 @@
 pkgname="zeitgeist-datasources"
 pkgdesc="Zeitgeist Data-Sources"
 pkgver=0.8.0.1
-pkgrel=1
+pkgrel=100
 arch=('x86_64' 'i686')
 url="https://launchpad.net/zeitgeist-datasources"
 license=('GPL3')

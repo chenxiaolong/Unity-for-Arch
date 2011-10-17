@@ -5,7 +5,7 @@
 pkgbase=appmenu-gtk
 pkgname=('appmenu-gtk2' 'appmenu-gtk3')
 pkgver=0.3.0
-pkgrel=1
+pkgrel=100
 arch=('i686' 'x86_64')
 url="https://launchpad.net/appmenu-gtk"
 license=('LGPL')

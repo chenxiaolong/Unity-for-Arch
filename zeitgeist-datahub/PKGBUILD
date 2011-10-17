@@ -4,7 +4,7 @@
 
 pkgname=zeitgeist-datahub
 pkgver=0.7.0
-pkgrel=1
+pkgrel=100
 pkgdesc="The datahub provides passive plugins which insert events into Zeitgeist"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/zeitgeist-datahub"
@@ -18,7 +18,7 @@ sha512sums=('994849bae8e6169aaa247a0d59b817911c82bf9c0a9db5182269de66c6c9c372a7c
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --disable-static
   make
 }
 

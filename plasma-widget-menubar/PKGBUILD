@@ -4,7 +4,7 @@
 
 pkgname=plasma-widget-menubar
 pkgver=0.1.16
-pkgrel=1
+pkgrel=100
 pkgdesc="A Plasma widget to display menubar of application windows"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/plasma-widget-menubar"

@@ -4,7 +4,7 @@
 
 pkgname=indicator-application
 pkgver=0.4.0
-pkgrel=1
+pkgrel=100
 pkgdesc="A library and indicator to take menus from applications and place them in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-application"

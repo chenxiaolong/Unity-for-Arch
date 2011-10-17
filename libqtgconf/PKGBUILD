@@ -4,7 +4,7 @@
 
 pkgname=libqtgconf
 pkgver=0.1
-pkgrel=1
+pkgrel=100
 pkgdesc="Provides a set of Qt bindings for GConf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gconf-qt"

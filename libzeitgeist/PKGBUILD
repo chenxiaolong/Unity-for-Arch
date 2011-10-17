@@ -4,7 +4,7 @@
 
 pkgname=libzeitgeist
 pkgver=0.3.12
-pkgrel=1
+pkgrel=100
 pkgdesc="Provides a client library for applications that want to interact with the Zeitgeist daemon"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libzeitgeist"

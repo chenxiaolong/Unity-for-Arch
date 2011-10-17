@@ -3,7 +3,7 @@
 pkgname=utouch-geis
 _ubuntu_ver=0ubuntu4
 pkgver=2.1.2.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-geis"

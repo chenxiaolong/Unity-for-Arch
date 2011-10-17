@@ -5,7 +5,7 @@
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
 pkgver=0.2.104
-pkgrel=1
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"

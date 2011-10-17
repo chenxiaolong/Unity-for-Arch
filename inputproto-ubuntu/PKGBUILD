@@ -3,7 +3,7 @@
 pkgname=inputproto-ubuntu
 _ubuntu_ver=2ubuntu1
 pkgver=2.0.2.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="X11 Input extension wire protocol"
 arch=('any')
 license=('custom')

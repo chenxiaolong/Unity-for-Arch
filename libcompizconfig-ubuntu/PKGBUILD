@@ -3,7 +3,7 @@
 pkgname=libcompizconfig-ubuntu
 _ubuntu_ver=0ubuntu2
 pkgver=0.9.5.94.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="Compiz configuration system library - Ubuntu version"
 arch=('i686' 'x86_64')
 url="http://compiz.org"

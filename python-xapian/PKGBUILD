@@ -4,7 +4,7 @@
 
 pkgname=python-xapian
 pkgver=1.2.7
-pkgrel=1
+pkgrel=100
 pkgdesc="SWIG and JNI bindings allowing Xapian to be used from various other programming languages"
 arch=('i686' 'x86_64')
 url="http://xapian.org/"

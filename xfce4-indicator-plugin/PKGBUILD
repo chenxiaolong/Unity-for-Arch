@@ -5,7 +5,7 @@
 pkgname=xfce4-indicator-plugin
 _ubuntu_ver=1ubuntu3
 pkgver=0.3.1.${_ubuntu_ver}
-pkgrel=1
+pkgrel=100
 pkgdesc="Display indicators in the xfce4 panel"
 arch=('i686' 'x86_64')
 license=('LGPL2.1')
