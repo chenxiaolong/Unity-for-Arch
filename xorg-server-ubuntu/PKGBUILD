@@ -1,0 +1,277 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+pkgbase=xorg-server-ubuntu
+pkgname=xorg-server-ubuntu
+true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
+_ubuntu_ver=1ubuntu4
+_ubuntu_ver2=1.10.4
+pkgver=1.10.4.${_ubuntu_ver}
+pkgrel=100
+arch=('i686' 'x86_64')
+license=('custom')
+url="http://xorg.freedesktop.org"
+makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto')
+options=('!libtool')
+source=(${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2
+        http://archive.ubuntu.com/ubuntu/pool/main/x/${pkgbase%-*}/${pkgbase%-*}_${_ubuntu_ver2}-${_ubuntu_ver}.diff.gz
+        xvfb-run
+        xvfb-run.1
+        10-quirks.conf)
+sha512sums=('8e3391c78e7d5e52041efe35badf04be49bbb8b7940c7694faadd1f6f555edc5afda554cb8f3524b3ae7cfe8d5e63b80ca715cf3855565820efff46641ecc9b5'
+            'aab25d84df72e6c9c0708822fb6d7bb2d4d2e9a97c9f08857aaa78e6ca12037b0c8c1790078ca3842c7dadeda3cbee12ec64b3f41a7a9eeac3f2b71317710107'
+            'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
+            'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
+            '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
+
+build() {
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
+
+  patch -Np1 -i "${srcdir}/${pkgbase%-*}_${_ubuntu_ver2}-${_ubuntu_ver}.diff"
+
+  #Apply Ubuntu patches
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
+
+#  patch -Np1 -i "debian/patches/001_fedora_extramodes.patch"
+  #patch -Np1 -i "debian/patches/02_Add-libnettle-as-option-for-sha1.diff"
+  #patch -Np1 -i "debian/patches/07-xfree86-fix-build-with-xv-disabled.diff"
+  #patch -Np1 -i "debian/patches/100_rethrow_signals.patch"
+  #patch -Np1 -i "debian/patches/105_nvidia_fglrx_autodetect.patch"
+  #patch -Np1 -i "debian/patches/111_armel-drv-fallbacks.patch"
+  #patch -Np1 -i "debian/patches/122_xext_fix_card32_overflow_in_xauth.patch"
+  #patch -Np1 -i "debian/patches/13_debian_add_xkbpath_env_variable.diff"
+  #patch -Np1 -i "debian/patches/157_check_null_modes.patch"
+  #patch -Np1 -i "debian/patches/15-nouveau.diff"
+  #patch -Np1 -i "debian/patches/162_null_crtc_in_rotation.patch"
+  #patch -Np1 -i "debian/patches/165_man_xorg_conf_no_device_ident.patch"
+  #patch -Np1 -i "debian/patches/166_nullptr_xinerama_keyrepeat.patch"
+  #patch -Np1 -i "debian/patches/167_nullptr_xisbread.patch"
+  #patch -Np1 -i "debian/patches/168_glibc_trace_to_stderr.patch"
+  #patch -Np1 -i "debian/patches/172_cwgetbackingpicture_nullptr_check.patch"
+  #patch -Np1 -i "debian/patches/188_default_primary_to_first_busid.patch"
+  #patch -Np1 -i "debian/patches/190_cache-xkbcomp_output_for_fast_start_up.patch"
+  #patch -Np1 -i "debian/patches/191-Xorg-add-an-extra-module-path.patch"
+  #patch -Np1 -i "debian/patches/198_nohwaccess.patch"
+  #patch -Np1 -i "debian/patches/200_randr-null.patch"
+  #patch -Np1 -i "debian/patches/201_report-real-dpi.patch"
+  #patch -Np1 -i "debian/patches/206_intel_8xx_default_to_fbdev.patch"
+  #patch -Np1 -i "debian/patches/208_switch_on_release.diff"
+  #patch -Np1 -i "debian/patches/209_add_legacy_bgnone_option.patch"
+  #patch -Np1 -i "debian/patches/210_pixman_null_ptr_check.patch"
+  #patch -Np1 -i "debian/patches/214_glx_dri_searchdirs.patch"
+#  patch -Np1 -i "debian/patches/217_revert_bgnonevisitwindow.patch"
+#  patch -Np1 -i "debian/patches/219_fedora-pointer-barriers.diff"
+#  patch -Np1 -i "debian/patches/220_xi21_always_deliver_raw_events.diff"
+#  patch -Np1 -i "debian/patches/500_xi2.1.patch"
+#  patch -Np1 -i "debian/patches/501_xf86CoordinatesToWindow.patch"
+#  patch -Np1 -i "debian/patches/502_gestures-extension.patch" #Crashes Xorg
+#  patch -Np1 -i "debian/patches/503_fix_masked_transformed_valuators.patch"
+#  patch -Np1 -i "debian/patches/504_fix_no_coords.patch"
+#  patch -Np1 -i "debian/patches/221_fix_SendEvent_flag_mask.diff"
+#  patch -Np1 -i "debian/patches/505_Xi_ensure_replayed_touch_events_have_devices.patch"
+#  patch -Np1 -i "debian/patches/506_Xi_ensure_touch_events_update_currentTime.patch"
+#  patch -Np1 -i "debian/patches/507_dix_Ensure_touch_events_are_delivered_to_next_client.patch"
+
+  #This is in the debian/rules file - not sure if it is needed
+  autoreconf
+
+  ./configure \
+    --prefix=/usr \
+    --enable-ipv6 \
+    --enable-dri \
+    --enable-dmx \
+    --enable-xvfb \
+    --enable-xnest \
+    --enable-composite \
+    --enable-xorg \
+    --enable-xephyr \
+    --enable-glx-tls \
+    --enable-kdrive \
+    --enable-config-udev \
+    --disable-config-dbus \
+    --enable-record \
+    --enable-xfbdev \
+    --disable-xfake \
+    --disable-static \
+    --sysconfdir=/etc/X11 \
+    --localstatedir=/var \
+    --with-xkb-path=/usr/share/X11/xkb \
+    --with-xkb-output=/var/lib/xkb \
+    --with-fontrootdir=/usr/share/fonts \
+    --enable-gestures \
+    --disable-dtrace \
+    --disable-strict-compilation \
+    --disable-debug \
+    --with-int10=x86emu \
+    --disable-devel-docs \
+    --disable-install-libxf86config \
+    --enable-mitshm \
+    --enable-xres \
+    --enable-xcsecurity \
+    --disable-xcalibrate \
+    --disable-tslib \
+    --enable-dbe \
+    --disable-xf86bigfont \
+    --enable-dpms \
+    --disable-xquartz \
+    --disable-xwin \
+    --disable-install-setuid \
+    --enable-aiglx \
+    --enable-registry \
+    --enable-xv \
+    --enable-xvmc \
+    --enable-dga \
+    --enable-screensaver \
+    --enable-xdmcp \
+    --enable-xdm-auth-1 \
+    --enable-glx \
+    --enable-xinerama \
+    --enable-xf86vidmode \
+    --enable-xace \
+    --enable-xfree86-utils \
+    --with-sha1=libgcrypt \
+    --enable-dri2
+    
+  make -j8
+
+  # Disable subdirs for make install rule to make splitting easier
+  sed -e 's/^DMX_SUBDIRS =.*/DMX_SUBDIRS =/' \
+      -e 's/^XVFB_SUBDIRS =.*/XVFB_SUBDIRS =/' \
+      -e 's/^XNEST_SUBDIRS =.*/XNEST_SUBDIRS = /' \
+      -e 's/^KDRIVE_SUBDIRS =.*/KDRIVE_SUBDIRS =/' \
+      -i hw/Makefile
+}
+
+package_xorg-server-common-ubuntu() {
+  pkgdesc="Xorg server common files"
+  depends=('xkeyboard-config' 'xorg-xkbcomp' 'xorg-setxkbmap' 'xorg-fonts-misc')
+  provides=('xorg-server-common')
+  conflicts=('xorg-server-common')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-common"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/xorg-server-common"
+  
+  make -C xkb DESTDIR="${pkgdir}" install-data
+
+  install -m755 -d "${pkgdir}/usr/share/man/man1"
+  install -m644 doc/man/Xserver.1 "${pkgdir}/usr/share/man/man1/"
+
+  install -m755 -d "${pkgdir}/usr/lib/xorg"
+  install -m644 dix/protocol.txt "${pkgdir}/usr/lib/xorg/"
+}
+
+package_xorg-server-ubuntu() {
+  pkgdesc="Xorg X server"
+  depends=(libxdmcp libxfont udev libpciaccess libdrm pixman libgcrypt libxau xorg-server-common xf86-input-evdev)
+  backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
+  provides=('x-server' 'xorg-server')
+  conflicts=('xorg-server')
+  groups=('xorg')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/etc/X11"
+  mv "${pkgdir}/usr/share/X11/xorg.conf.d" "${pkgdir}/etc/X11/"
+  install -m644 "${srcdir}/10-quirks.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
+
+  #Some debian stuff
+    #This should be done by evdev
+  #install -m644 "debian/local/10-kbd.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
+  #install -m644 "debian/local/10-mouse.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
+  install -m644 "debian/local/64-xorg-xkb.rules" "${pkgdir}/etc/X11/xorg.conf.d/"
+
+  rmdir "${pkgdir}/usr/share/X11"
+
+  # Needed for non-mesa drivers, libgl will restore it
+  mv "${pkgdir}/usr/lib/xorg/modules/extensions/libglx.so" \
+     "${pkgdir}/usr/lib/xorg/modules/extensions/libglx.xorg"
+
+  rm -rf "${pkgdir}/var"
+
+  rm -f "${pkgdir}/usr/share/man/man1/Xserver.1"
+  rm -f "${pkgdir}/usr/lib/xorg/protocol.txt"
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server/COPYING"
+
+  rm -rf "${pkgdir}/usr/lib/pkgconfig"
+  rm -rf "${pkgdir}/usr/include"
+  rm -rf "${pkgdir}/usr/share/aclocal"
+}
+
+package_xorg-server-xephyr-ubuntu() {
+  pkgdesc="A nested X server that runs as an X application"
+  depends=(libxfont libgl libgcrypt libxv pixman xorg-server-common)
+  provides=('xorg-server-xephyr')
+  conflicts=('xorg-server-xephyr')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}/hw/kdrive"
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-xephyr"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-xephyr/COPYING"
+}
+
+package_xorg-server-xvfb-ubuntu() {
+  pkgdesc="Virtual framebuffer X server"
+  depends=(libxfont libxdmcp libxau libgcrypt pixman xorg-server-common)
+  provides=('xorg-server-xvfb')
+  conflicts=('xorg-server-xvfb')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}/hw/vfb"
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 "${srcdir}/xvfb-run" "${pkgdir}/usr/bin/"
+  install -m644 "${srcdir}/xvfb-run.1" "${pkgdir}/usr/share/man/man1/"
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-xvfb"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-xvfb/COPYING"
+}
+
+package_xorg-server-xnest-ubuntu() {
+  pkgdesc="A nested X server that runs as an X application"
+  depends=(libxfont libxext libgcrypt pixman xorg-server-common)
+  provides=('xorg-server-xnest')
+  conflicts=('xorg-server-xnest')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}/hw/xnest"
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-xnest"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-xnest/COPYING"
+}
+
+package_xorg-server-xdmx-ubuntu() {
+  pkgdesc="Distributed Multihead X Server and utilities"
+  depends=(libxfont libxi libgcrypt libxaw libxrender libdmx libxfixes pixman xorg-server-common)
+  provides=('xorg-server-xdmx')
+  conflicts=('xorg-server-xdmx')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}/hw/dmx"
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-xdmx"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-xdmx/COPYING"
+}
+
+package_xorg-server-devel-ubuntu() {
+  pkgdesc="Development files for the X.Org X server"
+  depends=(xproto randrproto renderproto xextproto inputproto kbproto fontsproto videoproto dri2proto xineramaproto xorg-util-macros pixman libpciaccess)
+  provides=('xorg-server-devel')
+  conflicts=('xorg-server-devel')
+
+  cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}" install
+
+  rm -rf "${pkgdir}/usr/bin"
+  rm -rf "${pkgdir}/usr/share/man"
+  rm -rf "${pkgdir}/usr/share/doc"
+  rm -rf "${pkgdir}/usr/share/X11"
+  rm -rf "${pkgdir}/usr/lib/xorg"
+  rm -rf "${pkgdir}/var"
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-devel"
+  ln -sf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-devel/COPYING"
+}
