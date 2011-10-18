@@ -7,8 +7,8 @@ Packages ending with "-ubuntu" contain Ubuntu patches and REPLACE Arch Linux ver
 Order to compile/install:
 
 01: glib2-ubuntu                   -> glib 2.0 with Ubuntu patches
-02: libxi-ubuntu                   -> X11 Input library with Ubuntu patches
-03: inputproto-ubuntu              -> X11 input extension wire protocol
+02: inputproto-ubuntu              -> X11 input extension wire protocol
+03: libxi-ubuntu                   -> X11 Input library with Ubuntu patches
 04: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
 05: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
 06: qt-ubuntu                      -> Qt framework with Ubuntu patches
