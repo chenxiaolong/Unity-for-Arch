@@ -32,6 +32,8 @@ build() {
     #Static linking stuff for udebs
       sed -i '/001_static-linking-dont-query-immodules.patch/d' "${srcdir}/debian/patches/series"
       sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
+    #Breaks pkgconfig
+      sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
