@@ -58,7 +58,7 @@ Order to compile/install:
 50: xorg-server-ubuntu             -> Xorg X11 server
 51: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
 52: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
-53: xf86-video-radeon-ubuntu *     -> Xorg X11 ATI/AMD video driver
+53: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
 54: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
 55: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
 56: mtdev                          -> Multitouch protocol translation library
@@ -72,7 +72,7 @@ Order to compile/install:
   - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
   - xf86-video-intel-ubuntu        => For users with Intel integrated graphics cards
   - xf86-video-nouveau-ubuntu      => For users with nVidia graphics cards
-  - xf86-video-radeon-ubuntu       => For users with ATI/AMD graphics cards
+  - xf86-video-ati-ubuntu          => For users with ATI/AMD graphics cards
   - xf86-input-synaptics-ubuntu    => For users with a Synaptics touchpad (laptops)
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
