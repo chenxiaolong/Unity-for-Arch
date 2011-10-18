@@ -1,8 +1,10 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
 pkgname=xf86-video-intel-ubuntu
 _ubuntu_ver=1ubuntu2
 _ubuntu_ver2=2.15.901
 pkgver=2.15.0.${_ubuntu_ver}
-pkgrel=2
+pkgrel=100
 pkgdesc="X.org Intel i810/i830/i915/945G/G965+ video drivers"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org/"
