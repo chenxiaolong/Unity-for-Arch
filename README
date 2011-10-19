@@ -67,6 +67,11 @@ Order to compile/install:
 59: utouch-grail                   -> Gesture recognition and instantiation lib.
 60: utouch-geis                    -> Implementation of the GEIS interface
 61: unity-asset-pool               -> Design assets for Unity
+62: gnome-menus2                   -> Gnome menu specifications
+63: unity-lens-applications        -> Unity applications lens
+64: unity-lens-
+65: unity-lens
+66: unity-lens
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar
