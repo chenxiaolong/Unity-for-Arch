@@ -4,7 +4,7 @@
 
 pkgbase=ido
 pkgname=('libido' 'libido3')
-pkgver=0.3.0
+pkgver=0.3.1
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
@@ -14,7 +14,7 @@ depends=('gtk3-ubuntu')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('8ddf773f3607d35d779171c41812026b5c09b27aed2592adf10917e87b8bd92395c9ab9e8b088d1833a87f581cd8f7fc6d12775c07b59f036dd054066d8fd1f3')
+sha512sums=('65773e4acec5a536f7fcc74bd69f00f0368dc4ff4d16db731859e48a32905d1c65036a0afcb8cca77d449d69bef433c853cb5c05fbfb70e3313e3c3680fb698e')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
