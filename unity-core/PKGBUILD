@@ -22,7 +22,9 @@ build() {
 
   #Only build the core
   sed -i -e '/subdirs/ s/tests//' -e '/subdirs/ s/tools//' -e '/compiz/d' -e '/Compiz/d' CMakeLists.txt
-  #patch -p1 -i "$srcdir/20-build-core-only.patch"
+
+  #Fix pkgconfig
+  sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
 
   mkdir build
   cd build
