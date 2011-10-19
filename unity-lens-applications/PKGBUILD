@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-applications
 pkgver=0.4.12
-pkgrel=1
+pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
