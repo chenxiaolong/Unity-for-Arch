@@ -10,6 +10,7 @@ arch=('any')
 url="https://launchpad.net/unity-asset-pool"
 license=('GPL')
 depends=('gnome-icon-theme')
+makedepends=('icon-naming-utils')
 groups=('unity')
 source=("http://launchpad.net/$pkgname/${pkgver%.*}/$pkgver/+download/$pkgname-$pkgver.tar.gz"
         'archlinux-icon-tango-22.png'
