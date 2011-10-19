@@ -66,6 +66,7 @@ Order to compile/install:
 58: utouch-frame                   -> Touch frame library
 59: utouch-grail                   -> Gesture recognition and instantiation lib.
 60: utouch-geis                    -> Implementation of the GEIS interface
+61: unity-asset-pool               -> Design assets for Unity
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar

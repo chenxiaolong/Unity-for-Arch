@@ -1,0 +1,44 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-asset-pool
+pkgver=0.8.22
+pkgrel=100
+pkgdesc="Design assets for Unity"
+arch=('any')
+url="https://launchpad.net/unity-asset-pool"
+license=('GPL')
+depends=('gnome-icon-theme')
+groups=('unity')
+source=("http://launchpad.net/$pkgname/${pkgver%.*}/$pkgver/+download/$pkgname-$pkgver.tar.gz"
+        'archlinux-icon-tango-22.png'
+        'archlinux-icon-tango-24.png')
+md5sums=('229e668ffb21812ee7e1a757e341ae2e'
+         'bc0711ac090ca3ec3cc06b2f2922b939'
+         'b742c591147d062e9f9bb835754ba567')
+
+build() {
+ /bin/true
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  mkdir -p "${pkgdir}/usr/share/unity/themes"
+  cp -r launcher/* "${pkgdir}/usr/share/unity/themes"
+  cp -r panel/* "${pkgdir}/usr/share/unity/themes"
+
+  mkdir -p "${pkgdir}/usr/share/icons"
+  cp -r unity-icon-theme "${pkgdir}/usr/share/icons/"
+  cp ${srcdir}/archlinux-icon-tango-22.png "${pkgdir}/usr/share/icons/unity-icon-theme/places/22/distributor-logo.png"
+  cp ${srcdir}/archlinux-icon-tango-24.png "${pkgdir}/usr/share/icons/unity-icon-theme/places/24/distributor-logo.png"
+
+  #From debian/rules
+  for i in $(find "${pkgdir}/usr/share/icons" -mindepth 2 -maxdepth 2 -type d); do
+    cd "${i}"
+    for j in *; do
+      /usr/lib/icon-naming-utils/icon-name-mapping -c ${j}
+    done
+  done
+}
