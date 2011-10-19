@@ -1,0 +1,45 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: Marius Dransfeld <marius.dransfeld@googlemail.com>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-2d
+_ubuntu_ver=0ubuntu1
+pkgver=4.12.0.${_ubuntu_ver}
+pkgrel=100
+pkgdesc="unity-2d project is a 2d implementation of Unity"
+arch=('i686' 'x86_64')
+url="http://launchpad.net/unity-2d"
+license=('GPL')
+depends=('qt-ubuntu' 'libwnck' 'libdbusmenu-qt' 'libindicator' 'libqtbamf' 'libqtdee' 'utouch-geis' 'libqtgconf' 'metacity-ubuntu' 'unity-lens-files' 'unity-lens-applications' 'unity-asset-pool' 'nux' 'unity-core' 'nautilus-ubuntu' 'gnome-session-ubuntu' 'gnome-themes-standard')
+makedepends=('cmake')
+conflicts=('unity2d-bzr')
+replaces=('unity2d-bzr')
+groups=('unity')
+optdepends=('appmenu-gtk: Export GTK menus over DBus'
+            'appmenu-qt: appmenu support for Qt')
+install=('unity-2d.install')
+source=("http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${pkgver%.*}.orig.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
+        '10-fix-geis-crash.patch')
+sha512sums=('d1086f64d004c342a7618304b90ed045f0795315af60a31886a6d7cb17748cc41e64ddf67415ba85215fcf7b8e1d9be9368babeabd1ec89fbb39a03ed1904a44'
+            'a233f64750fc32b898bbafb164652c51e862e3aab8d92bf8d3b72519ca5f8bbee71a91bd5e863a8797f75f413bb76d4d655542126277702ffe5227bffc383bbb'
+            '86839a524a728216b456deef496680864ec92939d2a2fc3fb03f418e4cc64ad7cf1c1565f073c961c72bd3a55ac73209c25619b3f43f869dfee52c3e04d030bf')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  patch -Np1 -i "${srcdir}/10-fix-geis-crash.patch"
+
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() { 
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd 'build'
+  make DESTDIR="${pkgdir}/" install
+  install -Dm644 "${srcdir}/debian/gconf/ubuntu-2d.default.path" "${pkgdir}/usr/share/gconf/defaults/10_ubuntu-2d"
+  install -Dm644 "${srcdir}/debian/gconf/ubuntu-2d.mandatory.path" "${pkgdir}/usr/share/gconf/mandatory/10_ubuntu-2d"
+}
