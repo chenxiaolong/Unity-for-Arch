@@ -1,0 +1,46 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: Marius Dransfeld <marius.dransfeld@googlemail.com>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-core
+pkgver=4.24.0
+pkgrel=1
+pkgdesc="Unity core library and services"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity"
+license=('GPL')
+depends=('qt-ubuntu' 'nux' 'libunity')
+makedepends=('cmake')
+groups=('unity')
+source=("http://launchpad.net/unity/4.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"
+        'launcher_bfb.png')
+sha512sums=('9d3d040688e66dceb89b01b89a934c699f2985083b41aa0df1d3025c02a83650c9fe9121b71e19e9f1a1cce0b0e844b8eaecb739eda72f833211a6c8e79ea308'
+            '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
+
+build() {
+  cd "${srcdir}/unity-${pkgver}"
+
+  #Only build the core
+  sed -i -e '/subdirs/ s/tests//' -e '/subdirs/ s/tools//' -e '/compiz/d' -e '/Compiz/d' CMakeLists.txt
+  #patch -p1 -i "$srcdir/20-build-core-only.patch"
+
+  mkdir build
+  cd build
+
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DGSETTINGS_LOCALINSTALL=1
+  make
+}
+
+package() { 
+  cd "${srcdir}/unity-${pkgver}"
+  cd 'build'
+  make DESTDIR="${pkgdir}/" install
+  cd '../plugins/unityshell/resources'
+  install -dm755 "${pkgdir}/usr/share/unity/4/"
+  install -m644 *.* -t "${pkgdir}/usr/share/unity/4/"
+  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/4/launcher_bfb.png"
+  rm -rvf "${pkgdir}/usr/share/locale"
+}
