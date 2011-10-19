@@ -4,7 +4,7 @@
 
 pkgname=unity-core
 pkgver=4.24.0
-pkgrel=1
+pkgrel=100
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
