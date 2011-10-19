@@ -1,0 +1,16 @@
+diff -rNu unity-lens-applications-0.4.10.orig/src/unity-ratings-db.c unity-lens-applications-0.4.10/src/unity-ratings-db.c
+--- unity-lens-applications-0.4.10.orig/src/unity-ratings-db.c	2011-09-27 22:10:22.373682263 +0200
++++ unity-lens-applications-0.4.10/src/unity-ratings-db.c	2011-09-27 22:10:45.576185158 +0200
+@@ -21,12 +21,6 @@
+ #include <string.h>
+ #include <db.h>
+ 
+-/* Hacky check, but we *really* need to have the same libdb version as the
+- * software-center is using to avoid a cascade of fail */
+-#if DB_VERSION_MAJOR != 4 || DB_VERSION_MINOR != 8
+-  #error "unity-lens-applications only compiles and works against libdb-4.8. Please install the package libdb4.8-dev"
+-#endif
+-
+ struct _UnityRatingsDatabase {
+   DB_ENV  *env;
+   DB      *db;

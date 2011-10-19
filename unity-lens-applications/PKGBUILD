@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-lens-applications
+pkgver=0.4.12
+pkgrel=1
+pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-lens-applications"
+license=('GPL')
+depends=('gconf' 'libzeitgeist' 'libunity' 'zeitgeist-extensions' 'db')
+makedepends=('vala' 'intltool')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+        '10-no-db48.patch')
+sha512sums=('83d959ac429d0b2c4e964056c5695bc680495fb4b03f0454f6087c05f5c66b01335b3d54e6e3aafe42d1e696d2e10ded4fe66310fa0d7c219aeb155a4e3f37c7'
+            '411bff583af20d9babf89a6bcd030c1128e510743f92261ff9a6eb04bb6aa58a249fbb4bde6cd799fc2fa151dada668c658c8c609aa3a43e3cd1800e17fbe046')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  patch -Np1 -i "${srcdir}/10-no-db48.patch"
+
+  ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname}
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
