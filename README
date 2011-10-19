@@ -69,7 +69,7 @@ Order to compile/install:
 61: unity-asset-pool               -> Design assets for Unity
 62: gnome-menus2                   -> Gnome menu specifications
 63: unity-lens-applications        -> Unity applications lens
-64: unity-lens-
+64: unity-lens-files               -> Unity files lens
 65: unity-lens
 66: unity-lens
 
