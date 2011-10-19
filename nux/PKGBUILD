@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=1.14.0
+pkgver=1.16.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/1.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('612a9c127e494427ec4106a3cb1830c439ae058b97e8e823b396691811f5ed3499e70a0a2ed6126cbadedd0d062f964d9532d811c53752722fe860273b9707bd')
+sha512sums=('3773c338221364adc3c8131d8674dc56a1a2d831174dcefca9858ea5cda940a93ec9bea106e0b7dc9070c6b2efa044e48af093a15ca06c2edcbfe6d5d31432b0')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
