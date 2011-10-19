@@ -72,8 +72,8 @@ Order to compile/install:
 64: libunity-misc                  -> Differently licensed stuff for Unity
 65: unity-lens-applications        -> Unity applications lens
 66: unity-lens-files               -> Unity files lens
-67: unity-lens
-68: unity-lens
+67: unity-lens-music               -> Unity music lens
+68: 
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar

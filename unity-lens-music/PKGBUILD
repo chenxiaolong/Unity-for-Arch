@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-lens-music
+pkgver=0.2.6
+pkgrel=100
+pkgdesc="Music, in the dash"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-place-music"
+license=('GPL')
+depends=('sqlite3' 'libunity' 'banshee')
+makedepends=('vala' 'intltool')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('d0ca4bdfbcbf682cdd4875beb2d2441d6287f83330a30175b877d0ce65ab582c612becd023f83210df139ba929729114a6eb0f4e4e03b94e32545564d7baf19d')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
