@@ -4,7 +4,7 @@
 
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-pkgver=0.3.0
+pkgver=0.3.1
 pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('28ca8969d16eb3250f7ae736be8476e5d5e36d4c435dd45cf4e7e8f45068aca3280db664d64c3f5060931c4b8b30aac645e9af5a521c92d8efe3a0f1f621f59d')
+sha512sums=('24a2cbcf77477497cf0aed13a48f081d0532874d40db982b071ba43f61cd407dfd6dc4595bbb26de0c8a10f179b08fab33cecb83b646c69ff6bd06cb4c63b175')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
