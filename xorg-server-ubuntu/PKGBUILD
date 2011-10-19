@@ -133,7 +133,7 @@ build() {
     --with-sha1=libgcrypt \
     --enable-dri2
     
-  make -j8
+  make
 
   # Disable subdirs for make install rule to make splitting easier
   sed -e 's/^DMX_SUBDIRS =.*/DMX_SUBDIRS =/' \
