@@ -26,7 +26,7 @@ ARRAY_PKGNAME=""
 ARRAY_PKGVER_PKG=""
 ARRAY_PKGVER_INST=""
 ARRAY_COUNTER=0
-NOT_INSTALLED=";"
+NOT_INSTALLED=""
 
 for i in ${PKGLIST}; do
   pushd "${i}" > /dev/null
