@@ -1,0 +1,67 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity
+_ubuntu_rel=0ubuntu3
+_ubuntu_ver=4.22.0
+pkgver=4.24.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A desktop experience designed for efficiency of space and interaction"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity/"
+license=('GPL')
+depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'doxygen' 'gconf' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
+makedepends=('cmake' 'intltool' 'pkg-config')
+groups=('unity')
+provides=("unity-core=${pkgver}")
+conflicts=('unity-core')
+source=("http://launchpad.net/unity/4.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        'launcher_bfb.png')
+sha512sums=('9d3d040688e66dceb89b01b89a934c699f2985083b41aa0df1d3025c02a83650c9fe9121b71e19e9f1a1cce0b0e844b8eaecb739eda72f833211a6c8e79ea308'
+            'e42871455d019212abe36e3699117fd6ff93d05fa40c4398998616ba286ba2d0348bbec39d15ae0fb50ef3c434acde576ee099f61b02d0ff156d3f11d792fb63'
+            '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  #done
+
+  #Fix pkgconfig
+  sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
+
+  mkdir -p build && cd build
+
+  cmake \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    ..
+  make -j8
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd 'build'
+  make DESTDIR="${pkgdir}/" install
+
+  #Taken from Ubuntu source package's debian/rules file
+  find "${pkgdir}/usr/lib" -name \*.*a -exec rm {} \;
+  rm -vf "${pkgdir}/usr/share/compiz/networkarearegion.xml"
+  rm -vf "${pkgdir}/usr/lib/compiz/libnetworkarearegion.so"
+  rm -vf "${pkgdir}/usr/share/compiz/unitydialog.xml"
+  rm -vf "${pkgdir}/usr/lib/compiz/libunitydialog.so"
+
+  #Fix Python 2 scripts
+  sed -i 's|^\(#!.*python$\)|\12|g' \
+    "${pkgdir}/usr/bin/unity" \
+    "${pkgdir}/usr/lib/unity/migrate_favorites.py" \
+    "${pkgdir}/usr/lib/unity/makebootchart.py"
+
+  #Arch Linux logo
+  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/4/launcher_bfb.png"
+}
