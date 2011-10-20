@@ -94,6 +94,7 @@ Order to compile/install:
   - xf86-input-synaptics-ubuntu    => For users with a Synaptics touchpad (laptops)
   - compizconfig-backend-gconf-ubuntu => Store Compiz settings in GConf
   - compizconfig-backend-kconfig4-ubuntu => Store Compiz settings in KConfig4
+  - unity-core                     => For users that want Unity 2D, but not Unity 3D
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
 
