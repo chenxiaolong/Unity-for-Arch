@@ -5,7 +5,7 @@ pkgname=compiz-core-ubuntu
 _ubuntu_ver2="bzr20110929"
 _ubuntu_ver="0ubuntu3"
 pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Compiz core components - Ubuntu version"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -92,8 +92,9 @@ package() {
   cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
   cd build
 
-  #unity_window_decorator's CMake install script ignores DESTDIR
+  #unity_window_decorator installs differently
   sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@" unity/unity_window_decorator/src/cmake_install.cmake
+  sed -i "/RPATH_REMOVE/ {n; s@\(\\\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@g}" unity/unity_window_decorator/src/cmake_install.cmake
 
   make install
   make findcompiz_install
