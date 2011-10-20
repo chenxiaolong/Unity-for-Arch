@@ -3,8 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_ver=0ubuntu6
-pkgver=3.2.0.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu6
+_ubuntu_ver=3.2.0
+pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -21,14 +22,33 @@ install=gnome-control-center.install
 license=('GPL')
 options=('!libtool' '!emptydirs')
 source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
-sha512sums=('fae6c250cd7fb1f4b6fca0fc5be731acaa6a0f3b766648b96e6816ee6d25cf81c697dc03891b3245411e84ca4de4bac53032d50229210cdfacf0453acb6d4dc9'
-            '28e792cc938b1a8dafbc76f38c1fe5febc178313a4d0eeddca007f1fc87c744edaa04bb00e3a65e80415a30dd1581f175045471c54a022410a0abe36edc71a51')
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "patch_52_ubuntu_language_list_mods.patch.patch")
+sha512sums=('e27e0b8dc7e50c373f7bfc5ccd5bf87034ebc454ff8df6e3a6bcdd1d1b3f574a757601959acbe338a4caa37f2c20e7a66c13790f0ec42daefdb55eb3808d20ec'
+            '28e792cc938b1a8dafbc76f38c1fe5febc178313a4d0eeddca007f1fc87c744edaa04bb00e3a65e80415a30dd1581f175045471c54a022410a0abe36edc71a51'
+            '115dd116c4fd22afe65f4e752468e6d05de05f55c943df8422b7cb63875b5c7831f29b0b6eb64cf36b22ad7a802c8b859eee7afa4882c210db1c88bbdc6e9777')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
+
+  #Disable some patches
+    #Accepted upstream
+      sed -i '/00git_use_gtk_widget_show.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_show_section_labels.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_use_correct_sleep_timeout_when_disabled.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_show_search_view.patch/d' "${srcdir}/debian/patches/series"
+
+  #12_add_never_turn_screen_off.patch expects a newline at the end of po/ja.po, so
+  #  instead of fixing the patch, we'll fix the file so that the patch works
+  echo "" >> 'po/ja.po'
+
+  #Patch the 52_ubuntu_language_list_mods.patch patch
+  pushd "${srcdir}/debian/patches"
+  patch -Np0 -i "${srcdir}/patch_52_ubuntu_language_list_mods.patch.patch"
+  popd
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
