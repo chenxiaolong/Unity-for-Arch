@@ -3,8 +3,9 @@
 
 pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
-_ubuntu_ver=0ubuntu5
-pkgver=2.24.6.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu5
+_ubuntu_ver=2.24.6
+pkgver=2.24.7.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -12,9 +13,9 @@ makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxc
 options=('!libtool' '!docs')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+2.0/gtk+2.0_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+2.0/gtk+2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         xid-collision-debug.patch)
-sha512sums=('eb3d843a4d4f8032208b414645bc39208ce7cf245e5480647a4448b6cd4923e76c50302c39abb297fec2db0cd93388bf2dcfd43b129891941b6a8dc823231643'
+sha512sums=('16d1c2666478808b44f087a134cb84569fa5f0cc4cf46e35bd247b1ea50d8c3f8b7cd4abc6f6758d0160585060b0b780b9d34ac5b157827bd870c8f3c89fd6ff'
             'd103016bfdb818fcf298b39d64fcda70492580e6cff8121b2e617e04157c3f69b1ca483dc6c4addd3ddda9211f060e9560fd097376e400b58bd55e6dbc842d2a'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
@@ -34,6 +35,9 @@ build() {
       sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
     #Breaks pkgconfig
       sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
+    #Patches accepted upstream
+      sed -i '/000git_file_chooser.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/101_filechooser.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
