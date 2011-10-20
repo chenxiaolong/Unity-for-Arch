@@ -3,8 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_ver=0ubuntu3
-pkgver=3.2.0.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu3
+_ubuntu_ver=3.2.0
+pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -18,12 +19,12 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'startunity'
         'unity-3d.desktop'
         'startunity3d'
         'unity-2d.desktop')
-sha512sums=('5d24aba5928e5d9d741561fcd380a6b94b7baf325774e52796971a88f58f134908613db6e10c2a8975c525fe0cefbf8beb27b69692f96d1a71f5c1803d065a9a'
+sha512sums=('ccc82d261ab800147aa5df56001047f212f740217d43954d3a18d9034f1eae13972af408e00a3d2dcc4c83954cffc1fb77ba83f45d0426021c2c65bf3ed146cf'
             'f0df4ef7cc0fa7bc9d2aee2845e0fbfd8efe19f780fbddddc0f97221409079c47d06d6645eb9db26b3233f66f89eccb3372dabab902803211901f30a01b16356'
             'c1a5ec1ece04328b98c060156e998fab905308a53d3bd1ab74119faa9658d3dc35487a3086fddad41f3cb24369a26a3b02eeff79c8d9dd60724aec70387f2f15'
             '105c9aa92ca355f367067715528a4b7352dc960c94b6b587794c7210c13dc50186fbb920665eeb5f7a8e6064df966372394ae865d3c89ad63f41b30a9eeb971f'
@@ -34,6 +35,10 @@ build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
+
+  #Don't apply these patches
+    #Accepted upstream
+      sed -i '/00git_dont_idle_on_0_timeouts.patch/d' "${srcdir}/debian/patches/series"
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
