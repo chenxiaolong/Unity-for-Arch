@@ -1,0 +1,161 @@
+--- 16_use_synchronous_notifications.patch.orig	2011-10-20 18:11:14.735171887 -0400
++++ 16_use_synchronous_notifications.patch	2011-10-20 18:12:06.181840963 -0400
+@@ -5,16 +5,16 @@
+ ===================================================================
+ --- gnome-settings-daemon-3.1.92.orig/plugins/media-keys/gsd-media-keys-manager.c	2011-09-21 13:00:51.629796557 +0100
+ +++ gnome-settings-daemon-3.1.92/plugins/media-keys/gsd-media-keys-manager.c	2011-09-21 13:08:23.793788522 +0100
+-@@ -58,6 +58,8 @@
+- 
+- #include <libupower-glib/upower.h>
++@@ -56,6 +56,8 @@
++ #include "gvc-mixer-control.h"
++ #endif /* HAVE_PULSE */
+  
+ +#include <libnotify/notify.h>
+ +
+  #define GSD_DBUS_PATH "/org/gnome/SettingsDaemon"
+  #define GSD_DBUS_NAME "org.gnome.SettingsDaemon"
+  #define GSD_MEDIA_KEYS_DBUS_PATH GSD_DBUS_PATH "/MediaKeys"
+-@@ -134,6 +136,11 @@
++@@ -133,6 +135,11 @@
+          GCancellable    *cancellable;
+  
+          guint            start_idle_id;
+@@ -26,7 +26,7 @@
+  };
+  
+  static void     gsd_media_keys_manager_class_init  (GsdMediaKeysManagerClass *klass);
+-@@ -144,6 +151,132 @@
++@@ -143,6 +150,132 @@
+  
+  static gpointer manager_object = NULL;
+  
+@@ -159,7 +159,7 @@
+  
+  static void
+  init_screens (GsdMediaKeysManager *manager)
+-@@ -574,11 +707,13 @@
++@@ -573,11 +706,13 @@
+          }
+  
+          /* Show the dialogue */
+@@ -178,13 +178,13 @@
+  
+          /* Clean up the drive selection and exit if no suitable
+           * drives are found */
+-@@ -636,11 +771,13 @@
++@@ -635,11 +770,13 @@
+  static void
+  do_touchpad_osd_action (GsdMediaKeysManager *manager, gboolean state)
+  {
+ -        dialog_init (manager);
+ -        gsd_media_keys_window_set_action_custom (GSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+--                                                 state ? "touchpad-enabled" : "touchpad-disabled",
++-                                                 state ? "input-touchpad-symbolic" : "touchpad-disabled-symbolic",
+ -                                                 FALSE);
+ -        dialog_show (manager);
+ +        if (!ubuntu_osd_notification_show_icon ((!state) ? "touchpad-enabled" : "touchpad-disabled", "Touchpad")) {
+@@ -197,7 +197,7 @@
+  }
+  
+  static void
+-@@ -671,12 +808,10 @@
++@@ -670,12 +807,10 @@
+                 gboolean sound_changed,
+                 gboolean quiet)
+  {
+@@ -214,7 +214,7 @@
+  
+          dialog_init (manager);
+          gsd_media_keys_window_set_volume_muted (GSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+-@@ -686,12 +821,26 @@
++@@ -685,12 +820,26 @@
+                                            GSD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
+          dialog_show (manager);
+  
+@@ -243,7 +243,7 @@
+  }
+  
+  static void
+-@@ -700,7 +849,7 @@
++@@ -699,7 +848,7 @@
+                   gboolean             quiet)
+  {
+          gboolean old_muted, new_muted;
+@@ -252,7 +252,7 @@
+          gboolean sound_changed;
+  
+          if (manager->priv->stream == NULL)
+-@@ -745,7 +894,16 @@
++@@ -744,7 +893,16 @@
+                  }
+          }
+  
+@@ -270,7 +270,7 @@
+  }
+  
+  static void
+-@@ -1021,8 +1179,11 @@
++@@ -1020,8 +1178,11 @@
+  
+  static gboolean
+  do_multimedia_player_action (GsdMediaKeysManager *manager,
+@@ -282,7 +282,7 @@
+          return gsd_media_player_key_pressed (manager, key);
+  }
+  
+-@@ -1311,7 +1472,8 @@
++@@ -1325,7 +1486,8 @@
+          GError *error = NULL;
+          guint percentage;
+          GVariant *new_percentage;
+@@ -292,7 +292,7 @@
+  
+          new_percentage = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+                                                     res, &error);
+-@@ -1319,22 +1481,68 @@
++@@ -1333,22 +1495,68 @@
+                  g_warning ("Failed to set new screen percentage: %s",
+                             error->message);
+                  g_error_free (error);
+@@ -368,11 +368,10 @@
+  do_screen_brightness_action (GsdMediaKeysManager *manager,
+                               MediaKeyType type)
+  {
+-@@ -1344,15 +1552,18 @@
+-                 return;
++@@ -1359,14 +1567,18 @@
+          }
+  
+--        /* call into the power plugin */
++         /* call into the power plugin */
+ +        GsdBrightnessActionData *data = g_new0 (GsdBrightnessActionData, 1);
+ +        data->manager = manager;
+ +        data->type = type;
+@@ -391,7 +390,7 @@
+  }
+  
+  static void
+-@@ -1376,13 +1587,18 @@
++@@ -1390,13 +1602,18 @@
+  
+          /* update the dialog with the new value */
+          g_variant_get (new_percentage, "(u)", &percentage);
+@@ -417,7 +416,7 @@
+          g_variant_unref (new_percentage);
+  }
+  
+-@@ -1485,23 +1701,23 @@
++@@ -1499,23 +1716,23 @@
+                  do_execute_desktop (manager, "gcalctool.desktop", timestamp);
+                  break;
+          case PLAY_KEY:
+@@ -450,7 +449,7 @@
+          case VIDEO_OUT_KEY:
+          case VIDEO_OUT2_KEY:
+                  do_video_out_action (manager, timestamp);
+-@@ -1800,6 +2016,24 @@
++@@ -1819,6 +2036,24 @@
+                  priv->connection = NULL;
+          }
+  

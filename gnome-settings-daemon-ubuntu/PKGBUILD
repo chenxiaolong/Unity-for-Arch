@@ -3,8 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_ver=0ubuntu5
-pkgver=3.2.0.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu5
+_ubuntu_ver=3.2.0
+pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -18,16 +19,27 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz"
-        'fix_color_crash.patch')
-sha512sums=('e6f57ebb8d93d4a97ee5ffa2df8dc1f6554a403abe66b4eae8f7e5006add9bb0875e9771092794dd29a99c6029cdb53bde5195b752e683e0d3dc6e278741691b'
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        'patch_16_use_synchronous_notifications.patch.patch')
+sha512sums=('7cbcf4f2fba584d54016b8b0613874a782e4158c247d887a3bd6d6ced408197f6c3bde4133aa9313f1bbdb5f2bd48559bcc2520061bcc1d33641e3b66fa3aefb'
             '8af54e657b0438e0bd035c7890c3d94b6d53724a2911410166292af1c16cb1b6e3fdd905a3855d7ffa8e7046962140a2061faf97ad30a0269fa330b8f3484ec7'
-            'b1775cd433d5a7b0a0ae40d25be8315dbe6766adf295e952f772a44dc0eb1662b78932e96e7dd16d28903f88ee0478aab5a39887fd30e0a06742e7c11e05c6f0')
+            'f00ef616d22a94f098006f8792db510a19586820f18ef6872a9a35cac78754b254a17e9c6af39b5d0b4b247c615733db9903168fe6465288045726a76fe79d39')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
+
+  #Don't apply these patches
+    #Accepted upstream
+      sed -i '/00git_dont_restore_brightness.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_fix_reference_leaks.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_fix_async_dbus_crash.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_dont_sleep_on_idle_by_default.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_dont_revert_pre_idle_brigthness.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/00git_avoid_undesired_sleeps.patch/d' "${srcdir}/debian/patches/series"
+    #No longer needed
+      sed -i '/49_fix_suspend_media_key.patch/d' "${srcdir}/debian/patches/series"
 
   #gsd-media-keys-manager.c fails to find libnotify. Adding libnotify to Makefile.am
   #  will solve the problem.
@@ -35,11 +47,15 @@ build() {
   sed -i '/test_media_keys_LDADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
   sed -i '/libmedia_keys_la_LIBADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
 
+  #Fix 16_use_synchronous_notifications.patch
+  pushd "${srcdir}/debian/patches"
+  patch -Np0 -i "${srcdir}/patch_16_use_synchronous_notifications.patch.patch"
+  popd
+
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  patch -Np1 -i "${srcdir}/fix_color_crash.patch"
 
   autoreconf -fi
   ./configure \
