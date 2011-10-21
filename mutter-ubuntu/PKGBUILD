@@ -5,11 +5,12 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=mutter-ubuntu
-_ubuntu_ver=0ubuntu2
-pkgver=3.2.0.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu2
+_ubuntu_ver=3.2.0
+pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME3 with Ubuntu's patches"
-arch=(i686 x86_64)
+arch=('i686' 'x86_64')
 license=('GPL')
 depends=('startup-notification' 'gconf' 'zenity' 'libcanberra' 'clutter' 'gobject-introspection')
 makedepends=('intltool' 'gnome-doc-utils')
@@ -20,8 +21,8 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=mutter.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/universe/m/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
-sha512sums=('650e6839ad2fecec428c1e4b8b93438aab11f046e4279afe3def375ab3f9ddbf09856f4a0880f549bb5077e24643a8c24042b20eff2b347a4df26a7664835be2'
+        "http://archive.ubuntu.com/ubuntu/pool/universe/m/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('29d450ff1eb755419fdd5a08fb9fc82be77f4677ba01b72ce53024b1d02f11cb7d12cefa80fb74305cb0b0fc3aa8767ef7bcf075255ad244d57236901e627188'
             '5c02158816cc3987fd6198c0b3b7332fcec9cae5eaa71b7a42ac27631cd08b93e4f71a05722457341bbfd1b28c85ce6a5d7d9876782a01f45083713ddd723a89')
 
 build() {
