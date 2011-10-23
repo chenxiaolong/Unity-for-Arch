@@ -18,8 +18,14 @@ sha512sums=('c6ddaee7a43c29b3f2fae20012489f12b0fe83defab547df8801ea08ba6cbeea32f
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
+
   autoreconf -fi
+
+  #Python2 fix
   sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench
+
+  #libdbusmenu-gtk2 won't install if libdbusmenu-glib is missing
+  sed -i 's|$(DBUSMENUGTK_CFLAGS)|$(DBUSMENUGTK_CFLAGS) -L../libdbusmenu-glib/.libs|' libdbusmenu-gtk/Makefile.{am,in}
 
   #Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
     # http://packages.ubuntu.com/search?keywords=dbusmenu&searchon=names&suite=oneiric&section=all
