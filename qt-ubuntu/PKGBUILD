@@ -157,7 +157,7 @@ package_qt-ubuntu() {
 
 package_qt-private-headers-ubuntu(){
   pkgdesc="Qt private headers for development with Ubuntu's patches"
-  depends=("qt-ubuntu=${pkgver%.*}")
+  depends=("qt-ubuntu=${pkgver}")
   provides=("qt-private-headers=${pkgver%.*}")
   conflicts=('qt-private-headers')
 
