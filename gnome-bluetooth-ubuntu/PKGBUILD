@@ -1,0 +1,52 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Contributor: Roman Kyrylych <roman@archlinux.org>
+
+pkgname=gnome-bluetooth-ubuntu
+_ubuntu_ver=3.2.0
+_ubuntu_rel=0ubuntu2
+pkgver=3.2.1.${_ubuntu_rel}
+pkgrel=1
+pkgdesc="The GNOME Bluetooth Subsystem"
+arch=('i686' 'x86_64')
+url="http://live.gnome.org/GnomeBluetooth"
+license=('GPL' 'LGPL')
+depends=('gtk3' 'hicolor-icon-theme' 'gvfs-obexftp' 'obexd-client' 'dconf')
+makedepends=('intltool' 'gnome-doc-utils' 'nautilus-sendto' 'gobject-introspection')
+provides=("gnome-bluetooth=${pkgver}")
+conflicts=('gnome-bluetooth')
+options=('!libtool' '!emptydirs')
+install=gnome-bluetooth.install
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        '61-gnome-bluetooth-rfkill.rules')
+sha512sums=('96df759b63aa6e056828ba8f668567c72ce217a3091bbad618cd2a575eb3881a384f4cbd2bf6b1fdd0440ed9b274fc932377aaf36ef8d134038320ed35d1b241'
+            '8e8d469c1ca77a17d66ed90632ed012efa1092599e8c46a8ca12b7fbc8fece7ed0a77c81218a42af64e56a11f4f017070fe54a85ca8fc6ffb87bbc83877953d5'
+            '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --disable-desktop-update \
+    --disable-icon-update \
+    --disable-schemas-compile
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}/" install
+
+  install -Dm644 "${srcdir}/61-gnome-bluetooth-rfkill.rules" "${pkgdir}/lib/udev/rules.d//61-gnome-bluetooth-rfkill.rules"
+  install -d "${pkgdir}/etc/ld.so.conf.d/"
+  echo "/usr/lib/gnome-bluetooth" > "${pkgdir}/etc/ld.so.conf.d/${pkgname%-*}.conf"
+}
