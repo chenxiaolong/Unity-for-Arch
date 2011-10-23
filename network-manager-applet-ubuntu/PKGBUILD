@@ -1,0 +1,76 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Arjan Timmerman <arjan@archlinux.org>
+# Contributor: Wael Nasreddine <gandalf@siemens-mobiles.org>
+# Contributor: Tor Krill <tor@krill.nu>
+# Contributor: Will Rea <sillywilly@gmail.com>
+
+pkgname=network-manager-applet-ubuntu
+_ubuntu_rel=0ubuntu6
+pkgver=0.9.1.90.${_ubuntu_rel}
+pkgrel=1
+pkgdesc="GNOME frontends to NetWorkmanager"
+arch=('i686' 'x86_64')
+license=('GPL')
+url="http://www.gnome.org/projects/NetworkManager/"
+depends=('networkmanager' 'libgnome-keyring' 'polkit-gnome' 'gtk3' 'libnotify' 'gnome-icon-theme' 'mobile-broadband-provider-info' 'gconf' 'iso-codes')
+makedepends=('intltool' 'gnome-bluetooth')
+optdepends=('gnome-bluetooth: for PAN/DUN support')
+provides=("network-manager-applet=${pkgver}")
+conflicts=('network-manager-applet')
+options=('!libtool')
+install=network-manager-applet.install
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/0.9/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/n/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('ba979058bf2b97491309540535a376cd503f9252109af235d32c4711a88b07dc3797badcb8cf42166688efcda1327afc19d521c07d12431402ee99bf91545791'
+            'c8bf6f060f071c229e511748c94fac94c1aaeb90cbe86e5a37d8c013c2ef6ab6eedabe0673720a4cfbdf995d821775d570827a7d37e42da297cf5087c279ac40')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  intltoolize -f -c
+  autoreconf -fi
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/networkmanager \
+    --disable-static \
+    --disable-maintainer-mode \
+    --enable-indicator
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/share/gconf/schemas/"
+  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain nm-applet "${pkgdir}"/etc/gconf/schemas/*.schemas
+  rm -fv "${pkgdir}"/etc/gconf/schemas/*.schemas
+
+  #Install Ubuntu stuff
+  install -dm755 "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  install -m644 "${srcdir}/debian/icons/22/nm-device-wired-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  install -m644 "${srcdir}/debian/icons/22/nm-signal-00-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  ln -snf 'nm-signal-00.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-none.png"
+  ln -snf 'nm-signal-00-secure.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-none-secure.png"
+  install -m644 "${srcdir}/debian/icons/22/nm-signal-25-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  ln -snf 'nm-signal-25.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-low.png"
+  ln -snf 'nm-signal-25-secure.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-low-secure.png"
+  install -m644 "${srcdir}/debian/icons/22/nm-signal-50-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  ln -snf 'nm-signal-50.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-medium.png"
+  ln -snf 'nm-signal-50-secure.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-medium-secure.png"
+  install -m644 "${srcdir}/debian/icons/22/nm-signal-75-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  ln -snf 'nm-signal-75.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-high.png"
+  ln -snf 'nm-signal-75-secure.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-high-secure.png"
+  install -m644 "${srcdir}/debian/icons/22/nm-signal-100-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
+  ln -snf 'nm-signal-100.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-full.png"
+  ln -snf 'nm-signal-100-secure.png' "${pkgdir}/usr/share/icons/hicolor/22x22/apps/gsm-3g-full-secure.png"
+}
