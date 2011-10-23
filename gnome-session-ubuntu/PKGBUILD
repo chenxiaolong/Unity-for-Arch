@@ -71,9 +71,7 @@ package() {
   install -m644 "${srcdir}/debian/gnome-wm.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/gnome-session-common.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
   install -m644 "${srcdir}/debian/defaults.list" "${pkgdir}/etc/gnome/"
-  pushd "${pkgdir}/usr/share/gnome/applications/"
-  ln -s ../../../etc/gnome/defaults.list .
-  popd
+  ln -s '/etc/gnome/defaults.list' "${pkgdir}/usr/share/gnome/applications/defaults.list"
 
   #Install thn81's files
   install -D -m644 "${srcdir}/unity-2d.desktop" "${pkgdir}/usr/share/apps/kdm/sessions/unity-2d.desktop"
