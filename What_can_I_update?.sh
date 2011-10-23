@@ -21,7 +21,7 @@ NEWPKGMSG="${BOLDGREEN}==> ${BOLDWHITE}The following packages can be updated:${R
 UPTODATEMSG="${BOLDGREEN}==> ${BOLDWHITE}Everything is up to date!${RESET}"
 NOTINSTMSG="${BOLDRED}==> ${BOLDWHITE}The following packages are not installed:${RESET}"
 
-PKGLIST=$(cat README | grep "^[[:digit:]][[:digit:]]:" | sed -e 's/^..:\ \(.*[a-z]\)\ .*->.*$/\1/g')
+PKGLIST=$(cat README | grep "^[[:digit:]][[:digit:]]:" | sed -e 's/^..:\ \(.*[a-z0-9]\)\ .*->.*$/\1/g')
 ARRAY_PKGNAME=""
 ARRAY_PKGVER_PKG=""
 ARRAY_PKGVER_INST=""
