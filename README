@@ -39,7 +39,7 @@ Order to compile/install:
 31: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 32: gnome-session-ubuntu           -> GNOME Session Manager
 33: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-34: gnome-screensaver              -> Screensaver and screen locking for GNOME
+34: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
 35: metacity-ubuntu                -> Lightweight GTK+ window manager
 36: launchpad-integration          -> Launchpad.net integration
 37: nautilus-ubuntu                -> File manager and graphics shell for GNOME
