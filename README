@@ -79,7 +79,7 @@ Order to compile/install:
 71: compiz-core-ubuntu             -> Compiz core components
 72: libcompizconfig-ubuntu         -> Compiz configuration system library
 73: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-74: compizconfig-backend-kconfig-ubuntu * -> KConfig4 backend for Compiz
+74: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
 75: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
 76: ccsm-ubuntu                    -> Compiz configuration manager
 77: compiz-plugins-main-ubuntu     -> Compiz main plugins
