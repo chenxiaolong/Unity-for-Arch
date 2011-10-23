@@ -39,53 +39,54 @@ Order to compile/install:
 31: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 32: gnome-session-ubuntu           -> GNOME Session Manager
 33: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-34: metacity-ubuntu                -> Lightweight GTK+ window manager
-35: launchpad-integration          -> Launchpad.net integration
-36: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-37: mutter-ubuntu                  -> Lightweight GTK+ window manager
-38: indicator-applet               -> GNOME panel indicator applet
-39: indicator-application          -> Takes menus and puts then in the panel
-40: indicator-appmenu              -> An indicator to host the menus from apps
-41: indicator-datetime             -> A very, very simple clock
-42: indicator-messages             -> Collects messages that need a response
-43: indicator-multiload            -> Port of the GNOME multiload applet
-44: indicator-session              -> Indicator to manage session
-45: indicator-sound                -> A unified sound menu
-46: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-47: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-48: nux                            -> An OpenGL toolkit
-49: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-50: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-51: xorg-xinput-ubuntu             -> Command line tool to configure input devices
-52: xorg-server-ubuntu             -> Xorg X11 server
-53: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
-54: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
-55: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
-56: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
-57: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-58: mtdev                          -> Multitouch protocol translation library
-59: utouch-evemu                   -> Event emulation for the uTouch stack
-60: utouch-frame                   -> Touch frame library
-61: utouch-grail                   -> Gesture recognition and instantiation lib.
-62: utouch-geis                    -> Implementation of the GEIS interface
-63: unity-asset-pool               -> Design assets for Unity
-64: gnome-menus2                   -> Gnome menu specifications
-65: libunity                       -> Library for integrating Unity
-66: libunity-misc                  -> Differently licensed stuff for Unity
-67: unity-lens-applications        -> Unity applications lens
-68: unity-lens-files               -> Unity files lens
-69: unity-lens-music               -> Unity music lens
-70: compiz-core-ubuntu             -> Compiz core components
-71: libcompizconfig-ubuntu         -> Compiz configuration system library
-72: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-73: compizconfig-backend-kconfig-ubuntu * -> KConfig4 backend for Compiz
-74: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-75: ccsm-ubuntu                    -> Compiz configuration manager
-76: compiz-plugins-main-ubuntu     -> Compiz main plugins
-77: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-78: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-79: unity                          -> A desktop experience designed for efficiency
-80: unity-2d                       -> 2D implementation of Unity
+34: gnome-screensaver              -> Screensaver and screen locking for GNOME
+35: metacity-ubuntu                -> Lightweight GTK+ window manager
+36: launchpad-integration          -> Launchpad.net integration
+37: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+38: mutter-ubuntu                  -> Lightweight GTK+ window manager
+39: indicator-applet               -> GNOME panel indicator applet
+40: indicator-application          -> Takes menus and puts then in the panel
+41: indicator-appmenu              -> An indicator to host the menus from apps
+42: indicator-datetime             -> A very, very simple clock
+43: indicator-messages             -> Collects messages that need a response
+44: indicator-multiload            -> Port of the GNOME multiload applet
+45: indicator-session              -> Indicator to manage session
+46: indicator-sound                -> A unified sound menu
+47: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+48: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+49: nux                            -> An OpenGL toolkit
+50: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+51: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+52: xorg-xinput-ubuntu             -> Command line tool to configure input devices
+53: xorg-server-ubuntu             -> Xorg X11 server
+54: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
+55: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
+56: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
+57: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
+58: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
+59: mtdev                          -> Multitouch protocol translation library
+60: utouch-evemu                   -> Event emulation for the uTouch stack
+61: utouch-frame                   -> Touch frame library
+62: utouch-grail                   -> Gesture recognition and instantiation lib.
+63: utouch-geis                    -> Implementation of the GEIS interface
+64: unity-asset-pool               -> Design assets for Unity
+65: gnome-menus2                   -> Gnome menu specifications
+66: libunity                       -> Library for integrating Unity
+67: libunity-misc                  -> Differently licensed stuff for Unity
+68: unity-lens-applications        -> Unity applications lens
+69: unity-lens-files               -> Unity files lens
+70: unity-lens-music               -> Unity music lens
+71: compiz-core-ubuntu             -> Compiz core components
+72: libcompizconfig-ubuntu         -> Compiz configuration system library
+73: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+74: compizconfig-backend-kconfig-ubuntu * -> KConfig4 backend for Compiz
+75: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+76: ccsm-ubuntu                    -> Compiz configuration manager
+77: compiz-plugins-main-ubuntu     -> Compiz main plugins
+78: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+79: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+80: unity                          -> A desktop experience designed for efficiency
+81: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar

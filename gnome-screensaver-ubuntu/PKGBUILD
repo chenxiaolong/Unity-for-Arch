@@ -1,0 +1,56 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gnome-screensaver-ubuntu
+_ubuntu_rel=0ubuntu1
+pkgver=3.2.0.${_ubuntu_rel}
+pkgrel=1
+pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
+arch=('i686' 'x86_64')
+license=('GPL')
+url="http://live.gnome.org/GnomeScreensaver"
+backup=('etc/pam.d/gnome-screensaver')
+depends=('dbus-glib' 'libgnomekbd' 'gnome-desktop' 'gsettings-desktop-schemas')
+makedepends=('pkgconfig' 'intltool' 'libxss')
+provides=("gnome-screensaver=${pkgver}")
+conflicts=('gnome-screensaver')
+groups=('gnome')
+options=(!emptydirs)
+install=gnome-screensaver.install
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'gnome-screensaver.pam')
+sha512sums=('ab0bf422901662c6a829fb35a7347f0070c0472724782576cb432f7bf78077d1c92f3f2608ffeccb5a3e30b4663213b74f392308f3f6aadc9928a13359984567'
+            '4031348b42955a537a847f6670bf81eb87e236ce775cc8ad06141c391db66a1ec92007d2ad5f74d1495998a59207c813d46847c988a25e8fc0ed1e44b53bfe7b'
+            '5eaf5f9982d949efd34595761d1c96e9f5d71fc892b0fdd0e1877d8aada3d97dac4bf789c241bfbf4cd9e9c867a3e2365fa5e855580542b96af76fc1d5bff92d')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -fi
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libexecdir=/usr/lib/gnome-screensaver \
+    --localstatedir=/var \
+    --with-mit-ext \
+    --enable-locking #from debian/rules
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}/" install
+  install -Dm644 "${srcdir}/gnome-screensaver.pam" "${pkgdir}/etc/pam.d/gnome-screensaver"
+
+  #From debian/rules
+  install -dm755 "${pkgdir}/usr/share/gnome/autostart/"
+  mv "${pkgdir}/etc/xdg/autostart/gnome-screensaver.desktop" "${pkgdir}/usr/share/gnome/autostart/"
+}
