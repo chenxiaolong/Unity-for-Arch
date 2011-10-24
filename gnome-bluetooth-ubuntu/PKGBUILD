@@ -47,6 +47,8 @@ package() {
   make DESTDIR="${pkgdir}/" install
 
   install -Dm644 "${srcdir}/61-gnome-bluetooth-rfkill.rules" "${pkgdir}/lib/udev/rules.d//61-gnome-bluetooth-rfkill.rules"
-  install -d "${pkgdir}/etc/ld.so.conf.d/"
+  install -dm755 "${pkgdir}/etc/ld.so.conf.d/"
   echo "/usr/lib/gnome-bluetooth" > "${pkgdir}/etc/ld.so.conf.d/${pkgname%-*}.conf"
+  install -dm755 "${pkgdir}/etc/xdg/autostart/"
+  install -m644 "${srcdir}/debian/bluetooth-applet-unity.desktop" "${pkgdir}/etc/xdg/autostart/"
 }
