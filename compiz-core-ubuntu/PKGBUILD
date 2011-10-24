@@ -128,7 +128,7 @@ package() {
     echo "X-Ubuntu-Gettext-Domain=compiz" >> ${d}
   done
   for i in launchers navigation screenshot system windows; do
-    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" > "$(pkgdir)/usr/share/gnome-control-center/keybindings/50-compiz-${i}.xml"
+    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" > "${pkgdir}/usr/share/gnome-control-center/keybindings/50-compiz-${i}.xml"
   done
-  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' "$(pkgdir)/usr/share/gnome-control-center/keybindings/50-compiz-navigation.xml"
+  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' "${pkgdir}/usr/share/gnome-control-center/keybindings/50-compiz-navigation.xml"
 }
