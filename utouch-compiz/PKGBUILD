@@ -1,0 +1,43 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=utouch-compiz
+_ubuntu_rel=0ubuntu4
+pkgver=0.1.2.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="Glues together the uTouch framework and the compiz framework to provide multi-touch and gestures."
+arch=('i686' 'x86_64')
+url="https://launchpad.net/utouch-compiz"
+license=('GPL' 'LGPL')
+depends=('boost' 'compiz-core-ubuntu')
+source=("http://launchpad.net/${pkgname}/natty/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/universe/u/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('32ff93b8e1da120f2eb71003fab2ff6a985797009a394ce208be58a3d5bbed3fbf0676a3db2724d8547a6174b8da465253fa987a2315154d7b1b66f6b273e233'
+            '841d3567cf52698c043bc71181d8de0b160c1cbea708f23fabb8c1ed7af2b190a24f8af6eedb8c04c32ec7881149553e790e077ec69f3a093d4e03545f3f3bac')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  [ -d build ] && rm -rvf build
+  mkdir build && cd build
+
+  cmake .. \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DCMAKE_INSTALL_PREFIX=/usr
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd build
+  make DESTDIR="${pkgdir}/" install
+}
+

@@ -22,7 +22,7 @@ build() {
   cd "${pkgname%-*}-${pkgver%.*}"
   patch -Np1 -i "${srcdir}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.diff"
 
-  #No patching needed for now
+  #Apply Ubuntu patches
   #for i in $(cat debian/patches/series | grep -Ev '#'); do
   #  patch -Np1 -i "debian/patches/${i}"
   #done
