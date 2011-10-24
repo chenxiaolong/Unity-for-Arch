@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=appmenu-qt
-pkgver=0.2.2
+pkgver=0.2.4
 pkgrel=100
 pkgdesc="Adds support for application menu to Qt"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('qt-ubuntu' 'libdbusmenu-qt')
 makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
-sha512sums=('99df77aa8bb2dc86db80de90592b953886d32fca4d20e43e93a69c262fc2a5e2fcbb47e3b5c3991edb6e81ec1e8258b16f40a3d27de6b374f3e1fcbf0459320b')
+sha512sums=('7eb83877b12c1d6b48bc313e94e106db090b222d4e0c09975c2359f26fe9a101a9ff426b67b0119f293ebb04f0f5cb1adc5518c45dead0a554686d7fc6a0b760')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
