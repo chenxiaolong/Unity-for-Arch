@@ -43,7 +43,8 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  automake
+  autoreconf -fi
+
   CXX=/bin/false ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
