@@ -73,8 +73,7 @@ build() {
 #  patch -Np1 -i "debian/patches/506_Xi_ensure_touch_events_update_currentTime.patch"
 #  patch -Np1 -i "debian/patches/507_dix_Ensure_touch_events_are_delivered_to_next_client.patch"
 
-  #This is in the debian/rules file - not sure if it is needed
-  autoreconf
+  autoreconf -fi
 
   ./configure \
     --prefix=/usr \
@@ -131,7 +130,8 @@ build() {
     --enable-xace \
     --enable-xfree86-utils \
     --with-sha1=libgcrypt \
-    --enable-dri2
+    --enable-dri2 \
+    --with-fop=no #Build fix
     
   make
 
