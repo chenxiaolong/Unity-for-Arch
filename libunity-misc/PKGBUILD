@@ -3,7 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity-misc
-pkgver=4.0.4
+_ubuntu_rel=0ubuntu2
+pkgver=4.0.4.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Misc. differently licensed stuff for Unity"
 arch=('i686' 'x86_64')
@@ -12,18 +13,26 @@ license=('LGPL')
 depends=('gtk3-ubuntu')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('ab85fe10a946e40fef318120b6fd9f657577fa996d437d654f41f88e147c2d191faa440e10961f9e23643b644cb04b1e640fe82281cf657923af7c203b555ea2')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/libu/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('ab85fe10a946e40fef318120b6fd9f657577fa996d437d654f41f88e147c2d191faa440e10961f9e23643b644cb04b1e640fe82281cf657923af7c203b555ea2'
+            '83687d3f4be975f813608e46e7b8e0b5acf5b1eb577a6e98d1396c79fa7fbc91e7f9a06582d32a261edb72305b585a2599cab2dce0d84275f83fc9067d779777')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat 'debian/patches/series' | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
 
   ./configure --prefix=/usr --disable-static
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}/" install
 }

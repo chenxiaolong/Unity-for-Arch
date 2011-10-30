@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity
-_ubuntu_rel=0ubuntu3
-_ubuntu_ver=4.22.0
+_ubuntu_rel=0ubuntu2b1
+_ubuntu_ver=4.24.0
 pkgver=4.24.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -18,16 +18,16 @@ source=("http://launchpad.net/unity/4.0/${pkgver%.*}/+download/${pkgname}-${pkgv
         "http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'launcher_bfb.png')
 sha512sums=('9d3d040688e66dceb89b01b89a934c699f2985083b41aa0df1d3025c02a83650c9fe9121b71e19e9f1a1cce0b0e844b8eaecb739eda72f833211a6c8e79ea308'
-            'e42871455d019212abe36e3699117fd6ff93d05fa40c4398998616ba286ba2d0348bbec39d15ae0fb50ef3c434acde576ee099f61b02d0ff156d3f11d792fb63'
+            '41e9ac7142721eb4b28effb098a8550569d668c8625112ec60297736561aa23e252ab578f87a582b74a2069881e26dae9943306ff8658809a7e8b8e52a547e18'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   #Apply Ubuntu patches
-  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  #done
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
 
   #Fix pkgconfig
   sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
