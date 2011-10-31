@@ -1,0 +1,60 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Brad Fanella <bradfanella@archlinux.us>
+# Contributor: Rainy <rainylau(at)gmail(dot)com>
+# Contributor: Lee.MaRS <leemars at gmail dot com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=ibus-ubuntu
+_ubuntu_rel=1ubuntu2
+pkgver=1.4.0.${_ubuntu_rel}
+pkgrel=1
+pkgdesc='Next Generation Input Bus for Linux.'
+arch=('i686' 'x86_64')
+license=('LGPL')
+url='http://ibus.googlecode.com'
+depends=('dbus-python>=0.84.0' 'gconf' 'dconf' 'python2' 'pygtk' 'pyxdg' 'iso-codes' 'librsvg' 'python-notify' 'hicolor-icon-theme' 'gtk3')
+optdepends=('notification-daemon')
+makedepends=('intltool')
+provides=("ibus=${pkgver}")
+conflicts=('ibus')
+options=('!libtool')
+install=ibus.install
+source=("http://ibus.googlecode.com/files/${pkgname%-*}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/i/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('8d7fb343d76fc017720db30b46489f79a3949503902e94d2718e8bffb598a79ec1a1beb292af6d026d0944d7e92181334920059ecc7dfaf8e6f59eb1e3d1d1af'
+            '73f33788ac37e236168c2b5256cec9c52cf7a8376120f062a8120407a5a8f034a2ba57fe866d78b90ceca3ab3029139fd5beb798805530039c12449375a6a879')
+
+build() {
+  cd "${pkgname%-*}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  export PYTHON=python2
+
+  ./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib/${pkgname%-*} \
+    --sysconfdir=/etc \
+    --with-gconf-schema-file-dir=/usr/share/gconf/schemas \
+    --enable-gtk3 \
+    --enable-surrounding-text #From debian/rules
+
+  # python2 fix
+  for file in setup/ibus-setup.in ui/gtk/ibus-ui-gtk.in; do
+    sed -i 's_exec python_exec python2_' $file
+  done
+
+  make
+}
+
+package() {
+  cd "${pkgname%-*}-${pkgver%.*}"
+
+  export PYTHON=python2
+  make DESTDIR="${pkgdir}/" install
+
+  find "${pkgdir}" -type f -exec sed -i 's_exec /usr/bin/python_exec /usr/bin/python2_' {} \;
+}
