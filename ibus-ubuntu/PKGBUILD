@@ -57,4 +57,8 @@ package() {
   make DESTDIR="${pkgdir}/" install
 
   find "${pkgdir}" -type f -exec sed -i 's_exec /usr/bin/python_exec /usr/bin/python2_' {} \;
+
+  #Files for im-switch
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinput.d/"
+  install -m644 "${srcdir}/debian/xinput/ibus" "${pkgdir}/etc/X11/xinit/xinput.d/"
 }
