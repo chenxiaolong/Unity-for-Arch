@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=compiz-plugins-main-ubuntu
-_ubuntu_ver="0ubuntu2"
+_ubuntu_ver=0ubuntu4
 pkgver=0.9.6.${_ubuntu_ver}
 pkgrel=100
 pkgdesc="Compiz main plugins - Ubuntu version"
@@ -16,11 +16,12 @@ makedepends=('intltool' 'cmake' 'pkgconfig' 'libtool')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('b4b9abb08103e5e6f5df11403480a5bc8a691cc3193cee66db49286e3ce1b4fd391666460f5ecd6825c4107d5c9d6ec0b3a2ad2233aeb9ebca2ffbc562c81839'
-            '91040332eb80dbacf23510720a93cfb88bf8d4dae6f8f8e4ff2e24be71f6612582b6308c82378a8653d0cce142ea4bee4d16d673abbdda0654da38fd082f7d70')
+            '05650ea2b1fdb3538a3070595ede1744f800e45c2bfde5b0c6aa6d68534912d5d007f8ad4ad87bed1fa2e9817244a1f36eb8ec011be29365f5e4a5b6fd1b58f8')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
+  #Apply Ubuntu patches
   for i in $(cat ${srcdir}/debian/patches/series | grep -Ev '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
