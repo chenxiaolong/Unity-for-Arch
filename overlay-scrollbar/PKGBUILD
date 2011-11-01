@@ -1,0 +1,56 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+pkgname=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
+pkgbase=overlay-scrollbar
+pkgver=0.2.12
+pkgrel=100
+pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
+arch=('i686' 'x86_64')
+url="https://launchpad.net/ayatana-scrollbar"
+license=('LGPL')
+groups=('unity')
+depends=('glib2-ubuntu' 'gtk2-ubuntu' 'gtk3-ubuntu' 'cairo')
+source=("http://launchpad.net/ayatana-scrollbar/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('a39f063a14888475fb941c88ceb352d0de57769a912442516c337382963c35d533d0b5477e7145051275c0aa25044078c49cd28cbbf20db557b8c6c3ed7dd020')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=2 --disable-static
+  make
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --disable-static
+  make
+  popd
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  msg "Nothing to check."
+}
+
+package_liboverlay-scrollbar3() {
+  pkgdesc="Scrollbar overlayed widget - GTK 3 library"
+  depends=('liboverlay-scrollbar' 'glib2-ubuntu' 'gtk3-ubuntu' 'cairo')
+  provides=('overlay-scrollbar')
+  conflicts=('overlay-scrollbar')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  make DESTDIR="${pkgdir}/" install
+
+  rm -rvf "${pkgdir}/etc/"
+}
+
+package_liboverlay-scrollbar() {
+  pkgdesc="Scrollbar overlayed widget - GTK 2 library"
+  depends=('glib2-ubuntu' 'gtk2-ubuntu' 'cairo')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  make DESTDIR="${pkgdir}/" install
+
+  rm -rvf "${pkgdir}/etc/"
+}
