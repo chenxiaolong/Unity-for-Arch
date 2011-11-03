@@ -25,36 +25,17 @@ sha512sums=('0f35e4330ee9d96b152853e8a64a7c1d93348e8764238d98a3ce72e7b2ca0212ac4
             'e51ad74386b8b3810848d80115c28389bd8f823557f59abd94933dfb98d79e0bbf4f8466ce17247f86153c3e2a285219cdd07a40d6a370d489a7d0c0687cdb9b')
 
 build() {
-  echo -e "\n\nPLEASE DO NOT INSTALL ANY SYNAPTICS DRIVER YET!!!\nThey will crash Xorg!"
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   patch -Np1 -i "${srcdir}/xserver-xorg-input-synaptics_${pkgver}-${_ubuntu_ver}.diff"
 
-  #Apply all patches
-  #for i in $(cat "debian/patches/series" | grep -Ev '#'); do
-  #  patch -Np1 -i "debian/patches/${i}"
-  #done
+  #Apply Ubuntu patches
+  for i in $(cat "debian/patches/series" | grep -Ev '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
 
-  #Testing one by one right now
-  #patch -Np1 -i 'debian/patches/01-synaptics-dont-grab-if-not-on-current-VT.patch'
-  #patch -Np1 -i 'debian/patches/02-do-not-use-synaptics-for-keyboards.patch'
-  #patch -Np1 -i 'debian/patches/101_resolution_detect_option.patch'
-  #patch -Np1 -i 'debian/patches/103_enable_cornertapping.patch'
-  #patch -Np1 -i 'debian/patches/104_always_enable_tapping.patch'
-  #patch -Np1 -i 'debian/patches/105_correct_multifinger_click.patch'
-  #patch -Np1 -i 'debian/patches/106_always_enable_vert_edge_scroll.patch'
-  #patch -Np1 -i 'debian/patches/115_evdev_only.patch'
-  patch -Np1 -i 'debian/patches/116_xi2_1.patch'
-  #patch -Np1 -i 'debian/patches/117_gestures.patch' #This patch crashes Xorg. Why??
-  #patch -Np1 -i 'debian/patches/118_quell_error_msg.patch'
-  #patch -Np1 -i 'debian/patches/119_active_area_touches.patch'
-  #patch -Np1 -i 'debian/patches/120_active_touches_num_fingers.patch'
-  #patch -Np1 -i 'debian/patches/121_semi-mt_num_fingers.patch'
-  #patch -Np1 -i 'debian/patches/122_revert_pressure_finger_default.patch'
-  #patch -Np1 -i 'debian/patches/123_order_ProcessTouch_for_numFingers.patch'
-  #patch -Np1 -i 'debian/patches/124_syndaemon_events.patch'
-
-  ./configure --prefix=/usr
+  chmod +x autogen.sh
+  ./autogen.sh --prefix=/usr
   make
 }
 
