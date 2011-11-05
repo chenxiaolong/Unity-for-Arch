@@ -1,8 +1,5 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-#AUR fix
-pkgdesc="Xorg X server with Ubuntu's patches"
-
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
@@ -25,6 +22,9 @@ sha512sums=('8e3391c78e7d5e52041efe35badf04be49bbb8b7940c7694faadd1f6f555edc5afd
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
+
+#AUR fix
+pkgdesc="Xorg X server with Ubuntu's patches"
 
 build() {
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
@@ -167,7 +167,9 @@ package_xorg-server-common-ubuntu() {
 
 package_xorg-server-ubuntu() {
   pkgdesc="Xorg X server"
-  depends=(libxdmcp libxfont udev libpciaccess libdrm pixman libgcrypt libxau xorg-server-common xf86-input-evdev)
+  depends=(libxdmcp libxfont udev libpciaccess libdrm pixman libgcrypt libxau xorg-server-common-ubuntu)
+  #Cannot put xf86-input-evdev-ubuntu in the dependencies - the AUR will
+  # cause a dependency loop due to the order the packages are installed
   backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
   provides=('x-server' 'xorg-server')
   conflicts=('xorg-server')
@@ -207,7 +209,7 @@ package_xorg-server-ubuntu() {
 
 package_xorg-server-xephyr-ubuntu() {
   pkgdesc="A nested X server that runs as an X application"
-  depends=(libxfont libgl libgcrypt libxv pixman xorg-server-common)
+  depends=(libxfont libgl libgcrypt libxv pixman xorg-server-common-ubuntu)
   provides=('xorg-server-xephyr')
   conflicts=('xorg-server-xephyr')
 
@@ -220,7 +222,7 @@ package_xorg-server-xephyr-ubuntu() {
 
 package_xorg-server-xvfb-ubuntu() {
   pkgdesc="Virtual framebuffer X server"
-  depends=(libxfont libxdmcp libxau libgcrypt pixman xorg-server-common)
+  depends=(libxfont libxdmcp libxau libgcrypt pixman xorg-server-common-ubuntu)
   provides=('xorg-server-xvfb')
   conflicts=('xorg-server-xvfb')
 
@@ -236,7 +238,7 @@ package_xorg-server-xvfb-ubuntu() {
 
 package_xorg-server-xnest-ubuntu() {
   pkgdesc="A nested X server that runs as an X application"
-  depends=(libxfont libxext libgcrypt pixman xorg-server-common)
+  depends=(libxfont libxext libgcrypt pixman xorg-server-common-ubuntu)
   provides=('xorg-server-xnest')
   conflicts=('xorg-server-xnest')
 
@@ -249,7 +251,7 @@ package_xorg-server-xnest-ubuntu() {
 
 package_xorg-server-xdmx-ubuntu() {
   pkgdesc="Distributed Multihead X Server and utilities"
-  depends=(libxfont libxi libgcrypt libxaw libxrender libdmx libxfixes pixman xorg-server-common)
+  depends=(libxfont libxi libgcrypt libxaw libxrender libdmx libxfixes pixman xorg-server-common-ubuntu)
   provides=('xorg-server-xdmx')
   conflicts=('xorg-server-xdmx')
 
@@ -262,7 +264,7 @@ package_xorg-server-xdmx-ubuntu() {
 
 package_xorg-server-devel-ubuntu() {
   pkgdesc="Development files for the X.Org X server"
-  depends=(xproto randrproto renderproto xextproto inputproto kbproto fontsproto videoproto dri2proto xineramaproto xorg-util-macros pixman libpciaccess)
+  depends=(xproto randrproto renderproto xextproto inputproto-ubuntu kbproto fontsproto videoproto dri2proto xineramaproto xorg-util-macros pixman libpciaccess)
   provides=('xorg-server-devel')
   conflicts=('xorg-server-devel')
 
