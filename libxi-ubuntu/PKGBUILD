@@ -19,17 +19,16 @@ sha512sums=('6ec8cedd7f6ad5ec6deb7ea594893615c87823537be20b6b1d67c8595364566ac4d
             'ef1ea2f8146ff9e5cc77d9ad2be5c8a1c858a6d7571221f2a698a26b6a2de44ace7636f9c1bad4e4e1cd1df0a81687312cbfcac2786b10a6df275bab4745e8fa')
 
 build() {
-  cd "${srcdir}"
-  patch -Np1 -i "${srcdir}/libxi_${pkgver%.*}-${_ubuntu_ver}.diff"
-
   cd "${srcdir}/libXi-${pkgver%.*}"
 
-  #Apply all patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -Ev '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  #Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/libxi_${pkgver%.*}-${_ubuntu_ver}.diff"
+  for i in $(cat "debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
   done
 
-  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
+  chmod +x autogen.sh
+  ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --with-xmlto --without-fop
   make
 }
 
