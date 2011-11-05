@@ -3,11 +3,11 @@
 pkgname=libxi-ubuntu
 _ubuntu_ver=3ubuntu1
 pkgver=1.4.3.${_ubuntu_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="X11 Input extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
-depends=('libxext' 'inputproto')
+depends=('libxext' 'inputproto-ubuntu')
 makedepends=('pkgconfig' 'xorg-util-macros')
 provides=("libxi=${pkgver}")
 conflicts=('libxi')
