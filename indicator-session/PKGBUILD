@@ -4,7 +4,7 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-pkgver=0.3.7
+pkgver=0.3.7.1
 pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
@@ -15,8 +15,8 @@ optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('e3e0b00608339d181afb4fa8a2850b1558fe90f91ba17ad3d2266471c375623f3fae8efeda7e54095b8fc1d5430649cfa90ae73ad2e2fe3521197b7b0ca50919')
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('5cf55ab872de45cf87206128210bdd32b83901b06cf445ff81237ebaea1845663061287936cfcec5391ee8b721abe2b7ddd25c28b32064f21ec25b397e495aad')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
