@@ -4,7 +4,7 @@
 
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
-pkgver=0.7.9.0
+pkgver=0.7.9.1
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -14,8 +14,8 @@ makedepends=('intltool' 'vala')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/fourth/${pkgver%.*}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('611d6785e1304aeb426a6fdf078db0ef8157da960296b1e8fdfb524c753cbe840bf21743e5746345138787e661b698a0df23d69af94b4e31809bcd0049cfc6ca')
+source=("http://launchpad.net/${pkgbase}/fourth/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('3247c5046ccf5313582c39581f2ff1216a44d501723f0a5c0f3ccbb45aeb7d24ffffb59fe67c2dc05aa31370a94af675b465783e62d7b349315c93d0bcd0ac96')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
