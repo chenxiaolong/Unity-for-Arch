@@ -5,7 +5,7 @@
 pkgname=unity-2d
 _ubuntu_ver=0ubuntu1
 pkgver=4.12.0.${_ubuntu_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="unity-2d project is a 2d implementation of Unity"
 arch=('i686' 'x86_64')
 url="http://launchpad.net/unity-2d"
@@ -25,6 +25,9 @@ sha512sums=('d1086f64d004c342a7618304b90ed045f0795315af60a31886a6d7cb17748cc41e6
             'a233f64750fc32b898bbafb164652c51e862e3aab8d92bf8d3b72519ca5f8bbee71a91bd5e863a8797f75f413bb76d4d655542126277702ffe5227bffc383bbb'
             '86839a524a728216b456deef496680864ec92939d2a2fc3fb03f418e4cc64ad7cf1c1565f073c961c72bd3a55ac73209c25619b3f43f869dfee52c3e04d030bf')
 
+#https://bugs.launchpad.net/unity-2d/+bug/809205
+export NO_PNG_PKG_MANGLE=1
+
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
@@ -40,6 +43,21 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
   cd 'build'
   make DESTDIR="${pkgdir}/" install
-  install -Dm644 "${srcdir}/debian/gconf/ubuntu-2d.default.path" "${pkgdir}/usr/share/gconf/defaults/10_ubuntu-2d"
-  install -Dm644 "${srcdir}/debian/gconf/ubuntu-2d.mandatory.path" "${pkgdir}/usr/share/gconf/mandatory/10_ubuntu-2d"
+
+  #Install GConf stuff
+  install -dm755 "${pkgdir}/usr/share/gconf/"
+  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
+  install -dm755 "${pkgdir}/usr/share/gconf/ubuntu-2d/mandatory/"
+  install -dm755 "${pkgdir}/usr/share/gconf/ubuntu-2d/default/"
+  install -m644 "${srcdir}/debian/gconf/ubuntu-2d.default.path" "${pkgdir}/usr/share/gconf/"
+  install -m644 "${srcdir}/debian/gconf/ubuntu-2d.mandatory.path" "${pkgdir}/usr/share/gconf/"
+  install -m644 "${srcdir}/debian/unity-2d.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_${pkgname}"
+  install -m644 "${srcdir}/debian/20_ubuntu-2d-gconf-mandatory" "${pkgdir}/usr/share/gconf/ubuntu-2d/mandatory/"
+  install -m644 "${srcdir}/debian/20_ubuntu-2d-gconf-default" "${pkgdir}/usr/share/gconf/ubuntu-2d/default/"
+
+  #Install manuals
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  for i in "${srcdir}"/debian/manpages/*; do
+    install -m644 "${i}" "${pkgdir}/usr/share/man/man1/"
+  done
 }
