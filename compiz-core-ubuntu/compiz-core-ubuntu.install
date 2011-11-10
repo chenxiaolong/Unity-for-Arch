@@ -1,0 +1,22 @@
+#SCHEMAS="compiz-annotate.schemas compiz-bailer.schemas compiz-blur.schemas compiz-clone.schemas compiz-commands.schemas compiz-compiztoolbox.schemas compiz-composite.schemas compiz-copytex.schemas compiz-core.schemas compiz-cube.schemas compiz-dbus.schemas compiz-debugspew.schemas compiz-decor.schemas compiz-detection.schemas compiz-fade.schemas compiz-gnomecompat.schemas compiz-imgpng.schemas compiz-imgsvg.schemas compiz-ini.schemas compiz-inotify.schemas compiz-kde.schemas compiz-move.schemas compiz-obs.schemas compiz-opengl.schemas compiz-place.schemas compiz-regex.schemas compiz-resize.schemas compiz-rotate.schemas compiz-scale.schemas compiz-screenshot.schemas compiz-switcher.schemas compiz-water.schemas compiz-wobbly.schemas compiz-zoom.schemas"
+SCHEMAS="gwd.schema"
+
+post_install() {
+  for i in ${SCHEMAS}; do
+    usr/sbin/gconfpkg --install $(echo ${i} | sed 's/\..*$//')
+  done
+}
+
+pre_remove() {
+  for i in ${SCHEMAS}; do
+    usr/sbin/gconfpkg --uninstall $(echo ${i} | sed 's/\..*$//')
+  done
+}
+
+pre_upgrade() {
+  pre_remove
+}
+
+post_upgrade() {
+  post_install
+}

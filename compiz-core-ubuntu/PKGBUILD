@@ -5,7 +5,7 @@ pkgname=compiz-core-ubuntu
 _ubuntu_ver2="bzr20110929"
 _ubuntu_ver="0ubuntu5"
 pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=102
+pkgrel=103
 pkgdesc="Compiz core components - Ubuntu version"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -62,6 +62,7 @@ provides=('compiz-core')
 conflicts=('compiz-core')
 groups=('unity')
 options=('emptydirs')
+install=compiz-core-ubuntu.install
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
@@ -97,7 +98,7 @@ package() {
   sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@" unity/unity_window_decorator/src/cmake_install.cmake
   sed -i "/RPATH_REMOVE/ {n; s@\(\\\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@g}" unity/unity_window_decorator/src/cmake_install.cmake
 
-  make install
+  make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 install
   make findcompiz_install
   #cmake_dir=`cmake --system-information 2> /dev/null | grep "^CMAKE_ROOT " | sed -e 's/.*"\(.*\)"/\1/'`
   #mkdir -p "${pkgdir}${cmake_dir}/Modules"
