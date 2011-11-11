@@ -5,7 +5,7 @@ pkgname=compiz-core-ubuntu
 _ubuntu_ver2="bzr20110929"
 _ubuntu_ver="0ubuntu5"
 pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=103
+pkgrel=104
 pkgdesc="Compiz core components - Ubuntu version"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -17,7 +17,7 @@ depends=(
   'dbus'
   'dbus-glib'
   'fuse'
-  'gconf'
+  'gconf-ubuntu'
   'glib2-ubuntu'
   'glibmm'
   'glproto'

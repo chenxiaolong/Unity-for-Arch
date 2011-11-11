@@ -4,16 +4,17 @@ pkgname=unity
 _ubuntu_rel=0ubuntu2b1
 _ubuntu_ver=4.24.0
 pkgver=4.24.0.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
 license=('GPL')
-depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'doxygen' 'gconf' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
+depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'doxygen' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
 makedepends=('cmake' 'intltool' 'pkg-config')
 groups=('unity')
 provides=("unity-core=${pkgver}")
 conflicts=('unity-core')
+install=unity.install
 source=("http://launchpad.net/unity/4.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'launcher_bfb.png')

@@ -3,7 +3,7 @@
 pkgname=compiz-plugins-main-ubuntu
 _ubuntu_ver=0ubuntu4
 pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Compiz main plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -11,8 +11,9 @@ arch=('i686' 'x86_64')
 provides=('compiz-plugins-main')
 conflicts=('compiz-plugins-main')
 groups=('unity')
-depends=('compiz-core-ubuntu' 'gconf' 'glib2-ubuntu' 'mesa' 'libjpeg-turbo' 'libxml2' 'libxslt' 'cairo' 'pango' 'librsvg' 'libsm' 'dbus' 'boost')
+depends=('compiz-core-ubuntu' 'gconf-ubuntu' 'glib2-ubuntu' 'mesa' 'libjpeg-turbo' 'libxml2' 'libxslt' 'cairo' 'pango' 'librsvg' 'libsm' 'dbus' 'boost')
 makedepends=('intltool' 'cmake' 'pkgconfig' 'libtool')
+install=compiz-plugins-main-ubuntu.install
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('b4b9abb08103e5e6f5df11403480a5bc8a691cc3193cee66db49286e3ce1b4fd391666460f5ecd6825c4107d5c9d6ec0b3a2ad2233aeb9ebca2ffbc562c81839'

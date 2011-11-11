@@ -1,0 +1,19 @@
+SCHEMAS="compiz-animation.schemas compiz-colorfilter.schemas compiz-expo.schemas compiz-ezoom.schemas compiz-grid.schemas compiz-imgjpeg.schemas compiz-kdecompat.schemas compiz-mag.schemas compiz-mousepoll.schemas compiz-neg.schemas compiz-opacify.schemas compiz-put.schemas compiz-resizeinfo.schemas compiz-ring.schemas compiz-scaleaddon.schemas compiz-session.schemas compiz-shift.schemas compiz-snap.schemas compiz-staticswitcher.schemas compiz-text.schemas compiz-thumbnail.schemas compiz-titleinfo.schemas compiz-vpswitch.schemas compiz-wall.schemas compiz-winrules.schemas compiz-workarounds.schemas"
+
+post_install() {
+  gconf-schemas --register ${SCHEMAS}
+  update-gconf-defaults
+}
+
+pre_remove() {
+  gconf-schemas --unregister ${SCHEMAS}
+  update-gconf-defaults
+}
+
+pre_upgrade() {
+  pre_remove
+}
+
+post_upgrade() {
+  post_install
+}
