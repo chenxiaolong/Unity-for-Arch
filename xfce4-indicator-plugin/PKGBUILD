@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=xfce4-indicator-plugin
-_ubuntu_ver=1ubuntu3
-pkgver=0.3.1.${_ubuntu_ver}
+_ubuntu_ver=0ubuntu1
+pkgver=0.4.0.${_ubuntu_ver}
 pkgrel=100
 pkgdesc="Display indicators in the xfce4 panel"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ groups=('unity')
 options=('!libtool')
 source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/universe/x/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
-sha512sums=('49f980fb2689a4c78318793978f241f471c019ee195de9245dd84edc0ea1bbe39b613bb56eada56d39482d0595015c952b27154c7122f6396b1b559650317653'
-            '27f40c48551fa398cb54caf53489f822e70bf7a681faabea20f964fc0b86941d6c70db8d47c7e0b2144c75ac085a9a5d6773b3dc8b8f040cfa0f2543d4e143be')
+sha512sums=('34800e56ea134f70f037bb6df6ab4fdf755d2d6171f44cc8a09c85e714e009b084e81c1f2e63293680329f8fd6d60d92e53ebff07dce1c12ee74294203628ff2'
+            '4fafd7f0d8e0bbf3112319ace303ce17bff0b64ce1dbb4814d82035dd2e70f1f3b2b492b4f5d18e4be8d1d81077419f3392dc9ff743635952699ed78018ea10c')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver%.*}
