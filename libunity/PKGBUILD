@@ -14,7 +14,7 @@ depends=('libgee' 'dee' 'libdbusmenu' 'dbus-glib')
 makedepends=('vala' 'python2' 'gobject-introspection')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/4.0.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgname}/4.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/libu/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('dbb7718204542db81722c7484bba647a99f808e23de2d09c782527feddc9674ba64ea6bdfa6da027cb53f91106f3d0f971a43f7ec8452036f0bf6664ef0b73c9'
             '660e8e2a007a12081764d96ad9526d9824c46a4d09219c181c60023a838d790e27ddd737abb4ed1edc1d6aaa0f3a8c4aba6d0dc811501ba19da5a1c66e80c52d')
