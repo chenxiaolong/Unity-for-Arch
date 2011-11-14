@@ -3,8 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=0ubuntu3
-_ubuntu_ver=3.2.0
+_ubuntu_rel=0ubuntu1
 pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
@@ -19,13 +18,13 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'startunity'
         'unity-3d.desktop'
         'startunity3d'
         'unity-2d.desktop')
 sha512sums=('ccc82d261ab800147aa5df56001047f212f740217d43954d3a18d9034f1eae13972af408e00a3d2dcc4c83954cffc1fb77ba83f45d0426021c2c65bf3ed146cf'
-            'f0df4ef7cc0fa7bc9d2aee2845e0fbfd8efe19f780fbddddc0f97221409079c47d06d6645eb9db26b3233f66f89eccb3372dabab902803211901f30a01b16356'
+            '7f4f938ee66f28fd9d0682ae827ed0165bfdcd628c9360229f0a82eee611bd8fba27cf64a6035965af43102aa12fb0852dc4a01b82fcb01e4cb0d92e27591758'
             'c1a5ec1ece04328b98c060156e998fab905308a53d3bd1ab74119faa9658d3dc35487a3086fddad41f3cb24369a26a3b02eeff79c8d9dd60724aec70387f2f15'
             '105c9aa92ca355f367067715528a4b7352dc960c94b6b587794c7210c13dc50186fbb920665eeb5f7a8e6064df966372394ae865d3c89ad63f41b30a9eeb971f'
             'd48de63950edb64bd730b0bc4ded86cf565328a7e48f7cd5d77c05b3f926b2f938395035ee1d29fb29684aa33a717bc57c36e0aa1daa237d181df60b5d583929'
@@ -36,9 +35,6 @@ build() {
 
   #Apply Ubuntu patches
 
-  #Don't apply these patches
-    #Accepted upstream
-      sed -i '/00git_dont_idle_on_0_timeouts.patch/d' "${srcdir}/debian/patches/series"
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -59,12 +55,12 @@ package() {
   make DESTDIR="${pkgdir}" install
 
   #Install Ubuntu files
-  install -d -m755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -d -m755 "${pkgdir}/usr/bin/"
-  install -d -m755 "${pkgdir}/usr/share/applications/"
-  install -d -m755 "${pkgdir}/etc/gnome/"
-  install -d -m755 "${pkgdir}/usr/share/gnome/applications/"
-  install -d -m755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/share/applications/"
+  install -dm755 "${pkgdir}/etc/gnome/"
+  install -dm755 "${pkgdir}/usr/share/gnome/applications/"
+  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
   install -m755 "${srcdir}/debian/scripts/gnome-wm" "${pkgdir}/usr/bin/"

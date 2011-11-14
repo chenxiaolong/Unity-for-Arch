@@ -3,8 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu5
-_ubuntu_ver=3.2.0
+_ubuntu_rel=0ubuntu3
 pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -19,39 +18,19 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'patch_16_use_synchronous_notifications.patch.patch')
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('7cbcf4f2fba584d54016b8b0613874a782e4158c247d887a3bd6d6ced408197f6c3bde4133aa9313f1bbdb5f2bd48559bcc2520061bcc1d33641e3b66fa3aefb'
-            '8af54e657b0438e0bd035c7890c3d94b6d53724a2911410166292af1c16cb1b6e3fdd905a3855d7ffa8e7046962140a2061faf97ad30a0269fa330b8f3484ec7'
-            'f00ef616d22a94f098006f8792db510a19586820f18ef6872a9a35cac78754b254a17e9c6af39b5d0b4b247c615733db9903168fe6465288045726a76fe79d39')
+            'ed621d3e842c980acc00cd7b59ba353166b54d36f7e921dce0eb31c16020d132565fd5fa0128c9eb8036077a55a882fb335fd6e5ca38e7c1134976e1d895bfed')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
-
-  #Don't apply these patches
-    #Accepted upstream
-      sed -i '/00git_dont_restore_brightness.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_fix_reference_leaks.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_fix_async_dbus_crash.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_dont_sleep_on_idle_by_default.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_dont_revert_pre_idle_brigthness.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_avoid_undesired_sleeps.patch/d' "${srcdir}/debian/patches/series"
-    #No longer needed
-      sed -i '/49_fix_suspend_media_key.patch/d' "${srcdir}/debian/patches/series"
-
   #gsd-media-keys-manager.c fails to find libnotify. Adding libnotify to Makefile.am
   #  will solve the problem.
   #Add ${LIBNOTIFY_LIBS} to plugins/media-keys/Makefile.am
   sed -i '/test_media_keys_LDADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
   sed -i '/libmedia_keys_la_LIBADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
-
-  #Fix 16_use_synchronous_notifications.patch
-  pushd "${srcdir}/debian/patches"
-  patch -Np0 -i "${srcdir}/patch_16_use_synchronous_notifications.patch.patch"
-  popd
-
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
@@ -82,4 +61,14 @@ package() {
 
   #Install gnome-update-wallpaper-cache
   install -c gnome-settings-daemon/gnome-update-wallpaper-cache "${pkgdir}/usr/lib/${pkgname%-*}"
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/${pkgname%-*}.1" "${pkgdir}/usr/share/man/man1/"
+
+  #Symlinks
+  install -dm755 "${pkgdir}/usr/bin/"
+  ln -s '/usr/lib/gnome-settings-daemon/gnome-settings-daemon' "${pkgdir}/usr/bin/"
+
+  #Gsetings override
+  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -m644 "${srcdir}/debian/gnome-settings-daemon.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
 }
