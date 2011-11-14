@@ -3,7 +3,7 @@
 
 pkgname=compiz-core-ubuntu
 _ubuntu_ver2="bzr20110929"
-_ubuntu_ver="0ubuntu5"
+_ubuntu_ver="0ubuntu7"
 pkgver=0.9.6.${_ubuntu_ver}
 pkgrel=104
 pkgdesc="Compiz core components - Ubuntu version"
@@ -66,7 +66,7 @@ install=compiz-core-ubuntu.install
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
-            'd718ea4344cdfad5d41b587f9c7a799f7ae9c93ee8848599f8e8489ca975429744c40771d642276070d935995c5b1b0ed649fc0e301e00f023af544a4113c68e')
+            '623abc6f379be9bb25a620e5502f58ade77eeb92ae553b21e1898e766fbc46ff64ca28bc3598ef46d0dbb0008c98c4a943c540ff338522cb4667ccd81986b1ec')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
