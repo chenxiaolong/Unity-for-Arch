@@ -3,7 +3,7 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_ver=1ubuntu4
+_ubuntu_ver=1ubuntu5
 _ubuntu_ver2=1.10.4
 pkgver=1.10.4.${_ubuntu_ver}
 pkgrel=100
@@ -18,7 +18,7 @@ source=(${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2
         xvfb-run.1
         10-quirks.conf)
 sha512sums=('8e3391c78e7d5e52041efe35badf04be49bbb8b7940c7694faadd1f6f555edc5afda554cb8f3524b3ae7cfe8d5e63b80ca715cf3855565820efff46641ecc9b5'
-            'aab25d84df72e6c9c0708822fb6d7bb2d4d2e9a97c9f08857aaa78e6ca12037b0c8c1790078ca3842c7dadeda3cbee12ec64b3f41a7a9eeac3f2b71317710107'
+            'faea9c815063bdae22d6b6281133f4d24c69ace13e72ef4b56bb13cd34ac8463f36a023bb9d8d3fcb0449925ae6d3e1aac389008b5a30d0a316e57beb40a0840'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
@@ -29,56 +29,14 @@ pkgdesc="Xorg X server with Ubuntu's patches"
 build() {
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
 
+  #Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgbase%-*}_${_ubuntu_ver2}-${_ubuntu_ver}.diff"
 
-  #Apply Ubuntu patches
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-#  patch -Np1 -i "debian/patches/001_fedora_extramodes.patch"
-  #patch -Np1 -i "debian/patches/02_Add-libnettle-as-option-for-sha1.diff"
-  #patch -Np1 -i "debian/patches/07-xfree86-fix-build-with-xv-disabled.diff"
-  #patch -Np1 -i "debian/patches/100_rethrow_signals.patch"
-  #patch -Np1 -i "debian/patches/105_nvidia_fglrx_autodetect.patch"
-  #patch -Np1 -i "debian/patches/111_armel-drv-fallbacks.patch"
-  #patch -Np1 -i "debian/patches/122_xext_fix_card32_overflow_in_xauth.patch"
-  #patch -Np1 -i "debian/patches/13_debian_add_xkbpath_env_variable.diff"
-  #patch -Np1 -i "debian/patches/157_check_null_modes.patch"
-  #patch -Np1 -i "debian/patches/15-nouveau.diff"
-  #patch -Np1 -i "debian/patches/162_null_crtc_in_rotation.patch"
-  #patch -Np1 -i "debian/patches/165_man_xorg_conf_no_device_ident.patch"
-  #patch -Np1 -i "debian/patches/166_nullptr_xinerama_keyrepeat.patch"
-  #patch -Np1 -i "debian/patches/167_nullptr_xisbread.patch"
-  #patch -Np1 -i "debian/patches/168_glibc_trace_to_stderr.patch"
-  #patch -Np1 -i "debian/patches/172_cwgetbackingpicture_nullptr_check.patch"
-  #patch -Np1 -i "debian/patches/188_default_primary_to_first_busid.patch"
-  #patch -Np1 -i "debian/patches/190_cache-xkbcomp_output_for_fast_start_up.patch"
-  #patch -Np1 -i "debian/patches/191-Xorg-add-an-extra-module-path.patch"
-  #patch -Np1 -i "debian/patches/198_nohwaccess.patch"
-  #patch -Np1 -i "debian/patches/200_randr-null.patch"
-  #patch -Np1 -i "debian/patches/201_report-real-dpi.patch"
-  #patch -Np1 -i "debian/patches/206_intel_8xx_default_to_fbdev.patch"
-  #patch -Np1 -i "debian/patches/208_switch_on_release.diff"
-  #patch -Np1 -i "debian/patches/209_add_legacy_bgnone_option.patch"
-  #patch -Np1 -i "debian/patches/210_pixman_null_ptr_check.patch"
-  #patch -Np1 -i "debian/patches/214_glx_dri_searchdirs.patch"
-#  patch -Np1 -i "debian/patches/217_revert_bgnonevisitwindow.patch"
-#  patch -Np1 -i "debian/patches/219_fedora-pointer-barriers.diff"
-#  patch -Np1 -i "debian/patches/220_xi21_always_deliver_raw_events.diff"
-#  patch -Np1 -i "debian/patches/500_xi2.1.patch"
-#  patch -Np1 -i "debian/patches/501_xf86CoordinatesToWindow.patch"
-#  patch -Np1 -i "debian/patches/502_gestures-extension.patch" #Crashes Xorg
-#  patch -Np1 -i "debian/patches/503_fix_masked_transformed_valuators.patch"
-#  patch -Np1 -i "debian/patches/504_fix_no_coords.patch"
-#  patch -Np1 -i "debian/patches/221_fix_SendEvent_flag_mask.diff"
-#  patch -Np1 -i "debian/patches/505_Xi_ensure_replayed_touch_events_have_devices.patch"
-#  patch -Np1 -i "debian/patches/506_Xi_ensure_touch_events_update_currentTime.patch"
-#  patch -Np1 -i "debian/patches/507_dix_Ensure_touch_events_are_delivered_to_next_client.patch"
-
-  autoreconf -fi
-
-  ./configure \
+  ./autogen.sh \
     --prefix=/usr \
     --enable-ipv6 \
     --enable-dri \
@@ -134,7 +92,10 @@ build() {
     --enable-xfree86-utils \
     --with-sha1=libgcrypt \
     --enable-dri2 \
-    --with-fop=no #Build fix
+    --with-fop=no `# build fix` \
+    --disable-xselinux \
+    --with-default-xkb-rules=evdev \
+    --disable-config-hal
     
   make
 
@@ -186,7 +147,8 @@ package_xorg-server-ubuntu() {
     #This should be done by evdev
   #install -m644 "debian/local/10-kbd.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
   #install -m644 "debian/local/10-mouse.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
-  install -m644 "debian/local/64-xorg-xkb.rules" "${pkgdir}/etc/X11/xorg.conf.d/"
+  install -dm755 "${pkgdir}/lib/udev/"
+  install -m644 'debian/local/64-xorg-xkb.rules' "${pkgdir}/lib/udev/"
 
   rmdir "${pkgdir}/usr/share/X11"
 
