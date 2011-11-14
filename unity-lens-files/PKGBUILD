@@ -12,7 +12,7 @@ license=('GPL')
 depends=('libzeitgeist' 'libunity' 'zeitgeist-extensions' 'libxdg-basedir' 'xdg-user-dirs' 'pyxdg')
 makedepends=('vala' 'intltool')
 groups=('unity')
-source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('5cebff1ac6cd49aa85c8f169b71d69d1c99f7d5e326ae80fee9a3216ddbbd5d8a8ed2d46464064def1a927e32b8c93c4107ff75c1d0d8b805bf791db223e984f')
 
 build() {
