@@ -4,7 +4,7 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _ubuntu_rel=0ubuntu3
-pkgver=3.2.1.${_ubuntu_rel}
+pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -19,8 +19,8 @@ install=gnome-settings-daemon.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('7cbcf4f2fba584d54016b8b0613874a782e4158c247d887a3bd6d6ced408197f6c3bde4133aa9313f1bbdb5f2bd48559bcc2520061bcc1d33641e3b66fa3aefb'
-            'ed621d3e842c980acc00cd7b59ba353166b54d36f7e921dce0eb31c16020d132565fd5fa0128c9eb8036077a55a882fb335fd6e5ca38e7c1134976e1d895bfed')
+sha512sums=('f0b2674c144ea4999d755c5ee5f9c76669cd436364c78e51d62a9aeec9665cb4e609dbc8e36ed8abae3128cd51005c010614a7d49316672b01df12c0b40bf530'
+            'abf65670e33c94340020931672b2bc3bd00ae21d61d64c914dd1523ca80e79593348614931b2929ad4334e697f40770ac4ce46c05318ecdc1ae76b0d36054a97')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
