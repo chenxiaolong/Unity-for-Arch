@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=3.2.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -22,14 +22,13 @@ license=('GPL')
 options=('!libtool' '!emptydirs')
 source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('e27e0b8dc7e50c373f7bfc5ccd5bf87034ebc454ff8df6e3a6bcdd1d1b3f574a757601959acbe338a4caa37f2c20e7a66c13790f0ec42daefdb55eb3808d20ec'
-            'b766194bda5c68d8d55f041cded51474069db4778673aa60073c3644f165b8c0cccac3cea32c434e0b03e2a43c2bfb12681597a983a4d730a9e358033ee09b2c')
+sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf79d8d42c7506fe61d9e8bca5fbd2aa98e82bf8cd03a5d860ca5a5e12b4c94'
+            '77a326dd8befe2c5fe53e9aa9ec7395a13bbfb3f1101740b8d0a4829daa7b237fd628aec65b9fece96083da80908a524fe78e32a2b94674bddac6ff4b47de786')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
-
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
