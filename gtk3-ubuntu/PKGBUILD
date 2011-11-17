@@ -2,9 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu2
-_ubuntu_ver=3.2.0
-pkgver=3.2.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GTK+ Toolkit (v3) with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -18,10 +17,10 @@ options=('!libtool' '!docs')
 backup=(etc/gtk-3.0/settings.ini)
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/3.2/gtk+-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
-sha512sums=('158f56ae38bb6faf1186169ef3e934a396684d7c10d01e5d064b11e52090880e72a5f3ebacdc2b8b5ceff69d88813f0e3cb159d6a1592bea71e6a72ba32b4fd3'
-            '8983118042dba536c6939bf2c993f8ab6e33b809e2b78822f34ce9e3c66366ca8270b2b8cf84c926f8d03649e73cbe7c9f7bafe1803f0f0250f499367d6faf92'
+sha512sums=('10a585e72c554211c80e3fbb3935a4abf6adc342eda34b0257cbcbb2b35fa57e6dac86775eb5f4d56ea357e073501fa621edfa3c6a49bd34debc516b78e8bd6d'
+            '5a0d985e61c1499bd0d52e631def33db7aa2d318a7b666be787b8e2af721a72cf89d8deab48f7a5a3cc1caa3c77a9ab82285a79e9031ecb986a94428b572838d'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
