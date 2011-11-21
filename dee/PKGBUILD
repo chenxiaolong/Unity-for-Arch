@@ -14,7 +14,7 @@ depends=('glib2')
 makedepends=('python2' 'gobject-introspection' 'gtk-doc' 'vala')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/0.5/${pkgver}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgname}/0.5/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/d/dee/dee_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('9ce1b558c4bfa372273ebbc1d0c26ba39e374ed1790270351cf771e5167f43cf5462e482fb35341900952136d5c6c0a479cd3c94f99e366528c00a92c8ea9b3d'
             'e4002dea614bee45a7a405542f803d614cfe54af65e7ea615cb2f8f4e223326f221612616e5cbf4617e89fdd97ceef4ecac2879f7d5e1f4e77d0fa49a82a19e0')
