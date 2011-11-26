@@ -106,6 +106,7 @@ showHelp() {
   echo "  -l, --pkglist     List packages in the group of PKGBUILDs"
   echo "  -p, --pkgnameonly Only output unformatted package names"
   echo "  -v, --pkgversions Assumes -p; also outputs package versions"
+  echo "  -b, --pkgbaseonly Only show package base name for split packages"
   echo "  -h, --help        This help message"
 }
 
@@ -132,6 +133,10 @@ while [ "${#}" != "0" ]; do
       ;;
     --pkgnameonly|-p)
       SHOW="${SHOW} PKGNAME"
+      shift
+      ;;
+    --pkgbaseonly|-b)
+      PKGBASE="true"
       shift
       ;;
     --help|-h)
@@ -195,20 +200,33 @@ for i in ${PKGLIST}; do
   source PKGBUILD
 
   #This method will work for split packages
-  for j in ${pkgname[@]}; do
+  for ((j=0;j<${#pkgname[@]};j++)); do
+  #for j in ${pkgname[@]}; do
+    #No upgrade by default
+    if [[ "${j}" == "0" ]]; then
+      UPGRADE="false"
+    fi
+
     #Progess display
-    echo -en "\r$(tput el)${BOLD}${BOLDYELLOW}==> ${BOLDWHITE}Comparing package versions of: ${BOLDPURPLE}${j}${RESET}"
+    echo -en "\r$(tput el)${BOLD}${BOLDYELLOW}==> ${BOLDWHITE}Comparing package versions of: ${BOLDPURPLE}${pkgname[${j}]}${RESET}"
 
-    # Current installed version
-    CURRENTVER=$(pacman -Qi ${j} 2>/dev/null | grep [[:digit:]]-[[:digit:]] | sed 's/^.*:\ \(.*\)$/\1/g')
+    #No need to repeated call pacman for the same split package
+    if [ "${j}" == 0 ]; then
+      # Current installed version
+      CURRENTVER=$(pacman -Qi ${pkgname[${j}]} 2>/dev/null | grep [[:digit:]]-[[:digit:]] | sed 's/^.*:\ \(.*\)$/\1/g')
 
-    # Which version is higher?
-    HIGHERVER=$(echo -e "${CURRENTVER}\n${pkgver}-${pkgrel}" | sort | tail -n 1)
+      # Which version is higher?
+      HIGHERVER=$(echo -e "${CURRENTVER}\n${pkgver}-${pkgrel}" | sort | tail -n 1)
 
-    #if PKGBUILD version does not equal current version and the PKGBUILD is the higher version
-    if [[ "${pkgver}-${pkgrel}" != "${CURRENTVER}" ]] && [[ "${pkgver}-${pkgrel}" == "${HIGHERVER}" ]]; then
+      #if PKGBUILD version does not equal current version and the PKGBUILD is the higher version
+      if [[ "${pkgver}-${pkgrel}" != "${CURRENTVER}" ]] && [[ "${pkgver}-${pkgrel}" == "${HIGHERVER}" ]]; then
+        UPGRADE="true"
+      fi
+    fi
+
+    if [[ "${UPGRADE}" == "true" ]]; then
       #Add packages to arrays
-      ARRAY_PKGNAME[${ARRAY_COUNTER}]=${j}
+      ARRAY_PKGNAME[${ARRAY_COUNTER}]=${pkgname[${j}]}
       ARRAY_PKGVER_PKG[${ARRAY_COUNTER}]=${HIGHERVER}
       if [ -z "${CURRENTVER}" ]; then
         #If the current version is empty then it's not installed
@@ -217,6 +235,10 @@ for i in ${PKGLIST}; do
         ARRAY_PKGVER_INST[${ARRAY_COUNTER}]=${CURRENTVER}
       fi
       let ARRAY_COUNTER++
+    fi
+    #Do not loop through every package name if package base name is requested
+    if [[ "${PKGBASEONLY}" == "true" ]]; then
+      break
     fi
   done
 
