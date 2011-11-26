@@ -118,10 +118,12 @@ while [ "${#}" != "0" ]; do
       ;;
     --onlynotinst|-i)
       SHOW="NOTINSTALLED"
+      SEPARATOR="NO"
       shift
       ;;
     --onlyupdates|-u)
       SHOW="UPDATES"
+      SEPARATOR="NO"
       shift
       ;;
     --pkglist|-l)
@@ -322,7 +324,7 @@ fi
 LONGEST_PKGNAME=0
 
 #Show separator if only package names are requested
-if [ "${SHOW/PKGNAME/}" != "${SHOW}" ]; then
+if [ "${SHOW/PKGNAME/}" != "${SHOW}" ] && [ "${SEPARATOR}" != "NO" ]; then
   echo ';;'
 fi
 
