@@ -2,9 +2,9 @@
 # Original Maintainer: Jan de Groot <jan@archlinux.org>
 
 pkgname=gconf-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=1ubuntu1
 pkgver=3.2.3.${_ubuntu_rel}
-pkgrel=102
+pkgrel=100
 pkgdesc="A configuration database system"
 arch=('i686' 'x86_64')
 license=('LGPL')
@@ -21,7 +21,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/GConf/3.2/GConf-${pkgver%.*}.tar
         'gconfpkg'
         'gconf-reload.patch')
 sha512sums=('1b160a77d73d1c30b3b308c21d5f75734ed1d844d7e3a930342f511580166eaafe3f355d8b11c3070e2a6282c0c7dc71c82ca1ec112a0f43fb351cbcb16cf278'
-            'e393f9d619f70f63769eef75fc84097fe89146b725c75163f315ccf9fd1f4f00c8cebfa9aa83bcb1c87fae883f0c9b23c41f375a8e5a89579eda58fb87eb7964'
+            'f038245a04ac8dc61a95b555df93ddb155c455bd31e820d5a82001512fbe9efde9d85891921b544065003693e718181504bd45431ab7abdf8783130fdea815cc'
             '0d2a099c772c9fbe535b6c5c35078038987d214a2b68f2d589f46b8bf4e5a8c604624363cd32747b6447d04037d2fb0870502982425629af25ac3ef8ebb2cde4'
             'c1a180fdbd88415f4d0277919bdd3af8c1003e44f81a6ab7f7c341a4065f9e01e320e639177ad93d53463ceecb7f1331171980edabcebdc10998d7f16c490494'
             '1af1d0c926d622794b5d2f21646783c276a8a5c2c6d8b8236804bfcaeb71ab40c6658b17eb4599ca01fb8fe33a513ebe7ec9e8c23e9a21ccae622f6d10aa5657')
