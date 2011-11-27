@@ -10,7 +10,7 @@ pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
-makedepends=('intltool' 'vala')
+makedepends=('intltool' 'vala' 'libgee')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
@@ -35,7 +35,7 @@ build() {
 
 package_indicator-sound() {
   pkgdesc="A unified sound menu - GTK 3 library"
-  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'gconf' 'dconf')
+  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'gconf' 'dconf' 'libgee')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
