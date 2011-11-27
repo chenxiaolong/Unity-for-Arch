@@ -66,12 +66,12 @@ Order to compile/install:
 58: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
 59: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
 60: mtdev                          -> Multitouch protocol translation library
-61: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
-62: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-63: utouch-evemu                   -> Event emulation for the uTouch stack
-64: utouch-frame                   -> Touch frame library
-65: utouch-grail                   -> Gesture recognition and instantiation lib.
-66: utouch-geis                    -> Implementation of the GEIS interface
+61: utouch-evemu                   -> Event emulation for the uTouch stack
+62: utouch-frame                   -> Touch frame library
+63: utouch-grail                   -> Gesture recognition and instantiation lib.
+64: utouch-geis                    -> Implementation of the GEIS interface
+65: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
+66: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
 67: utouch-compiz                  -> Links uTouch with Compiz
 68: unity-asset-pool               -> Design assets for Unity
 69: gnome-menus2                   -> Gnome menu specifications
