@@ -136,7 +136,7 @@ while [ "${#}" != "0" ]; do
       shift
       ;;
     --pkgbaseonly|-b)
-      PKGBASE="true"
+      PKGBASEONLY="true"
       shift
       ;;
     --help|-h)
