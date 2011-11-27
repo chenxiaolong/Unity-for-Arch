@@ -226,7 +226,11 @@ for i in ${PKGLIST}; do
 
     if [[ "${UPGRADE}" == "true" ]]; then
       #Add packages to arrays
-      ARRAY_PKGNAME[${ARRAY_COUNTER}]=${pkgname[${j}]}
+      if [[ "${PKGBASEONLY}" == "true" ]]; then
+        ARRAY_PKGNAME[${ARRAY_COUNTER}]=${i}
+      else
+        ARRAY_PKGNAME[${ARRAY_COUNTER}]=${pkgname[${j}]}
+      fi
       ARRAY_PKGVER_PKG[${ARRAY_COUNTER}]=${HIGHERVER}
       if [ -z "${CURRENTVER}" ]; then
         #If the current version is empty then it's not installed
