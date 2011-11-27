@@ -1,0 +1,51 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=gmock
+_ubuntu_rel=0ubuntu1
+pkgver=1.6.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="Google Mock - A library for writing and using C++ mock classes"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/googlemock/"
+license=('BSD')
+depends=('python2' 'gtest')
+options=(!libtool)
+source=("http://googlemock.googlecode.com/files/${pkgname}-${pkgver%.*}.zip"
+        "http://archive.ubuntu.com/ubuntu/pool/universe/g/google-mock/google-mock_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('7adff00bb6ff81a6ffb704be71d0747636d69e24b4a8b709e1fb8c177a9a47f6dea8d14fde73034ebfb1529c291c7212a944ad92a34f88abdfe23c2d0b11b6f7'
+            '6367905b0bd13a59500ab26c87eceeae6c3dc65ddfe597b382b9d0ff67d42b383173d924e4073fdeee47f6529966c9d8508016eb3ba5b379ba3d15c9ce20327c')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  #Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  find -name \*.py -exec sed -i 's|\(#!.*bin.*python$\)|\12|g' {} \;
+  ./configure --prefix=/usr --enable-external-gtest
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}/" install
+  mkdir -p "${pkgdir}/usr/share/licenses/gmock/"
+  cp 'COPYING' "${pkgdir}/usr/share/licenses/${pkgname}/"
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/share/${pkgname}/"
+  install -dm755 "${pkgdir}/usr/share/doc/${pkgname}/"
+  install -m755 "scripts/generator/gmock_gen.py" "${pkgdir}/usr/bin/"
+  cp -r --preserve=mode,links "scripts/generator/cpp" "${pkgdir}/usr/share/${pkgname}/"
+  for i in README CONTRIBUTORS; do
+    install -m644 "${i}" "${pkgdir}/usr/share/doc/${pkgname}/"
+  done
+  for f in $(ls "${pkgdir}"/usr/bin/*.py); do
+    mv "${f}" "$(echo ${f} | sed s/\.py//)"
+  done
+  rm -v "${pkgdir}"/usr/lib/libgtest*
+  rm -rv "${pkgdir}"/usr/include/gtest*
+}
+
+# vim:set ts=2 sw=2 et:
