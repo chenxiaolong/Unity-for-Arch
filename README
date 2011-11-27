@@ -55,40 +55,42 @@ Order to compile/install:
 47: indicator-sound                -> A unified sound menu
 48: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
 49: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-50: nux                            -> An OpenGL toolkit
-51: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-52: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-53: xorg-xinput-ubuntu             -> Command line tool to configure input devices
-54: xorg-server-ubuntu             -> Xorg X11 server
-55: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
-56: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
-57: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
-58: mtdev                          -> Multitouch protocol translation library
-59: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
-60: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-61: utouch-evemu                   -> Event emulation for the uTouch stack
-62: utouch-frame                   -> Touch frame library
-63: utouch-grail                   -> Gesture recognition and instantiation lib.
-64: utouch-geis                    -> Implementation of the GEIS interface
-65: utouch-compiz                  -> Links uTouch with Compiz
-66: unity-asset-pool               -> Design assets for Unity
-67: gnome-menus2                   -> Gnome menu specifications
-68: libunity                       -> Library for integrating Unity
-69: libunity-misc                  -> Differently licensed stuff for Unity
-70: unity-lens-applications        -> Unity applications lens
-71: unity-lens-files               -> Unity files lens
-72: unity-lens-music               -> Unity music lens
-73: compiz-core-ubuntu             -> Compiz core components
-74: libcompizconfig-ubuntu         -> Compiz configuration system library
-75: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-76: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-77: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-78: ccsm-ubuntu                    -> Compiz configuration manager
-79: compiz-plugins-main-ubuntu     -> Compiz main plugins
-80: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-81: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-82: unity                          -> A desktop experience designed for efficiency
-83: unity-2d                       -> 2D implementation of Unity
+50: gtest                          -> C++ testing utility based on xUnit
+51: gmock                          -> A library for writing C++ mock classes
+52: nux                            -> An OpenGL toolkit
+53: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+54: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+55: xorg-xinput-ubuntu             -> Command line tool to configure input devices
+56: xorg-server-ubuntu             -> Xorg X11 server
+57: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
+58: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
+59: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
+60: mtdev                          -> Multitouch protocol translation library
+61: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
+62: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
+63: utouch-evemu                   -> Event emulation for the uTouch stack
+64: utouch-frame                   -> Touch frame library
+65: utouch-grail                   -> Gesture recognition and instantiation lib.
+66: utouch-geis                    -> Implementation of the GEIS interface
+67: utouch-compiz                  -> Links uTouch with Compiz
+68: unity-asset-pool               -> Design assets for Unity
+69: gnome-menus2                   -> Gnome menu specifications
+70: libunity                       -> Library for integrating Unity
+71: libunity-misc                  -> Differently licensed stuff for Unity
+72: unity-lens-applications        -> Unity applications lens
+73: unity-lens-files               -> Unity files lens
+74: unity-lens-music               -> Unity music lens
+75: compiz-core-ubuntu             -> Compiz core components
+76: libcompizconfig-ubuntu         -> Compiz configuration system library
+77: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+78: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+79: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+80: ccsm-ubuntu                    -> Compiz configuration manager
+81: compiz-plugins-main-ubuntu     -> Compiz main plugins
+82: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+83: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+84: unity                          -> A desktop experience designed for efficiency
+85: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar
