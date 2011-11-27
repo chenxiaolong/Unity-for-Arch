@@ -10,7 +10,7 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('gobject-introspection' 'libwnck3' 'libwnck')
+makedepends=('gobject-introspectioin' 'libwnck3' 'libwnck' 'libgtop')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
@@ -56,6 +56,7 @@ package_libbamf() {
   #Remove bamfdaemon from this package
   rm -rvf "${pkgdir}/usr/lib/${pkgbase}/"
   rm -rvf "${pkgdir}/usr/share/dbus-1/"
+  rm -rvf "${pkgdir}/usr/share/"
 }
 
 package_libbamf3() {
