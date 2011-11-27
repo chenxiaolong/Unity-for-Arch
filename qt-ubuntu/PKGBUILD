@@ -11,10 +11,7 @@ pkgrel=100
 arch=('i686' 'x86_64')
 url='http://qt.nokia.com/'
 license=('GPL3' 'LGPL')
-makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus'
-    'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib'
-    'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs'
-    'mysql' 'unixodbc' 'cups' 'gtk2')
+makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libxtst')
 options=('!libtool')
 _pkgfqn="qt-everywhere-opensource-src-${pkgver%.*}"
 source=("ftp://ftp.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
