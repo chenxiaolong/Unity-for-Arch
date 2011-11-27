@@ -1,0 +1,37 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Alexandre Bique <bique.alexandre@gmail.com>
+# Contributor: Louis R. Marascio <lrm@fitnr.com>
+# Contributor: Cody Maloney <cmaloney@theoreticalchaos.com>
+
+pkgname=gtest
+pkgver=1.6.0
+pkgrel=100
+pkgdesc="Google Test - C++ testing utility based on the xUnit framework (like JUnit)"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/googletest/"
+license=('BSD')
+options=('!libtool')
+depends=('gcc-libs' 'sh')
+makedepends=('python2' 'cmake')
+source=("http://googletest.googlecode.com/files/${pkgname}-${pkgver}.zip")
+sha512sums=('f4718dfbfa3339bb9449c3f14e5b44ae405ea7df64c10a0957a6300985b71c4642981d069a1382e27ae041a4e2873527a9e442aff978447e795a190f99fac115')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  rm -rvf build
+  mkdir build
+  cd build
+  cmake -DBUILD_SHARED_LIBS=ON ..
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  install -dm755 ${pkgdir}/usr/{lib,include/gtest/internal,share/licenses/${pkgname}}
+  install -m644 build/libgtest{,_main}.so "${pkgdir}/usr/lib/"
+  install -m644 include/gtest/*.h "${pkgdir}/usr/include/gtest/"
+  install -m644 include/gtest/internal/*.h "${pkgdir}/usr/include/gtest/internal/"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}
+
+# vim:set ts=2 sw=2 et:
