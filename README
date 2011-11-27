@@ -72,15 +72,15 @@ Order to compile/install:
 64: utouch-geis                    -> Implementation of the GEIS interface
 65: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
 66: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-67: utouch-compiz                  -> Links uTouch with Compiz
-68: unity-asset-pool               -> Design assets for Unity
-69: gnome-menus2                   -> Gnome menu specifications
-70: libunity                       -> Library for integrating Unity
-71: libunity-misc                  -> Differently licensed stuff for Unity
-72: unity-lens-applications        -> Unity applications lens
-73: unity-lens-files               -> Unity files lens
-74: unity-lens-music               -> Unity music lens
-75: compiz-core-ubuntu             -> Compiz core components
+67: unity-asset-pool               -> Design assets for Unity
+68: gnome-menus2                   -> Gnome menu specifications
+69: libunity                       -> Library for integrating Unity
+70: libunity-misc                  -> Differently licensed stuff for Unity
+71: unity-lens-applications        -> Unity applications lens
+72: unity-lens-files               -> Unity files lens
+73: unity-lens-music               -> Unity music lens
+74: compiz-core-ubuntu             -> Compiz core components
+75: utouch-compiz                  -> Links uTouch with Compiz
 76: libcompizconfig-ubuntu         -> Compiz configuration system library
 77: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
 78: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
