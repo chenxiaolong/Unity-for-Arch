@@ -11,7 +11,7 @@ pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-makedepends=('boost' 'cmake' 'gnome-control-center' 'intltool' 'kdebase-workspace' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
+makedepends=('boost' 'cmake' 'glibmm' 'gnome-control-center' 'intltool' 'kdebase-workspace' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
 options=('emptydirs')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
