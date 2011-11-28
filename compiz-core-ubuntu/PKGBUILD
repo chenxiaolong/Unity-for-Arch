@@ -3,6 +3,10 @@
 
 pkgbase=compiz-core-ubuntu
 pkgname=('compiz-core-ubuntu' 'compiz-kde-ubuntu' 'compiz-gnome-ubuntu')
+_kdedeps=('kdebase-workspace')
+#Uncomment the following lines to not build KDE package
+#pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
+#_kdedeps=('')
 _ubuntu_rel2="bzr20110929"
 _ubuntu_rel="0ubuntu7"
 pkgver=0.9.6.${_ubuntu_rel}
@@ -11,7 +15,12 @@ pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-makedepends=('boost' 'cmake' 'glibmm' 'gnome-control-center' 'intltool' 'kdebase-workspace' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
+makedepends=('boost' 'cmake' 'glibmm' 'gnome-control-center' 'intltool' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
+if [ ! -z "${_kdedeps}" ]; then
+  for i in ${_kdedeps[@]}; do
+    makedepends[${#makedepends[@]}]=${i}
+  done
+fi
 options=('emptydirs')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
