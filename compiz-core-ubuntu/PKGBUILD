@@ -1,77 +1,28 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Based on Nathan Hulses's PKGBUILD
 
-pkgname=compiz-core-ubuntu
-_ubuntu_ver2="bzr20110929"
-_ubuntu_ver="0ubuntu7"
-pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=104
-pkgdesc="Compiz core components - Ubuntu version"
+pkgbase=compiz-core-ubuntu
+pkgname=('compiz-core-ubuntu' 'compiz-kde-ubuntu' 'compiz-gnome-ubuntu')
+_ubuntu_rel2="bzr20110929"
+_ubuntu_rel="0ubuntu7"
+pkgver=0.9.6.${_ubuntu_rel}
+pkgrel=105
+pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=(
-  'automoc4'
-  'boost'
-  'cairo'
-  'dbus'
-  'dbus-glib'
-  'fuse'
-  'gconf-ubuntu'
-  'glib2-ubuntu'
-  'glibmm'
-  'glproto'
-  'gnome-control-center'
-  #'gnome-desktop2'
-  'gtk2'
-  'gtk3-ubuntu'
-  'kdebase-lib'
-  'kdebase-workspace'
-  'libgl'
-  'libice'
-  'libpng'
-  'librsvg'
-  'libsm'
-  'libx11'
-  'libxcb'
-  'libxcomposite'
-  'libxcursor'
-  'libxdamage'
-  'libxext'
-  'libxfixes'
-  'libxinerama'
-  'libxml2'
-  'libxrandr'
-  'libxrender'
-  'libxslt'
-  'libtool'
-  'libwnck'
-  'mesa'
-  'metacity'
-  'pango'
-  'perl-xml-parser'
-  'startup-notification'
-  'xorg-server'
-)
-optdepends=('ccsm-ubuntu: CompizConfig Settings Manager'
-            'compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database'
-            'compiz-plugins-main-ubuntu: Main plugins'
-            'compiz-plugins-extra-ubuntu: Extra plugins')
-makedepends=('intltool' 'cmake' 'git')
-provides=('compiz-core')
-conflicts=('compiz-core')
-groups=('unity')
+makedepends=('boost' 'cmake' 'gnome-control-center' 'intltool' 'kdebase-workspace' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
 options=('emptydirs')
-install=compiz-core-ubuntu.install
-source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}.orig.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_ver2}-${_ubuntu_ver}.debian.tar.gz")
+source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
+        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
             '623abc6f379be9bb25a620e5502f58ade77eeb92ae553b21e1898e766fbc46ff64ca28bc3598ef46d0dbb0008c98c4a943c540ff338522cb4667ccd81986b1ec')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
 
-  for i in $(cat ${srcdir}/debian/patches/series | grep -Ev '#'); do
+  #Apply Ubuntu patches
+  for i in $(cat ${srcdir}/debian/patches/series | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
@@ -79,7 +30,7 @@ build() {
   cd build
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCOMPIZ_DESTDIR="${pkgdir}" \
+    -DCOMPIZ_DESTDIR="${srcdir}/temp_install" \
     -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
     -DCOMPIZ_DEFAULT_PLUGINS="core bailer detection composite opengl decor mousepoll vpswitch regex animation snap expo move compiztoolbox place grid imgpng gnomecompat wall ezoom workarounds staticswitcher resize fade scale session" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -88,48 +39,151 @@ build() {
     -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
     ..
   make
-}
 
-package() {
-  cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
-  cd build
+  #Install to temporary directory
 
   #unity_window_decorator installs differently
-  sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@" unity/unity_window_decorator/src/cmake_install.cmake
-  sed -i "/RPATH_REMOVE/ {n; s@\(\\\${CMAKE_INSTALL_PREFIX}\)@${pkgdir}\1@g}" unity/unity_window_decorator/src/cmake_install.cmake
+  sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${srcdir}/temp_install\1@" unity/unity_window_decorator/src/cmake_install.cmake
+  sed -i "/RPATH_REMOVE/ {n; s@\(\\\${CMAKE_INSTALL_PREFIX}\)@${srcdir}/temp_install\1@g}" unity/unity_window_decorator/src/cmake_install.cmake
 
   make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 install
   make findcompiz_install
-  #cmake_dir=`cmake --system-information 2> /dev/null | grep "^CMAKE_ROOT " | sed -e 's/.*"\(.*\)"/\1/'`
-  #mkdir -p "${pkgdir}${cmake_dir}/Modules"
-  #cp ../cmake/FindCompiz.cmake "${pkgdir}${cmake_dir}/Modules"
-  install -dm755 "${pkgdir}/usr/bin/"
-  install -dm755 "${pkgdir}/usr/share/man/man1/"
-  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -dm755 "${pkgdir}/etc/compizconfig/"
-  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
-  install -dm755 "${pkgdir}/usr/share/gnome-control-center/keybindings/"
-  install -dm755 "${pkgdir}/usr/share/gnome/wm-properties/"
-  install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
-  install -m755 "${srcdir}/debian/compiz-decorator" "${pkgdir}/usr/bin/"
-  install -m644 "${srcdir}/debian/compiz.1" "${pkgdir}/usr/share/man/man1/"
-  install -m644 "${srcdir}/debian/compiz-decorator.1" "${pkgdir}/usr/share/man/man1/"
-  install -m644 "${srcdir}/debian/gtk-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
-  install -m644 "${srcdir}/debian/kde4-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
-  install -m755 "${srcdir}/debian/65compiz_profile-on-session" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -m644 "${srcdir}/debian/unity.ini" "${pkgdir}/etc/compizconfig/"
-  install -m644 "${srcdir}/debian/compiz-gnome.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_compiz-gnome"
-  install -m644 "${pkgdir}/usr/share/applications/compiz.desktop" "${pkgdir}/usr/share/gnome/wm-properties/"
-
+  install -dm755 "${srcdir}/temp_install/usr/bin/"
+  install -dm755 "${srcdir}/temp_install/usr/share/man/man1/"
+  install -dm755 "${srcdir}/temp_install/etc/X11/xinit/xinitrc.d/"
+  install -dm755 "${srcdir}/temp_install/etc/compizconfig/"
+  install -dm755 "${srcdir}/temp_install/usr/share/gconf/defaults/"
+  install -dm755 "${srcdir}/temp_install/usr/share/gnome-control-center/keybindings/"
+  install -dm755 "${srcdir}/temp_install/usr/share/gnome/wm-properties/"
+  install -dm755 "${srcdir}/temp_install/etc/compizconfig/upgrades/"
+  install -m755 "${srcdir}/debian/compiz-decorator" "${srcdir}/temp_install/usr/bin/"
+  install -m644 "${srcdir}/debian/compiz.1" "${srcdir}/temp_install/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/compiz-decorator.1" "${srcdir}/temp_install/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/gtk-window-decorator.1" "${srcdir}/temp_install/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/kde4-window-decorator.1" "${srcdir}/temp_install/usr/share/man/man1/"
+  install -m755 "${srcdir}/debian/65compiz_profile-on-session" "${srcdir}/temp_install/etc/X11/xinit/xinitrc.d/"
+  install -m644 "${srcdir}/debian/unity.ini" "${srcdir}/temp_install/etc/compizconfig/"
+  install -m644 "${srcdir}/debian/compiz-gnome.gconf-defaults" "${srcdir}/temp_install/usr/share/gconf/defaults/10_compiz-gnome"
+  install -m644 "${srcdir}/temp_install/usr/share/applications/compiz.desktop" "${srcdir}/temp_install/usr/share/gnome/wm-properties/"
   for i in $(find "${srcdir}/debian/profile_upgrades/" -type f -name "*.upgrade"); do
-    install "${i}" "${pkgdir}/etc/compizconfig/upgrades/"
+    install -m644 "${i}" "${srcdir}/temp_install/etc/compizconfig/upgrades/"
   done
-  for d in $(find "${pkgdir}" -type f \( -name "*.desktop" -o -name "*.directory" \) ); do
+  for d in $(find "${srcdir}/temp_install" -type f \( -name "*.desktop" -o -name "*.directory" \) ); do
     sed -ri '/^(Name|GenericName|Comment|X-GNOME-FullName)\[/d' ${d}
     echo "X-Ubuntu-Gettext-Domain=compiz" >> ${d}
   done
   for i in launchers navigation screenshot system windows; do
-    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" > "${pkgdir}/usr/share/gnome-control-center/keybindings/50-compiz-${i}.xml"
+    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" > "${srcdir}/temp_install/usr/share/gnome-control-center/keybindings/50-compiz-${i}.xml"
   done
-  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' "${pkgdir}/usr/share/gnome-control-center/keybindings/50-compiz-navigation.xml"
+  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' "${srcdir}/temp_install/usr/share/gnome-control-center/keybindings/50-compiz-navigation.xml"
+
+  #Temp
+  cp -rv "${srcdir}/temp_install" "${srcdir}/temp_install.bak"
+}
+
+package_compiz-kde-ubuntu() {
+  pkgdesc="OpenGL window and compositing manager - KDE window decorator"
+  groups=('unity' 'compiz-ubuntu')
+  #compizconfig-backend-kconfig4 cannot compile
+  depends=('kdebase-workspace' 'compiz-core-ubuntu')
+  optdepends=('compizconfig-backend-kconfig4-ubuntu: Store sttings with KConfig')
+  provides=("compiz-decorator-kde=${pkgver}")
+  conflicts=('compiz-decorator-kde')
+
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/lib/compiz/"
+  install -dm755 "${pkgdir}/usr/share/compiz/"
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  mv "${srcdir}/temp_install/usr/bin/kde4-window-decorator" "${pkgdir}/usr/bin/"
+  mv "${srcdir}/temp_install/usr/lib/compiz/libkde.so" "${pkgdir}/usr/lib/compiz/"
+  mv "${srcdir}/temp_install/usr/share/compiz/kde.xml" "${pkgdir}/usr/share/compiz/"
+  mv "${srcdir}/temp_install/usr/share/man/man1/kde4-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
+}
+
+package_compiz-gnome-ubuntu() {
+  pkgdesc="OpenGL window and compositing manager - GNOME window decorator"
+  groups=('unity' 'compiz-ubuntu')
+  depends=('gnome-control-center' 'metacity-ubuntu' 'compiz-core' 'gconf-ubuntu')
+  optdepends=('compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database')
+  provides=("compiz-decorator-gtk=${pkgver}")
+  conflicts=('compiz-decorator-gtk')
+  install=compiz-gnome-ubuntu.install
+
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
+  install -dm755 "${pkgdir}/usr/share/gconf/schemas/"
+  install -dm755 "${pkgdir}/usr/share/gnome-control-center/keybindings/"
+  install -dm755 "${pkgdir}/usr/share/gnome/wm-properties/"
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  mv "${srcdir}/temp_install/etc/X11/xinit/xinitrc.d/65compiz_profile-on-session" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  mv "${srcdir}/temp_install/etc/compizconfig/unity.ini" "${pkgdir}/etc/compizconfig/"
+  mv "${srcdir}/temp_install/etc/compizconfig/upgrades/com.canonical.unity.unity.01.upgrade" "${pkgdir}/etc/compizconfig/upgrades/"
+  mv "${srcdir}/temp_install/etc/compizconfig/upgrades/com.canonical.unity.unity.02.upgrade" "${pkgdir}/etc/compizconfig/upgrades/"
+  mv "${srcdir}/temp_install/usr/bin/gtk-window-decorator" "${pkgdir}/usr/bin/"
+  mv "${srcdir}/temp_install/usr/bin/unity-window-decorator" "${pkgdir}/usr/bin/"
+  mv "${srcdir}/temp_install/usr/share/gconf/defaults/10_compiz-gnome" "${pkgdir}/usr/share/gconf/defaults/"
+  for i in compiz-{annotate,bailer,blur,clone,commands,compiztoolbox,composite,copytex,core,cube,dbus,debugspew,decor,detection,fade,gnomecompat,imgpng,imgsvg,ini,inotify,kde,move,obs,opengl,place,regex,resize,rotate,scale,screenshot,switcher,water,wobbly,zoom}.schemas gwd.schemas; do
+    mv "${srcdir}/temp_install/usr/share/gconf/schemas/${i}" "${pkgdir}/usr/share/gconf/schemas/"
+  done
+  for i in 50-compiz-{launchers,navigation,screenshot,system,windows}.xml; do
+    mv "${srcdir}/temp_install/usr/share/gnome-control-center/keybindings/${i}" "${pkgdir}/usr/share/gnome-control-center/keybindings/"
+  done
+  mv "${srcdir}/temp_install/usr/share/gnome/wm-properties/compiz.desktop" "${pkgdir}/usr/share/gnome/wm-properties/"
+  mv "${srcdir}/temp_install/usr/share/man/man1/gtk-window-decorator.1" "${pkgdir}/usr/share/man/man1/"
+}
+
+package_compiz-core-ubuntu() {
+  pkgdesc="OpenGL window and compositing manager"
+  groups=('unity' 'compiz-ubuntu')
+  depends=('startup-notification' 'mesa' 'dbus' 'libxslt' 'fuse')
+  optdepends=()
+  provides=("compiz-core=${pkgver}")
+  conflicts=('compiz-core')
+  optdepends=('ccsm-ubuntu: CompizConfig Settings Manager'
+              'compiz-gnome-ubuntu: GNOME/Unity support'
+              'compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database'
+              'compiz-kde-ubuntu: KDE support'
+              'compizconfig-backend-kconfig4-ubuntu: Store sttings with KConfig'
+              'compiz-plugins-main-ubuntu: Main plugins'
+              'compiz-plugins-extra-ubuntu: Extra plugins')
+
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/include/"
+  install -dm755 "${pkgdir}/usr/lib/"
+  mv "${srcdir}/temp_install/usr/bin/compiz" "${pkgdir}/usr/bin/"
+  mv "${srcdir}/temp_install/usr/bin/compiz-decorator" "${pkgdir}/usr/bin/"
+  mv "${srcdir}/temp_install/usr/lib/libdecoration.so"* "${pkgdir}/usr/lib/"
+  for dir in usr/include usr/share/locale usr/share/applications usr/lib/pkgconfig; do
+    pushd "${srcdir}/temp_install/${dir}"
+    for file in $(find . -type f); do
+      install -Dm644 "${file}" "${pkgdir}/${dir}/${file}"
+      rm "${file}"
+    done
+    popd
+  done
+  pushd "${srcdir}/temp_install/usr/lib/compiz/"
+  for file in $(find . -type f ! -name 'libkde.so'); do
+    install -Dm755 "${file}" "${pkgdir}/usr/lib/compiz/${file}"
+    rm "${file}"
+  done
+  popd
+  pushd "${srcdir}/temp_install/usr/share/compiz/"
+  for file in $(find . -type f ! -name 'kde.xml'); do
+    install -Dm644 "${file}" "${pkgdir}/usr/share/compiz/${file}"
+    rm "${file}"
+  done
+  popd
+  pushd "${srcdir}/temp_install/usr/share/man/"
+  for file in $(find . -type f ! -name 'kde4-window-decorator.1' ! -name 'gtk-window-decorator.1'); do
+    install -Dm644 "${file}" "${pkgdir}/usr/share/man/${file}"
+    rm "${file}"
+  done
+  pushd "${srcdir}/temp_install/usr/share/"
+  for file in $(find cmake* -type f); do
+    install -Dm644 "${file}" "${pkgdir}/usr/share/${file}"
+    rm "${file}"
+  done
+  popd
 }
