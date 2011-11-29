@@ -17,8 +17,8 @@ arch=('i686' 'x86_64')
 license=('GPL')
 makedepends=('boost' 'cmake' 'glibmm' 'gnome-control-center' 'intltool' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification')
 if [ ! -z "${_kdedeps}" ]; then
-  for i in ${_kdedeps[@]}; do
-    makedepends[${#makedepends[@]}]=${i}
+  for dep in ${_kdedeps[@]}; do
+    makedepends[${#makedepends[@]}]=${dep}
   done
 fi
 options=('emptydirs')
