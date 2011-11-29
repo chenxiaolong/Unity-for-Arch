@@ -68,7 +68,14 @@ build() {
   sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
   sed -i "/^QMAKE_LFLAGS\s/s|+=|+= ${LDFLAGS}|g" mkspecs/common/g++.conf
 
-  ./configure \
+  #Fix i686 chroot compile from x86_64 machine
+  if [[ "${CARCH}" != "$(uname -m)" ]]; then
+    BUILDARCH="setarch ${CARCH}"
+  else
+    BUILDARCH=""
+  fi
+
+  ${BUILDARCH} ./configure \
     -confirm-license \
     -opensource \
     -prefix /usr \
