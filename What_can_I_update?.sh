@@ -104,9 +104,10 @@ showHelp() {
   echo "  -i, --onlynotinst Only show packages that aren't installed"
   echo "  -u, --onlyupdates Only show available updates"
   echo "  -l, --pkglist     List packages in the group of PKGBUILDs"
-  echo "  -p, --pkgnameonly Only output unformatted package names"
+  echo "  -n, --pkgnameonly Only output unformatted package names"
   echo "  -v, --pkgversions Assumes -p; also outputs package versions"
   echo "  -b, --pkgbaseonly Only show package base name for split packages"
+  echo "  -p, --noprogress  Disable the progress output"
   echo "  -h, --help        This help message"
 }
 
@@ -131,12 +132,16 @@ while [ "${#}" != "0" ]; do
       SHOW="PKGLIST"
       shift
       ;;
-    --pkgnameonly|-p)
+    --pkgnameonly|-n)
       SHOW="${SHOW} PKGNAME"
       shift
       ;;
     --pkgbaseonly|-b)
       PKGBASEONLY="true"
+      shift
+      ;;
+    --noprogress|-p)
+      PROGRESS="false"
       shift
       ;;
     --help|-h)
@@ -208,7 +213,9 @@ for i in ${PKGLIST}; do
     fi
 
     #Progess display
-    echo -en "\r$(tput el)${BOLD}${BOLDYELLOW}==> ${BOLDWHITE}Comparing package versions of: ${BOLDPURPLE}${pkgname[${j}]}${RESET}"
+    if [[ "${PROGRESS}" != "false" ]]; then
+      echo -en "\r$(tput el)${BOLD}${BOLDYELLOW}==> ${BOLDWHITE}Comparing package versions of: ${BOLDPURPLE}${pkgname[${j}]}${RESET}"
+    fi
 
     #No need to repeated call pacman for the same split package
     if [ "${j}" == 0 ]; then
