@@ -8,7 +8,7 @@ _kdedeps=('kdebase-workspace')
 #pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
 #_kdedeps=('')
 _ubuntu_rel2="bzr20110929"
-_ubuntu_rel="0ubuntu7"
+_ubuntu_rel="0ubuntu8"
 pkgver=0.9.6.${_ubuntu_rel}
 pkgrel=105
 pkgdesc="OpenGL window and compositing manager"
@@ -25,7 +25,7 @@ options=('emptydirs')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
         "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
-            '623abc6f379be9bb25a620e5502f58ade77eeb92ae553b21e1898e766fbc46ff64ca28bc3598ef46d0dbb0008c98c4a943c540ff338522cb4667ccd81986b1ec')
+            '7104c29d72f9c25bf29e95327df66de04e3efce7679b6521fcde374ec2714260ca3b9c0ae3cf149d7c30cc5e093def3489ff45c86d0ddfde8ed85adc2fab1ec7')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
