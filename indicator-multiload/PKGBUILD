@@ -17,6 +17,8 @@ sha512sums=('7f15e68c9705cd30c8f5fb383cb5cc24d107fb139c3cecadfbf400b90f7b068b457
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
+  export CFLAGS="${CFLAGS} -lm"
+
   ./autogen.sh
   make distclean
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
