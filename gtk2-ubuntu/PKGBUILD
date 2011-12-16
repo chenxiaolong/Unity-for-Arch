@@ -3,7 +3,7 @@
 
 pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
-_ubuntu_rel=2ubuntu1
+_ubuntu_rel=2ubuntu2
 pkgver=2.24.8.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.
         "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+2.0/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         xid-collision-debug.patch)
 sha512sums=('616e76d7879206b8c551d2e09e8406311cbaf72093cc8d4e0c18e132f366276eb1dbabf1755fe1e8d9b70df819ffb1dac5694f166014d305bf1a0bcc39a239a4'
-            '29c9127dd4990afc83ad778171ef2017c81842650cfd0152ac19dcef6220c658f56fec8959b4ff86119575159942cde53bdaf8ef7a5a5ac9e640a3caae17fb27'
+            '5684caced301bab1428d2617ee16dbfffe854a7390f5d6ba6fd1be27de4287803313293eedd78e3e3277b9489323ae6a5e1c48b29d6e7013b2d58f153afb877d'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
 build() {

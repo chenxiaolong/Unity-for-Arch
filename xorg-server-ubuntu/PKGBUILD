@@ -3,8 +3,7 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_ver=1ubuntu5
-_ubuntu_ver2=1.10.4
+_ubuntu_rel=1ubuntu6
 pkgver=1.10.4.${_ubuntu_ver}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -13,12 +12,12 @@ url="http://xorg.freedesktop.org"
 makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto')
 options=('!libtool')
 source=(${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2
-        http://archive.ubuntu.com/ubuntu/pool/main/x/${pkgbase%-*}/${pkgbase%-*}_${_ubuntu_ver2}-${_ubuntu_ver}.diff.gz
+        http://archive.ubuntu.com/ubuntu/pool/main/x/${pkgbase%-*}/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz
         xvfb-run
         xvfb-run.1
         10-quirks.conf)
 sha512sums=('8e3391c78e7d5e52041efe35badf04be49bbb8b7940c7694faadd1f6f555edc5afda554cb8f3524b3ae7cfe8d5e63b80ca715cf3855565820efff46641ecc9b5'
-            'faea9c815063bdae22d6b6281133f4d24c69ace13e72ef4b56bb13cd34ac8463f36a023bb9d8d3fcb0449925ae6d3e1aac389008b5a30d0a316e57beb40a0840'
+            'dc30cb653f7cd2485e9136848042f80fe7ce209955ebcdbb898a924824066e5d7cd0b65cf52483faf60d01a6250a575d0a21b8741262880d7ad2e3e581a27019'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
@@ -30,7 +29,7 @@ build() {
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
 
   #Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase%-*}_${_ubuntu_ver2}-${_ubuntu_ver}.diff"
+  patch -Np1 -i "${srcdir}/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
