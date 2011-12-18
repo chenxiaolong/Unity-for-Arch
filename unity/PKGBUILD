@@ -1,9 +1,19 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+_UBUNTU=false # Using Ubuntu patches?
+
 pkgname=unity
-_ubuntu_rel=0ubuntu2b1
-_ubuntu_ver=4.24.0
-pkgver=4.24.0.${_ubuntu_rel}
+pkgver=4.26.0
+
+if [ "${_UBUNTU}" == true ]; then
+  _ubuntu_rel=0ubuntu2b1 #Using upstream version
+  _ubuntu_ver=4.24.0
+  pkgver="${pkgver}.${_ubuntu_rel}"
+  _actual_ver="${pkgver%.*}"
+else
+  _actual_ver="${pkgver}"
+fi
+
 pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -12,26 +22,42 @@ license=('GPL')
 depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'doxygen' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
 makedepends=('cmake' 'intltool' 'pkg-config')
 groups=('unity')
-provides=("unity-core=${pkgver}")
+provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 install=unity.install
-source=("http://launchpad.net/unity/4.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/u/${pkgname}/${pkgname}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://launchpad.net/unity/4.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
+        "http://ompldr.org/vYnQxdQ/launchpad-export.tar.gz" #Snapshot of translations from Launchpad as of 2011-12-18
         'launcher_bfb.png')
-sha512sums=('9d3d040688e66dceb89b01b89a934c699f2985083b41aa0df1d3025c02a83650c9fe9121b71e19e9f1a1cce0b0e844b8eaecb739eda72f833211a6c8e79ea308'
-            '41e9ac7142721eb4b28effb098a8550569d668c8625112ec60297736561aa23e252ab578f87a582b74a2069881e26dae9943306ff8658809a7e8b8e52a547e18'
+sha512sums=('fca9329a100e3864906777195309073b4fe32c610951b698f3a8ac17b795c0d52f0bcbe1e897e99fd64de0bdca7008cadf1ca32f3851fe9e9b3ff1dcfa3ffc41'
+            '5bfbacfe23ab2e14d82d04eaa55b5e8529ff530d4ec0c007c4fd5be725c899036e421d5184d169cea1bf403110faeb887ec619847fd59cd84715fb1625f781f9'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}"
 
-  #Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  ## Using upstream version ##
+  # Apply Ubuntu patches
+  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  #done
+
+  # Fix pkgconfig
+  #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
+
+  # Install translations from Launchpad
+  pushd po
+  rm LINGUAS && touch LINGUAS # Recreate LINGUAS (list of languages) file
+  for i in "${srcdir}"/po/*.po; do
+    _NEWFILE=${i##*/} # Strip path
+    _NEWFILE=${_NEWFILE#*-} # Strip 'unity-'
+    cp "${i}" "${_NEWFILE}" # Copy new translation
+    echo "${_NEWFILE%.*}" >> unity.pot # Add translation
   done
+  cp "${srcdir}/po/unity.pot" unity.pot
+  popd
 
-  #Fix pkgconfig
-  sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
+  # Disable '-Werror'
+  sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
 
   mkdir -p build && cd build
 
@@ -46,7 +72,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}"
   cd 'build'
   make DESTDIR="${pkgdir}/" install
 
