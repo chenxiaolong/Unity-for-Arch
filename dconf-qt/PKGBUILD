@@ -5,12 +5,12 @@
 pkgname=dconf-qt
 _ubuntu_ver=0ubuntu3
 pkgver=0.0.0.110722.${_ubuntu_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Qt and QML bindings for dconf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dconf-qt"
 license=('LGPL')
-depends=('qt-ubuntu' 'dconf')
+depends=('qt' 'dconf')
 makedepends=('cmake')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.bz2"

@@ -5,12 +5,12 @@
 pkgname=unity-2d
 _ubuntu_ver=0ubuntu1
 pkgver=4.12.0.${_ubuntu_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="unity-2d project is a 2d implementation of Unity"
 arch=('i686' 'x86_64')
 url="http://launchpad.net/unity-2d"
 license=('GPL')
-depends=('qt-ubuntu' 'libwnck' 'libdbusmenu-qt' 'libindicator' 'libqtbamf' 'libqtdee' 'utouch-geis' 'libqtgconf' 'metacity-ubuntu' 'unity-lens-files' 'unity-lens-applications' 'unity-asset-pool' 'nux' 'unity-core' 'nautilus-ubuntu' 'gnome-session-ubuntu' 'gnome-themes-standard')
+depends=('qt' 'libwnck' 'libdbusmenu-qt' 'libindicator' 'libqtbamf' 'libqtdee' 'utouch-geis' 'libqtgconf' 'metacity-ubuntu' 'unity-lens-files' 'unity-lens-applications' 'unity-asset-pool' 'nux' 'unity-core' 'nautilus-ubuntu' 'gnome-session-ubuntu' 'gnome-themes-standard')
 makedepends=('cmake')
 conflicts=('unity2d-bzr')
 replaces=('unity2d-bzr')

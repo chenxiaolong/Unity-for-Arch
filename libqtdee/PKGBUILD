@@ -4,12 +4,12 @@
 
 pkgname=libqtdee
 pkgver=0.2.3
-pkgrel=100
+pkgrel=101
 pkgdesc="Provides a set of Qt bindings for libdee"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dee-qt"
 license=('GPL')
-depends=('qt-ubuntu' 'dee')
+depends=('qt' 'dee')
 makedepends=('cmake')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")

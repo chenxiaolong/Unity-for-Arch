@@ -4,12 +4,12 @@
 
 pkgname=unity-core
 pkgver=4.24.0
-pkgrel=100
+pkgrel=101
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('qt-ubuntu' 'nux' 'libunity')
+depends=('qt' 'nux' 'libunity')
 makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/unity/4.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"

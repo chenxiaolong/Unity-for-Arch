@@ -4,12 +4,12 @@
 
 pkgname=libqtbamf
 pkgver=0.2.2
-pkgrel=100
+pkgrel=101
 pkgdesc="Provides a set of Qt bindings for libbamf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf-qt"
 license=('GPL')
-depends=('qt-ubuntu' 'libbamf3')
+depends=('qt' 'libbamf3')
 makedepends=('cmake')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")

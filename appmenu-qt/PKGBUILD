@@ -4,12 +4,12 @@
 
 pkgname=appmenu-qt
 pkgver=0.2.4
-pkgrel=100
+pkgrel=101
 pkgdesc="Adds support for application menu to Qt"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/appmenu-qt"
 license=('GPL')
-depends=('qt-ubuntu' 'libdbusmenu-qt')
+depends=('qt' 'libdbusmenu-qt')
 makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
