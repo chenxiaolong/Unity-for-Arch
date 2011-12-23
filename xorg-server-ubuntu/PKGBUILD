@@ -95,6 +95,9 @@ build() {
     --disable-xselinux \
     --with-default-xkb-rules=evdev \
     --disable-config-hal
+
+  # Build fix
+  find . -name Makefile -exec sed -i 's/-Werror[=a-zA-Z]*//g' {} \;
     
   make
 
