@@ -97,7 +97,32 @@ build() {
     --disable-config-hal
 
   # Build fix
-  find . -name Makefile -exec sed -i 's/-Werror[=a-zA-Z]*//g' {} \;
+  find . -name Makefile -exec \
+    sed -i \
+      -e 's/-Werror=int-to-pointer-cast//g' \
+      -e 's/-Werror=address//g' \
+      -e 's/-Werror=array-bounds//g' \
+      -e 's/-Werror=attributes//g' \
+      -e 's/-Werror=clobbered//g' \
+      -e 's/-Werror=format-security//g' \
+      -e 's/-Werror=implicit//g' \
+      -e 's/-Werror=incompatible-pointer-types//g' \
+      -e 's/-Werror=init-self//g' \
+      -e 's/-Werror=int-to-pointer-cast//g' \
+      -e 's/-Werror=main//g' \
+      -e 's/-Werror=missing-braces//g' \
+      -e 's/-Werror=nonnull//g' \
+      -e 's/-Werror=return-type//g' \
+      -e 's/-Werror=sequence-point//g' \
+      -e 's/-Werror=trigraphs//g' \
+      -e 's/-Werror=unknown-warning-option//g' \
+      -e 's/-Werror=unused-command-line-argument//g' \
+      -e 's/-Wformat-nonliteral//g' \
+      -e 's/-Wimplicit-function-declaration//g' \
+      -e 's/-Wparentheses//g' \
+      -e 's/-Werror=write-strings//g' \
+      -e 's/-Werror=pointer-to-int-cast//g' \
+      {} \;
     
   make
 
