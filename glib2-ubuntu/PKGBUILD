@@ -44,7 +44,7 @@ build() {
     --sysconfdir=/etc \
     --with-pcre=system \
     --disable-fam
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
