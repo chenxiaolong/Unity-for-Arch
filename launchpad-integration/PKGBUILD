@@ -8,6 +8,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/launchpad-integration"
 license=('LGPL')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'pygtk' 'mono' 'gtk-sharp-2' 'gobject-introspection')
+groups=('unity')
 source=("http://archive.ubuntu.com/ubuntu/pool/main/l/${pkgbase}/${pkgbase}_${pkgver}.tar.gz"
         "https://github.com/mono/mono/blob/master/mcs/class/mono.snk?raw=true")
 sha512sums=('b1a3bb2d5d7f45676bbcd5a86897804a39191118a50e4e41b85bfbe02df71a708ce98047987e204742bf73cd8607b869e5b5462841383825be964096362d05d5'
