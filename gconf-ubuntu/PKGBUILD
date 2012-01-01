@@ -49,7 +49,7 @@ build() {
     --with-gtk=3.0 \
     --disable-orbit
 
-  make pkglibdir=/usr/lib/GConf
+  make pkglibdir=/usr/lib/GConf ${MAKEFLAGS}
 }
 
 package() {

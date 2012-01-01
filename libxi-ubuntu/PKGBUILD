@@ -29,7 +29,7 @@ build() {
 
   chmod +x autogen.sh
   ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --with-xmlto --without-fop
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

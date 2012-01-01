@@ -31,7 +31,7 @@ build() {
 
   chmod +x autogen.sh
   ./autogen.sh --prefix=/usr
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

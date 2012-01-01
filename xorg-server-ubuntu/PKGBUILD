@@ -124,7 +124,7 @@ build() {
       -e 's/-Werror=pointer-to-int-cast//g' \
       {} \;
     
-  make
+  make ${MAKEFLAGS}
 
   # Disable subdirs for make install rule to make splitting easier
   sed -e 's/^DMX_SUBDIRS =.*/DMX_SUBDIRS =/' \

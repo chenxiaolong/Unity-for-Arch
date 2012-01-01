@@ -33,7 +33,7 @@ build() {
   done
 
   ./autogen.sh --prefix=/usr --enable-dri
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

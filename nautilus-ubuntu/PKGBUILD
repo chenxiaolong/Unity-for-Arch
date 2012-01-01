@@ -42,7 +42,7 @@ build() {
     --disable-packagekit \
     --disable-schemas-compile \
     --disable-appindicator --enable-introspection #From debian/rules
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

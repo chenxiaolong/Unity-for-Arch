@@ -25,7 +25,7 @@ build() {
   patch -Np0 -i "${srcdir}/menus.patch"
 
   PYTHON=python2 ./configure --prefix=/usr --disable-static
-  make
+  make ${MAKEFLAGS}
 }
 
 package(){

@@ -40,7 +40,7 @@ build() {
     --disable-desktop-update \
     --disable-icon-update \
     --disable-schemas-compile
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

@@ -28,7 +28,7 @@ build() {
   done
 
   ./configure --prefix=/usr
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

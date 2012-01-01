@@ -42,7 +42,7 @@ build() {
     --with-mit-ext \
     --enable-locking #from debian/rules
 
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

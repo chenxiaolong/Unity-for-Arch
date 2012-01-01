@@ -46,7 +46,7 @@ build() {
     --libexecdir=/usr/lib/gnome-session \
     --disable-schemas-compile \
     --enable-ipv6 #From debian/rules
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

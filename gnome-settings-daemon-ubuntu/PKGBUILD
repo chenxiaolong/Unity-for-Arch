@@ -49,7 +49,7 @@ build() {
       
   #https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
-  make
+  make ${MAKEFLAGS}
 
   #Compile gnome-update-wallpaper-cache.c
   gcc -o gnome-settings-daemon/gnome-update-wallpaper-cache "${srcdir}/debian/gnome-update-wallpaper-cache.c" $(pkg-config --cflags --libs glib-2.0 gdk-3.0 gdk-x11-3.0 gio-2.0 gnome-desktop-3.0)

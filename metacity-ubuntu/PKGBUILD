@@ -40,7 +40,7 @@ build() {
     --localstatedir=/var \
     --disable-static \
     --enable-startup-notifications=yes #From debian/rules
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
