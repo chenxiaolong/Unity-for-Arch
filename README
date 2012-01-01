@@ -90,6 +90,7 @@ Order to compile/install:
 82: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
 83: unity                          -> A desktop experience designed for efficiency
 84: unity-2d                       -> 2D implementation of Unity
+85: unity-rotated-bzr *            -> A modified version of Unity (rotated)
 
 * Optional packages
   - plasma-widget-menubar          => For KDE users who want a global menubar
@@ -101,6 +102,7 @@ Order to compile/install:
   - compizconfig-backend-gconf-ubuntu => Store Compiz settings in GConf
   - compizconfig-backend-kconfig4-ubuntu => Store Compiz settings in KConfig4
   - unity-core                     => For users that want Unity 2D, but not Unity 3D
+  - unity-rotated-bzr              => Modified Unity with the launcher at the bottom
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
 

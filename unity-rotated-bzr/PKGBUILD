@@ -1,0 +1,115 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-rotated-bzr
+pkgver=1723
+pkgrel=1
+pkgdesc="Rotated version of Ubuntu's Unity shell"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity/"
+license=('GPL')
+#depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'doxygen' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
+depends=('unity')
+makedepends=('cmake' 'intltool' 'pkg-config' 'bzr')
+groups=('unity')
+install=unity-rotated.install
+
+_bzrtrunk='lp:~paullo612/unity/unityshell-rotated'
+_bzrmod='unityshell-rotated'
+
+build() {
+  cd "${srcdir}"
+  msg "Connecting to Bazaar server...."
+
+  if [[ -d "${_bzrmod}" ]]; then
+    cd "${_bzrmod}" && bzr pull "${_bzrtrunk}" -r "${pkgver}"
+    msg "The local files are updated."
+  else
+    bzr branch "${_bzrtrunk}" "${_bzrmod}" -q -r "${pkgver}"
+  fi  
+
+  msg "Bazaar checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "${srcdir}/${_bzrmod}-build"
+  cp -r "${srcdir}/${_bzrmod}" "${srcdir}/${_bzrmod}-build"
+  cd "${srcdir}/${_bzrmod}-build"
+
+  # Disable '-Werror'
+  sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
+
+  # Compiz plugins cannot build from source directory
+  mkdir build && cd build
+
+  cmake .. \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${_bzrmod}-build/build"
+  make DESTDIR="${pkgdir}/" install
+
+  # Taken from Ubuntu source package's debian/rules file
+  find "${pkgdir}/usr/lib" -name \*.*a -exec rm {} \;
+  rm -v "${pkgdir}/usr/share/compiz/networkarearegion.xml"
+  rm -v "${pkgdir}/usr/lib/compiz/libnetworkarearegion.so"
+  rm -v "${pkgdir}/usr/share/compiz/unitydialog.xml"
+  rm -v "${pkgdir}/usr/lib/compiz/libunitydialog.so"
+
+  # Remove languages (po's from the original Unity are used)
+  rm -rv "${pkgdir}/usr/share/locale/"
+
+  # Remove Unity source headers
+  rm -rv "${pkgdir}/usr/include/"
+
+  # Remove man pages
+  rm -rv "${pkgdir}/usr/share/man/"
+
+  # Remove binaries
+  rm -rv "${pkgdir}/usr/bin/"
+
+  # Remove DBus services
+  rm -rv "${pkgdir}/usr/share/dbus-1/"
+
+  # Remove Unity helper binaries
+  rm -rv "${pkgdir}/usr/lib/unity/"
+
+  # Remove pkgconfig files
+  rm -rv "${pkgdir}/usr/lib/pkgconfig/"
+
+  # Extended globbing doesn't work in PKGBUILD's, so find is used
+
+  # Remove unneeded GConf2 schemas
+  pushd "${pkgdir}/usr/share/gconf/schemas/"
+  find . -type f ! -name compiz-unityshellrotated.schemas -exec rm -v {} \;
+  popd
+
+  # Remove unneeded GLib schemas
+  pushd "${pkgdir}/usr/share/glib-2.0/schemas/"
+  find . -type f ! -name org.freedesktop.compiz.unityshellrotated.gschema.xml -exec rm -v {} \;
+  popd
+
+  # Remove unneeded Compiz libraries
+  pushd "${pkgdir}/usr/lib/compiz/"
+  find . -type f ! -name 'libunityshellrotated.*' -exec rm -v {} \;
+  popd
+
+  # Remove unneeded Compiz shared files
+  pushd "${pkgdir}/usr/share/compiz/"
+  find . -maxdepth 1 -type d ! -name . -exec rm -rv {} \;
+  find . -type f ! -name unityshellrotated.xml -exec rm -v {} \;
+  popd
+
+  # Remove unneeded libraries
+  pushd "${pkgdir}/usr/lib/"
+  find . -maxdepth 1 -type d ! -name . ! -name compiz -exec rm -rv {} \;
+  find . -maxdepth 1 -type f -exec rm -rv {} \;
+  find . -maxdepth 1 -type l -exec rm -rv {} \;
+  popd
+}
+
+# vim:set ts=2 sw=2 et:
