@@ -3,7 +3,7 @@
 pkgname=glib2-ubuntu
 _ubuntu_rel=0ubuntu4
 _ubuntu_ver=2.30.0
-pkgver=2.30.1.${_ubuntu_rel}
+pkgver=2.30.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
@@ -18,7 +18,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/glib/2.30/glib-${pkgver%.*}.tar.
         "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
-sha512sums=('17309d40a05506f51d706342afd1aff38b14d7a4a5140fdf2f2faeca58276f3aa60feace8b682d7fd7823edae6df568c15c929c6f7892674035bb60107153ea0'
+sha512sums=('803f5de2d0c14c1631e59b618880ec32f060c2e475411ad662635f168013f2a5a5e1e38703d6f16894f5435e12268d961bba5bbf955a6e1d8279968f06f192dc'
             '510c1212f05a94eefb17beb986b399c93ce29bd550af94a4f37a5ea507dc3f1eea6e16c2b6c55e8e6623312005329cb9e4f5ee8334e21811bce69421a3811f9a'
             'dca2bc74d2013fcb24145ac794eef457aa3213c039e40a1a26ca5017694930768e7c80e334e17a56834549dff6549c781ddd91fae6c7bbb26fdd6a083ad8217a'
             'c3899eb7fa5482ce8a35fe02db90fd0f928d50aa7e4365a9529ef35a2dcd1ed86d5a24f6bc5c635ef5b2d95a0ebfebc2bb6bc90404c99f6fb7484ed2fa032c06')
