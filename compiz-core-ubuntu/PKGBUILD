@@ -3,15 +3,15 @@
 
 pkgbase=compiz-core-ubuntu
 
-#AUR fix
+# AUR fix
 pkgname=compiz-core-ubuntu
-true && pkgname=('compiz-core-ubuntu' 'compiz-kde-ubuntu' 'compiz-gnome-ubuntu')
+true && pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
 
-_kdedeps=('kdebase-workspace')
+_kdedeps=('')
 
-#Uncomment the following lines to not build KDE package
-#pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
-#_kdedeps=('')
+# Uncomment the following lines to build the KDE package
+#pkgname=('compiz-core-ubuntu' 'compiz-kde-ubuntu' 'compiz-gnome-ubuntu')
+#_kdedeps=('kdebase-workspace')
 
 _ubuntu_rel2="bzr20110929"
 _ubuntu_rel="0ubuntu8"
@@ -36,7 +36,7 @@ sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99d
 build() {
   cd "${srcdir}/${pkgname%%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat ${srcdir}/debian/patches/series | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
