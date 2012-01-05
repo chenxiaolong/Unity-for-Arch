@@ -28,7 +28,11 @@ sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
+
+  # Disable using Ubuntu's update manager
+  sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
