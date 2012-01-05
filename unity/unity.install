@@ -6,8 +6,13 @@ post_install() {
   update-gconf-defaults
 }
 
+pre_remove() {
+  gconf-schemas --unregister ${SCHEMAS}
+  update-gconf-defaults
+}
+
 pre_upgrade() {
-  post_remove
+  pre_remove
 }
 
 post_upgrade() {
@@ -16,6 +21,4 @@ post_upgrade() {
 
 post_remove() {
   glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
-  gconf-schemas --unregister ${SCHEMAS}
-  update-gconf-defaults
 }
