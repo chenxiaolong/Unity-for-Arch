@@ -4,7 +4,8 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-pkgver=0.2.104
+_ubuntu_rel=0ubuntu2
+pkgver=0.2.104.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
@@ -14,11 +15,18 @@ makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/0.2.204/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('66b705c8040cf4dcbcf2b3751d0d2231989034c2fab907f2e7c0167f7008db7ffe5f76533b292a1d3f4659b57e4a4341a3441e5d1de5af26e110b028d4a8ea4c')
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/0.2.204/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/b/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('66b705c8040cf4dcbcf2b3751d0d2231989034c2fab907f2e7c0167f7008db7ffe5f76533b292a1d3f4659b57e4a4341a3441e5d1de5af26e110b028d4a8ea4c'
+            'ec1484ef7e15be03c18e6c6e736fac5feadb6bcd35997dcb7ea537d7162161c4b79721ff5f1d9c3eff76ae9dd0a535a35cee436f64ddbe9b1091b0d70d4bfa97')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -37,7 +45,7 @@ build() {
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
   depends=('dbus-glib' 'libwnck3' 'libgtop')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3" #Doesn't matter which one
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3" #Doesn't matter which one
 
   install -d -m755 "${pkgdir}/usr/lib/${pkgbase}/"
   install -d -m755 "${pkgdir}/usr/share/dbus-1/services/"
@@ -49,7 +57,7 @@ package_libbamf() {
   pkgdesc="Window matching library for GTK 2"
   depends=('bamfdaemon' 'gtk2-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   make DESTDIR="${pkgdir}/" install
 
@@ -62,10 +70,10 @@ package_libbamf() {
 package_libbamf3() {
   pkgdesc="Window matching library for GTK 3"
   depends=('bamfdaemon' 'gtk3-ubuntu')
-  provides=("bamf=${pkgver}")
+  provides=("bamf=${pkgver%.*}")
   conflicts=('bamf')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 
