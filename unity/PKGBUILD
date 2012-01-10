@@ -19,8 +19,8 @@ pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
 license=('GPL')
-depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gmock' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
-makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen')
+depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala')
+makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
