@@ -1,0 +1,12 @@
+diff -Nru unity-4.28.0.orig/CMakeLists.txt unity-4.28.0/CMakeLists.txt
+--- unity-4.28.0.orig/CMakeLists.txt	2012-01-09 23:22:36.516901011 -0500
++++ unity-4.28.0/CMakeLists.txt	2012-01-09 23:22:54.320190083 -0500
+@@ -4,7 +4,7 @@
+ 
+ include (cmake/Documentation.cmake)
+ 
+-subdirs (doc services tests tools UnityCore guides)
++subdirs (doc services tools UnityCore tests guides)
+ 
+ #
+ # Base bits
