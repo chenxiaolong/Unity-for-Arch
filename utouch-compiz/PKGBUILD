@@ -9,6 +9,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-compiz"
 license=('GPL' 'LGPL')
 depends=('boost' 'compiz-core-ubuntu')
+groups=('unity')
 source=("http://launchpad.net/${pkgname}/natty/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/universe/u/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('32ff93b8e1da120f2eb71003fab2ff6a985797009a394ce208be58a3d5bbed3fbf0676a3db2724d8547a6174b8da465253fa987a2315154d7b1b66f6b273e233'
