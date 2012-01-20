@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=2ubuntu8
+_ubuntu_rel=2ubuntu9
 pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
@@ -20,7 +20,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('1e5c4aca7b73ad55318390632bb35a97a3c6ed35e013a0d57a5071f43a5c2a35daa70720258acc8f7e6abc163934497ced8376569b1cd164342535c9639a830d'
-            '23a036d6189b443a4d905d560d888f6305f39e0cbd6ef0e7530744c491f6447d39a4fe5eb1fbd30415f5fb01a14f036b3e7c0507ef436eb04166a4673ed8e485')
+            '9b459f9650095cb68c4e7196542e6e5dc3acd2de942347557f38c840eb2e8150ea7cd72aed6631fce3ed06ae52483b71b708c1b9f5b753b69d71e15b7a35ee05')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
