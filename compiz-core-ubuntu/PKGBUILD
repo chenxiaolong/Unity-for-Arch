@@ -7,11 +7,13 @@ pkgbase=compiz-core-ubuntu
 pkgname=compiz-core-ubuntu
 true && pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu' 'compiz-kde-ubuntu')
 
-_kdedeps=('kdebase-workspace')
+_kdedeps=('kdebase-workspace' 'kdelibs')
 
-# Commend the following lines to disable the KDE package
-#pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
-#_kdedeps=()
+# Run makepkg with "NO_KDE=true makepkg" to disable the KDE package
+if [[ "${NO_KDE}" == "true" ]]; then
+  pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
+  _kdedeps=()
+fi
 
 _ubuntu_rel2="bzr20110929"
 _ubuntu_rel="0ubuntu8"
@@ -141,7 +143,7 @@ package_compiz-gnome-ubuntu() {
   mv "${srcdir}/temp_install/usr/bin/unity-window-decorator" "${pkgdir}/usr/bin/"
   mv "${srcdir}/temp_install/usr/share/gconf/defaults/10_compiz-gnome" "${pkgdir}/usr/share/gconf/defaults/"
   for i in compiz-{annotate,bailer,blur,clone,commands,compiztoolbox,composite,copytex,core,cube,dbus,debugspew,decor,detection,fade,gnomecompat,imgpng,imgsvg,ini,inotify,kde,move,obs,opengl,place,regex,resize,rotate,scale,screenshot,switcher,water,wobbly,zoom}.schemas gwd.schemas; do
-    if [ -z "${_kdedeps}" ] && [[ ${i} == "compiz-kde.schemas" ]]; then
+    if [ -z "${_kdedeps[@]}" ] && [[ "${i}" == "compiz-kde.schemas" ]]; then
       continue
     fi
     mv "${srcdir}/temp_install/usr/share/gconf/schemas/${i}" "${pkgdir}/usr/share/gconf/schemas/"
