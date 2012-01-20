@@ -19,7 +19,7 @@ sha512sums=('541feec8384540ca011190aceb9596d558ff4b71f03e64b7e8800adcdf942d9a47f
             '678e762edbff4b34511c0e2612f5f45604ea62dca0d277bf13348bb6e32a77a05cbc7e9c8b75f31ea66c79da21e6dec11adb78070150416af3fc11b149af1721')
 
 build() {
-  cd "${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/compizconfig-settings-manager_${pkgver%.*}-${_ubuntu_rel}.diff"
