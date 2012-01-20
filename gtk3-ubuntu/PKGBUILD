@@ -2,11 +2,11 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 _ubuntu_ver=3.2.0
-pkgver=3.2.2.${_ubuntu_rel}
+pkgver=3.2.3.${_ubuntu_rel}
 pkgrel=100
-pkgdesc="The GTK+ Toolkit (v3) with Ubuntu's patches"
+pkgdesc="GTK+ is a multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=gtk3.install
@@ -18,10 +18,10 @@ options=('!libtool' '!docs')
 backup=(etc/gtk-3.0/settings.ini)
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/3.2/gtk+-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
-sha512sums=('e5b50edbb2b9b68880fd8c185f4f9bfdc62ba493e5df1af73d2db2416e87322a88258a477e3c34ce73f0e797eb2cfc7a9d342d93d00964c0a1d64264d136939c'
-            '046613932578915e31449c0e57fca435ffbff72d41388778436daa1cb12ed6ecf6dd45bd74fcd61208115945c8abc50dcca34f7edb3625b9ff99e8a2a07e7b60'
+sha512sums=('918e407e4e3044300492b0f9e77a31cf38a67d63e5371b9e9e15fd7796d516625e089d6f949594d2a267cbeccdf924d7995310f0e7f762c7c8903d52559fe963'
+            '86d15089c9e62685d6c57d7e44a70ebb808fefd5d0785a2ce0cc8b54331c29022e4bf00ada0d52e467a587ec6660ce8879fbca0520d7bf994ba3890ee35fca2f'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
@@ -43,7 +43,7 @@ build() {
     --enable-xinput
   #https://bugzilla.gnome.org/show_bug.cgi?id=655517
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
@@ -52,6 +52,3 @@ package() {
 
   install -Dm644 "${srcdir}/settings.ini" "${pkgdir}/etc/gtk-3.0/settings.ini"
 }
-sha512sums=('10a585e72c554211c80e3fbb3935a4abf6adc342eda34b0257cbcbb2b35fa57e6dac86775eb5f4d56ea357e073501fa621edfa3c6a49bd34debc516b78e8bd6d'
-            '046613932578915e31449c0e57fca435ffbff72d41388778436daa1cb12ed6ecf6dd45bd74fcd61208115945c8abc50dcca34f7edb3625b9ff99e8a2a07e7b60'
-            '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')

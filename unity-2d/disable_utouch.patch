@@ -1,0 +1,62 @@
+diff -rNu unity-2d-4.12.0.orig/launcher/app/CMakeLists.txt unity-2d-4.12.0/launcher/app/CMakeLists.txt
+--- unity-2d-4.12.0.orig/launcher/app/CMakeLists.txt	2011-10-25 21:39:29.365771562 +0200
++++ unity-2d-4.12.0/launcher/app/CMakeLists.txt	2011-10-25 21:40:30.965709225 +0200
+@@ -1,5 +1,4 @@
+ # Dependencies
+-pkg_check_modules(GEIS REQUIRED libutouch-geis)
+ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+ pkg_check_modules(DCONFQT REQUIRED dconf-qt)
+ 
+@@ -8,14 +7,12 @@
+     visibilitycontroller.cpp
+     launcherview.cpp
+     launcherdbus.cpp
+-    gesturehandler.cpp
+     )
+ 
+ set(launcher_MOC_HDRS
+     visibilitycontroller.h
+     launcherview.h
+     launcherdbus.h
+-    gesturehandler.h
+     )
+ 
+ qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
+@@ -35,7 +32,6 @@
+     ${CMAKE_CURRENT_BINARY_DIR}
+     ${GTK_INCLUDE_DIRS}
+     ${X11_INCLUDE_DIRS}
+-    ${GEIS_INCLUDE_DIRS}
+     ${QTGCONF_INCLUDE_DIRS}
+     ${DCONFQT_INCLUDE_DIRS}
+     ${libunity-2d-private_SOURCE_DIR}/src
+@@ -48,7 +44,6 @@
+     ${QT_QTDECLARATIVE_LIBRARIES}
+     ${GTK_LDFLAGS}
+     ${X11_LDFLAGS}
+-    ${GEIS_LDFLAGS}
+     ${QTGCONF_LDFLAGS}
+     ${DCONFQT_LDFLAGS}
+     unity-2d-private
+diff -rNu unity-2d-4.12.0.orig/launcher/app/launcher.cpp unity-2d-4.12.0/launcher/app/launcher.cpp
+--- unity-2d-4.12.0.orig/launcher/app/launcher.cpp	2011-10-25 21:39:29.365771562 +0200
++++ unity-2d-4.12.0/launcher/app/launcher.cpp	2011-10-25 21:39:56.654300950 +0200
+@@ -40,7 +40,6 @@
+ #include "visibilitycontroller.h"
+ #include "unity2ddebug.h"
+ #include "unity2dpanel.h"
+-#include "gesturehandler.h"
+ 
+ // libc
+ #include <stdlib.h>
+@@ -140,10 +139,6 @@
+        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
+     unsetenv("DESKTOP_AUTOSTART_ID");
+ 
+-    /* Gesture handler instance in charge of listening to gesture events and
+-       trigger appropriate actions in response. */
+-    GestureHandler gestureHandler(&panel);
+-
+     return application.exec();
+ }
+ 

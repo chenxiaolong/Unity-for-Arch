@@ -1,0 +1,306 @@
+diff -Nru compizconfig-backend-kconfig4-0.9.2.orig/src/kconfig_backend.cpp compizconfig-backend-kconfig4-0.9.2/src/kconfig_backend.cpp
+--- compizconfig-backend-kconfig4-0.9.2.orig/src/kconfig_backend.cpp	2012-01-17 01:39:47.014492095 -0500
++++ compizconfig-backend-kconfig4-0.9.2/src/kconfig_backend.cpp	2012-01-17 01:46:12.147834071 -0500
+@@ -256,7 +256,7 @@
+ 	       readEntry (specialOptions[num].kdeName,
+ 			  setting->defaultValue.value.asInt);
+ 
+-    ccsSetInt (setting, val);
++    ccsSetInt (setting, val, TRUE);
+ }
+ 
+ static void
+@@ -268,7 +268,7 @@
+ 			   (setting->defaultValue.value.asBool)?
+ 		true: false))? TRUE : FALSE;
+ 
+-    ccsSetBool (setting, val);
++    ccsSetBool (setting, val, TRUE);
+ }
+ 
+ static void
+@@ -305,7 +305,7 @@
+     keySet.keysym = XStringToKeysym(KShortcut (key & 0x1FFFFFF).toString ()
+ 				    .toAscii ().constData ());
+     keySet.keyModMask = kdeKeymod;
+-    ccsSetKey (setting, keySet);
++    ccsSetKey (setting, keySet, TRUE);
+ }
+ 
+ static void
+@@ -343,7 +343,7 @@
+     case OptionSpecial:
+ 	if (specialOptions[option].settingName == "command11")
+ 	{
+-	    ccsSetString (setting, "xkill");
++	    ccsSetString (setting, "xkill", TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "unmaximize_window_key"
+ 		 || specialOptions[option].settingName == "maximize_window_key"
+@@ -359,14 +359,14 @@
+ 
+ 	    keyVal.keyModMask = 0;
+ 
+-	    ccsSetKey (setting, keyVal);
++	    ccsSetKey (setting, keyVal, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "click_to_focus")
+ 	{
+ 	    Bool val = (cFiles->kwin->group ("Windows").
+ 		        readEntry ("FocusPolicy") == "ClickToFocus") ?
+ 		        TRUE : FALSE;
+-	    ccsSetBool (setting, val);
++	    ccsSetBool (setting, val, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "mode" &&
+ 		 specialOptions[option].pluginName == "resize")
+@@ -396,14 +396,14 @@
+ 		    result = 2;
+ 	    }
+ 
+-	    ccsSetInt (setting, result);
++	    ccsSetInt (setting, result, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "snap_type")
+ 	{
+ 	    static int intList[2] = {0, 1};
+ 	    CCSSettingValueList list = ccsGetValueListFromIntArray (intList, 2,
+ 								    setting);
+-	    ccsSetList (setting, list);
++	    ccsSetList (setting, list, TRUE);
+ 	    ccsSettingValueListFree (list, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "resistance_distance" ||
+@@ -421,7 +421,7 @@
+ 		result = mcg->readEntry ("snap_distance (Integrated)", int (0));
+ 
+ 	    if (result > 0)
+-	    	ccsSetInt (setting, result);
++	    	ccsSetInt (setting, result, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "edges_categories")
+ 	{
+@@ -445,7 +445,7 @@
+ 	    CCSSettingValueList list = ccsGetValueListFromIntArray (intList,
+ 								    num,
+ 								    setting);
+-	    ccsSetList (setting, list);
++	    ccsSetList (setting, list, TRUE);
+ 	    ccsSettingValueListFree (list, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "edge_flip_window" ||
+@@ -456,9 +456,9 @@
+ 		    readEntry ("ElectricBorders", int (0));
+ 
+ 	    if (val > 0)
+-		ccsSetBool (setting, TRUE);
++		ccsSetBool (setting, TRUE, TRUE);
+ 	    else
+-		ccsSetBool (setting, FALSE);
++		ccsSetBool (setting, FALSE, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "edge_flip_pointer" ||
+ 		 specialOptions[option].settingName == "edgeflip_pointer")
+@@ -468,9 +468,9 @@
+ 		    readEntry ("ElectricBorders", int (0));
+ 
+ 	    if (val > 1)
+-		ccsSetBool (setting, TRUE);
++		ccsSetBool (setting, TRUE, TRUE);
+ 	    else
+-		ccsSetBool (setting, FALSE);
++		ccsSetBool (setting, FALSE, TRUE);
+ 	}
+ 	else if (specialOptions[option].settingName == "mode" &&
+ 		 specialOptions[option].pluginName == "place")
+@@ -490,7 +490,7 @@
+ 	    else if (mode == "Centered")
+ 		result = 1;
+ 
+-	    ccsSetInt (setting, result);
++	    ccsSetInt (setting, result, TRUE);
+ 	}
+ 	break;
+ 
+@@ -579,7 +579,7 @@
+ 
+ 	    if (!profile.isEmpty() )
+ 		ret = ccsStringListAppend (ret, 
+-		    strdup (profile.toAscii().constData()));
++		    (CCSString *)strdup (profile.toAscii().constData()));
+ 	}
+     }
+ 
+@@ -605,7 +605,7 @@
+ 
+     if (!cfg.hasKey (key) )
+     {
+-	ccsResetToDefault (setting);
++	ccsResetToDefault (setting, TRUE);
+ 	return;
+     }
+ 
+@@ -613,25 +613,25 @@
+     {
+ 
+     case TypeString:
+-	ccsSetString (setting, cfg.readEntry (key, "").toAscii ().constData ());
++	ccsSetString (setting, cfg.readEntry (key, "").toAscii ().constData (), TRUE);
+ 	break;
+ 
+     case TypeMatch:
+-	ccsSetMatch (setting, cfg.readEntry (key, "").toAscii ().constData ());
++	ccsSetMatch (setting, cfg.readEntry (key, "").toAscii ().constData (), TRUE);
+ 	break;
+ 
+     case TypeFloat:
+-	ccsSetFloat (setting, cfg.readEntry (key, double(0.0)));
++	ccsSetFloat (setting, cfg.readEntry (key, double(0.0)), TRUE);
+ 	break;
+ 
+     case TypeInt:
+-	ccsSetInt (setting, cfg.readEntry (key, int(0)));
++	ccsSetInt (setting, cfg.readEntry (key, int(0)), TRUE);
+ 	break;
+ 
+     case TypeBool:
+ 	{
+ 	    Bool val = (cfg.readEntry (key, false)) ? TRUE : FALSE;
+-	    ccsSetBool (setting, val);
++	    ccsSetBool (setting, val, TRUE);
+ 	}
+ 	break;
+ 
+@@ -641,7 +641,7 @@
+ 	    QString value = cfg.readEntry (key, "");
+ 
+ 	    if (ccsStringToColor (value.toAscii ().constData (), &color))
+-		ccsSetColor (setting, color);
++		ccsSetColor (setting, color, TRUE);
+ 	}
+ 	break;
+ 
+@@ -665,7 +665,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromBoolArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		    delete array;
+ 		}
+@@ -686,7 +686,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromIntArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		    delete array;
+ 		}
+@@ -711,7 +711,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromStringArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 
+ 		    for (int j = 0; j < i; j++)
+@@ -741,7 +741,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromStringArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 
+ 		    for (int j = 0; j < i; j++)
+@@ -767,7 +767,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromFloatArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		    delete array;
+ 		}
+@@ -795,7 +795,7 @@
+ 
+ 		    CCSSettingValueList l =
+ 			ccsGetValueListFromColorArray (array, i, setting);
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		    delete array;
+ 		}
+@@ -820,7 +820,7 @@
+ 			    free (sVal);
+ 		    }
+ 
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		}
+ 		break;
+@@ -844,7 +844,7 @@
+ 			    free (sVal);
+ 		    }
+ 
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		}
+ 		break;
+@@ -865,7 +865,7 @@
+ 			l = ccsSettingValueListAppend (l, sVal);
+ 		    }
+ 
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		}
+ 		break;
+@@ -885,7 +885,7 @@
+ 			l = ccsSettingValueListAppend (l, sVal);
+ 		    }
+ 
+-		    ccsSetList (setting, l);
++		    ccsSetList (setting, l, TRUE);
+ 		    ccsSettingValueListFree (l, TRUE);
+ 		}
+ 		break;
+@@ -904,7 +904,7 @@
+ 
+ 	    ccsStringToKeyBinding (str.toAscii ().constData (), &value);
+ 
+-	    ccsSetKey (setting, value);
++	    ccsSetKey (setting, value, TRUE);
+ 	}
+ 	break;
+     case TypeButton:
+@@ -915,7 +915,7 @@
+ 
+ 	    ccsStringToButtonBinding (str.toAscii ().constData (), &value);
+ 
+-	    ccsSetButton (setting, value);
++	    ccsSetButton (setting, value, TRUE);
+ 	}
+ 	break;
+     case TypeEdge:
+@@ -926,13 +926,13 @@
+ 
+ 	    value = ccsStringToEdges (str.toAscii ().constData ());
+ 
+-	    ccsSetEdge (setting, value);
++	    ccsSetEdge (setting, value, TRUE);
+ 	}
+ 	break;
+     case TypeBell:
+ 	{
+ 	    Bool val = (cfg.readEntry (key, false)) ? TRUE : FALSE;
+-	    ccsSetBell (setting, val);
++	    ccsSetBell (setting, val, TRUE);
+ 	}
+ 	break;
+ 

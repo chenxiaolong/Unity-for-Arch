@@ -4,7 +4,8 @@
 
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-pkgver=0.3.1
+_ubuntu_rel=0ubuntu3
+pkgver=0.3.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
@@ -14,29 +15,37 @@ makedepends=('intltool')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('24a2cbcf77477497cf0aed13a48f081d0532874d40db982b071ba43f61cd407dfd6dc4595bbb26de0c8a10f179b08fab33cecb83b646c69ff6bd06cb4c63b175')
+source=("http://launchpad.net/${pkgbase}/0.3/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('24a2cbcf77477497cf0aed13a48f081d0532874d40db982b071ba43f61cd407dfd6dc4595bbb26de0c8a10f179b08fab33cecb83b646c69ff6bd06cb4c63b175'
+            'd700f49270532d134a0263f5b8ec89031ebd3d0b3212687aa0e65d1ef0c7f6e2e90d5cc55de7c74ce2b46490710e1ec0993c7f6cad86336b265c2d9037400a05')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile --with-gtk=2
-  make
+  make ${MAKEFLAGS}
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile --with-gtk=3
-  make
+  make ${MAKEFLAGS}
   popd
 }
 
 package_indicator-datetime() {
   pkgdesc="A very, very simple clock - GTK 3 library"
   depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center-ubuntu')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -44,7 +53,7 @@ package_indicator-datetime() {
 package_indicator-datetime-gtk2() {
   pkgdesc="A very, very simple clock - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'gtk2-ubuntu' 'libido' 'geoclue' 'indicator-datetime')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
   install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/6/"

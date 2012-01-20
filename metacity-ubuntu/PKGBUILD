@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=metacity-ubuntu
-_ubuntu_ver=1ubuntu4
-pkgver=2.34.1.${_ubuntu_ver}
+_ubuntu_rel=1ubuntu4
+pkgver=2.34.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -18,14 +18,12 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/m/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('44e4879d0b5cac8a50fbd0c33c29fa64b6485f80eca5bf6154b368cae64492402fb880eb6783ab4f1d2258079e96f53bf3b7300d4c2fbb36e4ebc7baaf8ee952'
             '78ece37b83501f84783d307df3a9494d43d8cddae985adf87948b0d1913ec55d565c366e714be97c62513fcfd7abc74d7e1b0b41c923ca211003745fba4a1ae5')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
-  # Don't use patch 16 - breaks some wine apps
-  #patch -Np1 -i "${srcdir}/16-capture-before-unmap.patch"
 
   #Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do

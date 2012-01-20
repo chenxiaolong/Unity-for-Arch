@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu5
+_ubuntu_rel=2ubuntu1
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
@@ -21,9 +21,9 @@ install=gnome-control-center.install
 license=('GPL')
 options=('!libtool' '!emptydirs')
 source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf79d8d42c7506fe61d9e8bca5fbd2aa98e82bf8cd03a5d860ca5a5e12b4c94'
-            'f60b8810824a7dd3f0c2e931ad98e9488e8b5d3a0b9f7dfa5cf96ca30b2b102ab63ffeddc987ce5a13ec7f4545524d7e12f76354f33953030ab57cc24440ce63')
+            '26d50fcf235da315059568e1225470fdfdd4c68e21ef845250cd713675a7bb28ee5ede52009137904e183055cb7ecd244aea289729260bcfa5353605f426cd59')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -37,7 +37,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -58,11 +58,11 @@ package() {
 
   #Ubuntu specific files
   install -d -m755 "${pkgdir}/usr/share/gnome-control-center/ui/"
-  install -d -m755 "${pkgdir}/usr/share/pixmaps/"
+  #install -d -m755 "${pkgdir}/usr/share/pixmaps/"
   install -d -m755 "${pkgdir}/usr/share/indicators/session/applications/"
   install -d -m755 "${pkgdir}/usr/share/menu/"
   install -m644 "${srcdir}/debian/UbuntuLogo.png" "${pkgdir}/usr/share/gnome-control-center/ui/"
-  install -m644 "${srcdir}/debian/control-center2.xpm" "${pkgdir}/usr/share/pixmaps/"
+  #install -m644 "${srcdir}/debian/control-center2.xpm" "${pkgdir}/usr/share/pixmaps/"
   ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
   install -m644 "${srcdir}/debian/gnome-control-center.menu" "${pkgdir}/usr/share/menu/"
 }

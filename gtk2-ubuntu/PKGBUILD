@@ -3,7 +3,7 @@
 
 pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
-_ubuntu_rel=2ubuntu2
+_ubuntu_rel=2ubuntu4
 pkgver=2.24.8.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -12,10 +12,10 @@ makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxc
 options=('!libtool' '!docs')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/gtk+2.0/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        xid-collision-debug.patch)
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'xid-collision-debug.patch')
 sha512sums=('616e76d7879206b8c551d2e09e8406311cbaf72093cc8d4e0c18e132f366276eb1dbabf1755fe1e8d9b70df819ffb1dac5694f166014d305bf1a0bcc39a239a4'
-            '5684caced301bab1428d2617ee16dbfffe854a7390f5d6ba6fd1be27de4287803313293eedd78e3e3277b9489323ae6a5e1c48b29d6e7013b2d58f153afb877d'
+            '8247add56a3812e6089bf37f079b897dd6baa23dc3c39549697946215f4c8570b084200a369b1a10d5594725063122681692dab86a254e186d83cb941bb93a99'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
 build() {
@@ -42,7 +42,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
 
   CXX=/bin/false ./configure \
     --prefix=/usr \
@@ -54,32 +54,34 @@ build() {
   #https://bugzilla.gnome.org/show_bug.cgi?id=655517
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make
+  make ${MAKEFLAGS}
 }
+
 package_gtk2-ubuntu() {
-    pkgdesc="The GTK+ Toolkit (v2) with Ubuntu's patches"
-    install=gtk2.install
-    depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
-    provides=("gtk2=${pkgver%.*}")
-    conflicts=('gtk2')
-    backup=(etc/gtk-2.0/gtkrc)
+  pkgdesc="GTK+ is a multi-platform toolkit (v2)"
+  install=gtk2.install
+  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+  provides=("gtk2=${pkgver%.*}")
+  conflicts=('gtk2')
+  backup=(etc/gtk-2.0/gtkrc)
 
-    cd "${srcdir}/gtk+-${pkgver%.*}"
+  cd "${srcdir}/gtk+-${pkgver%.*}"
 
-    make DESTDIR="${pkgdir}" install
-    sed -i "s#env python#env python2#" $pkgdir/usr/bin/gtk-builder-convert
-    echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
-    #split this out to use with gtk3 too
-    rm "${pkgdir}/usr/bin/gtk-update-icon-cache"
+  make DESTDIR="${pkgdir}" install
+  sed -i "s#env python#env python2#" $pkgdir/usr/bin/gtk-builder-convert
+  echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
+  #split this out to use with gtk3 too
+  rm "${pkgdir}/usr/bin/gtk-update-icon-cache"
 }
+
 package_gtk-update-icon-cache-ubuntu() {
-    pkgdesc="The GTK+ update icon cache tool with Ubuntu's patches"
-    depends=('gdk-pixbuf2')
-    provides=("gtk-update-icon-cache=${pkgver%.*}")
-    conflicts=('gtk-update-icon-cache')
+  pkgdesc="The GTK+ update icon cache tool"
+  depends=('gdk-pixbuf2')
+  provides=("gtk-update-icon-cache=${pkgver%.*}")
+  conflicts=('gtk-update-icon-cache')
 
-    cd "${srcdir}/gtk+-${pkgver%.*}/gtk"
+  cd "${srcdir}/gtk+-${pkgver%.*}/gtk"
 
-    install -D -m755 gtk-update-icon-cache ${pkgdir}/usr/bin/gtk-update-icon-cache
+  install -Dm755 gtk-update-icon-cache "${pkgdir}/usr/bin/gtk-update-icon-cache"
 }
 

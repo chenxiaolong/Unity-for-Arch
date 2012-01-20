@@ -3,7 +3,7 @@ SCHEMAS="compiz-annotate.schemas compiz-bailer.schemas compiz-blur.schemas compi
 post_install() {
   gconf-schemas --register ${SCHEMAS}
   if [ -f /usr/share/gconf/schemas/compiz-kde.schemas ]; then
-    gconf-schemas --register ${SCHEMAS}
+    gconf-schemas --register compiz-kde.schemas
   fi
   update-gconf-defaults
 }
@@ -11,7 +11,7 @@ post_install() {
 pre_remove() {
   gconf-schemas --unregister ${SCHEMAS}
   if [ -f /usr/share/gconf/schemas/compiz-kde.schemas ]; then
-    gconf-schemas --unregister ${SCHEMAS}
+    gconf-schemas --unregister compiz-kde.schemas
   fi
   update-gconf-defaults
 }

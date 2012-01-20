@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu5
+_ubuntu_rel=0ubuntu10
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -18,9 +18,9 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f0b2674c144ea4999d755c5ee5f9c76669cd436364c78e51d62a9aeec9665cb4e609dbc8e36ed8abae3128cd51005c010614a7d49316672b01df12c0b40bf530'
-            '2f2b7d4ff8e72aa760d2b3fa5422291500473b46f75ad3e366610a91f6b0e4256096c4378f2797b4385484d563f5045866697854f005dbd5e1e14ba0477bf07a')
+            '53cce9475db54ff2320046e40a5b5fbdcc04ca463ab797ece6526aad362af9f77dbaa8f4db5b2890bb56481a58fd59fa3d5ef01680ddf0fd1cdee9fe49082bd0')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -36,7 +36,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \

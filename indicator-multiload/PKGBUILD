@@ -22,7 +22,7 @@ build() {
   ./autogen.sh
   make distclean
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

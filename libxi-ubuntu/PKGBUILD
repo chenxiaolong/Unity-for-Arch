@@ -1,20 +1,20 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libxi-ubuntu
-_ubuntu_ver=3ubuntu1
-pkgver=1.4.3.${_ubuntu_ver}
+_ubuntu_rel=3ubuntu1
+pkgver=1.4.3.${_ubuntu_rel}
 pkgrel=101
 pkgdesc="X11 Input extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
 depends=('libxext' 'inputproto-ubuntu')
-makedepends=('pkgconfig' 'xorg-util-macros' 'xmlto' 'docbook-xml')
+makedepends=('pkgconfig' 'xorg-util-macros' 'xmlto' 'docbook-xml' 'asciidoc')
 provides=("libxi=${pkgver}")
 conflicts=('libxi')
 options=(!libtool)
 license=('custom')
 source=("${url}/releases/individual/lib/libXi-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/libx/libxi/libxi_${pkgver%.*}-${_ubuntu_ver}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/libxi_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('6ec8cedd7f6ad5ec6deb7ea594893615c87823537be20b6b1d67c8595364566ac4d22292e49640cb94e0ba2216c60859fcfb8f0650089015df9dc42b10a02b87'
             'ef1ea2f8146ff9e5cc77d9ad2be5c8a1c858a6d7571221f2a698a26b6a2de44ace7636f9c1bad4e4e1cd1df0a81687312cbfcac2786b10a6df275bab4745e8fa')
 
@@ -22,7 +22,7 @@ build() {
   cd "${srcdir}/libXi-${pkgver%.*}"
 
   #Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/libxi_${pkgver%.*}-${_ubuntu_ver}.diff"
+  patch -Np1 -i "${srcdir}/libxi_${pkgver%.*}-${_ubuntu_rel}.diff"
   for i in $(cat "debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done

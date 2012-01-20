@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-input-evdev-ubuntu
-_ubuntu_ver=1ubuntu13
-pkgver=2.6.0.${_ubuntu_ver}
+_ubuntu_rel=1ubuntu13
+pkgver=2.6.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X.org evdev input driver"
 arch=('i686' 'x86_64')
@@ -15,16 +15,16 @@ conflicts=('xorg-server<1.10.0' 'xf86-input-evdev')
 options=('!libtool' '!makeflags')
 groups=('xorg-drivers' 'xorg')
 source=("${url}/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/xserver-xorg-input-evdev/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_ver}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('c5ff503d6bde7e5690333867595d54ddd5403e6d8f556b09a631bcb65629aa82f55c694f5257d925541cbe86cc47a9464a3c21b9ff62fda8b4bf0118c92637c5'
             'e15a8fa85263eef40e7bcc0b6a2e8a14fbdd0174a8083fdac8269f5c8c893cf3d8f005d834c60246a26d35a7c6e5372e3c1de86edc434373762c9180869d2673')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  patch -Np1 -i "${srcdir}/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_ver}.diff"
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_rel}.diff"
 
-  #Apply all patches
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done

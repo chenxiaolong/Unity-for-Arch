@@ -26,8 +26,9 @@ sha512sums=('33f261bfb8c62102cc525a7bf467d037ff375cb4346d83f7f80443518a83c1f36c4
 build() {
   cd "${srcdir}/xserver-xorg-video-ati_${_actual_ver}${_ubuntu_ver}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/xserver-xorg-video-ati_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff"
+
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done

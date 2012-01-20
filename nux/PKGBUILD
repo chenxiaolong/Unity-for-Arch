@@ -3,25 +3,26 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=1.16.0
+pkgver=2.0.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
 license=('LGPL')
-depends=('gdk-pixbuf2' 'glew' 'pango' 'libsigc++' 'libxcomposite')
-makedepends=('boost' 'glproto' 'dri2proto' 'gtest' 'gmock')
+depends=('gdk-pixbuf2' 'glew' 'pango' 'libsigc++' 'libxcomposite' 'libxinerama')
+makedepends=('boost' 'glproto' 'dri2proto' 'gtest' 'gmock' 'doxygen' 'graphviz')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/1.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('3773c338221364adc3c8131d8674dc56a1a2d831174dcefca9858ea5cda940a93ec9bea106e0b7dc9070c6b2efa044e48af093a15ca06c2edcbfe6d5d31432b0')
+source=("http://launchpad.net/${pkgname}/2.0/${pkgver%.*}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('a989b3ea4db3d2c18f3314d0bc22679c6da89878f05d564429c8f835178690447dff76ab0de0becb66e211f20a2dd1032d9426993b38d7d3bd128dc83738f5fe')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./autogen.sh
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+
+  #./autogen.sh
+  ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make ${MAKEFLAGS}
 }
 
 package() {

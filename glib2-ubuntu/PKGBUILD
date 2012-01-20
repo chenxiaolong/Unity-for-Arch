@@ -7,7 +7,7 @@ pkgver=2.30.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
-arch=(i686 x86_64)
+arch=('i686' 'x86_64')
 license=('LGPL')
 depends=('pcre' 'libffi')
 provides=("glib2=${pkgver%.*}")
@@ -15,7 +15,7 @@ conflicts=('glib2')
 makedepends=('python2' 'pkgconfig')
 options=('!libtool' '!docs' '!emptydirs')
 source=("http://ftp.gnome.org/pub/GNOME/sources/glib/2.30/glib-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/glib2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/glib2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
 sha512sums=('803f5de2d0c14c1631e59b618880ec32f060c2e475411ad662635f168013f2a5a5e1e38703d6f16894f5435e12268d961bba5bbf955a6e1d8279968f06f192dc'
@@ -51,7 +51,7 @@ package() {
   cd "${srcdir}/glib-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  install -d "${pkgdir}/etc/profile.d"
+  install -dm755 "${pkgdir}/etc/profile.d"
   install -m755 "${srcdir}/glib2.sh" "${pkgdir}/etc/profile.d/"
   install -m755 "${srcdir}/glib2.csh" "${pkgdir}/etc/profile.d/"
 

@@ -1,9 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-video-intel-ubuntu
-_ubuntu_ver=1ubuntu2
-_ubuntu_ver2=2.15.901
-pkgver=2.15.0.${_ubuntu_ver}
+_ubuntu_rel=1ubuntu4
+pkgver=2.15.901.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X.org Intel i810/i830/i915/945G/G965+ video drivers"
 arch=('i686' 'x86_64')
@@ -16,25 +15,21 @@ conflicts=('xorg-server<1.10.0' 'xf86-video-i810' 'xf86-video-intel-legacy' 'xf8
 options=('!libtool')
 groups=('xorg-drivers' 'xorg')
 source=("${url}/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "git-fixes.patch"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/xserver-xorg-video-intel/xserver-xorg-video-intel_${_ubuntu_ver2}-${_ubuntu_ver}.diff.gz")
-sha512sums=('e2a8ce427f653350d711cdfa419104f9b33ab3b93bcf5d4d9e0ce5045b34e8754e263dcee37bc26afcb1274ae4fbee4a9c79f41488e975eca939e3bfd243b511'
-            'a588356d739c3e4c9c74e6703a26fab9b5a3632631f9ced417389c016cd7fbe338f6ec9d5514c43786b2902778aa74e75c0f8e992387363c472cd7fd8255ac0e'
-            '2bb5ab251c58eaaedfdc6e365c0a72e9e8d9d68f98f7363045ca9064722c5c89a2c2ae20cd7d95f905272d8e722313b42308521d177910a3ddbe977c68437d6b')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-video-intel_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('5aa42b6151aba800d7648a506e49a4e0b8917a4820bf34c85dae48c05ec482f589334f76193fa97c9fbf9b781a37575b288cb76c0e6c04e489692d9b209b2d33'
+            '0d3d3e70a2b2ea06fdaa7a7ba4eb8ae1ff9bd646b7529d7cbebb8f5cc3974b167721063712630a7d3ff14c446b26326a910027d226eac44af31eb9209e78e43a')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  patch -Np1 -i "${srcdir}/git-fixes.patch"
-
   #Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/xserver-xorg-video-intel_${_ubuntu_ver2}-${_ubuntu_ver}.diff"
+  patch -Np1 -i "${srcdir}/xserver-xorg-video-intel_${pkgver%.*}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  autoreconf
+  autoreconf -vfi
   ./configure --prefix=/usr --enable-dri
   make ${MAKEFLAGS}
 }

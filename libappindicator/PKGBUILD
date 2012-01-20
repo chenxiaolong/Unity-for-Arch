@@ -4,7 +4,7 @@
 
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 pkgver=0.4.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
@@ -15,9 +15,9 @@ makedepends=('libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3
 groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/liba/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('28f8c80fe9aa019bdff4a4047bb63602f7b8fcaca4bdc86301265b272ee80b04f861254b64d309171978cc245f5481e12e52011b00ffc0a436179e1a7112a2d4'
-            'd72cee9b3d59c6f0b9f2887e925cfd2445256f60d5647f8d8434e16314c87ff05e999707530589f91b7466c8539e4844c57e50cbcb05a085e92d70602855c790')
+            '101fb2c1559d8cb8d8dde9bbd0e325cbff6857628dc2246e041e7ceb1dd237a182fd39cb92387a4b3fbf1c57b7c4acd05b0e44cedcf92e4bd9de44b2703a9a79')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -28,19 +28,19 @@ build() {
   # nunit renamed to mono-nunit in /usr/lib/pkgconfig/mono-nunit.pc
   sed -i 's/nunit >= 2\.4\.7/mono-nunit >= 2.4.7/' configure{,.ac}
 
-  # Makefile was hardcoded to link to Python 2.6
-  sed -i 's/-lpyglib-2\.0-python2\.6/-lpyglib-2\.0-python2/' bindings/python/Makefile.{am,in}
+  # Makefile was hardcoded to link to Python 2.7
+  sed -i 's/-lpyglib-2\.0-python2\.7/-lpyglib-2\.0-python2/' bindings/python/Makefile.{am,in}
 
   # The /usr/lib/cli location for Mono bindings is specific to Ubuntu
   sed -i 's|assemblydir = $(libdir)/cli/appindicator-sharp-0.1|assemblydir = $(libdir)/appindicator-sharp-0.1|' bindings/mono/Makefile.{am,in}
   sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
 
   autoreconf -vfi
-  export MAKEFLAGS="-j1"
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --with-gtk=2 --disable-static PYTHON=python2
+  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
   popd
 
@@ -58,6 +58,7 @@ package_libappindicator() {
 
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
+  MAKEFLAGS="-j1"
   make DESTDIR="${pkgdir}/" install
 }
 

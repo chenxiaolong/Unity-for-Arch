@@ -1,12 +1,16 @@
 post_install() {
-	gtk-update-icon-cache -f -t /usr/share/ccsm/icons/hicolor
+  if [ -x $(which gtk-update-icon-cache) ]; then
+    gtk-update-icon-cache -q -t -f usr/share/ccsm/icons/hicolor
+  fi
 }
 
 post_upgrade() {
-	post_install
+  post_install
 }
 
 pre_remove()
 {
-	rm /usr/share/ccsm/icons/hicolor/icon-theme.cache
+  if [ -f /usr/share/ccsm/icons/hicolor/icon-theme.cache ]; then
+    rm /usr/share/ccsm/icons/hicolor/icon-theme.cache
+  fi
 }

@@ -3,7 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-activity-journal
-pkgver=0.8.0
+_ubuntu_rel=1ubuntu1
+pkgver=0.8.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A tool for easily browsing and finding files on your computer"
 arch=('any')
@@ -15,18 +16,20 @@ optdepends=('gstreamer0.10-python: add multimedia tooltip to multimedia files'
             'python2-pygments: get a thumbnail of a text file')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('5d92bb032328c9eb7c230015675c379b9cb9f3c31362128b8b25ede070df11120beadbf1766ba5d250006f1da523fc8a45f760119706a977de6e0124321375a7')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('5d92bb032328c9eb7c230015675c379b9cb9f3c31362128b8b25ede070df11120beadbf1766ba5d250006f1da523fc8a45f760119706a977de6e0124321375a7'
+            '1df898360f42cd0d6b9f3d454ed9f5e9a40ca64418a534ab3cb47f8f756f3312b2f22fcb2f75a7cae79389dea2af0cf141b5fe3db2a3b8c0e991aea102c9128d')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
   sed -i 's|^\(#!.*python\)$|\12|g' src/config.py gnome-activity-journal
 
   python2 setup.py build
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   python2 setup.py install --root="${pkgdir}/" --optimize=1
 }

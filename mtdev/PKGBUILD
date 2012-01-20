@@ -3,7 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=mtdev
-pkgver=1.1.0
+_ubuntu_rel=2ubuntu1
+pkgver=1.1.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A stand-alone library which transforms all variants of kernel MT events to the slotted type B protocol"
 arch=('i686' 'x86_64')
@@ -12,18 +13,20 @@ license=('GPL')
 depends=('glibc')
 groups=('unity')
 options=('!libtool')
-source=("${url}${pkgname}-${pkgver}.tar.bz2")
-sha512sums=('e46c1cdd0543544fd75b0cf7a474ecc06716c5c0f6021027664d7de7343b0bde987358be3744bfe1e95154b4e2b96471277d153e6655a81d2658579d783fae38')
+source=("${url}${pkgname}-${pkgver%.*}.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('e46c1cdd0543544fd75b0cf7a474ecc06716c5c0f6021027664d7de7343b0bde987358be3744bfe1e95154b4e2b96471277d153e6655a81d2658579d783fae38'
+            '239a275c8756bb7c5fd68f0dddc13e27280e1446059987943a16389f96b6dbc34083714cc92ed31fe49726f3d73ac513eadf0f29abf6b29b447006e64395b9c3')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   ./configure --prefix=/usr --disable-static
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}/" install
 }

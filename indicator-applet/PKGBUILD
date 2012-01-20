@@ -7,7 +7,7 @@
 # This package is probably not required anymore
 
 pkgname=indicator-applet
-pkgver=0.4.13
+pkgver=0.4.14
 pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
@@ -24,14 +24,14 @@ optdepends=('indicator-application: take menus from applications and place them 
             'indicator-sound: a unified sound menu')
 groups=('unity')
 install=${pkgname}.install
+# Use Jason Conti's version (patched for GNOME 3)
 source=("https://launchpad.net/~jconti/+archive/gnome3/+files/${pkgname}_${pkgver}.orig.tar.gz")
-sha512sums=('490cdef9c8cff5a3b5296cf2a9b8001e85754200a214bb680392d80d0e5b8d9b78dca32eeba9d24e2117433612c090afbb14d7b78bd4c27ee3aacb7ddad5f175')
+sha512sums=('681ae443c79af6a4ea7fcc244d140ec5eea558f67a38c7fa693496ae0d2fbacbbd2da438663ff5beac71747f1d26d0fec18697605c5c08ae9989c0b83e45d8df')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  autoreconf -fi
-  export MAKEFLAGS="-j1"
+  autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make
 }

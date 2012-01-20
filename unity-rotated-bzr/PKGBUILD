@@ -12,11 +12,25 @@ depends=('unity')
 makedepends=('cmake' 'intltool' 'pkg-config' 'bzr')
 groups=('unity')
 install=unity-rotated.install
+source=('http://launchpad.net/nux/1.0/1.16.0/+download/nux-1.16.0.tar.gz')
+sha512sums=('3773c338221364adc3c8131d8674dc56a1a2d831174dcefca9858ea5cda940a93ec9bea106e0b7dc9070c6b2efa044e48af093a15ca06c2edcbfe6d5d31432b0')
 
 _bzrtrunk='lp:~paullo612/unity/unityshell-rotated'
 _bzrmod='unityshell-rotated'
 
 build() {
+  # We need to build Nux 1.0 since Unity rotated is based on Unity 4
+  if [ ! -d "${srcdir}/nux_temp" ]; then
+    cd "${srcdir}/nux-1.16.0"
+    ./autogen.sh --prefix="${srcdir}/nux_temp" --disable-static --disable-examples --disable-gputests
+    make ${MAKEFLAGS}
+    make install
+  fi
+
+  export PKG_CONFIG_PATH="${srcdir}/nux_temp/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export LD_LIBRARY_PATH="${srcdir}/nux_temp/lib:${LD_LIBRARY_PATH}"
+  msg "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
+
   cd "${srcdir}"
   msg "Connecting to Bazaar server...."
 
@@ -36,6 +50,11 @@ build() {
 
   # Disable '-Werror'
   sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
+  # Disable '-Wall'
+  sed -i 's/[ ]*-Wall[ ]*//g' CMakeLists.txt services/CMakeLists.txt
+
+  # Disable building tests
+  sed -i 's/[ ]*tests[ ]*/ /g' CMakeLists.txt
 
   # Compiz plugins cannot build from source directory
   mkdir build && cd build
@@ -46,10 +65,26 @@ build() {
     -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr
+
+  #MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 }
 
 package() {
+  ## Install Nux 1.0 ##
+
+  cd "${srcdir}/nux_temp"
+
+  # Install libraries
+  pushd "lib/"
+  find . -type f ! -name '*.pc' ! -name '*.la' -exec install -Dm755 {} "${pkgdir}"/usr/lib/{} \;
+  # Ideally use install, but that won't work with symlinks
+  find . -type l ! -name '*.pc' -exec cp -P --no-preserve=mode {} "${pkgdir}"/usr/lib/{} \;
+  find "${pkgdir}/usr/lib/" -type l -exec chmod 755 {} \;
+  popd
+
+  ## Install Unity rotated 4 ##
+
   cd "${srcdir}/${_bzrmod}-build/build"
   make DESTDIR="${pkgdir}/" install
 
@@ -107,8 +142,8 @@ package() {
   # Remove unneeded libraries
   pushd "${pkgdir}/usr/lib/"
   find . -maxdepth 1 -type d ! -name . ! -name compiz -exec rm -rv {} \;
-  find . -maxdepth 1 -type f -exec rm -rv {} \;
-  find . -maxdepth 1 -type l -exec rm -rv {} \;
+  find . -maxdepth 1 -type f ! -name '*nux*.so*' -exec rm -rv {} \;
+  find . -maxdepth 1 -type l ! -name '*nux*.so*' -exec rm -rv {} \;
   popd
 }
 

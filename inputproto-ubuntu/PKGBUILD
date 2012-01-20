@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=inputproto-ubuntu
-_ubuntu_ver=2ubuntu1
-pkgver=2.0.2.${_ubuntu_ver}
+_ubuntu_rel=2ubuntu1
+pkgver=2.0.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X11 Input extension wire protocol"
 arch=('any')
@@ -12,29 +12,29 @@ makedepends=('xorg-util-macros')
 provides=("inputproto=${pkgver}")
 conflicts=('inputproto')
 source=("${url}/releases/individual/proto/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/x11proto-input/x11proto-input_${pkgver%.*}-${_ubuntu_ver}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/x11proto-input_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('33ac36e447d58dec7e604d4a7f3d4f86734104ee9d8001dece3808edac5a7e6bd7f18c0c70ad2263051a7bc88d9e9f12db944775e42ae43f3cb021cd234a8c1f'
             'fdec5a6c21ec8b04f93c8ebeeb99929d5d7b2b5fbf4b2991b08e214ad8774fbc28e3688cf3dafd4bda8726c1c74c6ec4e571e526376568def8fa4fd3c6619006')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  # Apply ubuntu patches
-  patch -Np1 -i "${srcdir}/x11proto-input_${pkgver%.*}-${_ubuntu_ver}.diff"
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/x11proto-input_${pkgver%.*}-${_ubuntu_rel}.diff"
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  autoreconf
+  autoreconf -vfi
 
   ./configure --prefix=/usr
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname%-*}"
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname%-*}"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname%-*}/"
 }

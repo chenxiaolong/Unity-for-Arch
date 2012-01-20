@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_ubuntu_rel=0ubuntu3
-pkgver=4.0.6.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=5.0.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
@@ -14,23 +14,24 @@ depends=('libgee' 'dee' 'libdbusmenu' 'dbus-glib')
 makedepends=('vala' 'python2' 'gobject-introspection')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/4.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/libu/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('dbb7718204542db81722c7484bba647a99f808e23de2d09c782527feddc9674ba64ea6bdfa6da027cb53f91106f3d0f971a43f7ec8452036f0bf6664ef0b73c9'
-            '660e8e2a007a12081764d96ad9526d9824c46a4d09219c181c60023a838d790e27ddd737abb4ed1edc1d6aaa0f3a8c4aba6d0dc811501ba19da5a1c66e80c52d')
+source=("http://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('525c10ae69d6d1c46a2e29667bf02435f43d69b568d67542d4220b2f2e50ba1d3035b9eeee76b442b2cb99c1333652dcf6db110121f2aac1b5b989d8e440afb2'
+            'de5b348cc6a840c18902ed7c7a836a6d6718a02e87fc02f605aedb12f2c40fac4f4f0e1028d0967a29367ca7cdf7edefe896e9f5653f4c94e4b058c2dec2cd53')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
   ./configure --prefix=/usr --disable-static PYTHON=python2
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

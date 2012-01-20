@@ -1,14 +1,20 @@
-SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unitymtgrabhandles.schemas compiz-unityshell.schemas"
-
+#SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unitymtgrabhandles.schemas compiz-unityshell.schemas"
+SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unityshell.schemas"
 post_install() {
   glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
   gconf-schemas --register ${SCHEMAS}
   update-gconf-defaults
+  if [ -x $(which gtk-update-icon-cache) ]; then
+    gtk-update-icon-cache -q -t -f usr/share/ccsm/icons/hicolor
+  fi
 }
 
 pre_remove() {
   gconf-schemas --unregister ${SCHEMAS}
   update-gconf-defaults
+  if [ -f /usr/share/ccsm/icons/hicolor/icon-theme.cache ]; then
+    rm /usr/share/ccsm/icons/hicolor/icon-theme.cache
+  fi
 }
 
 pre_upgrade() {

@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=utouch-geis
-_ubuntu_ver=0ubuntu1
-pkgver=2.2.2.${_ubuntu_ver}
+_ubuntu_rel=0ubuntu1
+pkgver=2.2.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
@@ -11,24 +11,22 @@ license=('GPL' 'LGPL')
 depends=('utouch-grail')
 makedepends=('xorg-server-ubuntu')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/u/utouch-geis/utouch-geis_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
-sha512sums=('2ff960e1a8b998c6625d661a3b92fe011688302728da5d5155135c335bbbbeaea80eeba6a30e20e89166bce8dc851393a666d2f2f1e19e12cf2560afb191b753'
-            'c354aa4634f53152c2f0bd733047da474b4bd083bba44a6ee60730fa281822658bef930aef0d97de9920d621386cb3424d6222f9eff344b09ab5071d5f04c5d8')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('cafecbb4ceda5b5c263f1b5f333cf3e0f5e938a10ff4083b133c6e4ef879bf0c01f20a94552296d846687cacc8aed091c43961de5467d16f3e334768ceafd496'
+            'ba667751c9ba46e584f550a97fb1e08c19a8dfd48c23b98d6032c992d7b35c046fc5a454b3e632606fa03d7d874c703b4e7b0c48b5637f4c3bc4808ae6411adf')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
-
   PYTHON2VER=$(ls -l /usr/bin/python2 2>&1 | sed 's/^.*\(.\..\)/\1/g')
   sed -i "/python >= ${PYTHON2VER}/s/python \(>= .\..\)/python-${PYTHON2VER} \1/g" configure
   PYTHON=/usr/bin/python2 ./configure --prefix=/usr --disable-static
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

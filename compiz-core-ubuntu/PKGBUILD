@@ -5,13 +5,13 @@ pkgbase=compiz-core-ubuntu
 
 # AUR fix
 pkgname=compiz-core-ubuntu
-true && pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
+true && pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu' 'compiz-kde-ubuntu')
 
-_kdedeps=('')
+_kdedeps=('kdebase-workspace')
 
-# Uncomment the following lines to build the KDE package
-#pkgname=('compiz-core-ubuntu' 'compiz-kde-ubuntu' 'compiz-gnome-ubuntu')
-#_kdedeps=('kdebase-workspace')
+# Commend the following lines to disable the KDE package
+#pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
+#_kdedeps=()
 
 _ubuntu_rel2="bzr20110929"
 _ubuntu_rel="0ubuntu8"
@@ -28,8 +28,8 @@ if [ ! -z "${_kdedeps}" ]; then
   done
 fi
 options=('emptydirs')
-source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%%-*}/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}.orig.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${pkgver%.*}+${_ubuntu_rel2}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('3588f8dd0b469172820df35eb03233e006379fbd161f93bba5db394e499ef28d99ddbc5ea31490640db098b505e4022bfdcff981b50244a0781e0fa2d5d5d118'
             '7104c29d72f9c25bf29e95327df66de04e3efce7679b6521fcde374ec2714260ca3b9c0ae3cf149d7c30cc5e093def3489ff45c86d0ddfde8ed85adc2fab1ec7')
 
@@ -53,11 +53,12 @@ build() {
     -DUSE_GSETTINGS=OFF \
     -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
     ..
-  make
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
 
-  #Install to temporary directory
+  # Install to temporary directory
 
-  #unity_window_decorator installs differently
+  # unity_window_decorator installs differently
   sed -i "/INSTALL DESTINATION.*TYPE EXECUTABLE FILES/s@\(\${CMAKE_INSTALL_PREFIX}\)@${srcdir}/temp_install\1@" unity/unity_window_decorator/src/cmake_install.cmake
   sed -i "/RPATH_REMOVE/ {n; s@\(\\\${CMAKE_INSTALL_PREFIX}\)@${srcdir}/temp_install\1@g}" unity/unity_window_decorator/src/cmake_install.cmake
 
@@ -92,14 +93,14 @@ build() {
   done
   sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' "${srcdir}/temp_install/usr/share/gnome-control-center/keybindings/50-compiz-navigation.xml"
 
-  #Temp
+  # Temp
   cp -rv "${srcdir}/temp_install" "${srcdir}/temp_install.bak"
 }
 
 package_compiz-kde-ubuntu() {
   pkgdesc="OpenGL window and compositing manager - KDE window decorator"
   groups=('unity' 'compiz-ubuntu')
-  #compizconfig-backend-kconfig4 cannot compile
+  # compizconfig-backend-kconfig4 cannot compile
   depends=('kdebase-workspace' 'compiz-core-ubuntu')
   optdepends=('compizconfig-backend-kconfig4-ubuntu: Store sttings with KConfig')
   provides=("compiz-decorator-kde=${pkgver}")

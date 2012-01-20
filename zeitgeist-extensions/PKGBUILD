@@ -14,10 +14,6 @@ groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/fts-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('3ff54cca7d98b0805df038a4d04616e1eb2dd2bc3895f8e9ffaf16147f6efd3410e8ca19abe04d0ef94793427374db94fbe18db8d196e2d2d4cd304bd34bd3cd')
 
-build() {
-  msg "Nothing to build."
-}
-
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 

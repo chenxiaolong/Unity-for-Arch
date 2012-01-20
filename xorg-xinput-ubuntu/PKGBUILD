@@ -2,8 +2,8 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=xorg-xinput-ubuntu
-_ubuntu_ver=2ubuntu1
-pkgver=1.5.3.${_ubuntu_ver}
+_ubuntu_rel=2ubuntu1
+pkgver=1.5.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Small commandline tool to configure devices with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ groups=('xorg-apps' 'xorg')
 provides=("xorg-xinput=${pkgver}")
 conflicts=('xorg-xinput')
 source=("http://xorg.freedesktop.org/archive/individual/app/xinput-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/xinput/xinput_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xinput_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('b6f389d5b1fe63de006d90da54824628be9407bf961ffa33ccc2f4080c7aed6e7c8dfe01b7289d6077d80b3d565d2cf9fa60578cc51793135e66e7066606b4b7'
             'b9805f50153442df2f53b63e713d49a38733a82f412a250443bf8f9a9d87e781773a735112f55d3454d7f6624914dae2db358b9b330d24e848f73d8228d86998')
 

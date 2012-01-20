@@ -1,7 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-pkgname=('launchpad-integration' 'liblaunchpad-integration' 'liblaunchpad-integration3' 'python-launchpad-integration')
+
 pkgbase=launchpad-integration
-pkgver=0.1.54
+pkgname=('launchpad-integration' 'liblaunchpad-integration' 'liblaunchpad-integration3' 'python-launchpad-integration')
+pkgver=0.1.54build1
 pkgrel=100
 pkgdesc="Launchpad integration library to integrate launchpad urls into the menus."
 arch=('i686' 'x86_64')
@@ -9,13 +10,13 @@ url="https://launchpad.net/launchpad-integration"
 license=('LGPL')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'pygtk' 'mono' 'gtk-sharp-2' 'gobject-introspection')
 groups=('unity')
-source=("http://archive.ubuntu.com/ubuntu/pool/main/l/${pkgbase}/${pkgbase}_${pkgver}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver}.tar.gz"
         "https://github.com/mono/mono/blob/master/mcs/class/mono.snk?raw=true")
-sha512sums=('b1a3bb2d5d7f45676bbcd5a86897804a39191118a50e4e41b85bfbe02df71a708ce98047987e204742bf73cd8607b869e5b5462841383825be964096362d05d5'
+sha512sums=('2e028e4436ac3764a71266355f533c934dc148718fb723883fbac916f6c7b14db40ed2faef00478294ce0ce8b08808d71dd45c234c0506550c222456a509b325'
             '7f3c4a3bd3eb64769a24be714f603d2c69642d8ff636792b9fb57a5be9b93479d8fbb6872e3243cdc4cc50d9dfc402f55910da339b46e2caf307c59124547541')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%build*}"
 
   #Python 2 fix
   export PYTHON=python2
@@ -28,25 +29,20 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --with-gtk=2 --disable-static
-  make
+  make ${MAKEFLAGS}
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --with-gtk=3 --disable-static
-  make
+  make ${MAKEFLAGS}
   popd
-}
-
-check() {
-  msg "Nothing to check."
 }
 
 package_launchpad-integration() {
   pkgdesc="Provides an easy way to set menu items for an application using GtkUIManager"
-  depends=()
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk2"
 
   install -d -m755 "${pkgdir}/usr/bin/"
   install -d -m755 "${pkgdir}/usr/share/${pkgbase}/launchpadintegration/"
@@ -69,7 +65,7 @@ package_liblaunchpad-integration() {
   pkgdesc="GTK+ 2.0 library for launchpad-integration"
   depends=('gtk2-ubuntu' 'launchpad-integration' 'mono' 'gtk-sharp-2')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk2"
   make DESTDIR="${pkgdir}/" install
   rm -rvf "${pkgdir}/usr/bin/"
   rm -rvf "${pkgdir}/usr/share/"
@@ -80,7 +76,7 @@ package_liblaunchpad-integration3() {
   pkgdesc="Gobject introspection information for the GTK+ 3.0 version of launchpad-integration"
   depends=('gtk3-ubuntu' 'launchpad-integration')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk3"
   make DESTDIR="${pkgdir}/" install
   rm -rvf "${pkgdir}/usr/bin/"
   rm -rvf "${pkgdir}/usr/share/"
@@ -88,9 +84,8 @@ package_liblaunchpad-integration3() {
 
 package_python-launchpad-integration() {
   pkgdesc="Python bindings for launchpad-integration"
-  depends=()
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk2"
   PYTHON2VER=$(find /usr/lib -maxdepth 1 -type d -name python2* | sed -e 's/^.*\///g')
   install -d -m755 "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
   install -m644 "../lib/__init__.py" "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"

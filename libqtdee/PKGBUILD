@@ -3,7 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libqtdee
-pkgver=0.2.3
+_ubuntu_rel=0ubuntu2
+pkgver=0.2.3.${_ubuntu_rel}
 pkgrel=101
 pkgdesc="Provides a set of Qt bindings for libdee"
 arch=('i686' 'x86_64')
@@ -12,18 +13,20 @@ license=('GPL')
 depends=('qt' 'dee')
 makedepends=('cmake')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")
-sha512sums=('59c894de50b84588c333e5d877d276ca09e199d062600a4a0c216f06900fc00c373631740a6324ef4a2c0d0b2bd03b91b065a94d16d9235df36b2269fdf57f3e')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('59c894de50b84588c333e5d877d276ca09e199d062600a4a0c216f06900fc00c373631740a6324ef4a2c0d0b2bd03b91b065a94d16d9235df36b2269fdf57f3e'
+            '0c6cb9f05d95840ee807dd3c1d75116c6ab47714ab0b00cb04c95a7e4d062ade8ba2434ec05380269113ab46873f801158250b5a9c414508f4f2a6b90a8f1e5f')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}/" install
 

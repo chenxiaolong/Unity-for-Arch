@@ -17,7 +17,7 @@ conflicts=('gnome-bluetooth')
 options=('!libtool' '!emptydirs')
 install=gnome-bluetooth.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         '61-gnome-bluetooth-rfkill.rules'
         'fix_gnome-bluetooth_automake_1.11.2.patch')
 sha512sums=('96df759b63aa6e056828ba8f668567c72ce217a3091bbad618cd2a575eb3881a384f4cbd2bf6b1fdd0440ed9b274fc932377aaf36ef8d134038320ed35d1b241'

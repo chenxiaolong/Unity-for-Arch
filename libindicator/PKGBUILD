@@ -10,7 +10,7 @@ pkgdesc="A set of symbols and convience functions that all indicators would like
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
 license=('GPL')
-mekedepends=('gtk3-unity')
+mekedepends=('gtk3-ubuntu')
 options=(!libtool)
 groups=('unity')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
@@ -18,17 +18,18 @@ sha512sums=('ed4aff3c045fbb43ea3534a9b147577bb4922d31623a08a7b26430accf7d80ba8b2
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-  
+
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2 --disable-static
-  make
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --disable-static
-  make
+  make ${MAKEFLAGS}
   popd
 }
 

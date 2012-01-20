@@ -19,7 +19,7 @@ options=(!libtool)
 backup=('etc/X11/xorg.conf.d/10-synaptics.conf')
 source=("http://xorg.freedesktop.org/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "10-synaptics.conf"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/xserver-xorg-input-synaptics/xserver-xorg-input-synaptics_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-synaptics_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('0f35e4330ee9d96b152853e8a64a7c1d93348e8764238d98a3ce72e7b2ca0212ac4c196a81c8177cd69a750418292bdac1b6296f1894b630853823d751e4ed21'
             '3e78c3c77e58ca9de19fc97b9cc3d7d6d08a740bacf005d564de9193e60037a0262ed6b0841f2b3d98adb5ba60675f4856569978d5cb47c4ed2312e47fe6c085'
             'e51ad74386b8b3810848d80115c28389bd8f823557f59abd94933dfb98d79e0bbf4f8466ce17247f86153c3e2a285219cdd07a40d6a370d489a7d0c0687cdb9b')
@@ -27,9 +27,9 @@ sha512sums=('0f35e4330ee9d96b152853e8a64a7c1d93348e8764238d98a3ce72e7b2ca0212ac4
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
+  # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/xserver-xorg-input-synaptics_${pkgver%.*}-${_ubuntu_rel}.diff"
 
-  #Apply Ubuntu patches
   for i in $(cat "debian/patches/series" | grep -Ev '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done

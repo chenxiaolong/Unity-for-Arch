@@ -3,7 +3,7 @@
 # Contributor: buddabrod <buddabrod@gmail.com>
 
 pkgname=xf86-video-nouveau-ubuntu
-_ubuntu_ver="+git20110411+8378443"
+_ubuntu_ver="+git20111201+b5534a1"
 _ubuntu_rel=1
 _actual_ver=0.0.16
 pkgver=${_actual_ver}$(echo ${_ubuntu_ver} | tr '+' '.')
@@ -19,16 +19,17 @@ provides=("xf86-video-nouveau=${pkgver}")
 conflicts=('xorg-server>=1.11.0' 'xf86-video-nouveau')
 options=('!libtool')
 install=${pkgname%-*}.install
-source=("http://archive.ubuntu.com/ubuntu/pool/main/x/xserver-xorg-video-nouveau/xserver-xorg-video-nouveau_${_actual_ver}${_ubuntu_ver}.orig.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/x/xserver-xorg-video-nouveau/xserver-xorg-video-nouveau_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('5da618ec7d20d1709906f3460661ee027eecdf1dfbc9f4098330d872b955d2c6c569a458f8962a918891cc01484e8335c64e1ae3938f8e643154ad8e48531e03'
-            '11cd4bb5514f106cc7dba182e13ac81d3a2e596a9c008b8db6a3477007581b5dff2945bf41895f1de1d1a4c6df46147417c2328ba2059053d35064a2baf32168')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-video-nouveau_${_actual_ver}${_ubuntu_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-video-nouveau_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff.gz")
+sha512sums=('d0ff54ead6e2b2e5eb640ac1a88f41d08757b3edda25c9ffcf4389aaf9e792b729a6d42a6b5f0f9a355a1d7e158cd79ccec5634d45493ec7a054cf27696432b9'
+            '108db48159abc3214871f0b441c991e0aa54f7bc86e294388b313a6fcdd1e6a179b676e06da47df331bea17cd8dc9202abf323886858a95dcec6d4f1ce3ffbf3')
 
 build() {
   cd "${srcdir}/${pkgname%-*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/xserver-xorg-video-nouveau_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff"
+
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done

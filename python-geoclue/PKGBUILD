@@ -14,10 +14,6 @@ groups=('unity')
 source=("http://www.paulocabido.com/soc/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('844c877038f9b8db096a33605be16f8aaea8e66fa84e3a42927f103afa9c8ab565b28cc69b9d02d30bfd02a20e6e20e7fdf28a7d06900db9d288775bb153c533')
 
-build() {
-  msg "Nothing to build."
-}
-
 package() {
   cd "${srcdir}/${pkgname}"
 

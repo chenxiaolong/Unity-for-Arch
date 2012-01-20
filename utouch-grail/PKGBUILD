@@ -15,8 +15,10 @@ sha512sums=("6d33e3394124c9d297f3e40ebcbbc8a77158258bd61cd487528a918802849f7c65e
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --disable-static
-  make
+  # Static library needed for tests
+  ./configure --prefix=/usr # --disable-static
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
 }
 
 package() {

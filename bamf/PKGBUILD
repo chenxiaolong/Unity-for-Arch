@@ -4,8 +4,8 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-_ubuntu_rel=0ubuntu2
-pkgver=0.2.104.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=0.2.106.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
@@ -15,30 +15,25 @@ makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/0.2.204/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/b/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('66b705c8040cf4dcbcf2b3751d0d2231989034c2fab907f2e7c0167f7008db7ffe5f76533b292a1d3f4659b57e4a4341a3441e5d1de5af26e110b028d4a8ea4c'
-            'ec1484ef7e15be03c18e6c6e736fac5feadb6bcd35997dcb7ea537d7162161c4b79721ff5f1d9c3eff76ae9dd0a535a35cee436f64ddbe9b1091b0d70d4bfa97')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}.orig.tar.gz")
+sha512sums=('331361b14464ff482b1890bbe72ce71d20cdb52d805f0599ad6141e17a40bc31e74d264e2b02f1ef605039ee8bc111f1743218db227a5068ef164971bcb626a7')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
 
   autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2 --disable-static
-  make
+  make ${MAKEFLAGS}
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   #Documentation will go in the GTK 3 package
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --enable-gtk-doc --disable-static
-  make
+  make ${MAKEFLAGS}
   popd
 }
 

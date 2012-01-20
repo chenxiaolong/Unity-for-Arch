@@ -4,7 +4,7 @@
 
 pkgname=dee
 _ubuntu_rel=0ubuntu1
-pkgver=0.5.22.${_ubuntu_rel}
+pkgver=1.0.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
 arch=('i686' 'x86_64')
@@ -14,10 +14,10 @@ depends=('glib2')
 makedepends=('python2' 'gobject-introspection' 'gtk-doc' 'vala')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/0.5/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/d/dee/dee_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('9ce1b558c4bfa372273ebbc1d0c26ba39e374ed1790270351cf771e5167f43cf5462e482fb35341900952136d5c6c0a479cd3c94f99e366528c00a92c8ea9b3d'
-            'e4002dea614bee45a7a405542f803d614cfe54af65e7ea615cb2f8f4e223326f221612616e5cbf4617e89fdd97ceef4ecac2879f7d5e1f4e77d0fa49a82a19e0')
+source=("http://launchpad.net/dee/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('7eccf55b8b9b4db3c66e20c797b7f8a6daa311ad8b64d75af6a37d6c44f7d99950a129ffc92185296353d7c5a07f7c3635ec0e377a00f12ce53fbe85627e91be'
+            'ae1d848b09275985647bc860de2717e222b099910d5555f2a7b5c487ba75e844dc6b98bc27e1f8c657fe0ed81b61670062096d2595a034bc2d8fe8fbf254652d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -28,7 +28,7 @@ build() {
   done
 
   ./configure --prefix=/usr --disable-static PYTHON=python2
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

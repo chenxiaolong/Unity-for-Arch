@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=geoclue
-_ubuntu_ver=1ubuntu10
-pkgver=0.12.0.${_ubuntu_ver}
+_ubuntu_rel=1ubuntu11
+pkgver=0.12.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Modular geoinformation service built on the D-Bus messaging system."
 arch=('i686' 'x86_64')
@@ -12,10 +12,10 @@ depends=('gconf')
 makedepends=('gtk-doc' 'autoconf' 'automake')
 groups=('unity')
 options=('!libtool')
-source=("http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname}/${pkgname}_${pkgver%.*}.orig.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname}/${pkgname}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('c65fef518fea5708067def3595a57b2e3cb4c04a3d1c367ac02c4802386a6c8420b3d20f5194896d8e0fdeee6cc6af2744cc920af1ab680a3ca197cb5a5bfab5'
-            '5bcd008fa26257bd8edc9673188025df0ca54fe5c9e9d1ba154168801de4b4209a02e6f5b353d0fcb02523320e5e4565dff5c62f7d33f8c2e5400bb61b1702f4')
+            'e9caff94d1a67f9ad5f80268b79027233eea5ed358fd8126f501459fff69e330f11b4330f0caa9c7176b0ab224c96325ba292b59548d0528f02b50586e63635b')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -27,7 +27,7 @@ build() {
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --enable-gpsd=no --enable-gypsy=no
 
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

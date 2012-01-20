@@ -20,7 +20,7 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=mutter.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/universe/m/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('29d450ff1eb755419fdd5a08fb9fc82be77f4677ba01b72ce53024b1d02f11cb7d12cefa80fb74305cb0b0fc3aa8767ef7bcf075255ad244d57236901e627188'
             'f943d468e077484139a7f31b759a7a29721374db9bf558e4a8f58ea512a840177f1b81869b0139ba219f94c58df20f770181d50b5a6f96d66d018c1b60644a75')
 
@@ -32,7 +32,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \

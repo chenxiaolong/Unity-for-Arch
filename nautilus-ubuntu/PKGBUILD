@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=2ubuntu4
+_ubuntu_rel=2ubuntu8
 pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
@@ -18,9 +18,9 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "http://archive.ubuntu.com/ubuntu/pool/main/n/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('1e5c4aca7b73ad55318390632bb35a97a3c6ed35e013a0d57a5071f43a5c2a35daa70720258acc8f7e6abc163934497ced8376569b1cd164342535c9639a830d'
-            'fce8bdf818e7c0a5a6ad3817b3ff149ba1c681cbe5186ae778331d4bb36fc43a5d0d41727bbc021407fbd636f7403e81ba1f9bc330ef735a880c09db994e9100')
+            '23a036d6189b443a4d905d560d888f6305f39e0cbd6ef0e7530744c491f6447d39a4fe5eb1fbd30415f5fb01a14f036b3e7c0507ef436eb04166a4673ed8e485')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -30,7 +30,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  autoreconf -fi
+  autoreconf -vfi
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \

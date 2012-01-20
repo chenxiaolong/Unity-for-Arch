@@ -16,7 +16,7 @@ options=('!libtool' 'emptydirs')
 install=gconf.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/GConf/3.2/GConf-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/g/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'gconf-merge-schema'
         'gconfpkg'
         'gconf-reload.patch')

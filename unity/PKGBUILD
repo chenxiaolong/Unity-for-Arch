@@ -1,13 +1,19 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-_UBUNTU=false # Using Ubuntu patches?
+# NOTE: Unity multitouch grab handles still relies on Nux 1.0, so it doesn't
+# get built anymore. It's is the same situation in Ubuntu 12.04, which also
+# has Nux 2.0.
+# http://packages.ubuntu.com/precise/amd64/unity/filelist
+# http://packages.ubuntu.com/precise/nux-tools
+
+_UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=4.28.0
+pkgver=5.0.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu3 #Using upstream version
-  _ubuntu_ver=4.24.0
+  _ubuntu_rel=0ubuntu1
+  #_ubuntu_ver=4.24.0
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
 else
@@ -25,27 +31,24 @@ groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 install=unity.install
-source=("http://launchpad.net/unity/4.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
-        "https://bugs.launchpad.net/unity/+bug/914009/+attachment/2665281/+files/fix_build_order_in_unity_cmakelists_4.28.0.patch"
+source=("http://launchpad.net/unity/${_actual_ver%.*}/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         "http://ompldr.org/vYnQxdQ/launchpad-export.tar.gz" #Snapshot of translations from Launchpad as of 2011-12-18
         'launcher_bfb.png')
-sha512sums=('c90603bb9341c845bb6d4de8c9f57aa07f781caaee9a19c745731d935e56bbd6c02335ccfd15bd4a70b9d1487a0a4b88ebbd0f463c98cc015e2d5767dd39340e'
-            'a861c9b0ff3338401e55220b3f7534e023359f833fe70771566e41d07baaf1c4c6ba3a97c695f994d07a29ee7b530eb4d6ca7cd49f60b4d6cda3902afbf9b0a9'
+sha512sums=('538a77b32b6929e0081be0c4198263fd5e55d25b73ef61def40068c240f967cca3e80cd93b57f00a90c57d7c82f4b62f19e90b872b66ead927cb6cb6ce48d339'
+            '4317fd10428239915aec78ab01ad577c9b2a25f6913809bb4e6407caa914ac2c0eb33f1282e31d338c8bea7f1f0f07442debdbb8f9b50a98018f725c385700a6'
             '5bfbacfe23ab2e14d82d04eaa55b5e8529ff530d4ec0c007c4fd5be725c899036e421d5184d169cea1bf403110faeb887ec619847fd59cd84715fb1625f781f9'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}"
 
-  ## Using upstream version ##
   # Apply Ubuntu patches
-  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  #done
+  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff"
 
-  # CMake build fix for Unity 4.28.0
-  # Launchpad Bug: https://bugs.launchpad.net/unity/+bug/914009
-  patch -Np1 -i "${srcdir}/fix_build_order_in_unity_cmakelists_4.28.0.patch"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
 
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
@@ -63,7 +66,7 @@ build() {
   popd
 
   # Disable '-Werror'
-  sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
+  #sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
 
   mkdir -p build && cd build
 
@@ -96,5 +99,5 @@ package() {
     "${pkgdir}/usr/lib/unity/makebootchart.py"
 
   #Arch Linux logo
-  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/4/launcher_bfb.png"
+  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/5/launcher_bfb.png"
 }

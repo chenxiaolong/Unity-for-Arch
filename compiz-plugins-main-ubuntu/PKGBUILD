@@ -1,9 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=compiz-plugins-main-ubuntu
-_ubuntu_ver=0ubuntu4
-pkgver=0.9.6.${_ubuntu_ver}
-pkgrel=101
+_ubuntu_rel=0ubuntu4.2
+pkgver=0.9.6.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Compiz main plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -14,16 +14,16 @@ groups=('unity')
 depends=('compiz-core-ubuntu' 'gconf-ubuntu' 'glib2-ubuntu' 'mesa' 'libjpeg-turbo' 'libxml2' 'libxslt' 'cairo' 'pango' 'librsvg' 'libsm' 'dbus' 'boost')
 makedepends=('intltool' 'cmake' 'pkgconfig' 'libtool')
 install=compiz-plugins-main-ubuntu.install
-source=("http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/c/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_ver}.debian.tar.gz")
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*.*}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('b4b9abb08103e5e6f5df11403480a5bc8a691cc3193cee66db49286e3ce1b4fd391666460f5ecd6825c4107d5c9d6ec0b3a2ad2233aeb9ebca2ffbc562c81839'
-            '05650ea2b1fdb3538a3070595ede1744f800e45c2bfde5b0c6aa6d68534912d5d007f8ad4ad87bed1fa2e9817244a1f36eb8ec011be29365f5e4a5b6fd1b58f8')
+            '2bc86a34c9cdc6d976316ca7ff89cdae3d9c875529ff825baf9ce386b651c85c865ff5721ce10ce0d07396051536cec2ed6353ebc8ef911ca092256b799ca85f')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}"
 
   #Apply Ubuntu patches
-  for i in $(cat ${srcdir}/debian/patches/series | grep -Ev '#'); do
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
@@ -37,12 +37,13 @@ build() {
     -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX=/usr
-  make
+
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
-  cd build
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}/build"
   make DESTDIR="${pkgdir}" install
 }
 

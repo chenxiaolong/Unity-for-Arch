@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=python-xapian
-pkgver=1.2.7
+pkgver=1.2.8
 pkgrel=100
 pkgdesc="SWIG and JNI bindings allowing Xapian to be used from various other programming languages"
 arch=('i686' 'x86_64')
@@ -12,14 +12,14 @@ license=('GPL')
 depends=('xapian-core' 'python2')
 groups=('unity')
 source=("http://oligarchy.co.uk/xapian/${pkgver}/xapian-bindings-${pkgver}.tar.gz")
-sha512sums=('9119c562da1778ee925c2334a13b35f9ff08d0afcf7f942edb4f379a21404d4dc9724a0ee19cd1b77386a04e96f98fc9a2fc83ad6ba7166525a25af1c8e55d19')
+sha512sums=('ef19b51bbdd32c08c7a4ab70701e652fbee23bcfab998082b7c5fe1f42eb47f2643398d6e2a6368c471948176f96ce663b70b2fe9ee8d20614d37358d42986e0')
 
 build() {
   cd "${srcdir}/xapian-bindings-${pkgver}"
   sed -i 's|^\(#!.*python\)$|\12|g' python/docs/examples/*
 
   ./configure --prefix=/usr --disable-static --with-python --without-php --without-ruby --without-tcl --without-csharp --without-java --without-perl PYTHON=python2
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libqtbamf
-pkgver=0.2.2
-pkgrel=101
+pkgver=0.2.3
+pkgrel=100
 pkgdesc="Provides a set of Qt bindings for libbamf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf-qt"
@@ -13,13 +13,13 @@ depends=('qt' 'libbamf3')
 makedepends=('cmake')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")
-sha512sums=('eff2eecf60e2db4a1d607dec8b06b721cccea7cbf8f296a184accc0a686c035bce7b8bd1610af73a37e78e441ebc1f399c636ed6631f15c4d3057d95473b639a')
+sha512sums=('97d4618daac7a42c139db678d7d19e25c73ede6bbf8f0d77eecbf3457043af23e3f00501760c3a9356557559760fb4712afe57985db2b51d9d008bc227ac1c6a')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {

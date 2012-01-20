@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-core
-pkgver=4.24.0
-pkgrel=101
+pkgver=5.0.0
+pkgrel=100
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
@@ -12,16 +12,29 @@ license=('GPL')
 depends=('qt' 'nux' 'libunity')
 makedepends=('cmake')
 groups=('unity')
-source=("http://launchpad.net/unity/4.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"
+source=("http://launchpad.net/unity/${pkgver%.*}/${pkgver}/+download/unity-${pkgver}.tar.bz2"
         'launcher_bfb.png')
-sha512sums=('9d3d040688e66dceb89b01b89a934c699f2985083b41aa0df1d3025c02a83650c9fe9121b71e19e9f1a1cce0b0e844b8eaecb739eda72f833211a6c8e79ea308'
+sha512sums=('538a77b32b6929e0081be0c4198263fd5e55d25b73ef61def40068c240f967cca3e80cd93b57f00a90c57d7c82f4b62f19e90b872b66ead927cb6cb6ce48d339'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
   cd "${srcdir}/unity-${pkgver}"
 
   #Only build the core
-  sed -i -e '/subdirs/ s/tests//' -e '/subdirs/ s/tools//' -e '/compiz/d' -e '/Compiz/d' CMakeLists.txt
+  sed -i \
+    -e '/add_subdirectory.*tests/d' \
+    -e '/add_subdirectory.*tools/d' \
+    -e '/add_subdirectory.*services/d' \
+    -e '/add_subdirectory.*guides/d' \
+    -e '/add_subdirectory.*doc/d' \
+    -e '/add_subdirectory.*standalone-clients/d' \
+    -e '/add_subdirectory.*plugins\/unityshell/d' \
+    -e '/add_subdirectory.*plugins\/gtkloader/d' \
+    -e '/add_subdirectory.*plugins\/networkarearegion/d' \
+    -e '/add_subdirectory.*plugins\/unitydialog/d' \
+    -e '/add_subdirectory.*plugins\/unity-mt-grab-handles/d' \
+    -e 's/compiz;//g' \
+    CMakeLists.txt
 
   #Fix pkgconfig
   sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
@@ -33,16 +46,18 @@ build() {
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DGSETTINGS_LOCALINSTALL=1
-  make
+
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
 }
 
 package() { 
-  cd "${srcdir}/unity-${pkgver}"
-  cd 'build'
+  cd "${srcdir}/unity-${pkgver}/build"
   make DESTDIR="${pkgdir}/" install
   cd '../plugins/unityshell/resources'
-  install -dm755 "${pkgdir}/usr/share/unity/4/"
-  install -m644 *.* -t "${pkgdir}/usr/share/unity/4/"
-  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/4/launcher_bfb.png"
-  rm -rvf "${pkgdir}/usr/share/locale"
+  install -dm755 "${pkgdir}/usr/share/unity/5/"
+  install -m644 *.* -t "${pkgdir}/usr/share/unity/5/"
+  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/5/launcher_bfb.png"
+  rm -rvf "${pkgdir}/usr/share/locale/"
+  rm -rvf "${pkgdir}/usr/share/glib-2.0/"
 }

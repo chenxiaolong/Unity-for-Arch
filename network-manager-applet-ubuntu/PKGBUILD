@@ -6,7 +6,7 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu6
+_ubuntu_rel=0ubuntu7
 pkgver=0.9.1.90.${_ubuntu_rel}
 pkgrel=1
 pkgdesc="GNOME frontends to NetWorkmanager"
@@ -21,9 +21,9 @@ conflicts=('network-manager-applet')
 options=('!libtool')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/0.9/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/n/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('ba979058bf2b97491309540535a376cd503f9252109af235d32c4711a88b07dc3797badcb8cf42166688efcda1327afc19d521c07d12431402ee99bf91545791'
-            'c8bf6f060f071c229e511748c94fac94c1aaeb90cbe86e5a37d8c013c2ef6ab6eedabe0673720a4cfbdf995d821775d570827a7d37e42da297cf5087c279ac40')
+            '54049b77a6c673ed15dd7099fc1717f55c81d98e093c8384bc23ba130cd893ea522cf8eb2bf76e16e5b1609bb5fc1c9900170b00c7ac4cbe374e8dfd63c1b7cb')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -34,7 +34,7 @@ build() {
   done
 
   intltoolize -f -c
-  autoreconf -fi
+  autoreconf -vfi
 
   ./configure \
     --prefix=/usr \
@@ -44,7 +44,7 @@ build() {
     --disable-static \
     --disable-maintainer-mode \
     --enable-indicator
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
