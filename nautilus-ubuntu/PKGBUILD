@@ -9,7 +9,7 @@ pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity')
 makedepends=('intltool' 'gobject-introspection')
 groups=('gnome')
 provides=("nautilus=${pkgver}")
@@ -39,9 +39,8 @@ build() {
     --libexecdir=/usr/lib/nautilus \
     --disable-nst-extension \
     --disable-update-mimedb \
-    --disable-packagekit \
-    --disable-schemas-compile \
-    --disable-appindicator --enable-introspection #From debian/rules
+    --enable-gtk-doc \
+    --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
