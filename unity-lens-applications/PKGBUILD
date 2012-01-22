@@ -4,14 +4,15 @@
 
 pkgname=unity-lens-applications
 pkgver=5.0.0
-pkgrel=100
+pkgrel=101
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
 license=('GPL')
-depends=('gconf' 'libzeitgeist' 'libunity' 'zeitgeist-extensions' 'db')
+depends=('dconf' 'libzeitgeist' 'libunity' 'zeitgeist-extensions' 'db')
 makedepends=('vala' 'intltool')
 groups=('unity')
+install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         '10-no-db48.patch')
 sha512sums=('7e7d4d41a5169fa0efb8f166ff512bb614d8e2ef519c3b6df700bb0ef4f0145981493976953a36e64a6702e5a8601086a1212c59305a807bdc2a980828220eb6'
@@ -23,7 +24,7 @@ build() {
   # Fix build against a higher version of DB
   patch -Np1 -i "${srcdir}/10-no-db48.patch"
 
-  ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname}
+  ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname} --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
