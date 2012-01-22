@@ -4,7 +4,7 @@ post_install() {
 }
 
 pre_upgrade() {
-  if (( $(vercmp $2 2.91.91.3-3) < 0 )); then
+  if (( $(vercmp ${2} 2.91.91.3-3) < 0 )); then
     usr/sbin/gconfpkg --uninstall gnome-session
   fi
 }

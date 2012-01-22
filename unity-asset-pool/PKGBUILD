@@ -12,7 +12,7 @@ license=('GPL')
 depends=('gnome-icon-theme')
 makedepends=('icon-naming-utils')
 groups=('unity')
-source=("http://launchpad.net/$pkgname/${pkgver%.*}/$pkgver/+download/$pkgname-$pkgver.tar.gz"
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         'archlinux-icon-tango-22.png'
         'archlinux-icon-tango-24.png')
 sha512sums=('d0a62d75dd18fe2750373e699570cc30f68bb510532a3147b76b7dd76e562cb020d415a01d7442dabd1e81c85998c4f30815ffdf1508acd4015fe5da6800d5b1'

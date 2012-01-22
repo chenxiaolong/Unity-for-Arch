@@ -28,7 +28,6 @@ build() {
 
   [[ -d build ]] || mkdir build
   cd build
-  env PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH" \
   cmake .. \
     -DCMAKE_BUILD_WITH_RPATH=FALSE \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \

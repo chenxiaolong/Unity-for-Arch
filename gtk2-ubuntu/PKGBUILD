@@ -68,7 +68,7 @@ package_gtk2-ubuntu() {
   cd "${srcdir}/gtk+-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}" install
-  sed -i "s#env python#env python2#" $pkgdir/usr/bin/gtk-builder-convert
+  sed -i "s#env python#env python2#" "${pkgdir}/usr/bin/gtk-builder-convert"
   echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
   #split this out to use with gtk3 too
   rm "${pkgdir}/usr/bin/gtk-update-icon-cache"
