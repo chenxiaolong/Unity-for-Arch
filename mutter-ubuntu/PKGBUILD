@@ -48,9 +48,9 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}" install
 
-  install -m755 -d "${pkgdir}/usr/share/gconf/schemas"
-  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain mutter ${pkgdir}/etc/gconf/schemas/*.schemas
-  rm -f ${pkgdir}/etc/gconf/schemas/*.schemas
+  install -dm755 "${pkgdir}/usr/share/gconf/schemas/"
+  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain mutter "${pkgdir}"/etc/gconf/schemas/*.schemas
+  rm -f "${pkgdir}"/etc/gconf/schemas/*.schemas
 
   #Install Ubuntu stuff
   install -d -m755 "${pkgdir}/usr/share/sgml/mutter-common/"

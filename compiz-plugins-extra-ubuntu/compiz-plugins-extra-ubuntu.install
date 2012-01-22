@@ -1,6 +1,7 @@
 SCHEMAS="compiz-addhelper.schemas compiz-animationaddon.schemas compiz-bench.schemas compiz-bicubic.schemas compiz-crashhandler.schemas compiz-cubeaddon.schemas compiz-extrawm.schemas compiz-fadedesktop.schemas compiz-firepaint.schemas compiz-gears.schemas compiz-group.schemas compiz-loginout.schemas compiz-maximumize.schemas compiz-mblur.schemas compiz-notification.schemas compiz-reflex.schemas compiz-scalefilter.schemas compiz-shelf.schemas compiz-showdesktop.schemas compiz-showmouse.schemas compiz-splash.schemas compiz-td.schemas compiz-trailfocus.schemas compiz-wallpaper.schemas compiz-widget.schemas"
 
 post_install() {
+  glib-compile-schemas usr/share/glib-2.0/schemas
   gconf-schemas --register ${SCHEMAS}
   update-gconf-defaults
 }
@@ -16,4 +17,8 @@ pre_upgrade() {
 
 post_upgrade() {
   post_install
+}
+
+post_remove() {
+  glib-compile-schemas usr/share/glib-2.0/schemas
 }
