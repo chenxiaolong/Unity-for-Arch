@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=inputproto-ubuntu
-_ubuntu_rel=2ubuntu1
-pkgver=2.0.2.${_ubuntu_rel}
+_ubuntu_rel=1
+pkgver=2.1.99.5.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X11 Input extension wire protocol"
 arch=('any')
@@ -13,8 +13,8 @@ provides=("inputproto=${pkgver}")
 conflicts=('inputproto')
 source=("${url}/releases/individual/proto/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/x11proto-input_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('33ac36e447d58dec7e604d4a7f3d4f86734104ee9d8001dece3808edac5a7e6bd7f18c0c70ad2263051a7bc88d9e9f12db944775e42ae43f3cb021cd234a8c1f'
-            'fdec5a6c21ec8b04f93c8ebeeb99929d5d7b2b5fbf4b2991b08e214ad8774fbc28e3688cf3dafd4bda8726c1c74c6ec4e571e526376568def8fa4fd3c6619006')
+sha512sums=('5ee2d7883d9104b91f4ca4aeee8ec8400b3e8208e1c23fbed9887fe30b8aaa3fcde3eba85b96c25c3388633ae2f93e639c13a890812e829ad033104f6e0b8b9b'
+            'ebafcafe73d0d8331edc0d05f2ad85243b3cf4eb30d2022d80bba688916571b1387d155d03eddbdfd3074f6a5ecebedce450fb0d20201ef3ba6a9a24df10568a')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
