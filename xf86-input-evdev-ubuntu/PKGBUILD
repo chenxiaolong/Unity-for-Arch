@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-input-evdev-ubuntu
-_ubuntu_rel=1ubuntu13
-pkgver=2.6.0.${_ubuntu_rel}
+_ubuntu_rel=1ubuntu3
+pkgver=2.6.99.901.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X.org evdev input driver"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ options=('!libtool' '!makeflags')
 groups=('xorg-drivers' 'xorg')
 source=("${url}/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c5ff503d6bde7e5690333867595d54ddd5403e6d8f556b09a631bcb65629aa82f55c694f5257d925541cbe86cc47a9464a3c21b9ff62fda8b4bf0118c92637c5'
-            'e15a8fa85263eef40e7bcc0b6a2e8a14fbdd0174a8083fdac8269f5c8c893cf3d8f005d834c60246a26d35a7c6e5372e3c1de86edc434373762c9180869d2673')
+sha512sums=('2cf0a6399bf377cc2f47586d29e719ec7cd36eb6904ee3403b6c1dbaa352f3800248e3b41be1e0dc86968df0fa0ea7834a364c8cbf04b8dc239a55f5f20b8e1a'
+            '58d1e0f1ab8240b8cfdced76af0807c1290b82fc3952bdd2cad4b9725ef219eb68aff82101bbde0556fb4efc9e9878edd6af72fedf13b3945852ea3cc99a5d78')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -37,9 +37,9 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
-  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname%-*}"
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname%-*}"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname%-*}/"
-  install -m755 -d "${pkgdir}/etc/X11/xorg.conf.d"
+  install -dm755 "${pkgdir}/etc/X11/xorg.conf.d"
   install -m644 'debian/local/11-evdev-quirks.conf' "${pkgdir}/etc/X11/xorg.conf.d/"
   install -m644 'debian/local/11-evdev-trackpoint.conf' "${pkgdir}/etc/X11/xorg.conf.d/"
 }
