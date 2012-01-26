@@ -1,8 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-input-synaptics-ubuntu
+_ubuntu_ver="+git20120101"
 _ubuntu_rel=1ubuntu2
-pkgver=1.4.1.${_ubuntu_rel}
+_actual_ver=1.5.0
+pkgver=${_actual_ver}$(echo ${_ubuntu_ver} | tr '+' '.').${_ubuntu_rel}
 pkgrel=1
 pkgdesc="Synaptics driver for notebook touchpads"
 arch=('i686' 'x86_64')
@@ -17,34 +19,29 @@ conflicts=('synaptics' 'xf86-input-synaptics')
 groups=('xorg-drivers' 'xorg')
 options=(!libtool)
 backup=('etc/X11/xorg.conf.d/10-synaptics.conf')
-source=("http://xorg.freedesktop.org/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "10-synaptics.conf"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-synaptics_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('0f35e4330ee9d96b152853e8a64a7c1d93348e8764238d98a3ce72e7b2ca0212ac4c196a81c8177cd69a750418292bdac1b6296f1894b630853823d751e4ed21'
-            '3e78c3c77e58ca9de19fc97b9cc3d7d6d08a740bacf005d564de9193e60037a0262ed6b0841f2b3d98adb5ba60675f4856569978d5cb47c4ed2312e47fe6c085'
-            'e51ad74386b8b3810848d80115c28389bd8f823557f59abd94933dfb98d79e0bbf4f8466ce17247f86153c3e2a285219cdd07a40d6a370d489a7d0c0687cdb9b')
+source=("10-synaptics.conf"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-synaptics_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.tar.gz")
+sha512sums=('3e78c3c77e58ca9de19fc97b9cc3d7d6d08a740bacf005d564de9193e60037a0262ed6b0841f2b3d98adb5ba60675f4856569978d5cb47c4ed2312e47fe6c085'
+            '6292b26e5cf760e1db0bf2097e6ddd2ae94ab0c02df952772e69eb673e0142c9f1d865361aba627465e888071f558019b580eb748e1a0680f616e4a02c66497d')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/xserver-xorg-input-synaptics"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/xserver-xorg-input-synaptics_${pkgver%.*}-${_ubuntu_rel}.diff"
-
-  for i in $(cat "debian/patches/series" | grep -Ev '#'); do
+  for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  chmod +x autogen.sh
   ./autogen.sh --prefix=/usr
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/xserver-xorg-input-synaptics"
   make DESTDIR="${pkgdir}" install
-  install -m755 -d "${pkgdir}/etc/X11/xorg.conf.d"
+  install -dm755 "${pkgdir}/etc/X11/xorg.conf.d"
   install -m644 "${srcdir}/10-synaptics.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
-  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname%-*}"
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname%-*}"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname%-*}/"
 
   #rm -rf "${pkgdir}/usr/share/X11"
