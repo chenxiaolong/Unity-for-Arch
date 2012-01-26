@@ -64,36 +64,33 @@ Order to compile/install:
 56: utouch-evemu                   -> Event emulation for the uTouch stack
 57: utouch-frame                   -> Touch frame library
 58: xorg-server-ubuntu             -> Xorg X11 server
-59: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
-60: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
-61: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
-62: check                          -> Unit testing framework for C
-63: utouch-grail                   -> Gesture recognition and instantiation lib.
-64: utouch-geis                    -> Implementation of the GEIS interface
-65: nux                            -> An OpenGL toolkit
-66: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
-67: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-68: unity-asset-pool               -> Design assets for Unity
-69: gnome-menus2                   -> Gnome menu specifications
-70: libunity                       -> Library for integrating Unity
-71: libunity-misc                  -> Differently licensed stuff for Unity
-72: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-73: unity-lens-applications        -> Unity applications lens
-74: unity-lens-files               -> Unity files lens
-75: unity-lens-music               -> Unity music lens
-76: compiz-core-ubuntu             -> Compiz core components
-77: utouch-compiz                  -> Links uTouch with Compiz
-78: libcompizconfig-ubuntu         -> Compiz configuration system library
-79: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-80: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-81: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-82: ccsm-ubuntu                    -> Compiz configuration manager
-83: compiz-plugins-main-ubuntu     -> Compiz main plugins
-84: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-85: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-86: unity                          -> A desktop experience designed for efficiency
-87: unity-2d                       -> 2D implementation of Unity
-88: unity-rotated-bzr *            -> A modified version of Unity (rotated)
+59: check                          -> Unit testing framework for C
+60: utouch-grail                   -> Gesture recognition and instantiation lib.
+61: utouch-geis                    -> Implementation of the GEIS interface
+62: nux                            -> An OpenGL toolkit
+63: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
+64: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
+65: unity-asset-pool               -> Design assets for Unity
+66: gnome-menus2                   -> Gnome menu specifications
+67: libunity                       -> Library for integrating Unity
+68: libunity-misc                  -> Differently licensed stuff for Unity
+69: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+70: unity-lens-applications        -> Unity applications lens
+71: unity-lens-files               -> Unity files lens
+72: unity-lens-music               -> Unity music lens
+73: compiz-core-ubuntu             -> Compiz core components
+74: utouch-compiz                  -> Links uTouch with Compiz
+75: libcompizconfig-ubuntu         -> Compiz configuration system library
+76: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+77: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+78: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+79: ccsm-ubuntu                    -> Compiz configuration manager
+80: compiz-plugins-main-ubuntu     -> Compiz main plugins
+81: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+82: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+83: unity                          -> A desktop experience designed for efficiency
+84: unity-2d                       -> 2D implementation of Unity
+85: unity-rotated-bzr *            -> A modified version of Unity (rotated)
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
