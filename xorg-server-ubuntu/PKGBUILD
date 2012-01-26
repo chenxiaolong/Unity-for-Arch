@@ -3,21 +3,21 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_rel=1ubuntu6
-pkgver=1.10.4.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu8
+pkgver=1.11.3.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
-makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto')
+makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt')
 options=('!libtool')
-source=(${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2
-        http://archive.ubuntu.com/ubuntu/pool/main/x/${pkgbase%-*}/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz
-        xvfb-run
-        xvfb-run.1
-        10-quirks.conf)
-sha512sums=('8e3391c78e7d5e52041efe35badf04be49bbb8b7940c7694faadd1f6f555edc5afda554cb8f3524b3ae7cfe8d5e63b80ca715cf3855565820efff46641ecc9b5'
-            'dc30cb653f7cd2485e9136848042f80fe7ce209955ebcdbb898a924824066e5d7cd0b65cf52483faf60d01a6250a575d0a21b8741262880d7ad2e3e581a27019'
+source=("${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        'xvfb-run'
+        'xvfb-run.1'
+        '10-quirks.conf')
+sha512sums=('f1325e5448454bb2f8811290126f0101e5005e364112da73b240010940196016e01b1a2b72f675e9d2fe135c4db0818f47e4d7ef415a68c3b1c4a13ac2a1d0c1'
+            '71b57aabec5d3156393cdffd212605cec80208829079fa22417c321d5d059581baaae24ec213cb8717a3fc4d8ca06addf62657a1b66a1d48c9e2ee4044a1a3aa'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
@@ -36,93 +36,98 @@ build() {
   done
 
   ./autogen.sh \
-    --prefix=/usr \
-    --enable-ipv6 \
-    --enable-dri \
-    --enable-dmx \
-    --enable-xvfb \
-    --enable-xnest \
+    `# enable features` \
+    --enable-aiglx \
     --enable-composite \
-    --enable-xorg \
-    --enable-xephyr \
+    --enable-config-udev \
+    --enable-dbe \
+    --enable-dga \
+    --enable-dmx \
+    --enable-dpms \
+    --enable-dri \
+    --enable-dri2 \
+    --enable-gestures \
+    --enable-glx \
+    --enable-ipv6 \
     --enable-glx-tls \
     --enable-kdrive \
-    --enable-config-udev \
-    --disable-config-dbus \
-    --enable-record \
-    --enable-xfbdev \
-    --disable-xfake \
-    --disable-static \
-    --sysconfdir=/etc/X11 \
-    --localstatedir=/var \
-    --with-xkb-path=/usr/share/X11/xkb \
-    --with-xkb-output=/var/lib/xkb \
-    --with-fontrootdir=/usr/share/fonts \
-    --enable-gestures \
-    --disable-dtrace \
-    --disable-strict-compilation \
-    --disable-debug \
-    --with-int10=x86emu \
-    --disable-devel-docs \
-    --disable-install-libxf86config \
     --enable-mitshm \
-    --enable-xres \
-    --enable-xcsecurity \
-    --disable-xcalibrate \
-    --disable-tslib \
-    --enable-dbe \
-    --disable-xf86bigfont \
-    --enable-dpms \
-    --disable-xquartz \
-    --disable-xwin \
-    --disable-install-setuid \
-    --enable-aiglx \
+    --enable-record \
     --enable-registry \
-    --enable-xv \
-    --enable-xvmc \
-    --enable-dga \
     --enable-screensaver \
-    --enable-xdmcp \
-    --enable-xdm-auth-1 \
-    --enable-glx \
-    --enable-xinerama \
-    --enable-xf86vidmode \
     --enable-xace \
+    --enable-xcsecurity \
+    --enable-xdm-auth-1 \
+    --enable-xdmcp \
+    --enable-xephyr \
+    --enable-xf86vidmode \
+    --enable-xfbdev \
     --enable-xfree86-utils \
-    --with-sha1=libgcrypt \
-    --enable-dri2 \
-    --with-fop=no `# build fix` \
+    --enable-xinerama \
+    --enable-xnest \
+    --enable-xorg \
+    --enable-xres \
+    --enable-xv \
+    --enable-xvfb \
+    --enable-xvmc \
+    `# disable features` \
+    --disable-config-dbus \
+    --disable-config-hal \
+    --disable-debug \
+    --disable-devel-docs \
+    --disable-dtrace \
+    --disable-install-libxf86config \
+    --disable-install-setuid \
+    --disable-silent-rules \
+    --disable-static \
+    --disable-strict-compilation \
+    --disable-tslib \
+    --disable-xcalibrate \
+    --disable-xf86bigfont \
+    --disable-xfake \
+    --disable-xquartz \
     --disable-xselinux \
+    --disable-xwin \
+    `# installation prefixes and paths` \
+    --localstatedir=/var \
+    --prefix=/usr \
+    --sysconfdir=/etc/X11 \
+    --with-fontrootdir=/usr/share/fonts \
+    --with-xkb-output=/var/lib/xkb \
+    --with-xkb-path=/usr/share/X11/xkb \
+    `# configuration options` \
     --with-default-xkb-rules=evdev \
-    --disable-config-hal
+    --with-fop=no `# build fix` \
+    --with-int10=x86emu \
+    --with-sha1=libgcrypt
 
   # Build fix
-  find . -name Makefile -exec \
-    sed -i \
-      -e 's/-Werror=int-to-pointer-cast//g' \
-      -e 's/-Werror=address//g' \
-      -e 's/-Werror=array-bounds//g' \
-      -e 's/-Werror=attributes//g' \
-      -e 's/-Werror=clobbered//g' \
-      -e 's/-Werror=format-security//g' \
-      -e 's/-Werror=implicit//g' \
-      -e 's/-Werror=incompatible-pointer-types//g' \
-      -e 's/-Werror=init-self//g' \
-      -e 's/-Werror=int-to-pointer-cast//g' \
-      -e 's/-Werror=main//g' \
-      -e 's/-Werror=missing-braces//g' \
-      -e 's/-Werror=nonnull//g' \
-      -e 's/-Werror=return-type//g' \
-      -e 's/-Werror=sequence-point//g' \
-      -e 's/-Werror=trigraphs//g' \
-      -e 's/-Werror=unknown-warning-option//g' \
-      -e 's/-Werror=unused-command-line-argument//g' \
-      -e 's/-Wformat-nonliteral//g' \
-      -e 's/-Wimplicit-function-declaration//g' \
-      -e 's/-Wparentheses//g' \
-      -e 's/-Werror=write-strings//g' \
-      -e 's/-Werror=pointer-to-int-cast//g' \
-      {} \;
+  #find . -name Makefile -exec \
+  #  sed -i \
+  #    -e 's/-Werror=int-to-pointer-cast//g' \
+  #    -e 's/-Werror=address//g' \
+  #    -e 's/-Werror=array-bounds//g' \
+  #    -e 's/-Werror=attributes//g' \
+  #    -e 's/-Werror=clobbered//g' \
+  #    -e 's/-Werror=format-security//g' \
+  #    -e 's/-Werror=implicit//g' \
+  #    -e 's/-Werror=incompatible-pointer-types//g' \
+  #    -e 's/-Werror=init-self//g' \
+  #    -e 's/-Werror=int-to-pointer-cast//g' \
+  #    -e 's/-Werror=main//g' \
+  #    -e 's/-Werror=missing-braces//g' \
+  #    -e 's/-Werror=nonnull//g' \
+  #    -e 's/-Werror=return-type//g' \
+  #    -e 's/-Werror=sequence-point//g' \
+  #    -e 's/-Werror=trigraphs//g' \
+  #    -e 's/-Werror=unknown-warning-option//g' \
+  #    -e 's/-Werror=unused-command-line-argument//g' \
+  #    -e 's/-Wformat-nonliteral//g' \
+  #    -e 's/-Wimplicit-function-declaration//g' \
+  #    -e 's/-Wparentheses//g' \
+  #    -e 's/-Werror=write-strings//g' \
+  #    -e 's/-Werror=pointer-to-int-cast//g' \
+  #    {} \;
     
   make ${MAKEFLAGS}
 
@@ -138,7 +143,7 @@ package_xorg-server-common-ubuntu() {
   pkgdesc="Xorg server common files"
   depends=('xkeyboard-config' 'xorg-xkbcomp' 'xorg-setxkbmap' 'xorg-fonts-misc')
   provides=('xorg-server-common')
-  conflicts=('xorg-server-common')
+  conflicts=('xorg-server-common' 'qt-ubuntu<4.8.0.1ubuntu2' 'utouch-frame<2.1.0')
 
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
   install -m755 -d "${pkgdir}/usr/share/licenses/xorg-server-common"
@@ -147,7 +152,7 @@ package_xorg-server-common-ubuntu() {
   make -C xkb DESTDIR="${pkgdir}" install-data
 
   install -m755 -d "${pkgdir}/usr/share/man/man1"
-  install -m644 doc/man/Xserver.1 "${pkgdir}/usr/share/man/man1/"
+  install -m644 man/Xserver.1 "${pkgdir}/usr/share/man/man1/"
 
   install -m755 -d "${pkgdir}/usr/lib/xorg"
   install -m644 dix/protocol.txt "${pkgdir}/usr/lib/xorg/"

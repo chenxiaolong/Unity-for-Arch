@@ -60,13 +60,13 @@ Order to compile/install:
 52: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
 53: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
 54: xorg-xinput-ubuntu             -> Command line tool to configure input devices
-55: xorg-server-ubuntu             -> Xorg X11 server
-56: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
-57: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
-58: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
-59: mtdev                          -> Multitouch protocol translation library
-60: utouch-evemu                   -> Event emulation for the uTouch stack
-61: utouch-frame                   -> Touch frame library
+55: mtdev                          -> Multitouch protocol translation library
+56: utouch-evemu                   -> Event emulation for the uTouch stack
+57: utouch-frame                   -> Touch frame library
+58: xorg-server-ubuntu             -> Xorg X11 server
+59: xf86-video-intel-ubuntu *      -> Xorg X11 Intel video driver
+60: xf86-video-nouveau-ubuntu *    -> Xorg X11 nVidia video driver
+61: xf86-video-ati-ubuntu *        -> Xorg X11 ATI/AMD video driver
 62: check                          -> Unit testing framework for C
 63: utouch-grail                   -> Gesture recognition and instantiation lib.
 64: utouch-geis                    -> Implementation of the GEIS interface
