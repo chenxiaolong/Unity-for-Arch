@@ -5,7 +5,7 @@
 pkgname=dconf-qt
 _ubuntu_rel=0ubuntu3
 pkgver=0.0.0.110722.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="Qt and QML bindings for dconf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dconf-qt"
@@ -21,12 +21,18 @@ sha512sums=('4c7e2f02f7dfce3d532a455c3a2b8da5900260f570280b0d4da312746e8925c0b9f
 build() {
   cd "${srcdir}/lib${pkgname}-${pkgver%.*.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  # Fix Qt imports directory
+  sed -i '/set(IMPORT_INSTALL_DIR/d' qml/CMakeLists.txt
+
+  cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DIMPORT_INSTALL_DIR=lib/qt/imports/QConf \
+    -DCMAKE_BUILD_TYPE=Release
   make ${MAKEFLAGS}
 }
 
