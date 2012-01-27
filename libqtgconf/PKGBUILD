@@ -4,7 +4,7 @@
 
 pkgname=libqtgconf
 pkgver=0.1
-pkgrel=100
+pkgrel=101
 pkgdesc="Provides a set of Qt bindings for GConf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gconf-qt"
@@ -18,7 +18,13 @@ sha512sums=('1327a08a65f3d80bcdf9e504615819c6463d0c007bc4b55e346e69442279252cffc
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  # Fix Qt imports directory
+  sed -i '/set(IMPORT_INSTALL_DIR/d' CMakeLists.txt
+
+  cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DIMPORT_INSTALL_DIR=lib/qt/imports/gconf \
+    -DCMAKE_BUILD_TYPE=Release
   make ${MAKEFLAGS}
 }
 
