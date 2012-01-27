@@ -12,85 +12,86 @@ Order to compile/install:
 04: libxi-ubuntu                   -> X11 Input library with Ubuntu patches
 05: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
 06: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
-07: gconf-ubuntu                   -> A configuration database system
-08: libdbusmenu                    -> Library for passing menus over DBus
-09: libindicator                   -> Symbols and functions for indicators
-10: libindicate                    -> Libraries for apps to raise 'flags' on DBus
-11: libindicate-qt                 -> Qt bindings for libindicate
-12: libappindicator                -> Library to export menu bar to Unity
-13: appmenu-gtk                    -> Application menu module for GTK+
-14: appmenu-qt                     -> Application menu support for QT
-15: bamf                           -> Application matching framework
-16: libqtbamf                      -> Qt bindings for bamf
-17: dee                            -> Create Model-View-Controller apps over DBus
-18: libqtdee                       -> Qt binding and QML plugin for Dee
-19: libqtgconf                     -> Qt bindings for GConf
-20: dconf-qt                       -> Qt bindings for DConf
-21: sni-qt                         -> Turns Qt tray icons into appindicators
-22: ido                            -> Widgets and objects used for indicators
-23: libzeitgeist                   -> Client library to interact with Zeitgeist
-24: python-rdflib                  -> A language for representing information
-25: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-26: geoclue                        -> Modular geoinformation service
-27: python-geoclue                 -> Geoclue Python module
-28: python-xapian                  -> Python bindings for Xapian
-29: zeitgeist-extensions           -> Extensions for Zeitgeist
-30: gnome-activity-journal         -> Tool for easily browsing and finding files
-31: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-32: gnome-session-ubuntu           -> GNOME Session Manager
-33: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-34: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-35: metacity-ubuntu                -> Lightweight GTK+ window manager
-36: launchpad-integration          -> Launchpad.net integration
-37: mutter-ubuntu                  -> Lightweight GTK+ window manager
-38: indicator-applet               -> GNOME panel indicator applet
-39: indicator-application          -> Takes menus and puts then in the panel
-40: indicator-appmenu              -> An indicator to host the menus from apps
-41: indicator-datetime             -> A very, very simple clock
-42: indicator-messages             -> Collects messages that need a response
-43: indicator-multiload            -> Port of the GNOME multiload applet
-44: indicator-power                -> Indicator to show battery information
-45: indicator-session              -> Indicator to manage session
-46: indicator-sound                -> A unified sound menu
-47: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-48: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-49: gtest                          -> C++ testing utility based on xUnit
-50: gmock                          -> A library for writing C++ mock classes
-51: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-52: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-53: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-54: xorg-xinput-ubuntu             -> Command line tool to configure input devices
-55: mtdev                          -> Multitouch protocol translation library
-56: utouch-evemu                   -> Event emulation for the uTouch stack
-57: utouch-frame                   -> Touch frame library
-58: xorg-server-ubuntu             -> Xorg X11 server
-59: check                          -> Unit testing framework for C
-60: utouch-grail                   -> Gesture recognition and instantiation lib.
-61: utouch-geis                    -> Implementation of the GEIS interface
-62: nux                            -> An OpenGL toolkit
-63: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
-64: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
-65: unity-asset-pool               -> Design assets for Unity
-66: gnome-menus2                   -> Gnome menu specifications
-67: libunity                       -> Library for integrating Unity
-68: libunity-misc                  -> Differently licensed stuff for Unity
-69: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-70: unity-lens-applications        -> Unity applications lens
-71: unity-lens-files               -> Unity files lens
-72: unity-lens-music               -> Unity music lens
-73: compiz-core-ubuntu             -> Compiz core components
-74: utouch-compiz                  -> Links uTouch with Compiz
-75: libcompizconfig-ubuntu         -> Compiz configuration system library
-76: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-77: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-78: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-79: ccsm-ubuntu                    -> Compiz configuration manager
-80: compiz-plugins-main-ubuntu     -> Compiz main plugins
-81: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-82: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-83: unity                          -> A desktop experience designed for efficiency
-84: unity-2d                       -> 2D implementation of Unity
-85: unity-rotated-bzr *            -> A modified version of Unity (rotated)
+07: qt-ubuntu                      -> Qt toolkit with Ubuntu patches
+08: gconf-ubuntu                   -> A configuration database system
+09: libdbusmenu                    -> Library for passing menus over DBus
+10: libindicator                   -> Symbols and functions for indicators
+11: libindicate                    -> Libraries for apps to raise 'flags' on DBus
+12: libindicate-qt                 -> Qt bindings for libindicate
+13: libappindicator                -> Library to export menu bar to Unity
+14: appmenu-gtk                    -> Application menu module for GTK+
+15: appmenu-qt                     -> Application menu support for QT
+16: bamf                           -> Application matching framework
+17: libqtbamf                      -> Qt bindings for bamf
+18: dee                            -> Create Model-View-Controller apps over DBus
+19: libqtdee                       -> Qt binding and QML plugin for Dee
+20: libqtgconf                     -> Qt bindings for GConf
+21: dconf-qt                       -> Qt bindings for DConf
+22: sni-qt                         -> Turns Qt tray icons into appindicators
+23: ido                            -> Widgets and objects used for indicators
+24: libzeitgeist                   -> Client library to interact with Zeitgeist
+25: python-rdflib                  -> A language for representing information
+26: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
+27: geoclue                        -> Modular geoinformation service
+28: python-geoclue                 -> Geoclue Python module
+29: python-xapian                  -> Python bindings for Xapian
+30: zeitgeist-extensions           -> Extensions for Zeitgeist
+31: gnome-activity-journal         -> Tool for easily browsing and finding files
+32: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+33: gnome-session-ubuntu           -> GNOME Session Manager
+34: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+35: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+36: metacity-ubuntu                -> Lightweight GTK+ window manager
+37: launchpad-integration          -> Launchpad.net integration
+38: mutter-ubuntu                  -> Lightweight GTK+ window manager
+39: indicator-applet               -> GNOME panel indicator applet
+40: indicator-application          -> Takes menus and puts then in the panel
+41: indicator-appmenu              -> An indicator to host the menus from apps
+42: indicator-datetime             -> A very, very simple clock
+43: indicator-messages             -> Collects messages that need a response
+44: indicator-multiload            -> Port of the GNOME multiload applet
+45: indicator-power                -> Indicator to show battery information
+46: indicator-session              -> Indicator to manage session
+47: indicator-sound                -> A unified sound menu
+48: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+49: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+50: gtest                          -> C++ testing utility based on xUnit
+51: gmock                          -> A library for writing C++ mock classes
+52: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+53: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+54: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+55: xorg-xinput-ubuntu             -> Command line tool to configure input devices
+56: mtdev                          -> Multitouch protocol translation library
+57: utouch-evemu                   -> Event emulation for the uTouch stack
+58: utouch-frame                   -> Touch frame library
+59: xorg-server-ubuntu             -> Xorg X11 server
+60: check                          -> Unit testing framework for C
+61: utouch-grail                   -> Gesture recognition and instantiation lib.
+62: utouch-geis                    -> Implementation of the GEIS interface
+63: nux                            -> An OpenGL toolkit
+64: xf86-input-evdev-ubuntu        -> Xorg X11 evdev input driver
+65: xf86-input-synaptics-ubuntu *  -> Xorg X11 Synaptics touchpad driver
+66: unity-asset-pool               -> Design assets for Unity
+67: gnome-menus2                   -> Gnome menu specifications
+68: libunity                       -> Library for integrating Unity
+69: libunity-misc                  -> Differently licensed stuff for Unity
+70: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+71: unity-lens-applications        -> Unity applications lens
+72: unity-lens-files               -> Unity files lens
+73: unity-lens-music               -> Unity music lens
+74: compiz-core-ubuntu             -> Compiz core components
+75: utouch-compiz                  -> Links uTouch with Compiz
+76: libcompizconfig-ubuntu         -> Compiz configuration system library
+77: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+78: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+79: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+80: ccsm-ubuntu                    -> Compiz configuration manager
+81: compiz-plugins-main-ubuntu     -> Compiz main plugins
+82: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+83: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+84: unity                          -> A desktop experience designed for efficiency
+85: unity-2d                       -> 2D implementation of Unity
+86: unity-rotated-bzr *            -> A modified version of Unity (rotated)
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar

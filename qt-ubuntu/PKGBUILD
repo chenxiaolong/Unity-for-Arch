@@ -1,0 +1,192 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+
+pkgbase=qt-ubuntu
+pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
+_ubuntu_rel=1ubuntu3
+pkgver=4.8.0.${_ubuntu_rel}
+pkgrel=100
+arch=('i686' 'x86_64')
+url='http://qt-project.org/'
+license=('GPL3' 'LGPL')
+makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
+options=('!libtool')
+_pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${pkgver%.*}"
+source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('b37f2d5fe3cebdcc7ebd5b6bc68ea03f4cabeadc492c77d7c18d00ede5c254adb57fcbe5cec6326072304db49e69e59c14af7e90875138c3b2f255237a99a78f'
+            '9843d3d09ce42fe233240881cf4cd8eebc41b353c54db3cc73f7ec5684ebbdb8ba8a3172872b598edfece9d0738e9fdd70aba9dfc860c561f123cae1cfb25871')
+
+build() {
+  cd "${srcdir}/${_pkgfqn}"
+
+  # Apply Ubuntu patches
+    # Disable patches
+      # Patch for adding "-qt4" to the end of the binaries' filenames
+      sed -i '/01_debian_append_qt4_suffix.diff/d' "${srcdir}/debian/patches/series"
+      # Multiarch patch for Debian/Ubuntu
+      sed -i '/qt-multiarch-plugin-path-compat.diff/d' "${srcdir}/debian/patches/series"
+      # Debian architecture detection (fails with: "Qt has not been ported to this architecture")
+      sed -i '/07_trust_dpkg-arch_over_uname-m.diff/d' "${srcdir}/debian/patches/series"
+      # ARM v6 entry for previous patch
+      sed -i '/94_armv6_uname_entry.diff/d' "${srcdir}/debian/patches/series"
+    # Fix patches
+      # Patches that have "-qt4"
+      sed -i 's/-qt4//g' "${srcdir}/debian/patches/kubuntu_17_enable_qtwebkit_for_qtassistant.diff"
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  # Workaround the error:
+  # error: ‘struct’ tag used in naming ‘union _GMutex’
+  CFLAGS="${CFLAGS} -fpermissive"
+  CXXFLAGS="${CXXFLAGS} -fpermissive"
+
+  export QT4DIR="${srcdir}/${_pkgfqn}"
+  export LD_LIBRARY_PATH="${QT4DIR}/lib:${LD_LIBRARY_PATH}"
+
+  sed -i "s|-O2|${CXXFLAGS}|" mkspecs/common/{g++,gcc}-base.conf
+  sed -i "/^QMAKE_LFLAGS_RPATH/s| -Wl,-rpath,||g" mkspecs/common/gcc-base-unix.conf
+  sed -i "/^QMAKE_LFLAGS\s/s|+=|+= ${LDFLAGS}|g" mkspecs/common/gcc-base.conf
+
+  # From debian/rules:
+  # Remove include directory. Then ./configure will take care of calling
+  # syncqt and regenerating it.
+  rm -rvf include
+
+  ./configure \
+    `# License` \
+    -confirm-license \
+    -opensource \
+    `# Paths and prefixes` \
+    -datadir /usr/share/qt \
+    -demosdir /usr/share/doc/qt/demos \
+    -docdir /usr/share/doc/qt \
+    -examplesdir /usr/share/doc/qt/examples \
+    -importdir /usr/lib/qt/imports \
+    -plugindir /usr/lib/qt/plugins \
+    -prefix /usr \
+    -sysconfdir /etc \
+    -translationdir /usr/share/qt/translations \
+    `# Enable features` \
+    -audio-backend \
+    -gtkstyle \
+    -icu \
+    -plugin-sql-ibase \
+    -plugin-sql-mysql \
+    -plugin-sql-odbc \
+    -plugin-sql-psql \
+    -plugin-sql-sqlite \
+      `# sqlite2 is not supported in Arch Linux` \
+      `# -plugin-sql-sqlite2` \
+    -plugin-sql-tds \
+    -qvfb \
+    -script \
+    -scripttools \
+    -svg \
+    -xmlpatterns \
+    `# Disable features` \
+    -no-egl \
+    -no-multimedia \
+    -no-openvg \
+    -no-phonon \
+    -no-phonon-backend \
+    -no-webkit \
+    `# Configuration options` \
+    -graphicssystem raster \
+    -no-separate-debug-info \
+    -opengl desktop \
+    -optimized-qmake \
+    -reduce-relocations \
+    -system-libjpeg \
+    -system-libpng \
+    -system-libtiff \
+      `# The 'nas' package from the AUR is required` \
+      `# -system-nas-sound` \
+    -system-sqlite \
+    -system-zlib \
+    `# Build options` \
+    -dbus-linked \
+    -fast \
+    -I/usr/include/freetype2 \
+    -lfontconfig \
+    -no-rpath \
+    -nomake demos \
+    -nomake docs \
+    -nomake examples \
+    -openssl-linked \
+    -verbose
+
+  make ${MAKEFLAGS}
+}
+
+package_qt-ubuntu() {
+  pkgdesc='A cross-platform application and UI framework'
+  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi-ubuntu>=1.5.99.0ubuntu3')
+  conflicts=('qt')
+  provides=("qt=${pkgver}")
+  optdepends=('postgresql-libs: PostgreSQL driver'
+              'libmysqlclient: MySQL driver'
+              'unixodbc: ODBC driver'
+              'freetds: Sybase and MS SQL driver'
+              'libfbclient: Firebird driver'
+              'libxinerama: Xinerama support'
+              'libxcursor: Xcursor support'
+              'libxfixes: Xfixes support')
+  install='qt.install'
+
+  cd "${srcdir}/${_pkgfqn}"
+  make INSTALL_ROOT="${pkgdir}" install
+
+  ### Tnstall desktop files and icons ###
+  install -d -m755 "${pkgdir}/usr/share/applications/"
+
+  # Qt Designer
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/designer-qt4.desktop" > "${pkgdir}/usr/share/applications/designer.desktop"
+  install -p -D -m644 tools/designer/src/designer/images/designer.png "${pkgdir}/usr/share/pixmaps/designer.png"
+  # Qt Assistant
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/assistant-qt4.desktop" > "${pkgdir}/usr/share/applications/assistant.desktop"
+  install -p -D -m644 tools/assistant/tools/assistant/images/assistant.png "${pkgdir}/usr/share/pixmaps/assistant.png"
+  # Qt Linguist
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/linguist-qt4.desktop" > "${pkgdir}/usr/share/applications/linguist.desktop"
+  install -p -D -m644 tools/linguist/linguist/images/icons/linguist-128-32.png "${pkgdir}/usr/share/pixmaps/linguist.png"
+  # Qt Config
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/qtconfig-qt4.desktop" > "${pkgdir}/usr/share/applications/qtconfig.desktop"
+  install -p -D -m644 src/gui/dialogs/images/qtlogo-64.png "${pkgdir}/usr/share/pixmaps/qtconfig.png"
+
+  ### Install manpages from Debian ###
+  install -d -m755 "${pkgdir}/usr/share/man/man1/"
+  for i in "${srcdir}"/debian/manpages/*.1; do
+    FILENAME="${i##*/}"
+    FILENAME="${FILENAME/-qt4/}"
+    sed -e 's/-qt4//g' -e 's/-QT4//g' < "${i}" > "${pkgdir}/usr/share/man/man1/${FILENAME}"
+  done
+
+  ### Install license files ###
+  install -D -m644 LGPL_EXCEPTION.txt "${pkgdir}/usr/share/licenses/qt/LGPL_EXCEPTION.txt"
+
+  ### Fix path in pkgconfig files ###
+  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' -exec perl -pi -e "s, -L${srcdir}/?\S+,,g" {} \;
+
+  ### Fix path in prl files ###
+  find "${pkgdir}/usr/lib" -type f -name '*.prl' -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;
+}
+
+package_qt-private-headers-ubuntu(){
+  pkgdesc="Qt private headers for development"
+  depends=("qt-ubuntu=${pkgver}")
+  conflicts=('qt-private-headers')
+  provides=("qt-private-headers=${pkgver}")
+
+  install -d -m755 "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}
+  install -d -m755 "${pkgdir}"/usr/src/{corelib,declarative,gui,script}
+    
+  for i in QtCore QtDeclarative QtGui QtScript; do
+    cp -r "${srcdir}/${_pkgfqn}/include/${i}/private/" "${pkgdir}/usr/include/${i}/"
+  done
+
+  for i in corelib declarative gui script; do
+    cp -r "${srcdir}/${_pkgfqn}/src/${i}" "${pkgdir}/usr/src/"
+  done
+}
