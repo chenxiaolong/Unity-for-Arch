@@ -39,6 +39,7 @@ package_liboverlay-scrollbar3() {
   conflicts=('overlay-scrollbar')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  MAKEFLAGS="-j1"
   make DESTDIR="${pkgdir}/" install
 
   rm -rvf "${pkgdir}/etc/"
