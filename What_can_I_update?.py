@@ -408,11 +408,32 @@ def getInstVers():
 
   # Insert "NOTINSTALLED" for packages that aren't installed
   counter = 0
+
   while notinstalled:
+    # pacman 4 has a new error message that shows if there's a local file with the same same as the package
+    if "warning" in notinstalled[0]:
+      del(notinstalled[0])
+      continue
+
     # Error messages are in the format:
     #   error: package "blah" not found
+    #   error: package 'blah' not found (in pacman 4)
     # The package name will always be in the second element of the list when splitting by a double quote
-    temp = notinstalled[0].split('"')[1]
+    # (single quote in pacman 4)
+
+    # Get pacman version and compare it
+    pacmanver = 4.0
+    process = subprocess.Popen(
+      ['vercmp','`pacman -Q pacman`',str(pacmanver)],
+      stdout=subprocess.PIPE,
+      universal_newlines=True
+    )
+    vercmp = process.communicate()[0].split('\n')[0]
+    if int(vercmp) >= 0: # Returns 0 if equal to pacmanver and 1 if newer
+      temp = notinstalled[0].split('\'')[1]
+    else:
+      temp = notinstalled[0].split('"')[1]
+
     # Take advantage of the sorted order
     if temp == allPkgnames[counter]:
       allPackages[counter].set_instver("NOTINSTALLED")
