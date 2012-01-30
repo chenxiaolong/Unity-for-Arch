@@ -265,7 +265,7 @@ ARRAY_COUNTER=0
 LONGEST_PKGNAME=0
 LONGEST_PKGVER_INST=0
 
-while [ "${ARRAY_COUNTER}" != "$((${#ARRAY_PKGNAME[@]}-1))" ]; do
+while [ "${ARRAY_COUNTER}" != "${#ARRAY_PKGNAME[@]}" ]; do
   # Do not installed packages that aren't installed in the list
   if [[ "${ARRAY_PKGVER_INST[${ARRAY_COUNTER}]}" == "notinstalled" ]]; then
     NOT_INSTALLED="${NOT_INSTALLED}${ARRAY_COUNTER};"
