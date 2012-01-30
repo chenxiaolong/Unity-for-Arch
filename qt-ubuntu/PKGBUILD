@@ -31,9 +31,8 @@ build() {
       sed -i '/07_trust_dpkg-arch_over_uname-m.diff/d' "${srcdir}/debian/patches/series"
       # ARM v6 entry for previous patch
       sed -i '/94_armv6_uname_entry.diff/d' "${srcdir}/debian/patches/series"
-    # Fix patches
-      # Patches that have "-qt4"
-      sed -i 's/-qt4//g' "${srcdir}/debian/patches/kubuntu_17_enable_qtwebkit_for_qtassistant.diff"
+      # Disable Qt webkit (exists in separate package)
+      sed -i '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d' "${srcdir}/debian/patches/series"
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
