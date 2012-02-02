@@ -20,17 +20,22 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=mutter.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'disable_-Werror.patch')
 sha512sums=('29d450ff1eb755419fdd5a08fb9fc82be77f4677ba01b72ce53024b1d02f11cb7d12cefa80fb74305cb0b0fc3aa8767ef7bcf075255ad244d57236901e627188'
-            'f943d468e077484139a7f31b759a7a29721374db9bf558e4a8f58ea512a840177f1b81869b0139ba219f94c58df20f770181d50b5a6f96d66d018c1b60644a75')
+            'f943d468e077484139a7f31b759a7a29721374db9bf558e4a8f58ea512a840177f1b81869b0139ba219f94c58df20f770181d50b5a6f96d66d018c1b60644a75'
+            'bbec0c740557d936135d8c11636deb5ba83d57912c0edcc72d438d3040b89f2d2f5a95892a89d1e95ea0749664987e9d1201780d0a67ef9bd1ef9ff4f702701d')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # Disable '-Werror'
+  patch -Np1 -i "${srcdir}/disable_-Werror.patch"
 
   autoreconf -vfi
   ./configure \
@@ -40,7 +45,7 @@ build() {
     --enable-compiler-warnings=no \
     --localstatedir=/var \
     --disable-static \
-    --enable-startup-notification=yes #From debian/rules
+    --enable-startup-notification=yes # From debian/rules
   make ${MAKEFLAGS}
 }
 
@@ -52,7 +57,7 @@ package() {
   gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain mutter "${pkgdir}"/etc/gconf/schemas/*.schemas
   rm -f "${pkgdir}"/etc/gconf/schemas/*.schemas
 
-  #Install Ubuntu stuff
+  # Install Ubuntu stuff
   install -d -m755 "${pkgdir}/usr/share/sgml/mutter-common/"
   install -m644 "${srcdir}/debian/mutter-common.catalog" "${pkgdir}/usr/share/sgml/mutter-common/catalog"
 }

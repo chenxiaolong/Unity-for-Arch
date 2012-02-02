@@ -5,7 +5,7 @@
 pkgname=libqtdee
 _ubuntu_rel=0ubuntu2
 pkgver=0.2.3.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="Provides a set of Qt bindings for libdee"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dee-qt"
@@ -21,7 +21,13 @@ sha512sums=('59c894de50b84588c333e5d877d276ca09e199d062600a4a0c216f06900fc00c373
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  # Fix Qt imports directory
+  sed -i '/set(IMPORT_INSTALL_DIR/d' CMakeLists.txt
+
+  cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DIMPORT_INSTALL_DIR=lib/qt/imports/dee \
+    -DCMAKE_BUILD_TYPE=Release
   make ${MAKEFLAGS}
 }
 
