@@ -1,0 +1,19 @@
+Disable -Werror to fix the following deprecation warning:
+core/display.c:2886:3: error: 'XKeycodeToKeysym' is deprecated (declared at /usr/include/X11/Xlib.h:1695) [-Werror=deprecated-declarations]
+diff -Nru mutter-3.2.1.orig/configure.in mutter-3.2.1/configure.in
+--- mutter-3.2.1.orig/configure.in	2012-02-01 22:29:58.333673316 -0500
++++ mutter-3.2.1/configure.in	2012-02-01 22:30:23.583674499 -0500
+@@ -480,13 +480,6 @@
+     *[\ \	]-Wsign-compare[\ \	]*) ;;
+     *) CFLAGS="$CFLAGS -Wsign-compare" ;;
+     esac
+-
+-    if test "$enable_compile_warnings" = error; then
+-      case " $CFLAGS " in
+-      *[\ \	]-Werror[\ \	]*) ;;
+-      *) CFLAGS="$CFLAGS -Werror" ;;
+-      esac
+-    fi
+   fi
+ fi
+ changequote([,])dnl
