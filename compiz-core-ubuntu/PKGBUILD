@@ -1,6 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Based on Nathan Hulses's PKGBUILD
 
+# Disable build with KDE 4.8 for now
+NO_KDE=true
+
 pkgbase=compiz-core-ubuntu
 
 # AUR fix
@@ -42,6 +45,10 @@ build() {
   for i in $(cat ${srcdir}/debian/patches/series | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  if [[ "${NO_KDE}" == "true" ]]; then
+    sed -i '/kde/d' CMakeLists.txt
+  fi
 
   [[ -d build ]] || mkdir build
   cd build
