@@ -4,7 +4,7 @@
 
 pkgname=libunity
 _ubuntu_rel=0ubuntu1
-pkgver=5.0.0.${_ubuntu_rel}
+pkgver=5.2.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
@@ -14,10 +14,10 @@ depends=('libgee' 'dee' 'libdbusmenu' 'dbus-glib')
 makedepends=('vala' 'python2' 'gobject-introspection')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('525c10ae69d6d1c46a2e29667bf02435f43d69b568d67542d4220b2f2e50ba1d3035b9eeee76b442b2cb99c1333652dcf6db110121f2aac1b5b989d8e440afb2'
-            'de5b348cc6a840c18902ed7c7a836a6d6718a02e87fc02f605aedb12f2c40fac4f4f0e1028d0967a29367ca7cdf7edefe896e9f5653f4c94e4b058c2dec2cd53')
+sha512sums=('bcfb75a718f03e638e6d28c01dd874ad3debe262b6b5d0fa4dea00c14485ffb8747658afb9f7d5aafaa669f03a39b9333c79b25f10b95fefe65ef51e75b4f207'
+            '3ebb98721c6d20e5847379c497a68df0b08c546cf3bb3490163768b61292e7bbcd1e21e5bd6dcb921461b46d52f196e3a3f6e7d4429abe136994b0908c1b2d62')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
