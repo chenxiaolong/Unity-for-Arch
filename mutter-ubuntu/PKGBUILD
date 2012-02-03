@@ -5,8 +5,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=mutter-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=3.2.1.${_ubuntu_rel}
+_ubuntu_rel=1ubuntu1
+pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME3 with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -19,11 +19,11 @@ conflicts=('mutter')
 url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=mutter.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'disable_-Werror.patch')
-sha512sums=('29d450ff1eb755419fdd5a08fb9fc82be77f4677ba01b72ce53024b1d02f11cb7d12cefa80fb74305cb0b0fc3aa8767ef7bcf075255ad244d57236901e627188'
-            'f943d468e077484139a7f31b759a7a29721374db9bf558e4a8f58ea512a840177f1b81869b0139ba219f94c58df20f770181d50b5a6f96d66d018c1b60644a75'
+sha512sums=('def486c808c0300087a2bc8872f203e376c59a6f669ed8d03586f0176e5d9102f3847229f28be50f5253f01474a9a32145e2d8d6b26f32270a3d394ac12dd466'
+            'efef89dc7b987bd8bf6f86bc0c2033c2b3c79fc93cf2620fab3f094b424e09909243ca74ae55abdbaa40a3167a44f842f5375ed1c1f18be1745cae748b23e596'
             'bbec0c740557d936135d8c11636deb5ba83d57912c0edcc72d438d3040b89f2d2f5a95892a89d1e95ea0749664987e9d1201780d0a67ef9bd1ef9ff4f702701d')
 
 build() {
