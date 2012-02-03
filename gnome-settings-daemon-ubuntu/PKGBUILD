@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu10
+_ubuntu_rel=0ubuntu14
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -20,7 +20,7 @@ url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f0b2674c144ea4999d755c5ee5f9c76669cd436364c78e51d62a9aeec9665cb4e609dbc8e36ed8abae3128cd51005c010614a7d49316672b01df12c0b40bf530'
-            '53cce9475db54ff2320046e40a5b5fbdcc04ca463ab797ece6526aad362af9f77dbaa8f4db5b2890bb56481a58fd59fa3d5ef01680ddf0fd1cdee9fe49082bd0')
+            '2743014bd612a623d0daf3bb119997eb80b04f792938f84e29d98859de182a166e149e7c274dd07335f3b3c7ab2ece4ff408bc75df524520990bdb200a1166d4')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
