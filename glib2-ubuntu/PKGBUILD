@@ -3,7 +3,7 @@
 pkgname=glib2-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=2.31.14.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
 arch=('i686' 'x86_64')
@@ -27,11 +27,13 @@ build() {
 
   #Apply Ubuntu patches
 
-  #Do not apply these patches
-    #Multiarch
+  # Do not apply these patches
+    # Multiarch
       sed -i '/gio-modules-multiarch-compat.patch/d' "${srcdir}/debian/patches/series"
-    #Patches accepted upstream
+    # Patches accepted upstream
       sed -i '/10_gvariant_check_null.patch/d' "${srcdir}/debian/patches/series"
+    # Do not change path of glib-compile-schemas
+      sed -i '/61_glib-compile-schemas-path.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
