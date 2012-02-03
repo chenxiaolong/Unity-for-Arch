@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=metacity-ubuntu
-_ubuntu_rel=1ubuntu4
+_ubuntu_rel=1ubuntu5
 pkgver=2.34.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
@@ -20,12 +20,12 @@ install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('44e4879d0b5cac8a50fbd0c33c29fa64b6485f80eca5bf6154b368cae64492402fb880eb6783ab4f1d2258079e96f53bf3b7300d4c2fbb36e4ebc7baaf8ee952'
-            '78ece37b83501f84783d307df3a9494d43d8cddae985adf87948b0d1913ec55d565c366e714be97c62513fcfd7abc74d7e1b0b41c923ca211003745fba4a1ae5')
+            '687963bf97bea9292699ab9840f7ae22777e6db0ca92a3914baafa552e846625192154a92376cf76ae5c00bd288606c52b1e39fd2438bc563b988fd5c9d855f3')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -37,7 +37,7 @@ build() {
     --disable-debug \
     --localstatedir=/var \
     --disable-static \
-    --enable-startup-notifications=yes #From debian/rules
+    --enable-startup-notifications=yes # from debian/rules
   make ${MAKEFLAGS}
 }
 
@@ -49,7 +49,7 @@ package() {
   gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain metacity "${pkgdir}"/etc/gconf/schemas/*.schemas
   rm -f "${pkgdir}"/etc/gconf/schemas/*.schemas
 
-  #Install Ubuntu stuff
+  # Install Ubuntu stuff
   install -d -m755 "${pkgdir}/usr/share/sgml/metacity-common/"
   install -d -m755 "${pkgdir}/usr/share/gconf/defaults/"
   install -m644 "doc/metacity-theme.dtd" "${pkgdir}/usr/share/sgml/metacity-common/"
