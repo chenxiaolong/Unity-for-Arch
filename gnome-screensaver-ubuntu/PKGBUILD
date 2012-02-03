@@ -2,7 +2,7 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=gnome-screensaver-ubuntu
-_ubuntu_rel=1ubuntu4
+_ubuntu_rel=1ubuntu6
 pkgver=3.2.0.${_ubuntu_rel}
 pkgrel=1
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
@@ -21,13 +21,13 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
 sha512sums=('ab0bf422901662c6a829fb35a7347f0070c0472724782576cb432f7bf78077d1c92f3f2608ffeccb5a3e30b4663213b74f392308f3f6aadc9928a13359984567'
-            'e7b895425b051819354f70403b5a87535bc57a37868d1d381385265f5f1438fbb1fe8663553c40594fde31f8546eed8b16d5cbde05a2a0bb792e6fdee3254139'
+            '6d340c0e2529b47f06e6a5c4880a0dea381313e7095eaf0d1fda635ea0be2019957e09a0614c45c45c001044507df158f1475c28b54dc5ecd2f8d454d72c9f86'
             '5eaf5f9982d949efd34595761d1c96e9f5d71fc892b0fdd0e1877d8aada3d97dac4bf789c241bfbf4cd9e9c867a3e2365fa5e855580542b96af76fc1d5bff92d')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -40,7 +40,7 @@ build() {
     --libexecdir=/usr/lib/gnome-screensaver \
     --localstatedir=/var \
     --with-mit-ext \
-    --enable-locking #from debian/rules
+    --enable-locking # from debian/rules
 
   make ${MAKEFLAGS}
 }
@@ -50,7 +50,7 @@ package() {
   make DESTDIR="${pkgdir}/" install
   install -Dm644 "${srcdir}/gnome-screensaver.pam" "${pkgdir}/etc/pam.d/gnome-screensaver"
 
-  #From debian/rules
+  # From debian/rules
   install -dm755 "${pkgdir}/usr/share/gnome/autostart/"
   mv "${pkgdir}/etc/xdg/autostart/gnome-screensaver.desktop" "${pkgdir}/usr/share/gnome/autostart/"
 }
