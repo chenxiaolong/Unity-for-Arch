@@ -5,8 +5,8 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 # Ubuntu's patches resolve Launchpad bug 870742
-_ubuntu_rel=0ubuntu2
-pkgver=0.5.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=0.5.90.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
@@ -15,10 +15,10 @@ license=('LGPL')
 makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gobject-introspection' 'vala' 'python2')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/dbusmenu/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/dbusmenu/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c6ddaee7a43c29b3f2fae20012489f12b0fe83defab547df8801ea08ba6cbeea32f2308ee82001a0d5f6ce9cd065e3c68e3369049e1e33ce10fa4811ef932174'
-            '759d9d1a1d323132b832fdcb3a768b3f5e99d345250c882b58e00f799752d68034950a47de9f4bc8742f74472d715e33f95d04265ad5eb012e09efc726690012')
+sha512sums=('c4534a66bab26a5840caf5c61072691fdcbe07364b92c9382d912e01adcf8acd0901d045669c6e23eb59f9ebb5f26d063024a6dd2817b8524cb096c295860d66'
+            'd35bb189dd818188c4c1c49d7d537f937970cba7a7b0f58de4c44b8ccc90daa46fc9cbff2bc033d458424af98ffdb4a399cccf0db1dfcfffcb1ffffc10b5a3e7')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -26,15 +26,18 @@ build() {
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
 
-  autoreconf -fi
+  autoreconf -vfi
 
-  #Python2 fix
+  # Add '-lgmodule-2.0' to linker command line
+  CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
+
+  # Python2 fix
   sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench
 
-  #libdbusmenu-gtk2 won't install if libdbusmenu-glib is missing
+  # libdbusmenu-gtk2 won't install if libdbusmenu-glib is missing
   sed -i 's|$(DBUSMENUGTK_CFLAGS)|$(DBUSMENUGTK_CFLAGS) -L../libdbusmenu-glib/.libs|' libdbusmenu-gtk/Makefile.{am,in}
 
-  #Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
+  # Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
     # http://packages.ubuntu.com/search?keywords=dbusmenu&searchon=names&suite=oneiric&section=all
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
