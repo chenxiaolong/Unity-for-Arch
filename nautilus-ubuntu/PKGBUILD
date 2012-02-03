@@ -3,13 +3,13 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=2ubuntu9
-pkgver=3.2.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.3.4.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity' 'glib2-ubuntu>=2.31.14.0ubuntu1' 'gtk3-ubuntu>=3.3.12.0ubuntu1')
 makedepends=('intltool' 'gobject-introspection')
 groups=('gnome')
 provides=("nautilus=${pkgver}")
@@ -17,20 +17,21 @@ conflicts=('nautilus')
 url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('1e5c4aca7b73ad55318390632bb35a97a3c6ed35e013a0d57a5071f43a5c2a35daa70720258acc8f7e6abc163934497ced8376569b1cd164342535c9639a830d'
-            '9b459f9650095cb68c4e7196542e6e5dc3acd2de942347557f38c840eb2e8150ea7cd72aed6631fce3ed06ae52483b71b708c1b9f5b753b69d71e15b7a35ee05')
+sha512sums=('184e2cdf14691f1e093ffff3f9cf34a4cb7725f41264ce29daafab5376ecd53f83b049ffccc85e21797274ffdfd2bea53ff5aef51b007c3479387422c7306910'
+            'a245321effc87566b80b842705155acf9ccc00fb3940c9e03253bdd733ec11d9ff19c768487942485cc2410f95fcae8fc35b49d753fc81634098a02c04af3336')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
   autoreconf -vfi
+
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -52,10 +53,10 @@ package() {
   echo "" > "${pkgdir}/usr/share/nautilus/nautilus.css"
 
   #Ubuntu specific stuff
-  install -d -m755 "${pkgdir}/usr/share/pixmaps/"
-  install -d -m755 "${pkgdir}/usr/share/glib-2.0/schemas/"
-  install -d -m755 "${pkgdir}/usr/share/applications/"
-  install -d -m755 "${pkgdir}/usr/share/menu/"
+  install -dm755 "${pkgdir}/usr/share/pixmaps/"
+  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -dm755 "${pkgdir}/usr/share/applications/"
+  install -dm755 "${pkgdir}/usr/share/menu/"
   install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
   install -m644 "${srcdir}/debian/nautilus.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
   install -m644 "${srcdir}/debian/nautilus-home.desktop" "${pkgdir}/usr/share/applications/"
