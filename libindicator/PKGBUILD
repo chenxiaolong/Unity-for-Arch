@@ -4,7 +4,8 @@
 
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
-pkgver=0.4.1
+_ubuntu_rel=0ubuntu4
+pkgver=0.4.90.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
@@ -13,11 +14,18 @@ license=('GPL')
 mekedepends=('gtk3-ubuntu')
 options=(!libtool)
 groups=('unity')
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('ed4aff3c045fbb43ea3534a9b147577bb4922d31623a08a7b26430accf7d80ba8b2a7eebf52e32776e33e2f0ee00c137b6a1f7d61d01fb8103c5fdee1ff7cf86')
+source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('828c61cb8fce7d881c3ba722a667eb58d7fb7e685fe29f9238bf0b4bc3ad209009c88ca5d240a3a94c19866a29c86f7046744a568062bcba54040ede997a3e0e'
+            '20c6ad5943ce9b73aff07704aa7ee8c2baa4291ac3f2811794ee5ed29853a67b9cf6d9b4011e94c95ad6e7f7855717425a766847581afc4613f736c11a92156a')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -37,7 +45,7 @@ package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
   depends=('gtk2-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -46,7 +54,7 @@ package_libindicator3(){
   pkgdesc+=" (GTK+ 3 library)"
   depends=('gtk3-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make -C libindicator DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
