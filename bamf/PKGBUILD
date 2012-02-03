@@ -4,22 +4,25 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-_ubuntu_rel=0ubuntu1
-pkgver=0.2.106.${_ubuntu_rel}
-pkgrel=101
+_ubuntu_rel=0ubuntu2
+pkgver=0.2.108.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop')
+makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'glib2-ubuntu>=2.31.14.0ubuntu1')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}.orig.tar.gz")
-sha512sums=('331361b14464ff482b1890bbe72ce71d20cdb52d805f0599ad6141e17a40bc31e74d264e2b02f1ef605039ee8bc111f1743218db227a5068ef164971bcb626a7')
+sha512sums=('e3aeb96c6d00c071832c2245537f24c352a809244c7d40692dd9d2239821d8f1dfe8b8889bc372c00a55f25a61bcd5b74d624bde4791ff1e0139967a96452e21')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  #sed -i 's/[ \t]*-Werror[ \t]*/ /g' configure.in
+  sed -i 's/-Werror/-Wno-error=implicit-function-declaration/g' configure.in
 
   autoreconf -vfi
 
@@ -37,9 +40,17 @@ build() {
   popd
 }
 
+check() {
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  make check
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  make check
+}
+
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
-  depends=('dbus-glib' 'libwnck3' 'libgtop')
+  depends=('dbus-glib' 'libwnck3' 'libgtop' 'glib2-ubuntu>=2.31.14.0ubuntu1')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3" #Doesn't matter which one
 
   install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
@@ -50,7 +61,7 @@ package_bamfdaemon() {
 
 package_libbamf() {
   pkgdesc="Window matching library for GTK 2"
-  depends=('bamfdaemon' 'gtk2-ubuntu')
+  depends=('bamfdaemon' 'gtk2-ubuntu' 'glib2-ubuntu>=2.31.14.0ubuntu1')
 
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
@@ -64,7 +75,7 @@ package_libbamf() {
 
 package_libbamf3() {
   pkgdesc="Window matching library for GTK 3"
-  depends=('bamfdaemon' 'gtk3-ubuntu')
+  depends=('bamfdaemon' 'gtk3-ubuntu' 'glib2-ubuntu>=2.31.14.0ubuntu1')
   provides=("bamf=${pkgver%.*}")
   conflicts=('bamf')
 
