@@ -4,25 +4,26 @@
 
 pkgname=dee
 _ubuntu_rel=0ubuntu1
-pkgver=1.0.0.${_ubuntu_rel}
+pkgver=1.0.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dee"
 license=('LGPL')
-depends=('glib2')
+depends=('glib2' 'icu')
 makedepends=('python2' 'gobject-introspection' 'gtk-doc' 'vala')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/dee/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('7eccf55b8b9b4db3c66e20c797b7f8a6daa311ad8b64d75af6a37d6c44f7d99950a129ffc92185296353d7c5a07f7c3635ec0e377a00f12ce53fbe85627e91be'
-            'ae1d848b09275985647bc860de2717e222b099910d5555f2a7b5c487ba75e844dc6b98bc27e1f8c657fe0ed81b61670062096d2595a034bc2d8fe8fbf254652d')
+sha512sums=('8f512ca9958ed4b114cb7eef1eacf5552599f350cc1d0ea588c41a160407b712c4e3dee84c04921d2d7cd279f7bed9cda6a18fae51a68567c468d7ea1546afa1'
+            'cfb138904c078bebf91fd7970f912f12566c6d38778042f5409831fa814a0ad6177419e06e5fde0ffa798e2eda816b5bb700c47d227f26e5b7972dd8afe33f0c')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
