@@ -4,7 +4,7 @@
 
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu5
 pkgver=0.3.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A very, very simple clock"
@@ -15,10 +15,12 @@ makedepends=('intltool')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/0.3/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        'fix_build_with_dbusmenu.patch')
 sha512sums=('24a2cbcf77477497cf0aed13a48f081d0532874d40db982b071ba43f61cd407dfd6dc4595bbb26de0c8a10f179b08fab33cecb83b646c69ff6bd06cb4c63b175'
-            'd700f49270532d134a0263f5b8ec89031ebd3d0b3212687aa0e65d1ef0c7f6e2e90d5cc55de7c74ce2b46490710e1ec0993c7f6cad86336b265c2d9037400a05')
+            '0444532a75a937412f1a52a511b9151fb8b8063ab118827557fd7b8ef66874ae25d358b5c3f1f42caa8dcb7931afb0d5df1dd535323b3bc6e57bf4c1933bfd0c'
+            '3ba72e7c2a539a638fd7d44ba833bbdf6765f2a5fc823a2bf33f76cba5e04c198139ce45e6bfb2c226a401df507e4de9dac871da7c6c94dda8ec3b968b76d4ec')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -28,6 +30,12 @@ build() {
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
+
+  # Build fix with new libdbusmenu
+  patch -Np1 -i "${srcdir}/fix_build_with_dbusmenu.patch"
+
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
