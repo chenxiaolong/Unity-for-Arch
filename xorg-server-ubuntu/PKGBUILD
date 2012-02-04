@@ -3,13 +3,13 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_rel=0ubuntu8
+_ubuntu_rel=0ubuntu10
 pkgver=1.11.3.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
-makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt')
+makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt' 'fixesproto-ubuntu>=5.0.2ubuntu1')
 options=('!libtool')
 source=("${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
@@ -17,7 +17,7 @@ source=("${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2"
         'xvfb-run.1'
         '10-quirks.conf')
 sha512sums=('f1325e5448454bb2f8811290126f0101e5005e364112da73b240010940196016e01b1a2b72f675e9d2fe135c4db0818f47e4d7ef415a68c3b1c4a13ac2a1d0c1'
-            '71b57aabec5d3156393cdffd212605cec80208829079fa22417c321d5d059581baaae24ec213cb8717a3fc4d8ca06addf62657a1b66a1d48c9e2ee4044a1a3aa'
+            'b45f523bfb05cecfa45c4ec2469fc0de035b9c527322c6b932eefb61b42f72da680deb3049597d96a9ed3ff5b211868425cc0e98588fb1fbb23c6f6db0368bf5'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
