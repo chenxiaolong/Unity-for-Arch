@@ -5,7 +5,7 @@
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
 pkgver=0.5.0
-pkgrel=100
+pkgrel=101
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -14,11 +14,24 @@ depends=('libindicator3' 'libindicate' 'libdbusmenu-gtk3' 'telepathy-glib')
 makedepends=('intltool>=0.35.0')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('ac5f81fff2da77aebff0712debfa783c1b0eeaf07386dfec89c87eff18c10e21aa460dd2bf9e214593f5cb7bd168c63d4e5f02fe546dd8d1d30b19088864f6fd')
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
+        'build_fix_with_libdbusmenu.patch')
+sha512sums=('ac5f81fff2da77aebff0712debfa783c1b0eeaf07386dfec89c87eff18c10e21aa460dd2bf9e214593f5cb7bd168c63d4e5f02fe546dd8d1d30b19088864f6fd'
+            '6b56ebfc971b63d74d46c0bf7d9449dfbd3a82560d224088b6d8217a7bca3a4efa71e94d40a76eb7834c1d5ad224e9351b9b247c7769b67a45a54e2f20325afa')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  # Fix build against new libdbusmenu
+  patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
+
+  # Cannot find libindicator
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
+
+  # Build fix
+  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -46,6 +59,8 @@ package_indicator-messages-gtk2() {
   depends=('libdbusmenu-gtk2' 'gtk2-ubuntu' 'libindicator' 'indicator-messages')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
-  install -m755 'src/.libs/libmessaging.so' "${pkgdir}/usr/lib/indicators/6/"
+  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
+
+  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
+  install -m755 'src/.libs/libmessaging.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
