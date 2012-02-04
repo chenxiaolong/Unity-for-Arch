@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=xfce4-indicator-plugin
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=0.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Display indicators in the xfce4 panel"
@@ -18,12 +18,12 @@ options=('!libtool')
 source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('34800e56ea134f70f037bb6df6ab4fdf755d2d6171f44cc8a09c85e714e009b084e81c1f2e63293680329f8fd6d60d92e53ebff07dce1c12ee74294203628ff2'
-            '4fafd7f0d8e0bbf3112319ace303ce17bff0b64ce1dbb4814d82035dd2e70f1f3b2b492b4f5d18e4be8d1d81077419f3392dc9ff743635952699ed78018ea10c')
+            '50faeb712e68bd681765fb4588833f4a37d1db0ad71168a7a79b0dbae4d1747c909ef7a3c769fb9a4f0018bc0532ed7c5424ab8a21a1af2680ccebded9af70ea')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver%.*}
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
