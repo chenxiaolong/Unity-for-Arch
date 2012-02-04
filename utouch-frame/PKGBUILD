@@ -2,7 +2,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=utouch-frame
-pkgver=2.1.0
+pkgver=2.2.0
 pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ makedepends=('asciidoc')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/v${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 options=('!libtool')
-sha512sums=('50d4771013f8fc9e9af176389e1b398111ce635346b695ccce33c23b1a765a302502d1400c1d4e7c5ed9621a09ef4fba39f36584f6afba07d82fb00070d95409')
+sha512sums=('6e3242d63a4f4118fc59cdcaf9b4bd64dd5fc59e335b485457387d11ea954e9200c7ba9b84dc9bdc1037072ce61cb4037f390db4c6ca070cceee3c6dbc962101')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
