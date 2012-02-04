@@ -4,7 +4,7 @@
 
 pkgname=unity-2d
 _ubuntu_rel=0ubuntu1
-pkgver=5.2.0.${_ubuntu_rel}
+pkgver=5.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="unity-2d project is a 2d implementation of Unity"
 arch=('i686' 'x86_64')
@@ -19,10 +19,10 @@ optdepends=('appmenu-gtk: Export GTK menus over DBus'
             'appmenu-qt: appmenu support for Qt')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
         'disable_utouch.patch')
-sha512sums=('ef3fcbab0836ee231dc6dbf9ca94690d0ffdc0056aa6d1271a18d72dbb02430d0477b4534796436ded135040ce03e2bb0444b84209be29ad25312ddbbdda4f83'
-            'b50693649b615e5c8735f862853faa75bd04a180317148370f9bdf93329da6318bffd48339c34714419254ef2d909d19dedf7195b9479d0b190861155b3bfbc5'
+sha512sums=('fbaec01a1e2cfe0c0d6b6c8a8b82a98005fae93e01ba8b4dbe042de912b13d92672f1825072610a29ce0d3277660b4db52c3f33a351a4a6b61ae0d7bf4625a52'
+            'c35271dbc0395e03771dc5a70d9124fe95bfaafe26a1469bdc4cabfc1723e5041da2ef1e28cdff75716b3ad24376800296745da0852478551a2f94d1c9dcdb36'
             '28607fac4dd648b3779abe035e2306b29f8428c663d3b1fb8739b4a1c528393eee6bffdaa03af94e8442d811243a2acfc59407bed432b03d85a91a97707da058')
 
 # https://bugs.launchpad.net/unity-2d/+bug/809205
@@ -30,6 +30,12 @@ export NO_PNG_PKG_MANGLE=1
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
 
   # Uncomment to disable uTouch (if xorg-*-ubuntu ans utouch-* wasn't
   # installed). Patch was made by City-Busz.
@@ -49,23 +55,24 @@ build() {
 
 package() { 
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
-  cd 'build'
+  pushd build
   make DESTDIR="${pkgdir}/" install
+  popd
 
   # Install GConf stuff
   install -dm755 "${pkgdir}/usr/share/gconf/"
   install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
   install -dm755 "${pkgdir}/usr/share/gconf/ubuntu-2d/mandatory/"
   install -dm755 "${pkgdir}/usr/share/gconf/ubuntu-2d/default/"
-  install -m644 "${srcdir}/debian/gconf/ubuntu-2d.default.path" "${pkgdir}/usr/share/gconf/"
-  install -m644 "${srcdir}/debian/gconf/ubuntu-2d.mandatory.path" "${pkgdir}/usr/share/gconf/"
-  install -m644 "${srcdir}/debian/unity-2d.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_${pkgname}"
-  install -m644 "${srcdir}/debian/20_ubuntu-2d-gconf-mandatory" "${pkgdir}/usr/share/gconf/ubuntu-2d/mandatory/"
-  install -m644 "${srcdir}/debian/20_ubuntu-2d-gconf-default" "${pkgdir}/usr/share/gconf/ubuntu-2d/default/"
+  install -m644 debian/gconf/ubuntu-2d.default.path "${pkgdir}/usr/share/gconf/"
+  install -m644 debian/gconf/ubuntu-2d.mandatory.path "${pkgdir}/usr/share/gconf/"
+  install -m644 debian/unity-2d.gconf-defaults "${pkgdir}/usr/share/gconf/defaults/10_${pkgname}"
+  install -m644 debian/20_ubuntu-2d-gconf-mandatory "${pkgdir}/usr/share/gconf/ubuntu-2d/mandatory/"
+  install -m644 debian/20_ubuntu-2d-gconf-default "${pkgdir}/usr/share/gconf/ubuntu-2d/default/"
 
   # Install manuals
   install -dm755 "${pkgdir}/usr/share/man/man1/"
-  for i in "${srcdir}"/debian/manpages/*; do
+  for i in debian/manpages/*; do
     install -m644 "${i}" "${pkgdir}/usr/share/man/man1/"
   done
 }
