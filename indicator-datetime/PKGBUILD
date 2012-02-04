@@ -6,7 +6,7 @@ pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
 _ubuntu_rel=0ubuntu5
 pkgver=0.3.1.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -63,6 +63,8 @@ package_indicator-datetime-gtk2() {
   depends=('libindicator' 'libdbusmenu-gtk2' 'gtk2-ubuntu' 'libido' 'geoclue' 'indicator-datetime')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
-  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
-  install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/6/"
+  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
+
+  install -d -m755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
+  install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
