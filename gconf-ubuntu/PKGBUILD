@@ -34,10 +34,13 @@ build() {
   # Python2 fix
   sed -i '1s|#!/usr/bin/env python$|&2|' gsettings/gsettings-schema-convert
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # Add gmodule-2.0 to linker flags
+  CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
 
   ./configure \
     --prefix=/usr \
