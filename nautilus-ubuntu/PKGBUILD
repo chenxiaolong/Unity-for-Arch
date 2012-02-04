@@ -5,7 +5,7 @@
 pkgname=nautilus-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=3.3.4.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
