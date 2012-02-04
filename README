@@ -98,9 +98,6 @@ Order to compile/install:
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
   - plasma-widget-menubar          => For KDE users who want a global menubar
   - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
-  - xf86-video-intel-ubuntu        => For users with Intel integrated graphics cards
-  - xf86-video-nouveau-ubuntu      => For users with nVidia graphics cards
-  - xf86-video-ati-ubuntu          => For users with ATI/AMD graphics cards
   - xf86-input-synaptics-ubuntu    => For users with a Synaptics touchpad (laptops)
   - compizconfig-backend-gconf-ubuntu => Store Compiz settings in GConf
   - compizconfig-backend-kconfig4-ubuntu => Store Compiz settings in KConfig4
