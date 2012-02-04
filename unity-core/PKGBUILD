@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-core
-pkgver=5.0.0
+pkgver=5.2.0
 pkgrel=100
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
@@ -12,9 +12,9 @@ license=('GPL')
 depends=('qt' 'nux' 'libunity')
 makedepends=('cmake')
 groups=('unity')
-source=("http://launchpad.net/unity/${pkgver%.*}/${pkgver}/+download/unity-${pkgver}.tar.bz2"
+source=("http://launchpad.net/unity/${pkgver%%.*}.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"
         'launcher_bfb.png')
-sha512sums=('538a77b32b6929e0081be0c4198263fd5e55d25b73ef61def40068c240f967cca3e80cd93b57f00a90c57d7c82f4b62f19e90b872b66ead927cb6cb6ce48d339'
+sha512sums=('625f9733d7cdbcfa8fed4b127515d131a36fbca6adcf87223eb56fe109792b0f2267878431381f9bc84c82346e61140f6d557475f00d5f14dee23282b1ddb9de'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
