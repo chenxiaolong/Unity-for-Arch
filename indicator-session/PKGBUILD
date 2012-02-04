@@ -4,7 +4,8 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-pkgver=0.3.7.1
+_ubuntu_rel=1ubuntu2
+pkgver=0.3.7.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
@@ -15,11 +16,31 @@ optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('5cf55ab872de45cf87206128210bdd32b83901b06cf445ff81237ebaea1845663061287936cfcec5391ee8b721abe2b7ddd25c28b32064f21ec25b397e495aad')
+source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'fix_build_with_libdbusmenu.patch')
+sha512sums=('5cf55ab872de45cf87206128210bdd32b83901b06cf445ff81237ebaea1845663061287936cfcec5391ee8b721abe2b7ddd25c28b32064f21ec25b397e495aad'
+            'b85ad128767bebb58c8751c8ea08678fe1c77f9fd3e614f7df901c3be3fbc66b0aed229d214829a5d32816637d8f2d9e413c74f6b227b322ef54f21709bf48e6'
+            '71db988b35cdd3b8288afe1205eda8b56153dbc8a00653648640a7553ff083a9935d65d6d599e1a64b44158bd1ec63b5cb1a6950c0b9edec4014c29e5233cbec')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  # Fix build with new libdbusmenu
+  patch -Np1 -i "${srcdir}/fix_build_with_libdbusmenu.patch"
+
+  # Cannot find libindicator
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
+
+  # Build fix
+  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -37,7 +58,7 @@ build() {
 package_indicator-session() {
   pkgdesc="Indicator showing session management, status and user switching - GTK 3 library"
   depends=('libindicator3' 'libdbusmenu-gtk3' 'dbus-glib' 'dconf')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -45,8 +66,10 @@ package_indicator-session() {
 package_indicator-session-gtk2() {
   pkgdesc="Indicator showing session management, status and user switching - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'indicator-session')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
-  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
-  install -m755 'src/.libs/libsession.so' "${pkgdir}/usr/lib/indicators/6/"
+  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
+
+  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
+  install -m755 'src/.libs/libsession.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
