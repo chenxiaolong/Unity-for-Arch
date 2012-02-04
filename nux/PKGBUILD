@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=2.0.0
+pkgver=2.2.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
@@ -14,13 +14,12 @@ makedepends=('boost' 'glproto' 'dri2proto' 'gtest' 'gmock' 'doxygen' 'graphviz')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/2.0/${pkgver%.*}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('a989b3ea4db3d2c18f3314d0bc22679c6da89878f05d564429c8f835178690447dff76ab0de0becb66e211f20a2dd1032d9426993b38d7d3bd128dc83738f5fe')
+source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver%.*}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('963fc15232900513539ab5d29190ed9552c69db5e693a50cfdc12669097ac2c7ba7e8ff2b5258f9f412a1fc22860a52f039e72f39f4095bbe51bc022767d2351')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  #./autogen.sh
   ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }
