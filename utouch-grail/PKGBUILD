@@ -2,7 +2,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=utouch-grail
-pkgver=2.0.1
+pkgver=3.0.0
 pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
@@ -10,8 +10,7 @@ url="https://launchpad.net/utouch-grail"
 license=('GPL')
 depends=('mtdev' 'utouch-evemu' 'utouch-frame')
 source=("http://launchpad.net/${pkgname}/trunk/v${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-
-sha512sums=("6d33e3394124c9d297f3e40ebcbbc8a77158258bd61cd487528a918802849f7c65ea46db7bacac8637529bcfa0ea4a859d3e90b7be4c78b011d8a4ede26c481a")
+sha512sums=('3a7ae60032aaac7e27c36806945934b4554049930e1b22b561ec96a82f728ecbf8f7b8c63a7d3544867c349710c46e3396703166e724a0ef2e9d2e8894c8d652')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
