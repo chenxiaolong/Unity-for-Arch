@@ -4,7 +4,8 @@
 
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
-pkgver=0.8.0.0
+_ubuntu_rel=0ubuntu3
+pkgver=0.8.0.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -14,11 +15,31 @@ makedepends=('intltool' 'vala')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgname}/fifth/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('6889f0bc424962f80cd1c04eb27c00c06d841cf136c808871daa9fd17ed86870f4593d29a97e1f325c2c278ca9f39a66e82e2ce032ee6c4fdc2f684c15d91bf1')
+source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'fix_build_with_libdbusmenu.patch')
+sha512sums=('6889f0bc424962f80cd1c04eb27c00c06d841cf136c808871daa9fd17ed86870f4593d29a97e1f325c2c278ca9f39a66e82e2ce032ee6c4fdc2f684c15d91bf1'
+            '8e984545f64a875f8fd6debdaebdd88d2254be240aaf42faf81b96ff16cf1e1ab464eb9d129ab3dcb027549640729766d637f071478ed45005bdeb3efbe4a991'
+            '5b824e9ce01c66dc5c23eca0353b5feb04961f7dce4ff5ea8fb0668d8ef5a3789b23d2f5d24ddecc4956cb0b56f63ebf5f0551fad704c7d7a0c342337131de83')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  # Fix build with new libdbusmenu
+  patch -Np1 -i "${srcdir}/fix_build_with_libdbusmenu.patch"
+
+  # Cannot find libindicator
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
+
+  # Fix build
+  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -36,7 +57,7 @@ build() {
 package_indicator-sound() {
   pkgdesc="A unified sound menu - GTK 3 library"
   depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'gconf' 'dconf')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -44,8 +65,10 @@ package_indicator-sound() {
 package_indicator-sound-gtk2() {
   pkgdesc="A unified sound menu - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'libnotify' 'indicator-sound')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
-  install -d -m755 "${pkgdir}/usr/lib/indicators/6/"
-  install -m755 'src/.libs/libsoundmenu.so' "${pkgdir}/usr/lib/indicators/6/"
+  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
+
+  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
+  install -m755 'src/.libs/libsoundmenu.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
