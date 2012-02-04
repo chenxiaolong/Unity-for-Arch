@@ -6,7 +6,7 @@ pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2')
 _ubuntu_rel=0ubuntu3
 pkgver=0.3.2.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -34,9 +34,6 @@ build() {
 
   # Build fix with new libdbusmenu
   patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
-
-  # Cannot find libindicator
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
 
   autoreconf -vfi
 

@@ -5,7 +5,7 @@
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
 pkgver=0.5.0
-pkgrel=101
+pkgrel=102
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -24,9 +24,6 @@ build() {
 
   # Fix build against new libdbusmenu
   patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
-
-  # Cannot find libindicator
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
 
   # Build fix
   CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"

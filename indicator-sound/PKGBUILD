@@ -6,7 +6,7 @@ pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
 _ubuntu_rel=0ubuntu3
 pkgver=0.8.0.0.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -32,9 +32,6 @@ build() {
 
   # Fix build with new libdbusmenu
   patch -Np1 -i "${srcdir}/fix_build_with_libdbusmenu.patch"
-
-  # Cannot find libindicator
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
 
   # Fix build
   CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"

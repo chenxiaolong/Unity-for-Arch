@@ -6,7 +6,7 @@ pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _ubuntu_rel=0ubuntu4
 pkgver=0.4.90.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
@@ -62,6 +62,4 @@ package_libindicator3(){
   #Identical in both packages, but Ubuntu puts it in the GTK 2 package
     #Debug
       rm -vf  "${pkgdir}/usr/share/libindicator/80indicator-debugging"
-    #Source headers
-      rm -rvf "${pkgdir}/usr/include/"
 }

@@ -6,7 +6,7 @@ pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
 _ubuntu_rel=0ubuntu5
 pkgver=0.3.1.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -34,7 +34,6 @@ build() {
   # Build fix with new libdbusmenu
   patch -Np1 -i "${srcdir}/fix_build_with_dbusmenu.patch"
 
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
   autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2

@@ -6,7 +6,7 @@ pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
 _ubuntu_rel=0ubuntu4
 pkgver=0.4.1.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libappindicator"
@@ -34,9 +34,6 @@ build() {
   # The /usr/lib/cli location for Mono bindings is specific to Ubuntu
   sed -i 's|assemblydir = $(libdir)/cli/appindicator-sharp-0.1|assemblydir = $(libdir)/appindicator-sharp-0.1|' bindings/mono/Makefile.{am,in}
   sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
-
-  # Build system cannot find libindicator
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
 
   autoreconf -vfi
 

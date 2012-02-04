@@ -2,7 +2,7 @@
 
 pkgname=indicator-power
 pkgver=0.10
-pkgrel=101
+pkgrel=102
 pkgdesc="A indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -15,9 +15,6 @@ sha512sums=('3417a499b61cf85f7f03f7c9bdaf861cc2a908eadbe3068b74e8e9dd4c4f136ad2e
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-
-  # Cannot find libindicator
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs indicator-0.4)"
 
   ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
   make ${MAKEFLAGS}
