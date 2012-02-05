@@ -1,0 +1,17 @@
+diff -Nru appmenu-gtk-0.3.0.orig/src/bridge.c appmenu-gtk-0.3.0/src/bridge.c
+--- appmenu-gtk-0.3.0.orig/src/bridge.c	2012-02-04 22:24:26.892946739 -0500
++++ appmenu-gtk-0.3.0/src/bridge.c	2012-02-04 22:24:50.806281191 -0500
+@@ -27,13 +27,8 @@
+ #include <gdk/gdkx.h>
+ #include <gio/gio.h>
+ 
+-#if GTK_CHECK_VERSION(3, 0, 0)
+-#include <libdbusmenu-gtk3/menuitem.h>
+-#include <libdbusmenu-gtk3/parser.h>
+-#else
+ #include <libdbusmenu-gtk/menuitem.h>
+ #include <libdbusmenu-gtk/parser.h>
+-#endif
+ 
+ #include <libdbusmenu-glib/menuitem.h>
+ #include <libdbusmenu-glib/server.h>

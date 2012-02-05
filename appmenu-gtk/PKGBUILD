@@ -12,11 +12,18 @@ license=('LGPL')
 makedepends=('gnome-common' 'gtk2-ubuntu' 'gtk3-ubuntu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/appmenu-gtk/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('18b53d9619455462237b9f24c481c3a2bcedf777e921e0f4bf80226ffa47c18961e5e33792ab83b2a483a082176fadb58bbf404f71d10b863bd50f71134adb5e')
+source=("http://launchpad.net/appmenu-gtk/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
+        'build_fix_with_libdbusmenu.patch')
+sha512sums=('18b53d9619455462237b9f24c481c3a2bcedf777e921e0f4bf80226ffa47c18961e5e33792ab83b2a483a082176fadb58bbf404f71d10b863bd50f71134adb5e'
+            '6bd33bd47c562a12e40ee16b470a5ecbc3b84cc3f9d76750d171bb04172bec9a6812d578c313edc4e52a5a02036eca29e065435119dacaa62ae2b3a6c9d6f4e6')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  # Build fix with new libdbusmenu
+  patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
+
+  autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
