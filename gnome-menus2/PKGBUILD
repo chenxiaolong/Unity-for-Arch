@@ -24,6 +24,9 @@ build() {
 
   patch -Np0 -i "${srcdir}/menus.patch"
 
+  # Cannot find 'gmodule-2.0'
+  CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
+
   PYTHON=python2 ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
 }
