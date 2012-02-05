@@ -19,12 +19,15 @@ sha512sums=('cd3e075b210af56dd2ad84e121f65b5f246eb9a0771390b039a96b69726ac0b27cb
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
-  #Python 2 fix
+  # Python 2 fix
   sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
   sed -i 's/-lpyglib-2\.0-python$PYTHON_VERSION/-lpyglib-2.0-python2/' configure{,.ac}
 
-  #libindicate-gtk2 won't install if libindicate isn't installed yet
+  # libindicate-gtk2 won't install if libindicate isn't installed yet
   sed -i 's|$(LIBINDICATEGTK_CFLAGS)|$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs|' libindicate-gtk/Makefile.{am,in}
+
+  # Cannot find gmodule-2.0
+  CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
 
   autoreconf -vfi
 
