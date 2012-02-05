@@ -12,11 +12,18 @@ license=('GPL')
 depends=('dbus-glib' 'libappindicator3')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgname}/0.4/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('24d0e88ea98b1661a75e3faf7f54e4d1dfd468d70c11d69ffc59a83632f0b2b46e7da9c0deb4a887ff9312b04b4b80d714fb62862dd61338e55470235b0c83cf')
+source=("http://launchpad.net/${pkgname}/0.4/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+        'build_fix_with_libdbusmenu.patch')
+sha512sums=('24d0e88ea98b1661a75e3faf7f54e4d1dfd468d70c11d69ffc59a83632f0b2b46e7da9c0deb4a887ff9312b04b4b80d714fb62862dd61338e55470235b0c83cf'
+            '076fd29c4bac23acd3087e5cc5b274160c6fecbf3d46bfb904422d8114592f0438ba138652aa590009d0fd800b392f969c2f3954cc1f5b0866d6987241219870')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
+
+  # Build fix with the new libdbusmenu
+  patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
+
+  autoreconf -vfi
 
   ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
   make ${MAKEFLAGS}
