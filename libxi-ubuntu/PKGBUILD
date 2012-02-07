@@ -7,7 +7,7 @@ pkgrel=100
 pkgdesc="X11 Input extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
-depends=('libxext' 'inputproto-ubuntu')
+depends=('libxext' 'inputproto-ubuntu' 'libx11-ubuntu>=1.4.99.1.0ubuntu1')
 makedepends=('pkgconfig' 'xorg-util-macros' 'xmlto' 'docbook-xml' 'asciidoc')
 provides=("libxi=${pkgver}")
 conflicts=('libxi')
