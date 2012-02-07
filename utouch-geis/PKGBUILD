@@ -8,8 +8,9 @@ pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) inter
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-geis"
 license=('GPL' 'LGPL')
-depends=('utouch-grail')
-makedepends=('xorg-server-ubuntu')
+depends=('utouch-grail' 'xorg-server-ubuntu' 'xorg-xinput-ubuntu')
+optdepends=('xf86-input-evdev-ubuntu: for Apple multitouch trackpad support'
+            'xf86-input-synaptics-ubuntu: for multitouch touchpad support')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('cafecbb4ceda5b5c263f1b5f333cf3e0f5e938a10ff4083b133c6e4ef879bf0c01f20a94552296d846687cacc8aed091c43961de5467d16f3e334768ceafd496'
