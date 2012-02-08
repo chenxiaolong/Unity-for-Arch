@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=2ubuntu5
+_ubuntu_rel=2ubuntu6
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
@@ -23,7 +23,7 @@ options=('!libtool' '!emptydirs')
 source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf79d8d42c7506fe61d9e8bca5fbd2aa98e82bf8cd03a5d860ca5a5e12b4c94'
-            'd749196341d8b6106dd24f045eacaf00e4d0b96dc24f8ae210420c769d15102f73a26fabb141f5fdeeddb8d5cfdaed394a0b98998ddc7f1920cc460075f4d8b7')
+            '67292c66bb08b47a943209d2bf94bb13bf1b259af085bedfce003faefa93edfd536a9f3f29348ea8dfdf58252c12d973d852785ea9d6c418afc050abd9cfc8a8')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
