@@ -4,8 +4,8 @@
 
 pkgname=nautilus-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=3.3.4.${_ubuntu_rel}
-pkgrel=101
+pkgver=3.3.5.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -19,8 +19,8 @@ options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('184e2cdf14691f1e093ffff3f9cf34a4cb7725f41264ce29daafab5376ecd53f83b049ffccc85e21797274ffdfd2bea53ff5aef51b007c3479387422c7306910'
-            'a245321effc87566b80b842705155acf9ccc00fb3940c9e03253bdd733ec11d9ff19c768487942485cc2410f95fcae8fc35b49d753fc81634098a02c04af3336')
+sha512sums=('369574a0a23b3ad0ae2599d24801713d60587dafd7295abe8b6e3695bfd1ea4b82326f946e3b65be4c6c2fa02687b85c79a0323e18e95a8d76930c06ee628f1c'
+            '8684d8b250faf4b71c047bb83f723b37725ba9671e71f552f3966018bbbfbeb140d88adc963b619805c5e6ebf643554fbc81cc9f5bf658645996fab21af1d258')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -49,10 +49,10 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  #From debian/rules
+  # From debian/rules
   echo "" > "${pkgdir}/usr/share/nautilus/nautilus.css"
 
-  #Ubuntu specific stuff
+  # Ubuntu specific stuff
   install -dm755 "${pkgdir}/usr/share/pixmaps/"
   install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   install -dm755 "${pkgdir}/usr/share/applications/"
