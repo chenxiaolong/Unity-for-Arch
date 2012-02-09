@@ -2,8 +2,8 @@
 
 pkgname=glib2-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=2.31.14.${_ubuntu_rel}
-pkgrel=101
+pkgver=2.31.16.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
 arch=('i686' 'x86_64')
@@ -17,15 +17,15 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/glib/${pkgver%.*.*}/glib-${pkgve
         "https://launchpad.net/ubuntu/+archive/primary/+files/glib2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
-sha512sums=('5107f2d6070cb21f9219b4a1105fe554f9479365db7ff63f4ebd46b0ba57ad19ee0882b24f7945316e037ead8f2b803b3fb56a820148e63533b9167a0185358b'
-            'de11bbdbdf9c5f99370cd7530f589d117c79a1237f85e33d3260549920235552af15f7f70ed37b1eacb245b6814b6d4ed81b04bd52a48d7953dd852a5b12ca77'
+sha512sums=('6764917407b074f183e6d9b4469fb5dadef32cf4b45784a489aaeeb50f8e18cb2c554d3f37d85deb7232ce2210c1f07faf4019d613e05e9bfca1201021f5e853'
+            '7ea38b057b2ecb7230fd07eb5f950c05c6932660be3de0a3dbebb703804eb970bc9077f6b8c597974ca8ad400ff419c0f73915616649109aa1d558d9e1612d10'
             'dca2bc74d2013fcb24145ac794eef457aa3213c039e40a1a26ca5017694930768e7c80e334e17a56834549dff6549c781ddd91fae6c7bbb26fdd6a083ad8217a'
             'c3899eb7fa5482ce8a35fe02db90fd0f928d50aa7e4365a9529ef35a2dcd1ed86d5a24f6bc5c635ef5b2d95a0ebfebc2bb6bc90404c99f6fb7484ed2fa032c06')
 
 build() {
   cd "${srcdir}/glib-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
 
   # Do not apply these patches
     # Multiarch
