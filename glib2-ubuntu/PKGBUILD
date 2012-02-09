@@ -28,10 +28,6 @@ build() {
   # Apply Ubuntu patches
 
   # Do not apply these patches
-    # Multiarch
-      sed -i '/gio-modules-multiarch-compat.patch/d' "${srcdir}/debian/patches/series"
-    # Patches accepted upstream
-      sed -i '/10_gvariant_check_null.patch/d' "${srcdir}/debian/patches/series"
     # Do not change path of glib-compile-schemas
       sed -i '/61_glib-compile-schemas-path.patch/d' "${srcdir}/debian/patches/series"
 
