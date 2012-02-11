@@ -40,13 +40,14 @@ build() {
   popd
 }
 
-check() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
-  make check
-
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
-  make check
-}
+# Disable tests: they require Xorg to be running
+#check() {
+#  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+#  make check
+#
+#  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+#  make check
+#}
 
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
