@@ -45,7 +45,7 @@ build() {
 #  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 #  make check
 #
-#  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+#  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 #  make check
 #}
 
