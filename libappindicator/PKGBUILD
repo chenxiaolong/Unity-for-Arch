@@ -4,9 +4,9 @@
 
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
-_ubuntu_rel=0ubuntu4
-pkgver=0.4.1.${_ubuntu_rel}
-pkgrel=101
+_ubuntu_rel=0ubuntu2
+pkgver=0.4.90.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libappindicator"
@@ -14,10 +14,10 @@ license=('LGPL')
 makedepends=('libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('28f8c80fe9aa019bdff4a4047bb63602f7b8fcaca4bdc86301265b272ee80b04f861254b64d309171978cc245f5481e12e52011b00ffc0a436179e1a7112a2d4'
-            'b2ec648008ef6f7be1d3c97f2e2b80f539d0cd14f143bd7748fbabaf1564b4f13f818446768ef168933b34f482f88d7620872043608034b4e80a30909341a281')
+sha512sums=('fe6c737bdd67d2878d0d516d710d59fdb7eef8da7e53e72c0ea3f6c50814a4f1c1b4f422008d82da7a37092bd72c8990de0ed0b4c07c600f93af48c218576766'
+            '03bd5a53eb937ccec87011b8bb0224023d89a8d435ee69ee9120f1afbcc62501c7c463dd1ccd61d634df4386634b7a24d46900f18c256fac5e2c298dccb9dc87')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -27,9 +27,6 @@ build() {
 
   # nunit renamed to mono-nunit in /usr/lib/pkgconfig/mono-nunit.pc
   sed -i 's/nunit >= 2\.4\.7/mono-nunit >= 2.4.7/' configure{,.ac}
-
-  # Makefile was hardcoded to link to Python 2.7
-  sed -i 's/-lpyglib-2\.0-python2\.7/-lpyglib-2\.0-python2/' bindings/python/Makefile.{am,in}
 
   # The /usr/lib/cli location for Mono bindings is specific to Ubuntu
   sed -i 's|assemblydir = $(libdir)/cli/appindicator-sharp-0.1|assemblydir = $(libdir)/appindicator-sharp-0.1|' bindings/mono/Makefile.{am,in}
