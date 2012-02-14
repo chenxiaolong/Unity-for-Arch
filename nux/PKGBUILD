@@ -4,7 +4,7 @@
 
 pkgname=nux
 pkgver=2.2.0
-pkgrel=100
+pkgrel=101
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
