@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libxi-ubuntu
-_ubuntu_rel=0ubuntu3
-pkgver=1.5.99.2.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=1.5.99.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X11 Input extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
-depends=('libxext' 'inputproto-ubuntu' 'libx11-ubuntu>=1.4.99.1.0ubuntu1')
+depends=('libxext' 'inputproto-ubuntu>=2.1.99.6' 'libx11-ubuntu>=1.4.99.1.0ubuntu1')
 makedepends=('pkgconfig' 'xorg-util-macros' 'xmlto' 'docbook-xml' 'asciidoc')
 provides=("libxi=${pkgver}")
 conflicts=('libxi')
@@ -15,8 +15,8 @@ options=(!libtool)
 license=('custom')
 source=("${url}/releases/individual/lib/libXi-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libxi_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('7f24edae93af7e82fa05d9ff4c8b0685562b22b294f66ef4fc674a1265aed5f9ca5ac997b78aa02838e013b280b2d96f76c98e2f0f105370e383bcf0f13980c5'
-            'f5d782fb9ab215c9298638eb7ed9610be8cb41146a7299440cb11093a9f23bba01c2ba34e85fca83d4b66a8523357ac1bdf662fd077cda4a2b0e6e716afb82b4')
+sha512sums=('7f1f4b561ea84a020f841e5288ab82d7d5de3ea7a56c7f39a3e0e10772799586249fd0976d5348d997ac3c11ba4747169305d69fc2ec636e5195ae363b20f33e'
+            '7d2a667a6a82f4faa02065bfc380e777d77a5672a48fa121a3b6c0c108d13f53c699302ac189e99fdf623d4e8bc759ea0527c3e0f069a48666f54d8ea3c7c744')
 
 build() {
   cd "${srcdir}/libXi-${pkgver%.*}"
