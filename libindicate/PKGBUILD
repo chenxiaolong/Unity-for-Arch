@@ -14,7 +14,7 @@ license=('LGPL')
 makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.7/${pkgveri%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgbase}/0.7/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('914d652309b31fc772daa9864f680f870a83be0fdabbb3bb447a9d7f457c3383859a7b894f06f8f9188fe495d0a1e46eb5ad14e8c65b41e545e59625a5a3a96b'
             '24d7269ce96f4c901e855be08992a8f99d26883d4a753c45ba425cf85c30ef8f1a33d61deb1bd9e9ecdd66f9ff5aeb73af7edbb6bd79054a9b48009235cbc455')
