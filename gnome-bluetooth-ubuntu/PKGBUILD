@@ -3,9 +3,9 @@
 # Contributor: Roman Kyrylych <roman@archlinux.org>
 
 pkgname=gnome-bluetooth-ubuntu
-_ubuntu_rel=1ubuntu5
-pkgver=3.2.1.${_ubuntu_rel}
-pkgrel=2
+_ubuntu_rel=0ubuntu1
+pkgver=3.2.2.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="The GNOME Bluetooth Subsystem"
 arch=('i686' 'x86_64')
 url="http://live.gnome.org/GnomeBluetooth"
@@ -18,12 +18,10 @@ options=('!libtool' '!emptydirs')
 install=gnome-bluetooth.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        '61-gnome-bluetooth-rfkill.rules'
-        'fix_gnome-bluetooth_automake_1.11.2.patch')
-sha512sums=('96df759b63aa6e056828ba8f668567c72ce217a3091bbad618cd2a575eb3881a384f4cbd2bf6b1fdd0440ed9b274fc932377aaf36ef8d134038320ed35d1b241'
-            '1f8dc45df4da7b0235e711bce8fe431607037ee963743bfe0c7a0983d41f9010acdcc23df38c46bf2f9176f9a58a2aa2cff06e78ab0e3ded85fa79acfef76edc'
-            '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de'
-            '36d6b523c18fc9108e09ff411f82c7a2dd0cf9072c8cf2525accb4aa77d50b137fa122c62fe36718b7ed35518d65ce29abbe53c01e322c364567984221b53aab')
+        '61-gnome-bluetooth-rfkill.rules')
+sha512sums=('a49200d8364d478e9011e79fa2437917a204f8fa608cd9fd829102969efbfd149b0a5878ee8259750d37047dcb70ff457e4a52e035194ba4abe81925b37211f8'
+            '3518cfc8497a1c89d4cb00305c04055da426999e4a7b84879978e960a48fbddf4fe3b773439b2b7f531578bbb51c056caac590bae6c9857fa06ef246c28cb728'
+            '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -32,10 +30,6 @@ build() {
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  # Fix build with automake 1.11.2
-  # I've filed a bug report at: https://bugzilla.gnome.org/show_bug.cgi?id=667323
-  patch -Np1 -i "${srcdir}/fix_gnome-bluetooth_automake_1.11.2.patch"
 
   autoreconf -vfi
 
