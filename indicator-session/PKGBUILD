@@ -4,9 +4,9 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-_ubuntu_rel=1ubuntu2
-pkgver=0.3.7.1.${_ubuntu_rel}
-pkgrel=101
+_ubuntu_rel=0ubuntu1
+pkgver=0.3.91.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -16,26 +16,19 @@ optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'fix_build_with_libdbusmenu.patch')
-sha512sums=('5cf55ab872de45cf87206128210bdd32b83901b06cf445ff81237ebaea1845663061287936cfcec5391ee8b721abe2b7ddd25c28b32064f21ec25b397e495aad'
-            'b85ad128767bebb58c8751c8ea08678fe1c77f9fd3e614f7df901c3be3fbc66b0aed229d214829a5d32816637d8f2d9e413c74f6b227b322ef54f21709bf48e6'
-            '71db988b35cdd3b8288afe1205eda8b56153dbc8a00653648640a7553ff083a9935d65d6d599e1a64b44158bd1ec63b5cb1a6950c0b9edec4014c29e5233cbec')
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('c18c8e902ec1e3601c9e3351f85b4b68ded688eff2daaf411b2c49e3ada28cee453cddd66aec2c631b253f87bd97d68a64649776dd78c5e4b82780c6a59a2cfc'
+            'e8bb886120f1d12876642d5f325fb88ec0e68049d3af6b966b70e7a1b194e0501c2fd17d0f9448804f2345fae52189f8062d2d72d9a51bf0da4031d7f27e65d0')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
 
   # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
-
-  # Fix build with new libdbusmenu
-  patch -Np1 -i "${srcdir}/fix_build_with_libdbusmenu.patch"
-
-  # Build fix
-  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+  #patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  #for i in $(cat debian/patches/series | grep -v '#'); do
+  #  patch -Np1 -i "debian/patches/${i}"
+  #done
 
   autoreconf -vfi
 
