@@ -20,7 +20,7 @@ sha512sums=('c65fef518fea5708067def3595a57b2e3cb4c04a3d1c367ac02c4802386a6c8420b
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
