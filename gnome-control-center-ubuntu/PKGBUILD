@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=2ubuntu6
+_ubuntu_rel=2ubuntu9
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
-depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet')
+depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet' 'libpulse-ubuntu=1.1.0ubuntu7-100')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'apg: adds password generation for user accounts'
             'gnome-color-manager: for color management tasks')
@@ -23,15 +23,22 @@ options=('!libtool' '!emptydirs')
 source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf79d8d42c7506fe61d9e8bca5fbd2aa98e82bf8cd03a5d860ca5a5e12b4c94'
-            '67292c66bb08b47a943209d2bf94bb13bf1b259af085bedfce003faefa93edfd536a9f3f29348ea8dfdf58252c12d973d852785ea9d6c418afc050abd9cfc8a8')
+            '68946abdb857e5b872471dc86384a14d25fd28bf5919a032f16c3ed25f383b331690ca665bd6c8a1ab508ef9de1d85e1d08a8fb6c4036f804348d7e9f5b6e092')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   # Apply Ubuntu patches
 
-  # Disable using Ubuntu's update manager
-  sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
+  # Disable patches
+    # Disable using Ubuntu's update manager
+      sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
+    # Do not use Ubuntu help files
+      sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
+
+  # Fix patches
+    # Use Arch Linux logo
+    sed -i 's/UbuntuLogo.png/archlinux-vert-dark-grad2.svg/' "${srcdir}/debian/patches/56_use_ubuntu_info_branding.patch"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
@@ -46,7 +53,7 @@ build() {
     --disable-scrollkeeper \
     --disable-update-mimedb
 
-  #https://bugzilla.gnome.org/show_bug.cgi?id=656229
+  # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
   make ${MAKEFLAGS}
 }
@@ -56,14 +63,15 @@ package() {
 
   make DESTDIR="${pkgdir}" install
 
-  #Ubuntu specific files
-  install -d -m755 "${pkgdir}/usr/share/gnome-control-center/ui/"
-  #install -d -m755 "${pkgdir}/usr/share/pixmaps/"
-  install -d -m755 "${pkgdir}/usr/share/indicators/session/applications/"
-  install -d -m755 "${pkgdir}/usr/share/menu/"
-  install -m644 "${srcdir}/debian/UbuntuLogo.png" "${pkgdir}/usr/share/gnome-control-center/ui/"
-  #install -m644 "${srcdir}/debian/control-center2.xpm" "${pkgdir}/usr/share/pixmaps/"
+  # Ubuntu specific files
+  install -dm755 "${pkgdir}/usr/share/gnome-control-center/ui/"
+  install -dm755 "${pkgdir}/usr/share/pixmaps/"
+  install -dm755 "${pkgdir}/usr/share/indicators/session/applications/"
+  install -dm755 "${pkgdir}/usr/share/menu/"
+  #install -m644 "${srcdir}/debian/UbuntuLogo.png" "${pkgdir}/usr/share/gnome-control-center/ui/"
+  # Use Arch Linux branding
+  ln -s /usr/share/archlinux/logos/archlinux-vert-dark-grad2.svg "${pkgdir}/usr/share/gnome-control-center/ui/"
+  install -m644 "${srcdir}/debian/gnome-control-center.xpm" "${pkgdir}/usr/share/pixmaps/"
   ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
   install -m644 "${srcdir}/debian/gnome-control-center.menu" "${pkgdir}/usr/share/menu/"
 }
-
