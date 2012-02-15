@@ -3,7 +3,7 @@
 
 pkgname=utouch-frame
 pkgver=2.2.0
-pkgrel=100
+pkgrel=101
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-frame"
@@ -17,7 +17,7 @@ sha512sums=('6e3242d63a4f4118fc59cdcaf9b4bd64dd5fc59e335b485457387d11ea954e9200c
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --disable-static
+  ./configure --prefix=/usr --disable-static --with-xi
   make ${MAKEFLAGS}
 }
 
