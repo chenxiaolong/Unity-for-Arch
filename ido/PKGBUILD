@@ -4,7 +4,7 @@
 
 pkgbase=ido
 pkgname=('libido' 'libido3')
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 pkgver=0.3.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
@@ -17,7 +17,7 @@ options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/0.3/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('65773e4acec5a536f7fcc74bd69f00f0368dc4ff4d16db731859e48a32905d1c65036a0afcb8cca77d449d69bef433c853cb5c05fbfb70e3313e3c3680fb698e'
-            '9a86fff587d32f0e1190c2434a70ef616ff961c5d7c74309bd723d47a89d6f19e141da3f61df40599d49c8787c794e47330a4cd7680ff89c800e1e500610f1a4')
+            '082183c3090e0c9e2a74a935951dcf2c01ede87cca2605b32aa71669e25ef022fd9e3adb96137e51da7f19a84abd70534655e37f9ee0c03b0d9b11fc4772b800')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
