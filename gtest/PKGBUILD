@@ -5,7 +5,7 @@
 
 pkgname=gtest
 pkgver=1.6.0
-pkgrel=100
+pkgrel=101
 pkgdesc="Google Test - C++ testing utility based on the xUnit framework (like JUnit)"
 arch=('i686' 'x86_64')
 url="http://code.google.com/p/googletest/"
@@ -28,7 +28,7 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   install -dm755 ${pkgdir}/usr/{lib,include/gtest/internal,share/licenses/${pkgname}}
-  install -m644 build/libgtest{,_main}.so "${pkgdir}/usr/lib/"
+  install -m755 build/libgtest{,_main}.so "${pkgdir}/usr/lib/"
   install -m644 include/gtest/*.h "${pkgdir}/usr/include/gtest/"
   install -m644 include/gtest/internal/*.h "${pkgdir}/usr/include/gtest/internal/"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
