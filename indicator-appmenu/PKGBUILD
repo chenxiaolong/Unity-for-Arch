@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=indicator-appmenu
-pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2')
-_ubuntu_rel=0ubuntu3
-pkgver=0.3.2.${_ubuntu_rel}
-pkgrel=101
+pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
+_ubuntu_rel=0ubuntu2
+pkgver=0.3.90.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -15,13 +15,11 @@ groups=('unity')
 optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-gtk3: support for GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
-options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
-        'build_fix_with_libdbusmenu.patch')
-sha512sums=('cf2d771cdde5902fca38fcaa8e442506d189cc4b8617eb596ab519b43f8ef27fd4602b093f5461560c7300048466213865cdf8a795a34688b02e16660251ac96'
-            '73debad2f50c5aad15bf683e398423edaea2a8d2aaa16823255355f384e9d958ee54ec1d6058f266149b5ea9d456666b58a12a62a1679a5e749fbe20a9cd2270'
-            '377937a0ba44a37e1a0cb4d6584f104ca06a4ffa39f1d9f93e60e4ce7e9c26152ea910152d8afc91cf9418ad1b9e92a61bf9e0aee8b1eaf8bc5f758994c273e6')
+options=('!libtool' '!emptydirs')
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('c8f10f106fbc2a527f71884ea38a210c1c5d95b3e86bf2f150fda4d6a427a250318135f5d26f4cd7d533bf1cfb76f7a33e018b0a0dec924c734715f52a03e751'
+            '2895bcdfaff4867da2032d4a2596bf8a6cacd79ebfb440843d5dec40d648077ba6ac2afb05c42809c5a985b6b15495cf1f02080e2f978e5ec891b92d29031f12')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -32,10 +30,11 @@ build() {
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  # Build fix with new libdbusmenu
-  patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
-
   autoreconf -vfi
+  intltoolize -f
+
+  # Disable -Werror
+  CFLAGS="${CFLAGS} -Wno-error"
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
@@ -55,7 +54,11 @@ package_indicator-appmenu() {
   depends=('gtk3-ubuntu' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
-  make DESTDIR="${pkgdir}/" install
+  make -C data DESTDIR="${pkgdir}/" install
+  make -C src DESTDIR="${pkgdir}/" install
+
+  # Remove files that go in indicator-appmenu-tools
+  rm "${pkgdir}"/usr/bin/hud-{cli,dump-application,list-applications,verify-app-info}
 }
 
 package_indicator-appmenu-gtk2() {
@@ -63,5 +66,28 @@ package_indicator-appmenu-gtk2() {
   depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'libbamf' 'indicator-appmenu')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
+  make -C data DESTDIR="${pkgdir}/" install
   make -C src DESTDIR="${pkgdir}/" install
+
+  # Remove files that don't belong here
+  rm "${pkgdir}"/usr/bin/hud-{cli,dump-application,list-applications,verify-app-info}
+  rm "${pkgdir}/usr/lib/indicator-appmenu/hud-service"
+  rm "${pkgdir}"/usr/share/glib-2.0/schemas/com.canonical.indicator.appmenu.{,hud.{,search.}}gschema.xml
+  rm "${pkgdir}/usr/share/dbus-1/services/com.canonical.hud.service"
+}
+
+package_indicator-appmenu-tools() {
+  pkgdesc="Indicator for application menus - Tools"
+  depends=('indicator-appmenu')
+
+  # Doesn't matter which one is used
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+
+  make -C docs DESTDIR="${pkgdir}/" install
+  make -C tools DESTDIR="${pkgdir}/" install
+  make -C src DESTDIR="${pkgdir}/" install
+
+  # Remove files that belong in the other packages
+  rm "${pkgdir}/usr/lib/indicators3/7/libappmenu.so"
+  rm "${pkgdir}/usr/lib/indicator-appmenu/hud-service"
 }
