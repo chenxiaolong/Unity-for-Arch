@@ -5,7 +5,7 @@
 pkgname=gnome-session-ubuntu
 _ubuntu_rel=0ubuntu4
 pkgver=3.2.1.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -19,21 +19,15 @@ install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'startunity'
-        'unity-3d.desktop'
-        'startunity3d'
-        'unity-2d.desktop')
+        '55gnome-session_gnomerc')
 sha512sums=('ccc82d261ab800147aa5df56001047f212f740217d43954d3a18d9034f1eae13972af408e00a3d2dcc4c83954cffc1fb77ba83f45d0426021c2c65bf3ed146cf'
             '432a5e20d2fe166f3a5c192d5597d3c542741fc314302d34ff1bcacde287285724eefc9f05cb9adc87f761bc90e0f087c98a6f1e128677aeffdfb15d9fc45767'
-            'c1a5ec1ece04328b98c060156e998fab905308a53d3bd1ab74119faa9658d3dc35487a3086fddad41f3cb24369a26a3b02eeff79c8d9dd60724aec70387f2f15'
-            '105c9aa92ca355f367067715528a4b7352dc960c94b6b587794c7210c13dc50186fbb920665eeb5f7a8e6064df966372394ae865d3c89ad63f41b30a9eeb971f'
-            'd48de63950edb64bd730b0bc4ded86cf565328a7e48f7cd5d77c05b3f926b2f938395035ee1d29fb29684aa33a717bc57c36e0aa1daa237d181df60b5d583929'
-            '713303d71e7c621f24b7c0ed93d91e4929268e17ef723821a6243980fa6cf897de95f3013f371d0109ec3a4dbc5f33510a2f7c8c5321989891ceedb0bd3ea3d4')
+            '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -45,7 +39,7 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/gnome-session \
     --disable-schemas-compile \
-    --enable-ipv6 #From debian/rules
+    --enable-ipv6 # From debian/rules
   make ${MAKEFLAGS}
 }
 
@@ -53,14 +47,16 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  #Install Ubuntu files
+  # Install Ubuntu files
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -dm755 "${pkgdir}/usr/bin/"
   install -dm755 "${pkgdir}/usr/share/applications/"
   install -dm755 "${pkgdir}/etc/gnome/"
   install -dm755 "${pkgdir}/usr/share/gnome/applications/"
   install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
-  install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  #install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  # Install my version of the script (more platform-agnostic)
+  install -m755 "${srcdir}/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
   install -m755 "${srcdir}/debian/scripts/gnome-wm" "${pkgdir}/usr/bin/"
   install -m644 "${srcdir}/debian/gnome-wm.desktop" "${pkgdir}/usr/share/applications/"
@@ -68,9 +64,8 @@ package() {
   install -m644 "${srcdir}/debian/defaults.list" "${pkgdir}/etc/gnome/"
   ln -s '/etc/gnome/defaults.list' "${pkgdir}/usr/share/gnome/applications/defaults.list"
 
-  #Install thn81's files
-  install -D -m644 "${srcdir}/unity-2d.desktop" "${pkgdir}/usr/share/apps/kdm/sessions/unity-2d.desktop"
-  install -D -m755 "${srcdir}/startunity" "${pkgdir}/usr/bin/startunity"
-  install -D -m644 "${srcdir}/unity-3d.desktop" "${pkgdir}/usr/share/apps/kdm/sessions/unity-3d.desktop"
-  install -D -m755 "${srcdir}/startunity3d" "${pkgdir}/usr/bin/startunity3d"
+  # symlink session files so that KDM can find them
+  install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
+  ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
+  ln -s /usr/share/xsessions/ubuntu-2d.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
 }

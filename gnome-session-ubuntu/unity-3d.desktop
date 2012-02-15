@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Unity
-Comment=This session logs you into Unity
-Exec=/usr/bin/startunity3d
-TryExec=/usr/bin/startunity3d
-Icon=
-Type=XSession
-X-Ubuntu-Gettext-Domain=unity-3d
