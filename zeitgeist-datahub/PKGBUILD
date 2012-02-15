@@ -3,8 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=zeitgeist-datahub
-pkgver=0.7.0
-pkgrel=101
+_ubuntu_rel=1ubuntu1
+pkgver=0.8.0.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="The datahub provides passive plugins which insert events into Zeitgeist"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/zeitgeist-datahub"
@@ -12,18 +13,24 @@ license=('GPL')
 depends=('libzeitgeist' 'gtk2-ubuntu')
 makedepends=('intltool' 'vala')
 groups=('unity')
-source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('994849bae8e6169aaa247a0d59b817911c82bf9c0a9db5182269de66c6c9c372a7c6e82977155c6cbe65b8940bff8df238d841c08f698c8172db0a9eddf69744')
+source=("http://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('7b3a82762bb582b6e2bc7b008313dcf27c1db3ba6f6966f2b1810b126ff538d7dcf80ea8bc3d18e8f393b717fe63083330198ccc9a47b8e1db3b9270ed1552b1'
+            'ba2e9dc813242408cfeda629ceb213dc0ba1a5514016beb4a794d81403e5ac5a6dd89c2802e765d2834192846ce52e52a547fba30feee40b0a760347d9469769')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
-  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/debian/patches/nodisplay_autostart.patch"
+  patch -Np1 -i "${srcdir}/debian/patches/add_datahub_autostart_delay.patch"
+
+  ./configure --prefix=/usr --sysconfdir=/etc
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}/" install
 }
