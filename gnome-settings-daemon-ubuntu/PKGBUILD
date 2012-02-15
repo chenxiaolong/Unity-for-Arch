@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu14
+_ubuntu_rel=0ubuntu17
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -20,15 +20,15 @@ url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f0b2674c144ea4999d755c5ee5f9c76669cd436364c78e51d62a9aeec9665cb4e609dbc8e36ed8abae3128cd51005c010614a7d49316672b01df12c0b40bf530'
-            '2743014bd612a623d0daf3bb119997eb80b04f792938f84e29d98859de182a166e149e7c274dd07335f3b3c7ab2ece4ff408bc75df524520990bdb200a1166d4')
+            'cd01b01b55ecac016b6a5d2b7444601008b535d7ff4e6921f4e5c32c52bfff6bd67ac2dc5033e15b6d825927d8202b07a9ccc8bd1da1042233e25f5f0fb8ab21')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
-  #gsd-media-keys-manager.c fails to find libnotify. Adding libnotify to Makefile.am
-  #  will solve the problem.
-  #Add ${LIBNOTIFY_LIBS} to plugins/media-keys/Makefile.am
+  # Apply Ubuntu patches
+  # gsd-media-keys-manager.c fails to find libnotify. Adding libnotify to Makefile.am
+  #   will solve the problem.
+  # Add ${LIBNOTIFY_LIBS} to plugins/media-keys/Makefile.am
   sed -i '/test_media_keys_LDADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
   sed -i '/libmedia_keys_la_LIBADD.*=.*\\/ a ${LIBNOTIFY_LIBS} \\' plugins/media-keys/Makefile.am
 
@@ -47,11 +47,11 @@ build() {
     --with-pnpids=/usr/share/libgnome-desktop-3.0/pnp.ids \
     --enable-gconf-bridge #from debian/rules
       
-  #https://bugzilla.gnome.org/show_bug.cgi?id=656231
+  # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
   make ${MAKEFLAGS}
 
-  #Compile gnome-update-wallpaper-cache.c
+  # Compile gnome-update-wallpaper-cache.c
   gcc -o gnome-settings-daemon/gnome-update-wallpaper-cache "${srcdir}/debian/gnome-update-wallpaper-cache.c" $(pkg-config --cflags --libs glib-2.0 gdk-3.0 gdk-x11-3.0 gio-2.0 gnome-desktop-3.0)
 }
 
@@ -59,16 +59,16 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  #Install gnome-update-wallpaper-cache
+  # Install gnome-update-wallpaper-cache
   install -c gnome-settings-daemon/gnome-update-wallpaper-cache "${pkgdir}/usr/lib/${pkgname%-*}"
   install -dm755 "${pkgdir}/usr/share/man/man1/"
   install -m644 "${srcdir}/debian/${pkgname%-*}.1" "${pkgdir}/usr/share/man/man1/"
 
-  #Symlinks
+  # Symlinks
   install -dm755 "${pkgdir}/usr/bin/"
   ln -s '/usr/lib/gnome-settings-daemon/gnome-settings-daemon' "${pkgdir}/usr/bin/"
 
-  #Gsetings override
+  # Gsetings override
   install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   install -m644 "${srcdir}/debian/gnome-settings-daemon.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
 }
