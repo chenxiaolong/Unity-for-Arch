@@ -3,32 +3,32 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_rel=0ubuntu10
-pkgver=1.11.3.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=1.11.4.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
-makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt' 'fixesproto-ubuntu>=5.0.2ubuntu1' 'libxfixes-ubuntu')
+makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto-ubuntu>=2.1.99.6.1' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt' 'fixesproto-ubuntu>=5.0.2ubuntu1' 'libxfixes-ubuntu')
 options=('!libtool')
 source=("${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
         'xvfb-run'
         'xvfb-run.1'
         '10-quirks.conf')
-sha512sums=('f1325e5448454bb2f8811290126f0101e5005e364112da73b240010940196016e01b1a2b72f675e9d2fe135c4db0818f47e4d7ef415a68c3b1c4a13ac2a1d0c1'
-            'b45f523bfb05cecfa45c4ec2469fc0de035b9c527322c6b932eefb61b42f72da680deb3049597d96a9ed3ff5b211868425cc0e98588fb1fbb23c6f6db0368bf5'
+sha512sums=('29013ffd51ff1b6a2b5679580c490d68dc5feaebdc9201a2812a410761200f5468de76c8791ab089950504be649e61f2cccb705587fde66eef1bcd3461f537ed'
+            'c7bfb6d3a49600d95c9efe8bfb172bc1367ae50c55f77fa63ac63277a7944cbb65faeb6e55ca0f362034460b5c1d95b80bf9cd5439e5cff15954584cb3b79df8'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
 
-#AUR fix
+# AUR fix
 pkgdesc="Xorg X server with Ubuntu's patches"
 
 build() {
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
@@ -160,7 +160,7 @@ package_xorg-server-common-ubuntu() {
 
 package_xorg-server-ubuntu() {
   pkgdesc="Xorg X server"
-  depends=(libxdmcp libxfont udev libpciaccess libdrm pixman libgcrypt libxau xorg-server-common-ubuntu)
+  depends=('libxdmcp' 'libxfont' 'udev' 'libpciaccess' 'libdrm' 'pixman' 'libgcrypt' 'libxau' 'xorg-server-common-ubuntu')
   #Cannot put xf86-input-evdev-ubuntu in the dependencies - the AUR will
   # cause a dependency loop due to the order the packages are installed
   backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
@@ -175,8 +175,8 @@ package_xorg-server-ubuntu() {
   mv "${pkgdir}/usr/share/X11/xorg.conf.d" "${pkgdir}/etc/X11/"
   install -m644 "${srcdir}/10-quirks.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
 
-  #Some debian stuff
-    #This should be done by evdev
+  # Some Debian stuff
+    # This should be done by evdev
   #install -m644 "debian/local/10-kbd.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
   #install -m644 "debian/local/10-mouse.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
   install -dm755 "${pkgdir}/lib/udev/"
@@ -203,7 +203,7 @@ package_xorg-server-ubuntu() {
 
 package_xorg-server-xephyr-ubuntu() {
   pkgdesc="A nested X server that runs as an X application"
-  depends=(libxfont libgl libgcrypt libxv pixman xorg-server-common-ubuntu)
+  depends=('libxfont' 'libgl' 'libgcrypt' 'libxv' 'pixman' 'xorg-server-common-ubuntu')
   provides=('xorg-server-xephyr')
   conflicts=('xorg-server-xephyr')
 
@@ -216,7 +216,7 @@ package_xorg-server-xephyr-ubuntu() {
 
 package_xorg-server-xvfb-ubuntu() {
   pkgdesc="Virtual framebuffer X server"
-  depends=(libxfont libxdmcp libxau libgcrypt pixman xorg-server-common-ubuntu)
+  depends=('libxfont' 'libxdmcp' 'libxau' 'libgcrypt' 'pixman' 'xorg-server-common-ubuntu')
   provides=('xorg-server-xvfb')
   conflicts=('xorg-server-xvfb')
 
@@ -232,7 +232,7 @@ package_xorg-server-xvfb-ubuntu() {
 
 package_xorg-server-xnest-ubuntu() {
   pkgdesc="A nested X server that runs as an X application"
-  depends=(libxfont libxext libgcrypt pixman xorg-server-common-ubuntu)
+  depends=('libxfont' 'libxext' 'libgcrypt' 'pixman' 'xorg-server-common-ubuntu')
   provides=('xorg-server-xnest')
   conflicts=('xorg-server-xnest')
 
@@ -245,7 +245,7 @@ package_xorg-server-xnest-ubuntu() {
 
 package_xorg-server-xdmx-ubuntu() {
   pkgdesc="Distributed Multihead X Server and utilities"
-  depends=(libxfont libxi libgcrypt libxaw libxrender libdmx libxfixes pixman xorg-server-common-ubuntu)
+  depends=('libxfont' 'libxi' 'libgcrypt' 'libxaw' 'libxrender' 'libdmx' 'libxfixes' 'pixman' 'xorg-server-common-ubuntu')
   provides=('xorg-server-xdmx')
   conflicts=('xorg-server-xdmx')
 
@@ -258,7 +258,7 @@ package_xorg-server-xdmx-ubuntu() {
 
 package_xorg-server-devel-ubuntu() {
   pkgdesc="Development files for the X.Org X server"
-  depends=(xproto randrproto renderproto xextproto inputproto-ubuntu kbproto fontsproto videoproto dri2proto xineramaproto xorg-util-macros pixman libpciaccess)
+  depends=('xproto' 'randrproto' 'renderproto' 'xextproto' 'inputproto-ubuntu' 'kbproto' 'fontsproto' 'videoproto' 'dri2proto' 'xineramaproto' 'xorg-util-macros' 'pixman' 'libpciaccess')
   provides=('xorg-server-devel')
   conflicts=('xorg-server-devel')
 
