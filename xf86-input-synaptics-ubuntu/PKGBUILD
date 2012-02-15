@@ -4,7 +4,10 @@ pkgname=xf86-input-synaptics-ubuntu
 _ubuntu_ver="+git20120210"
 _ubuntu_rel=0ubuntu2
 _actual_ver=1.5.0
-pkgver=${_actual_ver}${_ubuntu_ver/+/.}.${_ubuntu_rel}
+
+# The AUR is sooo annoying...
+pkgver=${_actual_ver}.git20120210.${_ubuntu_rel}
+
 pkgrel=1
 pkgdesc="Synaptics driver for notebook touchpads"
 arch=('i686' 'x86_64')
