@@ -1,8 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-input-evdev-ubuntu
-_ubuntu_rel=1ubuntu3
-pkgver=2.6.99.901.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+_ubuntu_ver="+git20120126"
+_actual_ver=2.6.99.901
+pkgver=${_actual_ver}${_ubuntu_ver/+/.}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X.org evdev input driver"
 arch=('i686' 'x86_64')
@@ -14,16 +16,16 @@ provides=('xf86-input-evdev')
 conflicts=('xorg-server<1.11.0' 'xf86-input-evdev')
 options=('!libtool' '!makeflags')
 groups=('xorg-drivers' 'xorg')
-source=("${url}/releases/individual/driver/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('2cf0a6399bf377cc2f47586d29e719ec7cd36eb6904ee3403b6c1dbaa352f3800248e3b41be1e0dc86968df0fa0ea7834a364c8cbf04b8dc239a55f5f20b8e1a'
-            '58d1e0f1ab8240b8cfdced76af0807c1290b82fc3952bdd2cad4b9725ef219eb68aff82101bbde0556fb4efc9e9878edd6af72fedf13b3945852ea3cc99a5d78')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-evdev_${_actual_ver}${_ubuntu_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-evdev_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff.gz")
+sha512sums=('09061f439711047fd81025e9d9bc81124ee25256422df3c066a93294f73e0e0e0f4c71dda7aa7b8a6f1b6a222d434a180f827b0732f8bb100a1a95d460771b7d'
+            'b8a44f6c7e078408f07e85fc09b0ed199efa233e50f8b708c5b27f9978d10f3457103fda3813c37559fd6e560bc590e14ccd8311322add97adfd609c31793127')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/xserver-xorg-input-evdev_${pkgver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/xserver-xorg-input-evdev_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
@@ -35,7 +37,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make DESTDIR="${pkgdir}" install
   install -dm755 "${pkgdir}/usr/share/licenses/${pkgname%-*}"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname%-*}/"
