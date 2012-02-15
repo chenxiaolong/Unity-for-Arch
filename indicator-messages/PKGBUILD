@@ -4,8 +4,8 @@
 
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
-pkgver=0.5.0
-pkgrel=102
+pkgver=0.5.91
+pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -14,19 +14,11 @@ depends=('libindicator3' 'libindicate' 'libdbusmenu-gtk3' 'telepathy-glib')
 makedepends=('intltool>=0.35.0')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
-        'build_fix_with_libdbusmenu.patch')
-sha512sums=('ac5f81fff2da77aebff0712debfa783c1b0eeaf07386dfec89c87eff18c10e21aa460dd2bf9e214593f5cb7bd168c63d4e5f02fe546dd8d1d30b19088864f6fd'
-            '6b56ebfc971b63d74d46c0bf7d9449dfbd3a82560d224088b6d8217a7bca3a4efa71e94d40a76eb7834c1d5ad224e9351b9b247c7769b67a45a54e2f20325afa')
+source=("http://launchpad.net/${pkgbase}/0.6/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('dc082a5222234c3119f0a4e758d9c6982e98d7f18641c2ecfa0aec5f4cf5b09b6493961816752bf8454434def23e22365a51db2a9d7aaee3af02599968fd3c1c')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-
-  # Fix build against new libdbusmenu
-  patch -Np1 -i "${srcdir}/build_fix_with_libdbusmenu.patch"
-
-  # Build fix
-  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
 
   autoreconf -vfi
 
