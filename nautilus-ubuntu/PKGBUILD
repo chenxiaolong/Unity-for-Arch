@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.3.5.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
@@ -20,15 +20,23 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('369574a0a23b3ad0ae2599d24801713d60587dafd7295abe8b6e3695bfd1ea4b82326f946e3b65be4c6c2fa02687b85c79a0323e18e95a8d76930c06ee628f1c'
-            '8684d8b250faf4b71c047bb83f723b37725ba9671e71f552f3966018bbbfbeb140d88adc963b619805c5e6ebf643554fbc81cc9f5bf658645996fab21af1d258')
+            '6e14018d2ff447bc5502b588b64936f3c43e252aa1ec8b940afd9c27953dfe73f399133b0d67b90a81e0498dd018ddc321e2de496e519996eaa6037bf32fcfcb')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   # Apply Ubuntu patches
+
+  # Disable patches
+    # Don't use Ubuntu help
+      sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # For updating translations in desktop files
+  ln -s "${srcdir}/debian" .
 
   autoreconf -vfi
 
