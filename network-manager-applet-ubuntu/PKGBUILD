@@ -6,8 +6,10 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu7
-pkgver=0.9.1.90.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+_ubuntu_ver='+git.20120126t000800.5151959'
+_actual_ver=0.9.2.0
+pkgver=${_actual_ver}${_ubuntu_ver/+/.}${_ubuntu_rel}
 pkgrel=1
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
@@ -20,20 +22,28 @@ provides=("network-manager-applet=${pkgver}")
 conflicts=('network-manager-applet')
 options=('!libtool')
 install=network-manager-applet.install
-source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/0.9/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('ba979058bf2b97491309540535a376cd503f9252109af235d32c4711a88b07dc3797badcb8cf42166688efcda1327afc19d521c07d12431402ee99bf91545791'
-            '54049b77a6c673ed15dd7099fc1717f55c81d98e093c8384bc23ba130cd893ea522cf8eb2bf76e16e5b1609bb5fc1c9900170b00c7ac4cbe374e8dfd63c1b7cb')
+# I'm not going to maintain a newer version of NetworkManager...
+source=("http://ftp.acc.umu.se/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('1f5509446d830d967cad7ec8ed92814ca7a0a4ab97cdc46ecab8abc82221fc93fa6316984c3dacd3bf0c1464b50060d2508c7a9dcc4439a8fe317b168b9fd4de'
+            'd9ec1a7d45c881bbe52e63d324136e74e43b4af63c8ef271f2462286b9a1e4832e0eacb90161826774ab369b240386cdede2b19808409680fc29fb1ece261b12')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
-  #Apply Ubuntu patches
+  # Apply Ubuntu patches
+
+  # Disable patches
+    # Require git version of NetworkManager
+      sed -i '/lp912150_lazy_notify_init.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/lp337960_dxteam_notification_icon_names.diff/d' "${srcdir}/debian/patches/series"
+      sed -i '/clear-notification-actions.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  intltoolize -f -c
+  #intltoolize -f -c
   autoreconf -vfi
 
   ./configure \
@@ -44,18 +54,19 @@ build() {
     --disable-static \
     --disable-maintainer-mode \
     --enable-indicator
+
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}/" install
 
   install -dm755 "${pkgdir}/usr/share/gconf/schemas/"
   gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain nm-applet "${pkgdir}"/etc/gconf/schemas/*.schemas
   rm -fv "${pkgdir}"/etc/gconf/schemas/*.schemas
 
-  #Install Ubuntu stuff
+  # Install Ubuntu stuff
   install -dm755 "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
   install -m644 "${srcdir}/debian/icons/22/nm-device-wired-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
   install -m644 "${srcdir}/debian/icons/22/nm-signal-00-secure.png" "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
