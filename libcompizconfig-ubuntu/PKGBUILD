@@ -1,8 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libcompizconfig-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=0.9.5.94.${_ubuntu_rel}
+
+_ubuntu_rel=0ubuntu1
+_ubuntu_ver='~bzr428'
+_actual_ver=0.9.7.0
+_WTF_ver=0.9.5.94
+
+pkgver=${_actual_ver}.bzr428.${_ubuntu_rel}
+
 pkgrel=100
 pkgdesc="Compiz configuration system library - Ubuntu version"
 arch=('i686' 'x86_64')
@@ -13,13 +19,14 @@ makedepends=('intltool' 'pkgconfig' 'cmake')
 provides=('libcompizconfig')
 conflicts=('libcompizconfig')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('39bceaf3cf319254ce90e892cb27d46c96c85ed4ef8046ef4eb1ad679015f7ceb8358c9f47b8c4d3738ba24889acba6b19f9622583c094c97ec2a6f528b368b3'
-            'a9d3c7277e386379812eab0d2ffa102ae94aa0eb8f3b5ca3abc4cfd41cec53ed26d405a6a9c92912a4c0087dbc2a338f5305443c431c725c51341ed36628793a')
+install=${pkgname%-*}.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('13612ebcdd3016c5111a664487dd76412ef39f59fe986c0805a96d58696780d200e70dfd09e2d93a20e4c35aeb5cd2959a79c6b544d465c9232a60889b692e19'
+            '9d434cc42c8ec7e5102bb2df3160de01fa8004f0b39dee98d690656c7ff1d9c3cba5ea374cab783e9e79220885745c76057ab7d5fa11b83fef5db71762d6ca26')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_WTF_ver}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
@@ -37,18 +44,21 @@ build() {
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCOMPIZ_DESTDIR="${pkgdir}"
+
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_WTF_ver}"
   cd "build"
   make install
   make findcompizconfig_install
 
-  mkdir -p "${pkgdir}/usr/share/compizconfig"
-  mkdir -p "${pkgdir}/etc/compizconfig"
-  install -m644 "${srcdir}/debian/normal.profile" "${pkgdir}/usr/share/compizconfig/"
-  install -m644 "${srcdir}/debian/extra.profile" "${pkgdir}/usr/share/compizconfig/"
+  install -dm755 "${pkgdir}/usr/share/compizconfig"
+  install -dm755 "${pkgdir}/etc/compizconfig"
+  install -m644 "${srcdir}/debian/normal.profile" \
+    "${pkgdir}/usr/share/compizconfig/"
+  install -m644 "${srcdir}/debian/extra.profile" \
+    "${pkgdir}/usr/share/compizconfig/"
   install -m644 "../config/config" "${pkgdir}/etc/compizconfig/"
 }
