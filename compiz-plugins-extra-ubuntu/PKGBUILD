@@ -1,9 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=compiz-plugins-extra-ubuntu
+
 _ubuntu_rel=0ubuntu1
-pkgver=0.9.5.94.${_ubuntu_rel}
-pkgrel=102
+_ubuntu_ver='~bzr9'
+_actual_ver=0.9.7.0
+
+pkgver=${_actual_ver}.bzr9.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Compiz extra plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -14,13 +18,13 @@ groups=('unity')
 depends=('compiz-core-ubuntu' 'compiz-plugins-main-ubuntu' 'librsvg' 'cairo' 'libsm' 'dbus' 'libjpeg-turbo' 'libxslt' 'gconf-ubuntu' 'libnotify')
 makedepends=('intltool' 'cmake' 'pkgconfig')
 install=compiz-plugins-extra-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('b9c9ef6b6143a2173ff2e9e5af07b5714a82f002617c186cef98b1aeb8da9838971b9daac03f523a39c98b8acae55c406e4454e7be8ff494c9a7a55d3d19b566'
-            '8e342c34904632986a837723c398d9c91505305e1024382f3d4d61364a6350d34eee14049c8981e817d364abaf56dcd1d2d49f94f2cba2833ae4fd7e1d0adc0e')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('5681447344359af7b5bd803cf986d3e27e79a4a55d338d7b793c2f5611b0c2d08ccdd8cbe0d60f41f88fda1146e91f524f40209c071d3bbb0b63c4dfef549714'
+            '591d6f48931ec765d7572747c7db355c9d26af908e3a7a8e51181fb95e7d3cda81f6bbcb3d000ffde226170aaee343b078cb92735fa5810c6edc81ee9595f4bc')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   [[ -d build ]] || mkdir build
   cd build
@@ -35,7 +39,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}/build"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}/build"
   make DESTDIR="${pkgdir}" install
 }
 
