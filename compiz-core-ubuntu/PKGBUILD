@@ -25,8 +25,11 @@ fi
 _ubuntu_ver="~bzr2995"
 _ubuntu_rel="0ubuntu1"
 _actual_ver=0.9.7.0
-pkgver=${_actual_ver}${_ubuntu_ver/\~/.}.${_ubuntu_rel}
-pkgrel=100
+
+# Another AUR fix
+pkgver=${_actual_ver}.bzr2995.${_ubuntu_rel}
+
+pkgrel=101
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -105,9 +108,9 @@ build() {
     #make findcompiz_install
     CMAKE_DIR=$(cmake --system-information | grep '^CMAKE_ROOT' \
       | awk -F\" '{print $2}')
-    install -dm755 "${srcdir}/temp_install${CMAKE_DIR}/modules/"
+    install -dm755 "${srcdir}/temp_install${CMAKE_DIR}/Modules/"
     install -m644 ../cmake/FindCompiz.cmake \
-      "${srcdir}/temp_install${CMAKE_DIR}/modules/"
+      "${srcdir}/temp_install${CMAKE_DIR}/Modules/"
 
   ### Install documentation ###
     install -dm755 "${srcdir}/temp_install/usr/share/doc/compiz-core/"
