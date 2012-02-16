@@ -3,7 +3,7 @@
 pkgname=compizconfig-backend-kconfig4-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=0.9.2.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Compizconfig KDE 4 kconfig backend - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -37,7 +37,8 @@ build() {
   cmake .. \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX=/usr
-  make
+
+  make ${MAKEFLAGS}
 }
 
 package() {
