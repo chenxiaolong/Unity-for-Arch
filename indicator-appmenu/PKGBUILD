@@ -52,6 +52,8 @@ build() {
 package_indicator-appmenu() {
   pkgdesc="Indicator for application menus - GTK 3 library"
   depends=('gtk3-ubuntu' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
+  install="${pkgbase}.install"
+
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make -C data DESTDIR="${pkgdir}/" install
@@ -64,6 +66,7 @@ package_indicator-appmenu() {
 package_indicator-appmenu-gtk2() {
   pkgdesc="Indicator for application menus - GTK 2 library"
   depends=('gtk2-ubuntu' 'libindicator3' 'libdbusmenu-gtk2' 'libbamf' 'indicator-appmenu')
+
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   make -C data DESTDIR="${pkgdir}/" install
