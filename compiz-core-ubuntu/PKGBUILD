@@ -366,11 +366,11 @@ package_compiz-core-ubuntu() {
           "${pkgdir}/usr/lib/"
 
       # Compiz core libraries
+        install -dm755 "${pkgdir}/usr/lib/"
         pushd "${srcdir}/temp_install/usr/lib"
-        for file in $(find . -maxdepth 1 -type f \
+        for file in $(find . -maxdepth 1 \( -type f -o -type l \) \
           -name 'libcompiz_core*'); do
-          install -Dm755 "${file}" "${pkgdir}/usr/lib/${file}"
-          rm "${file}"
+          mv "${file}" "${pkgdir}/usr/lib/${file}"
         done
         popd
 
