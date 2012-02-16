@@ -1,0 +1,13 @@
+The test requires pthread, but doesn't get linked against it
+diff -Nru unity-5.2.0.orig/tests/CMakeLists.txt unity-5.2.0/tests/CMakeLists.txt
+--- unity-5.2.0.orig/tests/CMakeLists.txt	2012-02-16 01:54:24.460597840 -0500
++++ unity-5.2.0/tests/CMakeLists.txt	2012-02-16 01:54:31.243931491 -0500
+@@ -165,7 +165,7 @@
+                  ${CMAKE_SOURCE_DIR}/plugins/unity-mt-grab-handles/src/unity-mt-grab-handle-layout.cpp
+                  ${CMAKE_SOURCE_DIR}/plugins/unity-mt-grab-handles/src/unity-mt-texture.cpp
+                  )
+-  target_link_libraries(test-gtest-xless ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIB} ${GMOCK_MAIN_LIB})
++  target_link_libraries(test-gtest-xless ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIB} ${GMOCK_MAIN_LIB} pthread)
+   add_test(UnityGTestXless test-gtest-xless)
+   add_dependencies(test-gtest-xless unity-core-${UNITY_API_VERSION})
+ 

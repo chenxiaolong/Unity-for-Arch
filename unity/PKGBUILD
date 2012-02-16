@@ -12,7 +12,7 @@ pkgname=unity
 pkgver=5.2.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu1
+  _ubuntu_rel=0ubuntu4
   #_ubuntu_ver=4.24.0
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
@@ -33,11 +33,14 @@ conflicts=('unity-core')
 install=unity.install
 source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
-        "http://ompldr.org/vY204YQ/launchpad-export.tar.gz" # Snapshot of translations from Launchpad as of 2011-02-04
+        # No longer using ompldr - too much downtime
+        "http://k004.kiwi6.com/hotlink/4n4nkehj83/launchpad_export_tar.gz" # Snapshot of translations from Launchpad as of 2011-02-13
+        'fix_test-gtest-xless.patch'
         'launcher_bfb.png')
 sha512sums=('625f9733d7cdbcfa8fed4b127515d131a36fbca6adcf87223eb56fe109792b0f2267878431381f9bc84c82346e61140f6d557475f00d5f14dee23282b1ddb9de'
-            '2874ed85cf4776fb884ea2b6d0013efd918bf51bfb50be6626cf57bc9c92d85837739e76202564ebec92659d1952b76ac729ee2c8a1554170ad580652578d086'
-            '173b858846b2555ee6f280f4e400b8fdc197c40d82332205636b25a08da04828a8c7e8ab0f376f7312f9b8f8364a97e0a4427c1a52a8b3e2aae10d7a044d9bef'
+            'accb34bc3db9e8d9a5c6cdf22b72e032bf5b72e3bf4967042efac8f9d02fd3324a03c91c6000ddfde9850fb298af4edcfdb80af3d2548aaef7eb1346e495478f'
+            'd49502eec01ea8b85915c940cdd5af1e1e4d2a4822ab8086433e6ef6f967d7af42bb3f6fc3451146ad07b33c9c99525fcc7f278c4bc00fc5e33a77b9611ded89'
+            '313976c2e6acf3d330aa1af01addeb694c094de0dfcfac7636af32d1181e318eb0f41a33df92e769186f2593a43cf73ab2377450422596c6f49b8ca57fe936e1'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
@@ -55,7 +58,10 @@ build() {
   # /usr/bin/ld: CMakeFiles/test-gtest-xless.dir/test_grabhandle.cpp.o: undefined reference to symbol 'pthread_setspecific@@GLIBC_2.2.5'
   # /usr/bin/ld: note: 'pthread_setspecific@@GLIBC_2.2.5' is defined in DSO /lib/libpthread.so.0 so try adding it to the linker command line
   # /lib/libpthread.so.0: could not read symbols: Invalid operation
-  sed -i '/tests/d' CMakeLists.txt
+  #sed -i '/tests/d' CMakeLists.txt
+
+  # Fix tests
+  patch -Np1 -i "${srcdir}/fix_test-gtest-xless.patch"
 
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
@@ -92,19 +98,25 @@ package() {
   cd 'build'
   make DESTDIR="${pkgdir}/" install
 
-  #Taken from Ubuntu source package's debian/rules file
+  # Install profile upgrade helper
+  install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
+  install -m644 ../debian/profile_upgrade/* \
+    "${pkgdir}/etc/compizconfig/upgrades/"
+
+  # Taken from Ubuntu source package's debian/rules file
   find "${pkgdir}/usr/lib" -name \*.*a -exec rm {} \;
   rm -vf "${pkgdir}/usr/share/compiz/networkarearegion.xml"
   rm -vf "${pkgdir}/usr/lib/compiz/libnetworkarearegion.so"
   rm -vf "${pkgdir}/usr/share/compiz/unitydialog.xml"
   rm -vf "${pkgdir}/usr/lib/compiz/libunitydialog.so"
 
-  #Fix Python 2 scripts
+  # Fix Python 2 scripts
   sed -i 's|^\(#!.*python$\)|\12|g' \
     "${pkgdir}/usr/bin/unity" \
     "${pkgdir}/usr/lib/unity/migrate_favorites.py" \
     "${pkgdir}/usr/lib/unity/makebootchart.py"
 
-  #Arch Linux logo
-  install -m644 "${srcdir}/launcher_bfb.png" "${pkgdir}/usr/share/unity/5/launcher_bfb.png"
+  # Arch Linux logo
+  install -m644 "${srcdir}/launcher_bfb.png" \
+    "${pkgdir}/usr/share/unity/5/launcher_bfb.png"
 }
