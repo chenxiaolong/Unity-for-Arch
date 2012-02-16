@@ -6,7 +6,7 @@ _ubuntu_ver="+git20120126"
 _actual_ver=2.6.99.901
 
 # The AUR is sooo annoying
-pkgver=${_actual_ver}.git20120126${_ubuntu_rel}
+pkgver=${_actual_ver}.git20120126.${_ubuntu_rel}
 
 pkgrel=100
 pkgdesc="X.org evdev input driver"
