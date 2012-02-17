@@ -4,8 +4,8 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-_ubuntu_rel=0ubuntu2
-pkgver=0.3.90.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=0.3.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -18,8 +18,8 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
 options=('!libtool' '!emptydirs')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c8f10f106fbc2a527f71884ea38a210c1c5d95b3e86bf2f150fda4d6a427a250318135f5d26f4cd7d533bf1cfb76f7a33e018b0a0dec924c734715f52a03e751'
-            '2895bcdfaff4867da2032d4a2596bf8a6cacd79ebfb440843d5dec40d648077ba6ac2afb05c42809c5a985b6b15495cf1f02080e2f978e5ec891b92d29031f12')
+sha512sums=('4599fc36aaea13ca27a428561f17c66c6d44462059fddcfbfe5b288089b4092c12da3b03845c87c48fb42385d9afe5f37c10205e9537f91053fa208bb414c878'
+            'daeb2b5d97fc9a91d0fa19545c766d53068c15f50b3e58421772a1ee58dedb7dc328b68b6dea092ace5c24925a43203a92d819652ecab92414375dc7cf3043c7')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
