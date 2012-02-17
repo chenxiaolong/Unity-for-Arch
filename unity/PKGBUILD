@@ -9,10 +9,10 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=5.2.0
+pkgver=5.4.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu4
+  _ubuntu_rel=0ubuntu1
   #_ubuntu_ver=4.24.0
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
@@ -31,14 +31,14 @@ groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 install=unity.install
-source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
+source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}_${_actual_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         "http://k004.kiwi6.com/hotlink/4n4nkehj83/launchpad_export_tar.gz" # Snapshot of translations from Launchpad as of 2011-02-13
         'fix_test-gtest-xless.patch'
         'launcher_bfb.png')
-sha512sums=('625f9733d7cdbcfa8fed4b127515d131a36fbca6adcf87223eb56fe109792b0f2267878431381f9bc84c82346e61140f6d557475f00d5f14dee23282b1ddb9de'
-            'accb34bc3db9e8d9a5c6cdf22b72e032bf5b72e3bf4967042efac8f9d02fd3324a03c91c6000ddfde9850fb298af4edcfdb80af3d2548aaef7eb1346e495478f'
+sha512sums=('0158892af2d23e4c120dd5fb83745dbd6b117a47fdda2a982c5e0ad41bef8243caf2121f5a8125d033138b2a1fe531c054049b4667e3373dcd142d48b480a6c7'
+            '66169c32100ebcc0901bdf27eed5f476f50130e723e03f4d1c82fb1a7ffecd84487ac98e06a5aa7c310c71b21403ec6a2803c65cb666c02fceb393681ece3ecb'
             'd49502eec01ea8b85915c940cdd5af1e1e4d2a4822ab8086433e6ef6f967d7af42bb3f6fc3451146ad07b33c9c99525fcc7f278c4bc00fc5e33a77b9611ded89'
             '313976c2e6acf3d330aa1af01addeb694c094de0dfcfac7636af32d1181e318eb0f41a33df92e769186f2593a43cf73ab2377450422596c6f49b8ca57fe936e1'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
