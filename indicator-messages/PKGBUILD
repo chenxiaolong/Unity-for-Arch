@@ -4,7 +4,8 @@
 
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
-pkgver=0.5.91
+_ubuntu_rel=0ubuntu3
+pkgver=0.5.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -14,11 +15,18 @@ depends=('libindicator3' 'libindicate' 'libdbusmenu-gtk3' 'telepathy-glib')
 makedepends=('intltool>=0.35.0')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.6/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('dc082a5222234c3119f0a4e758d9c6982e98d7f18641c2ecfa0aec5f4cf5b09b6493961816752bf8454434def23e22365a51db2a9d7aaee3af02599968fd3c1c')
+source=("http://launchpad.net/${pkgbase}/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('dc082a5222234c3119f0a4e758d9c6982e98d7f18641c2ecfa0aec5f4cf5b09b6493961816752bf8454434def23e22365a51db2a9d7aaee3af02599968fd3c1c'
+            'd13f0940c9526d12dea46e06a7fd2a933527989e8e98d71bb3d53ff80172105b3cba431d19d3bc0617977e15df3c4f3bf3ec3bbde3bd2f5ca142929933f24bbd')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
 
   autoreconf -vfi
 
@@ -38,7 +46,7 @@ build() {
 package_indicator-messages() {
   pkgdesc="Indicator that collects messages that need a response - GTK 3 library"
   depends=('libdbusmenu-gtk3' 'gtk3-ubuntu' 'libindicator3' 'libindicate')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -46,7 +54,7 @@ package_indicator-messages() {
 package_indicator-messages-gtk2() {
   pkgdesc="Indicator that collects messages that need a response - GTK 2 library"
   depends=('libdbusmenu-gtk2' 'gtk2-ubuntu' 'libindicator' 'indicator-messages')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
 
