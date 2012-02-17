@@ -17,7 +17,7 @@ COMPIZ_DISABLE_PLUGIN_KDE="OFF"
 
 # Run makepkg with "NO_KDE=true makepkg" to disable the KDE package
 if [[ "${NO_KDE}" == "true" ]]; then
-  pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
+  true && pkgname=('compiz-core-ubuntu' 'compiz-gnome-ubuntu')
   _kdedeps=()
   COMPIZ_DISABLE_PLUGIN_KDE="ON"
 fi
