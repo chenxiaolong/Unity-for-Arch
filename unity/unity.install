@@ -11,7 +11,6 @@ post_install() {
 
 pre_remove() {
   gconf-schemas --unregister ${SCHEMAS}
-  update-gconf-defaults
   if [ -f /usr/share/ccsm/icons/hicolor/icon-theme.cache ]; then
     rm /usr/share/ccsm/icons/hicolor/icon-theme.cache
   fi
@@ -27,4 +26,5 @@ post_upgrade() {
 
 post_remove() {
   glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
+  update-gconf-defaults
 }
