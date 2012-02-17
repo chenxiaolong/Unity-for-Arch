@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-files
-pkgver=5.2.0
+pkgver=5.4.0
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('libzeitgeist' 'libunity' 'zeitgeist-extensions' 'libxdg-basedir' 'xdg-
 makedepends=('vala' 'intltool')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('ff80a97c53b6b0f99979b9eb32027a19c9aaabc6c28a48c3f229161c752ae01902beb8431c6520e68341e24416ce7053d54eeb75359f4072a571e13144228543')
+sha512sums=('51a28d0852135cda370114531f68d6008d5fe83e25803c5e97bbd22c6c77eb2f16b0c345c703a10a17151964e1d040dd9f0ba439c4bf5b1fbf7d2643b678dbda')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
