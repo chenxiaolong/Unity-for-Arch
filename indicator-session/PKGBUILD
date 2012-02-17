@@ -6,20 +6,23 @@ pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
 _ubuntu_rel=0ubuntu1
 pkgver=0.3.91.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
 license=('GPL')
-makedepends=('intltool')
+depends=('gnome-packagekit')
+makedepends=('intltool' 'packagekit')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        'use_gnome-packagekit.patch')
 sha512sums=('c18c8e902ec1e3601c9e3351f85b4b68ded688eff2daaf411b2c49e3ada28cee453cddd66aec2c631b253f87bd97d68a64649776dd78c5e4b82780c6a59a2cfc'
-            'e8bb886120f1d12876642d5f325fb88ec0e68049d3af6b966b70e7a1b194e0501c2fd17d0f9448804f2345fae52189f8062d2d72d9a51bf0da4031d7f27e65d0')
+            'e8bb886120f1d12876642d5f325fb88ec0e68049d3af6b966b70e7a1b194e0501c2fd17d0f9448804f2345fae52189f8062d2d72d9a51bf0da4031d7f27e65d0'
+            '2314a5516c8f71d8fd233605a87732c9868f45a25e55f89c9f6edfc2f4f8589f4c4427c71657363b2dd8071fe24aa787b799a7d0d5d24a5869d586c4eea7b96a')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -29,6 +32,9 @@ build() {
   #for i in $(cat debian/patches/series | grep -v '#'); do
   #  patch -Np1 -i "debian/patches/${i}"
   #done
+
+  # Use gnome-packagekit
+  patch -Np1 -i "${srcdir}/use_gnome-packagekit.patch"
 
   autoreconf -vfi
 

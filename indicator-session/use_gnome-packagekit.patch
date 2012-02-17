@@ -1,0 +1,19 @@
+Run gnome-packagekit instead instead of update-manager. indicator-session
+already uses PackageKit to check for updates, so theoretically, update
+checking should work, but there's a bug in PackageKit that causes the
+following error:
+
+Unknown filter part: unknown
+
+diff -Nru indicator-session-0.3.91.orig/src/apt-watcher.c indicator-session-0.3.91/src/apt-watcher.c
+--- indicator-session-0.3.91.orig/src/apt-watcher.c	2012-02-17 16:28:57.348300812 -0500
++++ indicator-session-0.3.91/src/apt-watcher.c	2012-02-17 16:57:07.158338743 -0500
+@@ -231,7 +231,7 @@
+ 	  g_free(dialog_line);
+   } 
+   else{
+-    if (!g_spawn_command_line_async("update-manager", &error))
++    if (!g_spawn_command_line_async("gpk-update-viewer", &error))
+     {
+       g_warning("Unable to show update-manager: %s", error->message);
+       g_error_free(error);
