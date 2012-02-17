@@ -3,7 +3,7 @@
 pkgname=utouch-compiz
 _ubuntu_rel=0ubuntu4
 pkgver=0.1.2.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="Glues together the uTouch framework and the compiz framework to provide multi-touch and gestures."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-compiz"

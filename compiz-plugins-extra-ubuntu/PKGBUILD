@@ -2,7 +2,7 @@
 
 pkgname=compiz-plugins-extra-ubuntu
 
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _ubuntu_ver='~bzr9'
 _actual_ver=0.9.7.0
 
@@ -21,7 +21,7 @@ install=compiz-plugins-extra-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('5681447344359af7b5bd803cf986d3e27e79a4a55d338d7b793c2f5611b0c2d08ccdd8cbe0d60f41f88fda1146e91f524f40209c071d3bbb0b63c4dfef549714'
-            '591d6f48931ec765d7572747c7db355c9d26af908e3a7a8e51181fb95e7d3cda81f6bbcb3d000ffde226170aaee343b078cb92735fa5810c6edc81ee9595f4bc')
+            '0e7349de63b955e85cfa5bddf55f0e9845d704c71c4985acd825e27f3a7a131cb13484001ea6af2358a5ef62c06eaf00c7d57e9486564d83d797f91956e5c649')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"

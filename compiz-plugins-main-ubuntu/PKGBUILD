@@ -2,7 +2,7 @@
 
 pkgname=compiz-plugins-main-ubuntu
 
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _ubuntu_ver='~bzr19'
 _actual_ver=0.9.7.0
 
@@ -21,7 +21,7 @@ install=compiz-plugins-main-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('6b408584851699e8661b674446f0a8fa7dc7f2fff9530a0fb31d4f099f2b7c818e3135365c925b6d2d1b2c02463089247306ade3cfeedfda17ae491eb2c6b857'
-            '6bc8c5809a440bdb1efd33f2a694a772e1f16c4a1451c7a34d2e697973af44f559d75fc51c3e7a4bdc7903d44246210b693f0ec0f8700212be0ce38e7c50261f')
+            '27a38bd98b864071dca8f04972ea378a67a9d58028383f8ac41bbe80351b8dadc3d7f41c6583ae23917a41ce2db2b85c319021a2cc6db50f64bb878b228ae026')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
