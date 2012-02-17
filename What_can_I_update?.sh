@@ -222,11 +222,10 @@ for i in ${PKGLIST}; do
       # Current installed version
       CURRENTVER=$(pacman -Qi ${pkgname[${j}]} 2>/dev/null | grep [[:digit:]]-[[:digit:]] | sed 's/^.*:\ \(.*\)$/\1/g')
 
-      # Which version is higher?
-      HIGHERVER=$(echo -e "${CURRENTVER}\n${pkgver}-${pkgrel}" | sort | tail -n 1)
+      # Compare versions
+      COMPARE=$(vercmp "${CURRENTVER}" "${pkgver}-${pkgrel}")
 
-      #if PKGBUILD version does not equal current version and the PKGBUILD is the higher version
-      if [[ "${pkgver}-${pkgrel}" != "${CURRENTVER}" ]] && [[ "${pkgver}-${pkgrel}" == "${HIGHERVER}" ]]; then
+      if [ "${COMPARE}" -lt 0 ]; then
         UPGRADE="true"
       fi
     fi
@@ -238,7 +237,7 @@ for i in ${PKGLIST}; do
       else
         ARRAY_PKGNAME[${ARRAY_COUNTER}]=${pkgname[${j}]}
       fi
-      ARRAY_PKGVER_PKG[${ARRAY_COUNTER}]=${HIGHERVER}
+      ARRAY_PKGVER_PKG[${ARRAY_COUNTER}]=${pkgver}-${pkgrel}
       if [ -z "${CURRENTVER}" ]; then
         #If the current version is empty then it's not installed
         ARRAY_PKGVER_INST[${ARRAY_COUNTER}]="notinstalled"
