@@ -4,9 +4,9 @@
 
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
-_ubuntu_rel=0ubuntu4
-pkgver=0.4.90.${_ubuntu_rel}
-pkgrel=101
+_ubuntu_rel=0ubuntu3
+pkgver=0.4.91.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
@@ -15,16 +15,17 @@ mekedepends=('gtk3-ubuntu')
 options=(!libtool)
 groups=('unity')
 source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('828c61cb8fce7d881c3ba722a667eb58d7fb7e685fe29f9238bf0b4bc3ad209009c88ca5d240a3a94c19866a29c86f7046744a568062bcba54040ede997a3e0e'
-            '20c6ad5943ce9b73aff07704aa7ee8c2baa4291ac3f2811794ee5ed29853a67b9cf6d9b4011e94c95ad6e7f7855717425a766847581afc4613f736c11a92156a')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('5a0d5c28fc64a558b22cc26550523eb2244125be469f344b3a35726cf8bd061e7aa4de6edc4df893d9985e3658995b2553743e3026dde9b0c96ed5bde59c14a8'
+            '8b6acfcc22d8953b6cdf230c5a133243eb75ec4b34895767df35f392d954fdca18800950b5acfb0a0e034d771dfbff8a40bf0411aa45a26319d4b41f36e1267c')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
 
   # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
   done
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
