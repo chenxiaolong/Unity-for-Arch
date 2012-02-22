@@ -4,23 +4,21 @@
 
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-_ubuntu_rel=0ubuntu5
-pkgver=0.3.1.${_ubuntu_rel}
-pkgrel=102
+_ubuntu_rel=0ubuntu1
+pkgver=0.3.90.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
-makedepends=('intltool')
+makedepends=('intltool' 'libtimezonemap')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
-        'fix_build_with_dbusmenu.patch')
-sha512sums=('24a2cbcf77477497cf0aed13a48f081d0532874d40db982b071ba43f61cd407dfd6dc4595bbb26de0c8a10f179b08fab33cecb83b646c69ff6bd06cb4c63b175'
-            '0444532a75a937412f1a52a511b9151fb8b8063ab118827557fd7b8ef66874ae25d358b5c3f1f42caa8dcb7931afb0d5df1dd535323b3bc6e57bf4c1933bfd0c'
-            '3ba72e7c2a539a638fd7d44ba833bbdf6765f2a5fc823a2bf33f76cba5e04c198139ce45e6bfb2c226a401df507e4de9dac871da7c6c94dda8ec3b968b76d4ec')
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('1573d6bdb28379913b0a8dc7025d48079571514cb04f081c0fa95195b9c8628db7f9ac05367af42ed3afa84019a29f1732d0c38b842e667cf9e213e4672aeaca'
+            'e9186dce6de558cd1c9f2e614e4d7c1eaf20ce664ca73c46fc0bdee50f965efbc831c39f14ed253260ad521641f436b40621ee904eeaa006eb06b01217cbb2bb')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -30,9 +28,6 @@ build() {
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
-
-  # Build fix with new libdbusmenu
-  patch -Np1 -i "${srcdir}/fix_build_with_dbusmenu.patch"
 
   autoreconf -vfi
 
@@ -51,7 +46,7 @@ build() {
 
 package_indicator-datetime() {
   pkgdesc="A very, very simple clock - GTK 3 library"
-  depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center-ubuntu')
+  depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center-ubuntu' 'libtimezonemap')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
@@ -64,6 +59,6 @@ package_indicator-datetime-gtk2() {
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
 
-  install -d -m755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
+  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
   install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
