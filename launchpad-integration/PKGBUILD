@@ -19,10 +19,10 @@ sha512sums=('2e028e4436ac3764a71266355f533c934dc148718fb723883fbac916f6c7b14db40
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%build*}"
 
-  #Python 2 fix
+  # Python 2 fix
   export PYTHON=python2
 
-  #mono fix
+  # mono fix
   sed -i "/AssemblyKeyFile/ s@\".*\"@\"${srcdir}/mono.snk\"@g" lib/AssemblyInfo.cs
   mv "${srcdir}"/mono.snk\?raw\=true "${srcdir}/mono.snk"
   sed -i '/configdir/ s@/cli@@g' Makefile.am Makefile.in
