@@ -3,20 +3,22 @@
 
 pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu5
 pkgver=2.24.10.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection' 'gtk-doc')
-options=('!libtool' '!docs')
+options=('!libtool')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'xid-collision-debug.patch')
+        'xid-collision-debug.patch'
+        'fix-ubuntumenuproxy-build.patch')
 sha512sums=('46bd22af861c04cf7d7b704356936f282da9e7edec1e637dd578170396ce6b4a837f660b46334ceb73372a076966e31afc02aaafb5d69796539ddaac1531fedf'
-            '7dedd89991eeac6bc1133202a16197e3305ba628711024c4df33c7e67f5e518f4c0c849ccae14d434b6bc23e4c9ef2bbeeebe3737936a932a4911325fcbe4640'
-            '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
+            'dcc78aa10f7ca397bd636ee9fa836e63ea39e6333774717cd2d8389a0ccdd2c7f08401806da543d1c722f8af434f726b2f70c3d39c7aab4a8c3af64c0919a285'
+            '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
+            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
 
 build() {
   cd "${srcdir}/gtk+-${pkgver%.*}"
@@ -34,6 +36,9 @@ build() {
       sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
     # Breaks pkgconfig
       sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
+
+  # Build fix from György Balló
+  patch -Np1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
@@ -60,6 +65,7 @@ package_gtk2-ubuntu() {
   depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
   provides=("gtk2=${pkgver%.*}")
   conflicts=('gtk2')
+  replaces=('gtk2-docs')
   backup=(etc/gtk-2.0/gtkrc)
 
   cd "${srcdir}/gtk+-${pkgver%.*}"
