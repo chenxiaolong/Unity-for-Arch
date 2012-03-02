@@ -2,20 +2,22 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgname=python-geoclue
+pkgname=python2-geoclue
 pkgver=0.1.0
-pkgrel=100
+pkgrel=101
 pkgdesc="A Geoclue python module"
 arch=('any')
 url="http://live.gnome.org/gtg/soc/python_geoclue"
 license=('GPL')
 depends=('geoclue' 'dbus-python' 'pygobject')
+replaces=('python-geoclue')
+conflicts=('python-geoclue')
 groups=('unity')
-source=("http://www.paulocabido.com/soc/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+source=("http://www.paulocabido.com/soc/${pkgname/2/}/${pkgname/2/}-${pkgver}.tar.gz")
 sha512sums=('844c877038f9b8db096a33605be16f8aaea8e66fa84e3a42927f103afa9c8ab565b28cc69b9d02d30bfd02a20e6e20e7fdf28a7d06900db9d288775bb153c533')
 
 package() {
-  cd "${srcdir}/${pkgname}"
+  cd "${srcdir}/${pkgname/2/}"
 
   python2 setup.py install --root=${pkgdir}/ --optimize=1
 }
