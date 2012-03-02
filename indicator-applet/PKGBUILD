@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-applet
-pkgver=0.4.90
+pkgver=0.4.91
 pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
@@ -21,14 +21,14 @@ optdepends=('indicator-application: take menus from applications and place them 
 groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/indicator-applet/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('44d5ff0d23bbb3bd3469eec4311bda8deaa6cb06b850b26ce5c79b8ff2930728c2aa9be61c7656c2f987d462bfd51612e0df6e47e5b19dd047472f1b664e70bc')
+sha512sums=('ed10b29c33ada992d50fae5e8a40472a7d89d9172982951d5dfd999e61778659be9fadde9489c2460e4f87eeb36953bbb164eda35e389acf61eddd7e8cc11d94')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+  make ${MAKEFLAGS}
 }
 
 package() {
