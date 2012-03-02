@@ -6,7 +6,7 @@ pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 # Ubuntu's patches resolve Launchpad bug 870742
 _ubuntu_rel=0ubuntu1
-pkgver=0.5.90.${_ubuntu_rel}
+pkgver=0.5.92.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/dbusmenu/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c4534a66bab26a5840caf5c61072691fdcbe07364b92c9382d912e01adcf8acd0901d045669c6e23eb59f9ebb5f26d063024a6dd2817b8524cb096c295860d66'
-            'd35bb189dd818188c4c1c49d7d537f937970cba7a7b0f58de4c44b8ccc90daa46fc9cbff2bc033d458424af98ffdb4a399cccf0db1dfcfffcb1ffffc10b5a3e7')
+sha512sums=('6671a6421d9c6d0ccd0f87bf230f675f4f53911b1fa02f16d6d69ef7087f10381c9d4b66cc5e5a434d1c63b49a551dfea6118f29b979b401b2e10cf060d1f0ca'
+            '7c89e791e0aaaf09946378c34b07c8e92976199b8652ec8e8b87bae5df776decaebad1da4a78586b7eda65f50a6b75ebc43881d84c5bb91d35717ad4bcdfa475')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
