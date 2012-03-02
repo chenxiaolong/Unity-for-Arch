@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=python-rdflib
-pkgver=3.1.0
+pkgver=3.2.0
 pkgrel=100
 pkgdesc="A Python library for working with RDF"
 arch=('any')
@@ -12,7 +12,7 @@ license=('BSD')
 depends=('python2-distribute')
 groups=('unity')
 source=("http://rdflib.googlecode.com/files/${pkgname#*-}-${pkgver}.tar.gz")
-sha512sums=('388bf16e068e31ce14b50d22798f4df24fbdc037f2ea8191608bc763192f0e6ef52d100b06a0701ecae7826732a517247c55b1c01200b5b61ad33c5c84c56256')
+sha512sums=('2303a93a1c0310439c05b111391f2972265d0aa53669a0e79f24d79252af240a76b87da5723ee15230cba56def530ee7a02af46be0759dbd2181f9d5ce47285c')
 
 build() {
   cd "${srcdir}/${pkgname#*-}-${pkgver}"
