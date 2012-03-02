@@ -4,7 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=0.3.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
@@ -19,7 +19,7 @@ options=('!libtool' '!emptydirs')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('4599fc36aaea13ca27a428561f17c66c6d44462059fddcfbfe5b288089b4092c12da3b03845c87c48fb42385d9afe5f37c10205e9537f91053fa208bb414c878'
-            'daeb2b5d97fc9a91d0fa19545c766d53068c15f50b3e58421772a1ee58dedb7dc328b68b6dea092ace5c24925a43203a92d819652ecab92414375dc7cf3043c7')
+            '0d496decfeb636b09d5ed91a3dbc36d94be5983b0fb8ce3b311f6c0f4efa8dc8f1336d55a0d0a32114451de05b4ed0b5d7472e2c4326ce98434d1380518653a1')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
