@@ -1,0 +1,30 @@
+# Maintainer:  Jan de Groot <jan@archlinux.org>
+
+pkgname=gnome-desktop
+pkgver=3.3.90
+pkgrel=1
+pkgdesc="Library with common API for various GNOME modules"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL')
+depends=('gsettings-desktop-schemas' 'startup-notification' 'gtk3')
+makedepends=('gnome-doc-utils' 'intltool' 'gobject-introspection')
+url="http://www.gnome.org"
+groups=('gnome')
+options=('!libtool')
+source=(http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('a6feb82410384915e1ce4af4bfe1a88a9d8b87c41e2a452a2a7a2d1d40be15e2')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --disable-static \
+      --with-gnome-distributor="Arch Linux" \
+      --disable-scrollkeeper
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
