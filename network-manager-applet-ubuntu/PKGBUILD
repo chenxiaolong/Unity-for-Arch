@@ -6,7 +6,7 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu4
 _ubuntu_ver='+git.20120126t000800.5151959'
 _actual_ver=0.9.2.0
 pkgver=${_actual_ver}${_ubuntu_ver/+/.}.${_ubuntu_rel}
@@ -26,7 +26,7 @@ install=network-manager-applet.install
 source=("http://ftp.acc.umu.se/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('1f5509446d830d967cad7ec8ed92814ca7a0a4ab97cdc46ecab8abc82221fc93fa6316984c3dacd3bf0c1464b50060d2508c7a9dcc4439a8fe317b168b9fd4de'
-            '4159a43a14cdf484a8109f3d8b573ee9c3ef03f28af79d3d9d9325eb64b934a707b82fa85b9c7a92da3e636d96dddec264260cde7ae12b4ed58405849964fdf3')
+            'adaafe6cdaa4f6c4ae0042e1374ea0d92a3369ae1394410a6d64794bd3f2f532e3112815a09ecfd2e0d86ba4f505cb0988c80554e68e8372d7514c4e7eba8a8a')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
