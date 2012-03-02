@@ -4,8 +4,8 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-_ubuntu_rel=0ubuntu2
-pkgver=0.2.108.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=0.2.110.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}.orig.tar.gz")
-sha512sums=('e3aeb96c6d00c071832c2245537f24c352a809244c7d40692dd9d2239821d8f1dfe8b8889bc372c00a55f25a61bcd5b74d624bde4791ff1e0139967a96452e21')
+sha512sums=('b2503b5aae6f80129b3fa40893489230d29c580e1bf056cf89e45686bf4671a90141088e31955be7911f6277033c76709ea91c89f2701c21c73c24f33f35dc1f')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -28,7 +28,7 @@ build() {
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
-  #Documentation will go in the GTK 2 package
+  # Documentation will go in the GTK 2 package
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2 --disable-static --enable-gtk-doc
   make ${MAKEFLAGS}
   popd
@@ -52,7 +52,7 @@ build() {
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
   depends=('dbus-glib' 'libwnck3' 'libgtop' 'glib2-ubuntu>=2.31.14.0ubuntu1')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3" #Doesn't matter which one
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3" # Doesn't matter which one
 
   install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
   install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
@@ -68,7 +68,7 @@ package_libbamf() {
 
   make DESTDIR="${pkgdir}/" install
 
-  #Remove bamfdaemon from this package
+  # Remove bamfdaemon from this package
   rm -rvf "${pkgdir}/usr/lib/${pkgbase}/"
   rm -rvf "${pkgdir}/usr/share/dbus-1/"
   rm -rvf "${pkgdir}/usr/share/"
@@ -84,7 +84,7 @@ package_libbamf3() {
 
   make DESTDIR="${pkgdir}/" install
 
-  #Remove bamfdaemon from this package
+  # Remove bamfdaemon from this package
   rm -rvf "${pkgdir}/usr/lib/${pkgbase}/"
   rm -rvf "${pkgdir}/usr/share/dbus-1/"
 }
