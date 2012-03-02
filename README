@@ -33,7 +33,7 @@ Order to compile/install:
 25: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
 26: geoclue                        -> Modular geoinformation service
 27: python2-geoclue                 -> Geoclue Python module
-28: python-xapian                  -> Python bindings for Xapian
+28: python2-xapian                  -> Python bindings for Xapian
 29: zeitgeist-extensions           -> Extensions for Zeitgeist
 30: gnome-activity-journal         -> Tool for easily browsing and finding files
 31: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
