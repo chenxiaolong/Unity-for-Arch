@@ -4,8 +4,8 @@
 
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
-_ubuntu_rel=0ubuntu3
-pkgver=0.4.91.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+pkgver=0.4.92.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ options=(!libtool)
 groups=('unity')
 source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('5a0d5c28fc64a558b22cc26550523eb2244125be469f344b3a35726cf8bd061e7aa4de6edc4df893d9985e3658995b2553743e3026dde9b0c96ed5bde59c14a8'
-            '8b6acfcc22d8953b6cdf230c5a133243eb75ec4b34895767df35f392d954fdca18800950b5acfb0a0e034d771dfbff8a40bf0411aa45a26319d4b41f36e1267c')
+sha512sums=('d8a1b21f9354e86e9e5c16f3b3f6c54d3a6b680af55e8f70126ea01d0d11215c718ec57be01ad712680c97d071c26c9ad1c8bd4e990e6ee1b41276b0e9608b70'
+            '99829236e16b8e1fd13608a84d25bc76b6dbe7bea1cec9f79e79c117376c2894bc2ca60e2094374717b07443f3570cb95a56a80db7b5ee4c349cb65d8c894e18')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -57,6 +57,7 @@ package_libindicator3(){
 
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
+  MAKEFLAGS="-j1"
   make -C libindicator DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
 
