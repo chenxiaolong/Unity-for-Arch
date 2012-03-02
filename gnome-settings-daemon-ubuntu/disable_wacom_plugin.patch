@@ -1,0 +1,5614 @@
+Disable the wacom plugin since it's too much work to package the dependencies
+diff -Nru gnome-settings-daemon-3.3.90.orig/configure.ac gnome-settings-daemon-3.3.90/configure.ac
+--- gnome-settings-daemon-3.3.90.orig/configure.ac	2012-03-02 11:21:16.133636832 -0500
++++ gnome-settings-daemon-3.3.90/configure.ac	2012-03-02 11:21:37.396970644 -0500
+@@ -245,12 +245,6 @@
+ PKG_CHECK_MODULES(COLOR, [colord >= 0.1.9 gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION libcanberra-gtk3])
+ 
+ dnl ---------------------------------------------------------------------------
+-dnl - wacom
+-dnl ---------------------------------------------------------------------------
+-
+-PKG_CHECK_MODULES(WACOM, [libwacom >= $LIBWACOM_REQUIRED_VERSION x11 xi xtst gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION xorg-wacom])
+-
+-dnl ---------------------------------------------------------------------------
+ dnl - GConf<->GSettings bridge
+ dnl ---------------------------------------------------------------------------
+ 
+@@ -568,7 +562,6 @@
+ plugins/smartcard/Makefile
+ plugins/sound/Makefile
+ plugins/updates/Makefile
+-plugins/wacom/Makefile
+ plugins/xrandr/Makefile
+ plugins/xsettings/Makefile
+ data/Makefile
+@@ -585,7 +578,6 @@
+ data/org.gnome.settings-daemon.plugins.orientation.gschema.xml.in
+ data/org.gnome.settings-daemon.plugins.updates.gschema.xml.in
+ data/org.gnome.settings-daemon.plugins.xrandr.gschema.xml.in
+-data/org.gnome.settings-daemon.peripherals.wacom.gschema.xml.in
+ data/org.gnome.settings-daemon.plugins.print-notifications.gschema.xml.in
+ po/Makefile.in
+ ])
+diff -Nru gnome-settings-daemon-3.3.90.orig/data/Makefile.am gnome-settings-daemon-3.3.90/data/Makefile.am
+--- gnome-settings-daemon-3.3.90.orig/data/Makefile.am	2012-03-02 11:21:16.133636832 -0500
++++ gnome-settings-daemon-3.3.90/data/Makefile.am	2012-03-02 11:24:20.200307632 -0500
+@@ -16,7 +16,6 @@
+ 	org.gnome.settings-daemon.plugins.xsettings.gschema.xml		\
+ 	org.gnome.settings-daemon.plugins.housekeeping.gschema.xml	\
+ 	org.gnome.settings-daemon.plugins.print-notifications.gschema.xml	\
+-	org.gnome.settings-daemon.peripherals.wacom.gschema.xml		\
+ 	org.gnome.settings-daemon.plugins.xrandr.gschema.xml
+ 
+ all_schemas = $(gsettings_SCHEMAS)
+diff -Nru gnome-settings-daemon-3.3.90.orig/data/org.gnome.settings-daemon.peripherals.wacom.gschema.xml.in.in gnome-settings-daemon-3.3.90/data/org.gnome.settings-daemon.peripherals.wacom.gschema.xml.in.in
+--- gnome-settings-daemon-3.3.90.orig/data/org.gnome.settings-daemon.peripherals.wacom.gschema.xml.in.in	2012-03-02 11:21:16.133636832 -0500
++++ gnome-settings-daemon-3.3.90/data/org.gnome.settings-daemon.peripherals.wacom.gschema.xml.in.in	1969-12-31 19:00:00.000000000 -0500
+@@ -1,96 +0,0 @@
+-<schemalist>
+-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.gnome.settings-daemon.plugins.gsdwacom" path="/org/gnome/settings-daemon/plugins/gsdwacom/">
+-    <key name="active" type="b">
+-      <default>true</default>
+-      <_summary>Activation of this plugin</_summary>
+-      <_description>Whether this plugin would be activated by gnome-settings-daemon or not</_description>
+-    </key>
+-    <key name="priority" type="i">
+-      <default>6</default>
+-      <_summary>Priority to use for this plugin</_summary>
+-      <_description>Priority to use for this plugin in gnome-settings-daemon startup queue</_description>
+-    </key>
+-  </schema>
+-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.gnome.settings-daemon.peripherals.wacom">
+-    <child name="stylus" schema="org.gnome.settings-daemon.peripherals.wacom.stylus"/>
+-    <child name="eraser" schema="org.gnome.settings-daemon.peripherals.wacom.eraser"/>
+-
+-    <!-- is-absolute applies to all tools but PAD, CURSOR is hard-coded -->
+-    <key name="is-absolute" type="b">
+-      <default>true</default>
+-      <_summary>Wacom stylus absolute mode</_summary>
+-      <_description>Enable this to set the tablet to absolute mode.</_description>
+-    </key>
+-    <key name="area" type="ai">
+-      <default>[-1, -1, -1, -1]</default>
+-      <_summary>Wacom tablet area</_summary>
+-      <_description>Set this to x1, y1 and x2, y2 of the area usable by the tools.</_description>
+-    </key>
+-    <key name="rotation" enum="org.gnome.settings-daemon.GsdWacomRotation">
+-      <default>'none'</default>
+-      <_summary>Wacom tablet rotation</_summary>
+-      <_description>Set this to 'none', 'cw' for 90 degree clockwise, 'half' for 180 degree, and 'ccw' for 90 degree counterclockwise.</_description>
+-    </key>
+-    <key name="touch" type="b">
+-      <default>true</default>
+-      <_summary>Wacom touch feature</_summary>
+-      <_description>Enable this to move the cursor when the user touches the tablet.</_description>
+-    </key>
+-    <key name="tablet-pc-button" type="b">
+-      <default>false</default>
+-      <_summary>Wacom tablet PC feature</_summary>
+-      <_description>Enable this to only report stylus events when the tip is pressed.</_description>
+-    </key>
+-    <key name="display" type="as">
+-      <default>["", "", ""]</default>
+-      <_summary>Wacom display mapping</_summary>
+-      <_description>EDID information of monitor to map tablet to. Must be in the format [vendor, product, serial]. ["","",""] disables mapping.</_description>
+-    </key>
+-  </schema>
+-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.gnome.settings-daemon.peripherals.wacom.stylus">
+-    <key name="pressurecurve" type="ai">
+-      <default>[0, 0, 100, 100]</default>
+-      <_summary>Wacom stylus pressure curve</_summary>
+-      <_description>Set this to x1, y1 and x2, y2 of the pressure curve applied to the stylus.</_description>
+-    </key>
+-    <key name="buttonmapping" type="ai">
+-      <default>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]</default>
+-      <_summary>Wacom stylus button mapping</_summary>
+-      <_description>Set this to the logical button mapping.</_description>
+-    </key>
+-    <key name="pressurethreshold" type="i">
+-      <default>-1</default>
+-      <_summary>Wacom stylus pressure threshold</_summary>
+-      <_description>Set this to the pressure value at which a stylus click event is generated.</_description>
+-    </key>
+-  </schema>
+-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.gnome.settings-daemon.peripherals.wacom.eraser">
+-    <key name="pressurecurve" type="ai">
+-      <default>[0, 0, 100, 100]</default>
+-      <_summary>Wacom eraser pressure curve</_summary>
+-      <_description>Set this to x1, y1 and x2, y2 of the pressure curve applied to the eraser.</_description>
+-    </key>
+-    <key name="buttonmapping" type="ai">
+-      <default>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]</default>
+-      <_summary>Wacom eraser button mapping</_summary>
+-      <_description>Set this to the logical button mapping.</_description>
+-    </key>
+-    <key name="pressurethreshold" type="i">
+-      <default>-1</default>
+-      <_summary>Wacom eraser pressure threshold</_summary>
+-      <_description>Set this to the pressure value at which an eraser click event is generated.</_description>
+-    </key>
+-  </schema>
+-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.gnome.settings-daemon.peripherals.wacom.tablet-button">
+-    <key name="action-type" enum="org.gnome.settings-daemon.GsdWacomActionType">
+-      <default>'none'</default>
+-      <_summary>Wacom button action type</_summary>
+-      <_description>The type of action triggered by the button being pressed.</_description>
+-    </key>
+-    <key name="custom-action" type="s">
+-      <default>''</default>
+-      <_summary>Key combination for the custom action</_summary>
+-      <_description>The keyboard shortcut generated when the button is pressed for custom actions.</_description>
+-    </key>
+-  </schema>
+-</schemalist>
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/Makefile.am gnome-settings-daemon-3.3.90/plugins/Makefile.am
+--- gnome-settings-daemon-3.3.90.orig/plugins/Makefile.am	2012-03-02 11:21:16.200303500 -0500
++++ gnome-settings-daemon-3.3.90/plugins/Makefile.am	2012-03-02 11:23:32.520306563 -0500
+@@ -16,7 +16,6 @@
+ 	media-keys	\
+ 	mouse		\
+ 	sound		\
+-	wacom		\
+ 	xrandr		\
+ 	xsettings	\
+ 	$(NULL)
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-device.c gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-device.c
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-device.c	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-device.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,1701 +0,0 @@
+-/*
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Bastien Nocera <hadess@hadess.net>
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <glib.h>
+-#include <glib/gi18n-lib.h>
+-#include <gtk/gtk.h>
+-#include <gdk/gdk.h>
+-#include <gdk/gdkx.h>
+-#include <X11/Xatom.h>
+-#define GNOME_DESKTOP_USE_UNSTABLE_API
+-#include <libgnome-desktop/gnome-rr.h>
+-#include <libgnome-desktop/gnome-rr-config.h>
+-
+-#include <libwacom/libwacom.h>
+-#include <X11/extensions/XInput.h>
+-#include <X11/extensions/XInput2.h>
+-
+-#include "gsd-input-helper.h"
+-
+-#include "gsd-enums.h"
+-#include "gsd-wacom-device.h"
+-
+-#define GSD_WACOM_STYLUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_TYPE_WACOM_STYLUS, GsdWacomStylusPrivate))
+-
+-#define WACOM_TABLET_SCHEMA "org.gnome.settings-daemon.peripherals.wacom"
+-#define WACOM_DEVICE_CONFIG_BASE "/org/gnome/settings-daemon/peripherals/wacom/%s/"
+-#define WACOM_STYLUS_SCHEMA "org.gnome.settings-daemon.peripherals.wacom.stylus"
+-#define WACOM_ERASER_SCHEMA "org.gnome.settings-daemon.peripherals.wacom.eraser"
+-#define WACOM_BUTTON_SCHEMA "org.gnome.settings-daemon.peripherals.wacom.tablet-button"
+-
+-static WacomDeviceDatabase *db = NULL;
+-
+-struct GsdWacomStylusPrivate
+-{
+-	GsdWacomDevice *device;
+-	int id;
+-	WacomStylusType type;
+-	char *name;
+-	const char *icon_name;
+-	GSettings *settings;
+-	gboolean has_eraser;
+-	int num_buttons;
+-};
+-
+-static void     gsd_wacom_stylus_class_init  (GsdWacomStylusClass *klass);
+-static void     gsd_wacom_stylus_init        (GsdWacomStylus      *wacom_stylus);
+-static void     gsd_wacom_stylus_finalize    (GObject              *object);
+-
+-G_DEFINE_TYPE (GsdWacomStylus, gsd_wacom_stylus, G_TYPE_OBJECT)
+-
+-static void
+-gsd_wacom_stylus_class_init (GsdWacomStylusClass *klass)
+-{
+-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+-
+-        object_class->finalize = gsd_wacom_stylus_finalize;
+-
+-        g_type_class_add_private (klass, sizeof (GsdWacomStylusPrivate));
+-}
+-
+-static void
+-gsd_wacom_stylus_init (GsdWacomStylus *stylus)
+-{
+-        stylus->priv = GSD_WACOM_STYLUS_GET_PRIVATE (stylus);
+-}
+-
+-static void
+-gsd_wacom_stylus_finalize (GObject *object)
+-{
+-        GsdWacomStylus *stylus;
+-        GsdWacomStylusPrivate *p;
+-
+-        g_return_if_fail (object != NULL);
+-        g_return_if_fail (GSD_IS_WACOM_STYLUS (object));
+-
+-        stylus = GSD_WACOM_STYLUS (object);
+-
+-        g_return_if_fail (stylus->priv != NULL);
+-
+-	p = stylus->priv;
+-
+-        if (p->settings != NULL) {
+-                g_object_unref (p->settings);
+-                p->settings = NULL;
+-        }
+-
+-        g_free (p->name);
+-        p->name = NULL;
+-
+-        G_OBJECT_CLASS (gsd_wacom_stylus_parent_class)->finalize (object);
+-}
+-
+-static const char *
+-get_icon_name_from_type (WacomStylusType type)
+-{
+-	switch (type) {
+-	case WSTYLUS_INKING:
+-	case WSTYLUS_STROKE:
+-		/* The stroke pen is the same as the inking pen with
+-		 * a different nib */
+-		return "wacom-stylus-inking";
+-	case WSTYLUS_AIRBRUSH:
+-		return "wacom-stylus-airbrush";
+-	case WSTYLUS_MARKER:
+-		return "wacom-stylus-art-pen";
+-	case WSTYLUS_CLASSIC:
+-		return "wacom-stylus-classic";
+-	default:
+-		return "wacom-stylus";
+-	}
+-}
+-
+-static GsdWacomStylus *
+-gsd_wacom_stylus_new (GsdWacomDevice    *device,
+-		      const WacomStylus *wstylus,
+-		      GSettings         *settings)
+-{
+-	GsdWacomStylus *stylus;
+-
+-	g_return_val_if_fail (G_IS_SETTINGS (settings), NULL);
+-	g_return_val_if_fail (wstylus != NULL, NULL);
+-
+-	stylus = GSD_WACOM_STYLUS (g_object_new (GSD_TYPE_WACOM_STYLUS,
+-						 NULL));
+-	stylus->priv->device = device;
+-	stylus->priv->id = libwacom_stylus_get_id (wstylus);
+-	stylus->priv->name = g_strdup (libwacom_stylus_get_name (wstylus));
+-	stylus->priv->settings = settings;
+-	stylus->priv->type = libwacom_stylus_get_type (wstylus);
+-	stylus->priv->icon_name = get_icon_name_from_type (stylus->priv->type);
+-	stylus->priv->has_eraser = libwacom_stylus_has_eraser (wstylus);
+-	stylus->priv->num_buttons = libwacom_stylus_get_num_buttons (wstylus);
+-
+-	return stylus;
+-}
+-
+-GSettings *
+-gsd_wacom_stylus_get_settings (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), NULL);
+-
+-	return stylus->priv->settings;
+-}
+-
+-const char *
+-gsd_wacom_stylus_get_name (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), NULL);
+-
+-	return stylus->priv->name;
+-}
+-
+-const char *
+-gsd_wacom_stylus_get_icon_name (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), NULL);
+-
+-	return stylus->priv->icon_name;
+-}
+-
+-GsdWacomDevice *
+-gsd_wacom_stylus_get_device (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), NULL);
+-
+-	return stylus->priv->device;
+-}
+-
+-gboolean
+-gsd_wacom_stylus_get_has_eraser (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), FALSE);
+-
+-	return stylus->priv->has_eraser;
+-}
+-
+-guint
+-gsd_wacom_stylus_get_num_buttons (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), -1);
+-
+-	return stylus->priv->num_buttons;
+-}
+-
+-GsdWacomStylusType
+-gsd_wacom_stylus_get_stylus_type (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), WACOM_STYLUS_TYPE_UNKNOWN);
+-
+-	switch (stylus->priv->type) {
+-	case WSTYLUS_UNKNOWN:
+-		return WACOM_STYLUS_TYPE_UNKNOWN;
+-	case WSTYLUS_GENERAL:
+-		return WACOM_STYLUS_TYPE_GENERAL;
+-	case WSTYLUS_INKING:
+-		return WACOM_STYLUS_TYPE_INKING;
+-	case WSTYLUS_AIRBRUSH:
+-		return WACOM_STYLUS_TYPE_AIRBRUSH;
+-	case WSTYLUS_CLASSIC:
+-		return WACOM_STYLUS_TYPE_CLASSIC;
+-	case WSTYLUS_MARKER:
+-		return WACOM_STYLUS_TYPE_MARKER;
+-	case WSTYLUS_STROKE:
+-		return WACOM_STYLUS_TYPE_STROKE;
+-	case WSTYLUS_PUCK:
+-		return WACOM_STYLUS_TYPE_PUCK;
+-	default:
+-		g_assert_not_reached ();
+-	}
+-
+-	return WACOM_STYLUS_TYPE_UNKNOWN;
+-}
+-
+-int
+-gsd_wacom_stylus_get_id (GsdWacomStylus *stylus)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_STYLUS (stylus), -1);
+-
+-	return stylus->priv->id;
+-}
+-
+-/* Tablet buttons */
+-static GsdWacomTabletButton *
+-gsd_wacom_tablet_button_new (const char               *name,
+-			     const char               *id,
+-			     const char               *settings_path,
+-			     GsdWacomTabletButtonType  type,
+-			     int                       group_id)
+-{
+-	GsdWacomTabletButton *ret;
+-
+-	ret = g_new0 (GsdWacomTabletButton, 1);
+-	ret->name = g_strdup (name);
+-	ret->id = g_strdup (id);
+-	if (type != WACOM_TABLET_BUTTON_TYPE_HARDCODED) {
+-		char *button_settings_path;
+-
+-		button_settings_path = g_strdup_printf ("%s%s/", settings_path, id);
+-		ret->settings = g_settings_new_with_path (WACOM_BUTTON_SCHEMA, button_settings_path);
+-		g_free (button_settings_path);
+-	}
+-	ret->group_id = group_id;
+-	ret->type = type;
+-
+-	return ret;
+-}
+-
+-void
+-gsd_wacom_tablet_button_free (GsdWacomTabletButton *button)
+-{
+-	g_return_if_fail (button != NULL);
+-
+-	if (button->settings != NULL)
+-		g_object_unref (button->settings);
+-	g_free (button->name);
+-	g_free (button->id);
+-	g_free (button);
+-}
+-
+-GsdWacomTabletButton *
+-gsd_wacom_tablet_button_copy (GsdWacomTabletButton *button)
+-{
+-	GsdWacomTabletButton *ret;
+-
+-	g_return_val_if_fail (button != NULL, NULL);
+-
+-	ret = g_new0 (GsdWacomTabletButton, 1);
+-	ret->name = g_strdup (button->name);
+-	if (button->settings != NULL)
+-		ret->settings = g_object_ref (button->settings);
+-	ret->id = button->id;
+-	ret->type = button->type;
+-	ret->group_id = button->group_id;
+-
+-	return ret;
+-}
+-
+-#define GSD_WACOM_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_TYPE_WACOM_DEVICE, GsdWacomDevicePrivate))
+-
+-/* we support two types of settings:
+- * Tablet-wide settings: applied to each tool on the tablet. e.g. rotation
+- * Tool-specific settings: applied to one tool only.
+- */
+-#define SETTINGS_WACOM_DIR         "org.gnome.settings-daemon.peripherals.wacom"
+-#define SETTINGS_STYLUS_DIR        "stylus"
+-#define SETTINGS_ERASER_DIR        "eraser"
+-
+-struct GsdWacomDevicePrivate
+-{
+-	GdkDevice *gdk_device;
+-	int device_id;
+-	int opcode;
+-
+-	GsdWacomDeviceType type;
+-	char *name;
+-	char *icon_name;
+-	char *tool_name;
+-	gboolean reversible;
+-	gboolean is_screen_tablet;
+-	GList *styli;
+-	GsdWacomStylus *last_stylus;
+-	GList *buttons;
+-	GSettings *wacom_settings;
+-};
+-
+-enum {
+-	PROP_0,
+-	PROP_GDK_DEVICE,
+-	PROP_LAST_STYLUS
+-};
+-
+-static void     gsd_wacom_device_class_init  (GsdWacomDeviceClass *klass);
+-static void     gsd_wacom_device_init        (GsdWacomDevice      *wacom_device);
+-static void     gsd_wacom_device_finalize    (GObject              *object);
+-
+-G_DEFINE_TYPE (GsdWacomDevice, gsd_wacom_device, G_TYPE_OBJECT)
+-
+-static GdkFilterReturn
+-filter_events (XEvent         *xevent,
+-               GdkEvent       *event,
+-               GsdWacomDevice *device)
+-{
+-	XIEvent             *xiev;
+-	XIPropertyEvent     *pev;
+-	XGenericEventCookie *cookie;
+-	char                *name;
+-	int                  tool_id;
+-
+-        /* verify we have a property event */
+-	if (xevent->type != GenericEvent)
+-		return GDK_FILTER_CONTINUE;
+-
+-	cookie = &xevent->xcookie;
+-	if (cookie->extension != device->priv->opcode)
+-		return GDK_FILTER_CONTINUE;
+-
+-	xiev = (XIEvent *) xevent->xcookie.data;
+-
+-	if (xiev->evtype != XI_PropertyEvent)
+-		return GDK_FILTER_CONTINUE;
+-
+-	pev = (XIPropertyEvent *) xiev;
+-
+-	/* Is the event for us? */
+-	if (pev->deviceid != device->priv->device_id)
+-		return GDK_FILTER_CONTINUE;
+-
+-	name = XGetAtomName (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), pev->property);
+-	if (name == NULL ||
+-	    g_strcmp0 (name, WACOM_SERIAL_IDS_PROP) != 0) {
+-		return GDK_FILTER_CONTINUE;
+-	}
+-	XFree (name);
+-
+-	tool_id = xdevice_get_last_tool_id (device->priv->device_id);
+-	if (tool_id == -1) {
+-		g_warning ("Failed to get value for changed stylus ID on device '%d", device->priv->device_id);
+-		return GDK_FILTER_CONTINUE;
+-	}
+-	gsd_wacom_device_set_current_stylus (device, tool_id);
+-
+-	return GDK_FILTER_CONTINUE;
+-}
+-
+-static gboolean
+-setup_property_notify (GsdWacomDevice *device)
+-{
+-	Display *dpy;
+-	XIEventMask evmask;
+-	int tool_id;
+-
+-	evmask.deviceid = device->priv->device_id;
+-	evmask.mask_len = XIMaskLen (XI_PropertyEvent);
+-	evmask.mask = g_malloc0(evmask.mask_len * sizeof(char));
+-	XISetMask (evmask.mask, XI_PropertyEvent);
+-
+-	dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+-	XISelectEvents (dpy, DefaultRootWindow(dpy), &evmask, 1);
+-
+-	g_free (evmask.mask);
+-
+-	gdk_window_add_filter (NULL,
+-			       (GdkFilterFunc) filter_events,
+-			       device);
+-
+-	tool_id = xdevice_get_last_tool_id (device->priv->device_id);
+-	if (tool_id == -1) {
+-		g_warning ("Failed to get value for changed stylus ID on device '%d", device->priv->device_id);
+-		return TRUE;
+-	}
+-	gsd_wacom_device_set_current_stylus (device, tool_id);
+-
+-	return TRUE;
+-}
+-
+-static GsdWacomDeviceType
+-get_device_type (XDeviceInfo *dev)
+-{
+-	GsdWacomDeviceType ret;
+-        static Atom stylus, cursor, eraser, pad, touch, prop;
+-        XDevice *device;
+-        Atom realtype;
+-        int realformat;
+-        unsigned long nitems, bytes_after;
+-        unsigned char *data = NULL;
+-        int rc;
+-
+-        ret = WACOM_TYPE_INVALID;
+-
+-        if ((dev->use == IsXPointer) || (dev->use == IsXKeyboard))
+-                return ret;
+-
+-        if (!stylus)
+-                stylus = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "STYLUS", False);
+-        if (!eraser)
+-                eraser = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "ERASER", False);
+-        if (!cursor)
+-                cursor = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "CURSOR", False);
+-        if (!pad)
+-                pad = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "PAD", False);
+-        if (!touch)
+-                touch = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "TOUCH", False);
+-        if (!prop)
+-		prop = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "Wacom Tool Type", False);
+-
+-	if (dev->type == stylus)
+-		ret = WACOM_TYPE_STYLUS;
+-	else if (dev->type == eraser)
+-		ret = WACOM_TYPE_ERASER;
+-	else if (dev->type == cursor)
+-		ret = WACOM_TYPE_CURSOR;
+-	else if (dev->type == pad)
+-		ret = WACOM_TYPE_PAD;
+-	else if (dev->type == touch)
+-		ret = WACOM_TYPE_TOUCH;
+-
+-	if (ret == WACOM_TYPE_INVALID)
+-		return ret;
+-
+-        /* There is currently no good way of detecting the driver for a device
+-         * other than checking for a driver-specific property.
+-         * Wacom Tool Type exists on all tools
+-         */
+-        gdk_error_trap_push ();
+-        device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), dev->id);
+-        if (gdk_error_trap_pop () || (device == NULL))
+-                return ret;
+-
+-        gdk_error_trap_push ();
+-
+-        rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+-                                 device, prop, 0, 1, False,
+-                                 XA_ATOM, &realtype, &realformat, &nitems,
+-                                 &bytes_after, &data);
+-        if (gdk_error_trap_pop () || rc != Success || realtype == None) {
+-                XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
+-                ret = WACOM_TYPE_INVALID;
+-        }
+-
+-        XFree (data);
+-
+-	return ret;
+-}
+-
+-/* Finds an output which matches the given EDID information. Any NULL
+- * parameter will be interpreted to match any value.
+- */
+-static GnomeRROutputInfo*
+-find_output_by_edid (const gchar *vendor, const gchar *product, const gchar *serial)
+-{
+-	GError *error = NULL;
+-	GnomeRRScreen *rr_screen;
+-	GnomeRRConfig *rr_config;
+-	GnomeRROutputInfo **rr_output_info;
+-        GnomeRROutputInfo *retval = NULL;
+-
+-	rr_screen = gnome_rr_screen_new (gdk_screen_get_default (), &error);
+-	if (rr_screen == NULL) {
+-		g_warning ("Failed to create GnomeRRScreen: %s", error->message);
+-		g_error_free (error);
+-		return NULL;
+-	}
+-	rr_config = gnome_rr_config_new_current (rr_screen, &error);
+-	if (rr_config == NULL) {
+-		g_warning ("Failed to get current screen configuration: %s", error->message);
+-		g_error_free (error);
+-		g_object_unref (rr_screen);
+-		return NULL;
+-	}
+-	rr_output_info = gnome_rr_config_get_outputs (rr_config);
+-
+-	for (; *rr_output_info != NULL; rr_output_info++) {
+-		gchar *o_vendor;
+-		gchar *o_product;
+-		gchar *o_serial;
+-		gboolean match;
+-
+-		o_vendor = g_malloc0 (4);
+-		gnome_rr_output_info_get_vendor (*rr_output_info, o_vendor);
+-		o_product = g_strdup_printf ("%d", gnome_rr_output_info_get_product (*rr_output_info));
+-		o_serial  = g_strdup_printf ("%d", gnome_rr_output_info_get_serial  (*rr_output_info));
+-
+-		g_debug ("Checking for match between '%s','%s','%s' and '%s','%s','%s'", \
+-		         vendor,product,serial, o_vendor,o_product,o_serial);
+-
+-		match = (vendor  == NULL || g_strcmp0 (vendor,  o_vendor)  == 0) && \
+-		        (product == NULL || g_strcmp0 (product, o_product) == 0) && \
+-		        (serial  == NULL || g_strcmp0 (serial,  o_serial)  == 0);
+-
+-		g_free (o_vendor);
+-		g_free (o_product);
+-		g_free (o_serial);
+-
+-		if (match) {
+-			retval = g_object_ref (*rr_output_info);
+-			break;
+-		}
+-	}
+-
+-	g_object_unref (rr_config);
+-	g_object_unref (rr_screen);
+-
+-	if (retval == NULL)
+-		g_debug ("Did not find a matching output for EDID '%s,%s,%s'",
+-			 vendor, product, serial);
+-
+-	return retval;
+-}
+-
+-static GnomeRROutputInfo*
+-find_output_by_heuristic (GsdWacomDevice *device)
+-{
+-	GnomeRROutputInfo *rr_output_info;
+-
+-	/* TODO: This heuristic will fail for non-Wacom display
+-	 * tablets and may give the wrong result if multiple Wacom
+-	 * display tablets are connected.
+-	 */
+-	rr_output_info = find_output_by_edid("WAC", NULL, NULL);
+-	return rr_output_info;
+-}
+-
+-static GnomeRROutputInfo*
+-find_output_by_display (GsdWacomDevice *device)
+-{
+-	gsize n;
+-	GSettings *tablet;
+-	GVariant *display;
+-	const gchar **edid;
+-
+-	if (device == NULL)
+-		return NULL;
+-
+-	tablet   = device->priv->wacom_settings;
+-	display  = g_settings_get_value (tablet, "display");
+-	edid     = g_variant_get_strv (display, &n);
+-
+-	if (n != 3) {
+-		g_critical ("Expected 'display' key to store %d values; got %"G_GSIZE_FORMAT".", 3, n);
+-		return NULL;
+-	}
+-
+-	if (strlen(edid[0]) == 0 || strlen(edid[1]) == 0 || strlen(edid[2]) == 0)
+-		return NULL;
+-
+-	return find_output_by_edid (edid[0], edid[1], edid[2]);
+-}
+-
+-static GnomeRROutputInfo*
+-find_output_by_monitor (GdkScreen *screen,
+-			int        monitor)
+-{
+-	GError *error = NULL;
+-	GnomeRRScreen *rr_screen;
+-	GnomeRRConfig *rr_config;
+-	GnomeRROutputInfo **rr_output_infos;
+-	GnomeRROutputInfo *ret;
+-	guint i;
+-
+-	ret = NULL;
+-
+-	rr_screen = gnome_rr_screen_new (screen, &error);
+-	if (rr_screen == NULL) {
+-		g_warning ("gnome_rr_screen_new() failed: %s", error->message);
+-		g_error_free (error);
+-		return NULL;
+-	}
+-
+-	rr_config = gnome_rr_config_new_current (rr_screen, &error);
+-	if (rr_screen == NULL) {
+-		g_warning ("gnome_rr_config_new_current() failed: %s", error->message);
+-		g_error_free (error);
+-		g_object_unref (rr_screen);
+-		return NULL;
+-	}
+-
+-	rr_output_infos = gnome_rr_config_get_outputs (rr_config);
+-
+-	for (i = 0; rr_output_infos[i] != NULL; i++) {
+-		GnomeRROutputInfo *info;
+-		int x, y, w, h;
+-
+-		info = rr_output_infos[i];
+-
+-		if (!gnome_rr_output_info_is_active (info))
+-			continue;
+-
+-		gnome_rr_output_info_get_geometry (info, &x, &y, &w, &h);
+-		if (monitor == gdk_screen_get_monitor_at_point (screen, x, y)) {
+-			ret = g_object_ref (info);
+-			break;
+-		}
+-	}
+-
+-	g_object_unref (rr_config);
+-	g_object_unref (rr_screen);
+-
+-	if (ret == NULL)
+-		g_warning ("No output found for monitor %d.", monitor);
+-
+-	return ret;
+-}
+-
+-static void
+-set_display_by_output (GsdWacomDevice    *device,
+-                       GnomeRROutputInfo *rr_output_info)
+-{
+-	GSettings   *tablet;
+-	GVariant    *c_array;
+-	GVariant    *n_array;
+-	gsize        nvalues;
+-	gchar       *o_vendor, *o_product, *o_serial;
+-	const gchar *values[3];
+-
+-	tablet  = gsd_wacom_device_get_settings (device);
+-	c_array = g_settings_get_value (tablet, "display");
+-	g_variant_get_strv (c_array, &nvalues);
+-	if (nvalues != 3) {
+-		g_warning("Unable set set display property. Got %"G_GSIZE_FORMAT" items; expected %d items.\n", nvalues, 4);
+-		return;
+-	}
+-
+-	if (rr_output_info == NULL)
+-	{
+-		o_vendor  = g_strdup ("");
+-		o_product = g_strdup ("");
+-		o_serial  = g_strdup ("");
+-	}
+-	else
+-	{
+-		o_vendor = g_malloc0 (4);
+-		gnome_rr_output_info_get_vendor (rr_output_info, o_vendor);
+-		o_product = g_strdup_printf ("%d", gnome_rr_output_info_get_product (rr_output_info));
+-		o_serial  = g_strdup_printf ("%d", gnome_rr_output_info_get_serial  (rr_output_info));
+-	}
+-
+-	values[0] = o_vendor;
+-	values[1] = o_product;
+-	values[2] = o_serial;
+-	n_array = g_variant_new_strv((const gchar * const *) &values, 3);
+-	g_settings_set_value (tablet, "display", n_array);
+-
+-	g_free (o_vendor);
+-	g_free (o_product);
+-	g_free (o_serial);
+-}
+-
+-
+-void
+-gsd_wacom_device_set_display (GsdWacomDevice *device,
+-                              int             monitor)
+-{
+-	GnomeRROutputInfo *output;
+-
+-        g_return_if_fail (GSD_IS_WACOM_DEVICE (device));
+-        g_return_if_fail (monitor >= 0);
+-
+-	output = find_output_by_monitor (gdk_screen_get_default (), monitor);
+-	if (output != NULL)
+-		set_display_by_output (device, output);
+-}
+-
+-static GnomeRROutputInfo*
+-find_output (GsdWacomDevice *device)
+-{
+-	GnomeRROutputInfo *rr_output_info;
+-
+-	rr_output_info = find_output_by_display(device);
+-
+-	if (rr_output_info == NULL) {
+-		if (gsd_wacom_device_is_screen_tablet (device)) {
+-			rr_output_info = find_output_by_heuristic (device);
+-			if (rr_output_info == NULL) {
+-				g_warning ("No fuzzy match based on heuristics was found.");
+-			} else {
+-				g_warning("Automatically mapping tablet to heuristically-found display.");
+-				set_display_by_output (device, rr_output_info);
+-			}
+-		}
+-	}
+-
+-	return rr_output_info;
+-}
+-
+-static void
+-calculate_transformation_matrix (const GdkRectangle mapped, const GdkRectangle desktop, float matrix[NUM_ELEMS_MATRIX])
+-{
+-	float x_scale = (float)mapped.x / desktop.width;
+-	float y_scale = (float)mapped.y / desktop.height;
+-	float width_scale  = (float)mapped.width / desktop.width;
+-	float height_scale = (float)mapped.height / desktop.height;
+-
+-	matrix[0] = width_scale;
+-	matrix[1] = 0.0f;
+-	matrix[2] = x_scale;
+-
+-	matrix[3] = 0.0f;
+-	matrix[4] = height_scale;
+-	matrix[5] = y_scale;
+-
+-	matrix[6] = 0.0f;
+-	matrix[7] = 0.0f;
+-	matrix[8] = 1.0f;
+-
+-	g_debug ("Matrix is %f,%f,%f,%f,%f,%f,%f,%f,%f.",
+-	         matrix[0], matrix[1], matrix[2],
+-	         matrix[3], matrix[4], matrix[5],
+-	         matrix[6], matrix[7], matrix[8]);
+-
+-	return;
+-}
+-
+-int
+-gsd_wacom_device_get_display_monitor (GsdWacomDevice *device)
+-{
+-	gint area[4];
+-	gboolean is_active;
+-	GnomeRROutputInfo *rr_output_info;
+-
+-        g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), -1);
+-
+-	rr_output_info = find_output(device);
+-	if (rr_output_info == NULL)
+-		return -1;
+-
+-	is_active = gnome_rr_output_info_is_active (rr_output_info);
+-	gnome_rr_output_info_get_geometry (rr_output_info, &area[0], &area[1], &area[2], &area[3]);
+-
+-	g_object_unref (rr_output_info);
+-
+-	if (!is_active)
+-	{
+-		g_warning ("Output is not active.");
+-		return -1;
+-	}
+-
+-	if (area[2] <= 0 || area[3] <= 0)
+-	{
+-		g_warning ("Output has non-positive area.");
+-		return -1;
+-	}
+-
+-	g_debug ("Area: %d,%d %dx%d", area[0], area[1], area[2], area[3]);
+-	return gdk_screen_get_monitor_at_point (gdk_screen_get_default (), area[0], area[1]);
+-}
+-
+-gboolean
+-gsd_wacom_device_get_display_matrix (GsdWacomDevice *device, float matrix[NUM_ELEMS_MATRIX])
+-{
+-	int monitor;
+-	GdkRectangle display;
+-	GdkRectangle desktop;
+-	GdkScreen *screen = gdk_screen_get_default ();
+-
+-	matrix[0] = 1.0f;
+-	matrix[1] = 0.0f;
+-	matrix[2] = 0.0f;
+-	matrix[3] = 0.0f;
+-	matrix[4] = 1.0f;
+-	matrix[5] = 0.0f;
+-	matrix[6] = 0.0f;
+-	matrix[7] = 0.0f;
+-	matrix[8] = 1.0f;
+-
+-	monitor = gsd_wacom_device_get_display_monitor (device);
+-	if (monitor < 0)
+-		return FALSE;
+-
+-	desktop.x = 0;
+-	desktop.y = 0;
+-	desktop.width = gdk_screen_get_width (screen);
+-	desktop.height = gdk_screen_get_height (screen);
+-
+-	gdk_screen_get_monitor_geometry (screen, monitor, &display);
+-	calculate_transformation_matrix (display, desktop, matrix);
+-	return TRUE;
+-}
+-
+-static void
+-add_stylus_to_device (GsdWacomDevice *device,
+-		      const char     *settings_path,
+-		      int             id)
+-{
+-	const WacomStylus *wstylus;
+-
+-	wstylus = libwacom_stylus_get_for_id (db, id);
+-	if (wstylus) {
+-		GsdWacomStylus *stylus;
+-		char *stylus_settings_path;
+-		GSettings *settings;
+-
+-		if (device->priv->type == WACOM_TYPE_STYLUS &&
+-		    libwacom_stylus_is_eraser (wstylus))
+-			return;
+-		if (device->priv->type == WACOM_TYPE_ERASER &&
+-		    libwacom_stylus_is_eraser (wstylus) == FALSE)
+-			return;
+-
+-		stylus_settings_path = g_strdup_printf ("%s0x%x/", settings_path, id);
+-		if (device->priv->type == WACOM_TYPE_STYLUS) {
+-			settings = g_settings_new_with_path (WACOM_STYLUS_SCHEMA, stylus_settings_path);
+-			stylus = gsd_wacom_stylus_new (device, wstylus, settings);
+-		} else {
+-			settings = g_settings_new_with_path (WACOM_ERASER_SCHEMA, stylus_settings_path);
+-			stylus = gsd_wacom_stylus_new (device, wstylus, settings);
+-		}
+-		g_free (stylus_settings_path);
+-		device->priv->styli = g_list_prepend (device->priv->styli, stylus);
+-	}
+-}
+-
+-static int
+-flags_to_group (WacomButtonFlags flags)
+-{
+-	if (flags & WACOM_BUTTON_RING_MODESWITCH)
+-		return 1;
+-	if (flags & WACOM_BUTTON_RING2_MODESWITCH)
+-		return 2;
+-	if (flags & WACOM_BUTTON_TOUCHSTRIP_MODESWITCH)
+-		return 3;
+-	if (flags & WACOM_BUTTON_TOUCHSTRIP2_MODESWITCH)
+-		return 4;
+-
+-	return 0;
+-}
+-
+-static GList *
+-gsd_wacom_device_add_ring_modes (WacomDevice      *wacom_device,
+-				 const char       *settings_path,
+-				 WacomButtonFlags  direction)
+-{
+-	GList *l;
+-	guint num_modes;
+-	guint i;
+-	char *name, *id;
+-
+-	l = NULL;
+-
+-	if ((direction & WACOM_BUTTON_POSITION_LEFT) && libwacom_has_ring (wacom_device)) {
+-		num_modes = libwacom_get_ring_num_modes (wacom_device);
+-		for (i = 1; i <= num_modes; i++) {
+-			name = g_strdup_printf (_("Left Ring Mode #%d"), i);
+-			id = g_strdup_printf ("left-ring-mode-%d", i);
+-			l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_ELEVATOR, flags_to_group (WACOM_BUTTON_RING_MODESWITCH)));
+-		}
+-	} else if ((direction & WACOM_BUTTON_POSITION_RIGHT) && libwacom_has_ring2 (wacom_device)) {
+-		num_modes = libwacom_get_ring2_num_modes (wacom_device);
+-		for (i = 1; i <= num_modes; i++) {
+-			name = g_strdup_printf (_("Right Ring Mode #%d"), i);
+-			id = g_strdup_printf ("right-ring-mode-%d", i);
+-			l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_ELEVATOR, flags_to_group (WACOM_BUTTON_RING2_MODESWITCH)));
+-		}
+-	}
+-
+-	return l;
+-}
+-
+-static GList *
+-gsd_wacom_device_add_strip_modes (WacomDevice      *wacom_device,
+-				  const char       *settings_path,
+-				  WacomButtonFlags  direction)
+-{
+-	GList *l;
+-	guint num_modes;
+-	guint num_strips;
+-	guint i;
+-	char *name, *id;
+-
+-	l = NULL;
+-	num_strips = libwacom_get_num_strips (wacom_device);
+-	if (num_strips > 2)
+-		g_warning ("Unhandled number of touchstrips: %d", num_strips);
+-
+-	if ((direction & WACOM_BUTTON_POSITION_LEFT) && num_strips >= 1) {
+-		num_modes = libwacom_get_strips_num_modes (wacom_device);
+-		for (i = 1; i <= num_modes; i++) {
+-			name = g_strdup_printf (_("Left Touchstrip Mode #%d"), i);
+-			id = g_strdup_printf ("left-strip-mode-%d", i);
+-			l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_ELEVATOR, flags_to_group (WACOM_BUTTON_TOUCHSTRIP_MODESWITCH)));
+-		}
+-	} else if ((direction & WACOM_BUTTON_POSITION_RIGHT) && num_strips >= 2) {
+-		num_modes = libwacom_get_strips_num_modes (wacom_device);
+-		for (i = 1; i <= num_modes; i++) {
+-			name = g_strdup_printf (_("Right Touchstrip Mode #%d"), i);
+-			id = g_strdup_printf ("right-strip-mode-%d", i);
+-			l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_ELEVATOR, flags_to_group (WACOM_BUTTON_TOUCHSTRIP2_MODESWITCH)));
+-		}
+-	}
+-
+-	return l;
+-}
+-
+-static char *
+-gsd_wacom_device_modeswitch_name (WacomButtonFlags flags,
+-				  guint button_num)
+-{
+-	if (flags & WACOM_BUTTON_RINGS_MODESWITCH) {
+-		if (flags & WACOM_BUTTON_POSITION_LEFT)
+-			return g_strdup_printf (_("Left Touchring Mode Switch"));
+-		else
+-			return g_strdup_printf (_("Right Touchring Mode Switch"));
+-	} else if (flags & WACOM_BUTTON_TOUCHSTRIPS_MODESWITCH) {
+-		if (flags & WACOM_BUTTON_POSITION_LEFT)
+-			return g_strdup_printf (_("Left Touchstrip Mode Switch"));
+-		else
+-			return g_strdup_printf (_("Right Touchstrip Mode Switch"));
+-	}
+-
+-	g_warning ("Unhandled modeswitch and direction combination");
+-
+-	return g_strdup_printf (_("Mode Switch #%d"), button_num);
+-}
+-
+-static GList *
+-gsd_wacom_device_add_buttons_dir (WacomDevice      *wacom_device,
+-				  const char       *settings_path,
+-				  WacomButtonFlags  direction,
+-				  const char       *button_str,
+-				  const char       *button_str_id)
+-{
+-	GList *l;
+-	guint num_buttons, i, button_num;
+-	char *name, *id;
+-
+-	l = NULL;
+-	button_num = 1;
+-	num_buttons = libwacom_get_num_buttons (wacom_device);
+-	for (i = 'A'; i < 'A' + num_buttons; i++) {
+-		WacomButtonFlags flags;
+-
+-		flags = libwacom_get_button_flag (wacom_device, i);
+-		if (!(flags & direction))
+-			continue;
+-		/* Ignore mode switches */
+-		if (flags & WACOM_BUTTON_MODESWITCH)
+-			continue;
+-
+-		name = g_strdup_printf (button_str, button_num++);
+-		id = g_strdup_printf ("%s%c", button_str_id, i);
+-		l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_NORMAL, flags_to_group (flags)));
+-		g_free (name);
+-		g_free (id);
+-	}
+-
+-	/* Handle modeswitches */
+-	for (i = 'A'; i < 'A' + num_buttons; i++) {
+-		WacomButtonFlags flags;
+-
+-		flags = libwacom_get_button_flag (wacom_device, i);
+-		if (!(flags & direction))
+-			continue;
+-		/* Ignore non-mode switches */
+-		if (flags & WACOM_BUTTON_MODESWITCH) {
+-			char *name, *id;
+-
+-			name = gsd_wacom_device_modeswitch_name (flags, button_num++);
+-			id = g_strdup_printf ("%s%c", button_str_id, i);
+-			l = g_list_append (l, gsd_wacom_tablet_button_new (name, id, settings_path, WACOM_TABLET_BUTTON_TYPE_HARDCODED, flags_to_group (flags)));
+-			g_free (name);
+-			g_free (id);
+-
+-			if (flags & WACOM_BUTTON_RINGS_MODESWITCH)
+-				l = g_list_concat (l, gsd_wacom_device_add_ring_modes (wacom_device, settings_path, direction));
+-			else if (flags & WACOM_BUTTON_TOUCHSTRIPS_MODESWITCH)
+-				l = g_list_concat (l, gsd_wacom_device_add_strip_modes (wacom_device, settings_path, direction));
+-			else
+-				g_warning ("Unhandled modeswitches");
+-		}
+-	}
+-
+-	return l;
+-}
+-
+-static void
+-gsd_wacom_device_add_buttons (GsdWacomDevice *device,
+-			      WacomDevice    *wacom_device,
+-			      const char     *settings_path)
+-{
+-	GList *l, *ret;
+-
+-	ret = NULL;
+-
+-	l = gsd_wacom_device_add_buttons_dir (wacom_device, settings_path, WACOM_BUTTON_POSITION_LEFT, _("Left Button #%d"), "button");
+-	if (l)
+-		ret = l;
+-	l = gsd_wacom_device_add_buttons_dir (wacom_device, settings_path, WACOM_BUTTON_POSITION_RIGHT, _("Right Button #%d"), "button");
+-	if (l)
+-		ret = g_list_concat (ret, l);
+-	l = gsd_wacom_device_add_buttons_dir (wacom_device, settings_path, WACOM_BUTTON_POSITION_TOP, _("Top Button #%d"), "button");
+-	if (l)
+-		ret = g_list_concat (ret, l);
+-	l = gsd_wacom_device_add_buttons_dir (wacom_device, settings_path, WACOM_BUTTON_POSITION_BOTTOM, _("Bottom Button #%d"), "button");
+-	if (l)
+-		ret = g_list_concat (ret, l);
+-
+-	device->priv->buttons = ret;
+-}
+-
+-static void
+-gsd_wacom_device_update_from_db (GsdWacomDevice *device,
+-				 WacomDevice    *wacom_device,
+-				 const char     *identifier)
+-{
+-	char *settings_path;
+-
+-	settings_path = g_strdup_printf (WACOM_DEVICE_CONFIG_BASE, libwacom_get_match (wacom_device));
+-	device->priv->wacom_settings = g_settings_new_with_path (WACOM_TABLET_SCHEMA,
+-								 settings_path);
+-
+-	device->priv->name = g_strdup (libwacom_get_name (wacom_device));
+-	device->priv->reversible = libwacom_is_reversible (wacom_device);
+-	device->priv->is_screen_tablet = libwacom_is_builtin (wacom_device);
+-	if (device->priv->is_screen_tablet) {
+-		if (libwacom_get_class (wacom_device) == WCLASS_CINTIQ)
+-			device->priv->icon_name = g_strdup ("wacom-tablet-cintiq");
+-		else
+-			device->priv->icon_name = g_strdup ("wacom-tablet-pc");
+-	} else {
+-		device->priv->icon_name = g_strdup ("wacom-tablet");
+-	}
+-
+-	if (device->priv->type == WACOM_TYPE_PAD)
+-		gsd_wacom_device_add_buttons (device, wacom_device, settings_path);
+-
+-	if (device->priv->type == WACOM_TYPE_STYLUS ||
+-	    device->priv->type == WACOM_TYPE_ERASER) {
+-		int *ids;
+-		int num_styli;
+-		guint i;
+-
+-		ids = libwacom_get_supported_styli(wacom_device, &num_styli);
+-		for (i = 0; i < num_styli; i++)
+-			add_stylus_to_device (device, settings_path, ids[i]);
+-		/* Create a fallback stylus if we don't have one */
+-		if (num_styli == 0)
+-			add_stylus_to_device (device, settings_path,
+-					      device->priv->type == WACOM_TYPE_STYLUS ?
+-					      WACOM_STYLUS_FALLBACK_ID : WACOM_ERASER_FALLBACK_ID);
+-
+-		device->priv->styli = g_list_reverse (device->priv->styli);
+-	}
+-	g_free (settings_path);
+-}
+-
+-static GObject *
+-gsd_wacom_device_constructor (GType                     type,
+-                              guint                      n_construct_properties,
+-                              GObjectConstructParam     *construct_properties)
+-{
+-        GsdWacomDevice *device;
+-        GdkDeviceManager *device_manager;
+-        XDeviceInfo *device_info;
+-        WacomDevice *wacom_device;
+-        int n_devices;
+-        guint i;
+-        char *path;
+-
+-        device = GSD_WACOM_DEVICE (G_OBJECT_CLASS (gsd_wacom_device_parent_class)->constructor (type,
+-												n_construct_properties,
+-												construct_properties));
+-
+-	if (device->priv->gdk_device == NULL)
+-		return G_OBJECT (device);
+-
+-	device_manager = gdk_display_get_device_manager (gdk_display_get_default ());
+-	g_object_get (device_manager, "opcode", &device->priv->opcode, NULL);
+-
+-        g_object_get (device->priv->gdk_device, "device-id", &device->priv->device_id, NULL);
+-
+-        device_info = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &n_devices);
+-        if (device_info == NULL) {
+-		g_warning ("Could not list any input devices through XListInputDevices()");
+-		goto end;
+-	}
+-
+-        for (i = 0; i < n_devices; i++) {
+-		if (device_info[i].id == device->priv->device_id) {
+-			device->priv->type = get_device_type (&device_info[i]);
+-			device->priv->tool_name = g_strdup (device_info[i].name);
+-			break;
+-		}
+-	}
+-
+-	XFreeDeviceList (device_info);
+-
+-	if (device->priv->type == WACOM_TYPE_INVALID)
+-		goto end;
+-
+-	path = xdevice_get_device_node (device->priv->device_id);
+-	if (path == NULL) {
+-		g_warning ("Could not get the device node path for ID '%d'", device->priv->device_id);
+-		device->priv->type = WACOM_TYPE_INVALID;
+-		goto end;
+-	}
+-
+-	if (db == NULL)
+-		db = libwacom_database_new ();
+-
+-	wacom_device = libwacom_new_from_path (db, path, FALSE, NULL);
+-	if (!wacom_device) {
+-		WacomError *wacom_error;
+-
+-		g_debug ("Creating fallback driver for wacom tablet '%s' ('%s')",
+-			 gdk_device_get_name (device->priv->gdk_device),
+-			 path);
+-
+-		wacom_error = libwacom_error_new ();
+-		wacom_device = libwacom_new_from_path (db, path, TRUE, wacom_error);
+-		if (wacom_device == NULL) {
+-			g_warning ("Failed to create fallback wacom device for '%s': %s (%d)",
+-				   path,
+-				   libwacom_error_get_message (wacom_error),
+-				   libwacom_error_get_code (wacom_error));
+-			g_free (path);
+-			libwacom_error_free (&wacom_error);
+-			device->priv->type = WACOM_TYPE_INVALID;
+-			goto end;
+-		}
+-	}
+-
+-	gsd_wacom_device_update_from_db (device, wacom_device, path);
+-	libwacom_destroy (wacom_device);
+-	g_free (path);
+-
+-	if (device->priv->type == WACOM_TYPE_STYLUS ||
+-	    device->priv->type == WACOM_TYPE_ERASER) {
+-		setup_property_notify (device);
+-	}
+-
+-end:
+-        return G_OBJECT (device);
+-}
+-
+-static void
+-gsd_wacom_device_set_property (GObject        *object,
+-                               guint           prop_id,
+-                               const GValue   *value,
+-                               GParamSpec     *pspec)
+-{
+-        GsdWacomDevice *device;
+-
+-        device = GSD_WACOM_DEVICE (object);
+-
+-        switch (prop_id) {
+-	case PROP_GDK_DEVICE:
+-		device->priv->gdk_device = g_value_get_pointer (value);
+-		break;
+-	case PROP_LAST_STYLUS:
+-		device->priv->last_stylus = g_value_get_pointer (value);
+-		break;
+-        default:
+-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-                break;
+-        }
+-}
+-
+-static void
+-gsd_wacom_device_get_property (GObject        *object,
+-                               guint           prop_id,
+-                               GValue         *value,
+-                               GParamSpec     *pspec)
+-{
+-        GsdWacomDevice *device;
+-
+-        device = GSD_WACOM_DEVICE (object);
+-
+-        switch (prop_id) {
+-	case PROP_GDK_DEVICE:
+-		g_value_set_pointer (value, device->priv->gdk_device);
+-		break;
+-	case PROP_LAST_STYLUS:
+-		g_value_set_pointer (value, device->priv->last_stylus);
+-		break;
+-        default:
+-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-                break;
+-        }
+-}
+-
+-static void
+-gsd_wacom_device_class_init (GsdWacomDeviceClass *klass)
+-{
+-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+-
+-        object_class->constructor = gsd_wacom_device_constructor;
+-        object_class->finalize = gsd_wacom_device_finalize;
+-        object_class->set_property = gsd_wacom_device_set_property;
+-        object_class->get_property = gsd_wacom_device_get_property;
+-
+-        g_type_class_add_private (klass, sizeof (GsdWacomDevicePrivate));
+-
+-	g_object_class_install_property (object_class, PROP_GDK_DEVICE,
+-					 g_param_spec_pointer ("gdk-device", "gdk-device", "gdk-device",
+-							       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+-	g_object_class_install_property (object_class, PROP_LAST_STYLUS,
+-					 g_param_spec_pointer ("last-stylus", "last-stylus", "last-stylus",
+-							       G_PARAM_READWRITE));
+-}
+-
+-static void
+-gsd_wacom_device_init (GsdWacomDevice *device)
+-{
+-        device->priv = GSD_WACOM_DEVICE_GET_PRIVATE (device);
+-        device->priv->type = WACOM_TYPE_INVALID;
+-}
+-
+-static void
+-gsd_wacom_device_finalize (GObject *object)
+-{
+-        GsdWacomDevice *device;
+-        GsdWacomDevicePrivate *p;
+-
+-        g_return_if_fail (object != NULL);
+-        g_return_if_fail (GSD_IS_WACOM_DEVICE (object));
+-
+-        device = GSD_WACOM_DEVICE (object);
+-
+-        g_return_if_fail (device->priv != NULL);
+-
+-	p = device->priv;
+-
+-        if (p->wacom_settings != NULL) {
+-                g_object_unref (p->wacom_settings);
+-                p->wacom_settings = NULL;
+-        }
+-
+-        g_list_foreach (p->buttons, (GFunc) gsd_wacom_tablet_button_free, NULL);
+-        g_list_free (p->buttons);
+-
+-        g_free (p->name);
+-        p->name = NULL;
+-
+-        g_free (p->tool_name);
+-        p->tool_name = NULL;
+-
+-        g_free (p->icon_name);
+-        p->icon_name = NULL;
+-
+-	gdk_window_remove_filter (NULL,
+-				  (GdkFilterFunc) filter_events,
+-				  device);
+-
+-        G_OBJECT_CLASS (gsd_wacom_device_parent_class)->finalize (object);
+-}
+-
+-GsdWacomDevice *
+-gsd_wacom_device_new (GdkDevice *device)
+-{
+-	return GSD_WACOM_DEVICE (g_object_new (GSD_TYPE_WACOM_DEVICE,
+-					       "gdk-device", device,
+-					       NULL));
+-}
+-
+-GList *
+-gsd_wacom_device_list_styli (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return g_list_copy (device->priv->styli);
+-}
+-
+-GsdWacomStylus *
+-gsd_wacom_device_get_stylus_for_type (GsdWacomDevice     *device,
+-				      GsdWacomStylusType  type)
+-{
+-	GList *l;
+-
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	for (l = device->priv->styli; l != NULL; l = l->next) {
+-		GsdWacomStylus *stylus = l->data;
+-
+-		if (gsd_wacom_stylus_get_stylus_type (stylus) == type)
+-			return stylus;
+-	}
+-	return NULL;
+-}
+-
+-const char *
+-gsd_wacom_device_get_name (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return device->priv->name;
+-}
+-
+-const char *
+-gsd_wacom_device_get_icon_name (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return device->priv->icon_name;
+-}
+-
+-const char *
+-gsd_wacom_device_get_tool_name (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return device->priv->tool_name;
+-}
+-
+-gboolean
+-gsd_wacom_device_reversible (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), FALSE);
+-
+-	return device->priv->reversible;
+-}
+-
+-gboolean
+-gsd_wacom_device_is_screen_tablet (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), FALSE);
+-
+-	return device->priv->is_screen_tablet;
+-}
+-
+-GSettings *
+-gsd_wacom_device_get_settings (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return device->priv->wacom_settings;
+-}
+-
+-void
+-gsd_wacom_device_set_current_stylus (GsdWacomDevice *device,
+-				     int             stylus_id)
+-{
+-	GList *l;
+-	GsdWacomStylus *stylus;
+-
+-	g_return_if_fail (GSD_IS_WACOM_DEVICE (device));
+-
+-	/* Don't change anything if the stylus is already set */
+-	if (device->priv->last_stylus != NULL) {
+-		GsdWacomStylus *stylus = device->priv->last_stylus;
+-		if (stylus->priv->id == stylus_id)
+-			return;
+-	}
+-
+-	for (l = device->priv->styli; l; l = l->next) {
+-		stylus = l->data;
+-
+-		/* Set a nice default if 0x0 */
+-		if (stylus_id == 0x0 &&
+-		    stylus->priv->type == WSTYLUS_GENERAL) {
+-			g_object_set (device, "last-stylus", stylus, NULL);
+-			return;
+-		}
+-
+-		if (stylus->priv->id == stylus_id) {
+-			g_object_set (device, "last-stylus", stylus, NULL);
+-			return;
+-		}
+-	}
+-
+-	/* Setting the default stylus to be the generic one */
+-	for (l = device->priv->styli; l; l = l->next) {
+-		stylus = l->data;
+-
+-		/* Set a nice default if 0x0 */
+-		if (stylus->priv->type == WSTYLUS_GENERAL) {
+-			g_debug ("Could not find stylus ID 0x%x for tablet '%s', setting general pen ID 0x%x instead",
+-				 stylus_id, device->priv->name, stylus->priv->id);
+-			g_object_set (device, "last-stylus", stylus, NULL);
+-			return;
+-		}
+-	}
+-
+-	g_warning ("Could not set the current stylus ID 0x%x for tablet '%s', no general pen found",
+-		   stylus_id, device->priv->name);
+-
+-	/* Setting the default stylus to be the first one */
+-	g_assert (device->priv->styli);
+-
+-	stylus = device->priv->styli->data;
+-	g_object_set (device, "last-stylus", stylus, NULL);
+-}
+-
+-GsdWacomDeviceType
+-gsd_wacom_device_get_device_type (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), WACOM_TYPE_INVALID);
+-
+-	return device->priv->type;
+-}
+-
+-gint *
+-gsd_wacom_device_get_area (GsdWacomDevice *device)
+-{
+-	int i, id;
+-	XDevice *xdevice;
+-	Atom area, realtype;
+-	int rc, realformat;
+-	unsigned long nitems, bytes_after;
+-	unsigned char *data = NULL;
+-	gint *device_area;
+-
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	g_object_get (device->priv->gdk_device, "device-id", &id, NULL);
+-
+-	area = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "Wacom Tablet Area", False);
+-
+-	gdk_error_trap_push ();
+-	xdevice = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), id);
+-	if (gdk_error_trap_pop () || (device == NULL))
+-		return NULL;
+-
+-	gdk_error_trap_push ();
+-	rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+-				 xdevice, area, 0, 4, False,
+-				 XA_INTEGER, &realtype, &realformat, &nitems,
+-				 &bytes_after, &data);
+-	if (gdk_error_trap_pop () || rc != Success || realtype == None || bytes_after != 0 || nitems != 4) {
+-		XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdevice);
+-		return NULL;
+-	}
+-
+-	device_area = g_new0 (int, nitems);
+-	for (i = 0; i < nitems; i++)
+-		device_area[i] = ((long*)data)[i];
+-
+-	XFree (data);
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdevice);
+-
+-	return device_area;
+-}
+-
+-const char *
+-gsd_wacom_device_type_to_string (GsdWacomDeviceType type)
+-{
+-	switch (type) {
+-	case WACOM_TYPE_INVALID:
+-		return "Invalid";
+-	case WACOM_TYPE_STYLUS:
+-		return "Stylus";
+-	case WACOM_TYPE_ERASER:
+-		return "Eraser";
+-	case WACOM_TYPE_CURSOR:
+-		return "Cursor";
+-	case WACOM_TYPE_PAD:
+-		return "Pad";
+-	case WACOM_TYPE_TOUCH:
+-		return "Touch";
+-	default:
+-		return "Unknown type";
+-	}
+-}
+-
+-GList *
+-gsd_wacom_device_get_buttons (GsdWacomDevice *device)
+-{
+-	g_return_val_if_fail (GSD_IS_WACOM_DEVICE (device), NULL);
+-
+-	return g_list_copy (device->priv->buttons);
+-}
+-
+-static GsdWacomTabletButton *
+-find_button_with_id (GsdWacomDevice *device,
+-		     const char     *id)
+-{
+-	GList *l;
+-
+-	for (l = device->priv->buttons; l != NULL; l = l->next) {
+-		GsdWacomTabletButton *button = l->data;
+-
+-		if (g_strcmp0 (button->id, id) == 0)
+-			return button;
+-	}
+-	return NULL;
+-}
+-
+-GsdWacomTabletButton *
+-gsd_wacom_device_get_button (GsdWacomDevice   *device,
+-			     int               button,
+-			     GtkDirectionType *dir)
+-{
+-	if (button <= 26) {
+-		char *id;
+-		GsdWacomTabletButton *ret;
+-		int physical_button;
+-
+-		/* mouse_button = physical_button < 4 ? physical_button : physical_button + 4 */
+-		if (button > 4)
+-			physical_button = button - 4;
+-		else
+-			physical_button = button;
+-
+-		id = g_strdup_printf ("button%c", 'A' + physical_button - 1);
+-		ret = find_button_with_id (device, id);
+-		g_free (id);
+-
+-		return ret;
+-	}
+-
+-	switch (button) {
+-	case 90:
+-	case 92:
+-	case 94:
+-	case 96:
+-		*dir = GTK_DIR_UP;
+-		break;
+-	case 91:
+-	case 93:
+-	case 95:
+-	case 97:
+-		*dir = GTK_DIR_DOWN;
+-		break;
+-	default:
+-		;;
+-	}
+-
+-	/* FIXME handle the mode */
+-	switch (button) {
+-	case 90:
+-	case 91:
+-		return find_button_with_id (device, "left-ring-mode-1");
+-	case 92:
+-	case 93:
+-		return find_button_with_id (device, "right-ring-mode-1");
+-	case 94:
+-	case 95:
+-		return find_button_with_id (device, "left-strip-mode-1");
+-	case 96:
+-	case 97:
+-		return find_button_with_id (device, "right-strip-mode-1");
+-	default:
+-		return NULL;
+-	}
+-}
+-
+-GsdWacomDevice *
+-gsd_wacom_device_create_fake (GsdWacomDeviceType  type,
+-			      const char         *name,
+-			      const char         *tool_name)
+-{
+-	GsdWacomDevice *device;
+-	GsdWacomDevicePrivate *priv;
+-	WacomDevice *wacom_device;
+-
+-	device = GSD_WACOM_DEVICE (g_object_new (GSD_TYPE_WACOM_DEVICE, NULL));
+-
+-	if (db == NULL)
+-		db = libwacom_database_new ();
+-
+-	wacom_device = libwacom_new_from_name (db, name, NULL);
+-	if (wacom_device == NULL)
+-		return NULL;
+-
+-	priv = device->priv;
+-	priv->type = type;
+-	priv->tool_name = g_strdup (tool_name);
+-	gsd_wacom_device_update_from_db (device, wacom_device, name);
+-	libwacom_destroy (wacom_device);
+-
+-	return device;
+-}
+-
+-GList *
+-gsd_wacom_device_create_fake_cintiq (void)
+-{
+-	GsdWacomDevice *device;
+-	GList *devices;
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_STYLUS,
+-					       "Wacom Cintiq 21UX2",
+-					       "Wacom Cintiq 21UX2 stylus");
+-	devices = g_list_prepend (NULL, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_ERASER,
+-					       "Wacom Cintiq 21UX2",
+-					       "Wacom Cintiq 21UX2 eraser");
+-	devices = g_list_prepend (devices, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_PAD,
+-					       "Wacom Cintiq 21UX2",
+-					       "Wacom Cintiq 21UX2 pad");
+-	devices = g_list_prepend (devices, device);
+-
+-	return devices;
+-}
+-
+-GList *
+-gsd_wacom_device_create_fake_bt (void)
+-{
+-	GsdWacomDevice *device;
+-	GList *devices;
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_STYLUS,
+-					       "Wacom Graphire Wireless",
+-					       "Graphire Wireless stylus");
+-	devices = g_list_prepend (NULL, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_ERASER,
+-					       "Wacom Graphire Wireless",
+-					       "Graphire Wireless eraser");
+-	devices = g_list_prepend (devices, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_PAD,
+-					       "Wacom Graphire Wireless",
+-					       "Graphire Wireless pad");
+-	devices = g_list_prepend (devices, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_CURSOR,
+-					       "Wacom Graphire Wireless",
+-					       "Graphire Wireless cursor");
+-	devices = g_list_prepend (devices, device);
+-
+-	return devices;
+-}
+-
+-GList *
+-gsd_wacom_device_create_fake_x201 (void)
+-{
+-	GsdWacomDevice *device;
+-	GList *devices;
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_STYLUS,
+-					       "Wacom Serial Tablet WACf004",
+-					       "Wacom Serial Tablet WACf004 stylus");
+-	devices = g_list_prepend (NULL, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_ERASER,
+-					       "Wacom Serial Tablet WACf004",
+-					       "Wacom Serial Tablet WACf004 eraser");
+-	devices = g_list_prepend (devices, device);
+-
+-	return devices;
+-}
+-
+-GList *
+-gsd_wacom_device_create_fake_intuos4 (void)
+-{
+-	GsdWacomDevice *device;
+-	GList *devices;
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_STYLUS,
+-					       "Wacom Intuos4 6x9",
+-					       "Wacom Intuos4 6x9 stylus");
+-	devices = g_list_prepend (NULL, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_ERASER,
+-					       "Wacom Intuos4 6x9",
+-					       "Wacom Intuos4 6x9 eraser");
+-	devices = g_list_prepend (devices, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_PAD,
+-					       "Wacom Intuos4 6x9",
+-					       "Wacom Intuos4 6x9 pad");
+-	devices = g_list_prepend (devices, device);
+-
+-	device = gsd_wacom_device_create_fake (WACOM_TYPE_CURSOR,
+-					       "Wacom Intuos4 6x9",
+-					       "Wacom Intuos4 6x9 cursor");
+-	devices = g_list_prepend (devices, device);
+-
+-	return devices;
+-}
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-device.h gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-device.h
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-device.h	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-device.h	1969-12-31 19:00:00.000000000 -0500
+@@ -1,165 +0,0 @@
+-/*
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Bastien Nocera <hadess@hadess.net>
+- *
+- */
+-
+-#ifndef __GSD_WACOM_DEVICE_MANAGER_H
+-#define __GSD_WACOM_DEVICE_MANAGER_H
+-
+-#include <glib-object.h>
+-
+-G_BEGIN_DECLS
+-
+-#define NUM_ELEMS_MATRIX 9
+-
+-#define GSD_TYPE_WACOM_DEVICE         (gsd_wacom_device_get_type ())
+-#define GSD_WACOM_DEVICE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GSD_TYPE_WACOM_DEVICE, GsdWacomDevice))
+-#define GSD_WACOM_DEVICE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GSD_TYPE_WACOM_DEVICE, GsdWacomDeviceClass))
+-#define GSD_IS_WACOM_DEVICE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GSD_TYPE_WACOM_DEVICE))
+-#define GSD_IS_WACOM_DEVICE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GSD_TYPE_WACOM_DEVICE))
+-#define GSD_WACOM_DEVICE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GSD_TYPE_WACOM_DEVICE, GsdWacomDeviceClass))
+-
+-typedef struct GsdWacomDevicePrivate GsdWacomDevicePrivate;
+-
+-typedef struct
+-{
+-        GObject                parent;
+-        GsdWacomDevicePrivate *priv;
+-} GsdWacomDevice;
+-
+-typedef struct
+-{
+-        GObjectClass   parent_class;
+-} GsdWacomDeviceClass;
+-
+-#define GSD_TYPE_WACOM_STYLUS         (gsd_wacom_stylus_get_type ())
+-#define GSD_WACOM_STYLUS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GSD_TYPE_WACOM_STYLUS, GsdWacomStylus))
+-#define GSD_WACOM_STYLUS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GSD_TYPE_WACOM_STYLUS, GsdWacomStylusClass))
+-#define GSD_IS_WACOM_STYLUS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GSD_TYPE_WACOM_STYLUS))
+-#define GSD_IS_WACOM_STYLUS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GSD_TYPE_WACOM_STYLUS))
+-#define GSD_WACOM_STYLUS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GSD_TYPE_WACOM_STYLUS, GsdWacomStylusClass))
+-
+-typedef struct GsdWacomStylusPrivate GsdWacomStylusPrivate;
+-
+-typedef struct
+-{
+-        GObject                parent;
+-        GsdWacomStylusPrivate *priv;
+-} GsdWacomStylus;
+-
+-typedef struct
+-{
+-        GObjectClass   parent_class;
+-} GsdWacomStylusClass;
+-
+-typedef enum {
+-	WACOM_STYLUS_TYPE_UNKNOWN,
+-	WACOM_STYLUS_TYPE_GENERAL,
+-	WACOM_STYLUS_TYPE_INKING,
+-	WACOM_STYLUS_TYPE_AIRBRUSH,
+-	WACOM_STYLUS_TYPE_CLASSIC,
+-	WACOM_STYLUS_TYPE_MARKER,
+-	WACOM_STYLUS_TYPE_STROKE,
+-	WACOM_STYLUS_TYPE_PUCK
+-} GsdWacomStylusType;
+-
+-GType            gsd_wacom_stylus_get_type       (void);
+-GSettings      * gsd_wacom_stylus_get_settings   (GsdWacomStylus *stylus);
+-const char     * gsd_wacom_stylus_get_name       (GsdWacomStylus *stylus);
+-const char     * gsd_wacom_stylus_get_icon_name  (GsdWacomStylus *stylus);
+-GsdWacomDevice * gsd_wacom_stylus_get_device     (GsdWacomStylus *stylus);
+-gboolean         gsd_wacom_stylus_get_has_eraser (GsdWacomStylus *stylus);
+-guint            gsd_wacom_stylus_get_num_buttons(GsdWacomStylus *stylus);
+-int              gsd_wacom_stylus_get_id         (GsdWacomStylus *stylus);
+-GsdWacomStylusType gsd_wacom_stylus_get_stylus_type (GsdWacomStylus *stylus);
+-
+-/* Tablet Buttons */
+-typedef enum {
+-	WACOM_TABLET_BUTTON_TYPE_NORMAL,
+-	WACOM_TABLET_BUTTON_TYPE_ELEVATOR,
+-	WACOM_TABLET_BUTTON_TYPE_HARDCODED
+-} GsdWacomTabletButtonType;
+-
+-#define MAX_GROUP_ID 4
+-
+-typedef struct
+-{
+-	char                     *name;
+-	char                     *id;
+-	GSettings                *settings;
+-	GsdWacomTabletButtonType  type;
+-	int                       group_id;
+-} GsdWacomTabletButton;
+-
+-void                  gsd_wacom_tablet_button_free (GsdWacomTabletButton *button);
+-GsdWacomTabletButton *gsd_wacom_tablet_button_copy (GsdWacomTabletButton *button);
+-
+-/* Device types to apply a setting to */
+-typedef enum {
+-	WACOM_TYPE_INVALID =     0,
+-        WACOM_TYPE_STYLUS  =     (1 << 1),
+-        WACOM_TYPE_ERASER  =     (1 << 2),
+-        WACOM_TYPE_CURSOR  =     (1 << 3),
+-        WACOM_TYPE_PAD     =     (1 << 4),
+-        WACOM_TYPE_TOUCH   =     (1 << 5),
+-        WACOM_TYPE_ALL     =     WACOM_TYPE_STYLUS | WACOM_TYPE_ERASER | WACOM_TYPE_CURSOR | WACOM_TYPE_PAD | WACOM_TYPE_TOUCH
+-} GsdWacomDeviceType;
+-
+-GType gsd_wacom_device_get_type     (void);
+-
+-void     gsd_wacom_device_set_display         (GsdWacomDevice    *device,
+-                                               int                monitor);
+-gint     gsd_wacom_device_get_display_monitor (GsdWacomDevice *device);
+-gboolean gsd_wacom_device_get_display_matrix  (GsdWacomDevice *device,
+-                                               float           matrix[NUM_ELEMS_MATRIX]);
+-
+-GsdWacomDevice * gsd_wacom_device_new              (GdkDevice *device);
+-GList          * gsd_wacom_device_list_styli       (GsdWacomDevice *device);
+-const char     * gsd_wacom_device_get_name         (GsdWacomDevice *device);
+-const char     * gsd_wacom_device_get_icon_name    (GsdWacomDevice *device);
+-const char     * gsd_wacom_device_get_tool_name    (GsdWacomDevice *device);
+-gboolean         gsd_wacom_device_reversible       (GsdWacomDevice *device);
+-gboolean         gsd_wacom_device_is_screen_tablet (GsdWacomDevice *device);
+-GSettings      * gsd_wacom_device_get_settings     (GsdWacomDevice *device);
+-void             gsd_wacom_device_set_current_stylus (GsdWacomDevice *device,
+-						      int             stylus_id);
+-GsdWacomStylus * gsd_wacom_device_get_stylus_for_type (GsdWacomDevice     *device,
+-						       GsdWacomStylusType  type);
+-
+-GsdWacomDeviceType gsd_wacom_device_get_device_type (GsdWacomDevice *device);
+-gint           * gsd_wacom_device_get_area          (GsdWacomDevice *device);
+-const char     * gsd_wacom_device_type_to_string    (GsdWacomDeviceType type);
+-GList          * gsd_wacom_device_get_buttons       (GsdWacomDevice *device);
+-GsdWacomTabletButton *gsd_wacom_device_get_button   (GsdWacomDevice   *device,
+-						     int               button,
+-						     GtkDirectionType *dir);
+-
+-/* Helper and debug functions */
+-GsdWacomDevice * gsd_wacom_device_create_fake (GsdWacomDeviceType  type,
+-					       const char         *name,
+-					       const char         *tool_name);
+-
+-GList * gsd_wacom_device_create_fake_cintiq   (void);
+-GList * gsd_wacom_device_create_fake_bt       (void);
+-GList * gsd_wacom_device_create_fake_x201     (void);
+-GList * gsd_wacom_device_create_fake_intuos4  (void);
+-
+-G_END_DECLS
+-
+-#endif /* __GSD_WACOM_DEVICE_MANAGER_H */
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.c gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.c
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.c	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,965 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- * Copyright (C) 2010 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-
+-#include <locale.h>
+-
+-#include <glib.h>
+-#include <gtk/gtk.h>
+-#include <gdk/gdkx.h>
+-#include <X11/Xatom.h>
+-#include <X11/extensions/XTest.h>
+-#include <X11/keysym.h>
+-#include <Xwacom.h>
+-
+-#include "gsd-enums.h"
+-#include "gsd-input-helper.h"
+-#include "gsd-keygrab.h"
+-#include "gnome-settings-profile.h"
+-#include "gsd-wacom-manager.h"
+-#include "gsd-wacom-device.h"
+-
+-#define GSD_WACOM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_TYPE_WACOM_MANAGER, GsdWacomManagerPrivate))
+-
+-#define KEY_ROTATION            "rotation"
+-#define KEY_TOUCH               "touch"
+-#define KEY_TPCBUTTON           "tablet-pc-button"
+-#define KEY_IS_ABSOLUTE         "is-absolute"
+-#define KEY_AREA                "area"
+-#define KEY_DISPLAY             "display"
+-
+-/* Stylus and Eraser settings */
+-#define KEY_BUTTON_MAPPING      "buttonmapping"
+-#define KEY_PRESSURETHRESHOLD   "pressurethreshold"
+-#define KEY_PRESSURECURVE       "pressurecurve"
+-
+-/* Button settings */
+-#define KEY_ACTION_TYPE         "action-type"
+-#define KEY_CUSTOM_ACTION       "custom-action"
+-
+-/* See "Wacom Pressure Threshold" */
+-#define DEFAULT_PRESSURE_THRESHOLD 27
+-
+-struct GsdWacomManagerPrivate
+-{
+-        guint start_idle_id;
+-        GdkDeviceManager *device_manager;
+-        guint device_added_id;
+-        guint device_removed_id;
+-        GHashTable *devices;
+-
+-        /* button capture */
+-        GSList *screens;
+-        int      opcode;
+-};
+-
+-static void     gsd_wacom_manager_class_init  (GsdWacomManagerClass *klass);
+-static void     gsd_wacom_manager_init        (GsdWacomManager      *wacom_manager);
+-static void     gsd_wacom_manager_finalize    (GObject              *object);
+-
+-G_DEFINE_TYPE (GsdWacomManager, gsd_wacom_manager, G_TYPE_OBJECT)
+-
+-static gpointer manager_object = NULL;
+-
+-static GObject *
+-gsd_wacom_manager_constructor (GType                     type,
+-                               guint                      n_construct_properties,
+-                               GObjectConstructParam     *construct_properties)
+-{
+-        GsdWacomManager      *wacom_manager;
+-
+-        wacom_manager = GSD_WACOM_MANAGER (G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->constructor (type,
+-                                                                                                         n_construct_properties,
+-                                                                                                         construct_properties));
+-
+-        return G_OBJECT (wacom_manager);
+-}
+-
+-static void
+-gsd_wacom_manager_dispose (GObject *object)
+-{
+-        G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->dispose (object);
+-}
+-
+-static void
+-gsd_wacom_manager_class_init (GsdWacomManagerClass *klass)
+-{
+-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+-
+-        object_class->constructor = gsd_wacom_manager_constructor;
+-        object_class->dispose = gsd_wacom_manager_dispose;
+-        object_class->finalize = gsd_wacom_manager_finalize;
+-
+-        g_type_class_add_private (klass, sizeof (GsdWacomManagerPrivate));
+-}
+-
+-static int
+-get_device_id (GsdWacomDevice *device)
+-{
+-	GdkDevice *gdk_device;
+-	int id;
+-
+-	g_object_get (device, "gdk-device", &gdk_device, NULL);
+-	if (gdk_device == NULL)
+-		return -1;
+-	g_object_get (gdk_device, "device-id", &id, NULL);
+-	return id;
+-}
+-
+-static XDevice *
+-open_device (GsdWacomDevice *device)
+-{
+-	XDevice *xdev;
+-	int id;
+-
+-	id = get_device_id (device);
+-	if (id < 0)
+-		return NULL;
+-
+-	gdk_error_trap_push ();
+-	xdev = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), id);
+-	if (gdk_error_trap_pop () || (xdev == NULL))
+-		return NULL;
+-
+-	return xdev;
+-}
+-
+-
+-static void
+-wacom_set_property (GsdWacomDevice *device,
+-		    PropertyHelper *property)
+-{
+-	XDevice *xdev;
+-
+-	xdev = open_device (device);
+-	device_set_property (xdev, gsd_wacom_device_get_tool_name (device), property);
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_rotation (GsdWacomDevice *device,
+-	      GsdWacomRotation rotation)
+-{
+-        gchar rot = rotation;
+-        PropertyHelper property = {
+-                .name = "Wacom Rotation",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &rot,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_pressurecurve (GsdWacomDevice *device,
+-                   GVariant       *value)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Pressurecurve",
+-                .nitems = 4,
+-                .type   = XA_INTEGER,
+-                .format = 32,
+-        };
+-        gsize nvalues;
+-
+-        property.data.i = g_variant_get_fixed_array (value, &nvalues, sizeof (gint32));
+-        g_variant_unref (value);
+-
+-        if (nvalues != 4) {
+-                g_error ("Pressurecurve requires 4 values.");
+-                return;
+-        }
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-/* Area handling. Each area is defined as top x/y, bottom x/y and limits the
+- * usable area of the physical device to the given area (in device coords)
+- */
+-static void
+-set_area (GsdWacomDevice  *device,
+-          GVariant        *value)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Tablet Area",
+-                .nitems = 4,
+-                .type   = XA_INTEGER,
+-                .format = 32,
+-        };
+-        gsize nvalues;
+-
+-        property.data.i = g_variant_get_fixed_array (value, &nvalues, sizeof (gint32));
+-        g_variant_unref (value);
+-
+-        if (nvalues != 4) {
+-                g_error ("Area configuration requires 4 values.");
+-                return;
+-        }
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_display (GsdWacomDevice  *device,
+-             GVariant        *value)
+-{
+-        float matrix[NUM_ELEMS_MATRIX];
+-        PropertyHelper property = {
+-                .name   = "Coordinate Transformation Matrix",
+-                .nitems = NUM_ELEMS_MATRIX,
+-                .format = 32,
+-                .type   = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "FLOAT", True),
+-        };
+-
+-        gsd_wacom_device_get_display_matrix (device, matrix);
+-
+-        property.data.i = (gint*)(&matrix);
+-        g_debug ("Applying matrix to device...");
+-        wacom_set_property (device, &property);
+-
+-        g_variant_unref (value);
+-}
+-
+-static void
+-set_absolute (GsdWacomDevice  *device,
+-              gint             is_absolute)
+-{
+-	XDevice *xdev;
+-
+-	xdev = open_device (device);
+-	gdk_error_trap_push ();
+-	XSetDeviceMode (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, is_absolute ? Absolute : Relative);
+-	if (gdk_error_trap_pop ())
+-		g_error ("Failed to set mode \"%s\" for \"%s\".",
+-			 is_absolute ? "Absolute" : "Relative", gsd_wacom_device_get_tool_name (device));
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_device_buttonmap (GsdWacomDevice *device,
+-                      GVariant       *value)
+-{
+-	XDevice *xdev;
+-	gsize nmap;
+-	const gint *intmap;
+-	unsigned char *map;
+-	int i, j, rc;
+-
+-	xdev = open_device (device);
+-
+-	intmap = g_variant_get_fixed_array (value, &nmap, sizeof (gint32));
+-	map = g_new0 (unsigned char, nmap);
+-	for (i = 0; i < nmap && i < sizeof (map); i++)
+-		map[i] = intmap[i];
+-        g_variant_unref (value);
+-
+-	gdk_error_trap_push ();
+-
+-	/* X refuses to change the mapping while buttons are engaged,
+-	 * so if this is the case we'll retry a few times
+-	 */
+-	for (j = 0;
+-	     j < 20 && (rc = XSetDeviceButtonMapping (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, map, nmap)) == MappingBusy;
+-	     ++j) {
+-		g_usleep (300);
+-	}
+-
+-	if ((gdk_error_trap_pop () && rc != MappingSuccess) ||
+-	    rc != MappingSuccess)
+-		g_warning ("Error in setting button mapping for \"%s\"", gsd_wacom_device_get_tool_name (device));
+-
+-	g_free (map);
+-
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_touch (GsdWacomDevice *device,
+-	   gboolean        touch)
+-{
+-        gchar data = touch;
+-        PropertyHelper property = {
+-                .name = "Wacom Enable Touch",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &data,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_tpcbutton (GsdWacomDevice *device,
+-	       gboolean        tpcbutton)
+-{
+-        /* Wacom's TPCButton option which this setting emulates is to enable
+-         * Tablet PC stylus behaviour when on. The property "Hover Click"
+-         * works the other way round, i.e. if Hover Click is enabled this
+-         * is the equivalent of TPC behaviour disabled. */
+-        gchar data = tpcbutton ? 0 : 1;
+-        PropertyHelper property = {
+-                .name = "Wacom Hover Click",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &data,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_pressurethreshold (GsdWacomDevice *device,
+-                       gint            threshold)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Pressure Threshold",
+-                .nitems = 1,
+-                .format = 32,
+-                .type   = XA_INTEGER,
+-                .data.i = &threshold,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-apply_stylus_settings (GsdWacomDevice *device)
+-{
+-	GSettings *stylus_settings;
+-	GsdWacomStylus *stylus;
+-	int threshold;
+-
+-	g_object_get (device, "last-stylus", &stylus, NULL);
+-	g_debug ("Applying setting for stylus '%s' on device '%s'",
+-		 gsd_wacom_stylus_get_name (stylus),
+-		 gsd_wacom_device_get_name (device));
+-
+-	stylus_settings = gsd_wacom_stylus_get_settings (stylus);
+-	set_pressurecurve (device, g_settings_get_value (stylus_settings, KEY_PRESSURECURVE));
+-	set_device_buttonmap (device, g_settings_get_value (stylus_settings, KEY_BUTTON_MAPPING));
+-
+-	threshold = g_settings_get_int (stylus_settings, KEY_PRESSURETHRESHOLD);
+-	if (threshold == -1)
+-		threshold = DEFAULT_PRESSURE_THRESHOLD;
+-	set_pressurethreshold (device, threshold);
+-}
+-
+-static struct {
+-	const char *button;
+-	int         num;
+-} def_buttons[] = {
+-	/* Touchrings */
+-	{ "AbsWheelUp", 90 },
+-	{ "AbsWheelDown", 91 },
+-	{ "AbsWheel2Up", 92 },
+-	{ "AbsWheel2Down", 93 },
+-	/* Touchstrips */
+-	{ "StripLeftUp", 94 },
+-	{ "StripLeftDown", 95 },
+-	{ "StripRightUp", 96 },
+-	{ "StripRightDown", 97 }
+-};
+-#define NUM_TOUCH_BUTTONS 4
+-
+-static void
+-reset_touch_buttons (XDevice    *xdev,
+-		     guint       offset,
+-		     const char *device_property)
+-{
+-	Atom actions[NUM_TOUCH_BUTTONS];
+-	Atom action_prop;
+-	guint i;
+-
+-	/* Create a device property with the action for button i */
+-	for (i = 0; i < NUM_TOUCH_BUTTONS; i++)
+-	{
+-		char *propname;
+-		int action[2]; /* press + release */
+-		Atom prop;
+-		int mapped_button = def_buttons[i + offset].num;
+-
+-		action[0] = AC_BUTTON | mapped_button;
+-
+-		propname = g_strdup_printf ("Button %s action", def_buttons[i + offset].button);
+-		prop = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), propname, False);
+-		g_free (propname);
+-		XChangeDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev,
+-				       prop, XA_INTEGER, 32, PropModeReplace,
+-				       (const guchar *) &action, 2);
+-
+-		/* prop now contains press + release for the mapped button */
+-		actions[i] = prop;
+-	}
+-
+-	/* Now set the actual action property to contain references to the various
+-	 * actions */
+-	action_prop = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_property, True);
+-	XChangeDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev,
+-			       action_prop, XA_ATOM, 32, PropModeReplace,
+-			       (const guchar *) actions, NUM_TOUCH_BUTTONS);
+-}
+-
+-static void
+-reset_pad_buttons (GsdWacomDevice *device)
+-{
+-	XDevice *xdev;
+-	int nmap;
+-	unsigned char *map;
+-	int i, j, rc;
+-
+-	/* Normal buttons */
+-	xdev = open_device (device);
+-
+-	gdk_error_trap_push ();
+-
+-	nmap = 256;
+-	map = g_new0 (unsigned char, nmap);
+-	for (i = 0; i < nmap && i < sizeof (map); i++)
+-		map[i] = i + 1;
+-
+-	/* X refuses to change the mapping while buttons are engaged,
+-	 * so if this is the case we'll retry a few times */
+-	for (j = 0;
+-	     j < 20 && (rc = XSetDeviceButtonMapping (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, map, nmap)) == MappingBusy;
+-	     ++j) {
+-		g_usleep (300);
+-	}
+-
+-	if ((gdk_error_trap_pop () && rc != MappingSuccess) ||
+-	    rc != MappingSuccess)
+-		g_warning ("Error in resetting button mapping for \"%s\" (rc=%d)", gsd_wacom_device_get_tool_name (device), rc);
+-
+-	g_free (map);
+-
+-	gdk_error_trap_push ();
+-	reset_touch_buttons (xdev, 0, "Wacom Wheel Buttons");
+-	reset_touch_buttons (xdev, 4, "Wacom Strip Buttons");
+-	gdk_error_trap_pop_ignored ();
+-
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-
+-	/* FIXME, set the LED(s) for the mode(s) too */
+-}
+-
+-static void
+-set_wacom_settings (GsdWacomManager *manager,
+-		    GsdWacomDevice  *device)
+-{
+-	GsdWacomDeviceType type;
+-	GSettings *settings;
+-
+-	g_debug ("Applying settings for device '%s' (type: %s)",
+-		 gsd_wacom_device_get_tool_name (device),
+-		 gsd_wacom_device_type_to_string (gsd_wacom_device_get_device_type (device)));
+-
+-	settings = gsd_wacom_device_get_settings (device);
+-        set_rotation (device, g_settings_get_enum (settings, KEY_ROTATION));
+-        set_touch (device, g_settings_get_boolean (settings, KEY_TOUCH));
+-
+-        type = gsd_wacom_device_get_device_type (device);
+-
+-	if (type == WACOM_TYPE_CURSOR) {
+-		GVariant *values[4], *variant;
+-		guint i;
+-
+-		set_absolute (device, FALSE);
+-
+-		for (i = 0; i < G_N_ELEMENTS (values); i++)
+-			values[i] = g_variant_new_int32 (-1);
+-
+-		variant = g_variant_new_array (G_VARIANT_TYPE_INT32, values, G_N_ELEMENTS (values));
+-		set_area (device, variant);
+-		return;
+-	}
+-
+-	if (type == WACOM_TYPE_PAD) {
+-		int id;
+-
+-		id = get_device_id (device);
+-		reset_pad_buttons (device);
+-		grab_button (id, TRUE, manager->priv->screens);
+-		return;
+-	}
+-
+-	if (type == WACOM_TYPE_STYLUS)
+-		set_tpcbutton (device, g_settings_get_boolean (settings, KEY_TPCBUTTON));
+-
+-	set_absolute (device, g_settings_get_boolean (settings, KEY_IS_ABSOLUTE));
+-	set_area (device, g_settings_get_value (settings, KEY_AREA));
+-	set_display (device, g_settings_get_value (settings, KEY_DISPLAY));
+-
+-        /* only pen and eraser have pressure threshold and curve settings */
+-        if (type == WACOM_TYPE_STYLUS ||
+-	    type == WACOM_TYPE_ERASER) {
+-		apply_stylus_settings (device);
+-	}
+-}
+-
+-static void
+-wacom_settings_changed (GSettings      *settings,
+-			gchar          *key,
+-			GsdWacomDevice *device)
+-{
+-	GsdWacomDeviceType type;
+-
+-	type = gsd_wacom_device_get_device_type (device);
+-
+-	if (g_str_equal (key, KEY_ROTATION)) {
+-		set_rotation (device, g_settings_get_enum (settings, key));
+-	} else if (g_str_equal (key, KEY_TOUCH)) {
+-		set_touch (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_TPCBUTTON)) {
+-		set_tpcbutton (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_IS_ABSOLUTE)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD &&
+-		    type != WACOM_TYPE_TOUCH)
+-			set_absolute (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_AREA)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD)
+-			set_area (device, g_settings_get_value (settings, key));
+-	} else if (g_str_equal (key, KEY_DISPLAY)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD)
+-			set_display (device, g_settings_get_value (settings, key));
+-	} else {
+-		g_warning ("Unhandled tablet-wide setting '%s' changed", key);
+-	}
+-}
+-
+-static void
+-stylus_settings_changed (GSettings      *settings,
+-			 gchar          *key,
+-			 GsdWacomStylus *stylus)
+-{
+-	GsdWacomDevice *device;
+-	GsdWacomStylus *last_stylus;
+-
+-	device = gsd_wacom_stylus_get_device (stylus);
+-
+-	g_object_get (device, "last-stylus", &last_stylus, NULL);
+-	if (last_stylus != stylus) {
+-		g_debug ("Not applying changed settings because '%s' is the current stylus, not '%s'",
+-			 last_stylus ? gsd_wacom_stylus_get_name (last_stylus) : "NONE",
+-			 gsd_wacom_stylus_get_name (stylus));
+-		return;
+-	}
+-
+-	if (g_str_equal (key, KEY_PRESSURECURVE)) {
+-		set_pressurecurve (device, g_settings_get_value (settings, key));
+-	} else if (g_str_equal (key, KEY_PRESSURETHRESHOLD)) {
+-		int threshold;
+-
+-		threshold = g_settings_get_int (settings, KEY_PRESSURETHRESHOLD);
+-		if (threshold == -1)
+-			threshold = DEFAULT_PRESSURE_THRESHOLD;
+-		set_pressurethreshold (device, threshold);
+-	} else if (g_str_equal (key, KEY_BUTTON_MAPPING)) {
+-		set_device_buttonmap (device, g_settings_get_value (settings, key));
+-	}  else {
+-		g_warning ("Unhandled stylus setting '%s' changed", key);
+-	}
+-}
+-
+-static void
+-last_stylus_changed (GsdWacomDevice  *device,
+-		     GParamSpec      *pspec,
+-		     GsdWacomManager *manager)
+-{
+-	g_debug ("Stylus for device '%s' changed, applying settings",
+-		 gsd_wacom_device_get_name (device));
+-	apply_stylus_settings (device);
+-}
+-
+-static void
+-device_added_cb (GdkDeviceManager *device_manager,
+-                 GdkDevice        *gdk_device,
+-                 GsdWacomManager  *manager)
+-{
+-	GsdWacomDevice *device;
+-	GSettings *settings;
+-
+-	device = gsd_wacom_device_new (gdk_device);
+-	if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_INVALID) {
+-		g_object_unref (device);
+-		return;
+-	}
+-	g_debug ("Adding device '%s' (type: '%s') to known devices list",
+-		 gsd_wacom_device_get_tool_name (device),
+-		 gsd_wacom_device_type_to_string (gsd_wacom_device_get_device_type (device)));
+-	g_hash_table_insert (manager->priv->devices, (gpointer) gdk_device, device);
+-
+-	settings = gsd_wacom_device_get_settings (device);
+-	g_signal_connect (G_OBJECT (settings), "changed",
+-			  G_CALLBACK (wacom_settings_changed), device);
+-
+-	if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_STYLUS ||
+-	    gsd_wacom_device_get_device_type (device) == WACOM_TYPE_ERASER) {
+-		GList *styli, *l;
+-
+-		styli = gsd_wacom_device_list_styli (device);
+-
+-		for (l = styli ; l ; l = l->next) {
+-			settings = gsd_wacom_stylus_get_settings (l->data);
+-			g_signal_connect (G_OBJECT (settings), "changed",
+-					  G_CALLBACK (stylus_settings_changed), l->data);
+-		}
+-
+-		g_list_free (styli);
+-
+-		g_signal_connect (G_OBJECT (device), "notify::last-stylus",
+-				  G_CALLBACK (last_stylus_changed), manager);
+-	}
+-
+-        set_wacom_settings (manager, device);
+-}
+-
+-static void
+-device_removed_cb (GdkDeviceManager *device_manager,
+-                   GdkDevice        *gdk_device,
+-                   GsdWacomManager  *manager)
+-{
+-	g_debug ("Removing device '%s' from known devices list",
+-		 gdk_device_get_name (gdk_device));
+-	g_hash_table_remove (manager->priv->devices, gdk_device);
+-}
+-
+-static GsdWacomDevice *
+-device_id_to_device (GsdWacomManager *manager,
+-		     int              deviceid)
+-{
+-	GList *devices, *l;
+-	GsdWacomDevice *ret;
+-
+-	ret = NULL;
+-	devices = g_hash_table_get_keys (manager->priv->devices);
+-
+-	for (l = devices; l != NULL; l = l->next) {
+-		GdkDevice *device = l->data;
+-		int id;
+-
+-		g_object_get (device, "device-id", &id, NULL);
+-		if (id == deviceid) {
+-			ret = g_hash_table_lookup (manager->priv->devices, device);
+-			break;
+-		}
+-	}
+-
+-	g_list_free (devices);
+-	return ret;
+-}
+-
+-struct {
+-	guint mask;
+-	KeySym keysym;
+-} mods_keysyms[] = {
+-	{ GDK_MOD1_MASK, XK_Alt_L },
+-	{ GDK_SHIFT_MASK, XK_Shift_L },
+-	{ GDK_CONTROL_MASK, XK_Control_L },
+-};
+-
+-static void
+-send_modifiers (Display *display,
+-		XDevice *dev,
+-		guint mask,
+-		gboolean is_press)
+-{
+-	guint i;
+-
+-	for (i = 0; i < G_N_ELEMENTS(mods_keysyms); i++) {
+-		if (mask & mods_keysyms[i].mask) {
+-			guint keycode;
+-
+-			keycode = XKeysymToKeycode (display, mods_keysyms[i].keysym);
+-			XTestFakeDeviceKeyEvent (display, dev, keycode,
+-						 is_press ? True : False, NULL, 0, 0);
+-		}
+-	}
+-}
+-
+-static GdkFilterReturn
+-filter_button_events (XEvent          *xevent,
+-                      GdkEvent        *event,
+-                      GsdWacomManager *manager)
+-{
+-	XIEvent             *xiev;
+-	XIDeviceEvent       *xev;
+-	XGenericEventCookie *cookie;
+-	guint                deviceid;
+-	GsdWacomDevice      *device;
+-	int                  button;
+-	GsdWacomTabletButton *wbutton;
+-	GtkDirectionType      dir;
+-	XDevice               dev;
+-	char                 *str;
+-	guint                 keyval;
+-	guint                *keycodes;
+-	guint                 mods;
+-
+-        /* verify we have a key event */
+-	if (xevent->type != GenericEvent)
+-		return GDK_FILTER_CONTINUE;
+-	cookie = &xevent->xcookie;
+-	if (cookie->extension != manager->priv->opcode)
+-		return GDK_FILTER_CONTINUE;
+-
+-	xiev = (XIEvent *) xevent->xcookie.data;
+-
+-	if (xiev->evtype != XI_ButtonRelease &&
+-	    xiev->evtype != XI_ButtonPress)
+-		return GDK_FILTER_CONTINUE;
+-
+-	xev = (XIDeviceEvent *) xiev;
+-
+-	deviceid = xev->sourceid;
+-	device = device_id_to_device (manager, deviceid);
+-	if (gsd_wacom_device_get_device_type (device) != WACOM_TYPE_PAD)
+-		return GDK_FILTER_CONTINUE;
+-
+-	button = xev->detail;
+-
+-	/* FIXME, we'll also need to pass the current mode(s) */
+-	wbutton = gsd_wacom_device_get_button (device, button, &dir);
+-	if (wbutton == NULL) {
+-		g_warning ("Could not find matching button for '%d' on '%s'",
+-			   button, gsd_wacom_device_get_name (device));
+-		return GDK_FILTER_CONTINUE;
+-	}
+-
+-	g_debug ("Received event button '%s'%s ('%d') on device '%s' ('%d')",
+-		 wbutton->id,
+-		 wbutton->type == WACOM_TABLET_BUTTON_TYPE_ELEVATOR ?
+-		 (dir == GTK_DIR_UP ? " 'up'" : " 'down'") : "",
+-		 button,
+-		 gsd_wacom_device_get_name (device),
+-		 deviceid);
+-
+-	/* FIXME, don't know how to handle those yet */
+-	if (wbutton->type == WACOM_TABLET_BUTTON_TYPE_ELEVATOR)
+-		return GDK_FILTER_REMOVE;
+-
+-	/* FIXME, we need to switch mode here */
+-	if (wbutton->type == WACOM_TABLET_BUTTON_TYPE_HARDCODED)
+-		return GDK_FILTER_REMOVE;
+-
+-	/* Nothing to do */
+-	if (g_settings_get_enum (wbutton->settings, KEY_ACTION_TYPE) == GSD_WACOM_ACTION_TYPE_NONE)
+-		return GDK_FILTER_REMOVE;
+-
+-	str = g_settings_get_string (wbutton->settings, KEY_CUSTOM_ACTION);
+-	gtk_accelerator_parse_with_keycode (str, &keyval, &keycodes, &mods);
+-
+-	if (keycodes == NULL) {
+-		g_warning ("Failed to find a keycode for shortcut '%s'", str);
+-		g_free (str);
+-		return GDK_FILTER_REMOVE;
+-	}
+-	g_free (str);
+-
+-	dev.device_id = deviceid; /* that's cheating, but whot did it first */
+-
+-	/* And send out the keys! */
+-	send_modifiers (xev->display, &dev, mods, TRUE);
+-	XTestFakeDeviceKeyEvent (xev->display, &dev, keycodes[0],
+-				 True, NULL, 0, 0);
+-	XTestFakeDeviceKeyEvent (xev->display, &dev, keycodes[0],
+-				 False, NULL, 0, 0);
+-	send_modifiers (xev->display, &dev, mods, FALSE);
+-
+-	g_free (keycodes);
+-
+-	return GDK_FILTER_REMOVE;
+-}
+-
+-static void
+-set_devicepresence_handler (GsdWacomManager *manager)
+-{
+-        GdkDeviceManager *device_manager;
+-
+-        device_manager = gdk_display_get_device_manager (gdk_display_get_default ());
+-        if (device_manager == NULL)
+-                return;
+-
+-        manager->priv->device_added_id = g_signal_connect (G_OBJECT (device_manager), "device-added",
+-                                                           G_CALLBACK (device_added_cb), manager);
+-        manager->priv->device_removed_id = g_signal_connect (G_OBJECT (device_manager), "device-removed",
+-                                                             G_CALLBACK (device_removed_cb), manager);
+-        manager->priv->device_manager = device_manager;
+-}
+-
+-static void
+-gsd_wacom_manager_init (GsdWacomManager *manager)
+-{
+-        manager->priv = GSD_WACOM_MANAGER_GET_PRIVATE (manager);
+-}
+-
+-static gboolean
+-gsd_wacom_manager_idle_cb (GsdWacomManager *manager)
+-{
+-	GList *devices, *l;
+-	GSList *ls;
+-
+-        gnome_settings_profile_start (NULL);
+-
+-        manager->priv->devices = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+-
+-        set_devicepresence_handler (manager);
+-
+-        devices = gdk_device_manager_list_devices (manager->priv->device_manager, GDK_DEVICE_TYPE_SLAVE);
+-        for (l = devices; l ; l = l->next)
+-		device_added_cb (manager->priv->device_manager, l->data, manager);
+-        g_list_free (devices);
+-
+-        /* Start filtering the button events */
+-        for (ls = manager->priv->screens; ls != NULL; ls = ls->next) {
+-                gdk_window_add_filter (gdk_screen_get_root_window (ls->data),
+-                                       (GdkFilterFunc) filter_button_events,
+-                                       manager);
+-        }
+-
+-        gnome_settings_profile_end (NULL);
+-
+-        manager->priv->start_idle_id = 0;
+-
+-        return FALSE;
+-}
+-
+-static void
+-init_screens (GsdWacomManager *manager)
+-{
+-        GdkDisplay *display;
+-        int i;
+-
+-        display = gdk_display_get_default ();
+-        for (i = 0; i < gdk_display_get_n_screens (display); i++) {
+-                GdkScreen *screen;
+-
+-                screen = gdk_display_get_screen (display, i);
+-                if (screen == NULL) {
+-                        continue;
+-                }
+-                manager->priv->screens = g_slist_append (manager->priv->screens, screen);
+-        }
+-}
+-
+-gboolean
+-gsd_wacom_manager_start (GsdWacomManager *manager,
+-                         GError         **error)
+-{
+-	int a, b, c, d;
+-
+-        gnome_settings_profile_start (NULL);
+-
+-        if (supports_xinput2_devices (&manager->priv->opcode) == FALSE) {
+-                g_debug ("No Xinput2 support, disabling plugin");
+-                return TRUE;
+-        }
+-
+-        if (!XTestQueryExtension (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &a, &b, &c, &d)) {
+-                g_debug ("No XTest extension support, disabling plugin");
+-                return TRUE;
+-        }
+-
+-        init_screens (manager);
+-
+-        manager->priv->start_idle_id = g_idle_add ((GSourceFunc) gsd_wacom_manager_idle_cb, manager);
+-
+-        gnome_settings_profile_end (NULL);
+-
+-        return TRUE;
+-}
+-
+-void
+-gsd_wacom_manager_stop (GsdWacomManager *manager)
+-{
+-        GsdWacomManagerPrivate *p = manager->priv;
+-        GSList *ls;
+-
+-        g_debug ("Stopping wacom manager");
+-
+-        if (p->device_manager != NULL) {
+-                g_signal_handler_disconnect (p->device_manager, p->device_added_id);
+-                g_signal_handler_disconnect (p->device_manager, p->device_removed_id);
+-                p->device_manager = NULL;
+-        }
+-
+-        for (ls = p->screens; ls != NULL; ls = ls->next) {
+-                gdk_window_remove_filter (gdk_screen_get_root_window (ls->data),
+-                                          (GdkFilterFunc) filter_button_events,
+-                                          manager);
+-        }
+-}
+-
+-static void
+-gsd_wacom_manager_finalize (GObject *object)
+-{
+-        GsdWacomManager *wacom_manager;
+-
+-        g_return_if_fail (object != NULL);
+-        g_return_if_fail (GSD_IS_WACOM_MANAGER (object));
+-
+-        wacom_manager = GSD_WACOM_MANAGER (object);
+-
+-        g_return_if_fail (wacom_manager->priv != NULL);
+-
+-        if (wacom_manager->priv->devices) {
+-                g_hash_table_destroy (wacom_manager->priv->devices);
+-                wacom_manager->priv->devices = NULL;
+-        }
+-
+-        if (wacom_manager->priv->screens != NULL) {
+-                g_slist_free (wacom_manager->priv->screens);
+-                wacom_manager->priv->screens = NULL;
+-        }
+-
+-        if (wacom_manager->priv->start_idle_id != 0)
+-                g_source_remove (wacom_manager->priv->start_idle_id);
+-
+-        G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->finalize (object);
+-}
+-
+-GsdWacomManager *
+-gsd_wacom_manager_new (void)
+-{
+-        if (manager_object != NULL) {
+-                g_object_ref (manager_object);
+-        } else {
+-                manager_object = g_object_new (GSD_TYPE_WACOM_MANAGER, NULL);
+-                g_object_add_weak_pointer (manager_object,
+-                                           (gpointer *) &manager_object);
+-        }
+-
+-        return GSD_WACOM_MANAGER (manager_object);
+-}
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.c.orig gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.c.orig
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.c.orig	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.c.orig	1969-12-31 19:00:00.000000000 -0500
+@@ -1,964 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- * Copyright (C) 2010 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-
+-#include <locale.h>
+-
+-#include <glib.h>
+-#include <gtk/gtk.h>
+-#include <gdk/gdkx.h>
+-#include <X11/Xatom.h>
+-#include <X11/extensions/XTest.h>
+-#include <X11/keysym.h>
+-#include <Xwacom.h>
+-
+-#include "gsd-enums.h"
+-#include "gsd-input-helper.h"
+-#include "gsd-keygrab.h"
+-#include "gnome-settings-profile.h"
+-#include "gsd-wacom-manager.h"
+-#include "gsd-wacom-device.h"
+-
+-#define GSD_WACOM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_TYPE_WACOM_MANAGER, GsdWacomManagerPrivate))
+-
+-#define KEY_ROTATION            "rotation"
+-#define KEY_TOUCH               "touch"
+-#define KEY_TPCBUTTON           "tablet-pc-button"
+-#define KEY_IS_ABSOLUTE         "is-absolute"
+-#define KEY_AREA                "area"
+-#define KEY_DISPLAY             "display"
+-
+-/* Stylus and Eraser settings */
+-#define KEY_BUTTON_MAPPING      "buttonmapping"
+-#define KEY_PRESSURETHRESHOLD   "pressurethreshold"
+-#define KEY_PRESSURECURVE       "pressurecurve"
+-
+-/* Button settings */
+-#define KEY_ACTION_TYPE         "action-type"
+-#define KEY_CUSTOM_ACTION       "custom-action"
+-
+-/* See "Wacom Pressure Threshold" */
+-#define DEFAULT_PRESSURE_THRESHOLD 27
+-
+-struct GsdWacomManagerPrivate
+-{
+-        guint start_idle_id;
+-        GdkDeviceManager *device_manager;
+-        guint device_added_id;
+-        guint device_removed_id;
+-        GHashTable *devices;
+-
+-        /* button capture */
+-        GSList *screens;
+-        int      opcode;
+-};
+-
+-static void     gsd_wacom_manager_class_init  (GsdWacomManagerClass *klass);
+-static void     gsd_wacom_manager_init        (GsdWacomManager      *wacom_manager);
+-static void     gsd_wacom_manager_finalize    (GObject              *object);
+-
+-G_DEFINE_TYPE (GsdWacomManager, gsd_wacom_manager, G_TYPE_OBJECT)
+-
+-static gpointer manager_object = NULL;
+-
+-static GObject *
+-gsd_wacom_manager_constructor (GType                     type,
+-                               guint                      n_construct_properties,
+-                               GObjectConstructParam     *construct_properties)
+-{
+-        GsdWacomManager      *wacom_manager;
+-
+-        wacom_manager = GSD_WACOM_MANAGER (G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->constructor (type,
+-                                                                                                         n_construct_properties,
+-                                                                                                         construct_properties));
+-
+-        return G_OBJECT (wacom_manager);
+-}
+-
+-static void
+-gsd_wacom_manager_dispose (GObject *object)
+-{
+-        G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->dispose (object);
+-}
+-
+-static void
+-gsd_wacom_manager_class_init (GsdWacomManagerClass *klass)
+-{
+-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+-
+-        object_class->constructor = gsd_wacom_manager_constructor;
+-        object_class->dispose = gsd_wacom_manager_dispose;
+-        object_class->finalize = gsd_wacom_manager_finalize;
+-
+-        g_type_class_add_private (klass, sizeof (GsdWacomManagerPrivate));
+-}
+-
+-static int
+-get_device_id (GsdWacomDevice *device)
+-{
+-	GdkDevice *gdk_device;
+-	int id;
+-
+-	g_object_get (device, "gdk-device", &gdk_device, NULL);
+-	if (gdk_device == NULL)
+-		return -1;
+-	g_object_get (gdk_device, "device-id", &id, NULL);
+-	return id;
+-}
+-
+-static XDevice *
+-open_device (GsdWacomDevice *device)
+-{
+-	XDevice *xdev;
+-	int id;
+-
+-	id = get_device_id (device);
+-	if (id < 0)
+-		return NULL;
+-
+-	gdk_error_trap_push ();
+-	xdev = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), id);
+-	if (gdk_error_trap_pop () || (xdev == NULL))
+-		return NULL;
+-
+-	return xdev;
+-}
+-
+-
+-static void
+-wacom_set_property (GsdWacomDevice *device,
+-		    PropertyHelper *property)
+-{
+-	XDevice *xdev;
+-
+-	xdev = open_device (device);
+-	device_set_property (xdev, gsd_wacom_device_get_tool_name (device), property);
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_rotation (GsdWacomDevice *device,
+-	      GsdWacomRotation rotation)
+-{
+-        gchar rot = rotation;
+-        PropertyHelper property = {
+-                .name = "Wacom Rotation",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &rot,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_pressurecurve (GsdWacomDevice *device,
+-                   GVariant       *value)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Pressurecurve",
+-                .nitems = 4,
+-                .type   = XA_INTEGER,
+-                .format = 32,
+-        };
+-        gsize nvalues;
+-
+-        property.data.i = g_variant_get_fixed_array (value, &nvalues, sizeof (gint32));
+-        g_variant_unref (value);
+-
+-        if (nvalues != 4) {
+-                g_error ("Pressurecurve requires 4 values.");
+-                return;
+-        }
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-/* Area handling. Each area is defined as top x/y, bottom x/y and limits the
+- * usable area of the physical device to the given area (in device coords)
+- */
+-static void
+-set_area (GsdWacomDevice  *device,
+-          GVariant        *value)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Tablet Area",
+-                .nitems = 4,
+-                .type   = XA_INTEGER,
+-                .format = 32,
+-        };
+-        gsize nvalues;
+-
+-        property.data.i = g_variant_get_fixed_array (value, &nvalues, sizeof (gint32));
+-        g_variant_unref (value);
+-
+-        if (nvalues != 4) {
+-                g_error ("Area configuration requires 4 values.");
+-                return;
+-        }
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_display (GsdWacomDevice  *device,
+-             GVariant        *value)
+-{
+-        float matrix[NUM_ELEMS_MATRIX];
+-        PropertyHelper property = {
+-                .name   = "Coordinate Transformation Matrix",
+-                .nitems = NUM_ELEMS_MATRIX,
+-                .format = 32,
+-                .type   = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "FLOAT", True),
+-        };
+-
+-        gsd_wacom_device_get_display_matrix (device, matrix);
+-
+-        property.data.i = (gint*)(&matrix);
+-        g_debug ("Applying matrix to device...");
+-        wacom_set_property (device, &property);
+-
+-        g_variant_unref (value);
+-}
+-
+-static void
+-set_absolute (GsdWacomDevice  *device,
+-              gint             is_absolute)
+-{
+-	XDevice *xdev;
+-
+-	xdev = open_device (device);
+-	gdk_error_trap_push ();
+-	XSetDeviceMode (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, is_absolute ? Absolute : Relative);
+-	if (gdk_error_trap_pop ())
+-		g_error ("Failed to set mode \"%s\" for \"%s\".",
+-			 is_absolute ? "Absolute" : "Relative", gsd_wacom_device_get_tool_name (device));
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_device_buttonmap (GsdWacomDevice *device,
+-                      GVariant       *value)
+-{
+-	XDevice *xdev;
+-	gsize nmap;
+-	const gint *intmap;
+-	unsigned char *map;
+-	int i, j, rc;
+-
+-	xdev = open_device (device);
+-
+-	intmap = g_variant_get_fixed_array (value, &nmap, sizeof (gint32));
+-	map = g_new0 (unsigned char, nmap);
+-	for (i = 0; i < nmap && i < sizeof (map); i++)
+-		map[i] = intmap[i];
+-        g_variant_unref (value);
+-
+-	gdk_error_trap_push ();
+-
+-	/* X refuses to change the mapping while buttons are engaged,
+-	 * so if this is the case we'll retry a few times
+-	 */
+-	for (j = 0;
+-	     j < 20 && (rc = XSetDeviceButtonMapping (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, map, nmap)) == MappingBusy;
+-	     ++j) {
+-		g_usleep (300);
+-	}
+-
+-	if ((gdk_error_trap_pop () && rc != MappingSuccess) ||
+-	    rc != MappingSuccess)
+-		g_warning ("Error in setting button mapping for \"%s\"", gsd_wacom_device_get_tool_name (device));
+-
+-	g_free (map);
+-
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-}
+-
+-static void
+-set_touch (GsdWacomDevice *device,
+-	   gboolean        touch)
+-{
+-        gchar data = touch;
+-        PropertyHelper property = {
+-                .name = "Wacom Enable Touch",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &data,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_tpcbutton (GsdWacomDevice *device,
+-	       gboolean        tpcbutton)
+-{
+-        /* Wacom's TPCButton option which this setting emulates is to enable
+-         * Tablet PC stylus behaviour when on. The property "Hover Click"
+-         * works the other way round, i.e. if Hover Click is enabled this
+-         * is the equivalent of TPC behaviour disabled. */
+-        gchar data = tpcbutton ? 0 : 1;
+-        PropertyHelper property = {
+-                .name = "Wacom Hover Click",
+-                .nitems = 1,
+-                .format = 8,
+-                .type   = XA_INTEGER,
+-                .data.c = &data,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-set_pressurethreshold (GsdWacomDevice *device,
+-                       gint            threshold)
+-{
+-        PropertyHelper property = {
+-                .name = "Wacom Pressure Threshold",
+-                .nitems = 1,
+-                .format = 32,
+-                .type   = XA_INTEGER,
+-                .data.i = &threshold,
+-        };
+-
+-        wacom_set_property (device, &property);
+-}
+-
+-static void
+-apply_stylus_settings (GsdWacomDevice *device)
+-{
+-	GSettings *stylus_settings;
+-	GsdWacomStylus *stylus;
+-	int threshold;
+-
+-	g_object_get (device, "last-stylus", &stylus, NULL);
+-	g_debug ("Applying setting for stylus '%s' on device '%s'",
+-		 gsd_wacom_stylus_get_name (stylus),
+-		 gsd_wacom_device_get_name (device));
+-
+-	stylus_settings = gsd_wacom_stylus_get_settings (stylus);
+-	set_pressurecurve (device, g_settings_get_value (stylus_settings, KEY_PRESSURECURVE));
+-	set_device_buttonmap (device, g_settings_get_value (stylus_settings, KEY_BUTTON_MAPPING));
+-
+-	threshold = g_settings_get_int (stylus_settings, KEY_PRESSURETHRESHOLD);
+-	if (threshold == -1)
+-		threshold = DEFAULT_PRESSURE_THRESHOLD;
+-	set_pressurethreshold (device, threshold);
+-}
+-
+-static struct {
+-	const char *button;
+-	int         num;
+-} def_buttons[] = {
+-	/* Touchrings */
+-	{ "AbsWheelUp", 90 },
+-	{ "AbsWheelDown", 91 },
+-	{ "AbsWheel2Up", 92 },
+-	{ "AbsWheel2Down", 93 },
+-	/* Touchstrips */
+-	{ "StripLeftUp", 94 },
+-	{ "StripLeftDown", 95 },
+-	{ "StripRightUp", 96 },
+-	{ "StripRightDown", 97 }
+-};
+-#define NUM_TOUCH_BUTTONS 4
+-
+-static void
+-reset_touch_buttons (XDevice    *xdev,
+-		     guint       offset,
+-		     const char *device_property)
+-{
+-	Atom actions[NUM_TOUCH_BUTTONS];
+-	Atom action_prop;
+-	guint i;
+-
+-	/* Create a device property with the action for button i */
+-	for (i = 0; i < NUM_TOUCH_BUTTONS; i++)
+-	{
+-		char *propname;
+-		int action[2]; /* press + release */
+-		Atom prop;
+-		int mapped_button = def_buttons[i + offset].num;
+-
+-		action[0] = AC_BUTTON | mapped_button;
+-
+-		propname = g_strdup_printf ("Button %s action", def_buttons[i + offset].button);
+-		prop = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), propname, False);
+-		g_free (propname);
+-		XChangeDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev,
+-				       prop, XA_INTEGER, 32, PropModeReplace,
+-				       (const guchar *) &action, 2);
+-
+-		/* prop now contains press + release for the mapped button */
+-		actions[i] = prop;
+-	}
+-
+-	/* Now set the actual action property to contain references to the various
+-	 * actions */
+-	action_prop = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_property, True);
+-	XChangeDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev,
+-			       action_prop, XA_ATOM, 32, PropModeReplace,
+-			       (const guchar *) actions, NUM_TOUCH_BUTTONS);
+-}
+-
+-static void
+-reset_pad_buttons (GsdWacomDevice *device)
+-{
+-	XDevice *xdev;
+-	int nmap;
+-	unsigned char *map;
+-	int i, j, rc;
+-
+-	/* Normal buttons */
+-	xdev = open_device (device);
+-
+-	gdk_error_trap_push ();
+-
+-	nmap = 256;
+-	map = g_new0 (unsigned char, nmap);
+-	for (i = 0; i < nmap && i < sizeof (map); i++)
+-		map[i] = i + 1;
+-
+-	/* X refuses to change the mapping while buttons are engaged,
+-	 * so if this is the case we'll retry a few times */
+-	for (j = 0;
+-	     j < 20 && (rc = XSetDeviceButtonMapping (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev, map, nmap)) == MappingBusy;
+-	     ++j) {
+-		g_usleep (300);
+-	}
+-
+-	if ((gdk_error_trap_pop () && rc != MappingSuccess) ||
+-	    rc != MappingSuccess)
+-		g_warning ("Error in resetting button mapping for \"%s\" (rc=%d)", gsd_wacom_device_get_tool_name (device), rc);
+-
+-	g_free (map);
+-
+-	gdk_error_trap_push ();
+-	reset_touch_buttons (xdev, 0, "Wacom Wheel Buttons");
+-	reset_touch_buttons (xdev, 4, "Wacom Strip Buttons");
+-	gdk_error_trap_pop_ignored ();
+-
+-	XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), xdev);
+-
+-	/* FIXME, set the LED(s) for the mode(s) too */
+-}
+-
+-static void
+-set_wacom_settings (GsdWacomManager *manager,
+-		    GsdWacomDevice  *device)
+-{
+-	GsdWacomDeviceType type;
+-	GSettings *settings;
+-
+-	g_debug ("Applying settings for device '%s' (type: %s)",
+-		 gsd_wacom_device_get_tool_name (device),
+-		 gsd_wacom_device_type_to_string (gsd_wacom_device_get_device_type (device)));
+-
+-	settings = gsd_wacom_device_get_settings (device);
+-        set_rotation (device, g_settings_get_enum (settings, KEY_ROTATION));
+-        set_touch (device, g_settings_get_boolean (settings, KEY_TOUCH));
+-
+-        type = gsd_wacom_device_get_device_type (device);
+-
+-	if (type == WACOM_TYPE_CURSOR) {
+-		GVariant *values[4], *variant;
+-		guint i;
+-
+-		set_absolute (device, FALSE);
+-
+-		for (i = 0; i < G_N_ELEMENTS (values); i++)
+-			values[i] = g_variant_new_int32 (-1);
+-
+-		variant = g_variant_new_array (G_VARIANT_TYPE_INT32, values, G_N_ELEMENTS (values));
+-		set_area (device, variant);
+-		return;
+-	}
+-
+-	if (type == WACOM_TYPE_PAD) {
+-		int id;
+-
+-		id = get_device_id (device);
+-		reset_pad_buttons (device);
+-		grab_button (id, TRUE, manager->priv->screens);
+-		return;
+-	}
+-
+-	if (type == WACOM_TYPE_STYLUS)
+-		set_tpcbutton (device, g_settings_get_boolean (settings, KEY_TPCBUTTON));
+-
+-	set_absolute (device, g_settings_get_boolean (settings, KEY_IS_ABSOLUTE));
+-	set_area (device, g_settings_get_value (settings, KEY_AREA));
+-	set_display (device, g_settings_get_value (settings, KEY_DISPLAY));
+-
+-        /* only pen and eraser have pressure threshold and curve settings */
+-        if (type == WACOM_TYPE_STYLUS ||
+-	    type == WACOM_TYPE_ERASER) {
+-		apply_stylus_settings (device);
+-	}
+-}
+-
+-static void
+-wacom_settings_changed (GSettings      *settings,
+-			gchar          *key,
+-			GsdWacomDevice *device)
+-{
+-	GsdWacomDeviceType type;
+-
+-	type = gsd_wacom_device_get_device_type (device);
+-
+-	if (g_str_equal (key, KEY_ROTATION)) {
+-		set_rotation (device, g_settings_get_enum (settings, key));
+-	} else if (g_str_equal (key, KEY_TOUCH)) {
+-		set_touch (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_TPCBUTTON)) {
+-		set_tpcbutton (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_IS_ABSOLUTE)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD)
+-			set_absolute (device, g_settings_get_boolean (settings, key));
+-	} else if (g_str_equal (key, KEY_AREA)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD)
+-			set_area (device, g_settings_get_value (settings, key));
+-	} else if (g_str_equal (key, KEY_DISPLAY)) {
+-		if (type != WACOM_TYPE_CURSOR &&
+-		    type != WACOM_TYPE_PAD)
+-			set_display (device, g_settings_get_value (settings, key));
+-	} else {
+-		g_warning ("Unhandled tablet-wide setting '%s' changed", key);
+-	}
+-}
+-
+-static void
+-stylus_settings_changed (GSettings      *settings,
+-			 gchar          *key,
+-			 GsdWacomStylus *stylus)
+-{
+-	GsdWacomDevice *device;
+-	GsdWacomStylus *last_stylus;
+-
+-	device = gsd_wacom_stylus_get_device (stylus);
+-
+-	g_object_get (device, "last-stylus", &last_stylus, NULL);
+-	if (last_stylus != stylus) {
+-		g_debug ("Not applying changed settings because '%s' is the current stylus, not '%s'",
+-			 last_stylus ? gsd_wacom_stylus_get_name (last_stylus) : "NONE",
+-			 gsd_wacom_stylus_get_name (stylus));
+-		return;
+-	}
+-
+-	if (g_str_equal (key, KEY_PRESSURECURVE)) {
+-		set_pressurecurve (device, g_settings_get_value (settings, key));
+-	} else if (g_str_equal (key, KEY_PRESSURETHRESHOLD)) {
+-		int threshold;
+-
+-		threshold = g_settings_get_int (settings, KEY_PRESSURETHRESHOLD);
+-		if (threshold == -1)
+-			threshold = DEFAULT_PRESSURE_THRESHOLD;
+-		set_pressurethreshold (device, threshold);
+-	} else if (g_str_equal (key, KEY_BUTTON_MAPPING)) {
+-		set_device_buttonmap (device, g_settings_get_value (settings, key));
+-	}  else {
+-		g_warning ("Unhandled stylus setting '%s' changed", key);
+-	}
+-}
+-
+-static void
+-last_stylus_changed (GsdWacomDevice  *device,
+-		     GParamSpec      *pspec,
+-		     GsdWacomManager *manager)
+-{
+-	g_debug ("Stylus for device '%s' changed, applying settings",
+-		 gsd_wacom_device_get_name (device));
+-	apply_stylus_settings (device);
+-}
+-
+-static void
+-device_added_cb (GdkDeviceManager *device_manager,
+-                 GdkDevice        *gdk_device,
+-                 GsdWacomManager  *manager)
+-{
+-	GsdWacomDevice *device;
+-	GSettings *settings;
+-
+-	device = gsd_wacom_device_new (gdk_device);
+-	if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_INVALID) {
+-		g_object_unref (device);
+-		return;
+-	}
+-	g_debug ("Adding device '%s' (type: '%s') to known devices list",
+-		 gsd_wacom_device_get_tool_name (device),
+-		 gsd_wacom_device_type_to_string (gsd_wacom_device_get_device_type (device)));
+-	g_hash_table_insert (manager->priv->devices, (gpointer) gdk_device, device);
+-
+-	settings = gsd_wacom_device_get_settings (device);
+-	g_signal_connect (G_OBJECT (settings), "changed",
+-			  G_CALLBACK (wacom_settings_changed), device);
+-
+-	if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_STYLUS ||
+-	    gsd_wacom_device_get_device_type (device) == WACOM_TYPE_ERASER) {
+-		GList *styli, *l;
+-
+-		styli = gsd_wacom_device_list_styli (device);
+-
+-		for (l = styli ; l ; l = l->next) {
+-			settings = gsd_wacom_stylus_get_settings (l->data);
+-			g_signal_connect (G_OBJECT (settings), "changed",
+-					  G_CALLBACK (stylus_settings_changed), l->data);
+-		}
+-
+-		g_list_free (styli);
+-
+-		g_signal_connect (G_OBJECT (device), "notify::last-stylus",
+-				  G_CALLBACK (last_stylus_changed), manager);
+-	}
+-
+-        set_wacom_settings (manager, device);
+-}
+-
+-static void
+-device_removed_cb (GdkDeviceManager *device_manager,
+-                   GdkDevice        *gdk_device,
+-                   GsdWacomManager  *manager)
+-{
+-	g_debug ("Removing device '%s' from known devices list",
+-		 gdk_device_get_name (gdk_device));
+-	g_hash_table_remove (manager->priv->devices, gdk_device);
+-}
+-
+-static GsdWacomDevice *
+-device_id_to_device (GsdWacomManager *manager,
+-		     int              deviceid)
+-{
+-	GList *devices, *l;
+-	GsdWacomDevice *ret;
+-
+-	ret = NULL;
+-	devices = g_hash_table_get_keys (manager->priv->devices);
+-
+-	for (l = devices; l != NULL; l = l->next) {
+-		GdkDevice *device = l->data;
+-		int id;
+-
+-		g_object_get (device, "device-id", &id, NULL);
+-		if (id == deviceid) {
+-			ret = g_hash_table_lookup (manager->priv->devices, device);
+-			break;
+-		}
+-	}
+-
+-	g_list_free (devices);
+-	return ret;
+-}
+-
+-struct {
+-	guint mask;
+-	KeySym keysym;
+-} mods_keysyms[] = {
+-	{ GDK_MOD1_MASK, XK_Alt_L },
+-	{ GDK_SHIFT_MASK, XK_Shift_L },
+-	{ GDK_CONTROL_MASK, XK_Control_L },
+-};
+-
+-static void
+-send_modifiers (Display *display,
+-		XDevice *dev,
+-		guint mask,
+-		gboolean is_press)
+-{
+-	guint i;
+-
+-	for (i = 0; i < G_N_ELEMENTS(mods_keysyms); i++) {
+-		if (mask & mods_keysyms[i].mask) {
+-			guint keycode;
+-
+-			keycode = XKeysymToKeycode (display, mods_keysyms[i].keysym);
+-			XTestFakeDeviceKeyEvent (display, dev, keycode,
+-						 is_press ? True : False, NULL, 0, 0);
+-		}
+-	}
+-}
+-
+-static GdkFilterReturn
+-filter_button_events (XEvent          *xevent,
+-                      GdkEvent        *event,
+-                      GsdWacomManager *manager)
+-{
+-	XIEvent             *xiev;
+-	XIDeviceEvent       *xev;
+-	XGenericEventCookie *cookie;
+-	guint                deviceid;
+-	GsdWacomDevice      *device;
+-	int                  button;
+-	GsdWacomTabletButton *wbutton;
+-	GtkDirectionType      dir;
+-	XDevice               dev;
+-	char                 *str;
+-	guint                 keyval;
+-	guint                *keycodes;
+-	guint                 mods;
+-
+-        /* verify we have a key event */
+-	if (xevent->type != GenericEvent)
+-		return GDK_FILTER_CONTINUE;
+-	cookie = &xevent->xcookie;
+-	if (cookie->extension != manager->priv->opcode)
+-		return GDK_FILTER_CONTINUE;
+-
+-	xiev = (XIEvent *) xevent->xcookie.data;
+-
+-	if (xiev->evtype != XI_ButtonRelease &&
+-	    xiev->evtype != XI_ButtonPress)
+-		return GDK_FILTER_CONTINUE;
+-
+-	xev = (XIDeviceEvent *) xiev;
+-
+-	deviceid = xev->sourceid;
+-	device = device_id_to_device (manager, deviceid);
+-	if (gsd_wacom_device_get_device_type (device) != WACOM_TYPE_PAD)
+-		return GDK_FILTER_CONTINUE;
+-
+-	button = xev->detail;
+-
+-	/* FIXME, we'll also need to pass the current mode(s) */
+-	wbutton = gsd_wacom_device_get_button (device, button, &dir);
+-	if (wbutton == NULL) {
+-		g_warning ("Could not find matching button for '%d' on '%s'",
+-			   button, gsd_wacom_device_get_name (device));
+-		return GDK_FILTER_CONTINUE;
+-	}
+-
+-	g_debug ("Received event button '%s'%s ('%d') on device '%s' ('%d')",
+-		 wbutton->id,
+-		 wbutton->type == WACOM_TABLET_BUTTON_TYPE_ELEVATOR ?
+-		 (dir == GTK_DIR_UP ? " 'up'" : " 'down'") : "",
+-		 button,
+-		 gsd_wacom_device_get_name (device),
+-		 deviceid);
+-
+-	/* FIXME, don't know how to handle those yet */
+-	if (wbutton->type == WACOM_TABLET_BUTTON_TYPE_ELEVATOR)
+-		return GDK_FILTER_REMOVE;
+-
+-	/* FIXME, we need to switch mode here */
+-	if (wbutton->type == WACOM_TABLET_BUTTON_TYPE_HARDCODED)
+-		return GDK_FILTER_REMOVE;
+-
+-	/* Nothing to do */
+-	if (g_settings_get_enum (wbutton->settings, KEY_ACTION_TYPE) == GSD_WACOM_ACTION_TYPE_NONE)
+-		return GDK_FILTER_REMOVE;
+-
+-	str = g_settings_get_string (wbutton->settings, KEY_CUSTOM_ACTION);
+-	gtk_accelerator_parse_with_keycode (str, &keyval, &keycodes, &mods);
+-
+-	if (keycodes == NULL) {
+-		g_warning ("Failed to find a keycode for shortcut '%s'", str);
+-		g_free (str);
+-		return GDK_FILTER_REMOVE;
+-	}
+-	g_free (str);
+-
+-	dev.device_id = deviceid; /* that's cheating, but whot did it first */
+-
+-	/* And send out the keys! */
+-	send_modifiers (xev->display, &dev, mods, TRUE);
+-	XTestFakeDeviceKeyEvent (xev->display, &dev, keycodes[0],
+-				 True, NULL, 0, 0);
+-	XTestFakeDeviceKeyEvent (xev->display, &dev, keycodes[0],
+-				 False, NULL, 0, 0);
+-	send_modifiers (xev->display, &dev, mods, FALSE);
+-
+-	g_free (keycodes);
+-
+-	return GDK_FILTER_REMOVE;
+-}
+-
+-static void
+-set_devicepresence_handler (GsdWacomManager *manager)
+-{
+-        GdkDeviceManager *device_manager;
+-
+-        device_manager = gdk_display_get_device_manager (gdk_display_get_default ());
+-        if (device_manager == NULL)
+-                return;
+-
+-        manager->priv->device_added_id = g_signal_connect (G_OBJECT (device_manager), "device-added",
+-                                                           G_CALLBACK (device_added_cb), manager);
+-        manager->priv->device_removed_id = g_signal_connect (G_OBJECT (device_manager), "device-removed",
+-                                                             G_CALLBACK (device_removed_cb), manager);
+-        manager->priv->device_manager = device_manager;
+-}
+-
+-static void
+-gsd_wacom_manager_init (GsdWacomManager *manager)
+-{
+-        manager->priv = GSD_WACOM_MANAGER_GET_PRIVATE (manager);
+-}
+-
+-static gboolean
+-gsd_wacom_manager_idle_cb (GsdWacomManager *manager)
+-{
+-	GList *devices, *l;
+-	GSList *ls;
+-
+-        gnome_settings_profile_start (NULL);
+-
+-        manager->priv->devices = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+-
+-        set_devicepresence_handler (manager);
+-
+-        devices = gdk_device_manager_list_devices (manager->priv->device_manager, GDK_DEVICE_TYPE_SLAVE);
+-        for (l = devices; l ; l = l->next)
+-		device_added_cb (manager->priv->device_manager, l->data, manager);
+-        g_list_free (devices);
+-
+-        /* Start filtering the button events */
+-        for (ls = manager->priv->screens; ls != NULL; ls = ls->next) {
+-                gdk_window_add_filter (gdk_screen_get_root_window (ls->data),
+-                                       (GdkFilterFunc) filter_button_events,
+-                                       manager);
+-        }
+-
+-        gnome_settings_profile_end (NULL);
+-
+-        manager->priv->start_idle_id = 0;
+-
+-        return FALSE;
+-}
+-
+-static void
+-init_screens (GsdWacomManager *manager)
+-{
+-        GdkDisplay *display;
+-        int i;
+-
+-        display = gdk_display_get_default ();
+-        for (i = 0; i < gdk_display_get_n_screens (display); i++) {
+-                GdkScreen *screen;
+-
+-                screen = gdk_display_get_screen (display, i);
+-                if (screen == NULL) {
+-                        continue;
+-                }
+-                manager->priv->screens = g_slist_append (manager->priv->screens, screen);
+-        }
+-}
+-
+-gboolean
+-gsd_wacom_manager_start (GsdWacomManager *manager,
+-                         GError         **error)
+-{
+-	int a, b, c, d;
+-
+-        gnome_settings_profile_start (NULL);
+-
+-        if (supports_xinput2_devices (&manager->priv->opcode) == FALSE) {
+-                g_debug ("No Xinput2 support, disabling plugin");
+-                return TRUE;
+-        }
+-
+-        if (!XTestQueryExtension (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &a, &b, &c, &d)) {
+-                g_debug ("No XTest extension support, disabling plugin");
+-                return TRUE;
+-        }
+-
+-        init_screens (manager);
+-
+-        manager->priv->start_idle_id = g_idle_add ((GSourceFunc) gsd_wacom_manager_idle_cb, manager);
+-
+-        gnome_settings_profile_end (NULL);
+-
+-        return TRUE;
+-}
+-
+-void
+-gsd_wacom_manager_stop (GsdWacomManager *manager)
+-{
+-        GsdWacomManagerPrivate *p = manager->priv;
+-        GSList *ls;
+-
+-        g_debug ("Stopping wacom manager");
+-
+-        if (p->device_manager != NULL) {
+-                g_signal_handler_disconnect (p->device_manager, p->device_added_id);
+-                g_signal_handler_disconnect (p->device_manager, p->device_removed_id);
+-                p->device_manager = NULL;
+-        }
+-
+-        for (ls = p->screens; ls != NULL; ls = ls->next) {
+-                gdk_window_remove_filter (gdk_screen_get_root_window (ls->data),
+-                                          (GdkFilterFunc) filter_button_events,
+-                                          manager);
+-        }
+-}
+-
+-static void
+-gsd_wacom_manager_finalize (GObject *object)
+-{
+-        GsdWacomManager *wacom_manager;
+-
+-        g_return_if_fail (object != NULL);
+-        g_return_if_fail (GSD_IS_WACOM_MANAGER (object));
+-
+-        wacom_manager = GSD_WACOM_MANAGER (object);
+-
+-        g_return_if_fail (wacom_manager->priv != NULL);
+-
+-        if (wacom_manager->priv->devices) {
+-                g_hash_table_destroy (wacom_manager->priv->devices);
+-                wacom_manager->priv->devices = NULL;
+-        }
+-
+-        if (wacom_manager->priv->screens != NULL) {
+-                g_slist_free (wacom_manager->priv->screens);
+-                wacom_manager->priv->screens = NULL;
+-        }
+-
+-        if (wacom_manager->priv->start_idle_id != 0)
+-                g_source_remove (wacom_manager->priv->start_idle_id);
+-
+-        G_OBJECT_CLASS (gsd_wacom_manager_parent_class)->finalize (object);
+-}
+-
+-GsdWacomManager *
+-gsd_wacom_manager_new (void)
+-{
+-        if (manager_object != NULL) {
+-                g_object_ref (manager_object);
+-        } else {
+-                manager_object = g_object_new (GSD_TYPE_WACOM_MANAGER, NULL);
+-                g_object_add_weak_pointer (manager_object,
+-                                           (gpointer *) &manager_object);
+-        }
+-
+-        return GSD_WACOM_MANAGER (manager_object);
+-}
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.h gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.h
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-manager.h	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-manager.h	1969-12-31 19:00:00.000000000 -0500
+@@ -1,58 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- * Copyright (C) 2010 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#ifndef __GSD_WACOM_MANAGER_H
+-#define __GSD_WACOM_MANAGER_H
+-
+-#include <glib-object.h>
+-
+-G_BEGIN_DECLS
+-
+-#define GSD_TYPE_WACOM_MANAGER         (gsd_wacom_manager_get_type ())
+-#define GSD_WACOM_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GSD_TYPE_WACOM_MANAGER, GsdWacomManager))
+-#define GSD_WACOM_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GSD_TYPE_WACOM_MANAGER, GsdWacomManagerClass))
+-#define GSD_IS_WACOM_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GSD_TYPE_WACOM_MANAGER))
+-#define GSD_IS_WACOM_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GSD_TYPE_WACOM_MANAGER))
+-#define GSD_WACOM_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GSD_TYPE_WACOM_MANAGER, GsdWacomManagerClass))
+-
+-typedef struct GsdWacomManagerPrivate GsdWacomManagerPrivate;
+-
+-typedef struct
+-{
+-        GObject                     parent;
+-        GsdWacomManagerPrivate *priv;
+-} GsdWacomManager;
+-
+-typedef struct
+-{
+-        GObjectClass   parent_class;
+-} GsdWacomManagerClass;
+-
+-GType                   gsd_wacom_manager_get_type            (void);
+-
+-GsdWacomManager *       gsd_wacom_manager_new                 (void);
+-gboolean                gsd_wacom_manager_start               (GsdWacomManager *manager,
+-                                                               GError         **error);
+-void                    gsd_wacom_manager_stop                (GsdWacomManager *manager);
+-
+-G_END_DECLS
+-
+-#endif /* __GSD_WACOM_MANAGER_H */
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-plugin.c gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-plugin.c
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-plugin.c	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-plugin.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,111 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- * Copyright (C) 2010 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2, or (at your option)
+- * any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <glib/gi18n-lib.h>
+-#include <gmodule.h>
+-
+-#include "gnome-settings-plugin.h"
+-#include "gsd-wacom-plugin.h"
+-#include "gsd-wacom-manager.h"
+-
+-struct GsdWacomPluginPrivate {
+-        GsdWacomManager *manager;
+-};
+-
+-#define GSD_WACOM_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), GSD_TYPE_WACOM_PLUGIN, GsdWacomPluginPrivate))
+-
+-GNOME_SETTINGS_PLUGIN_REGISTER (GsdWacomPlugin, gsd_wacom_plugin)
+-
+-static void
+-gsd_wacom_plugin_init (GsdWacomPlugin *plugin)
+-{
+-        plugin->priv = GSD_WACOM_PLUGIN_GET_PRIVATE (plugin);
+-
+-        g_debug ("GsdWacomPlugin initializing");
+-
+-        plugin->priv->manager = gsd_wacom_manager_new ();
+-}
+-
+-static void
+-gsd_wacom_plugin_finalize (GObject *object)
+-{
+-        GsdWacomPlugin *plugin;
+-
+-        g_return_if_fail (object != NULL);
+-        g_return_if_fail (GSD_IS_WACOM_PLUGIN (object));
+-
+-        g_debug ("GsdWacomPlugin finalizing");
+-
+-        plugin = GSD_WACOM_PLUGIN (object);
+-
+-        g_return_if_fail (plugin->priv != NULL);
+-
+-        if (plugin->priv->manager != NULL) {
+-                g_object_unref (plugin->priv->manager);
+-        }
+-
+-        G_OBJECT_CLASS (gsd_wacom_plugin_parent_class)->finalize (object);
+-}
+-
+-static void
+-impl_activate (GnomeSettingsPlugin *plugin)
+-{
+-        gboolean res;
+-        GError  *error;
+-
+-        g_debug ("Activating wacom plugin");
+-
+-        error = NULL;
+-        res = gsd_wacom_manager_start (GSD_WACOM_PLUGIN (plugin)->priv->manager, &error);
+-        if (! res) {
+-                g_warning ("Unable to start wacom manager: %s", error->message);
+-                g_error_free (error);
+-        }
+-}
+-
+-static void
+-impl_deactivate (GnomeSettingsPlugin *plugin)
+-{
+-        g_debug ("Deactivating wacom plugin");
+-        gsd_wacom_manager_stop (GSD_WACOM_PLUGIN (plugin)->priv->manager);
+-}
+-
+-static void
+-gsd_wacom_plugin_class_init (GsdWacomPluginClass *klass)
+-{
+-        GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+-        GnomeSettingsPluginClass *plugin_class = GNOME_SETTINGS_PLUGIN_CLASS (klass);
+-
+-        object_class->finalize = gsd_wacom_plugin_finalize;
+-
+-        plugin_class->activate = impl_activate;
+-        plugin_class->deactivate = impl_deactivate;
+-
+-        g_type_class_add_private (klass, sizeof (GsdWacomPluginPrivate));
+-}
+-
+-static void
+-gsd_wacom_plugin_class_finalize (GsdWacomPluginClass *klass)
+-{
+-}
+-
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-plugin.h gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-plugin.h
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/gsd-wacom-plugin.h	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/gsd-wacom-plugin.h	1969-12-31 19:00:00.000000000 -0500
+@@ -1,60 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- * Copyright (C) 2010 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2, or (at your option)
+- * any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#ifndef __GSD_WACOM_PLUGIN_H__
+-#define __GSD_WACOM_PLUGIN_H__
+-
+-#include <glib.h>
+-#include <glib-object.h>
+-#include <gmodule.h>
+-
+-#include "gnome-settings-plugin.h"
+-
+-G_BEGIN_DECLS
+-
+-#define GSD_TYPE_WACOM_PLUGIN                (gsd_wacom_plugin_get_type ())
+-#define GSD_WACOM_PLUGIN(o)                  (G_TYPE_CHECK_INSTANCE_CAST ((o), GSD_TYPE_WACOM_PLUGIN, GsdWacomPlugin))
+-#define GSD_WACOM_PLUGIN_CLASS(k)            (G_TYPE_CHECK_CLASS_CAST((k), GSD_TYPE_WACOM_PLUGIN, GsdWacomPluginClass))
+-#define GSD_IS_WACOM_PLUGIN(o)               (G_TYPE_CHECK_INSTANCE_TYPE ((o), GSD_TYPE_WACOM_PLUGIN))
+-#define GSD_IS_WACOM_PLUGIN_CLASS(k)         (G_TYPE_CHECK_CLASS_TYPE ((k), GSD_TYPE_WACOM_PLUGIN))
+-#define GSD_WACOM_PLUGIN_GET_CLASS(o)        (G_TYPE_INSTANCE_GET_CLASS ((o), GSD_TYPE_WACOM_PLUGIN, GsdWacomPluginClass))
+-
+-typedef struct GsdWacomPluginPrivate GsdWacomPluginPrivate;
+-
+-typedef struct
+-{
+-        GnomeSettingsPlugin    parent;
+-        GsdWacomPluginPrivate *priv;
+-} GsdWacomPlugin;
+-
+-typedef struct
+-{
+-        GnomeSettingsPluginClass parent_class;
+-} GsdWacomPluginClass;
+-
+-GType   gsd_wacom_plugin_get_type            (void) G_GNUC_CONST;
+-
+-/* All the plugins must implement this function */
+-G_MODULE_EXPORT GType register_gnome_settings_plugin (GTypeModule *module);
+-
+-G_END_DECLS
+-
+-#endif /* __GSD_WACOM_PLUGIN_H__ */
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/list-wacom.c gnome-settings-daemon-3.3.90/plugins/wacom/list-wacom.c
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/list-wacom.c	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/list-wacom.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,301 +0,0 @@
+-/*
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Bastien Nocera <hadess@hadess.net>
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <gtk/gtk.h>
+-
+-#include "gsd-wacom-device.h"
+-
+-static gboolean fake_devices = FALSE;
+-static gboolean monitor_styli = FALSE;
+-static gboolean option_debug = FALSE;
+-
+-static char *
+-get_loc (GSettings *settings)
+-{
+-	char *path, *schema, *ret;
+-
+-	g_return_val_if_fail (G_IS_SETTINGS (settings), NULL);
+-
+-	g_object_get (G_OBJECT (settings),
+-		      "path", &path,
+-		      "schema", &schema,
+-		      NULL);
+-	ret = g_strdup_printf ("schema: %s (path: %s)", schema, path);
+-	g_free (schema);
+-	g_free (path);
+-
+-	return ret;
+-}
+-
+-static const char *
+-stylus_type_to_string (GsdWacomStylusType type)
+-{
+-	switch (type) {
+-	case WACOM_STYLUS_TYPE_UNKNOWN:
+-		return "Unknown";
+-	case WACOM_STYLUS_TYPE_GENERAL:
+-		return "General";
+-	case WACOM_STYLUS_TYPE_INKING:
+-		return "Inking";
+-	case WACOM_STYLUS_TYPE_AIRBRUSH:
+-		return "Airbrush";
+-	case WACOM_STYLUS_TYPE_CLASSIC:
+-		return "Classic";
+-	case WACOM_STYLUS_TYPE_MARKER:
+-		return "Marker";
+-	case WACOM_STYLUS_TYPE_STROKE:
+-		return "Stroke";
+-	case WACOM_STYLUS_TYPE_PUCK:
+-		return "Puck";
+-	default:
+-		g_assert_not_reached ();
+-	}
+-	return NULL;
+-}
+-
+-static const char *
+-button_type_to_string (GsdWacomTabletButtonType type)
+-{
+-	switch (type) {
+-	case WACOM_TABLET_BUTTON_TYPE_NORMAL:
+-		return "normal";
+-	case WACOM_TABLET_BUTTON_TYPE_ELEVATOR:
+-		return "elevator";
+-	case WACOM_TABLET_BUTTON_TYPE_HARDCODED:
+-		return "hard-coded";
+-	default:
+-		g_assert_not_reached ();
+-	}
+-}
+-
+-#define BOOL_AS_STR(x) (x ? "yes" : "no")
+-
+-static void
+-print_stylus (GsdWacomStylus *stylus,
+-	      gboolean        is_current)
+-{
+-	GsdWacomDevice *device;
+-	char *loc;
+-
+-	device = gsd_wacom_stylus_get_device (stylus);
+-
+-	g_print ("\t%sStylus: '%s' (Type: %s, ID: 0x%x)\n",
+-		 is_current ? "*** " : "",
+-		 gsd_wacom_stylus_get_name (stylus),
+-		 stylus_type_to_string (gsd_wacom_stylus_get_stylus_type (stylus)),
+-		 gsd_wacom_stylus_get_id (stylus));
+-
+-	loc = get_loc (gsd_wacom_stylus_get_settings (stylus));
+-	g_print ("\t\tSettings: %s\n", loc);
+-	g_free (loc);
+-
+-	g_print ("\t\tIcon name: %s\n", gsd_wacom_stylus_get_icon_name (stylus));
+-
+-	if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_STYLUS) {
+-		int num_buttons;
+-		char *buttons;
+-
+-		g_print ("\t\tHas Eraser: %s\n", BOOL_AS_STR(gsd_wacom_stylus_get_has_eraser (stylus)));
+-
+-		num_buttons = gsd_wacom_stylus_get_num_buttons (stylus);
+-		if (num_buttons < 0)
+-			num_buttons = 2;
+-		if (num_buttons > 0)
+-			buttons = g_strdup_printf ("%d buttons", num_buttons);
+-		else
+-			buttons = g_strdup ("no button");
+-		g_print ("\t\tButtons: %s\n", buttons);
+-		g_free (buttons);
+-	}
+-}
+-
+-static void
+-print_buttons (GsdWacomDevice *device)
+-{
+-	GList *buttons, *l;
+-
+-	buttons = gsd_wacom_device_get_buttons (device);
+-	if (buttons == NULL)
+-		return;
+-
+-	for (l = buttons; l != NULL; l = l->next) {
+-		GsdWacomTabletButton *button = l->data;
+-
+-		g_print ("\tButton: %s (%s)\n", button->name, button->id);
+-		g_print ("\t\tType: %s\n", button_type_to_string (button->type));
+-		if (button->group_id > 0)
+-			g_print ("\t\tGroup: %d\n", button->group_id);
+-		if (button->settings) {
+-			char *loc;
+-			loc = get_loc (button->settings);
+-			g_print ("\t\tSettings: %s\n", loc);
+-			g_free (loc);
+-		}
+-	}
+-	g_list_free (buttons);
+-}
+-
+-static void
+-last_stylus_changed (GsdWacomDevice  *device,
+-		     GParamSpec      *pspec,
+-		     gpointer         user_data)
+-{
+-	GsdWacomStylus *stylus;
+-
+-	g_object_get (device, "last-stylus", &stylus, NULL);
+-
+-	g_print ("Stylus changed for device '%s'\n",
+-		 gsd_wacom_device_get_tool_name (device));
+-
+-	print_stylus (stylus, TRUE);
+-}
+-
+-static void
+-list_devices (GList *devices)
+-{
+-	GList *l;
+-
+-	for (l = devices; l ; l = l->next) {
+-		GsdWacomDevice *device;
+-		GsdWacomDeviceType type;
+-		char *loc;
+-
+-		device = l->data;
+-
+-		g_signal_connect (G_OBJECT (device), "notify::last-stylus",
+-				  G_CALLBACK (last_stylus_changed), NULL);
+-
+-		g_print ("Device '%s' (type: %s)\n",
+-			 gsd_wacom_device_get_name (device),
+-			 gsd_wacom_device_type_to_string (gsd_wacom_device_get_device_type (device)));
+-		g_print ("\tReversible: %s\n", BOOL_AS_STR (gsd_wacom_device_reversible (device)));
+-		g_print ("\tScreen Tablet: %s\n", BOOL_AS_STR (gsd_wacom_device_is_screen_tablet (device)));
+-
+-		loc = get_loc (gsd_wacom_device_get_settings (device));
+-		g_print ("\tGeneric settings: %s\n", loc);
+-		g_free (loc);
+-
+-		type = gsd_wacom_device_get_device_type (device);
+-		if (type == WACOM_TYPE_STYLUS ||
+-		    type == WACOM_TYPE_ERASER) {
+-			GList *styli, *j;
+-			GsdWacomStylus *current_stylus;
+-
+-			g_object_get (device, "last-stylus", &current_stylus, NULL);
+-
+-			styli = gsd_wacom_device_list_styli (device);
+-			for (j = styli; j; j = j->next) {
+-				GsdWacomStylus *stylus;
+-
+-				stylus = j->data;
+-				print_stylus (stylus, current_stylus == stylus);
+-			}
+-			g_list_free (styli);
+-		}
+-
+-		print_buttons (device);
+-
+-		if (monitor_styli == FALSE)
+-			g_object_unref (device);
+-	}
+-	g_list_free (devices);
+-}
+-
+-static void
+-list_actual_devices (void)
+-{
+-	GdkDeviceManager *mgr;
+-	GList *list, *l, *devices;
+-
+-	mgr = gdk_display_get_device_manager (gdk_display_get_default ());
+-
+-	list = gdk_device_manager_list_devices (mgr, GDK_DEVICE_TYPE_SLAVE);
+-	devices = NULL;
+-	for (l = list; l ; l = l->next) {
+-		GsdWacomDevice *device;
+-
+-		device = gsd_wacom_device_new (l->data);
+-		if (gsd_wacom_device_get_device_type (device) == WACOM_TYPE_INVALID) {
+-			g_object_unref (device);
+-			continue;
+-		}
+-
+-		devices = g_list_prepend (devices, device);
+-	}
+-	g_list_free (list);
+-
+-	list_devices (devices);
+-}
+-
+-static void
+-list_fake_devices (void)
+-{
+-	GList *devices;
+-
+-	devices = gsd_wacom_device_create_fake_cintiq ();
+-	list_devices (devices);
+-
+-	devices = gsd_wacom_device_create_fake_bt ();
+-	list_devices (devices);
+-
+-	devices = gsd_wacom_device_create_fake_x201 ();
+-	list_devices (devices);
+-
+-	devices = gsd_wacom_device_create_fake_intuos4 ();
+-	list_devices (devices);
+-}
+-
+-int main (int argc, char **argv)
+-{
+-	GError *error = NULL;
+-	GOptionContext *context;
+-	const GOptionEntry entries[] = {
+-		{ "fake", 'f', 0, G_OPTION_ARG_NONE, &fake_devices, "Output fake devices", NULL },
+-		{ "monitor", 'm', 0, G_OPTION_ARG_NONE, &monitor_styli, "Monitor changing styli", NULL },
+-		{ "debug", 'd', 0, G_OPTION_ARG_NONE, &option_debug, "Debug output", NULL },
+-		{ NULL }
+-	};
+-
+-	gtk_init (&argc, &argv);
+-
+-	context = g_option_context_new ("- test parser functions");
+-	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+-
+-	if (g_option_context_parse (context, &argc, &argv, &error) == FALSE) {
+-		g_print ("Option parsing failed: %s\n", error->message);
+-		return 1;
+-	}
+-
+-	if (option_debug)
+-		g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
+-
+-	if (fake_devices == FALSE)
+-		list_actual_devices ();
+-	else
+-		list_fake_devices ();
+-
+-	if (monitor_styli)
+-		gtk_main ();
+-
+-	return 0;
+-}
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/Makefile.am gnome-settings-daemon-3.3.90/plugins/wacom/Makefile.am
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/Makefile.am	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/Makefile.am	1969-12-31 19:00:00.000000000 -0500
+@@ -1,103 +0,0 @@
+-plugin_name = wacom
+-
+-plugin_LTLIBRARIES = libgsdwacom.la
+-
+-libgsdwacom_la_SOURCES =	\
+-	gsd-wacom-plugin.h	\
+-	gsd-wacom-plugin.c	\
+-	gsd-wacom-manager.h	\
+-	gsd-wacom-manager.c	\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-libgsdwacom_la_CPPFLAGS = \
+-	-I$(top_srcdir)/gnome-settings-daemon		\
+-	-I$(top_srcdir)/plugins/common/			\
+-	-I$(top_srcdir)/data/				\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+-	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
+-	$(AM_CPPFLAGS)
+-
+-libgsdwacom_la_CFLAGS = \
+-	$(PLUGIN_CFLAGS)		\
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-libgsdwacom_la_LDFLAGS =		\
+-	$(GSD_PLUGIN_LDFLAGS)
+-
+-libgsdwacom_la_LIBADD  =						\
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_PLUGIN_LIBS)						\
+-	$(WACOM_LIBS)
+-
+-noinst_PROGRAMS = test-wacom list-wacom
+-
+-test_wacom_SOURCES =		\
+-	test-wacom.c		\
+-	gsd-wacom-manager.c	\
+-	gsd-wacom-manager.h	\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-test_wacom_CPPFLAGS = \
+-	-I$(top_srcdir)/data/					\
+-	-I$(top_srcdir)/gnome-settings-daemon			\
+-	-I$(top_srcdir)/plugins/common				\
+-	-DBINDIR=\"$(bindir)\"					\
+-	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
+-	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+-	$(AM_CPPFLAGS)
+-
+-test_wacom_CFLAGS =			\
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-test_wacom_LDADD = \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la		\
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_DAEMON_LIBS)			\
+-	$(SETTINGS_PLUGIN_LIBS)			\
+-	$(WACOM_LIBS)				\
+-	-lm
+-
+-list_wacom_SOURCES =		\
+-	list-wacom.c		\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-list_wacom_CPPFLAGS = \
+-	-I$(top_srcdir)/data/					\
+-	-I$(top_srcdir)/gnome-settings-daemon			\
+-	-I$(top_srcdir)/plugins/common				\
+-	-DBINDIR=\"$(bindir)\"					\
+-	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
+-	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+-	$(AM_CPPFLAGS)
+-
+-list_wacom_CFLAGS =			\
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-list_wacom_LDADD = \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la		\
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_DAEMON_LIBS)			\
+-	$(SETTINGS_PLUGIN_LIBS)			\
+-	$(WACOM_LIBS)				\
+-	-lm
+-
+-plugin_in_files = wacom.gnome-settings-plugin.in
+-
+-plugin_DATA = $(plugin_in_files:.gnome-settings-plugin.in=.gnome-settings-plugin)
+-
+-EXTRA_DIST = $(plugin_in_files)
+-CLEANFILES = $(plugin_DATA)
+-DISTCLEANFILES = $(plugin_DATA)
+-
+-@GSD_INTLTOOL_PLUGIN_RULE@
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/Makefile.in gnome-settings-daemon-3.3.90/plugins/wacom/Makefile.in
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/Makefile.in	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/Makefile.in	1969-12-31 19:00:00.000000000 -0500
+@@ -1,914 +0,0 @@
+-# Makefile.in generated by automake 1.11.3 from Makefile.am.
+-# @configure_input@
+-
+-# Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
+-# 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software
+-# Foundation, Inc.
+-# This Makefile.in is free software; the Free Software Foundation
+-# gives unlimited permission to copy and/or distribute it,
+-# with or without modifications, as long as this notice is preserved.
+-
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+-# PARTICULAR PURPOSE.
+-
+-@SET_MAKE@
+-
+-
+-
+-VPATH = @srcdir@
+-pkgdatadir = $(datadir)/@PACKAGE@
+-pkgincludedir = $(includedir)/@PACKAGE@
+-pkglibdir = $(libdir)/@PACKAGE@
+-pkglibexecdir = $(libexecdir)/@PACKAGE@
+-am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
+-install_sh_DATA = $(install_sh) -c -m 644
+-install_sh_PROGRAM = $(install_sh) -c
+-install_sh_SCRIPT = $(install_sh) -c
+-INSTALL_HEADER = $(INSTALL_DATA)
+-transform = $(program_transform_name)
+-NORMAL_INSTALL = :
+-PRE_INSTALL = :
+-POST_INSTALL = :
+-NORMAL_UNINSTALL = :
+-PRE_UNINSTALL = :
+-POST_UNINSTALL = :
+-build_triplet = @build@
+-host_triplet = @host@
+-noinst_PROGRAMS = test-wacom$(EXEEXT) list-wacom$(EXEEXT)
+-subdir = plugins/wacom
+-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+-	$(top_srcdir)/configure.ac
+-am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
+-	$(ACLOCAL_M4)
+-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+-CONFIG_HEADER = $(top_builddir)/config.h
+-CONFIG_CLEAN_FILES =
+-CONFIG_CLEAN_VPATH_FILES =
+-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+-am__vpath_adj = case $$p in \
+-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+-    *) f=$$p;; \
+-  esac;
+-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+-am__install_max = 40
+-am__nobase_strip_setup = \
+-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+-am__nobase_strip = \
+-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+-am__nobase_list = $(am__nobase_strip_setup); \
+-  for p in $$list; do echo "$$p $$p"; done | \
+-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+-    if (++n[$$2] == $(am__install_max)) \
+-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+-    END { for (dir in files) print dir, files[dir] }'
+-am__base_list = \
+-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+-am__uninstall_files_from_dir = { \
+-  test -z "$$files" \
+-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+-         $(am__cd) "$$dir" && rm -f $$files; }; \
+-  }
+-am__installdirs = "$(DESTDIR)$(plugindir)" "$(DESTDIR)$(plugindir)"
+-LTLIBRARIES = $(plugin_LTLIBRARIES)
+-am__DEPENDENCIES_1 =
+-libgsdwacom_la_DEPENDENCIES =  \
+-	$(top_builddir)/plugins/common/libcommon.la \
+-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+-am_libgsdwacom_la_OBJECTS = libgsdwacom_la-gsd-wacom-plugin.lo \
+-	libgsdwacom_la-gsd-wacom-manager.lo \
+-	libgsdwacom_la-gsd-wacom-device.lo
+-libgsdwacom_la_OBJECTS = $(am_libgsdwacom_la_OBJECTS)
+-AM_V_lt = $(am__v_lt_@AM_V@)
+-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+-am__v_lt_0 = --silent
+-libgsdwacom_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+-	$(libgsdwacom_la_CFLAGS) $(CFLAGS) $(libgsdwacom_la_LDFLAGS) \
+-	$(LDFLAGS) -o $@
+-PROGRAMS = $(noinst_PROGRAMS)
+-am_list_wacom_OBJECTS = list_wacom-list-wacom.$(OBJEXT) \
+-	list_wacom-gsd-wacom-device.$(OBJEXT)
+-list_wacom_OBJECTS = $(am_list_wacom_OBJECTS)
+-list_wacom_DEPENDENCIES =  \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la \
+-	$(top_builddir)/plugins/common/libcommon.la \
+-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+-	$(am__DEPENDENCIES_1)
+-list_wacom_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(list_wacom_CFLAGS) \
+-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+-am_test_wacom_OBJECTS = test_wacom-test-wacom.$(OBJEXT) \
+-	test_wacom-gsd-wacom-manager.$(OBJEXT) \
+-	test_wacom-gsd-wacom-device.$(OBJEXT)
+-test_wacom_OBJECTS = $(am_test_wacom_OBJECTS)
+-test_wacom_DEPENDENCIES =  \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la \
+-	$(top_builddir)/plugins/common/libcommon.la \
+-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+-	$(am__DEPENDENCIES_1)
+-test_wacom_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_wacom_CFLAGS) \
+-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+-DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+-depcomp = $(SHELL) $(top_srcdir)/depcomp
+-am__depfiles_maybe = depfiles
+-am__mv = mv -f
+-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+-LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+-	$(AM_CFLAGS) $(CFLAGS)
+-AM_V_CC = $(am__v_CC_@AM_V@)
+-am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+-am__v_CC_0 = @echo "  CC    " $@;
+-AM_V_at = $(am__v_at_@AM_V@)
+-am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
+-am__v_at_0 = @
+-CCLD = $(CC)
+-LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+-AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+-am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+-am__v_CCLD_0 = @echo "  CCLD  " $@;
+-AM_V_GEN = $(am__v_GEN_@AM_V@)
+-am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
+-am__v_GEN_0 = @echo "  GEN   " $@;
+-SOURCES = $(libgsdwacom_la_SOURCES) $(list_wacom_SOURCES) \
+-	$(test_wacom_SOURCES)
+-DIST_SOURCES = $(libgsdwacom_la_SOURCES) $(list_wacom_SOURCES) \
+-	$(test_wacom_SOURCES)
+-DATA = $(plugin_DATA)
+-ETAGS = etags
+-CTAGS = ctags
+-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+-ACLOCAL = @ACLOCAL@
+-ALL_LINGUAS = @ALL_LINGUAS@
+-AMTAR = @AMTAR@
+-AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+-APPINDICATOR_CFLAGS = @APPINDICATOR_CFLAGS@
+-APPINDICATOR_LIBS = @APPINDICATOR_LIBS@
+-AR = @AR@
+-AUTOCONF = @AUTOCONF@
+-AUTOHEADER = @AUTOHEADER@
+-AUTOMAKE = @AUTOMAKE@
+-AUTOMOUNT_CFLAGS = @AUTOMOUNT_CFLAGS@
+-AUTOMOUNT_LIBS = @AUTOMOUNT_LIBS@
+-AWK = @AWK@
+-BACKGROUND_CFLAGS = @BACKGROUND_CFLAGS@
+-BACKGROUND_LIBS = @BACKGROUND_LIBS@
+-BACKLIGHT_HELPER_CFLAGS = @BACKLIGHT_HELPER_CFLAGS@
+-BACKLIGHT_HELPER_LIBS = @BACKLIGHT_HELPER_LIBS@
+-CATALOGS = @CATALOGS@
+-CATOBJEXT = @CATOBJEXT@
+-CC = @CC@
+-CCDEPMODE = @CCDEPMODE@
+-CFLAGS = @CFLAGS@
+-COLOR_CFLAGS = @COLOR_CFLAGS@
+-COLOR_LIBS = @COLOR_LIBS@
+-COMMON_CFLAGS = @COMMON_CFLAGS@
+-COMMON_LIBS = @COMMON_LIBS@
+-CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
+-CUPS_CFLAGS = @CUPS_CFLAGS@
+-CUPS_CONFIG = @CUPS_CONFIG@
+-CUPS_LIBS = @CUPS_LIBS@
+-CURSOR_CFLAGS = @CURSOR_CFLAGS@
+-CURSOR_LIBS = @CURSOR_LIBS@
+-CXX = @CXX@
+-CXXCPP = @CXXCPP@
+-CXXDEPMODE = @CXXDEPMODE@
+-CXXFLAGS = @CXXFLAGS@
+-CYGPATH_W = @CYGPATH_W@
+-DATADIRNAME = @DATADIRNAME@
+-DBUS_SYS_DIR = @DBUS_SYS_DIR@
+-DEBUG_CFLAGS = @DEBUG_CFLAGS@
+-DEFS = @DEFS@
+-DEPDIR = @DEPDIR@
+-DLLTOOL = @DLLTOOL@
+-DSYMUTIL = @DSYMUTIL@
+-DUMPBIN = @DUMPBIN@
+-ECHO_C = @ECHO_C@
+-ECHO_N = @ECHO_N@
+-ECHO_T = @ECHO_T@
+-EGREP = @EGREP@
+-EXEEXT = @EXEEXT@
+-FGREP = @FGREP@
+-FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
+-FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
+-GCONF_CFLAGS = @GCONF_CFLAGS@
+-GCONF_LIBS = @GCONF_LIBS@
+-GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+-GIOUNIX_CFLAGS = @GIOUNIX_CFLAGS@
+-GIOUNIX_LIBS = @GIOUNIX_LIBS@
+-GLIB_COMPILE_SCHEMAS = @GLIB_COMPILE_SCHEMAS@
+-GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+-GMOFILES = @GMOFILES@
+-GMSGFMT = @GMSGFMT@
+-GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
+-GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
+-GREP = @GREP@
+-GSD_API_VERSION = @GSD_API_VERSION@
+-GSD_INTLTOOL_PLUGIN_RULE = @GSD_INTLTOOL_PLUGIN_RULE@
+-GSD_PLUGIN_LDFLAGS = @GSD_PLUGIN_LDFLAGS@
+-GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
+-GUDEV_CFLAGS = @GUDEV_CFLAGS@
+-GUDEV_LIBS = @GUDEV_LIBS@
+-INSTALL = @INSTALL@
+-INSTALL_DATA = @INSTALL_DATA@
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+-INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+-INSTOBJEXT = @INSTOBJEXT@
+-INTLLIBS = @INTLLIBS@
+-INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+-INTLTOOL_MERGE = @INTLTOOL_MERGE@
+-INTLTOOL_PERL = @INTLTOOL_PERL@
+-INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+-INTLTOOL_V_MERGE = @INTLTOOL_V_MERGE@
+-INTLTOOL_V_MERGE_OPTIONS = @INTLTOOL_V_MERGE_OPTIONS@
+-INTLTOOL__v_MERGE_ = @INTLTOOL__v_MERGE_@
+-INTLTOOL__v_MERGE_0 = @INTLTOOL__v_MERGE_0@
+-KEYBOARD_CFLAGS = @KEYBOARD_CFLAGS@
+-KEYBOARD_LIBS = @KEYBOARD_LIBS@
+-LCMS_CFLAGS = @LCMS_CFLAGS@
+-LCMS_LIBS = @LCMS_LIBS@
+-LD = @LD@
+-LDFLAGS = @LDFLAGS@
+-LIBNOTIFY_CFLAGS = @LIBNOTIFY_CFLAGS@
+-LIBNOTIFY_LIBS = @LIBNOTIFY_LIBS@
+-LIBOBJS = @LIBOBJS@
+-LIBS = @LIBS@
+-LIBTOOL = @LIBTOOL@
+-LIPO = @LIPO@
+-LN_S = @LN_S@
+-LTLIBOBJS = @LTLIBOBJS@
+-MAINT = @MAINT@
+-MAKEINFO = @MAKEINFO@
+-MANIFEST_TOOL = @MANIFEST_TOOL@
+-MEDIA_KEYS_CFLAGS = @MEDIA_KEYS_CFLAGS@
+-MEDIA_KEYS_LIBS = @MEDIA_KEYS_LIBS@
+-MKDIR_P = @MKDIR_P@
+-MKINSTALLDIRS = @MKINSTALLDIRS@
+-MOUSE_CFLAGS = @MOUSE_CFLAGS@
+-MOUSE_LIBS = @MOUSE_LIBS@
+-MSGFMT = @MSGFMT@
+-MSGFMT_OPTS = @MSGFMT_OPTS@
+-MSGMERGE = @MSGMERGE@
+-NM = @NM@
+-NMEDIT = @NMEDIT@
+-NSS_CFLAGS = @NSS_CFLAGS@
+-NSS_DATABASE = @NSS_DATABASE@
+-NSS_LIBS = @NSS_LIBS@
+-OBJDUMP = @OBJDUMP@
+-OBJEXT = @OBJEXT@
+-OTOOL = @OTOOL@
+-OTOOL64 = @OTOOL64@
+-PACKAGE = @PACKAGE@
+-PACKAGEKIT_CFLAGS = @PACKAGEKIT_CFLAGS@
+-PACKAGEKIT_LIBS = @PACKAGEKIT_LIBS@
+-PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+-PACKAGE_NAME = @PACKAGE_NAME@
+-PACKAGE_STRING = @PACKAGE_STRING@
+-PACKAGE_TARNAME = @PACKAGE_TARNAME@
+-PACKAGE_URL = @PACKAGE_URL@
+-PACKAGE_VERSION = @PACKAGE_VERSION@
+-PATH_SEPARATOR = @PATH_SEPARATOR@
+-PKG_CONFIG = @PKG_CONFIG@
+-PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+-PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+-PLUGIN_CFLAGS = @PLUGIN_CFLAGS@
+-POFILES = @POFILES@
+-POLKIT_CFLAGS = @POLKIT_CFLAGS@
+-POLKIT_LIBS = @POLKIT_LIBS@
+-POSUB = @POSUB@
+-PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+-PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+-RANLIB = @RANLIB@
+-SED = @SED@
+-SETTINGS_DAEMON_CFLAGS = @SETTINGS_DAEMON_CFLAGS@
+-SETTINGS_DAEMON_LIBS = @SETTINGS_DAEMON_LIBS@
+-SETTINGS_PLUGIN_CFLAGS = @SETTINGS_PLUGIN_CFLAGS@
+-SETTINGS_PLUGIN_LIBS = @SETTINGS_PLUGIN_LIBS@
+-SET_MAKE = @SET_MAKE@
+-SHELL = @SHELL@
+-STRIP = @STRIP@
+-SYSTEMD_CFLAGS = @SYSTEMD_CFLAGS@
+-SYSTEMD_LIBS = @SYSTEMD_LIBS@
+-UPOWER_CFLAGS = @UPOWER_CFLAGS@
+-UPOWER_LIBS = @UPOWER_LIBS@
+-USE_NLS = @USE_NLS@
+-VERSION = @VERSION@
+-WACOM_CFLAGS = @WACOM_CFLAGS@
+-WACOM_LIBS = @WACOM_LIBS@
+-WARN_CFLAGS = @WARN_CFLAGS@
+-XGETTEXT = @XGETTEXT@
+-abs_builddir = @abs_builddir@
+-abs_srcdir = @abs_srcdir@
+-abs_top_builddir = @abs_top_builddir@
+-abs_top_srcdir = @abs_top_srcdir@
+-ac_ct_AR = @ac_ct_AR@
+-ac_ct_CC = @ac_ct_CC@
+-ac_ct_CXX = @ac_ct_CXX@
+-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+-am__include = @am__include@
+-am__leading_dot = @am__leading_dot@
+-am__quote = @am__quote@
+-am__tar = @am__tar@
+-am__untar = @am__untar@
+-bindir = @bindir@
+-build = @build@
+-build_alias = @build_alias@
+-build_cpu = @build_cpu@
+-build_os = @build_os@
+-build_vendor = @build_vendor@
+-builddir = @builddir@
+-datadir = @datadir@
+-datarootdir = @datarootdir@
+-docdir = @docdir@
+-dvidir = @dvidir@
+-exec_prefix = @exec_prefix@
+-gsettingsschemadir = @gsettingsschemadir@
+-host = @host@
+-host_alias = @host_alias@
+-host_cpu = @host_cpu@
+-host_os = @host_os@
+-host_vendor = @host_vendor@
+-htmldir = @htmldir@
+-includedir = @includedir@
+-infodir = @infodir@
+-install_sh = @install_sh@
+-intltool__v_merge_options_ = @intltool__v_merge_options_@
+-intltool__v_merge_options_0 = @intltool__v_merge_options_0@
+-libdir = @libdir@
+-libexecdir = @libexecdir@
+-localedir = @localedir@
+-localstatedir = @localstatedir@
+-mandir = @mandir@
+-mkdir_p = @mkdir_p@
+-oldincludedir = @oldincludedir@
+-pdfdir = @pdfdir@
+-plugindir = @plugindir@
+-prefix = @prefix@
+-program_transform_name = @program_transform_name@
+-psdir = @psdir@
+-sbindir = @sbindir@
+-sharedstatedir = @sharedstatedir@
+-srcdir = @srcdir@
+-sysconfdir = @sysconfdir@
+-target_alias = @target_alias@
+-top_build_prefix = @top_build_prefix@
+-top_builddir = @top_builddir@
+-top_srcdir = @top_srcdir@
+-plugin_name = wacom
+-plugin_LTLIBRARIES = libgsdwacom.la
+-libgsdwacom_la_SOURCES = \
+-	gsd-wacom-plugin.h	\
+-	gsd-wacom-plugin.c	\
+-	gsd-wacom-manager.h	\
+-	gsd-wacom-manager.c	\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-libgsdwacom_la_CPPFLAGS = \
+-	-I$(top_srcdir)/gnome-settings-daemon		\
+-	-I$(top_srcdir)/plugins/common/			\
+-	-I$(top_srcdir)/data/				\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+-	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
+-	$(AM_CPPFLAGS)
+-
+-libgsdwacom_la_CFLAGS = \
+-	$(PLUGIN_CFLAGS)		\
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-libgsdwacom_la_LDFLAGS = \
+-	$(GSD_PLUGIN_LDFLAGS)
+-
+-libgsdwacom_la_LIBADD = \
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_PLUGIN_LIBS)						\
+-	$(WACOM_LIBS)
+-
+-test_wacom_SOURCES = \
+-	test-wacom.c		\
+-	gsd-wacom-manager.c	\
+-	gsd-wacom-manager.h	\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-test_wacom_CPPFLAGS = \
+-	-I$(top_srcdir)/data/					\
+-	-I$(top_srcdir)/gnome-settings-daemon			\
+-	-I$(top_srcdir)/plugins/common				\
+-	-DBINDIR=\"$(bindir)\"					\
+-	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
+-	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+-	$(AM_CPPFLAGS)
+-
+-test_wacom_CFLAGS = \
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-test_wacom_LDADD = \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la		\
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_DAEMON_LIBS)			\
+-	$(SETTINGS_PLUGIN_LIBS)			\
+-	$(WACOM_LIBS)				\
+-	-lm
+-
+-list_wacom_SOURCES = \
+-	list-wacom.c		\
+-	gsd-wacom-device.c	\
+-	gsd-wacom-device.h
+-
+-list_wacom_CPPFLAGS = \
+-	-I$(top_srcdir)/data/					\
+-	-I$(top_srcdir)/gnome-settings-daemon			\
+-	-I$(top_srcdir)/plugins/common				\
+-	-DBINDIR=\"$(bindir)\"					\
+-	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
+-	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
+-	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+-	$(AM_CPPFLAGS)
+-
+-list_wacom_CFLAGS = \
+-	$(SETTINGS_PLUGIN_CFLAGS)	\
+-	$(WACOM_CFLAGS)			\
+-	$(AM_CFLAGS)
+-
+-list_wacom_LDADD = \
+-	$(top_builddir)/gnome-settings-daemon/libgsd.la		\
+-	$(top_builddir)/plugins/common/libcommon.la			\
+-	$(SETTINGS_DAEMON_LIBS)			\
+-	$(SETTINGS_PLUGIN_LIBS)			\
+-	$(WACOM_LIBS)				\
+-	-lm
+-
+-plugin_in_files = wacom.gnome-settings-plugin.in
+-plugin_DATA = $(plugin_in_files:.gnome-settings-plugin.in=.gnome-settings-plugin)
+-EXTRA_DIST = $(plugin_in_files)
+-CLEANFILES = $(plugin_DATA)
+-DISTCLEANFILES = $(plugin_DATA)
+-all: all-am
+-
+-.SUFFIXES:
+-.SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+-	@for dep in $?; do \
+-	  case '$(am__configure_deps)' in \
+-	    *$$dep*) \
+-	      ( cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh ) \
+-	        && { if test -f $@; then exit 0; else break; fi; }; \
+-	      exit 1;; \
+-	  esac; \
+-	done; \
+-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu plugins/wacom/Makefile'; \
+-	$(am__cd) $(top_srcdir) && \
+-	  $(AUTOMAKE) --gnu plugins/wacom/Makefile
+-.PRECIOUS: Makefile
+-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+-	@case '$?' in \
+-	  *config.status*) \
+-	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
+-	  *) \
+-	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
+-	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
+-	esac;
+-
+-$(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+-	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-
+-$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+-	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+-	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(am__aclocal_m4_deps):
+-install-pluginLTLIBRARIES: $(plugin_LTLIBRARIES)
+-	@$(NORMAL_INSTALL)
+-	test -z "$(plugindir)" || $(MKDIR_P) "$(DESTDIR)$(plugindir)"
+-	@list='$(plugin_LTLIBRARIES)'; test -n "$(plugindir)" || list=; \
+-	list2=; for p in $$list; do \
+-	  if test -f $$p; then \
+-	    list2="$$list2 $$p"; \
+-	  else :; fi; \
+-	done; \
+-	test -z "$$list2" || { \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(plugindir)'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(plugindir)"; \
+-	}
+-
+-uninstall-pluginLTLIBRARIES:
+-	@$(NORMAL_UNINSTALL)
+-	@list='$(plugin_LTLIBRARIES)'; test -n "$(plugindir)" || list=; \
+-	for p in $$list; do \
+-	  $(am__strip_dir) \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(plugindir)/$$f'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(plugindir)/$$f"; \
+-	done
+-
+-clean-pluginLTLIBRARIES:
+-	-test -z "$(plugin_LTLIBRARIES)" || rm -f $(plugin_LTLIBRARIES)
+-	@list='$(plugin_LTLIBRARIES)'; for p in $$list; do \
+-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+-	  test "$$dir" != "$$p" || dir=.; \
+-	  echo "rm -f \"$${dir}/so_locations\""; \
+-	  rm -f "$${dir}/so_locations"; \
+-	done
+-libgsdwacom.la: $(libgsdwacom_la_OBJECTS) $(libgsdwacom_la_DEPENDENCIES) $(EXTRA_libgsdwacom_la_DEPENDENCIES) 
+-	$(AM_V_CCLD)$(libgsdwacom_la_LINK) -rpath $(plugindir) $(libgsdwacom_la_OBJECTS) $(libgsdwacom_la_LIBADD) $(LIBS)
+-
+-clean-noinstPROGRAMS:
+-	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
+-	echo " rm -f" $$list; \
+-	rm -f $$list || exit $$?; \
+-	test -n "$(EXEEXT)" || exit 0; \
+-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+-	echo " rm -f" $$list; \
+-	rm -f $$list
+-list-wacom$(EXEEXT): $(list_wacom_OBJECTS) $(list_wacom_DEPENDENCIES) $(EXTRA_list_wacom_DEPENDENCIES) 
+-	@rm -f list-wacom$(EXEEXT)
+-	$(AM_V_CCLD)$(list_wacom_LINK) $(list_wacom_OBJECTS) $(list_wacom_LDADD) $(LIBS)
+-test-wacom$(EXEEXT): $(test_wacom_OBJECTS) $(test_wacom_DEPENDENCIES) $(EXTRA_test_wacom_DEPENDENCIES) 
+-	@rm -f test-wacom$(EXEEXT)
+-	$(AM_V_CCLD)$(test_wacom_LINK) $(test_wacom_OBJECTS) $(test_wacom_LDADD) $(LIBS)
+-
+-mostlyclean-compile:
+-	-rm -f *.$(OBJEXT)
+-
+-distclean-compile:
+-	-rm -f *.tab.c
+-
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsdwacom_la-gsd-wacom-device.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsdwacom_la-gsd-wacom-manager.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsdwacom_la-gsd-wacom-plugin.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_wacom-gsd-wacom-device.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_wacom-list-wacom.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_wacom-gsd-wacom-device.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_wacom-gsd-wacom-manager.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_wacom-test-wacom.Po@am__quote@
+-
+-.c.o:
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c $<
+-
+-.c.obj:
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c `$(CYGPATH_W) '$<'`
+-
+-.c.lo:
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+-
+-libgsdwacom_la-gsd-wacom-plugin.lo: gsd-wacom-plugin.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -MT libgsdwacom_la-gsd-wacom-plugin.lo -MD -MP -MF $(DEPDIR)/libgsdwacom_la-gsd-wacom-plugin.Tpo -c -o libgsdwacom_la-gsd-wacom-plugin.lo `test -f 'gsd-wacom-plugin.c' || echo '$(srcdir)/'`gsd-wacom-plugin.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgsdwacom_la-gsd-wacom-plugin.Tpo $(DEPDIR)/libgsdwacom_la-gsd-wacom-plugin.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-plugin.c' object='libgsdwacom_la-gsd-wacom-plugin.lo' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -c -o libgsdwacom_la-gsd-wacom-plugin.lo `test -f 'gsd-wacom-plugin.c' || echo '$(srcdir)/'`gsd-wacom-plugin.c
+-
+-libgsdwacom_la-gsd-wacom-manager.lo: gsd-wacom-manager.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -MT libgsdwacom_la-gsd-wacom-manager.lo -MD -MP -MF $(DEPDIR)/libgsdwacom_la-gsd-wacom-manager.Tpo -c -o libgsdwacom_la-gsd-wacom-manager.lo `test -f 'gsd-wacom-manager.c' || echo '$(srcdir)/'`gsd-wacom-manager.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgsdwacom_la-gsd-wacom-manager.Tpo $(DEPDIR)/libgsdwacom_la-gsd-wacom-manager.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-manager.c' object='libgsdwacom_la-gsd-wacom-manager.lo' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -c -o libgsdwacom_la-gsd-wacom-manager.lo `test -f 'gsd-wacom-manager.c' || echo '$(srcdir)/'`gsd-wacom-manager.c
+-
+-libgsdwacom_la-gsd-wacom-device.lo: gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -MT libgsdwacom_la-gsd-wacom-device.lo -MD -MP -MF $(DEPDIR)/libgsdwacom_la-gsd-wacom-device.Tpo -c -o libgsdwacom_la-gsd-wacom-device.lo `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgsdwacom_la-gsd-wacom-device.Tpo $(DEPDIR)/libgsdwacom_la-gsd-wacom-device.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-device.c' object='libgsdwacom_la-gsd-wacom-device.lo' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgsdwacom_la_CPPFLAGS) $(CPPFLAGS) $(libgsdwacom_la_CFLAGS) $(CFLAGS) -c -o libgsdwacom_la-gsd-wacom-device.lo `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-
+-list_wacom-list-wacom.o: list-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -MT list_wacom-list-wacom.o -MD -MP -MF $(DEPDIR)/list_wacom-list-wacom.Tpo -c -o list_wacom-list-wacom.o `test -f 'list-wacom.c' || echo '$(srcdir)/'`list-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/list_wacom-list-wacom.Tpo $(DEPDIR)/list_wacom-list-wacom.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='list-wacom.c' object='list_wacom-list-wacom.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -c -o list_wacom-list-wacom.o `test -f 'list-wacom.c' || echo '$(srcdir)/'`list-wacom.c
+-
+-list_wacom-list-wacom.obj: list-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -MT list_wacom-list-wacom.obj -MD -MP -MF $(DEPDIR)/list_wacom-list-wacom.Tpo -c -o list_wacom-list-wacom.obj `if test -f 'list-wacom.c'; then $(CYGPATH_W) 'list-wacom.c'; else $(CYGPATH_W) '$(srcdir)/list-wacom.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/list_wacom-list-wacom.Tpo $(DEPDIR)/list_wacom-list-wacom.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='list-wacom.c' object='list_wacom-list-wacom.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -c -o list_wacom-list-wacom.obj `if test -f 'list-wacom.c'; then $(CYGPATH_W) 'list-wacom.c'; else $(CYGPATH_W) '$(srcdir)/list-wacom.c'; fi`
+-
+-list_wacom-gsd-wacom-device.o: gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -MT list_wacom-gsd-wacom-device.o -MD -MP -MF $(DEPDIR)/list_wacom-gsd-wacom-device.Tpo -c -o list_wacom-gsd-wacom-device.o `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/list_wacom-gsd-wacom-device.Tpo $(DEPDIR)/list_wacom-gsd-wacom-device.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-device.c' object='list_wacom-gsd-wacom-device.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -c -o list_wacom-gsd-wacom-device.o `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-
+-list_wacom-gsd-wacom-device.obj: gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -MT list_wacom-gsd-wacom-device.obj -MD -MP -MF $(DEPDIR)/list_wacom-gsd-wacom-device.Tpo -c -o list_wacom-gsd-wacom-device.obj `if test -f 'gsd-wacom-device.c'; then $(CYGPATH_W) 'gsd-wacom-device.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-device.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/list_wacom-gsd-wacom-device.Tpo $(DEPDIR)/list_wacom-gsd-wacom-device.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-device.c' object='list_wacom-gsd-wacom-device.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_wacom_CPPFLAGS) $(CPPFLAGS) $(list_wacom_CFLAGS) $(CFLAGS) -c -o list_wacom-gsd-wacom-device.obj `if test -f 'gsd-wacom-device.c'; then $(CYGPATH_W) 'gsd-wacom-device.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-device.c'; fi`
+-
+-test_wacom-test-wacom.o: test-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-test-wacom.o -MD -MP -MF $(DEPDIR)/test_wacom-test-wacom.Tpo -c -o test_wacom-test-wacom.o `test -f 'test-wacom.c' || echo '$(srcdir)/'`test-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-test-wacom.Tpo $(DEPDIR)/test_wacom-test-wacom.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-wacom.c' object='test_wacom-test-wacom.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-test-wacom.o `test -f 'test-wacom.c' || echo '$(srcdir)/'`test-wacom.c
+-
+-test_wacom-test-wacom.obj: test-wacom.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-test-wacom.obj -MD -MP -MF $(DEPDIR)/test_wacom-test-wacom.Tpo -c -o test_wacom-test-wacom.obj `if test -f 'test-wacom.c'; then $(CYGPATH_W) 'test-wacom.c'; else $(CYGPATH_W) '$(srcdir)/test-wacom.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-test-wacom.Tpo $(DEPDIR)/test_wacom-test-wacom.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-wacom.c' object='test_wacom-test-wacom.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-test-wacom.obj `if test -f 'test-wacom.c'; then $(CYGPATH_W) 'test-wacom.c'; else $(CYGPATH_W) '$(srcdir)/test-wacom.c'; fi`
+-
+-test_wacom-gsd-wacom-manager.o: gsd-wacom-manager.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-gsd-wacom-manager.o -MD -MP -MF $(DEPDIR)/test_wacom-gsd-wacom-manager.Tpo -c -o test_wacom-gsd-wacom-manager.o `test -f 'gsd-wacom-manager.c' || echo '$(srcdir)/'`gsd-wacom-manager.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-gsd-wacom-manager.Tpo $(DEPDIR)/test_wacom-gsd-wacom-manager.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-manager.c' object='test_wacom-gsd-wacom-manager.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-gsd-wacom-manager.o `test -f 'gsd-wacom-manager.c' || echo '$(srcdir)/'`gsd-wacom-manager.c
+-
+-test_wacom-gsd-wacom-manager.obj: gsd-wacom-manager.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-gsd-wacom-manager.obj -MD -MP -MF $(DEPDIR)/test_wacom-gsd-wacom-manager.Tpo -c -o test_wacom-gsd-wacom-manager.obj `if test -f 'gsd-wacom-manager.c'; then $(CYGPATH_W) 'gsd-wacom-manager.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-manager.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-gsd-wacom-manager.Tpo $(DEPDIR)/test_wacom-gsd-wacom-manager.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-manager.c' object='test_wacom-gsd-wacom-manager.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-gsd-wacom-manager.obj `if test -f 'gsd-wacom-manager.c'; then $(CYGPATH_W) 'gsd-wacom-manager.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-manager.c'; fi`
+-
+-test_wacom-gsd-wacom-device.o: gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-gsd-wacom-device.o -MD -MP -MF $(DEPDIR)/test_wacom-gsd-wacom-device.Tpo -c -o test_wacom-gsd-wacom-device.o `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-gsd-wacom-device.Tpo $(DEPDIR)/test_wacom-gsd-wacom-device.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-device.c' object='test_wacom-gsd-wacom-device.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-gsd-wacom-device.o `test -f 'gsd-wacom-device.c' || echo '$(srcdir)/'`gsd-wacom-device.c
+-
+-test_wacom-gsd-wacom-device.obj: gsd-wacom-device.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -MT test_wacom-gsd-wacom-device.obj -MD -MP -MF $(DEPDIR)/test_wacom-gsd-wacom-device.Tpo -c -o test_wacom-gsd-wacom-device.obj `if test -f 'gsd-wacom-device.c'; then $(CYGPATH_W) 'gsd-wacom-device.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-device.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_wacom-gsd-wacom-device.Tpo $(DEPDIR)/test_wacom-gsd-wacom-device.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gsd-wacom-device.c' object='test_wacom-gsd-wacom-device.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_wacom_CPPFLAGS) $(CPPFLAGS) $(test_wacom_CFLAGS) $(CFLAGS) -c -o test_wacom-gsd-wacom-device.obj `if test -f 'gsd-wacom-device.c'; then $(CYGPATH_W) 'gsd-wacom-device.c'; else $(CYGPATH_W) '$(srcdir)/gsd-wacom-device.c'; fi`
+-
+-mostlyclean-libtool:
+-	-rm -f *.lo
+-
+-clean-libtool:
+-	-rm -rf .libs _libs
+-install-pluginDATA: $(plugin_DATA)
+-	@$(NORMAL_INSTALL)
+-	test -z "$(plugindir)" || $(MKDIR_P) "$(DESTDIR)$(plugindir)"
+-	@list='$(plugin_DATA)'; test -n "$(plugindir)" || list=; \
+-	for p in $$list; do \
+-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+-	  echo "$$d$$p"; \
+-	done | $(am__base_list) | \
+-	while read files; do \
+-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(plugindir)'"; \
+-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(plugindir)" || exit $$?; \
+-	done
+-
+-uninstall-pluginDATA:
+-	@$(NORMAL_UNINSTALL)
+-	@list='$(plugin_DATA)'; test -n "$(plugindir)" || list=; \
+-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+-	dir='$(DESTDIR)$(plugindir)'; $(am__uninstall_files_from_dir)
+-
+-ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+-	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
+-	unique=`for i in $$list; do \
+-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+-	  done | \
+-	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
+-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+-	mkid -fID $$unique
+-tags: TAGS
+-
+-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+-		$(TAGS_FILES) $(LISP)
+-	set x; \
+-	here=`pwd`; \
+-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+-	unique=`for i in $$list; do \
+-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+-	  done | \
+-	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
+-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+-	shift; \
+-	if test -z "$(ETAGS_ARGS)$$*$$unique"; then :; else \
+-	  test -n "$$unique" || unique=$$empty_fix; \
+-	  if test $$# -gt 0; then \
+-	    $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+-	      "$$@" $$unique; \
+-	  else \
+-	    $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+-	      $$unique; \
+-	  fi; \
+-	fi
+-ctags: CTAGS
+-CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+-		$(TAGS_FILES) $(LISP)
+-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+-	unique=`for i in $$list; do \
+-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+-	  done | \
+-	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
+-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+-	test -z "$(CTAGS_ARGS)$$unique" \
+-	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
+-	     $$unique
+-
+-GTAGS:
+-	here=`$(am__cd) $(top_builddir) && pwd` \
+-	  && $(am__cd) $(top_srcdir) \
+-	  && gtags -i $(GTAGS_ARGS) "$$here"
+-
+-distclean-tags:
+-	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
+-
+-distdir: $(DISTFILES)
+-	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
+-	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
+-	list='$(DISTFILES)'; \
+-	  dist_files=`for file in $$list; do echo $$file; done | \
+-	  sed -e "s|^$$srcdirstrip/||;t" \
+-	      -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
+-	case $$dist_files in \
+-	  */*) $(MKDIR_P) `echo "$$dist_files" | \
+-			   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
+-			   sort -u` ;; \
+-	esac; \
+-	for file in $$dist_files; do \
+-	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
+-	  if test -d $$d/$$file; then \
+-	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+-	    if test -d "$(distdir)/$$file"; then \
+-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+-	    fi; \
+-	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
+-	      cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
+-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+-	    fi; \
+-	    cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
+-	  else \
+-	    test -f "$(distdir)/$$file" \
+-	    || cp -p $$d/$$file "$(distdir)/$$file" \
+-	    || exit 1; \
+-	  fi; \
+-	done
+-check-am: all-am
+-check: check-am
+-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+-installdirs:
+-	for dir in "$(DESTDIR)$(plugindir)" "$(DESTDIR)$(plugindir)"; do \
+-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+-	done
+-install: install-am
+-install-exec: install-exec-am
+-install-data: install-data-am
+-uninstall: uninstall-am
+-
+-install-am: all-am
+-	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+-
+-installcheck: installcheck-am
+-install-strip:
+-	if test -z '$(STRIP)'; then \
+-	  $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+-	    install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
+-	      install; \
+-	else \
+-	  $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+-	    install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
+-	    "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'" install; \
+-	fi
+-mostlyclean-generic:
+-
+-clean-generic:
+-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+-
+-distclean-generic:
+-	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+-	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+-	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
+-
+-maintainer-clean-generic:
+-	@echo "This command is intended for maintainers to use"
+-	@echo "it deletes files that may require special tools to rebuild."
+-clean: clean-am
+-
+-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
+-	clean-pluginLTLIBRARIES mostlyclean-am
+-
+-distclean: distclean-am
+-	-rm -rf ./$(DEPDIR)
+-	-rm -f Makefile
+-distclean-am: clean-am distclean-compile distclean-generic \
+-	distclean-tags
+-
+-dvi: dvi-am
+-
+-dvi-am:
+-
+-html: html-am
+-
+-html-am:
+-
+-info: info-am
+-
+-info-am:
+-
+-install-data-am: install-pluginDATA install-pluginLTLIBRARIES
+-
+-install-dvi: install-dvi-am
+-
+-install-dvi-am:
+-
+-install-exec-am:
+-
+-install-html: install-html-am
+-
+-install-html-am:
+-
+-install-info: install-info-am
+-
+-install-info-am:
+-
+-install-man:
+-
+-install-pdf: install-pdf-am
+-
+-install-pdf-am:
+-
+-install-ps: install-ps-am
+-
+-install-ps-am:
+-
+-installcheck-am:
+-
+-maintainer-clean: maintainer-clean-am
+-	-rm -rf ./$(DEPDIR)
+-	-rm -f Makefile
+-maintainer-clean-am: distclean-am maintainer-clean-generic
+-
+-mostlyclean: mostlyclean-am
+-
+-mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+-	mostlyclean-libtool
+-
+-pdf: pdf-am
+-
+-pdf-am:
+-
+-ps: ps-am
+-
+-ps-am:
+-
+-uninstall-am: uninstall-pluginDATA uninstall-pluginLTLIBRARIES
+-
+-.MAKE: install-am install-strip
+-
+-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
+-	clean-libtool clean-noinstPROGRAMS clean-pluginLTLIBRARIES \
+-	ctags distclean distclean-compile distclean-generic \
+-	distclean-libtool distclean-tags distdir dvi dvi-am html \
+-	html-am info info-am install install-am install-data \
+-	install-data-am install-dvi install-dvi-am install-exec \
+-	install-exec-am install-html install-html-am install-info \
+-	install-info-am install-man install-pdf install-pdf-am \
+-	install-pluginDATA install-pluginLTLIBRARIES install-ps \
+-	install-ps-am install-strip installcheck installcheck-am \
+-	installdirs maintainer-clean maintainer-clean-generic \
+-	mostlyclean mostlyclean-compile mostlyclean-generic \
+-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+-	uninstall-am uninstall-pluginDATA uninstall-pluginLTLIBRARIES
+-
+-
+-@GSD_INTLTOOL_PLUGIN_RULE@
+-
+-# Tell versions [3.59,3.63) of GNU make to not export all variables.
+-# Otherwise a system limit (for SysV at least) may be exceeded.
+-.NOEXPORT:
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/test-wacom.c gnome-settings-daemon-3.3.90/plugins/wacom/test-wacom.c
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/test-wacom.c	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/test-wacom.c	1969-12-31 19:00:00.000000000 -0500
+@@ -1,61 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of the
+- * License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+- * 02111-1307, USA.
+- *
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <stdlib.h>
+-
+-#include <glib/gi18n.h>
+-#include <gtk/gtk.h>
+-
+-#include "gsd-wacom-manager.h"
+-
+-static GsdWacomManager *manager = NULL;
+-
+-int
+-main (int    argc,
+-      char **argv)
+-{
+-        GError  *error;
+-
+-        bindtextdomain (GETTEXT_PACKAGE, GNOME_SETTINGS_LOCALEDIR);
+-        bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+-        textdomain (GETTEXT_PACKAGE);
+-
+-	g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
+-
+-        error = NULL;
+-        if (! gtk_init_with_args (&argc, &argv, NULL, NULL, NULL, &error)) {
+-                fprintf (stderr, "%s", error->message);
+-                g_error_free (error);
+-                exit (1);
+-        }
+-
+-        manager = gsd_wacom_manager_new ();
+-
+-        error = NULL;
+-        gsd_wacom_manager_start (manager, &error);
+-
+-        gtk_main ();
+-
+-        return 0;
+-}
+diff -Nru gnome-settings-daemon-3.3.90.orig/plugins/wacom/wacom.gnome-settings-plugin.in gnome-settings-daemon-3.3.90/plugins/wacom/wacom.gnome-settings-plugin.in
+--- gnome-settings-daemon-3.3.90.orig/plugins/wacom/wacom.gnome-settings-plugin.in	2012-03-02 11:21:16.230303501 -0500
++++ gnome-settings-daemon-3.3.90/plugins/wacom/wacom.gnome-settings-plugin.in	1969-12-31 19:00:00.000000000 -0500
+@@ -1,8 +0,0 @@
+-[GNOME Settings Plugin]
+-Module=gsdwacom
+-IAge=0
+-_Name=Wacom
+-_Description=Wacom plugin
+-Authors=Peter Hutterer
+-Copyright=Copyright © 2010
+-Website=

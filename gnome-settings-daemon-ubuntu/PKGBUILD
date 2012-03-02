@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu17
-pkgver=3.2.2.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu4
+pkgver=3.3.90.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -18,9 +18,11 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('f0b2674c144ea4999d755c5ee5f9c76669cd436364c78e51d62a9aeec9665cb4e609dbc8e36ed8abae3128cd51005c010614a7d49316672b01df12c0b40bf530'
-            'cd01b01b55ecac016b6a5d2b7444601008b535d7ff4e6921f4e5c32c52bfff6bd67ac2dc5033e15b6d825927d8202b07a9ccc8bd1da1042233e25f5f0fb8ab21')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'disable_wacom_plugin.patch')
+sha512sums=('2fa2b782cbf2f8b06d337c43e0cae9eb5a7a531aacd5b3583e5a020d5ee854f3d389c3e5f87f0665a62bbb4c4c1a65695f1311fbbd28bbd1a6416ecb0db86e42'
+            'efda517402fdc2f7433cc3117417a114f3489b8423f7e141f3b12b0b625ff27444f4ea9d595fe0346c423af76cc150282076d456b01036d69b62407ddee5e2d5'
+            '52f54a02d8c509a910ec2076f612dbc013876244de7b10fd65d3a3cbd3eb94cda383de4f9f3db94b7099a7bb2d6ae4109aa37dc63480bbdfbb2b8adbab3f7f82')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -35,6 +37,9 @@ build() {
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # Disable wacom plugin
+  patch -Np1 -i "${srcdir}/disable_wacom_plugin.patch" || true
 
   autoreconf -vfi
   ./configure \
