@@ -4,8 +4,8 @@
 
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
-_ubuntu_rel=0ubuntu3
-pkgver=0.5.91.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=0.5.92.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -16,16 +16,17 @@ makedepends=('intltool>=0.35.0')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('dc082a5222234c3119f0a4e758d9c6982e98d7f18641c2ecfa0aec5f4cf5b09b6493961816752bf8454434def23e22365a51db2a9d7aaee3af02599968fd3c1c'
-            'd13f0940c9526d12dea46e06a7fd2a933527989e8e98d71bb3d53ff80172105b3cba431d19d3bc0617977e15df3c4f3bf3ec3bbde3bd2f5ca142929933f24bbd')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('fd4c2acb8562401f047ca77dfa0bde3d3617c73c2c2802b772f1b7f027e44c340c1ed47b05c31ff8329fec2be4a4b184a80dceae6c63d8f550ed91fc0e76bd2d'
+            'd5ddc34d876f83ff1cb42be9d1819108c6163422c7735321d9592db643bf3b6a2f7ebd298521149e0004dfc3e53a6d8f0426c09948267cbdb6821ab46c20cf45')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
 
   # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
   done
 
   autoreconf -vfi
