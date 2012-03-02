@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=2ubuntu9
-pkgver=3.2.2.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu4
+pkgver=3.3.90.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
-depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet' 'libpulse-ubuntu=1.1.0ubuntu7-100')
+depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet' 'libpulse-ubuntu>=1.1.0ubuntu7-100')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'apg: adds password generation for user accounts'
             'gnome-color-manager: for color management tasks')
@@ -20,10 +20,12 @@ conflicts=('gnome-control-center')
 install=gnome-control-center.install
 license=('GPL')
 options=('!libtool' '!emptydirs')
-source=("http://download.gnome.org/sources/${pkgname%-*}/3.2/${pkgname%-*}-${pkgver%.*}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('59f290440f390c4f40446d95c44b168bf4de0e696211ab9e36dcde959ea13b7feaf79d8d42c7506fe61d9e8bca5fbd2aa98e82bf8cd03a5d860ca5a5e12b4c94'
-            '68946abdb857e5b872471dc86384a14d25fd28bf5919a032f16c3ed25f383b331690ca665bd6c8a1ab508ef9de1d85e1d08a8fb6c4036f804348d7e9f5b6e092')
+source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'disable_wacom_panel.patch')
+sha512sums=('960bd2d48336f6a7451d8cf486e6b2e68a0d441f3c6f332f2f81ca495865b8a91d9c9a6bfd9fb0270ffdb39b82ce0a3c0c648289c09a2841086563559702a46f'
+            '62417d18ac894ba9d7d65f5acff309ad7a8dea3333006d00c180ce467dad83c84edc57338adb5cbf531e002bc336d0a011d977dddd1c4efd48e301d8c91327ea'
+            '0b9779ba153f8a0c4f05cf62edd81dae0a879b47f1462a7ba66504651896a4b089461a8d4c0de330e9255866b63a2265385da7ed23df5edf84f07b5838fdc65b')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -43,6 +45,9 @@ build() {
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # disable wacom panel - too much work to package
+  patch -Np1 -i "${srcdir}/disable_wacom_panel.patch" || true
 
   autoreconf -vfi
   ./configure \
