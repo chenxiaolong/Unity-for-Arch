@@ -2,14 +2,16 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgname=python-xapian
+pkgname=python2-xapian
 pkgver=1.2.8
-pkgrel=100
+pkgrel=101
 pkgdesc="SWIG and JNI bindings allowing Xapian to be used from various other programming languages"
 arch=('i686' 'x86_64')
 url="http://xapian.org/"
 license=('GPL')
 depends=('xapian-core' 'python2')
+replaces=('python-xapian')
+conflicts=('python-xapian')
 groups=('unity')
 source=("http://oligarchy.co.uk/xapian/${pkgver}/xapian-bindings-${pkgver}.tar.gz")
 sha512sums=('ef19b51bbdd32c08c7a4ab70701e652fbee23bcfab998082b7c5fe1f42eb47f2643398d6e2a6368c471948176f96ce663b70b2fe9ee8d20614d37358d42986e0')
