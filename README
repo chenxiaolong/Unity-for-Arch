@@ -32,7 +32,7 @@ Order to compile/install:
 24: libzeitgeist                   -> Client library to interact with Zeitgeist
 25: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
 26: geoclue                        -> Modular geoinformation service
-27: python-geoclue                 -> Geoclue Python module
+27: python2-geoclue                 -> Geoclue Python module
 28: python-xapian                  -> Python bindings for Xapian
 29: zeitgeist-extensions           -> Extensions for Zeitgeist
 30: gnome-activity-journal         -> Tool for easily browsing and finding files
