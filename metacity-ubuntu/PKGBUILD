@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=metacity-ubuntu
-_ubuntu_rel=1ubuntu5
+_ubuntu_rel=1ubuntu7
 pkgver=2.34.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
@@ -20,7 +20,7 @@ install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('44e4879d0b5cac8a50fbd0c33c29fa64b6485f80eca5bf6154b368cae64492402fb880eb6783ab4f1d2258079e96f53bf3b7300d4c2fbb36e4ebc7baaf8ee952'
-            '687963bf97bea9292699ab9840f7ae22777e6db0ca92a3914baafa552e846625192154a92376cf76ae5c00bd288606c52b1e39fd2438bc563b988fd5c9d855f3')
+            '9d75c485ccd4993aea31f6bebe74aa0dfd774161c331c87fa75ce632cea08d4308c796dd85bf3f0f7d5bc12c764572532ab91e2ff7af801ab8ee69762abd6aaa')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
