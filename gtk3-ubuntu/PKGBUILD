@@ -3,7 +3,7 @@
 
 pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=3.3.14.${_ubuntu_rel}
+pkgver=3.3.16.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GTK+ is a multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
@@ -19,8 +19,8 @@ license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/gtk+-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
-sha512sums=('ea2c3556830d5c605438255576640d440b00ad2992969e5de83c43967da193fddf7bcb0e3acab841e38030f4c92bfd55cf441213b5fe0ddbd77390465f96dba2'
-            '3333401874944880c1eb63e9fec978f586e06bc4dc1a31729631cfc693d21e10b0a1b0a7802ffcc5bbe2af7e15c43b9de5c3a776505721905c06f71be7d2aa64'
+sha512sums=('b3d1a10ea501d62dd3213ca6c76eaf492675ad2b55906695b61d9f9cb13c50a70268cc2d1fe4a37d1dff485c50345429102825490f54b2389ce88b27796fbcdc'
+            '49dc30066144325c428417e38d5a71ac556f527109d17d4433046d48b3b1a972cf808b3cd6e8647e14671209e17a407d277bec85a0b0a4901f9340e21f6e4af7'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
