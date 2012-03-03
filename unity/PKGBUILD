@@ -74,7 +74,7 @@ build() {
     _NEWFILE=${i##*/} # Strip path
     _NEWFILE=${_NEWFILE#*-} # Strip 'unity-'
     cp "${i}" "${_NEWFILE}" # Copy new translation
-    echo "${_NEWFILE%.*}" >> unity.pot # Add translation
+    echo "${_NEWFILE%.*}" >> LINGUAS # Add translation
   done
   cp "${srcdir}/po/unity.pot" unity.pot
   popd
