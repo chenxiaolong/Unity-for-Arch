@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-lens-video
-pkgver=0.1.1
+pkgver=0.3.3
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('i686' 'x86_64')
@@ -10,7 +10,7 @@ license=('GPL')
 depends=('python2' 'dee')
 groups=('unity')
 source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('4138b89b3ffaf1b22e427330ea4133c48736e26136350bcad2a2d9d5f7ecb5d778d10087cde663c904ada0a550550a8e406ff1e8faf1652b16d8ae03e50bc9fd')
+sha512sums=('09c4aa80763d3158f3995c7c3742f6586abe819dc3bc2f5e08674dfb3dae20c9ccc3df7baa0fbb46e4545aedfa17638f504cdd8dba77c0d089997ecacf91449a')
 
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
