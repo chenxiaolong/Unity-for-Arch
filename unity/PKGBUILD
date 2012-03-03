@@ -35,7 +35,7 @@ source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+downloa
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
-        "launchpad_export.tar.gz::http://ubuntuone.com/1uOWRNegG0LvwZKnerHoMk" # Snapshot of translations from Launchpad as of 2011-03-03
+        "launchpad_export.tar.gz::http://ubuntuone.com/1uOWRNegG0LvwZKnerHoMk" # Snapshot of translations from Launchpad as of 2012-03-03
         'fix_test-gtest-xless.patch'
         'launcher_bfb.png')
 sha512sums=('0158892af2d23e4c120dd5fb83745dbd6b117a47fdda2a982c5e0ad41bef8243caf2121f5a8125d033138b2a1fe531c054049b4667e3373dcd142d48b480a6c7'
