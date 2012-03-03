@@ -2,8 +2,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=utouch-frame
-pkgver=2.2.0
-pkgrel=101
+pkgver=2.2.1
+pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-frame"
@@ -11,9 +11,9 @@ license=('GPL')
 depends=('utouch-evemu' 'mtdev')
 makedepends=('asciidoc')
 groups=('unity')
-source=("http://launchpad.net/${pkgname}/trunk/v${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 options=('!libtool')
-sha512sums=('6e3242d63a4f4118fc59cdcaf9b4bd64dd5fc59e335b485457387d11ea954e9200c7ba9b84dc9bdc1037072ce61cb4037f390db4c6ca070cceee3c6dbc962101')
+source=("https://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('28cef15bbcb53952bf0ee7bb30a32dd402a28513ef98f50fb6dd037bc504574d15aa68e27541e360c1e0227d8e597572de20be88e7e3ee8a3118b21a6ff39b15')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
