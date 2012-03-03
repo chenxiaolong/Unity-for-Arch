@@ -12,7 +12,7 @@ pkgname=unity
 pkgver=5.4.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu1
+  _ubuntu_rel=0ubuntu2
   #_ubuntu_ver=4.24.0
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
@@ -20,7 +20,7 @@ else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=101
+pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
@@ -35,12 +35,12 @@ source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+downloa
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
-        "launchpad_export.tar.gz::http://ubuntuone.com/0WPtOWuoAyDg8NJrdeUVwe" # Snapshot of translations from Launchpad as of 2011-02-17
+        "launchpad_export.tar.gz::http://ubuntuone.com/1uOWRNegG0LvwZKnerHoMk" # Snapshot of translations from Launchpad as of 2011-03-03
         'fix_test-gtest-xless.patch'
         'launcher_bfb.png')
 sha512sums=('0158892af2d23e4c120dd5fb83745dbd6b117a47fdda2a982c5e0ad41bef8243caf2121f5a8125d033138b2a1fe531c054049b4667e3373dcd142d48b480a6c7'
-            '66169c32100ebcc0901bdf27eed5f476f50130e723e03f4d1c82fb1a7ffecd84487ac98e06a5aa7c310c71b21403ec6a2803c65cb666c02fceb393681ece3ecb'
-            '72dfa2d8306dae34515a1ce2ae97f686cb7bcdf6176efaf07a03b1fed91dcfa553aa6948e4dadce2b3ac7c757445ec7126c1ab4fd76120b394c0e809798f2ca7'
+            '5b49f73c16c8b69bb191d1bde0c594bd7998f4f5e77b515e427a05873ce882bcaf224544b6b7bb3aab6f043f6bf26bf766be91e4615f85c327774c7d2151eb2e'
+            'f80df915dfc13502a96a19b5b62c1c1a0bb626d91f4a3559b3c2877ce5356bd69e60f618f026aecc281edf87c6411196a1558763143e610d0f2d18b2892c74b8'
             '313976c2e6acf3d330aa1af01addeb694c094de0dfcfac7636af32d1181e318eb0f41a33df92e769186f2593a43cf73ab2377450422596c6f49b8ca57fe936e1'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 

@@ -1,5 +1,4 @@
-#SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unitymtgrabhandles.schemas compiz-unityshell.schemas"
-SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unityshell.schemas"
+SCHEMAS="compiz-gtkloader.schemas compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unitymtgrabhandles.schemas compiz-unityshell.schemas"
 post_install() {
   glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
   gconf-schemas --register ${SCHEMAS}
