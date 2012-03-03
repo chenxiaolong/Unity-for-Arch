@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xf86-input-synaptics-ubuntu
-_ubuntu_ver="+git20120210"
+_ubuntu_ver="~git20120223"
 _ubuntu_rel=0ubuntu2
-_actual_ver=1.5.0
+_actual_ver=1.5.99
 
 # The AUR is sooo annoying...
-pkgver=${_actual_ver}.git20120210.${_ubuntu_rel}
+pkgver=${_actual_ver}.git20120223.${_ubuntu_rel}
 
 pkgrel=1
 pkgdesc="Synaptics driver for notebook touchpads"
@@ -26,8 +26,8 @@ source=("10-synaptics.conf"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-synaptics_${_actual_ver}${_ubuntu_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xserver-xorg-input-synaptics_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.diff.gz")
 sha512sums=('3e78c3c77e58ca9de19fc97b9cc3d7d6d08a740bacf005d564de9193e60037a0262ed6b0841f2b3d98adb5ba60675f4856569978d5cb47c4ed2312e47fe6c085'
-            '576329dbeb34139a522200a87decee63dc0f30b3689cf77126d767bff3128e48454f5509ed08b761b93a00ddc1e2a74591ce421efcd85982970b79547680e169'
-            'cbf9efd272f419bd713858fb33037905bf439cc081471e68148ed84de1f86453eb0c893aff3b66f91301e6e23793462f5a8247bdfa7580d606dfbe57e1dd51ea')
+            '468a49e4e2222a18f7f367ab1f5554dd8ad64420045b00d952e3645ec59cc5eed876f4bcc7909762d543d9aad357671d19fce3955a82f90627d2954117f6b273'
+            '8610112839dad065e205650a1bbd6bc523c37d0020a806e9c04d63b1bbd517b51a62d72acc27d8e73948a04275d4e86f98b28a275a2def6d858fcc91593f0f84')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-1.5.99"
