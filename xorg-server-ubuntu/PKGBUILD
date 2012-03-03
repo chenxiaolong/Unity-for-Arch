@@ -3,7 +3,7 @@
 pkgbase=xorg-server-ubuntu
 pkgname=xorg-server-ubuntu
 true && pkgname=('xorg-server-ubuntu' 'xorg-server-xephyr-ubuntu' 'xorg-server-xdmx-ubuntu' 'xorg-server-xvfb-ubuntu' 'xorg-server-xnest-ubuntu' 'xorg-server-common-ubuntu' 'xorg-server-devel-ubuntu')
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 pkgver=1.11.4.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -17,7 +17,7 @@ source=("${url}/releases/individual/xserver/${pkgbase%-*}-${pkgver%.*}.tar.bz2"
         'xvfb-run.1'
         '10-quirks.conf')
 sha512sums=('29013ffd51ff1b6a2b5679580c490d68dc5feaebdc9201a2812a410761200f5468de76c8791ab089950504be649e61f2cccb705587fde66eef1bcd3461f537ed'
-            'c7bfb6d3a49600d95c9efe8bfb172bc1367ae50c55f77fa63ac63277a7944cbb65faeb6e55ca0f362034460b5c1d95b80bf9cd5439e5cff15954584cb3b79df8'
+            'db592c965e098a9b9672078746f8b0cb9882611cfcf66a5c0a93168e7ed26b312ec442f0190c6ce7dcf865544ccebbc9fcd59de74d20f304eb2a47127294148e'
             'ca1cda27016f7c269cbdecc45da36255afeef5c1973cc484544f9dfbf56ed1868365c93a4c7f93e3a23e5322f084ec0cdd137e15b43872aae7f0c03040028ce6'
             'de5e2cb3c6825e6cf1f07ca0d52423e17f34d70ec7935e9dd24be5fb9883bf1e03b50ff584931bd3b41095c510ab2aa44d2573fd5feaebdcb59363b65607ff22'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2')
