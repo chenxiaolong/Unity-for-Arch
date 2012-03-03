@@ -2,7 +2,7 @@
 
 pkgname=libcompizconfig-ubuntu
 
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 _ubuntu_ver='~bzr428'
 _actual_ver=0.9.7.0
 _WTF_ver=0.9.5.94
@@ -23,7 +23,7 @@ install=${pkgname%-*}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('13612ebcdd3016c5111a664487dd76412ef39f59fe986c0805a96d58696780d200e70dfd09e2d93a20e4c35aeb5cd2959a79c6b544d465c9232a60889b692e19'
-            '2828e19694ce9e120b197245d1ddcf667eb8cf92e16806af618790064d3cb04cfabd325e727087dac5a757fdd86bd01e95168d8b75eced4a476059716ed6279a')
+            '95358867c7b2f2aa9a48793421b291dd5e204baafcbae3b0a59b05e9cd09817a07e1a6b73a15e9bab1d33d732d28b416c98b5947c2e83e40221f0647e4f0c5e0')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_WTF_ver}"
