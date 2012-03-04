@@ -4,7 +4,7 @@
 
 pkgbase=qt-ubuntu
 pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=1ubuntu4
+_ubuntu_rel=1ubuntu8
 pkgver=4.8.0.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -14,25 +14,86 @@ makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'db
 options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${pkgver%.*}"
 source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'fix-qgraphicsscene-regression.patch'
+        'improved-filter-event.patch'
+        'qurl-backward-compatibility.patch')
 sha512sums=('b37f2d5fe3cebdcc7ebd5b6bc68ea03f4cabeadc492c77d7c18d00ede5c254adb57fcbe5cec6326072304db49e69e59c14af7e90875138c3b2f255237a99a78f'
-            '705232004c7fa406867d72e72f35a2abdfde223f678fd891211b643650ec6463d31a5ef41ceb12c354e1c426ad211f8bd4f8abec61ad5e1650eeba2c9862bde4')
+            '717bcffbde58bebe461caf76cfa5ce388e38731b668231002d894321d324980cfd045d9f80201e963e2c0a094e62298071976fa8f1b55737551e1d4001e1424e'
+            '5b5bdf98eaba6cbbd5e9245fcd34bdccdc0dbf4dc84e311fb3967c82a586426b62e8f616d5b84e02a434fdee185fe30ea1b3949061f7b805112adbe132822068'
+            '9d3675b4773c8979268ab02e81779804ebc83c128d6be3df17321e251e11caa2b4ea8f5b98743435557cdd6fecf80e5542dd7c54fa7cc544409ecf7da8e95037'
+            'c9d5861a486d09d004cc32f49a9c981876835ab7e4994ac21bd89b0a9236d77a04a7490306a44f6fff06d3be8ce4b344fb63603e500cabf4b9f8e2ef1e4d8c58')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
 
+  # Apply Arch Linux patches
+    # (FS#28707)
+      patch -p1 -i "${srcdir}"/fix-qgraphicsscene-regression.patch
+    # (FS#27757) (KDEBUG#275469)
+      patch -p1 -i "${srcdir}"/improved-filter-event.patch
+      patch -p1 -i "${srcdir}"/qurl-backward-compatibility.patch
+
   # Apply Ubuntu patches
-    # Disable patches
-      # Patch for adding "-qt4" to the end of the binaries' filenames
-      sed -i '/01_debian_append_qt4_suffix.diff/d' "${srcdir}/debian/patches/series"
-      # Multiarch patch for Debian/Ubuntu
-      sed -i '/qt-multiarch-plugin-path-compat.diff/d' "${srcdir}/debian/patches/series"
-      # Debian architecture detection (fails with: "Qt has not been ported to this architecture")
-      sed -i '/07_trust_dpkg-arch_over_uname-m.diff/d' "${srcdir}/debian/patches/series"
-      # ARM v6 entry for previous patch
-      sed -i '/94_armv6_uname_entry.diff/d' "${srcdir}/debian/patches/series"
-      # Disable Qt webkit (exists in separate package)
-      sed -i '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d' "${srcdir}/debian/patches/series"
+    # Disable patches (longest command you've ever seen? :D) (can't use
+    # punctuation for comments or editors will completely screw up the
+    # syntax highlighting)
+      sed -i \
+      `# Patch for adding '-qt4' to the end of the filenames of binaries` \
+        -e '/01_debian_append_qt4_suffix.diff/d'                          \
+      `# Multiarch patch for Debian/Ubuntu`                               \
+        -e '/qt-multiarch-plugin-path-compat.diff/d'                      \
+      `# Debian architecture detection {fails with:`                      \
+      `# "Qt has not been ported to this architecture"}`                  \
+        -e '/07_trust_dpkg-arch_over_uname-m.diff/d'                      \
+      `# ARM v6 entry for previous patch`                                 \
+        -e '/94_armv6_uname_entry.diff/d'                                 \
+      `# Disable Qt webkit {exists in separate package}`                  \
+        -e '/16_hide_std_symbols_on_qtwebkit.diff/d'                      \
+        -e '/18_enable_qt3support_qtwebkit_debug_info.diff/d'             \
+        -e '/30_webkit_unaligned_access.diff/d'                           \
+        -e '/96_webkit_no_gc_sections.diff/d'                             \
+        -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
+        -e '/kubuntu_01_fix_build_glib_231.diff/d'                        \
+        -e '/11_build_translations.diff/d'                                \
+      `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
+      `# the built-in Qt webkit`                                          \
+        -e '/20_install_qvfb.diff/d'                                      \
+        -e '/fix_qvfb_build.patch/d'                                      \
+      `# Debug packages arent used in Arch Linux - remove patch to`       \
+      `# default to keeping debug symbols`                                \
+        -e '/12_add_nostrip_for_debug_packages.diff/d'                    \
+      `# Breaks build`                                                    \
+        -e '/kubuntu_97_a11y_qt_and_qml_backport.diff/d'                  \
+      `# Unsupported CPU architectures`                                   \
+        -e '/add_missing_method_for_QBasicAtomicPointer_on_s390.patch/d'  \
+        -e '/powerpc_designer_gstabs.diff/d'                              \
+        -e '/kfreebsd_monotonic_clock.diff/d'                             \
+        -e '/sh.diff/d'                                                   \
+        -e '/powerpcspe.diff/d'                                           \
+        -e '/99_hppa_bug561203_decrease_failure_rate.diff/d'              \
+        -e '/92_armel_gcc43_valist_compat.diff/d'                         \
+        -e '/80_hurd_max_path.diff/d'                                     \
+        -e '/71_hppa_unaligned_access_fix_458133.diff/d'                  \
+        -e '/70_hppa_ldcw_fix.diff/d'                                     \
+        -e '/51_kfreebsd_strnstr_build_fix.diff/d'                        \
+        -e '/50_kfreebsd_Q_OS.diff/d'                                     \
+        -e '/41_disable_opengl_visibility.diff/d'                         \
+        -e '/40_alpha_ice.diff/d'                                         \
+      `# Demos arent built on Arch Linux`                                 \
+        -e '/buildable_appchooser_states_demos.patch/d'                   \
+      `# This is not Debian or Ubuntu`                                    \
+        -e '/08_configure_quilt_compat.diff/d'                            \
+        -e '/fix_ftbfs_format-security.patch/d'                           \
+      `# Do not default to ibus`                                          \
+        -e '/kubuntu_10_ibus_input_method.diff/d'                         \
+      `# Tests arent built`                                               \
+        -e '/10_config_tests_fixes.diff/d'                                \
+      `# Not needed for rolling release distros`                          \
+        -e '/23_permit_plugins_built_with_future_qt.diff/d'               \
+      \
+      "${srcdir}/debian/patches/series"
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -41,6 +102,14 @@ build() {
   # error: ‘struct’ tag used in naming ‘union _GMutex’
   CFLAGS="${CFLAGS} -fpermissive"
   CXXFLAGS="${CXXFLAGS} -fpermissive"
+
+  # Workaround error with new glib
+  #CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+  #CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations"
+
+  # More workarounds
+  CFLAGS="${CFLAGS} -Wno-error"
+  CXXFLAGS="${CXXFLAGS} -Wno-error"
 
   export QT4DIR="${srcdir}/${_pkgfqn}"
   export LD_LIBRARY_PATH="${QT4DIR}/lib:${LD_LIBRARY_PATH}"
@@ -66,50 +135,25 @@ build() {
     -importdir /usr/lib/qt/imports \
     -plugindir /usr/lib/qt/plugins \
     -prefix /usr \
-    -sysconfdir /etc \
+    -sysconfdir /etc/xdg \
     -translationdir /usr/share/qt/translations \
     `# Enable features` \
-    -audio-backend \
-    -gtkstyle \
-    -icu \
-    -plugin-sql-ibase \
     -plugin-sql-mysql \
     -plugin-sql-odbc \
     -plugin-sql-psql \
     -plugin-sql-sqlite \
-      `# sqlite2 is not supported in Arch Linux` \
-      `# -plugin-sql-sqlite2` \
-    -plugin-sql-tds \
-    -qvfb \
-    -script \
-    -scripttools \
-    -svg \
-    -xmlpatterns \
     `# Disable features` \
-    -no-egl \
-    -no-multimedia \
     -no-openvg \
     -no-phonon \
     -no-phonon-backend \
     -no-webkit \
     `# Configuration options` \
     -graphicssystem raster \
-    -no-separate-debug-info \
-    -opengl desktop \
     -optimized-qmake \
     -reduce-relocations \
-    -system-libjpeg \
-    -system-libpng \
-    -system-libtiff \
-      `# The 'nas' package from the AUR is required` \
-      `# -system-nas-sound` \
     -system-sqlite \
-    -system-zlib \
     `# Build options` \
     -dbus-linked \
-    -fast \
-    -I/usr/include/freetype2 \
-    -lfontconfig \
     -no-rpath \
     -nomake demos \
     -nomake docs \
