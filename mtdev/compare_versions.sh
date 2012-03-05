@@ -10,6 +10,6 @@ UPSTREAM_VER=$(wget -q 'http://bitmath.org/code/mtdev/' -O - | sed -n 's/.*mtdev
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${pkgver}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
