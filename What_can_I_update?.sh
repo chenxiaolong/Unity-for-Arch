@@ -220,7 +220,7 @@ for i in ${PKGLIST}; do
     #No need to repeated call pacman for the same split package
     if [ "${j}" == 0 ]; then
       # Current installed version
-      CURRENTVER=$(pacman -Qi ${pkgname[${j}]} 2>/dev/null | grep [[:digit:]]-[[:digit:]] | sed 's/^.*:\ \(.*\)$/\1/g')
+      CURRENTVER=$(pacman -Q ${pkgname[${j}]} 2>/dev/null | awk '{print $2}')
 
       # Compare versions
       COMPARE=$(vercmp "${CURRENTVER}" "${pkgver}-${pkgrel}")
@@ -231,7 +231,7 @@ for i in ${PKGLIST}; do
     fi
 
     if [[ "${UPGRADE}" == "true" ]]; then
-      #Add packages to arrays
+      # Add packages to arrays
       if [[ "${PKGBASEONLY}" == "true" ]]; then
         ARRAY_PKGNAME[${ARRAY_COUNTER}]=${i}
       else
@@ -239,14 +239,14 @@ for i in ${PKGLIST}; do
       fi
       ARRAY_PKGVER_PKG[${ARRAY_COUNTER}]=${pkgver}-${pkgrel}
       if [ -z "${CURRENTVER}" ]; then
-        #If the current version is empty then it's not installed
+        # If the current version is empty then it's not installed
         ARRAY_PKGVER_INST[${ARRAY_COUNTER}]="notinstalled"
       else
         ARRAY_PKGVER_INST[${ARRAY_COUNTER}]=${CURRENTVER}
       fi
       let ARRAY_COUNTER++
     fi
-    #Do not loop through every package name if package base name is requested
+    # Do not loop through every package name if package base name is requested
     if [[ "${PKGBASEONLY}" == "true" ]]; then
       break
     fi
