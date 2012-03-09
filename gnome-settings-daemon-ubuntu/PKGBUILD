@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu4
-pkgver=3.3.90.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=3.3.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -20,9 +20,9 @@ url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'disable_wacom_plugin.patch')
-sha512sums=('2fa2b782cbf2f8b06d337c43e0cae9eb5a7a531aacd5b3583e5a020d5ee854f3d389c3e5f87f0665a62bbb4c4c1a65695f1311fbbd28bbd1a6416ecb0db86e42'
-            'efda517402fdc2f7433cc3117417a114f3489b8423f7e141f3b12b0b625ff27444f4ea9d595fe0346c423af76cc150282076d456b01036d69b62407ddee5e2d5'
-            '52f54a02d8c509a910ec2076f612dbc013876244de7b10fd65d3a3cbd3eb94cda383de4f9f3db94b7099a7bb2d6ae4109aa37dc63480bbdfbb2b8adbab3f7f82')
+sha512sums=('cba0701bdd0202d6e344e89a682e4272800a3fca276d4b47311437f658cb3b91c34e04c18165da2b5ea266e7e365f2f8fafc832ff7fb44deab68142ee53107a3'
+            '113e7ca9b66e29fc73f8badfa3709c73d1d74a409c507d52779e87328b4aa63def148d085fbc0047d541ebb76e388d1f025ceb3ed92479b52d0b8014a3b04ec6'
+            '8b04751faf5f4bcdc77e8a0a7a0d84e26b6e44042ce2ee389a8cee9465794d0bbef5aaf9593a0c4d60c9277027490738c6e22660d249a7434cc91fd2a7856030')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
