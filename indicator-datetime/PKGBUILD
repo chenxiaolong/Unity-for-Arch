@@ -5,7 +5,7 @@
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
 _ubuntu_rel=0ubuntu1
-pkgver=0.3.90.${_ubuntu_rel}
+pkgver=0.3.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ options=(!libtool)
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('1573d6bdb28379913b0a8dc7025d48079571514cb04f081c0fa95195b9c8628db7f9ac05367af42ed3afa84019a29f1732d0c38b842e667cf9e213e4672aeaca'
-            'e9186dce6de558cd1c9f2e614e4d7c1eaf20ce664ca73c46fc0bdee50f965efbc831c39f14ed253260ad521641f436b40621ee904eeaa006eb06b01217cbb2bb')
+sha512sums=('36a9868bc5550f925384127173d69d43f8218f17feb0d2bb50d000e837fb77e27f70c23b3c2a6ecb78cbb8418acc17c3e4e6c08a73f54cfe199b8d673f974c78'
+            '5864564260b684b3ee897d1a934e3015bc86a93d0e0f71177ccc46c1797f4ace93843f53a10a97f794872fcbd31e41db5a3971cfba3d11192a8c13858f4c487b')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
