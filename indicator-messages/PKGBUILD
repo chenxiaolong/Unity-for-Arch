@@ -5,7 +5,7 @@
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
 _ubuntu_rel=0ubuntu1
-pkgver=0.5.92.${_ubuntu_rel}
+pkgver=0.5.93.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('fd4c2acb8562401f047ca77dfa0bde3d3617c73c2c2802b772f1b7f027e44c340c1ed47b05c31ff8329fec2be4a4b184a80dceae6c63d8f550ed91fc0e76bd2d'
-            'd5ddc34d876f83ff1cb42be9d1819108c6163422c7735321d9592db643bf3b6a2f7ebd298521149e0004dfc3e53a6d8f0426c09948267cbdb6821ab46c20cf45')
+sha512sums=('a29d1acb9a6811e5aa87e14a227b66a0c7feb920280d0fed122b127a7a3883123e71d16386d03171f6a2e18ab9cad6438086904fb769a8c588800a05fa43a32f'
+            '91326ef9689ef587b833eedeee52142da108d992b6b1fe52a9a84b71d878b39231b3bbeab43d3cde17ce06515beeddc234d3347426a0be80e884428b37d08765')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
