@@ -4,8 +4,7 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-_ubuntu_rel=0ubuntu1
-pkgver=0.3.92.${_ubuntu_rel}
+pkgver=0.3.93
 pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
@@ -17,22 +16,13 @@ optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
         'use_gnome-packagekit.patch')
-sha512sums=('b57e843bc0e1a5ff6f3fbd6204270dc4362095cf809a8f051be53427b7f77d63587c1dba43226231451db685ae73880d729e38347bd33e2c37eccec25cab8f90'
-            'dd200530db3eb8d90d89a98106c196d4f66866fb24af33cf8adae5b9d7d930fb152d68d400c220c3a8875792a3e7ef8623ae9935c50d30c61441d1e1b64672b4'
+sha512sums=('bae0628403f04b10bdd4e390b063df04a782fffc4d73f91e830506cec5d313a0f34629505fea69871af16665a0127ea3b363dd6ec7cd064170d8147cda3176d8'
             '2314a5516c8f71d8fd233605a87732c9868f45a25e55f89c9f6edfc2f4f8589f4c4427c71657363b2dd8071fe24aa787b799a7d0d5d24a5869d586c4eea7b96a')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
-  done
-  patch -Np0 -i debian/patches/restore_session_lock.patch
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   # Use gnome-packagekit
   patch -Np1 -i "${srcdir}/use_gnome-packagekit.patch"
@@ -55,7 +45,7 @@ build() {
 package_indicator-session() {
   pkgdesc="Indicator showing session management, status and user switching - GTK 3 library"
   depends=('libindicator3' 'libdbusmenu-gtk3' 'dbus-glib' 'dconf')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -63,7 +53,7 @@ package_indicator-session() {
 package_indicator-session-gtk2() {
   pkgdesc="Indicator showing session management, status and user switching - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'indicator-session')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
 
