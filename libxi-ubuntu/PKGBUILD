@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libxi-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=1.5.99.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="X11 Input extension library"
@@ -16,7 +16,7 @@ license=('custom')
 source=("${url}/releases/individual/lib/libXi-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libxi_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('7f1f4b561ea84a020f841e5288ab82d7d5de3ea7a56c7f39a3e0e10772799586249fd0976d5348d997ac3c11ba4747169305d69fc2ec636e5195ae363b20f33e'
-            '7d2a667a6a82f4faa02065bfc380e777d77a5672a48fa121a3b6c0c108d13f53c699302ac189e99fdf623d4e8bc759ea0527c3e0f069a48666f54d8ea3c7c744')
+            'dfb8b155569d2ad537e33b3e8be23585ff07add47cbe2f6199bbaf9b0ba63f131dc23d788c161e717468fda48fd6ce1a082dbea821ab97150d6913e10df8ef5b')
 
 build() {
   cd "${srcdir}/libXi-${pkgver%.*}"
