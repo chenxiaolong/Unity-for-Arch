@@ -4,8 +4,7 @@
 
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
-_ubuntu_rel=0ubuntu1
-pkgver=0.6.90.${_ubuntu_rel}
+pkgver=0.6.91
 pkgrel=100
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
@@ -14,19 +13,11 @@ license=('LGPL')
 makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.7/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('914d652309b31fc772daa9864f680f870a83be0fdabbb3bb447a9d7f457c3383859a7b894f06f8f9188fe495d0a1e46eb5ad14e8c65b41e545e59625a5a3a96b'
-            '24d7269ce96f4c901e855be08992a8f99d26883d4a753c45ba425cf85c30ef8f1a33d61deb1bd9e9ecdd66f9ff5aeb73af7edbb6bd79054a9b48009235cbc455')
+source=("http://launchpad.net/${pkgbase}/0.7/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('a5ba959ba7aa9cce3eeeec23d9341d2a99a6c735b2cd458c397df7d334711c16db25901d1a9982bc63c957ee3a38010dbd0e038a985f91d442a7f02dce1ded98')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
-  done
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   # Python 2 fix
   sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
@@ -57,7 +48,7 @@ build() {
 package_libindicate() {
   depends=('libdbusmenu' 'dbus-glib')
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   MAKEFLAGS="-j1"
 
@@ -71,7 +62,7 @@ package_libindicate-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
   depends=("libindicate=${pkgver}" 'gtk2-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   MAKEFLAGS="-j1"
 
@@ -85,7 +76,7 @@ package_libindicate-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
   depends=("libindicate=${pkgver}" 'gtk3-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   MAKEFLAGS="-j1"
 
