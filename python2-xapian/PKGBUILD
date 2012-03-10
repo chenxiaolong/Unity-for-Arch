@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=python2-xapian
-pkgver=1.2.8
-pkgrel=101
+pkgver=1.2.9
+pkgrel=100
 pkgdesc="SWIG and JNI bindings allowing Xapian to be used from various other programming languages"
 arch=('i686' 'x86_64')
 url="http://xapian.org/"
@@ -14,7 +14,7 @@ replaces=('python-xapian')
 conflicts=('python-xapian')
 groups=('unity')
 source=("http://oligarchy.co.uk/xapian/${pkgver}/xapian-bindings-${pkgver}.tar.gz")
-sha512sums=('ef19b51bbdd32c08c7a4ab70701e652fbee23bcfab998082b7c5fe1f42eb47f2643398d6e2a6368c471948176f96ce663b70b2fe9ee8d20614d37358d42986e0')
+sha512sums=('2684dfc0900d255c135e6c7e478050b26aaac555981d35f13577d22f3aa65723d26fa650465bfd308a40212272630b0fec4453d3952361638713e19aedd64304')
 
 build() {
   cd "${srcdir}/xapian-bindings-${pkgver}"
