@@ -4,7 +4,7 @@
 
 pkgbase=qt-ubuntu
 pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=1ubuntu8
+_ubuntu_rel=1ubuntu9
 pkgver=4.8.0.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -19,7 +19,7 @@ source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
         'improved-filter-event.patch'
         'qurl-backward-compatibility.patch')
 sha512sums=('b37f2d5fe3cebdcc7ebd5b6bc68ea03f4cabeadc492c77d7c18d00ede5c254adb57fcbe5cec6326072304db49e69e59c14af7e90875138c3b2f255237a99a78f'
-            '717bcffbde58bebe461caf76cfa5ce388e38731b668231002d894321d324980cfd045d9f80201e963e2c0a094e62298071976fa8f1b55737551e1d4001e1424e'
+            '912641b15bfff8d44890f17f090d7ac2ce973a152e69befe8c7370eeddacf6acd0bb9919620a62cc866217d0ebd861205df26c5e81f6fef86ba3de1a8f90a92e'
             '5b5bdf98eaba6cbbd5e9245fcd34bdccdc0dbf4dc84e311fb3967c82a586426b62e8f616d5b84e02a434fdee185fe30ea1b3949061f7b805112adbe132822068'
             '9d3675b4773c8979268ab02e81779804ebc83c128d6be3df17321e251e11caa2b4ea8f5b98743435557cdd6fecf80e5542dd7c54fa7cc544409ecf7da8e95037'
             'c9d5861a486d09d004cc32f49a9c981876835ab7e4994ac21bd89b0a9236d77a04a7490306a44f6fff06d3be8ce4b344fb63603e500cabf4b9f8e2ef1e4d8c58')
