@@ -5,7 +5,7 @@ pkgbase=gtk2-ubuntu
 pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
 _ubuntu_rel=0ubuntu5
 pkgver=2.24.10.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection' 'gtk-doc')
@@ -62,7 +62,7 @@ build() {
 package_gtk2-ubuntu() {
   pkgdesc="GTK+ is a multi-platform toolkit (v2)"
   install=gtk2.install
-  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi-ubuntu' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
   provides=("gtk2=${pkgver%.*}")
   conflicts=('gtk2')
   replaces=('gtk2-docs')
