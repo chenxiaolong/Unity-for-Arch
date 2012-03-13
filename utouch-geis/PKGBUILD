@@ -3,14 +3,12 @@
 pkgname=utouch-geis
 _ubuntu_rel=0ubuntu1
 pkgver=2.2.5.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-geis"
 license=('GPL' 'LGPL')
-depends=('utouch-grail' 'xorg-server-ubuntu' 'xorg-xinput-ubuntu')
-optdepends=('xf86-input-evdev-ubuntu: for Apple multitouch trackpad support'
-            'xf86-input-synaptics-ubuntu: for multitouch touchpad support')
+depends=('utouch-grail' 'xorg-xinput')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('43e58c5e1df07946ed52069b3f8d72a43f73c6742ed6f542f98db7f88560951981a9ec28d639d7b7d924d8d6c5f4e78a61783ed6a0ae713db09b15e9178ebd6d'
