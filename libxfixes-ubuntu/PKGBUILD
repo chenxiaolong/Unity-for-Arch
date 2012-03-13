@@ -2,14 +2,14 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=libxfixes-ubuntu
-_ubuntu_rel=4ubuntu1
+_ubuntu_rel=4ubuntu4
 pkgver=5.0.${_ubuntu_rel}
 pkgrel=1
 pkgdesc="X11 miscellaneous 'fixes' extension library"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org/"
 license=('custom')
-depends=('libx11-ubuntu' 'fixesproto-ubuntu>=5.0.2ubuntu1')
+depends=('libx11' 'fixesproto-ubuntu>=5.0.2ubuntu1')
 makedepends=('xorg-util-macros')
 provides=("libxfixes=${pkgver%.*}")
 conflicts=('libxfixes')
@@ -17,7 +17,7 @@ options=('!libtool')
 source=("${url}/releases/individual/lib/libXfixes-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('fd3071b52c657975b4321e6c7ebe433c43ea6944d04d2228da075aad394e962eec705e41a6c3a6bbc12f704765189116d1328c3111e457f23395ff6f57ae63d5'
-            '01ca02cefcaec123f9037614f91e791a213739623cf241b400d44118740408f5d5d001cbb3ac3b493717fc95b44483fd79632c9cbfcc857f566d7e7ca141f6f7')
+            '503b7213a1aa3ca1d5faa9ff8cb2a80b50a999dd58c188646db8f21af355c05915069fa0b256b5eeb32d4758add5c8264ab62fee500826f5487c5818653a29d3')
 
 build() {
   cd "${srcdir}/libXfixes-${pkgver%.*}"
