@@ -2,7 +2,7 @@
 
 pkgname=compiz-plugins-main-ubuntu
 
-_ubuntu_rel=0ubuntu5
+_ubuntu_rel=0ubuntu6
 _ubuntu_ver='~bzr19'
 _actual_ver=0.9.7.0
 
@@ -21,7 +21,7 @@ install=compiz-plugins-main-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('6b408584851699e8661b674446f0a8fa7dc7f2fff9530a0fb31d4f099f2b7c818e3135365c925b6d2d1b2c02463089247306ade3cfeedfda17ae491eb2c6b857'
-            '2eded4ffbe9b21e2403170026fa01f55b0c24066aa64737c2bc2e28edfa0925ed896719148e2eb60029c7fc766692fa05023f4a26b8fe4c8284985716a7002f1')
+            'c8474546484f3082ead22d537f74288c9630bb106db2cd9b0d813e814a56e8029e20003b8b4af6833e3a6e2c584bab3de75eaadaf5af5c39a3b3c279aa798cdd')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -50,4 +50,3 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}/build"
   make DESTDIR="${pkgdir}" install
 }
-
