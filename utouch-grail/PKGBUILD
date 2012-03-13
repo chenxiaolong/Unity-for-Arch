@@ -3,12 +3,12 @@
 
 pkgname=utouch-grail
 pkgver=3.0.2
-pkgrel=100
+pkgrel=101
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-grail"
 license=('GPL')
-depends=('mtdev' 'utouch-evemu' 'utouch-frame' 'inputproto-ubuntu>=2.1.99.6.1')
+depends=('mtdev' 'utouch-evemu' 'utouch-frame' 'inputproto')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('c7d42bc639b92ba0c3f886776b22e633c700a7de6852102053bb7a0337a7f9cab8e204aa6676f3ddb10263a018f6f5806fe4d2b374d848ae586b8d14f7c5f2cb')
 
