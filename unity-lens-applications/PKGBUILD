@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-applications
-pkgver=5.4.0
+pkgver=5.6.0
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
@@ -14,15 +14,15 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        '10-no-db48.patch')
-sha512sums=('a73f42420218199af2d19b7d8d3a277020c41f1ae3b27e568c92a80cb0ca2fbaeea5602dfb50b333ecb9742eea245a54a8b7b79b46b088dfb280f08edea1a47d'
-            '411bff583af20d9babf89a6bcd030c1128e510743f92261ff9a6eb04bb6aa58a249fbb4bde6cd799fc2fa151dada668c658c8c609aa3a43e3cd1800e17fbe046')
+        '10-no-db51.patch')
+sha512sums=('d60ebe15f64aa306a6432ea9e12ee26a81ceda18fa58b418b4a68881131ccdd1092235595bf7c28594c71a32320f2fb28a385a6c989b80228e11aa60f6e4da7d'
+            '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # Fix build against a higher version of DB
-  patch -Np1 -i "${srcdir}/10-no-db48.patch"
+  # Remove check for db version 5.1
+  patch -Np1 -i "${srcdir}/10-no-db51.patch"
 
   ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname} --disable-schemas-compile
   make ${MAKEFLAGS}
