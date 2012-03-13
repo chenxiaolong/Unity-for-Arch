@@ -4,7 +4,7 @@
 
 pkgname=libunity
 _ubuntu_rel=0ubuntu1
-pkgver=5.4.0.${_ubuntu_rel}
+pkgver=5.6.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('86ca1ac2cb447322bcc77cb5ee78968e7d23d2049bb76e47e24894f9523da489ad8fb56f763b37fa9d182e4ae903026f510674f34210d88e3b71d042e0c2d79d'
-            '1e5560c5125626453f72863436388bab95db3d616cb82fa7b2b7b486ea613bfb1ffb2a87f427b4de82ddaa59b0f38266f11bdf698dbb8775f389994dcce29096')
+sha512sums=('309fcb6bc009bce5deb214d193a7bcd1a1634a4ca155b64b839bfb3872f3060b02d37862f9de6f919236b7865d1acebe941ad321570d75d4fe6a364932e0a4d5'
+            'f1c209bde887160fed914f500260f5bbd83d3f24fbd7d1b4b5d432df6582aacf694a8609c99922d7cdca54d848423a88f94e37fa89b483e3ef72befecf1a159f')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
