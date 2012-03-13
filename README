@@ -86,18 +86,17 @@ Order to compile/install:
 78: unity-lens-music               -> Unity music lens
 79: unity-lens-video               -> Unity video lens
 80: compiz-core-ubuntu             -> Compiz core components
-81: utouch-compiz                  -> Links uTouch with Compiz
-82: libcompizconfig-ubuntu         -> Compiz configuration system library
-83: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-84: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-85: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-86: ccsm-ubuntu                    -> Compiz configuration manager
-87: compiz-plugins-main-ubuntu     -> Compiz main plugins
-88: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-89: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-90: unity                          -> A desktop experience designed for efficiency
-91: unity-2d                       -> 2D implementation of Unity
-92: unity-rotated-bzr *            -> A modified version of Unity (rotated)
+81: libcompizconfig-ubuntu         -> Compiz configuration system library
+82: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+83: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+84: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+85: ccsm-ubuntu                    -> Compiz configuration manager
+86: compiz-plugins-main-ubuntu     -> Compiz main plugins
+87: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+88: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+89: unity                          -> A desktop experience designed for efficiency
+90: unity-2d                       -> 2D implementation of Unity
+91: unity-rotated-bzr *            -> A modified version of Unity (rotated)
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
