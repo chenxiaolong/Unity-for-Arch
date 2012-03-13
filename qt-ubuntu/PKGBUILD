@@ -6,7 +6,7 @@ pkgbase=qt-ubuntu
 pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
 _ubuntu_rel=1ubuntu10
 pkgver=4.8.0.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
@@ -166,7 +166,7 @@ build() {
 
 package_qt-ubuntu() {
   pkgdesc='A cross-platform application and UI framework'
-  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi-ubuntu>=1.5.99.0ubuntu3')
+  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi')
   conflicts=('qt')
   provides=("qt=${pkgver}")
   optdepends=('postgresql-libs: PostgreSQL driver'
