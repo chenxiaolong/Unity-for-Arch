@@ -5,7 +5,7 @@
 USE_SYSTEMD=false
 
 pkgname=gnome-screensaver-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=1
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
@@ -29,7 +29,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
 sha512sums=('504080e006f5d86bb5a44bb02482baf91cfbc3f1af94a225d9e6a78553c39f4c5e269d706b4706dfb0fcf4627bb188e686befaf5c6df13c7e5ce5340af3b7b5b'
-            '85946acf6ba8a3547144e5b7e0e382bcc4f2c4809dfd5afa9b487cce44af101a3341101475d3db62ef66d7d71fb7488da871ef1e5ff04b26dcd0d412b0e55fc8'
+            '64dc3d539ada55d53b36b0c83f4d316cb9ee79352ced0748acd12e3b619d1c5300f98216d9cd23763d3066c7ef7ecf717e985cc213bea65f3f436c35861175e2'
             '5eaf5f9982d949efd34595761d1c96e9f5d71fc892b0fdd0e1877d8aada3d97dac4bf789c241bfbf4cd9e9c867a3e2365fa5e855580542b96af76fc1d5bff92d')
 
 build() {
