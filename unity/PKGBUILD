@@ -1,19 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-# NOTE: Unity multitouch grab handles still relies on Nux 1.0, so it doesn't
-# get built anymore. It's is the same situation in Ubuntu 12.04, which also
-# has Nux 2.0.
-# http://packages.ubuntu.com/precise/amd64/unity/filelist
-# http://packages.ubuntu.com/precise/nux-tools
-
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=5.4.0
+pkgver=5.6.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu2
-  #_ubuntu_ver=4.24.0
+  _ubuntu_rel=0ubuntu3
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
 else
@@ -31,17 +24,19 @@ groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 install=unity.install
-source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}_${_actual_ver}.orig.tar.bz2"
+source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
         "launchpad_export.tar.gz::http://ubuntuone.com/1uOWRNegG0LvwZKnerHoMk" # Snapshot of translations from Launchpad as of 2012-03-03
         'fix_test-gtest-xless.patch'
+        'fix_gtest_directory.patch'
         'launcher_bfb.png')
-sha512sums=('0158892af2d23e4c120dd5fb83745dbd6b117a47fdda2a982c5e0ad41bef8243caf2121f5a8125d033138b2a1fe531c054049b4667e3373dcd142d48b480a6c7'
-            '5b49f73c16c8b69bb191d1bde0c594bd7998f4f5e77b515e427a05873ce882bcaf224544b6b7bb3aab6f043f6bf26bf766be91e4615f85c327774c7d2151eb2e'
+sha512sums=('224e73c425900007cee4c23d52c8c511a6299879b0288281b51925b0d67933f3cac00fb6cfb7ebaeec19a02980fd3086fceebcc2827be10c1e973f5fcf4a13f9'
+            'd32a2090bd9f4ed51f5580a891c1bef688ea98db5fbce5baf471dcc1caa3a1f7d0c9fe3268b396d0fba8456a3ba81e90ac50a57141c5b32d29e3d4e1a1d92bf4'
             'f80df915dfc13502a96a19b5b62c1c1a0bb626d91f4a3559b3c2877ce5356bd69e60f618f026aecc281edf87c6411196a1558763143e610d0f2d18b2892c74b8'
-            '313976c2e6acf3d330aa1af01addeb694c094de0dfcfac7636af32d1181e318eb0f41a33df92e769186f2593a43cf73ab2377450422596c6f49b8ca57fe936e1'
+            'dab7371e5c353ea3a95bf37d768c4cd0a530280d1560f043387d037fec5b6a028c155a0c10bfa982fbe5d07ba11c229a69724206cee8f21be9aa249ed213f5a5'
+            '6c8e76017ca90ed27f82066b5c75c1d1dee508c48508ffc29786a52202beb2ca16259cf9f4f2db517517bf22c67d37e1a733b1c4c6cae051c12ecebd855b70df'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
@@ -63,6 +58,9 @@ build() {
 
   # Fix tests
   patch -Np1 -i "${srcdir}/fix_test-gtest-xless.patch"
+
+  # Fix gtest directory
+  patch -Np1 -i "${srcdir}/fix_gtest_directory.patch"
 
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
