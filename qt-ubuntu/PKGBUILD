@@ -2,8 +2,12 @@
 # Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 
+# AUR fix
+pkgname=qt-ubuntu
+pkgdesc='A cross-platform application and UI framework'
+
 pkgbase=qt-ubuntu
-pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
+true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
 _ubuntu_rel=1ubuntu10
 pkgver=4.8.0.${_ubuntu_rel}
 pkgrel=101
