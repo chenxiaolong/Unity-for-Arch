@@ -261,11 +261,11 @@ def parseArgs():
                          const="list",
                          default="!list")
 
-  argParser.add_argument("-p", "--progress",
-                         help="Display progress",
-                         action='store_const',
-                         const="progress",
-                         default="!progress")
+  #argParser.add_argument("-p", "--progress",
+  #                       help="Display progress",
+  #                       action='store_const',
+  #                       const="progress",
+  #                       default="!progress")
   argParser.add_argument("-v", "--version",
                          help="Show script version",
                          action='version',
@@ -292,7 +292,7 @@ def parseArgs():
   show.append(args.list)
   show.append(args.color)
   show.append(args.formatting)
-  show.append(args.progress)
+  #show.append(args.progress)
 
 def parseSource():
   import fileinput
@@ -444,13 +444,22 @@ def getInstVers():
       counter += 1
 
 def checkUpgrades():
+  import subprocess
+  
   for i in pkginfo:
     temp = i.get()
     for j in temp:
-      # Python's greater than operator magically works
-      if j.get_pkgver() > j.get_instver():
-        # Upgrate = true
-        j.set_upgrade(True)
+      if j.get_instver() != "NOTINSTALLED":
+        process = subprocess.Popen(
+          ['vercmp',str(j.get_pkgver()),str(j.get_instver())],
+          stdout=subprocess.PIPE,
+          universal_newlines=True
+        )
+        vercmp = process.communicate()[0].split('\n')[0]
+
+        if int(vercmp) > 0:
+          # Upgrate = true
+          j.set_upgrade(True)
 
 def main():
   # Parse command line arguments
@@ -476,6 +485,12 @@ def main():
   checkUpgrades()
 
   # At this point, all the information about the packages are gathered.
+  for i in pkginfo:
+    for j in i.get():
+      if j.get_upgrade():
+        print("Package name        : " + j.get_pkgname())
+        print("  PKGBUILD version  : " + j.get_pkgver())
+        print("  Installed version : " + j.get_instver())
 
 ### Begin program ###
 if __name__ == '__main__':
