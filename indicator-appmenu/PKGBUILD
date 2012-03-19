@@ -4,7 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-pkgver=0.3.92
+pkgver=0.3.94
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-qt: support for Qt apps')
 options=('!libtool' '!emptydirs')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('630b4b2831bad2d03ba34863fda114381a64b8691a00f4efcfdc6f1d41691da6a556817cae4d73e4bd626298cecfcd7278b934976de388d368e4d95291373fbb')
+sha512sums=('ec186bf76fcbeb148a09f32556a29f9efe625b0b891165c3041fabda4bc58c2e69f06b7d4899f0c37ba9e22b88ab37e914e1bf538fd8ff3538977a84df5600ba')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
