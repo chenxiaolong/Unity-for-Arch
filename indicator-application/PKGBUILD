@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-application
-pkgver=0.4.92
+pkgver=0.4.93
 pkgrel=100
 pkgdesc="A library and indicator to take menus from applications and place them in the panel"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('dbus-glib' 'libappindicator3')
 groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/${pkgname}/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('74ea4b02432a02479a1ce89caf14e61444feee50f1df306e6542b7e21cca43993323612ece41b064d0a95ec8779dbe1c89c1c97a98e8c0862622064927455578')
+sha512sums=('36c1c1358eed36e44894776ed6bd974bdef42c49324596185da852bce1867bde1e21da65d733aa0f985e40148bdd9b76f62e572f25ea85c73482ec289c7d1a98')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
