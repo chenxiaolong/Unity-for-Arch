@@ -2,7 +2,7 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 pkgver=3.3.18.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GTK+ is a multi-platform toolkit (v3)"
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/gtk+-${pkgve
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
 sha512sums=('54d6fabd54d73bf608d471a6f6c266f5b27fb5c8e77c0ec475851883c490e615487710b5c9f23482be0ec70374e398712a6495dbfa52ba72523955178b179696'
-            '266391dab847c79de4d1574aa7f84aeaf71888d60014a0a6bf982f7438c88890ed04e649aa912893d0a3fe99f623bc2b84ccc95842e5b578febf47bda3e1deac'
+            '6caedf4076ba6c484375b41ca971bc331836282610d82d4188a9d37e252db0d86e9b9dca83a3a27604e04f50cb4256b96adcb0b9dc322674cbf7c962baf2f42c'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
