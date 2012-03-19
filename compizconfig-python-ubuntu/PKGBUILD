@@ -3,7 +3,7 @@
 pkgname=compizconfig-python-ubuntu
 _ubuntu_rel=0ubuntu4
 pkgver=0.9.5.94.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="Compizconfig bindings for python - Ubuntu version"
 arch=('i686' 'x86_64')
 url="http://compiz.org"

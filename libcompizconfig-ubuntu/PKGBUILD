@@ -9,7 +9,7 @@ _WTF_ver=0.9.5.94
 
 pkgver=${_actual_ver}.bzr428.${_ubuntu_rel}
 
-pkgrel=100
+pkgrel=101
 pkgdesc="Compiz configuration system library - Ubuntu version"
 arch=('i686' 'x86_64')
 url="http://compiz.org"

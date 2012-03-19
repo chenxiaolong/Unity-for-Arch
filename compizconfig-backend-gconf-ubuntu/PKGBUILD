@@ -3,7 +3,7 @@
 pkgname=compizconfig-backend-gconf-ubuntu
 _ubuntu_rel=0ubuntu2
 pkgver=0.9.5.92.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="GConf backend for Compiz - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')

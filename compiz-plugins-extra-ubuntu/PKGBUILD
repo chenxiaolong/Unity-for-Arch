@@ -7,7 +7,7 @@ _ubuntu_ver='~bzr9'
 _actual_ver=0.9.7.0
 
 pkgver=${_actual_ver}.bzr9.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Compiz extra plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')

@@ -3,7 +3,7 @@
 pkgname=ccsm-ubuntu
 _ubuntu_rel=0ubuntu3
 pkgver=0.9.5.92.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Compizconfig Settings Manager in Python - Ubuntu version"
 arch=('any')
 url="http://compiz.org"

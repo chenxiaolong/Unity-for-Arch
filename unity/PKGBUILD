@@ -13,7 +13,7 @@ else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"

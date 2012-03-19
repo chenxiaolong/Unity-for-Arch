@@ -29,7 +29,7 @@ _actual_ver=0.9.7.0
 # Another AUR fix
 pkgver=${_actual_ver}.bzr3035.${_ubuntu_rel}
 
-pkgrel=100
+pkgrel=101
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
