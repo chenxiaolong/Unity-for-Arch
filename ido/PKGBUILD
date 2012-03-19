@@ -4,7 +4,8 @@
 
 pkgbase=ido
 pkgname=('libido' 'libido3')
-pkgver=0.3.3
+_ubuntu_rel=0ubuntu2
+pkgver=0.3.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
@@ -13,11 +14,19 @@ license=('LGPL')
 depends=('gtk3-ubuntu')
 groups=('unity')
 options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.3/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('1683fce2d88e77079c978fa79adb8259ec2ba1e5ee1e39fcd01f499fa67b6032c90ce24ad4199e4497e4360407b7018afd070190f4ca0b910ab93aa20c20d1e6')
+source=("http://launchpad.net/${pkgbase}/0.3/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('1683fce2d88e77079c978fa79adb8259ec2ba1e5ee1e39fcd01f499fa67b6032c90ce24ad4199e4497e4360407b7018afd070190f4ca0b910ab93aa20c20d1e6'
+            '8948c01e81c27d9fd00ce50038af17bfcd93355a67ba8174b6e3659cf674bed43106c31059d155d68ee3e399c47d50c806d70230d517d60cef37c3e2241920fe')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/series/${i}"
+  done
 
   autoreconf -vfi
 
@@ -39,7 +48,7 @@ package_libido3() {
   depends=('gtk3-ubuntu')
   provides=("ido=${pkgver%.*}")
   conflicts=('ido')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -47,7 +56,7 @@ package_libido3() {
 package_libido() {
   pkgdesc="Widgets and other objects used for indicators - GTK 2 library"
   depends=('gtk2-ubuntu')
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   make DESTDIR="${pkgdir}/" install
 }
