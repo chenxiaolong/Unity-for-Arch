@@ -4,7 +4,7 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-pkgver=0.3.93
+pkgver=0.3.94
 pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
@@ -18,7 +18,7 @@ options=('!libtool')
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
         'use_gnome-packagekit.patch')
-sha512sums=('bae0628403f04b10bdd4e390b063df04a782fffc4d73f91e830506cec5d313a0f34629505fea69871af16665a0127ea3b363dd6ec7cd064170d8147cda3176d8'
+sha512sums=('84dd86b2c96c64fd43f8013bf81d0bb12c9797cf107e48d38db6f7832d151310316e6601e6dc97205f776c364b5c4735b50599afd5f56b6710765c66db34790f'
             '2314a5516c8f71d8fd233605a87732c9868f45a25e55f89c9f6edfc2f4f8589f4c4427c71657363b2dd8071fe24aa787b799a7d0d5d24a5869d586c4eea7b96a')
 
 build() {
