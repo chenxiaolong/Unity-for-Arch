@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=dconf-qt
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 pkgver=0.0.0.110722.${_ubuntu_rel}
-pkgrel=102
+pkgrel=100
 pkgdesc="Qt and QML bindings for dconf"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dconf-qt"
@@ -16,7 +16,7 @@ groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('4c7e2f02f7dfce3d532a455c3a2b8da5900260f570280b0d4da312746e8925c0b9fe842006d441fc17e193b07b16016d13a5f1a1b47eba725419e9e4f0f7fd47'
-            'b251f922b35dacf3a42969aac2a7158a668fa6b6c02dbeb9ba13adff4b23fb966d1496249a1951d3fe3e5fc720a2e4c0b6518c7d10e0df11205420b8c9ab70ab')
+            'bdab024e8139812a906eb2af335e7967bec14e65a48311e62fd7a8bf670845da67dcb99b1dd3d80aa7880f4b07ec9d273128775ed6d941194b5f8e3b24619523')
 
 build() {
   cd "${srcdir}/lib${pkgname}-${pkgver%.*.*}"
