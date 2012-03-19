@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 pkgver=3.3.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
@@ -24,7 +24,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgnam
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'disable_wacom_panel.patch')
 sha512sums=('92561ce49982bdd16147f0946b9cb7ff778198ed8fa983a8971ef38a47d232736b6ddcb66a3ecac3e0b9289ab53d1a3165698db154baedbb42fd8e8594431a2f'
-            '4e56f825ee9e781d5d4cb9fdd733af9a19e644e36f9fad47e14ffe94d9454e752e0a4d91a2662fdb3a2943ec5540f7ad5179bc7626f0a0406a9a70212e0dbe11'
+            'aa1426f489096c216c780aeb6b34f0d81d3acbfa958fdf1953abe5e65987ca5a825f637b8226a96db3a5e97d10de2fa229baf74643a40ea92a0dbf7db5d8f549'
             'a2ee352a4f30fa3d5d551c4bcc060c535ac7a10e1bcf39dd1365502797f906470abc938c84418b1c993a98523eb4032baf1372c00d0fd6c3dd0a529a83fe3821')
 
 build() {
