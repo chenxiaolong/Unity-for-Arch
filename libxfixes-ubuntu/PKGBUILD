@@ -28,6 +28,8 @@ build() {
     patch -Np1 -i "debian/patches/${i}"
   done
 
+  autoreconf -vfi
+
   ./configure --prefix=/usr --sysconfdir=/etc --disable-static
   make ${MAKEFLAGS}
 }
