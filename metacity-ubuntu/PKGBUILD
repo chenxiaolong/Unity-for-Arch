@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=metacity-ubuntu
-_ubuntu_rel=1ubuntu8
+_ubuntu_rel=1ubuntu9
 pkgver=2.34.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
@@ -20,7 +20,7 @@ install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('44e4879d0b5cac8a50fbd0c33c29fa64b6485f80eca5bf6154b368cae64492402fb880eb6783ab4f1d2258079e96f53bf3b7300d4c2fbb36e4ebc7baaf8ee952'
-            '9d75c485ccd4993aea31f6bebe74aa0dfd774161c331c87fa75ce632cea08d4308c796dd85bf3f0f7d5bc12c764572532ab91e2ff7af801ab8ee69762abd6aaa')
+            'fa3914c55843f949b7e3fde259aa1c971c59146cf0d1e8f2ad62eeb42049f83ba9252a099f86a34319b55dba7e6f36473492ea1f53264bac654b5d6b714e2862')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -56,5 +56,3 @@ package() {
   install -m644 "${srcdir}/debian/metacity-common.catalog" "${pkgdir}/usr/share/sgml/metacity-common/"
   install -m644 "${srcdir}/debian/metacity-common.gconf-defaults" "${pkgdir}/usr/share/gconf/defaults/10_metacity-common"
 }
-sha512sums=('44e4879d0b5cac8a50fbd0c33c29fa64b6485f80eca5bf6154b368cae64492402fb880eb6783ab4f1d2258079e96f53bf3b7300d4c2fbb36e4ebc7baaf8ee952'
-            '10eedb7da8a2e6ef3aebf6c70185ae8874ddb68852ee4fd1f0e652be1593cb23532f53bcce4120bf33a7af1e116cc27f32e0427cbba551db8897556d326ecb40')
