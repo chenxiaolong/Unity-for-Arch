@@ -4,7 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-pkgver=0.3.94
+pkgver=0.3.95
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-qt: support for Qt apps')
 options=('!libtool' '!emptydirs')
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('ec186bf76fcbeb148a09f32556a29f9efe625b0b891165c3041fabda4bc58c2e69f06b7d4899f0c37ba9e22b88ab37e914e1bf538fd8ff3538977a84df5600ba')
+sha512sums=('3a0f30e63b0259ab31cf7e7b22cf85b4e4c03227a8aa70dad125cd2581a930fe87d4c8ff6285f4b07a2341bf9c9c7a043ae3e103c231422318e49aaa3fa46347')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
@@ -26,6 +26,9 @@ build() {
 
   # Disable -Werror
   CFLAGS="${CFLAGS} -Wno-error"
+
+  # Cannot find gio/gdesktopappinfo.h
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gio-unix-2.0)"
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
