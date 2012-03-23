@@ -1,7 +1,7 @@
 # Maintainer:  Jan de Groot <jan@archlinux.org>
 
 pkgname=gnome-desktop
-pkgver=3.3.90
+pkgver=3.3.92
 pkgrel=1
 pkgdesc="Library with common API for various GNOME modules"
 arch=('i686' 'x86_64')
@@ -11,8 +11,8 @@ makedepends=('gnome-doc-utils' 'intltool' 'gobject-introspection')
 url="http://www.gnome.org"
 groups=('gnome')
 options=('!libtool')
-source=(http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz)
-sha256sums=('a6feb82410384915e1ce4af4bfe1a88a9d8b87c41e2a452a2a7a2d1d40be15e2')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz")
+sha512sums=('65cbb01353b74ddaa5bdc6ca3d5b8a90b2e32b0e12b8fcd398013f53eaa9dbffcf3045cf6d9ccf8955b91d257af6d9742537a5698d33d387642cbecbb333f94a')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -21,7 +21,8 @@ build() {
       --localstatedir=/var --disable-static \
       --with-gnome-distributor="Arch Linux" \
       --disable-scrollkeeper
-  make
+
+  make ${MAKEFLAGS}
 }
 
 package() {
