@@ -10,7 +10,7 @@ pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
 _ubuntu_rel=1ubuntu11
 pkgver=4.8.0.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
@@ -33,10 +33,10 @@ build() {
 
   # Apply Arch Linux patches
     # (FS#28707)
-      patch -p1 -i "${srcdir}"/fix-qgraphicsscene-regression.patch
+      #patch -p1 -i "${srcdir}"/fix-qgraphicsscene-regression.patch
     # (FS#27757) (KDEBUG#275469)
-      patch -p1 -i "${srcdir}"/improved-filter-event.patch
-      patch -p1 -i "${srcdir}"/qurl-backward-compatibility.patch
+      #patch -p1 -i "${srcdir}"/improved-filter-event.patch
+      #patch -p1 -i "${srcdir}"/qurl-backward-compatibility.patch
 
   # Apply Ubuntu patches
     # Disable patches (longest command you've ever seen? :D) (can't use
@@ -67,8 +67,6 @@ build() {
       `# Debug packages arent used in Arch Linux - remove patch to`       \
       `# default to keeping debug symbols`                                \
         -e '/12_add_nostrip_for_debug_packages.diff/d'                    \
-      `# Breaks build`                                                    \
-        -e '/kubuntu_97_a11y_qt_and_qml_backport.diff/d'                  \
       `# Unsupported CPU architectures`                                   \
         -e '/add_missing_method_for_QBasicAtomicPointer_on_s390.patch/d'  \
         -e '/powerpc_designer_gstabs.diff/d'                              \
