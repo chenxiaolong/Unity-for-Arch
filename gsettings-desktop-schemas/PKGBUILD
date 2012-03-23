@@ -3,7 +3,7 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 pkgname=gsettings-desktop-schemas
-pkgver=3.3.90
+pkgver=3.3.92
 pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
@@ -11,20 +11,21 @@ url="http://live.gnome.org/"
 license=('GPL')
 depends=('glib2')
 makedepends=('intltool')
-install=$pkgname.install
-source=(http://ftp.gnome.org/pub/gnome/sources/${pkgname}/3.3/${pkgname}-${pkgver}.tar.xz)
-sha256sums=('41bce97a0951e76858ac0d5150ac86a60c00505c83d9d75c7fb6ac6f80ac2c6b')
+install=${pkgname}.install
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz")
+sha512sums=('6e61cdd60cef64ca8c0462bb646a8b172a2ddd0546e32291d6b3d23356a4d3dc830f8f2b855165d20a1421fa9fc8bce7820b283b0b3985feb78af118c950a7b4')
 
 build() {
-  cd ${srcdir}/${pkgname}-${pkgver}
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
     --disable-schemas-compile
-  make
+
+  make ${MAKEFLAGS}
 }
 
 package() {
-  cd ${srcdir}/${pkgname}-${pkgver}
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
-  make DESTDIR=${pkgdir} install
+  make DESTDIR="${pkgdir}" install
 }
