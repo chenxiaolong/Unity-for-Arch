@@ -3,7 +3,8 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 pkgname=gsettings-desktop-schemas
-pkgver=3.3.92
+_ubuntu_rel=0ubuntu1
+pkgver=3.3.92.${_ubuntu_rel}
 pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
@@ -12,11 +13,20 @@ license=('GPL')
 depends=('glib2')
 makedepends=('intltool')
 install=${pkgname}.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz")
-sha512sums=('6e61cdd60cef64ca8c0462bb646a8b172a2ddd0546e32291d6b3d23356a4d3dc830f8f2b855165d20a1421fa9fc8bce7820b283b0b3985feb78af118c950a7b4')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('6e61cdd60cef64ca8c0462bb646a8b172a2ddd0546e32291d6b3d23356a4d3dc830f8f2b855165d20a1421fa9fc8bce7820b283b0b3985feb78af118c950a7b4'
+            '1b2cf7167f6578d12f57cd2963f055fd6872091785d67665405c0497edd5b58d5b2fb80c30cf2e75f557f14e6a88a6a7932bd7e4801ac8030ac4e448b39ba24d')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -vfi
 
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
     --disable-schemas-compile
@@ -25,7 +35,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}" install
 }
