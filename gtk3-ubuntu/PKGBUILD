@@ -2,8 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu3
-pkgver=3.3.18.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.3.20.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GTK+ is a multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
@@ -19,8 +19,8 @@ license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/gtk+-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
-sha512sums=('54d6fabd54d73bf608d471a6f6c266f5b27fb5c8e77c0ec475851883c490e615487710b5c9f23482be0ec70374e398712a6495dbfa52ba72523955178b179696'
-            '6caedf4076ba6c484375b41ca971bc331836282610d82d4188a9d37e252db0d86e9b9dca83a3a27604e04f50cb4256b96adcb0b9dc322674cbf7c962baf2f42c'
+sha512sums=('ff35e3b78288d4cbc781ce74748a1e7ea70b1e00ad98ea84b267ce4707a22986fd794fecf6b6c1d5565ddab6ec77f720d95beb1a145940d78a6c182999623305'
+            'c3fefe9f09e5cd649013b8b58edc77329b87ad718999c6b9ff2b99a24c8a35a3c7d009ab2670bfea2519b972077e759fae3c3570759fd4d05376ebe6869b0d74'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
