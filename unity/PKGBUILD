@@ -13,7 +13,7 @@ else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=102
+pkgrel=103
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
@@ -61,6 +61,9 @@ build() {
 
   # Fix gtest directory
   patch -Np1 -i "${srcdir}/fix_gtest_directory.patch"
+
+  # Cannot find gmodule
+  CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
 
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
