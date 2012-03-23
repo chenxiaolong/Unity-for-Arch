@@ -79,7 +79,6 @@ build() {
       --with-xkb-output=/var/lib/xkb \
       --with-fontrootdir=/usr/share/fonts
 
-  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 
   # Disable subdirs for make install rule to make splitting easier
