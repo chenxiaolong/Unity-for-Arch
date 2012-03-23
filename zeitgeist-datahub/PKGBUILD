@@ -4,7 +4,7 @@
 
 pkgname=zeitgeist-datahub
 _ubuntu_rel=1ubuntu1
-pkgver=0.8.1.${_ubuntu_rel}
+pkgver=0.8.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The datahub provides passive plugins which insert events into Zeitgeist"
 arch=('i686' 'x86_64')
@@ -15,8 +15,8 @@ makedepends=('intltool' 'vala')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('4e846a9b38dd45a4c778968706d6f0c030c959fa01edddb4c7912240fa3e3f6cfd27a55c32edb6a526324ef944471149d0c59814152bab95e2ab6dcc3ea32963'
-            '1f51c62ab5a14f608f0e71ea5fd1c37e3649d6d0933137857ebf21222ee0a9bf0e54f8f7861f765c8577f90bda5cd2b63bbf348a67707385137201c514048a98')
+sha512sums=('277963060a45172288caa21a06516097be20cc545b96981b9ae68095826bba6e97128c9de2b2535e2cb564867e20b8daf48a8a4d128d7c7a7eafe7ebad8be416'
+            '376337754aace0f9cee22448c8b8444c6a29fdc4c1f2a8238587c20fe6c43283f4071a1a4f11f409fc22951883bfd89463ea79c3d78af7e7903b65977fa7113e')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
