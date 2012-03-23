@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libzeitgeist
-pkgver=0.3.14
+pkgver=0.3.16
 pkgrel=100
 pkgdesc="Provides a client library for applications that want to interact with the Zeitgeist daemon"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('glib2')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('8e3e4bd1482ce78235d09054c492ec1a33e7f4080f095f2fc8dc31a0b1d40fd58d8ea22733744ade31126a7688630395a436dcf1faa262574e1db5ec1372dd0d')
+sha512sums=('845d717870c93483cab830651fedc710db143a146014b4e6d132632c7f903c58bbf6594df760450757f28a2b935a4178da412bcf579f8e5f950e9027e2385c08')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
