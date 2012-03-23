@@ -4,8 +4,8 @@
 
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
-_ubuntu_rel=0ubuntu1
-pkgver=0.8.4.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu4
+pkgver=0.8.4.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -15,10 +15,10 @@ makedepends=('intltool' 'vala')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('186413f759f110d2643c49d385ed509e54beecac22d39976b12a934a33b88eeef3394f7f6205112d3411c6219565dd0c2d6eac30af538cc9fc3aa59507f96627'
-            '705a7c5382163a16ac62d75fee378c67d1f39301869f158f64f8c5901ab3e01830852edae04c8b281832ff0afd04e5fabfa60073f8fa0c2ab2fa2bfd134582e5')
+sha512sums=('1de5d97a393cfe65e0ceea78fe2ec852ed6854dd485b8ecef19fbeb9c4b7209909edbe88cbc70b10e682f8c4add45de764362c985a61a7b230aeecb1aa8769a8'
+            '27e70bc36b6918a25935b0b16fe8e0ce8643e60e385cc48f850aee5d27fc178bf4af091430d088ecf44d460990cb5e1bbd3ce3989dded245a31c82c320affd9f')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
