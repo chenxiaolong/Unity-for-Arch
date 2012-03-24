@@ -35,7 +35,7 @@ build() {
 
 package_appmenu-gtk2() {
   pkgdesc="Adds appmenu support for GTK+ 2 apps"
-  depends=('gtk2-ubuntu' 'libdbusmenu-gtk2')
+  depends=('libdbusmenu-gtk2')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
@@ -46,7 +46,7 @@ package_appmenu-gtk2() {
 
 package_appmenu-gtk3() {
   pkgdesc="Adds appmenu support for GTK+ 3 apps"
-  depends=('gtk3-ubuntu' 'libdbusmenu-gtk3')
+  depends=('libdbusmenu-gtk3')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
