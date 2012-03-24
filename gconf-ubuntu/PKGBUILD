@@ -2,7 +2,7 @@
 # Original Maintainer: Jan de Groot <jan@archlinux.org>
 
 pkgname=gconf-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.2.5.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A configuration database system"
@@ -21,14 +21,15 @@ source=("http://ftp.gnome.org/pub/gnome/sources/GConf/3.2/GConf-${pkgver%.*}.tar
         'gconfpkg'
         'gconf-reload.patch')
 sha512sums=('d67427a275bc62531232d8cf9641135a03567aef7a97b014d86058df20279004b785b9bfaf11f4f5f88c7187c2b68a138074c5dd0d1e5e1347ebb2b394367926'
-            '9a15392d4212540010bc3b6987068d11266f2932d58639776957d75b7ccab751d074bde3b4db3c389895859d966ae29151720e2299c36e6c70000a6944d2abb6'
+            'cf9b7e8ef009e90797b877e7f77e601822fa5ad6cce80032e33274fde38d48435164534698e917d936702214d79c1dd01a481495276889452eb1d7653d1121a3'
             '0d2a099c772c9fbe535b6c5c35078038987d214a2b68f2d589f46b8bf4e5a8c604624363cd32747b6447d04037d2fb0870502982425629af25ac3ef8ebb2cde4'
             'c1a180fdbd88415f4d0277919bdd3af8c1003e44f81a6ab7f7c341a4065f9e01e320e639177ad93d53463ceecb7f1331171980edabcebdc10998d7f16c490494'
             '1af1d0c926d622794b5d2f21646783c276a8a5c2c6d8b8236804bfcaeb71ab40c6658b17eb4599ca01fb8fe33a513ebe7ec9e8c23e9a21ccae622f6d10aa5657')
 
 build() {
   cd "${srcdir}/GConf-${pkgver%.*}"
-  # Patch from fedora - reloads gconf after installing schemas
+
+  # Patch from Fedora - reloads gconf after installing schemas
   patch -Np1 -i "${srcdir}/gconf-reload.patch"
 
   # Python2 fix
@@ -59,13 +60,13 @@ package() {
   cd "${srcdir}/GConf-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
-  install -m755 -d "${pkgdir}/etc/gconf/gconf.xml.system"
+  install -dm755 "${pkgdir}/etc/gconf/gconf.xml.system"
   install -m755 "${srcdir}/gconf-merge-schema" "${pkgdir}/usr/bin/"
   install -Dm755 "${srcdir}/gconfpkg" "${pkgdir}/usr/sbin/gconfpkg"
 
-  #Install Ubuntu stuff
+  ## Install Ubuntu stuff ##
 
-  #Create directories -> from gconf2-common.dirs
+  # Create directories -> from gconf2-common.dirs
   install -dm755 "${pkgdir}/etc/gconf/2/"
   install -dm755 "${pkgdir}/etc/gconf/gconf.xml.mandatory/"
   install -dm755 "${pkgdir}/etc/gconf/gconf.xml.defaults/"
@@ -77,11 +78,11 @@ package() {
   install -dm755 "${pkgdir}/var/lib/gconf/debian.defaults/"
   install -dm755 "${pkgdir}/var/lib/gconf/debian.mandatory/"
 
-  #Install xinit file
+  # Install xinit file
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -m755 "${srcdir}/debian/70gconfd_path-on-session" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
 
-  #Install configuration files
+  # Install configuration files
   install -dm755 "${pkgdir}/usr/share/gconf/"
   for i in "${srcdir}"/debian/default.path*; do
     install -m644 "${i}" "${pkgdir}/usr/share/gconf/"
@@ -89,17 +90,17 @@ package() {
   install -dm755 "${pkgdir}/etc/gconf/2/"
   install -m644 "${pkgdir}/usr/share/gconf/default.path" "${pkgdir}/etc/gconf/2/path"
 
-  #Install binaries
+  # Install binaries
   install -dm755 "${pkgdir}/usr/sbin/"
   install -m755 "${srcdir}/debian/gconf-schemas" "${pkgdir}/usr/sbin/"
-  #Python 2 fix
+  # Python 2 fix
     sed -i 's|^\(#!.*python\)$|\12|g' "${pkgdir}/usr/sbin/gconf-schemas"
   install -dm755 "${pkgdir}/usr/bin/"
   install -m755 "${srcdir}/debian/update-gconf-defaults" "${pkgdir}/usr/bin/"
-  #Python 2 fix
+  # Python 2 fix
     sed -i 's|^\(#!.*python\)$|\12|g' "${pkgdir}/usr/bin/update-gconf-defaults"
 
-  #Install manuals
+  # Install manuals
   install -dm755 "${pkgdir}/usr/share/man/man8/"
   install -m644 "${srcdir}/debian/update-gconf-defaults.8" "${pkgdir}/usr/share/man/man8/"
 }
