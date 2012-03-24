@@ -8,7 +8,7 @@ pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
 arch=('i686' 'x86_64')
 license=('LGPL')
-depends=('pcre' 'libffi')
+depends=('pcre' 'libffi' 'python2' 'elfutils')
 provides=("glib2=${pkgver%.*}")
 conflicts=('glib2')
 makedepends=('python2' 'pkgconfig')
