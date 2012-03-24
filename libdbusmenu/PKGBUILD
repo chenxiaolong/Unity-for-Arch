@@ -12,7 +12,7 @@ url="https://launchpad.net/dbusmenu"
 license=('LGPL')
 makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gobject-introspection' 'vala' 'python2')
 groups=('unity')
-options=(!libtool)
+options=('!libtool')
 source=("http://launchpad.net/dbusmenu/0.6/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
 sha512sums=('0d076448b8d831f70199c35f5f11f44b76cf142f3e3de7d4b7d3f0d18b3a7aa3a72274e39d11896a2cabfcc04fc535b3e12039dc945a89834d52ad9a3da10ec8')
 
@@ -51,7 +51,7 @@ build() {
 #   packages that depend on libdbusmenu.
 
 package_libdbusmenu() {
-  depends=('json-glib')
+  depends=('json-glib' 'gtk2-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
