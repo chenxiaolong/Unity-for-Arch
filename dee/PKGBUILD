@@ -4,7 +4,7 @@
 
 pkgname=dee
 _ubuntu_rel=0ubuntu1
-pkgver=1.0.6.${_ubuntu_rel}
+pkgver=1.0.8.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
 arch=('i686' 'x86_64')
@@ -13,11 +13,11 @@ license=('LGPL')
 depends=('glib2' 'icu')
 makedepends=('python2' 'gobject-introspection' 'gtk-doc' 'vala')
 groups=('unity')
-options=(!libtool)
+options=('!libtool')
 source=("http://launchpad.net/dee/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('73ab90e61dae5a093cac21dd9653d494563b5760de5a2f39a61c7a26ed781835fad4b1e3374405220612d1d343cdea880d480808b67b48f776e238b54fa6c55c'
-            '280312cdd0382e271303180318c2a62b70443861671c25ae647d6db3ca3e1c4b59f0df32cb6c55c51963ae9b4b056c79b02bd4defb53e0fd922d98585107ecfb')
+sha512sums=('120ea08af78f99683c2aa9fb03e92880d682647b2a7187e7adfce841a02f9dba5b939dbc12149607592bc80c45181b747aea305930c4e7f5850331d4297d762e'
+            '48411500c007fdbfb5bb080269f75d5b7261ae7cf7862223b9787808389f8ac445c7d7bea2f904d96c926aff695322dc4620f21b8d6646c9ab5b36ad2b0a4e9a')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
