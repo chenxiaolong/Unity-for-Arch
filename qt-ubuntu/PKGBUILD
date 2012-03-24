@@ -14,7 +14,7 @@ pkgrel=102
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
-makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
+makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
 options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${pkgver%.*}"
 source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
@@ -168,7 +168,7 @@ build() {
 
 package_qt-ubuntu() {
   pkgdesc='A cross-platform application and UI framework'
-  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi')
+  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi')
   conflicts=('qt')
   provides=("qt=${pkgver}")
   optdepends=('postgresql-libs: PostgreSQL driver'
@@ -223,6 +223,7 @@ package_qt-private-headers-ubuntu(){
   depends=("qt-ubuntu=${pkgver}")
   conflicts=('qt-private-headers')
   provides=("qt-private-headers=${pkgver}")
+  options=('!emptydirs')
 
   install -d -m755 "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}
   install -d -m755 "${pkgdir}"/usr/src/{corelib,declarative,gui,script}
