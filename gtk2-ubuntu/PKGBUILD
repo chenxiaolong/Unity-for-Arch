@@ -1,8 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
-pkgbase=gtk2-ubuntu
-pkgname=('gtk2-ubuntu' 'gtk-update-icon-cache-ubuntu')
+pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu5
 pkgver=2.24.10.${_ubuntu_rel}
 pkgrel=101
@@ -62,29 +61,17 @@ build() {
 package_gtk2-ubuntu() {
   pkgdesc="GTK+ is a multi-platform toolkit (v2)"
   install=gtk2.install
-  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'libcups' 'gtk-update-icon-cache' 'python2')
   provides=("gtk2=${pkgver%.*}")
   conflicts=('gtk2')
   replaces=('gtk2-docs')
-  backup=(etc/gtk-2.0/gtkrc)
+  backup=('etc/gtk-2.0/gtkrc')
 
   cd "${srcdir}/gtk+-${pkgver%.*}"
 
   make DESTDIR="${pkgdir}" install
   sed -i "s#env python#env python2#" "${pkgdir}/usr/bin/gtk-builder-convert"
   echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
-  # split this out to use with gtk3 too
-  rm "${pkgdir}/usr/bin/gtk-update-icon-cache"
+  # Use the official gtk-update-icon-cache package
+  rm -v "${pkgdir}/usr/bin/gtk-update-icon-cache"
 }
-
-package_gtk-update-icon-cache-ubuntu() {
-  pkgdesc="The GTK+ update icon cache tool"
-  depends=('gdk-pixbuf2')
-  provides=("gtk-update-icon-cache=${pkgver%.*}")
-  conflicts=('gtk-update-icon-cache')
-
-  cd "${srcdir}/gtk+-${pkgver%.*}/gtk"
-
-  install -Dm755 gtk-update-icon-cache "${pkgdir}/usr/bin/gtk-update-icon-cache"
-}
-
