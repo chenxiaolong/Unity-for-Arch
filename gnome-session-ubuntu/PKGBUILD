@@ -9,7 +9,7 @@ pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('upower' 'gtk3' 'gconf' 'startup-notification' 'hicolor-icon-theme' 'libxtst' 'polkit-gnome' 'libgl' 'librsvg' 'gsettings-desktop-schemas' 'consolekit' 'libsm' 'dconf')
+depends=('upower' 'gconf' 'startup-notification' 'hicolor-icon-theme' 'libxtst' 'polkit-gnome' 'libgl' 'librsvg' 'gsettings-desktop-schemas' 'consolekit' 'libsm' 'dconf' 'json-glib')
 makedepends=('intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
