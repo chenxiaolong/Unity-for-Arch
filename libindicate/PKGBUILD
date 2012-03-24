@@ -60,7 +60,7 @@ package_libindicate() {
 
 package_libindicate-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=("libindicate=${pkgver}" 'gtk2-ubuntu')
+  depends=("libindicate=${pkgver}" 'gtk2-ubuntu' 'python2-gobject2')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
