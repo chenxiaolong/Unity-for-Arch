@@ -41,13 +41,16 @@ build() {
 }
 
 package_launchpad-integration() {
+  arch=('any')
   pkgdesc="Provides an easy way to set menu items for an application using GtkUIManager"
+  depends=('hicolor-icon-theme')
+  install=${pkgname}.install
 
   cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk2"
 
-  install -d -m755 "${pkgdir}/usr/bin/"
-  install -d -m755 "${pkgdir}/usr/share/${pkgbase}/launchpadintegration/"
-  install -d -m755 "${pkgdir}/usr/share/icons/hicolor/16x16/apps/"
+  install -dm755 "${pkgdir}/usr/bin/"
+  install -dm755 "${pkgdir}/usr/share/${pkgbase}/launchpadintegration/"
+  install -dm755 "${pkgdir}/usr/share/icons/hicolor/16x16/apps/"
   install -m755 'launchpad-integration' "${pkgdir}/usr/bin/"
   pushd ../launchpadintegration
   for i in *.py; do
@@ -85,10 +88,11 @@ package_liblaunchpad-integration3() {
 
 package_python-launchpad-integration() {
   pkgdesc="Python bindings for launchpad-integration"
+  depends=('liblaunchpad-integration')
 
   cd "${srcdir}/${pkgbase}-${pkgver%build*}/build-gtk2"
   PYTHON2VER=$(find /usr/lib -maxdepth 1 -type d -name python2* | sed -e 's/^.*\///g')
-  install -d -m755 "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
+  install -dm755 "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
   install -m644 "../lib/__init__.py" "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
   install -m755 'lib/.libs/_lpi.so' "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
 }
