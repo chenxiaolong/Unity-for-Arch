@@ -1,6 +1,8 @@
-# Maintainer:  Jan de Groot <jan@archlinux.org>
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jan@archlinux.org>
 
 pkgname=gnome-desktop
+epoch=1
 pkgver=3.3.92
 pkgrel=1
 pkgdesc="Library with common API for various GNOME modules"
