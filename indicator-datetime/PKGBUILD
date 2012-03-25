@@ -46,7 +46,7 @@ build() {
 
 package_indicator-datetime() {
   pkgdesc="A very, very simple clock - GTK 3 library"
-  depends=('libindicator3' 'libdbusmenu-gtk3' 'gtk3-ubuntu' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center-ubuntu' 'libtimezonemap')
+  depends=('libindicator3' 'libdbusmenu-gtk3' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center-ubuntu' 'libtimezonemap')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
@@ -54,7 +54,7 @@ package_indicator-datetime() {
 
 package_indicator-datetime-gtk2() {
   pkgdesc="A very, very simple clock - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'gtk2-ubuntu' 'libido' 'geoclue' 'indicator-datetime')
+  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'geoclue' 'indicator-datetime')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
