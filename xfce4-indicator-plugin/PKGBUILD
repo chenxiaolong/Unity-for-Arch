@@ -11,10 +11,11 @@ arch=('i686' 'x86_64')
 license=('LGPL2.1')
 url="http://goodies.xfce.org/projects/panel-plugins/xfce4-indicator-plugin"
 groups=('xfce4-goodies' 'unity')
-depends=('xfce4-panel' 'libxfce4util' 'libindicator')
+depends=('xfce4-panel' 'libindicator')
 makedepends=('intltool' 'xfce4-dev-tools')
 groups=('unity')
 options=('!libtool')
+install=${pkgname}.install
 source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('34800e56ea134f70f037bb6df6ab4fdf755d2d6171f44cc8a09c85e714e009b084e81c1f2e63293680329f8fd6d60d92e53ebff07dce1c12ee74294203628ff2'
