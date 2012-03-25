@@ -2,12 +2,12 @@
 
 pkgname=compiz-plugins-main-ubuntu
 
-_ubuntu_rel=0ubuntu6
+_ubuntu_rel=0ubuntu7
 _ubuntu_ver='~bzr19'
 _actual_ver=0.9.7.0
 
 pkgver=${_actual_ver}.bzr19.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="Compiz main plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -15,13 +15,13 @@ arch=('i686' 'x86_64')
 provides=('compiz-plugins-main')
 conflicts=('compiz-plugins-main')
 groups=('unity')
-depends=('compiz-core-ubuntu' 'gconf-ubuntu' 'glib2-ubuntu' 'mesa' 'libjpeg-turbo' 'libxml2' 'libxslt' 'cairo' 'pango' 'librsvg' 'libsm' 'dbus' 'boost')
+depends=('compiz-core-ubuntu' 'gconf-ubuntu' 'glib2-ubuntu' 'libjpeg-turbo')
 makedepends=('intltool' 'cmake' 'pkgconfig' 'libtool')
 install=compiz-plugins-main-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('6b408584851699e8661b674446f0a8fa7dc7f2fff9530a0fb31d4f099f2b7c818e3135365c925b6d2d1b2c02463089247306ade3cfeedfda17ae491eb2c6b857'
-            'c8474546484f3082ead22d537f74288c9630bb106db2cd9b0d813e814a56e8029e20003b8b4af6833e3a6e2c584bab3de75eaadaf5af5c39a3b3c279aa798cdd')
+            '1411897223f3b8beb3a64c8d341325fe7603b8911d8b778b8521b732ccf457584f5c35eca46d210339fb96e422745021b3dea4c3939ed9b5ea40f8c5f7742767')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
