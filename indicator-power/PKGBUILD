@@ -2,14 +2,15 @@
 
 pkgname=indicator-power
 pkgver=1.93
-pkgrel=100
+pkgrel=101
 pkgdesc="A indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
 license=('GPL')
-depends=('dbus-glib' 'libappindicator3')
+depends=('dbus-glib' 'libindicator3' 'dconf' 'upower')
 groups=('unity')
 options=('!libtool')
+install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/2.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('041b74b8e19ef4ecf2d55a751c4a342fa46de55045a7e05560f79700e3fc8ccfbb7cfec83ff5c48f709c1f02b7f5391013d21f3f792c72d2404e9f78eb7a6c30')
 
