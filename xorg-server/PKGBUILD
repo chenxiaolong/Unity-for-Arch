@@ -91,7 +91,7 @@ build() {
 
 package_xorg-server() {
   pkgdesc="Xorg X server"
-  depends=('libxdmcp' 'libxfont' 'udev' 'libpciaccess' 'libdrm' 'pixman' 'libgcrypt' 'libxau' 'xorg-server-common' 'xf86-input-evdev')
+  depends=('libdrm' 'pixman' 'libgcrypt' 'xorg-server-common' 'xf86-input-evdev')
   backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
   provides=('x-server')
   groups=('xorg')
@@ -124,6 +124,7 @@ package_xorg-server() {
 }
 
 package_xorg-server-devel() {
+  arch=('any')
   pkgdesc="Development files for the X.Org X server"
   depends=('xproto' 'randrproto' 'renderproto' 'xextproto' 'inputproto' 'kbproto' 'fontsproto' 'videoproto' 'dri2proto' 'xineramaproto' 'xorg-util-macros' 'pixman' 'libpciaccess')
 
