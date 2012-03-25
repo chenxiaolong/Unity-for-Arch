@@ -2,7 +2,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=utouch-evemu
-pkgver=1.0.8
+pkgver=1.0.9
 pkgrel=100
 pkgdesc="Event Emulation for the uTouch Stack"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ makedepends=('xmlto' 'asciidoc')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 options=('!libtool')
-sha512sums=('641eeecc00432a4d22b3fb0278ac7e9d1ce29554a1bea13d59507e4c6d3c2b3336dcb038d4bcbbae7a549182c07340709f05a3df0f9d94ddeb11a4683af574f2')
+sha512sums=('e594267184f1f4a39087522d78dc7dbf4c7a7d28efc8013200be445d15b1a7f066160e60d4fa6b8969e7ec78b7a103cdee6024e917585912e0e63105124b0240')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -25,4 +25,3 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 }
-
