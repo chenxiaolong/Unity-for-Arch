@@ -44,7 +44,7 @@ build() {
 
 package_indicator-session() {
   pkgdesc="Indicator showing session management, status and user switching - GTK 3 library"
-  depends=('libindicator3' 'libdbusmenu-gtk3' 'dbus-glib' 'dconf')
+  depends=('libindicator3' 'libdbusmenu-gtk3' 'dbus-glib' 'dconf' 'packagekit')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
