@@ -3,19 +3,21 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-core
-pkgver=5.6.0
+pkgver=5.8.0
 pkgrel=100
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('qt' 'nux' 'libunity')
+depends=('nux')
 makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/unity/${pkgver%%.*}.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"
-        'launcher_bfb.png')
-sha512sums=('224e73c425900007cee4c23d52c8c511a6299879b0288281b51925b0d67933f3cac00fb6cfb7ebaeec19a02980fd3086fceebcc2827be10c1e973f5fcf4a13f9'
-            '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
+        'launcher_bfb.png'
+        'fix_gtest_directory.patch')
+sha512sums=('715a74319b0dc335d0193f7769a74e85c6a5091e69cf484621680a3384cb0e70fa33860eab6308470d6fcfc476c9c7b66634ee6c4ee7fe41cdbd5bdab94ea1be'
+            '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
+            '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc')
 
 build() {
   cd "${srcdir}/unity-${pkgver}"
@@ -35,6 +37,9 @@ build() {
     -e '/add_subdirectory.*plugins\/unity-mt-grab-handles/d' \
     -e 's/compiz;//g' \
     CMakeLists.txt
+
+  # Fix gtest directory
+  patch -Np1 -i "${srcdir}/fix_gtest_directory.patch"
 
   # Fix pkgconfig
   sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
