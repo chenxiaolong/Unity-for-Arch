@@ -8,10 +8,10 @@ pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-frame"
 license=('GPL')
-depends=('utouch-evemu' 'mtdev')
+depends=('utouch-evemu' 'mtdev' 'libxi')
 makedepends=('asciidoc')
 groups=('unity')
-options=('!libtool')
+options=('!libtool' '!emptydirs')
 source=("https://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('59bda9a3a8b9e1c46ca61d52b548322769d295791ac87c43b549e3113f6bc52c065792b02306d5062ad59e640f43a0dc20dfcf3e893d5bb316f6c0d767b30357')
 
