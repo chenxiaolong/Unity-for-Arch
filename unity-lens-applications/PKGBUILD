@@ -3,19 +3,19 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-applications
-pkgver=5.6.0
+pkgver=5.8.0
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
 license=('GPL')
-depends=('dconf' 'libzeitgeist' 'libunity' 'zeitgeist-extensions' 'db' 'gnome-menus2')
+depends=('dconf' 'libzeitgeist' 'libunity' 'zeitgeist-extensions' 'gnome-menus2')
 makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         '10-no-db51.patch')
-sha512sums=('d60ebe15f64aa306a6432ea9e12ee26a81ceda18fa58b418b4a68881131ccdd1092235595bf7c28594c71a32320f2fb28a385a6c989b80228e11aa60f6e4da7d'
+sha512sums=('ee3003cf1b7fee249f8d00c7ff2c48e942e958f1543a18e91870ddad1d0ee291c167ff2f4523773ba3084fca2367646ec300e1fbda8dcc82f87a8913f4f6404f'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
