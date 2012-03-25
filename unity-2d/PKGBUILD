@@ -4,27 +4,28 @@
 
 pkgname=unity-2d
 _ubuntu_rel=0ubuntu1
-pkgver=5.7.0.${_ubuntu_rel}
-pkgrel=103
-pkgdesc="unity-2d project is a 2d implementation of Unity"
+pkgver=5.8.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="Unity interface for non-accelerated graphics cards"
 arch=('i686' 'x86_64')
 url="http://launchpad.net/unity-2d"
 license=('GPL')
-depends=('qt-ubuntu>=4.8.0.1ubuntu11-101' 'libwnck' 'libdbusmenu-qt' 'libindicator' 'libqtbamf' 'libqtdee' 'utouch-geis' 'libqtgconf' 'metacity-ubuntu' 'unity-lens-files' 'unity-lens-applications' 'unity-asset-pool' 'nux' 'unity-core' 'nautilus-ubuntu' 'gnome-session-ubuntu' 'gnome-themes-standard' 'gconf-ubuntu' 'xorg-server>=1.12.0-100')
+depends=('qt-ubuntu>=4.8.0.1ubuntu11-101' 'libdbusmenu-qt' 'libindicator' 'libqtbamf' 'libqtdee' 'libqtgconf' 'metacity-ubuntu' 'unity-lens-files' 'unity-lens-applications' 'unity-asset-pool' 'nux' 'unity-core' 'nautilus-ubuntu' 'gnome-session-ubuntu' 'gnome-themes-standard' 'gconf-ubuntu' 'xorg-server>=1.12.0-100' 'dconf-qt')
 makedepends=('cmake')
 conflicts=('unity2d-bzr')
 replaces=('unity2d-bzr')
 groups=('unity')
 optdepends=('appmenu-gtk: Export GTK menus over DBus'
             'appmenu-qt: appmenu support for Qt')
+options=('!emptydirs')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
         "launchpad-export-2d.tar.gz::http://ubuntuone.com/0SVDsqeV12zqz4FfcIVwMZ" # Snapshot of translations from Launchpad as of 2012-03-03
         'fix_QMouseEvent_error.patch'
         'workaround_xfixes_issue.patch')
-sha512sums=('9283466419e59bd8522f78041336e3918db316c411ac333e621a3c44558b00003f1fa962ddd05da485c88e77dcbc0ffbc3437b3b50838f1dabbd0028a88079ec'
-            '3d7ddb9c3dbac304a41ee1eb2e470a1c55fc1af15815eb2d3d080c04733e573e423e6c6e3c07ed5e471f604d39e99efe7694e367e0d70bb83e3845eb5df33a65'
+sha512sums=('d81e0be2acfda0b34dcb4560a04bbe18edeb4e501ae68345a5cd693a2691ab9ecb10e929b9f1574b901bf2fea69930dfe9373fe5932374e1bfe8d62bfda75e96'
+            '95e9d6344dbc60b901d8b493d9ac06d1f12958742b4dd7f436f2c2278550e3470f78542071a4321d25a024cae2c4e89a656b245b5e3bc4550efd9778ddf10243'
             '8cfd6d7f852b7ccf759f48b788a8239e3df732a10d81ede29fc6caaf95bc106f0ba6105c192b619a08945d6286f3e4ee59b5c690837f7a74a5fe7a705c70dcbc'
             'c7a1c7d94dd91be89de16fb1b88cd56cff74f1a9e12d70cca74ce6905ddfb3b8755d001511cbbc1b8c41f859905d3c2a7be4aff936d2ae8928ae156bf9247237'
             '093bf6d59e56b33d1787c0f99bd1ec802218abbc5f0277f0fa48fb003285af7047648b0e734b0bbbe5d32691b0a79629362c5d90648a406e35a560c5d3557a28')
