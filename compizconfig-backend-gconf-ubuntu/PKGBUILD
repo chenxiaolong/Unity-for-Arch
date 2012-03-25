@@ -1,14 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=compizconfig-backend-gconf-ubuntu
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 pkgver=0.9.5.92.${_ubuntu_rel}
-pkgrel=102
+pkgrel=100
 pkgdesc="GConf backend for Compiz - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
 arch=('i686' 'x86_64')
-depends=('gconf' 'libcompizconfig-ubuntu' 'boost' 'glib2-ubuntu' 'libxslt' 'libxml2')
+depends=('gconf' 'libcompizconfig-ubuntu' 'glib2-ubuntu')
 makedepends=('intltool' 'cmake' 'libtool' 'pkgconfig')
 provides=('compizconfig-backend-gconf')
 conflicts=('compizconfig-backend-gconf')
@@ -16,7 +16,7 @@ groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('d03bd33ab21af915825a1f51dbc8411ce3edea5e485ce6f90a6f65cefeb3b1b949254ac93da655f1abb2ec4bc25010ba1c6858f62fa1a8510e05c0a938685f67'
-            'b2e63b04d4c8318a00babec74d0b69539b2297ff8faa983c112b2127327e849fce124e0520bf5d2af4fe0665f9469f21762e768ced1f5cd1acee3d5195aa898e')
+            '63e448b34aee3f46a23192bd85a72a52e95c0ac27deec68334496934315a1ae5f1d3312dd33aad71900ce81d57e932b4f4028cb3192be58ae322e3f604c7e4b5')
 
 build() {
   cd "${pkgname%-*}-${pkgver%.*}"
@@ -29,7 +29,14 @@ build() {
       sed -i '/01_add_transition_gconf.patch/d' debian/patches/series
 
   for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
+    case ${i} in
+    fix_953214.patch)
+      patch -Np0 -i "debian/patches/${i}"
+      ;;
+    *)
+      patch -Np1 -i "debian/patches/${i}"
+      ;;
+    esac
   done
 
   [[ -d build ]] || mkdir build
@@ -45,8 +52,6 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
-  cd build
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}/build"
   make install
 }
-
