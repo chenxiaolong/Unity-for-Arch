@@ -3,14 +3,15 @@
 
 pkgname=indicator-multiload
 pkgver=0.2
-pkgrel=101
+pkgrel=102
 pkgdesc="A port of the gnome multiload panel applet to appindicators and vala"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-multiload"
 license=('GPL')
-depends=('libappindicator3')
+depends=('libappindicator3' 'libgtop' 'dconf')
 groups=('unity')
-options=(!libtool)
+options=('!libtool')
+install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/0.2/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
 sha512sums=('7f15e68c9705cd30c8f5fb383cb5cc24d107fb139c3cecadfbf400b90f7b068b457fc61a4320369259aef949e8f847b0b58774a991fccc939b6a6f693d714fad')
 
