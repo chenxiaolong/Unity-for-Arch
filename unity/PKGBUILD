@@ -3,23 +3,23 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=5.6.0
+pkgver=5.8.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu4
+  _ubuntu_rel=0ubuntu1
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
 else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=104
+pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
 license=('GPL')
-depends=('atk' 'bamf' 'boost' 'cairo' 'ccsm-ubuntu' 'clutter' 'clutter-gtk' 'compiz-core-ubuntu' 'dbus-glib' 'dee' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'gobject-introspection' 'gtest' 'gtk2-ubuntu' 'gtk3-ubuntu' 'json-glib' 'libdbusmenu' 'libgee' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxcb' 'libxslt' 'nux' 'pango' 'python2-gconf' 'startup-notification' 'unity-asset-pool' 'utouch-geis' 'utouch-grail' 'vala' 'xorg-server>=1.12.0-100')
-makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock')
+depends=('bamf' 'boost' 'ccsm-ubuntu' 'clutter-gtk' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'python2-gconf' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3')
+makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock' 'gtest')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
@@ -32,11 +32,11 @@ source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+downloa
         'fix_test-gtest-xless.patch'
         'fix_gtest_directory.patch'
         'launcher_bfb.png')
-sha512sums=('224e73c425900007cee4c23d52c8c511a6299879b0288281b51925b0d67933f3cac00fb6cfb7ebaeec19a02980fd3086fceebcc2827be10c1e973f5fcf4a13f9'
-            'b00b12432a7db2221fdf54a1c55d331f58e82264309306898a27e7b87a2ec096e9974bdcf7fd7bcef6f2a726bbab0a08b0cf4e980a0ccb5fd4c250e0d67795d7'
+sha512sums=('715a74319b0dc335d0193f7769a74e85c6a5091e69cf484621680a3384cb0e70fa33860eab6308470d6fcfc476c9c7b66634ee6c4ee7fe41cdbd5bdab94ea1be'
+            '911310f059907b8d7cdf89da38f4cfe90b79e656f58b02bee2b9f95d14bb3c1a0681482e9669451f8b98cd585747ba9d181e976b804f4899511f93a966dd15e0'
             'f80df915dfc13502a96a19b5b62c1c1a0bb626d91f4a3559b3c2877ce5356bd69e60f618f026aecc281edf87c6411196a1558763143e610d0f2d18b2892c74b8'
             'dab7371e5c353ea3a95bf37d768c4cd0a530280d1560f043387d037fec5b6a028c155a0c10bfa982fbe5d07ba11c229a69724206cee8f21be9aa249ed213f5a5'
-            '6c8e76017ca90ed27f82066b5c75c1d1dee508c48508ffc29786a52202beb2ca16259cf9f4f2db517517bf22c67d37e1a733b1c4c6cae051c12ecebd855b70df'
+            '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054')
 
 build() {
