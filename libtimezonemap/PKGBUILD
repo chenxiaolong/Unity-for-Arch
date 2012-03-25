@@ -8,8 +8,9 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/libtimezonemap"
 license=('GPL')
 groups=('unity')
-depends=('gtk3')
+depends=('gtk3' 'json-glib')
 makedepends=('gobject-introspection' 'intltool')
+options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.tar.gz")
 sha512sums=('4a82794c2ae0497768470ffb34df6dffda567ca0f1d63e991260a88898c5a731dcdb51796a8cb974b6f2d4fc2da2576cdf8678cbd92da5eae2f869b89b4b9017')
 
