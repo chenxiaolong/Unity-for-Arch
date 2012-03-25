@@ -10,7 +10,7 @@ UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/compiz' -O - | 
 
 echo ""
 
-echo -e "PKGBUILD version: ${_actual_ver}${_ubuntu_ver} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${_actual_ver} ${_ubuntu_rel}"
 #echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Upstream version: (none)"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"

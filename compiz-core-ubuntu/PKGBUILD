@@ -22,14 +22,13 @@ if [[ "${NO_KDE}" == "true" ]]; then
   COMPIZ_DISABLE_PLUGIN_KDE="ON"
 fi
 
-_ubuntu_ver="+bzr3035"
 _ubuntu_rel="0ubuntu1"
-_actual_ver=0.9.7.0
+_actual_ver=0.9.7.2
 
 # Another AUR fix
-pkgver=${_actual_ver}.bzr3035.${_ubuntu_rel}
+pkgver=${_actual_ver}.${_ubuntu_rel}
 
-pkgrel=101
+pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -41,10 +40,10 @@ if [ ! -z "${_kdedeps}" ]; then
   done
 fi
 options=('emptydirs')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('04d95796c9f0891cd2d7930f144d7ba5ffec3957a02d1f3345cce06cf2d9a78cc7864e8698d4d8eaabb9be919fc5bbd3aa0da3bf070d9bf6877b099ef6ec9eed'
-            'f27cfd034feb9a4fb60a0b1544d9d403d78616bf709a4b9776fc4ec5923bec6f243e6a6c2fbd8f8266d2b2d3efbffa33562701890435debd8b30a94a170a45be')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}.orig.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('e10c826bf829feb421a4f4296ffe56213877d210232012aa5131db698666d053155e626ec5449a236f884dc5098651bcb0a2a00753e855f1956ef3e4d159dfa6'
+            '9d33381c2d6ceb9a2215e5d1f2a934c72a41f90616cd2871e1aac30dab0f559d90ecee8de8e10a8bb804325cbca308bde4266edd66e156cbf89adbb982317e21')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${_actual_ver}"
@@ -232,7 +231,7 @@ package_compiz-kde-ubuntu() {
 package_compiz-gnome-ubuntu() {
   pkgdesc="OpenGL window and compositing manager - GNOME window decorator"
   groups=('unity' 'compiz-ubuntu')
-  depends=('gnome-control-center' 'metacity-ubuntu' 'compiz-core' 'gconf-ubuntu')
+  depends=('gnome-control-center' 'metacity-ubuntu' 'compiz-core' 'gconf-ubuntu' 'glibmm')
   optdepends=('compizconfig-backend-gconf-ubuntu: Store settings in GNOME GConf database')
   provides=("compiz-decorator-gtk=${pkgver}")
   conflicts=('compiz-decorator-gtk')
@@ -329,7 +328,7 @@ package_compiz-gnome-ubuntu() {
 package_compiz-core-ubuntu() {
   pkgdesc="OpenGL window and compositing manager"
   groups=('unity' 'compiz-ubuntu')
-  depends=('startup-notification' 'mesa' 'dbus' 'libxslt' 'fuse')
+  depends=('startup-notification' 'mesa' 'dbus' 'libxslt' 'fuse' 'glibmm' 'libxrandr' 'libxdamage' 'libxcomposite' 'librsvg' 'boost-libs' 'libxinerama')
   optdepends=()
   provides=("compiz-core=${pkgver}")
   conflicts=('compiz-core')
