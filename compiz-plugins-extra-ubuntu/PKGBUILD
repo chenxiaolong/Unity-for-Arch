@@ -2,12 +2,12 @@
 
 pkgname=compiz-plugins-extra-ubuntu
 
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 _ubuntu_ver='~bzr9'
 _actual_ver=0.9.7.0
 
 pkgver=${_actual_ver}.bzr9.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="Compiz extra plugins - Ubuntu version"
 url="http://www.compiz.org/"
 license=('GPL' 'LGPL' 'MIT')
@@ -15,13 +15,13 @@ arch=('i686' 'x86_64')
 provides=('compiz-plugins-extra')
 conflicts=('compiz-plugins-extra')
 groups=('unity')
-depends=('compiz-core-ubuntu' 'compiz-plugins-main-ubuntu' 'librsvg' 'cairo' 'libsm' 'dbus' 'libjpeg-turbo' 'libxslt' 'gconf-ubuntu' 'libnotify')
+depends=('compiz-core-ubuntu' 'compiz-plugins-main-ubuntu' 'libjpeg-turbo' 'gconf-ubuntu' 'libnotify' 'dconf')
 makedepends=('intltool' 'cmake' 'pkgconfig')
 install=compiz-plugins-extra-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('5681447344359af7b5bd803cf986d3e27e79a4a55d338d7b793c2f5611b0c2d08ccdd8cbe0d60f41f88fda1146e91f524f40209c071d3bbb0b63c4dfef549714'
-            '8794bf238c0cab73aa47fdd175faa73ce26afa472cfb87cbf50440bf7b03dd2c37019e207dd28564a982e82781a55fb1698f7b4909d10fb8a991b08d999e2ae1')
+            '8670cb269dd74b16336bc5d90dae76a26f4b0b29b870e7e2eb196586ab5461256500b3c6679c7f0ae54e0d14aadc18ddb4066ca94bf191c800dfd21bd8100b18')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
