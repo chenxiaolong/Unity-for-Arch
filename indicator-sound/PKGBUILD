@@ -13,7 +13,7 @@ url="https://launchpad.net/indicator-sound"
 license=('GPL')
 makedepends=('intltool' 'vala')
 groups=('unity')
-options=(!libtool)
+options=('!libtool')
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
@@ -48,7 +48,7 @@ build() {
 
 package_indicator-sound() {
   pkgdesc="A unified sound menu - GTK 3 library"
-  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'gconf' 'dconf')
+  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'dconf')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
@@ -56,7 +56,7 @@ package_indicator-sound() {
 
 package_indicator-sound-gtk2() {
   pkgdesc="A unified sound menu - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'libnotify' 'indicator-sound')
+  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'indicator-sound')
   cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
