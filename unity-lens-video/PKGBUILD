@@ -1,28 +1,43 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-lens-video
-pkgver=0.3.4
-pkgrel=101
+_ubuntu_rel=0ubuntu1
+pkgver=0.3.4.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
 url="https://launchpad.net/unity-lens-videos"
 license=('GPL')
 depends=('python2')
 groups=('unity')
-source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        "https://launchpad.net/unity-lens-videos/remote-videos-scope/remote-videos-${pkgver}/+download/unity-scope-video-remote-${pkgver}.tar.gz")
+source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/unity-lens-videos/remote-videos-scope/remote-videos-${pkgver%.*}/+download/unity-scope-video-remote-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-video-remote_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('53e92105202f6d24b743c36410a448ee3633a7892dda113d515dd1ff7db26f64bec3ae9987e13c35cc3eff8a07e3135d22ba5dfb970c7d10074bc85baf2a343f'
-            '0be84b5b5118e91be6907c164bf3f2a3f8ceda7fbcdfc251c5f0e6d06f0df82e2d43239b978a582a10a84382a724e83890a6df572245fa4ba5655b55d846913c')
+            '0be84b5b5118e91be6907c164bf3f2a3f8ceda7fbcdfc251c5f0e6d06f0df82e2d43239b978a582a10a84382a724e83890a6df572245fa4ba5655b55d846913c'
+            'b0471f7bdfa5927bdd7e3ae43111eb51bb23d87063622d74bb52135aead1fe7a73a6f20cb179d1de2729c789061eed876296432cc9a4d064c103ddcbb9b22e60'
+            '5dcd718b98c8c88fe4e27116683da619b5b54dab825c74b5843aa9f76df294c48b9f6d8829b82c69a7fa4a26761dcd11ec6d445ade6e5a983699c763feb1aa5d')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+
+  cd "${srcdir}/unity-scope-video-remote-${pkgver%.*}"
+
+  patch -Np1 -i "${srcdir}/unity-scope-video-remote_${pkgver%.*}-${_ubuntu_rel}.diff"
+}
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   python2 setup.py install --root="${pkgdir}/" --optimize=1
 
   # Python 2 fix
   sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}/usr/lib/unity-lens-video/unity-lens-video"
 
-  cd "${srcdir}/unity-scope-video-remote-${pkgver}"
+  cd "${srcdir}/unity-scope-video-remote-${pkgver%.*}"
 
   python2 setup.py install --root="${pkgdir}/" --optimize=1
 
