@@ -8,7 +8,8 @@ pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) inter
 arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-geis"
 license=('GPL' 'LGPL')
-depends=('utouch-grail' 'xorg-xinput')
+depends=('utouch-grail' 'xorg-xinput' 'python2' 'dbus-core')
+options=('!emptydirs' '!libtool')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('45733279bc6e2b9eb53f7fa8feb61fd8e1660da167f076a8ec54b81bb8ca042e2a1f163bcafa370bf5d2478471a858b80cc08128e7883655860f8dd0cb18f7e1'
@@ -31,5 +32,5 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
   make DESTDIR="${pkgdir}/" install
-  sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}"/usr/bin/{geisview,pygeis}
+  sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}"/usr/bin/{geisview,pygeis} "${pkgdir}/usr/lib/python2.7/site-packages/geisview/__init__.py"
 }
