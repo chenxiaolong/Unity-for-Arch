@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=geoclue
-_ubuntu_rel=1ubuntu11
+_ubuntu_rel=1ubuntu12
 pkgver=0.12.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Modular geoinformation service built on the D-Bus messaging system."
@@ -15,7 +15,7 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('c65fef518fea5708067def3595a57b2e3cb4c04a3d1c367ac02c4802386a6c8420b3d20f5194896d8e0fdeee6cc6af2744cc920af1ab680a3ca197cb5a5bfab5'
-            'e9caff94d1a67f9ad5f80268b79027233eea5ed358fd8126f501459fff69e330f11b4330f0caa9c7176b0ab224c96325ba292b59548d0528f02b50586e63635b')
+            '8627411335292eede5dee3ccab4f0e066e48c9f8598ad9ce0323bff736b2916a2b0a5a290e8d2a5e2a8d501bd0fb0e19acb4ffb9926dba50c35cb646010bfd52')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
