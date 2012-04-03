@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=glib2-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=2.31.22.${_ubuntu_rel}
+_ubuntu_rel=1ubuntu1
+pkgver=2.32.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
@@ -17,8 +17,8 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/glib/${pkgver%.*.*}/glib-${pkgve
         "https://launchpad.net/ubuntu/+archive/primary/+files/glib2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
-sha512sums=('37ee08a0f37abad1806567bcbad213b82ea1477a42a3d5b949bb4b8aaed834e1ff5f17dc253ad2908278f51bf87acd31ce09875aae589625eb562d37b901e9dc'
-            '609c3ecb08022503ab927fc6c6961c5f131b038d4f094dd33d19eeda7147f5da9f175dd2100eb80b8d4f4db7b57ae4a8956826c45312334c1ab076d2eec872ca'
+sha512sums=('6788b2bb9d35f566efd7bf02f05e4e56184fc11160cf1e08ef833dbd49314bc5ef74b7abf9257fa5fdf298148ab6aa6db11faa8b362e2114e31b08027bdff50f'
+            '697f2f3633b57b20c1de28726228e86a8fe0232fea6274a295b092fc6424993f157e0efceb006ee91a048349b01e00ba535c650f1dfdd8e64a0628898e40c422'
             'dca2bc74d2013fcb24145ac794eef457aa3213c039e40a1a26ca5017694930768e7c80e334e17a56834549dff6549c781ddd91fae6c7bbb26fdd6a083ad8217a'
             'c3899eb7fa5482ce8a35fe02db90fd0f928d50aa7e4365a9529ef35a2dcd1ed86d5a24f6bc5c635ef5b2d95a0ebfebc2bb6bc90404c99f6fb7484ed2fa032c06')
 
@@ -53,7 +53,7 @@ package() {
   install -m755 "${srcdir}/glib2.csh" "${pkgdir}/etc/profile.d/"
 
   for _i in "${pkgdir}/etc/bash_completion.d/"*; do
-      chmod -x "${_i}"
+    chmod -x "${_i}"
   done
   sed -i "s|^\(#!.*python\)$|\12|" "${pkgdir}"/usr/bin/gdbus-codegen
 }
