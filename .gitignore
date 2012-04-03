@@ -5,3 +5,6 @@ src/
 *.tar.gz
 *.tar.xz
 .*.swp
+
+*~
+TEMP/
