@@ -3,7 +3,7 @@
 
 pkgname=gnome-desktop
 epoch=1
-pkgver=3.3.92
+pkgver=3.4.0
 pkgrel=1
 pkgdesc="Library with common API for various GNOME modules"
 arch=('i686' 'x86_64')
@@ -14,15 +14,14 @@ url="http://www.gnome.org"
 groups=('gnome')
 options=('!libtool')
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz")
-sha512sums=('65cbb01353b74ddaa5bdc6ca3d5b8a90b2e32b0e12b8fcd398013f53eaa9dbffcf3045cf6d9ccf8955b91d257af6d9742537a5698d33d387642cbecbb333f94a')
+sha512sums=('d8f5908710f49f48f8db730401a671ea11acbfa01d46609fb9f93623a03946a8184b5001b32f33b90e979c43e71fc12d4afa6e27482c158f547c851275512ffa')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   ./configure --prefix=/usr --sysconfdir=/etc \
       --localstatedir=/var --disable-static \
-      --with-gnome-distributor="Arch Linux" \
-      --disable-scrollkeeper
+      --with-gnome-distributor="Arch Linux"
 
   make ${MAKEFLAGS}
 }
