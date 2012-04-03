@@ -1,36 +1,28 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
-# NOTE: Change the following to true to compile in systemd support
-USE_SYSTEMD=false
-
 pkgname=gnome-screensaver-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=3.2.2.${_ubuntu_rel}
-pkgrel=1
+_ubuntu_rel=0ubuntu1
+pkgver=3.4.0.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=('i686' 'x86_64')
 license=('GPL')
 url="http://live.gnome.org/GnomeScreensaver"
 backup=('etc/pam.d/gnome-screensaver')
-depends=('dbus-glib' 'libgnomekbd' 'gnome-desktop' 'gsettings-desktop-schemas')
-if [[ "${USE_SYSTEMD}" == "true" ]]; then
-  depends=(${depends[@]} 'libsystemd')
-else
-  CONFIGURE_OPTS='--without-systemd'
-fi
+depends=('dbus-glib' 'libgnomekbd' 'gnome-desktop' 'gsettings-desktop-schemas' 'libsystemd')
 makedepends=('pkgconfig' 'intltool' 'libxss')
 provides=("gnome-screensaver=${pkgver}")
 conflicts=('gnome-screensaver')
 groups=('gnome')
-options=(!emptydirs)
+options=('!emptydirs')
 install=gnome-screensaver.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
-sha512sums=('504080e006f5d86bb5a44bb02482baf91cfbc3f1af94a225d9e6a78553c39f4c5e269d706b4706dfb0fcf4627bb188e686befaf5c6df13c7e5ce5340af3b7b5b'
-            '64dc3d539ada55d53b36b0c83f4d316cb9ee79352ced0748acd12e3b619d1c5300f98216d9cd23763d3066c7ef7ecf717e985cc213bea65f3f436c35861175e2'
-            '5eaf5f9982d949efd34595761d1c96e9f5d71fc892b0fdd0e1877d8aada3d97dac4bf789c241bfbf4cd9e9c867a3e2365fa5e855580542b96af76fc1d5bff92d')
+sha512sums=('441e38de4b119019a502ded401bb95ddd55e5cab7134bc72cca550e510a37c22e1c97b89db6ee71e84551ac2f131260b66ae0ba1fde736416b0d27c9492f6fd7'
+            '32a1e5978f6c7f3cb53741a4f620c322b2041d51702ee1c332c4e1d092114ac32628112852c6c22abe4d3e33ddb40b18b5d04465afc0dbeb5ba0876e806117da'
+            'aed0933feed70a9b16da80d6e4716641cd45d2fd3fadbace3dfeb02b1a07124ee659f470277f8ce93492c6f7cf3cc9996bc60598724eea1955975604ff8f324d')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -45,11 +37,10 @@ build() {
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
-    --libexecdir=/usr/lib/gnome-screensaver \
+    --libexecdir=/usr/lib/${pkgname%-*} \
     --localstatedir=/var \
     --with-mit-ext \
-    --enable-locking \
-    ${CONFIGURE_OPTS}
+    --with-systemd
 
   make ${MAKEFLAGS}
 }
