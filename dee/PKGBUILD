@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=dee
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=1.0.8.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
@@ -17,7 +17,7 @@ options=('!libtool')
 source=("http://launchpad.net/dee/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('120ea08af78f99683c2aa9fb03e92880d682647b2a7187e7adfce841a02f9dba5b939dbc12149607592bc80c45181b747aea305930c4e7f5850331d4297d762e'
-            '48411500c007fdbfb5bb080269f75d5b7261ae7cf7862223b9787808389f8ac445c7d7bea2f904d96c926aff695322dc4620f21b8d6646c9ab5b36ad2b0a4e9a')
+            '8dcc67c1a206667a2b3100792f8b41482d0dd8cc209bf572a7ed1168c1a576607eba9dcfbec71351c37fc772d8156ce98cdbc8a0b99961d2c7f1c2272aba8ddc')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
