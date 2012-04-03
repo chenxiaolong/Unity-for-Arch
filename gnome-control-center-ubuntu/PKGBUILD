@@ -3,29 +3,34 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=3.3.92.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=3.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
-depends=('gtk3-ubuntu' 'gsettings-desktop-schemas' 'gnome-menus' 'gnome-desktop' 'gnome-settings-daemon-ubuntu' 'upower' 'libgtop' 'cups-pk-helper' 'accountsservice' 'sound-theme-freedesktop' 'gnome-online-accounts' 'network-manager-applet' 'libpulse-ubuntu>=1.1.0ubuntu7-100')
+groups=('gnome')
+url="http://www.gnome.org"
+license=('GPL')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop'
+         'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu'
+         'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb'
+         'network-manager-applet' 'sound-theme-freedesktop' 'upower'
+         'libsystemd' 'cheese' 'libpulse-ubuntu>=1.1.0ubuntu7-100'
+         'archlinux-artwork')
+makedepends=('gnome-doc-utils' 'intltool' 'gnome-common')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'apg: adds password generation for user accounts'
             'gnome-color-manager: for color management tasks')
-makedepends=('gnome-doc-utils' 'intltool')
-groups=('gnome')
-url="http://www.gnome.org"
 provides=("gnome-control-center=${pkgver}")
 conflicts=('gnome-control-center')
-install=gnome-control-center.install
-license=('GPL')
 options=('!libtool' '!emptydirs')
+install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'disable_wacom_panel.patch')
-sha512sums=('e40dae34995e8171427ebb52868abfb791f42bf2c6c88ae0873f1abcdc9ba1fd084cad74a4207a5eecd1db97786a25a74d89e73a3c65d05df4993308b493a936'
-            '350ef8339324341e7937f351fa107b486ee95bbdccdb55cf0b07fa198fba73a4cb3f60b48b68ed11f97e65dc362c7f8a9c62d1597394bbc27f8a63e004365e07'
-            'a2ee352a4f30fa3d5d551c4bcc060c535ac7a10e1bcf39dd1365502797f906470abc938c84418b1c993a98523eb4032baf1372c00d0fd6c3dd0a529a83fe3821')
+        'systemd-fallback.patch')
+sha512sums=('519cabe698c139e517772c430911f7085438a8041c14faed5ad74e3fa1e2e1dc962af6934d459600f451c267d2373c85efa706d5c321ebab8c31b42d3245dca6'
+            '27d532649f217cf66cbe8c5fc85543f9f400dc9f31069bc1e474f3a3db9484e3d07b89f40f7d088157a8f313b320be6289137b3ca5bdc8f0892830f08e494aea'
+            '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -46,8 +51,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  # disable wacom panel - too much work to package
-  patch -Np1 -i "${srcdir}/disable_wacom_panel.patch" || true
+  patch -Np1 -i "${srcdir}/systemd-fallback.patch"
 
   autoreconf -vfi
   ./configure \
@@ -55,7 +59,8 @@ build() {
     --sysconfdir=/etc \
     --localstatedir=/var \
     --disable-static \
-    --disable-scrollkeeper \
+    --enable-systemd \
+    --with-libsocialweb \
     --disable-update-mimedb
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
