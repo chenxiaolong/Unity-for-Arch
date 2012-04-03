@@ -3,15 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=3.3.92.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=3.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('libgnomekbd' 'gnome-desktop' 'libnotify' 'hicolor-icon-theme' 'libcanberra-pulse' 'nss' 'gconf' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3' 'packagekit')
-makedepends=('intltool' 'gtk-doc' 'gnome-desktop')
+depends=('colord' 'dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libgnomekbd' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3' 'packagekit')
+makedepends=('intltool' 'gtk-doc' 'gnome-desktop' 'gnome-common' 'xf86-input-wacom')
 groups=('unity')
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=('gnome-settings-daemon')
@@ -19,10 +19,10 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'disable_wacom_plugin.patch')
-sha512sums=('dbcf9db025228c3265ec429de2ec5d8ff4c333f9e5973936e53aa01b66977e27f22676279c753ce8e74d37ff29fc66ac338a127f0aa0c77ab115e6157ec3025e'
-            '20ff2083dd69d43be8a45b37d66d4ed8448c337ce68acb9d89a72816c54ff313b7bcaa34b868d6e661d034a7fb92f38d4751414bea34e885c98ee2dec9b3ed0c'
-            '8b04751faf5f4bcdc77e8a0a7a0d84e26b6e44042ce2ee389a8cee9465794d0bbef5aaf9593a0c4d60c9277027490738c6e22660d249a7434cc91fd2a7856030')
+        'systemd-fallback.patch')
+sha512sums=('07c39fcfcff39cfc968814987666c27be035205fdd7fef6964c3eb1f373fef19478da13fb13b7162732749936a36d905cb912237c6f06e873ad8bbf46e2a1fd4'
+            '5e4797c398f24abb5c8791fec7901b531a503258d7a1ab3c0c9d95215d76fae716985a8f0610e1d020d7104c2e8251645d44a6de312116dda46a5cb7403ecbfa'
+            '6afbad62dd69e0c779ae991e9afa46c3f2c0db07f0f7d77d607198f939498a8dfa0cd46099f46ce25d6d993425d7914bb3b8098044f007485e7fe501c900fe63')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -38,8 +38,7 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  # Disable wacom plugin
-  patch -Np1 -i "${srcdir}/disable_wacom_plugin.patch" || true
+  patch -Np1 -i "${srcdir}/systemd-fallback.patch"
 
   autoreconf -vfi
   ./configure \
@@ -48,9 +47,7 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/${pkgname%-*} \
     --disable-static \
-    --enable-pulse \
-    --with-pnpids=/usr/share/libgnome-desktop-3.0/pnp.ids \
-    --enable-gconf-bridge #from debian/rules
+    --enable-systemd
       
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
