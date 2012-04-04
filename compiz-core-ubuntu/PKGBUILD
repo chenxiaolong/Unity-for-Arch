@@ -23,7 +23,7 @@ if [[ "${NO_KDE}" == "true" ]]; then
 fi
 
 _ubuntu_rel="0ubuntu1"
-_actual_ver=0.9.7.2
+_actual_ver=0.9.7.4
 
 # Another AUR fix
 pkgver=${_actual_ver}.${_ubuntu_rel}
@@ -42,8 +42,8 @@ fi
 options=('emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('e10c826bf829feb421a4f4296ffe56213877d210232012aa5131db698666d053155e626ec5449a236f884dc5098651bcb0a2a00753e855f1956ef3e4d159dfa6'
-            '9d33381c2d6ceb9a2215e5d1f2a934c72a41f90616cd2871e1aac30dab0f559d90ecee8de8e10a8bb804325cbca308bde4266edd66e156cbf89adbb982317e21')
+sha512sums=('d1851fefc7e93b1c864c4dbee716e9fe5805358503683d12aaf15fd61b2f99e91c55dce8214e850244c6192b45555c088c1d4da3d170b4a25bc5605928bb555e'
+            'a806a9524a2cbba7820ed63f4835107ba951e31255752fe0fbebdbe9802ce9eaa5aa6eb4da74a6fe65e71206556e494c7471f6c372937121051be230fb1c5583')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${_actual_ver}"
@@ -72,6 +72,9 @@ build() {
     'workarounds' 'scale' 'expo' 'ezoom'
   )
 
+  # Build fix
+  CXXFLAGS="${CXXFLAGS} -Wno-error=sign-compare"
+
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
   LDFLAGS="$(echo ${LDFLAGS} | sed 's/-B[ ]*symbolic-functions//')"
@@ -93,7 +96,7 @@ build() {
     -DCOMPIZ_DISABLE_PLUGIN_KDE="${COMPIZ_DISABLE_PLUGIN_KDE}" \
     -DCOMPIZ_BUILD_TESTING=OFF \
     ..
-  MAKEFLAGS="-j1"
+
   make ${MAKEFLAGS}
 
   # Install to temporary directory
