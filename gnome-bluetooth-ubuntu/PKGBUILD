@@ -3,7 +3,7 @@
 # Contributor: Roman Kyrylych <roman@archlinux.org>
 
 pkgname=gnome-bluetooth-ubuntu
-_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu5
 pkgver=3.2.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Bluetooth Subsystem"
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         '61-gnome-bluetooth-rfkill.rules')
 sha512sums=('a49200d8364d478e9011e79fa2437917a204f8fa608cd9fd829102969efbfd149b0a5878ee8259750d37047dcb70ff457e4a52e035194ba4abe81925b37211f8'
-            '28b2393f72ec473d0ec095fd487feb56111796250a5e0a7d6cc8f409a5fbbafc20f761922f078d8634b56fb45e108ffa6c022cde6e0d65ce6e176941fec82b47'
+            '21540dfe165af642b917befb30a5b523daf2a576601deb7cad3e0a054be75638cb30fc7b070e61f38ff3f375e6a95ca0c000559e52f4672586eeb06893dd724f'
             '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de')
 
 build() {
