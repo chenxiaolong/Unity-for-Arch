@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/compizconfig-backend-gconf' -O - | sed -n 's/.*>compizconfig-backend-gconf_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/compizconfig-backend-gconf' -O - | sed -n 's/.*>compizconfig-backend-gconf_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 #echo "Getting latest upstream version..."
 #UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/" -O - | sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p')
