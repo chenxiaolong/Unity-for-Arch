@@ -2,7 +2,7 @@
 
 pkgname=compiz-plugins-main-ubuntu
 
-_ubuntu_rel=0ubuntu7
+_ubuntu_rel=0ubuntu8
 _ubuntu_ver='~bzr19'
 _actual_ver=0.9.7.0
 
@@ -21,7 +21,7 @@ install=compiz-plugins-main-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('6b408584851699e8661b674446f0a8fa7dc7f2fff9530a0fb31d4f099f2b7c818e3135365c925b6d2d1b2c02463089247306ade3cfeedfda17ae491eb2c6b857'
-            '1411897223f3b8beb3a64c8d341325fe7603b8911d8b778b8521b732ccf457584f5c35eca46d210339fb96e422745021b3dea4c3939ed9b5ea40f8c5f7742767')
+            '3a3cc28efabf132f98b1b58ce0072472766dfe99881f9bf5d53cc5e376cbdeb26da215b324ec44ecba852bad0ca0b381b5ac1081a720bc8b3c157494a4ab9985')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -42,7 +42,6 @@ build() {
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX=/usr
 
-  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 }
 
