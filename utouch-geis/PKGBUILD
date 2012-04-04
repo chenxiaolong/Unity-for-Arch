@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=utouch-geis
-_ubuntu_rel=0ubuntu2
-pkgver=2.2.7.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=2.2.8.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
@@ -12,8 +12,8 @@ depends=('utouch-grail' 'xorg-xinput' 'python2' 'dbus-core')
 options=('!emptydirs' '!libtool')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('45733279bc6e2b9eb53f7fa8feb61fd8e1660da167f076a8ec54b81bb8ca042e2a1f163bcafa370bf5d2478471a858b80cc08128e7883655860f8dd0cb18f7e1'
-            'ad4054186c6f53f55e0f288320e679fbe76c39add3f349c43686abcadd1ed1febcca41fe84204008c9a4b35c04d07eacc76636557a682c128b5dc5998a2880d1')
+sha512sums=('844bef8c512e7d3f165c2d3181f1b6b9932c39038de55c5b4037adfd8df0b55263ac9f46da975bd8c0d591dc65de6c3dc293ace72ee27ec94348b8d7dacd1ac9'
+            '6f0ebeca35722c4069eda801c1c78a41d6585d494e1f883849017f47f9adbe770bab24479004a3fcf9fac11befcf32605469a2465b74e78d21135675a71a8105')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
