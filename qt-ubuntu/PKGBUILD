@@ -8,9 +8,9 @@ pkgdesc='A cross-platform application and UI framework'
 
 pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=1ubuntu11
-pkgver=4.8.0.${_ubuntu_rel}
-pkgrel=102
+_ubuntu_rel=0ubuntu1
+pkgver=4.8.1.${_ubuntu_rel}
+pkgrel=100
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
@@ -19,24 +19,17 @@ options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${pkgver%.*}"
 source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'fix-qgraphicsscene-regression.patch'
-        'improved-filter-event.patch'
-        'qurl-backward-compatibility.patch')
-sha512sums=('b37f2d5fe3cebdcc7ebd5b6bc68ea03f4cabeadc492c77d7c18d00ede5c254adb57fcbe5cec6326072304db49e69e59c14af7e90875138c3b2f255237a99a78f'
-            '3d0c0f8fec21ece4c98c9f7c3c8fc6caeb0f323c0be4ab3c67ea4d56fb3c927f35c70ed710f3fe46f77bc3db3509aaf4b4d89b2acee8b5fdd0c34d90caef62f9'
-            '5b5bdf98eaba6cbbd5e9245fcd34bdccdc0dbf4dc84e311fb3967c82a586426b62e8f616d5b84e02a434fdee185fe30ea1b3949061f7b805112adbe132822068'
-            '9d3675b4773c8979268ab02e81779804ebc83c128d6be3df17321e251e11caa2b4ea8f5b98743435557cdd6fecf80e5542dd7c54fa7cc544409ecf7da8e95037'
-            'c9d5861a486d09d004cc32f49a9c981876835ab7e4994ac21bd89b0a9236d77a04a7490306a44f6fff06d3be8ce4b344fb63603e500cabf4b9f8e2ef1e4d8c58')
+        'gcc47.patch')
+sha512sums=('a48825a3d42c93c6d9d769d9f79b297d92b5deb9003c89c2d1f1b364b496fc6e7d307e0eb6b798ae49d7bf1928caeda6741025242499296550293518004c3d90'
+            '0bd50bf1f0a77ef2c51d4e492831fe6b9a6d18022d151f1b8c1606dad96fcac8eff031a95934965268e4665933778eee07e88d51dfa5bf30967e086443a41ea8'
+            '992b7fbaf234448f81d405a16885c14004a9caafa19963771db08b7b971fd0981078b151b614dbf5fd849e5303d5c1443e41ece7df49d0384c54dd88b1c46535')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
 
   # Apply Arch Linux patches
-    # (FS#28707)
-      #patch -p1 -i "${srcdir}"/fix-qgraphicsscene-regression.patch
-    # (FS#27757) (KDEBUG#275469)
-      #patch -p1 -i "${srcdir}"/improved-filter-event.patch
-      #patch -p1 -i "${srcdir}"/qurl-backward-compatibility.patch
+    # Fix build with GCC 4.7
+      patch -Np1 -i "${srcdir}/gcc47.patch"
 
   # Apply Ubuntu patches
     # Disable patches (longest command you've ever seen? :D) (can't use
@@ -86,7 +79,6 @@ build() {
         -e '/buildable_appchooser_states_demos.patch/d'                   \
       `# This is not Debian or Ubuntu`                                    \
         -e '/08_configure_quilt_compat.diff/d'                            \
-        -e '/fix_ftbfs_format-security.patch/d'                           \
       `# Do not default to ibus`                                          \
         -e '/kubuntu_10_ibus_input_method.diff/d'                         \
       `# Tests arent built`                                               \
@@ -102,16 +94,16 @@ build() {
 
   # Workaround the error:
   # error: ‘struct’ tag used in naming ‘union _GMutex’
-  CFLAGS="${CFLAGS} -fpermissive"
-  CXXFLAGS="${CXXFLAGS} -fpermissive"
+  #CFLAGS="${CFLAGS} -fpermissive"
+  #CXXFLAGS="${CXXFLAGS} -fpermissive"
 
   # Workaround error with new glib
   #CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
   #CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations"
 
   # More workarounds
-  CFLAGS="${CFLAGS} -Wno-error"
-  CXXFLAGS="${CXXFLAGS} -Wno-error"
+  #CFLAGS="${CFLAGS} -Wno-error"
+  #CXXFLAGS="${CXXFLAGS} -Wno-error"
 
   export QT4DIR="${srcdir}/${_pkgfqn}"
   export LD_LIBRARY_PATH="${QT4DIR}/lib:${LD_LIBRARY_PATH}"
