@@ -38,25 +38,25 @@ diff -Nru xorg-server-1.12.0.orig/configure.ac xorg-server-1.12.0/configure.ac
 diff -Nru xorg-server-1.12.0.orig/dix/dixutils.c xorg-server-1.12.0/dix/dixutils.c
 --- xorg-server-1.12.0.orig/dix/dixutils.c	2012-03-23 16:45:11.041240923 -0400
 +++ xorg-server-1.12.0/dix/dixutils.c	2012-03-23 16:45:22.487907847 -0400
-@@ -537,7 +537,7 @@
- 	{
- 	    /* remove q from the list */
- 	    *p = q->next;    /* don't fetch until after func called */
--	    free(q);
+@@ -522,7 +522,7 @@
+         if ((*q->function) (q->client, q->closure)) {
+             /* remove q from the list */
+             *p = q->next;       /* don't fetch until after func called */
+-            free(q);
 +	    (*q->destroyProc) (q);
- 	}
- 	else
- 	{
-@@ -560,7 +560,7 @@
- 	    (void) (*q->function) (q->client, q->closure);
- 	    /* remove q from the list */
- 	    *p = q->next;    /* don't fetch until after func called */
--	    free(q);
+         }
+         else {
+             p = &q->next;       /* don't fetch until after func called */
+@@ -542,7 +542,7 @@
+             (void) (*q->function) (q->client, q->closure);
+             /* remove q from the list */
+             *p = q->next;       /* don't fetch until after func called */
+-            free(q);
 +	    (*q->destroyProc) (q);
- 	}
- 	else
- 	{
-@@ -570,6 +570,12 @@
+         }
+         else {
+             p = &q->next;       /* don't fetch until after func called */
+@@ -551,6 +551,12 @@
      workQueueLast = p;
  }
  
@@ -67,9 +67,9 @@ diff -Nru xorg-server-1.12.0.orig/dix/dixutils.c xorg-server-1.12.0/dix/dixutils
 +}
 +
  Bool
- QueueWorkProc (
-     Bool (*function)(ClientPtr /* pClient */, pointer /* closure */),
-@@ -583,12 +589,22 @@
+ QueueWorkProc(Bool (*function)
+               (ClientPtr /* pClient */ , pointer /* closure */ ),
+@@ -564,12 +564,22 @@
      q->function = function;
      q->client = client;
      q->closure = closure;
@@ -127,26 +127,26 @@ diff -Nru xorg-server-1.12.0.orig/dix/getevents.c xorg-server-1.12.0/dix/geteven
 diff -Nru xorg-server-1.12.0.orig/include/dix.h xorg-server-1.12.0/include/dix.h
 --- xorg-server-1.12.0.orig/include/dix.h	2012-03-23 16:45:10.951240921 -0400
 +++ xorg-server-1.12.0/include/dix.h	2012-03-23 16:45:22.487907847 -0400
-@@ -266,6 +266,8 @@
-     pointer /*closure*/
- );
+@@ -245,6 +245,8 @@
+                                     pointer     /*closure */
+     );
  
 +extern _X_EXPORT Bool QueueWorkItem(WorkQueuePtr item);
 +
- typedef Bool (* ClientSleepProcPtr)(
-     ClientPtr /*client*/,
-     pointer /*closure*/);
+ typedef Bool (*ClientSleepProcPtr) (ClientPtr /*client */ ,
+                                     pointer /*closure */ );
+ 
 diff -Nru xorg-server-1.12.0.orig/include/dixstruct.h xorg-server-1.12.0/include/dixstruct.h
 --- xorg-server-1.12.0.orig/include/dixstruct.h	2012-03-23 16:45:10.947907587 -0400
 +++ xorg-server-1.12.0/include/dixstruct.h	2012-03-23 16:45:22.491241180 -0400
-@@ -152,6 +152,9 @@
- );
-     ClientPtr   client;
-     pointer     closure;
+@@ -153,6 +153,9 @@
+         );
+     ClientPtr client;
+     pointer closure;
 +    void       (*destroyProc) (
 +                struct _WorkQueue * /* this */
 +);
- }           WorkQueueRec;
+ } WorkQueueRec;
  
  extern _X_EXPORT TimeStamp currentTime;
 diff -Nru xorg-server-1.12.0.orig/include/protocol-versions.h xorg-server-1.12.0/include/protocol-versions.h
@@ -1051,11 +1051,11 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
 --- xorg-server-1.12.0.orig/xfixes/cursor.c	2012-03-23 16:45:10.964574253 -0400
 +++ xorg-server-1.12.0/xfixes/cursor.c	2012-03-23 16:46:00.681242038 -0400
 @@ -61,6 +61,7 @@
- static RESTYPE		CursorHideCountType;
- static RESTYPE		CursorWindowType;
- RESTYPE			PointerBarrierType;
+ static RESTYPE CursorHideCountType;
+ static RESTYPE CursorWindowType;
+ RESTYPE PointerBarrierType;
 +static RESTYPE		PointerBarrierClientType;
- static CursorPtr	CursorCurrent[MAXDEVICES];
+ static CursorPtr CursorCurrent[MAXDEVICES];
  
  static DevPrivateKeyRec CursorScreenPrivateKeyRec;
 @@ -119,6 +120,11 @@
@@ -1070,34 +1070,35 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
  /*
   * Wrap DisplayCursor to catch cursor change events
   */
-@@ -129,6 +135,7 @@
+@@ -135,6 +135,7 @@
      ConstrainCursorHarderProcPtr ConstrainCursorHarder;
-     CursorHideCountPtr          pCursorHideCounts;
-     struct xorg_list            barriers;
+     CursorHideCountPtr pCursorHideCounts;
+     struct xorg_list barriers;
 +    struct xorg_list            barrierClients;
  } CursorScreenRec, *CursorScreenPtr;
  
  #define GetCursorScreen(s) ((CursorScreenPtr)dixLookupPrivate(&(s)->devPrivates, CursorScreenPrivateKey))
-@@ -1106,7 +1113,8 @@
+@@ -1085,7 +1085,8 @@
  
      /* Algorithm below doesn't handle edge cases well, hence the extra
       * checks. */
 -    if (barrier_is_vertical(barrier)) {
 +    if (barrier_is_vertical(barrier) &&
 +	(dir & (BarrierPositiveX | BarrierNegativeX))) {
- 	/* handle immediate barrier adjacency, moving away */
- 	if (dir & BarrierPositiveX && x1 == barrier->x1)
- 	    return FALSE;
-@@ -1117,7 +1125,8 @@
- 	    *distance = 0;
- 	    return TRUE;
- 	}
--    } else {
-+    } else if (barrier_is_horizontal(barrier) &&
+         /* handle immediate barrier adjacency, moving away */
+         if (dir & BarrierPositiveX && x1 == barrier->x1)
+             return FALSE;
+@@ -1096,8 +1096,9 @@
+             *distance = 0;
+             return TRUE;
+         }
+     }
+-    else {
++    else if (barrier_is_horizontal(barrier) &&
 +		(dir & (BarrierPositiveY | BarrierNegativeY))){
- 	/* handle immediate barrier adjacency, moving away */
- 	if (dir & BarrierPositiveY && y1 == barrier->y1)
- 	    return FALSE;
+         /* handle immediate barrier adjacency, moving away */
+         if (dir & BarrierPositiveY && y1 == barrier->y1)
+             return FALSE;
 @@ -1219,6 +1228,125 @@
      }
  }
@@ -1224,17 +1225,18 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
  static void
  CursorConstrainCursorHarder(DeviceIntPtr dev, ScreenPtr screen, int mode, int *x, int *y)
  {
-@@ -1226,12 +1354,23 @@
+@@ -1323,13 +1323,24 @@
  
-     if (!xorg_list_is_empty(&cs->barriers) && !IsFloating(dev) && mode == Relative) {
- 	int ox, oy;
+     if (!xorg_list_is_empty(&cs->barriers) && !IsFloating(dev) &&
+         mode == Relative) {
+         int ox, oy;
 +	int vel_x, vel_y;
- 	int dir;
- 	struct PointerBarrier *nearest = NULL;
+         int dir;
+         struct PointerBarrier *nearest = NULL;
 +	PointerBarrierClientPtr c;
  
- 	/* where are we coming from */
- 	miPointerGetPosition(dev, &ox, &oy);
+         /* where are we coming from */
+         miPointerGetPosition(dev, &ox, &oy);
  
 +	/* Use the unclamped values, if available.  If not, *x, *y
 +	 * will have to do.
@@ -1245,21 +1247,21 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
 +	    unclamped_prey = *y;
 +	}
 +
- 	/* How this works:
- 	 * Given the origin and the movement vector, get the nearest barrier
- 	 * to the origin that is blocking the movement.
-@@ -1239,11 +1378,27 @@
- 	 * Then, check from the clamped intersection to the original
- 	 * destination, again finding the nearest barrier and clamping.
- 	 */
--	dir = barrier_get_direction(ox, oy, *x, *y);
+         /* How this works:
+          * Given the origin and the movement vector, get the nearest barrier
+          * to the origin that is blocking the movement.
+@@ -1352,11 +1352,27 @@
+          * Then, check from the clamped intersection to the original
+          * destination, again finding the nearest barrier and clamping.
+          */
+-        dir = barrier_get_direction(ox, oy, *x, *y);
 +	dir = barrier_get_direction(ox, oy, unclamped_prex, unclamped_prey);
 +	barrier_calculate_velocity_components(ox, oy, unclamped_prex, unclamped_prey, &vel_x, &vel_y);
  
--	nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
+-        nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
 +	nearest = barrier_find_nearest(cs, dir, ox, oy, unclamped_prex, unclamped_prey);
- 	if (nearest) {
--	    barrier_clamp_to_barrier(nearest, dir, x, y);
+         if (nearest) {
+-            barrier_clamp_to_barrier(nearest, dir, x, y);
 +	    int velocity = barrier_is_vertical(nearest) ? vel_x : vel_y;
 +	    Bool threshold_exceeded = (nearest->velocity != 0) &&
 +				      (velocity > nearest->velocity);
@@ -1277,16 +1279,16 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
 +
 +	    QueueBarrierEvent(cs, nearest, *x, *y, velocity, threshold_exceeded);
  
- 	    if (barrier_is_vertical(nearest)) {
- 		dir &= ~(BarrierNegativeX | BarrierPositiveX);
-@@ -1253,11 +1408,31 @@
- 		oy = *y;
- 	    }
+             if (barrier_is_vertical(nearest)) {
+                 dir &= ~(BarrierNegativeX | BarrierPositiveX);
+@@ -1367,11 +1367,31 @@
+                 oy = *y;
+             }
  
--	    nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
+-            nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
 +	    nearest = barrier_find_nearest(cs, dir, ox, oy, unclamped_prex, unclamped_prey);
- 	    if (nearest) {
--		barrier_clamp_to_barrier(nearest, dir, x, y);
+             if (nearest) {
+-                barrier_clamp_to_barrier(nearest, dir, x, y);
 +		velocity = barrier_is_vertical(nearest) ? vel_x : vel_y;
 +		threshold_exceeded = (nearest->velocity != 0) &&
 +				     (velocity > nearest->velocity);
@@ -1303,8 +1305,8 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
 +		}
 +
 +		QueueBarrierEvent(cs, nearest, *x, *y, velocity, threshold_exceeded);
- 	    }
- 	}
+             }
+         }
 +
 +	xorg_list_for_each_entry(c, &cs->barriers, entry) {
 +	    c->barrier.lastHit = c->barrier.hit;
@@ -1313,8 +1315,8 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
      }
  
      if (cs->ConstrainCursorHarder) {
-@@ -1272,15 +1447,45 @@
- 			   xXFixesCreatePointerBarrierReq *stuff)
+@@ -1386,15 +1386,45 @@
+                            xXFixesCreatePointerBarrierReq * stuff)
  {
      CursorScreenPtr cs = GetCursorScreen(screen);
 -    struct PointerBarrierClient *ret = malloc(sizeof(*ret));
@@ -1348,18 +1350,18 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
 +    struct PointerBarrierClient *ret = calloc(sizeof(*ret), 1);
  
      if (ret) {
- 	ret->screen = screen;
+         ret->screen = screen;
 +	ret->barrier.barrier = stuff->barrier;
- 	ret->barrier.x1 = min(stuff->x1, stuff->x2);
- 	ret->barrier.x2 = max(stuff->x1, stuff->x2);
- 	ret->barrier.y1 = min(stuff->y1, stuff->y2);
- 	ret->barrier.y2 = max(stuff->y1, stuff->y2);
- 	ret->barrier.directions = stuff->directions & 0x0f;
+         ret->barrier.x1 = min(stuff->x1, stuff->x2);
+         ret->barrier.x2 = max(stuff->x1, stuff->x2);
+         ret->barrier.y1 = min(stuff->y1, stuff->y2);
+         ret->barrier.y2 = max(stuff->y1, stuff->y2);
+         ret->barrier.directions = stuff->directions & 0x0f;
 +	ret->barrier.velocity = stuff->velocity;
 +	ret->barrier.barrierEventID = 0;
- 	if (barrier_is_horizontal(&ret->barrier))
- 	    ret->barrier.directions &= ~(BarrierPositiveX | BarrierNegativeX);
- 	if (barrier_is_vertical(&ret->barrier))
+         if (barrier_is_horizontal(&ret->barrier))
+             ret->barrier.directions &= ~(BarrierPositiveX | BarrierNegativeX);
+         if (barrier_is_vertical(&ret->barrier))
 @@ -1352,6 +1557,68 @@
      return ProcXFixesVector[stuff->xfixesReqType](client);
  }
@@ -1546,59 +1548,64 @@ diff -Nru xorg-server-1.12.0.orig/xfixes/cursor.c xorg-server-1.12.0/xfixes/curs
  Bool
  XFixesCursorInit (void)
  {
-@@ -1427,6 +1804,7 @@
- 	if (!cs)
- 	    return FALSE;
- 	xorg_list_init(&cs->barriers);
+@@ -1714,6 +1714,7 @@
+         if (!cs)
+             return FALSE;
+         xorg_list_init(&cs->barriers);
 +	xorg_list_init(&cs->barrierClients);
- 	Wrap (cs, pScreen, CloseScreen, CursorCloseScreen);
- 	Wrap (cs, pScreen, DisplayCursor, CursorDisplayCursor);
- 	Wrap (cs, pScreen, ConstrainCursorHarder, CursorConstrainCursorHarder);
-@@ -1441,8 +1819,10 @@
- 					     "XFixesCursorWindow");
+         Wrap(cs, pScreen, CloseScreen, CursorCloseScreen);
+         Wrap(cs, pScreen, DisplayCursor, CursorDisplayCursor);
+         Wrap(cs, pScreen, ConstrainCursorHarder, CursorConstrainCursorHarder);
+@@ -1728,7 +1728,9 @@
+                                              "XFixesCursorWindow");
      PointerBarrierType = CreateNewResourceType(CursorFreeBarrier,
- 					      "XFixesPointerBarrier");
+                                                "XFixesPointerBarrier");
 +    PointerBarrierClientType = CreateNewResourceType(CursorFreeBarrierClient,
 +						     "XFixesPointerBarrierClient");
  
      return CursorClientType && CursorHideCountType && CursorWindowType &&
--	   PointerBarrierType;
+-        PointerBarrierType;
 +	   PointerBarrierType && PointerBarrierClientType;
  }
- 
 diff -Nru xorg-server-1.12.0.orig/xfixes/xfixes.c xorg-server-1.12.0/xfixes/xfixes.c
 --- xorg-server-1.12.0.orig/xfixes/xfixes.c	2012-03-23 16:45:10.964574253 -0400
 +++ xorg-server-1.12.0/xfixes/xfixes.c	2012-03-23 16:45:22.494574513 -0400
-@@ -99,6 +99,7 @@
-     X_XFixesExpandRegion,	    /* Version 3 */
-     X_XFixesShowCursor,		    /* Version 4 */
-     X_XFixesDestroyPointerBarrier,  /* Version 5 */
+@@ -102,6 +102,7 @@
+     X_XFixesExpandRegion,       /* Version 3 */
+     X_XFixesShowCursor,         /* Version 4 */
+     X_XFixesDestroyPointerBarrier,      /* Version 5 */
 +    X_XFixesBarrierReleasePointer, /* Version 6 */
  };
  
  #define NUM_VERSION_REQUESTS	(sizeof (version_requests) / sizeof (version_requests[0]))
-@@ -142,6 +143,10 @@
+@@ -140,7 +140,12 @@
+ /*************** Version 4 ****************/
+         ProcXFixesHideCursor, ProcXFixesShowCursor,
  /*************** Version 5 ****************/
-     ProcXFixesCreatePointerBarrier,
-     ProcXFixesDestroyPointerBarrier,
+-ProcXFixesCreatePointerBarrier, ProcXFixesDestroyPointerBarrier,};
++ProcXFixesCreatePointerBarrier, ProcXFixesDestroyPointerBarrier,
 +/*************** Version 6 ****************/
 +    ProcXFixesCreatePointerBarrierVelocity,
 +    ProcXFixesSelectBarrierInput,
 +    ProcXFixesBarrierReleasePointer,
- };
++};
  
  static int
-@@ -207,6 +212,10 @@
+ ProcXFixesDispatch(ClientPtr client)
+@@ -200,7 +200,12 @@
+ /*************** Version 4 ****************/
+         SProcXFixesHideCursor, SProcXFixesShowCursor,
  /*************** Version 5 ****************/
-     SProcXFixesCreatePointerBarrier,
-     SProcXFixesDestroyPointerBarrier,
+-SProcXFixesCreatePointerBarrier, SProcXFixesDestroyPointerBarrier,};
++SProcXFixesCreatePointerBarrier, SProcXFixesDestroyPointerBarrier,
 +/*************** Version 6 ****************/
 +    SProcXFixesCreatePointerBarrierVelocity,
 +    SProcXFixesSelectBarrierInput,
 +    SProcXFixesBarrierReleasePointer,
- };
++};
  
  static int
+ SProcXFixesDispatch(ClientPtr client)
 diff -Nru xorg-server-1.12.0.orig/xfixes/xfixes.h xorg-server-1.12.0/xfixes/xfixes.h
 --- xorg-server-1.12.0.orig/xfixes/xfixes.h	2012-03-23 16:45:10.964574253 -0400
 +++ xorg-server-1.12.0/xfixes/xfixes.h	2012-03-23 16:45:22.494574513 -0400
