@@ -110,3 +110,25 @@ Global menus aren't working when logging in with KDM (KDE display manager).
 
     # rm -rvf /usr/share/config/kdm
     # genkdmconf
+
+AHH! Something is wrong with Unity!
+
+  Try resetting the settings for Unity and Compiz and relogin:
+
+    $ rm -rvf ~/.compiz-1/
+    $ rm -rvf ~/.cache/compizconfig-1/
+    $ rm -rvf ~/.config/compiz-1/
+    $ gconftool-2 --recursive-unset /apps/compiz-1
+    $ gconftool-2 --recursive-unset /apps/compizconfig-1
+    $ rm -rvf ~/.gconf/apps/compiz-1/
+    $ rm -rvf ~/.gconf/apps/compizconfig-1/
+    $ rm -rvf ~/.cache/unity/
+    $ rm -vf ~/.cache/unity-lens-video
+
+  If something is still wrong, please file a bug report at either:
+
+    https://github.com/chenxiaolong/Unity-for-Arch/issues
+
+  or
+
+    https://bugs.launchpad.net/unity-for-arch
