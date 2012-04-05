@@ -11,7 +11,7 @@
 pkgbase=pulseaudio-ubuntu
 pkgname=("pulseaudio-ubuntu" "libpulse-ubuntu")
 pkgdesc="A featureful, general-purpose sound server"
-_ubuntu_rel=0ubuntu13
+_ubuntu_rel=0ubuntu14
 pkgver=1.1.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -23,7 +23,7 @@ source=("http://freedesktop.org/software/${pkgbase%-*}/releases/${pkgbase%-*}-${
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
         "${pkgbase%-*}.xinit")
 sha512sums=('6cd24259ad27f272c9069f4474c63208e431b802858f8485e601a7335a92787701a4a51b3f6b11d3bf2c5c04b4d9ec8c3b33f8dd3c0dda674c15da7c0c78cbba'
-            'b375b92959eb3d3e40a9c7da7f4b37eeae3ba5268c475729e3822314a69b7f5a6fb6d40d32107abd66f184378b341e5698512f9246667ba5e4fa3a96a7671013'
+            'ae6c1a7743870647026020cdd1af2f7f2d38c2560ae1e4a9048b3bfabed06f8c0510d5352cb69806f4fe50194c4344058cc12a8d83d5918ce1dad6d08879ae58'
             'd6d2fae73a80f7e470dd858c7d5f917348d536e146f551776abf1fbea671febeeb74e44daeb1a03e2626d3fc946ce659eec78c22728f95ed4be73be9e7829f4a')
 
 build() {
