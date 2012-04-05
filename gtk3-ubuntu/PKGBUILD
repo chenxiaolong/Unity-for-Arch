@@ -2,7 +2,7 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 pkgver=3.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/gtk+-${pkgve
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
 sha512sums=('4f224bb73f469d6e7cb9b96d201d3bf8b417c442f5e039058664c1ef23e7ecfe6b1d05e81860d0df5cc8bb1187b7edfb9cd8cfb07b6866aeeffed84fdb34015f'
-            '5b8918d836ff35b0fd6b69e178a916b2e9d75c15abc00e63c46be1a5d5ec52f9b80c5ffb9ca8c40e1ba2f37479ff0bc82272e5d369f94419ec59f31daa680b40'
+            '22933571f6c29fd13ba59c851e140a478ec01e2dd7fb5335b112304167c2a74a9b3b8632b0d49c691d944c6273184e0d7a22276b7a24563096a8dc4b13ce16ee'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
