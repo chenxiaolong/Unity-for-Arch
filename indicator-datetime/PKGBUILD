@@ -5,7 +5,7 @@
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
 _ubuntu_rel=0ubuntu1
-pkgver=0.3.93.${_ubuntu_rel}
+pkgver=0.3.94.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
@@ -13,12 +13,12 @@ url="https://launchpad.net/indicator-datetime"
 license=('GPL')
 makedepends=('intltool' 'libtimezonemap')
 groups=('unity')
-options=(!libtool)
+options=('!libtool')
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('2db0a146c316313ff80dbe3eeee0e026c8d2304d883bef6a19386f0c3989edbf9d1e73b658253ea76c475edbbca9a0b55ac6f6d4656e01d1016b55f170f0d488'
-            '347f6ea84c4aadbc9946cf0291b092d7be83342e736fbea458a83cbd887a8f5b446d4fa44af6283370dea2592c459188a8a2986b9da60fcb854d433a16e3454b')
+sha512sums=('44214a834fba00d4c810b9029bc01ca1a25dde14abfa295f5b87ee8b4aa49e37e41aa08da1e751c925020c8e93d1bbb7e9683ead29f4e504def9afd6bce94692'
+            '20dd079008071820cf08085d4eabef15b852d7ab47ad56115a840f9d894d5aacb0634a8973c0387058cc303ac09b1b01453d5d3dffbdc1253d738abdedf05b71')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
