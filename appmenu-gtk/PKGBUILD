@@ -4,7 +4,7 @@
 
 pkgbase=appmenu-gtk
 pkgname=('appmenu-gtk2' 'appmenu-gtk3')
-pkgver=0.3.91
+pkgver=0.3.92
 pkgrel=100
 arch=('i686' 'x86_64')
 url="https://launchpad.net/appmenu-gtk"
@@ -13,7 +13,7 @@ makedepends=('gnome-common' 'gtk2-ubuntu' 'gtk3-ubuntu' 'libdbusmenu-gtk2' 'libd
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/appmenu-gtk/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('e4237a2a1715405157502af57002e4092f8dbbd6b0339c1102bbf7322eda8c058262e64c3039f73c310e01cb62a887d35a732f8c64b13b235aadfc229a1368df')
+sha512sums=('e685d0d3ed0a5a1eff8c0f6dbb760c09e9fa72361d993da6eb46a86641a2cd8293cb4ba27cdf5d79cb87ece645bbe1f37eaf975ada46b5c36ed8a602bfa792ee')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
