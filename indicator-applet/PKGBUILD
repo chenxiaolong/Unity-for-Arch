@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-applet
-pkgver=0.4.92
+pkgver=0.5.0
 pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
@@ -21,7 +21,7 @@ optdepends=('indicator-application: take menus from applications and place them 
 groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/indicator-applet/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('582a04c9b40c8d091632c35f1de754ea5f7787f26b403df519d4b2ed98bf5e868e26d8b43fb30c7e6e0d94057037042729da8afa604602aa3c0c12627b68ca29')
+sha512sums=('f35a6101ee5a2b94cb22ddc5c78d86a42ac0df6bd50aa6584c22a03a7de99d3609e58133c33460cc3a2595d4d4b04be96fb88af69cc5ae9e44157e238467a170')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
