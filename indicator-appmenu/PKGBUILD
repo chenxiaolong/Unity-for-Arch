@@ -4,8 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-_ubuntu_rel=0ubuntu3
-pkgver=0.3.96.${_ubuntu_rel}
+pkgver=0.3.97
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -17,19 +16,11 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-gtk3: support for GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
 options=('!libtool' '!emptydirs')
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('7f521cfd7728937ee5b0f4d4145de3b54d93c9d2d929b2cf7e565cdd04c0d8a71193f31beff9cbb69b143c4ce4abcfe57c12b5aa97c1aeb5e1f77071c5113f5f'
-            '4e999a34c25595e95227e270e771d33b0d60d1ba3fc9f9de741d9ea1cbbda73cc593e20ae07901f5f0ef4c22e88802e21eeeb47682191df000a291afa47c133c')
+source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('58b4fa27c42c51cfe62db149881da1bc2112e540ad5f008b64ab8ceff3c4712becad6ec0790286dd5e88b5b120e5839caad31d690c4d1f8ed5589ad1fc88aa14')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
-  done
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   autoreconf -vfi
   intltoolize -f
@@ -58,7 +49,7 @@ package_indicator-appmenu() {
   depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
   install="${pkgbase}.install"
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make -C data DESTDIR="${pkgdir}/" install
   make -C src DESTDIR="${pkgdir}/" install
@@ -71,7 +62,7 @@ package_indicator-appmenu-gtk2() {
   pkgdesc="Indicator for application menus - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'libbamf' 'indicator-appmenu' 'libwnck')
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
   make -C data DESTDIR="${pkgdir}/" install
   make -C src DESTDIR="${pkgdir}/" install
@@ -88,7 +79,7 @@ package_indicator-appmenu-tools() {
   depends=('indicator-appmenu')
 
   # Doesn't matter which one is used
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
   make -C docs DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
