@@ -4,7 +4,7 @@
 
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
-pkgver=0.5.96
+pkgver=0.5.98
 pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
@@ -14,7 +14,7 @@ makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-d
 groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/dbusmenu/0.6/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('d8387f57d844ed0c9a2cc8889b5409335e2ed986042f9966dc1bbc13b621a0787031f84d05c9dfa8592d1ee79c51f76bca862da7f61ccefe1f4cb2e92d4f59e2')
+sha512sums=('2b904ea81624572785e2f0d5d663c2724d9f017eab0fea16f7146edcfbc74bf401738cb5bbe898cf4fda5d4c022d31d29e1951fafe32ad890af6f3dcc62b2d7d')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
