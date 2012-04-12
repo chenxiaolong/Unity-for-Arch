@@ -1,8 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=utouch-geis
-_ubuntu_rel=0ubuntu1
-pkgver=2.2.8.${_ubuntu_rel}
+pkgver=2.2.9
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
@@ -10,18 +9,11 @@ url="https://launchpad.net/utouch-geis"
 license=('GPL' 'LGPL')
 depends=('utouch-grail' 'xorg-xinput' 'python2' 'dbus-core')
 options=('!emptydirs' '!libtool')
-source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('844bef8c512e7d3f165c2d3181f1b6b9932c39038de55c5b4037adfd8df0b55263ac9f46da975bd8c0d591dc65de6c3dc293ace72ee27ec94348b8d7dacd1ac9'
-            '6f0ebeca35722c4069eda801c1c78a41d6585d494e1f883849017f47f9adbe770bab24479004a3fcf9fac11befcf32605469a2465b74e78d21135675a71a8105')
+source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('c2bc07840d199b6e627ebdeeb48d31f61efcef884cfedf677a69aee77f5d862d05a4ed71f515a3f69220a6ce62b065ae7ba1791105d49b2ed261d76546a781fb')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   PYTHON2VER=$(ls -l /usr/bin/python2 2>&1 | sed 's/^.*\(.\..\)/\1/g')
   sed -i "/python >= ${PYTHON2VER}/s/python \(>= .\..\)/python-${PYTHON2VER} \1/g" configure
@@ -30,7 +22,9 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
   sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}"/usr/bin/{geisview,pygeis} "${pkgdir}/usr/lib/python2.7/site-packages/geisview/__init__.py"
 }
+
+# vim:set ts=2 sw=2 et:
