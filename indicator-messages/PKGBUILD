@@ -5,7 +5,7 @@
 pkgbase=indicator-messages
 pkgname=('indicator-messages' 'indicator-messages-gtk2')
 _ubuntu_rel=0ubuntu1
-pkgver=0.5.94.${_ubuntu_rel}
+pkgver=0.6.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/${pkgbase}/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('33c0ee7a6fbd37e4e940543c62ec6da9ff089b366f3c2cba95b88c0fd140fb8e4b4aacffd47aef21a527aad3b7f09793257f94aab468ae26c12ec7118e5af233'
-            'fd466a6d53e74f3b0321913680580db8481fc466011bfb4d6d25e528b4ab292eb71a50e67b927171e8cc3a8740f1921b7a2c1ddd9b43db599550b1aa09d064ad')
+sha512sums=('d46ee85d5ceffd794af2917f6246febb538e73b7f23ff70e6198daca9c9a200c85a385d546b2a1e8b5e51f86ac3e58d2aa17378c5077c4b30ae2f3c1a902fafe'
+            'fdfcfc8be6f115f30160d05ac4d02fa9caec1ec595c87cc7343688c98176700063701c20bd0cbb65d1970d106f17b1e164850f1134748c8e64372aca72c02cda')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -62,3 +62,5 @@ package_indicator-messages-gtk2() {
   install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
   install -m755 'src/.libs/libmessaging.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
+
+# vim:set ts=2 sw=2 et:
