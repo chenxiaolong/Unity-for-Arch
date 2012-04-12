@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=zeitgeist-datahub
-_ubuntu_rel=1ubuntu1
+_ubuntu_rel=1ubuntu2
 pkgver=0.8.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The datahub provides passive plugins which insert events into Zeitgeist"
@@ -16,7 +16,7 @@ groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('277963060a45172288caa21a06516097be20cc545b96981b9ae68095826bba6e97128c9de2b2535e2cb564867e20b8daf48a8a4d128d7c7a7eafe7ebad8be416'
-            '376337754aace0f9cee22448c8b8444c6a29fdc4c1f2a8238587c20fe6c43283f4071a1a4f11f409fc22951883bfd89463ea79c3d78af7e7903b65977fa7113e')
+            'bdb330383c5aaae270464c7224a3b01079f995b0d4af43943d6dadba73685fae3cf86ab8edeebad391faeb9524f8e0aa08519362946a8d7a4d3b928c502f1a9d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -34,3 +34,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
