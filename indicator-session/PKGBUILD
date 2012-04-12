@@ -4,7 +4,7 @@
 
 pkgbase=indicator-session
 pkgname=('indicator-session' 'indicator-session-gtk2')
-pkgver=0.3.95
+pkgver=0.3.96
 pkgrel=100
 pkgdesc="Quick! Change your status. Switch users. Close your session. All provided by the The Session Menu these tasks are conviniently placed in the upper-right corner of the desktop to make them available and easy to use"
 arch=('i686' 'x86_64')
@@ -18,7 +18,7 @@ options=('!libtool')
 install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
         'use_gnome-packagekit.patch')
-sha512sums=('c523f81c3b3c00484fff87b1b76a1067b6e1ed9564df12af4ac5453849831e04ce837e6e267ebbeecd14cd1baf116f4c52694f98ee0f0d912b4c562fbd2b876a'
+sha512sums=('f28ddf0d519da1a0eef79e85f27f77dbf8a125e79d9766f078340ed506f603e7b49dd5adf32db79b706cfda5a3a9bf6513ec2af2e2cf9d06d643cbadfdbdd9ba'
             '2314a5516c8f71d8fd233605a87732c9868f45a25e55f89c9f6edfc2f4f8589f4c4427c71657363b2dd8071fe24aa787b799a7d0d5d24a5869d586c4eea7b96a')
 
 build() {
@@ -60,3 +60,5 @@ package_indicator-session-gtk2() {
   install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
   install -m755 'src/.libs/libsession.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
+
+# vim:set ts=2 sw=2 et:
