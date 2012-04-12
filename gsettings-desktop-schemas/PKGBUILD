@@ -3,9 +3,9 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 pkgname=gsettings-desktop-schemas
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=1ubuntu1
 pkgver=3.4.0.${_ubuntu_rel}
-pkgrel=1
+pkgrel=100
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"
@@ -16,7 +16,7 @@ install=${pkgname}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('204c1b9231d4e9a5fc92c0c5972beacfcc2cdace8affe006a41e8e544f242d23987a40ca318c7ef592740311945ed1c5938c0771501e5120942eb2c99127a17a'
-            'ced427dc8b0301846491fbc4f934c55b858c847e199707218da252c39192154f740852a2911c90d269a6fb55fbd0845e03b81d0599942c354e741dce56f70000')
+            'e38e7280796d154a12da94a23832e2aa981e74b85a0df52cc9c92aa43469fe9c1c73ca35586668f98fd489ab6b3e453904ea3a30b095ba0b9be05ae2d9deea0d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -39,3 +39,5 @@ package() {
 
   make DESTDIR="${pkgdir}" install
 }
+
+# vim:set ts=2 sw=2 et:
