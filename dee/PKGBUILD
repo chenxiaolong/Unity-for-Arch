@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=dee
-_ubuntu_rel=0ubuntu2
-pkgver=1.0.8.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=1.0.10.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library that uses DBus to provide objects allowing you to create Model-View-Controller type programs across DBus"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/dee/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('120ea08af78f99683c2aa9fb03e92880d682647b2a7187e7adfce841a02f9dba5b939dbc12149607592bc80c45181b747aea305930c4e7f5850331d4297d762e'
-            '8dcc67c1a206667a2b3100792f8b41482d0dd8cc209bf572a7ed1168c1a576607eba9dcfbec71351c37fc772d8156ce98cdbc8a0b99961d2c7f1c2272aba8ddc')
+sha512sums=('fb18694d49426c44a91b766e9929d33099d869c1de94952b4d835ee19a95ace9b5f5e9a8b24f28dc989255173205e939e289f7b9955c894a982b52c5766f8326'
+            'e3f1d47b0d92b6c1b938fe1d9aadd56e74b4f74a1fe38591ce98d05d8249e2ea2ca34b2f38d30a27333de50f3da87ad2c1a95c1785422852884cbb4fc04d4dbc')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -40,3 +40,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
