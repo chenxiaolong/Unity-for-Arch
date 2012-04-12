@@ -2,8 +2,8 @@
 
 pkgbase=launchpad-integration
 pkgname=('launchpad-integration' 'liblaunchpad-integration' 'liblaunchpad-integration3' 'python-launchpad-integration')
-pkgver=0.1.54build1
-pkgrel=101
+pkgver=0.1.56
+pkgrel=100
 pkgdesc="Launchpad integration library to integrate launchpad urls into the menus."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/launchpad-integration"
@@ -13,7 +13,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver}.tar.gz"
         "https://github.com/mono/mono/blob/master/mcs/class/mono.snk?raw=true")
-sha512sums=('2e028e4436ac3764a71266355f533c934dc148718fb723883fbac916f6c7b14db40ed2faef00478294ce0ce8b08808d71dd45c234c0506550c222456a509b325'
+sha512sums=('78777e9b531b9626e6add3739142a81b5acc4edd3f16a9f13f7cbee2d762e69b60d79272aa4ebeedb7f03607fb7210707d9de3a04d6851f59714891ae28130d0'
             '7f3c4a3bd3eb64769a24be714f603d2c69642d8ff636792b9fb57a5be9b93479d8fbb6872e3243cdc4cc50d9dfc402f55910da339b46e2caf307c59124547541')
 
 build() {
@@ -96,3 +96,5 @@ package_python-launchpad-integration() {
   install -m644 "../lib/__init__.py" "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
   install -m755 'lib/.libs/_lpi.so' "${pkgdir}/usr/lib/${PYTHON2VER}/site-packages/gtk-2.0/LaunchpadIntegration/"
 }
+
+# vim:set ts=2 sw=2 et:
