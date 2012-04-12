@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=indicator-power
-pkgver=1.93
-pkgrel=101
+pkgver=2.0
+pkgrel=100
 pkgdesc="A indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -12,7 +12,7 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/2.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('041b74b8e19ef4ecf2d55a751c4a342fa46de55045a7e05560f79700e3fc8ccfbb7cfec83ff5c48f709c1f02b7f5391013d21f3f792c72d2404e9f78eb7a6c30')
+sha512sums=('7fed77bd3d0d0edd7e579bc13416fcd9c922ddb7397f01a832a5449ecbb8113294a0fb7dd221a3e65070379e27488afa0a2b60da6780d86e58be1352ca51b8cd')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -26,3 +26,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
