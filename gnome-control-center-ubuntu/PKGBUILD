@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu6
 pkgver=3.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
@@ -29,7 +29,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgnam
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
 sha512sums=('519cabe698c139e517772c430911f7085438a8041c14faed5ad74e3fa1e2e1dc962af6934d459600f451c267d2373c85efa706d5c321ebab8c31b42d3245dca6'
-            '2ca26810a308812487a9dbce279382f7a50a55c723440469eae8d6036bfce8aed7051723fffb489b2bd680f6237004b9a6d644d6f17522bc82ea951e1968ecf1'
+            'c4d0e94ba94d685f4a347de89a49b2e166de75b4b6170c6daf73143bf0dc4e99966204ed340a20411773119840390a2fc05120964d9636e7889cb7c8b3278e86'
             '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
 
 build() {
@@ -85,3 +85,5 @@ package() {
   ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
   install -m644 "${srcdir}/debian/gnome-control-center.menu" "${pkgdir}/usr/share/menu/"
 }
+
+# vim:set ts=2 sw=2 et:
