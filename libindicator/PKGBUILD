@@ -5,7 +5,7 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _ubuntu_rel=0ubuntu1
-pkgver=0.4.95.${_ubuntu_rel}
+pkgver=0.5.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ options=('!libtool')
 groups=('unity')
 source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('34bacc124a468471e11e04f2877d67d369a5b0e5664db87ccb67a7a308f866091b2b9298689c4f7457171774b182699234bfb5c4b297f29fb6116d45bfa4b5c8'
-            '080852624a2cd0aa1a986e43a19148dec968b31d510ff4a33d70e3ada65a4c477f78c94cfa49a88326f0c326ef22cd0293f1660b1972cab38d39bd00e3736599')
+sha512sums=('119a7633f5bd742c49d2a0a696516a4d4df0573f32c1358a3ca74e7c8a5ae598e975364bce37ca0e0bec9a469d053426d23c30b8742db7a190d4f8d086cb84e7'
+            '9188942f876ad88c9c81274f192e8fe79d52f225c540d6eaa2ef5eaecec33b559b49d8edba4c6b47a0fac0dfc2ee5d85c144584e2a9a484d66c52cd13213d192')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -67,3 +67,5 @@ package_libindicator3(){
     # Debug
       rm -vf  "${pkgdir}/usr/share/libindicator/80indicator-debugging"
 }
+
+# vim:set ts=2 sw=2 et:
