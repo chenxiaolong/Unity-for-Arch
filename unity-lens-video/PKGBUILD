@@ -2,7 +2,7 @@
 
 pkgname=unity-lens-video
 _ubuntu_rel=0ubuntu1
-pkgver=0.3.4.${_ubuntu_rel}
+pkgver=0.3.5.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
@@ -14,10 +14,10 @@ source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver%.*}/+download/${
         "https://launchpad.net/unity-lens-videos/remote-videos-scope/remote-videos-${pkgver%.*}/+download/unity-scope-video-remote-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-video-remote_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('53e92105202f6d24b743c36410a448ee3633a7892dda113d515dd1ff7db26f64bec3ae9987e13c35cc3eff8a07e3135d22ba5dfb970c7d10074bc85baf2a343f'
-            '0be84b5b5118e91be6907c164bf3f2a3f8ceda7fbcdfc251c5f0e6d06f0df82e2d43239b978a582a10a84382a724e83890a6df572245fa4ba5655b55d846913c'
-            'b0471f7bdfa5927bdd7e3ae43111eb51bb23d87063622d74bb52135aead1fe7a73a6f20cb179d1de2729c789061eed876296432cc9a4d064c103ddcbb9b22e60'
-            '5dcd718b98c8c88fe4e27116683da619b5b54dab825c74b5843aa9f76df294c48b9f6d8829b82c69a7fa4a26761dcd11ec6d445ade6e5a983699c763feb1aa5d')
+sha512sums=('73e780b458f6d1436ab92e7dba7a7d1fec1b1cf8545666b0dd9dbea46add6e14e94cac231515e2947d8c9181917661d6192b05e0b650eb4d89f16cdb13d93892'
+            '88f2fd45d1c0c6549e747ddaedaa4fb867cb640f579b97687d6b041afdc192fede6d35f4124073f6dcf71e4f68ae161336bcab4759a613d574894010f1ce4712'
+            'd6f161e8baad845a23093787c8658380179dc1875c5f47b370d72e13599aeede5800eb92213371a51635483f9971a3b469754fc1c8645adbe4bbdb036537ee16'
+            'e085714e988eedeb8f8af51edfb3062b59b9daf74ffe433c7b327fc75359c62aeeab993e80c347f0300e109ccc812307c569ded3ab27e32e34b7339f7512c73d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -44,3 +44,5 @@ package() {
   # Python 2 fix
   sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}/usr/lib/unity-scope-video-remote/unity-scope-video-remote"
 }
+
+# vim:set ts=2 sw=2 et:
