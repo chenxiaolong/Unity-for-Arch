@@ -2,7 +2,7 @@
 
 pkgname=compiz-plugins-main-ubuntu
 
-_ubuntu_rel=0ubuntu8
+_ubuntu_rel=0ubuntu10
 _ubuntu_ver='~bzr19'
 _actual_ver=0.9.7.0
 
@@ -21,7 +21,7 @@ install=compiz-plugins-main-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('6b408584851699e8661b674446f0a8fa7dc7f2fff9530a0fb31d4f099f2b7c818e3135365c925b6d2d1b2c02463089247306ade3cfeedfda17ae491eb2c6b857'
-            '3a3cc28efabf132f98b1b58ce0072472766dfe99881f9bf5d53cc5e376cbdeb26da215b324ec44ecba852bad0ca0b381b5ac1081a720bc8b3c157494a4ab9985')
+            '051bf6efc21da779431f4cc2e2e2aaf525e63bc8518080da42abe928e03ddc6c62af697dc10415206e94ef92e148cdb17c1567baeef1898014822b0cdf49df43')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -49,3 +49,5 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}/build"
   make DESTDIR="${pkgdir}" install
 }
+
+# vim:set ts=2 sw=2 et:
