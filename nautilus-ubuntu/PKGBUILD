@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.4.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
@@ -20,7 +20,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('7adcec7a81bffc78d2a3cb4e4f962b534c84d770e88aa3888adb39dd77a97401d453cbc909fbc11dfd7300fd1d92ced21f11b554e09e9683dcc9fb7fb1626286'
-            '2b522678d43d4e9321eb2ae76670402006ec5a02863cc87be7072cce5221691843e7b87abaad76ce23fcea13d834f9fb7fa47deec044cc8e6c36a74d8910ed35')
+            'c3c515c66c17a88bb0a0ebd698d7e8c76044939741d17ae10a725972128b2ff912ee8bcf6e83f70e14f1a2e34842065093a99662a6d8ef18de83ca8aac18ac4b')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -72,3 +72,5 @@ package() {
   install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/menu" "${pkgdir}/usr/share/menu/${pkgname%-*}.menu"
 }
+
+# vim:set ts=2 sw=2 et:
