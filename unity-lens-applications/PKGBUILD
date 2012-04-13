@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-applications
-pkgver=5.8.0
+pkgver=5.10.0
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         '10-no-db51.patch')
-sha512sums=('ee3003cf1b7fee249f8d00c7ff2c48e942e958f1543a18e91870ddad1d0ee291c167ff2f4523773ba3084fca2367646ec300e1fbda8dcc82f87a8913f4f6404f'
+sha512sums=('72aeda80f33faca7cb1a477d4a14c90182c720f2010cfeda25b25b65fcf4d9e303546524b6bc63f0a65f7fc84ddec06ae5e39af0967b4e1de99d5dfb9736e193'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
@@ -33,3 +33,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
