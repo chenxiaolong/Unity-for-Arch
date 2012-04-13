@@ -23,7 +23,7 @@ if [[ "${NO_KDE}" == "true" ]]; then
 fi
 
 _ubuntu_rel="0ubuntu1"
-_actual_ver=0.9.7.4
+_actual_ver=0.9.7.6
 
 # Another AUR fix
 pkgver=${_actual_ver}.${_ubuntu_rel}
@@ -42,8 +42,8 @@ fi
 options=('emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('d1851fefc7e93b1c864c4dbee716e9fe5805358503683d12aaf15fd61b2f99e91c55dce8214e850244c6192b45555c088c1d4da3d170b4a25bc5605928bb555e'
-            'a806a9524a2cbba7820ed63f4835107ba951e31255752fe0fbebdbe9802ce9eaa5aa6eb4da74a6fe65e71206556e494c7471f6c372937121051be230fb1c5583')
+sha512sums=('ceb0ccb8a4117285086c46f9fe3e7713d2e7af86ba036cb1110441c81614735d9690cee8425724c3f63df5866a1e4f16754ffca30c6003431b9399d7740846c2'
+            '9bbb4e3f685d470f27c3f1a126e7c8ea3014c66e5a9b49a66ca04316904f0016a7e673ac0fda7d55afd7fbbed3ec3c6a65d4ee31b26e44df4cc243635a3432d0')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${_actual_ver}"
@@ -420,3 +420,5 @@ package_compiz-core-ubuntu() {
         done
         popd
 }
+
+# vim:set ts=2 sw=2 et:
