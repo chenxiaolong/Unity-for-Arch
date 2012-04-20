@@ -19,11 +19,12 @@ makedepends=('intltool' 'pkgconfig' 'cmake')
 provides=('libcompizconfig')
 conflicts=('libcompizconfig')
 groups=('unity')
-install=${pkgname%-*}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}.orig.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        'build_fix_cannot_find_compiz.patch')
 sha512sums=('13612ebcdd3016c5111a664487dd76412ef39f59fe986c0805a96d58696780d200e70dfd09e2d93a20e4c35aeb5cd2959a79c6b544d465c9232a60889b692e19'
-            '2a92b6551466b5be6b0e99a11c1d985b569d14d898ecb78e9ce953de2e82129e2f16aa2446dbd86339a64e0ff4403aa218bda0acce65cb6767b1bd052f518bb8')
+            '2a92b6551466b5be6b0e99a11c1d985b569d14d898ecb78e9ce953de2e82129e2f16aa2446dbd86339a64e0ff4403aa218bda0acce65cb6767b1bd052f518bb8'
+            '47253c3b694bca6e9d1fead6319791e274a1f6a5063a483fba4a1980ec5463509d16ca635a5cfd07f240fee039eac505268187b04066e495cdc20ec7e1323cc2')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_WTF_ver}"
@@ -32,6 +33,11 @@ build() {
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  # Patch CMake files to find Compiz
+  patch -Np1 -i "${srcdir}/build_fix_cannot_find_compiz.patch"
+
+  CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs compiz)"
 
   [[ -d build ]] || mkdir build
   cd build
