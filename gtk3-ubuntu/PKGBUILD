@@ -10,7 +10,7 @@ arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=gtk3.install
 depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'glib2>=2.31.0' 'dconf' 'pango>=1.30.0')
-makedepends=('gobject-introspection')
+makedepends=('gobject-introspection>=1.32.0')
 provides=("gtk3=${pkgver%.*}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
@@ -27,6 +27,9 @@ build() {
   cd "${srcdir}/gtk+-${pkgver%.*}"
 
   # Apply Ubuntu Patches
+    # Disable patches
+      # No multiarch
+        sed -i '/061_multiarch_module_fallback.patch/d' "${srcdir}/debian/patches/series"
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
