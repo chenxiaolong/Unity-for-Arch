@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu6
-pkgver=3.4.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.4.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -28,8 +28,8 @@ install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
-sha512sums=('519cabe698c139e517772c430911f7085438a8041c14faed5ad74e3fa1e2e1dc962af6934d459600f451c267d2373c85efa706d5c321ebab8c31b42d3245dca6'
-            'c4d0e94ba94d685f4a347de89a49b2e166de75b4b6170c6daf73143bf0dc4e99966204ed340a20411773119840390a2fc05120964d9636e7889cb7c8b3278e86'
+sha512sums=('09d0547dd0d76c071b14364b47f01b4a20b63a4ecec8f35b1da267c8abf73e5b1b495f74aeb3bff980d6e3c6f96e36377712cc920cd1831e22e6f98ae128f18b'
+            '2a651208a5c4e3cb755175b26c414716c358462b46bc5a94cce38a7b6bcdbcea61374b6afa92065b00d753147d0619c7da1276d4f6dc8481d5a964a1ba586a07'
             '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
 
 build() {
