@@ -33,60 +33,59 @@ Order to compile/install:
 25: zeitgeist-extensions           -> Extensions for Zeitgeist
 26: gnome-activity-journal         -> Tool for easily browsing and finding files
 27: gsettings-desktop-schemas      -> Shared GSettings schemas for the desktop
-28: gnome-desktop                  -> Library for various GNOME modules
-29: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-30: gnome-session-ubuntu           -> GNOME Session Manager
-31: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
-32: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-33: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-34: metacity-ubuntu                -> Lightweight GTK+ window manager
-35: launchpad-integration          -> Launchpad.net integration
-36: indicator-applet               -> GNOME panel indicator applet
-37: indicator-application          -> Takes menus and puts then in the panel
-38: indicator-appmenu              -> An indicator to host the menus from apps
-39: libtimezonemap                 -> GTK+3 timezone map widget
-40: indicator-datetime             -> A very, very simple clock
-41: indicator-messages             -> Collects messages that need a response
-42: indicator-multiload            -> Port of the GNOME multiload applet
-43: indicator-power                -> Indicator to show battery information
-44: indicator-session              -> Indicator to manage session
-45: indicator-sound                -> A unified sound menu
-46: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-47: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-48: gtest                          -> C++ testing utility based on xUnit
-49: gmock                          -> A library for writing C++ mock classes
-50: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-51: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-52: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-53: utouch-evemu                   -> Event emulation for the uTouch stack
-54: utouch-frame                   -> Touch frame library
-55: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-56: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-57: xorg-server                    -> Xorg X server
-58: check                          -> Unit testing framework for C
-59: utouch-grail                   -> Gesture recognition and instantiation lib.
-60: utouch-geis                    -> Implementation of the GEIS interface
-61: nux                            -> An OpenGL toolkit
-62: unity-asset-pool               -> Design assets for Unity
-63: gnome-menus2                   -> Gnome menu specifications
-64: libunity                       -> Library for integrating Unity
-65: libunity-misc                  -> Differently licensed stuff for Unity
-66: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-67: unity-lens-applications        -> Unity applications lens
-68: unity-lens-files               -> Unity files lens
-69: unity-lens-music               -> Unity music lens
-70: unity-lens-video               -> Unity video lens
-71: compiz-core-ubuntu             -> Compiz core components
-72: libcompizconfig-ubuntu         -> Compiz configuration system library
-73: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-74: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-75: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-76: ccsm-ubuntu                    -> Compiz configuration manager
-77: compiz-plugins-main-ubuntu     -> Compiz main plugins
-78: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-79: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-80: unity                          -> A desktop experience designed for efficiency
-81: unity-2d                       -> 2D implementation of Unity
+28: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+29: gnome-session-ubuntu           -> GNOME Session Manager
+30: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
+31: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+32: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+33: metacity-ubuntu                -> Lightweight GTK+ window manager
+34: launchpad-integration          -> Launchpad.net integration
+35: indicator-applet               -> GNOME panel indicator applet
+36: indicator-application          -> Takes menus and puts then in the panel
+37: indicator-appmenu              -> An indicator to host the menus from apps
+38: libtimezonemap                 -> GTK+3 timezone map widget
+39: indicator-datetime             -> A very, very simple clock
+40: indicator-messages             -> Collects messages that need a response
+41: indicator-multiload            -> Port of the GNOME multiload applet
+42: indicator-power                -> Indicator to show battery information
+43: indicator-session              -> Indicator to manage session
+44: indicator-sound                -> A unified sound menu
+45: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+46: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+47: gtest                          -> C++ testing utility based on xUnit
+48: gmock                          -> A library for writing C++ mock classes
+49: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+50: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+51: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+52: utouch-evemu                   -> Event emulation for the uTouch stack
+53: utouch-frame                   -> Touch frame library
+54: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+55: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+56: xorg-server                    -> Xorg X server
+57: check                          -> Unit testing framework for C
+58: utouch-grail                   -> Gesture recognition and instantiation lib.
+59: utouch-geis                    -> Implementation of the GEIS interface
+60: nux                            -> An OpenGL toolkit
+61: unity-asset-pool               -> Design assets for Unity
+62: gnome-menus2                   -> Gnome menu specifications
+63: libunity                       -> Library for integrating Unity
+64: libunity-misc                  -> Differently licensed stuff for Unity
+65: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+66: unity-lens-applications        -> Unity applications lens
+67: unity-lens-files               -> Unity files lens
+68: unity-lens-music               -> Unity music lens
+69: unity-lens-video               -> Unity video lens
+70: compiz-core-ubuntu             -> Compiz core components
+71: libcompizconfig-ubuntu         -> Compiz configuration system library
+72: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+73: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+74: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+75: ccsm-ubuntu                    -> Compiz configuration manager
+76: compiz-plugins-main-ubuntu     -> Compiz main plugins
+77: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+78: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+79: unity                          -> A desktop experience designed for efficiency
+80: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
