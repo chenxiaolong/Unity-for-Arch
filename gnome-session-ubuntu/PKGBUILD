@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=0ubuntu7
+_ubuntu_rel=0ubuntu8
 pkgver=3.2.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
@@ -21,7 +21,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         '55gnome-session_gnomerc')
 sha512sums=('ccc82d261ab800147aa5df56001047f212f740217d43954d3a18d9034f1eae13972af408e00a3d2dcc4c83954cffc1fb77ba83f45d0426021c2c65bf3ed146cf'
-            'b427a9427faeabf22ecac4356fdc73315818fa97d501d103ef59880e16c19af1d9cf1154a9d4d701766278d2046e78b348fa98fff8f4636e20ee69a99ac785fa'
+            'ba6595610735ab27c1e48cb1fc1b9da55c29e95cd0a5ff9c24916471148acae75dde3fcd272f6922126cce28e0ee0b8bd4c235c02b84f690ba4b7f6aad8943e1'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a')
 
 build() {
