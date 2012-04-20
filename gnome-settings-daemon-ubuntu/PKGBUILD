@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu7
-pkgver=3.4.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.4.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -20,8 +20,8 @@ install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
-sha512sums=('07c39fcfcff39cfc968814987666c27be035205fdd7fef6964c3eb1f373fef19478da13fb13b7162732749936a36d905cb912237c6f06e873ad8bbf46e2a1fd4'
-            'adff7c78d938982bdc796be94ef9b266174495ede87a49ec2c3eff7bec98520c044fed449445b149e743b7850e48193f55b576f108b8d23224d9a8813703ce46'
+sha512sums=('530aa9f3a79c9b89093885c57abaf863c437aef12b77873aa6b8eac4a5f3daaf86fadeb38a5190096e400f70d322cea175025bde2b5d8c2d123601690555fe15'
+            'df62a2e012116722784fc55efd988b9b03d361e2b3cc961b7ff6caee0df4107b05f07189a35e2ebe132e207ef808eb28c2beb9219f6d74f81573c101df08fa4b'
             '6afbad62dd69e0c779ae991e9afa46c3f2c0db07f0f7d77d607198f939498a8dfa0cd46099f46ce25d6d993425d7914bb3b8098044f007485e7fe501c900fe63')
 
 build() {
