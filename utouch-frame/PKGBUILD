@@ -9,7 +9,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/utouch-frame"
 license=('GPL')
 depends=('utouch-evemu' 'mtdev' 'libxi')
-makedepends=('asciidoc')
+makedepends=('asciidoc' 'xorg-server-devel')
 groups=('unity')
 options=('!libtool' '!emptydirs')
 source=("https://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
@@ -25,3 +25,5 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
