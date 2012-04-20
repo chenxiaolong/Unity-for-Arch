@@ -43,6 +43,9 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
+  # Cannot find gmodule-2.0
+  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
+
   autoreconf -vfi
 
   CXX=/bin/false ./configure \
