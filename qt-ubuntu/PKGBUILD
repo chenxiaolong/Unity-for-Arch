@@ -8,7 +8,7 @@ pkgdesc='A cross-platform application and UI framework'
 
 pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu4
 pkgver=4.8.1.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -21,7 +21,7 @@ source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'gcc47.patch')
 sha512sums=('a48825a3d42c93c6d9d769d9f79b297d92b5deb9003c89c2d1f1b364b496fc6e7d307e0eb6b798ae49d7bf1928caeda6741025242499296550293518004c3d90'
-            '0bd50bf1f0a77ef2c51d4e492831fe6b9a6d18022d151f1b8c1606dad96fcac8eff031a95934965268e4665933778eee07e88d51dfa5bf30967e086443a41ea8'
+            'a67f090af9212c843e0b2697f2171681a8efb6c3eca79f939eb2d007a14a681ecaabf28fc690be5dd36ff1eaef970326b57057dedd0753600c3c315ba542fe60'
             '992b7fbaf234448f81d405a16885c14004a9caafa19963771db08b7b971fd0981078b151b614dbf5fd849e5303d5c1443e41ece7df49d0384c54dd88b1c46535')
 
 build() {
