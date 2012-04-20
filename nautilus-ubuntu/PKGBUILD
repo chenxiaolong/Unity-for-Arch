@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=3.4.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=3.4.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -19,8 +19,8 @@ options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('7adcec7a81bffc78d2a3cb4e4f962b534c84d770e88aa3888adb39dd77a97401d453cbc909fbc11dfd7300fd1d92ced21f11b554e09e9683dcc9fb7fb1626286'
-            'c3c515c66c17a88bb0a0ebd698d7e8c76044939741d17ae10a725972128b2ff912ee8bcf6e83f70e14f1a2e34842065093a99662a6d8ef18de83ca8aac18ac4b')
+sha512sums=('22367f57efea0ac041d702e63dd0feffc174825dd5bb84bd237aafca98adb9e1a455c93a79e478fd4c8e961b8e57dc13266600c89f69eaa40f0a87ff6d3fff81'
+            '8adcaf58b78b8bebf3d0b7a82e41592b277de69e8676d3e47a50362e41fb4f95d8f7da05e2aec0c704fe2c7744ef62efab619053f78b80b01527939156456cc7')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
