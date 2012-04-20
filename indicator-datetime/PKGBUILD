@@ -4,7 +4,7 @@
 
 pkgbase=indicator-datetime
 pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=0.3.94.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A very, very simple clock"
@@ -18,7 +18,7 @@ install=${pkgbase}.install
 source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('44214a834fba00d4c810b9029bc01ca1a25dde14abfa295f5b87ee8b4aa49e37e41aa08da1e751c925020c8e93d1bbb7e9683ead29f4e504def9afd6bce94692'
-            '20dd079008071820cf08085d4eabef15b852d7ab47ad56115a840f9d894d5aacb0634a8973c0387058cc303ac09b1b01453d5d3dffbdc1253d738abdedf05b71')
+            '8a019da66a1457a581629a39e11e5478895934a97cba3d0b30cd9c18e82688499c6a0f8fec0606e9208b2bef94f0f65239b7933172e8066c85cb1b4a89fe803f')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -62,3 +62,5 @@ package_indicator-datetime-gtk2() {
   install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
   install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
+
+# vim:set ts=2 sw=2 et:
