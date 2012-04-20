@@ -4,7 +4,7 @@
 
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=0.8.5.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
@@ -18,7 +18,7 @@ install=${pkgbase}.install
 source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('bca5d3d1e8ac215d7261aa1bdbfd1ed73505cc6a51da19cdfce681a3641e734f2c1a1c88de2bf3a8129b737aec976748a55e3c793e00497da5b98d004eda9c7d'
-            '49e460848d568e8b9b6b390b8cd9da78053b79cd82e43e60be1529aaecac6806d81869714948fe0e76a2aa5f5eb04370e133bae8ebed19eec7addeab2f026d92')
+            '3e4beaac011b85e87f890279dbdeba66cf2a0a9d2281cc092999ccd99a71da6c6484e49b2ae60106cfc23aecc58c7ab16989d1c8734cebbb2336d03584d37da9')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -64,3 +64,5 @@ package_indicator-sound-gtk2() {
   install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
   install -m755 'src/.libs/libsoundmenu.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
+
+# vim:set ts=2 sw=2 et:
