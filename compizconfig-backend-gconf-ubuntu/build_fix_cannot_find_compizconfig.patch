@@ -1,0 +1,11 @@
+diff -Nru compizconfig-backend-gconf-0.9.5.92.orig/CMakeLists.txt compizconfig-backend-gconf-0.9.5.92/CMakeLists.txt
+--- compizconfig-backend-gconf-0.9.5.92.orig/CMakeLists.txt	2012-04-20 15:46:27.673574093 -0400
++++ compizconfig-backend-gconf-0.9.5.92/CMakeLists.txt	2012-04-20 15:47:53.503109115 -0400
+@@ -1,5 +1,7 @@
+ project (compizconfig-backend-gconf)
+ 
++set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/share/compiz/cmake)
++
+ find_package (CompizConfig REQUIRED)
+ find_package (Boost 1.34.0 REQUIRED)
+ 
