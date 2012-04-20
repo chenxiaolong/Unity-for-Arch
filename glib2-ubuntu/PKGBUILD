@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=glib2-ubuntu
-_ubuntu_rel=1ubuntu3
-pkgver=2.32.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+pkgver=2.32.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
@@ -17,8 +17,8 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/glib/${pkgver%.*.*}/glib-${pkgve
         "https://launchpad.net/ubuntu/+archive/primary/+files/glib2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'glib2.sh'
         'glib2.csh')
-sha512sums=('6788b2bb9d35f566efd7bf02f05e4e56184fc11160cf1e08ef833dbd49314bc5ef74b7abf9257fa5fdf298148ab6aa6db11faa8b362e2114e31b08027bdff50f'
-            'ea69f1cce84f1d210226e747c68cd549cf447556dc379576ef087bc570111ae6312c42f252f711b10e6bf9e953bf137394aa2222dff6a16c832a812e68bbfd7b'
+sha512sums=('0776a0017459346651f6c071d0d8edaf5214012a037465a17c26af914b408d7c8f398d3ccb68029ebbf8581042d4d09e29ff779dd61e05aa293c15d64abfbd20'
+            '0e925e3c1be5246494d36c37b1d83f8bf091b0fe80cdc1e3c9d92d4d0342bc0bf9f52e87885c14173142442453c4987bab53d0c4e03497a95319ecc0eeceaf18'
             'dca2bc74d2013fcb24145ac794eef457aa3213c039e40a1a26ca5017694930768e7c80e334e17a56834549dff6549c781ddd91fae6c7bbb26fdd6a083ad8217a'
             'c3899eb7fa5482ce8a35fe02db90fd0f928d50aa7e4365a9529ef35a2dcd1ed86d5a24f6bc5c635ef5b2d95a0ebfebc2bb6bc90404c99f6fb7484ed2fa032c06')
 
