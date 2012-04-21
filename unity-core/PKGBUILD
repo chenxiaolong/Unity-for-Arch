@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-core
-pkgver=5.8.0
+pkgver=5.10.0
 pkgrel=100
 pkgdesc="Unity core library and services"
 arch=('i686' 'x86_64')
@@ -14,10 +14,12 @@ makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/unity/${pkgver%%.*}.0/${pkgver}/+download/unity-${pkgver}.tar.bz2"
         'launcher_bfb.png'
-        'fix_gtest_directory.patch')
-sha512sums=('715a74319b0dc335d0193f7769a74e85c6a5091e69cf484621680a3384cb0e70fa33860eab6308470d6fcfc476c9c7b66634ee6c4ee7fe41cdbd5bdab94ea1be'
+        'fix_gtest_directory.patch'
+        'gcc_4.7_fix.patch')
+sha512sums=('d93c3abbafe70bb09f4f4ef0d2a04072946fff59fffbff1bbf0680ce9643c039d9c07436f9746d1dacd2c0ec796eb3853b17ae3a8c47f3331b69da2a9b7e2bf3'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
-            '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc')
+            '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
+            'fe64519131c45669e7e7ab2fc71e69470b41169e12c717d2826d243d3870bbfbe6aabdcb9e6ee7e9fda7c692962dc836924031948784e6c17bc2ecb591f97696')
 
 build() {
   cd "${srcdir}/unity-${pkgver}"
@@ -44,6 +46,9 @@ build() {
   # Fix pkgconfig
   sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
 
+  # GCC 4.7 build fix
+  patch -Np1 -i "${srcdir}/gcc_4.7_fix.patch"
+
   mkdir build
   cd build
 
@@ -52,7 +57,6 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DGSETTINGS_LOCALINSTALL=1
 
-  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 }
 
@@ -66,3 +70,5 @@ package() {
   rm -rvf "${pkgdir}/usr/share/locale/"
   rm -rvf "${pkgdir}/usr/share/glib-2.0/"
 }
+
+# vim:set ts=2 sw=2 et:
