@@ -1,0 +1,69 @@
+diff -Nru unity-5.10.0.orig/UnityCore/GLibSignal-inl.h unity-5.10.0/UnityCore/GLibSignal-inl.h
+--- unity-5.10.0.orig/UnityCore/GLibSignal-inl.h	2012-04-21 02:20:37.937077783 -0400
++++ unity-5.10.0/UnityCore/GLibSignal-inl.h	2012-04-21 02:20:58.403633574 -0400
+@@ -218,7 +218,7 @@
+ template<typename R, typename G>
+ Signal<R, G>::Signal(G object, std::string const& signal_name, SignalCallback callback)
+ {
+-  Connect(object, signal_name, callback);
++  this->Connect(object, signal_name, callback);
+ }
+ 
+ template<typename R, typename G, typename T1>
+@@ -228,7 +228,7 @@
+ template<typename R, typename G, typename T1>
+ Signal<R, G, T1>::Signal(G object, std::string const& signal_name, SignalCallback callback)
+ {
+-  Connect(object, signal_name, callback);
++  this->Connect(object, signal_name, callback);
+ }
+ 
+ template<typename R, typename G, typename T1, typename T2>
+@@ -240,7 +240,7 @@
+                              std::string const& signal_name,
+                              SignalCallback callback)
+ {
+-  Connect(object, signal_name, callback);
++  this->Connect(object, signal_name, callback);
+ }
+ 
+ template<typename R, typename G, typename T1, typename T2, typename T3>
+@@ -252,7 +252,7 @@
+                                  std::string const& signal_name,
+                                  SignalCallback callback)
+ {
+-  Connect(object, signal_name, callback);
++  this->Connect(object, signal_name, callback);
+ }
+ 
+ template<typename R, typename G, typename T1, typename T2, typename T3, typename T4>
+diff -Nru unity-5.10.0.orig/plugins/unityshell/src/IconRenderer.cpp unity-5.10.0/plugins/unityshell/src/IconRenderer.cpp
+--- unity-5.10.0.orig/plugins/unityshell/src/IconRenderer.cpp	2012-04-21 02:20:37.953744361 -0400
++++ unity-5.10.0/plugins/unityshell/src/IconRenderer.cpp	2012-04-21 02:20:42.603719170 -0400
+@@ -104,7 +104,7 @@
+   tex.t = tex.t/varyTexCoord0.w;                    \n\
+                                                     \n\
+   vec4 texel = color0 * SampleTexture(TextureObject0, tex);  \n\
+-  vec4 desat = vec4 ("LUMIN_RED"*texel.r + "LUMIN_GREEN"*texel.g + "LUMIN_BLUE"*texel.b);  \n\
++  vec4 desat = vec4 (" LUMIN_RED "*texel.r + " LUMIN_GREEN "*texel.g + " LUMIN_BLUE "*texel.b);  \n\
+   vec4 final_color = (vec4 (1.0, 1.0, 1.0, 1.0) - desat_factor) * desat + desat_factor * texel; \n\
+   final_color = colorify_color * final_color;       \n\
+   final_color.a = texel.a;                          \n\
+@@ -134,7 +134,7 @@
+ PARAM color0 = program.local[0];                              \n\
+ PARAM factor = program.local[1];                              \n\
+ PARAM colorify_color = program.local[2];                      \n\
+-PARAM luma = {"LUMIN_RED", "LUMIN_GREEN", "LUMIN_BLUE", 0.0}; \n\
++PARAM luma = {" LUMIN_RED ", " LUMIN_GREEN ", " LUMIN_BLUE ", 0.0}; \n\
+ TEMP temp;                                                    \n\
+ TEMP pcoord;                                                  \n\
+ TEMP tex0;                                                    \n\
+@@ -156,7 +156,7 @@
+ PARAM color0 = program.local[0];                              \n\
+ PARAM factor = program.local[1];                              \n\
+ PARAM colorify_color = program.local[2];                      \n\
+-PARAM luma = {"LUMIN_RED", "LUMIN_GREEN", "LUMIN_BLUE", 0.0}; \n\
++PARAM luma = {" LUMIN_RED ", " LUMIN_GREEN ", " LUMIN_BLUE ", 0.0}; \n\
+ TEMP temp;                                                    \n\
+ TEMP pcoord;                                                  \n\
+ TEMP tex0;                                                    \n\
