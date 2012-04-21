@@ -34,9 +34,6 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  # Patch CMake files to find Compiz
-  patch -Np1 -i "${srcdir}/build_fix_cannot_find_compiz.patch"
-
   CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs compiz)"
 
   [[ -d build ]] || mkdir build
@@ -68,3 +65,5 @@ package() {
     "${pkgdir}/usr/share/compizconfig/"
   install -m644 "../config/config" "${pkgdir}/etc/compizconfig/"
 }
+
+# vim:set ts=2 sw=2 et:
