@@ -27,65 +27,64 @@ Order to compile/install:
 19: ido                            -> Widgets and objects used for indicators
 20: libzeitgeist                   -> Client library to interact with Zeitgeist
 21: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-22: geoclue                        -> Modular geoinformation service
-23: python2-geoclue                 -> Geoclue Python module
-24: python2-xapian                  -> Python bindings for Xapian
-25: zeitgeist-extensions           -> Extensions for Zeitgeist
-26: gnome-activity-journal         -> Tool for easily browsing and finding files
-27: gsettings-desktop-schemas      -> Shared GSettings schemas for the desktop
-28: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-29: gnome-session-ubuntu           -> GNOME Session Manager
-30: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
-31: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-32: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-33: metacity-ubuntu                -> Lightweight GTK+ window manager
-34: launchpad-integration          -> Launchpad.net integration
-35: indicator-applet               -> GNOME panel indicator applet
-36: indicator-application          -> Takes menus and puts then in the panel
-37: indicator-appmenu              -> An indicator to host the menus from apps
-38: libtimezonemap                 -> GTK+3 timezone map widget
-39: indicator-datetime             -> A very, very simple clock
-40: indicator-messages             -> Collects messages that need a response
-41: indicator-multiload            -> Port of the GNOME multiload applet
-42: indicator-power                -> Indicator to show battery information
-43: indicator-session              -> Indicator to manage session
-44: indicator-sound                -> A unified sound menu
-45: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-46: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-47: gtest                          -> C++ testing utility based on xUnit
-48: gmock                          -> A library for writing C++ mock classes
-49: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-50: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-51: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-52: utouch-evemu                   -> Event emulation for the uTouch stack
-53: utouch-frame                   -> Touch frame library
-54: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-55: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-56: xorg-server                    -> Xorg X server
-57: check                          -> Unit testing framework for C
-58: utouch-grail                   -> Gesture recognition and instantiation lib.
-59: utouch-geis                    -> Implementation of the GEIS interface
-60: nux                            -> An OpenGL toolkit
-61: unity-asset-pool               -> Design assets for Unity
-62: gnome-menus2                   -> Gnome menu specifications
-63: libunity                       -> Library for integrating Unity
-64: libunity-misc                  -> Differently licensed stuff for Unity
-65: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-66: unity-lens-applications        -> Unity applications lens
-67: unity-lens-files               -> Unity files lens
-68: unity-lens-music               -> Unity music lens
-69: unity-lens-video               -> Unity video lens
-70: compiz-core-ubuntu             -> Compiz core components
-71: libcompizconfig-ubuntu         -> Compiz configuration system library
-72: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
-73: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-74: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-75: ccsm-ubuntu                    -> Compiz configuration manager
-76: compiz-plugins-main-ubuntu     -> Compiz main plugins
-77: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-78: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-79: unity                          -> A desktop experience designed for efficiency
-80: unity-2d                       -> 2D implementation of Unity
+22: python2-geoclue                 -> Geoclue Python module
+23: python2-xapian                  -> Python bindings for Xapian
+24: zeitgeist-extensions           -> Extensions for Zeitgeist
+25: gnome-activity-journal         -> Tool for easily browsing and finding files
+26: gsettings-desktop-schemas      -> Shared GSettings schemas for the desktop
+27: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+28: gnome-session-ubuntu           -> GNOME Session Manager
+29: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
+30: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+31: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+32: metacity-ubuntu                -> Lightweight GTK+ window manager
+33: launchpad-integration          -> Launchpad.net integration
+34: indicator-applet               -> GNOME panel indicator applet
+35: indicator-application          -> Takes menus and puts then in the panel
+36: indicator-appmenu              -> An indicator to host the menus from apps
+37: libtimezonemap                 -> GTK+3 timezone map widget
+38: indicator-datetime             -> A very, very simple clock
+39: indicator-messages             -> Collects messages that need a response
+40: indicator-multiload            -> Port of the GNOME multiload applet
+41: indicator-power                -> Indicator to show battery information
+42: indicator-session              -> Indicator to manage session
+43: indicator-sound                -> A unified sound menu
+44: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+45: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+46: gtest                          -> C++ testing utility based on xUnit
+47: gmock                          -> A library for writing C++ mock classes
+48: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+49: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+50: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+51: utouch-evemu                   -> Event emulation for the uTouch stack
+52: utouch-frame                   -> Touch frame library
+53: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+54: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+55: xorg-server                    -> Xorg X server
+56: check                          -> Unit testing framework for C
+57: utouch-grail                   -> Gesture recognition and instantiation lib.
+58: utouch-geis                    -> Implementation of the GEIS interface
+59: nux                            -> An OpenGL toolkit
+60: unity-asset-pool               -> Design assets for Unity
+61: gnome-menus2                   -> Gnome menu specifications
+62: libunity                       -> Library for integrating Unity
+63: libunity-misc                  -> Differently licensed stuff for Unity
+64: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+65: unity-lens-applications        -> Unity applications lens
+66: unity-lens-files               -> Unity files lens
+67: unity-lens-music               -> Unity music lens
+68: unity-lens-video               -> Unity video lens
+69: compiz-core-ubuntu             -> Compiz core components
+70: libcompizconfig-ubuntu         -> Compiz configuration system library
+71: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+72: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
+73: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
+74: ccsm-ubuntu                    -> Compiz configuration manager
+75: compiz-plugins-main-ubuntu     -> Compiz main plugins
+76: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
+77: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+78: unity                          -> A desktop experience designed for efficiency
+79: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
