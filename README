@@ -31,7 +31,7 @@ Order to compile/install:
 23: python2-xapian                  -> Python bindings for Xapian
 24: zeitgeist-extensions           -> Extensions for Zeitgeist
 25: gnome-activity-journal         -> Tool for easily browsing and finding files
-26: gsettings-desktop-schemas      -> Shared GSettings schemas for the desktop
+26: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
 27: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 28: gnome-session-ubuntu           -> GNOME Session Manager
 29: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
