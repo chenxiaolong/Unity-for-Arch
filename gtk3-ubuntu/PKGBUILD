@@ -34,8 +34,6 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  export CFLAGS+=" -g -O0"
-
   autoreconf -vfi
 
   CXX=/bin/false ./configure \
