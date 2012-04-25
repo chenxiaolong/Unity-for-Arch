@@ -1,0 +1,64 @@
+diff -Nru gnome-session-3.4.1.orig/data/session-properties.ui gnome-session-3.4.1/data/session-properties.ui
+--- gnome-session-3.4.1.orig/data/session-properties.ui	2012-04-24 14:27:37.270983615 -0400
++++ gnome-session-3.4.1/data/session-properties.ui	2012-04-24 18:59:35.664350270 -0400
+@@ -2,9 +2,8 @@
+ <interface>
+   <requires lib="gtk+" version="2.16"/>
+   <!-- interface-naming-policy toplevel-contextual -->
+-  <object class="GtkNotebook" id="main-notebook">
++  <object class="GtkVBox" id="main-notebook">
+     <property name="visible">True</property>
+-    <property name="can_focus">True</property>
+     <property name="border_width">6</property>
+     <child>
+       <object class="GtkVBox" id="vbox1">
+@@ -113,18 +112,9 @@
+         </child>
+       </object>
+     </child>
+-    <child type="tab">
+-      <object class="GtkLabel" id="label4">
+-        <property name="visible">True</property>
+-        <property name="label" translatable="yes">Startup Programs</property>
+-      </object>
+-      <packing>
+-        <property name="tab_fill">False</property>
+-      </packing>
+-    </child>
+     <child>
+       <object class="GtkVBox" id="vbox3">
+-        <property name="visible">True</property>
++        <property name="visible">False</property>
+         <property name="border_width">12</property>
+         <property name="orientation">vertical</property>
+         <property name="spacing">6</property>
+@@ -196,16 +186,6 @@
+         <property name="position">1</property>
+       </packing>
+     </child>
+-    <child type="tab">
+-      <object class="GtkLabel" id="label5">
+-        <property name="visible">True</property>
+-        <property name="label" translatable="yes">Options</property>
+-      </object>
+-      <packing>
+-        <property name="position">1</property>
+-        <property name="tab_fill">False</property>
+-      </packing>
+-    </child>
+   </object>
+   <object class="GtkTable" id="main-table">
+     <property name="visible">True</property>
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-session-fill.c gnome-session-3.4.1/gnome-session/gsm-session-fill.c
+--- gnome-session-3.4.1.orig/gnome-session/gsm-session-fill.c	2012-04-24 14:27:37.267650300 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-session-fill.c	2012-04-24 19:00:15.724133249 -0400
+@@ -239,7 +239,8 @@
+                 autostart_dirs = gsm_util_get_autostart_dirs ();
+ 
+ 
+-                maybe_load_saved_session_apps (manager);
++                if (g_getenv ("GNOME_SESSION_SAVE") != NULL)
++                        maybe_load_saved_session_apps (manager);
+ 
+                 for (i = 0; autostart_dirs[i]; i++) {
+                         gsm_manager_add_autostart_apps_from_dir (manager,

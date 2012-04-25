@@ -1,0 +1,215 @@
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-app.c gnome-session-3.4.1/gnome-session/gsm-app.c
+--- gnome-session-3.4.1.orig/gnome-session/gsm-app.c	2012-04-24 14:27:37.267650300 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-app.c	2012-04-24 14:51:57.689738514 -0400
+@@ -252,6 +252,7 @@
+         klass->impl_provides = NULL;
+         klass->impl_get_provides = NULL;
+         klass->impl_is_running = NULL;
++        klass->impl_peek_autostart_delay = NULL;
+ 
+         g_object_class_install_property (object_class,
+                                          PROP_PHASE,
+@@ -470,6 +471,18 @@
+         g_signal_emit (app, signals[REGISTERED], 0);
+ }
+ 
++int
++gsm_app_peek_autostart_delay (GsmApp *app)
++{
++        g_return_val_if_fail (GSM_IS_APP (app), FALSE);
++
++        if (GSM_APP_GET_CLASS (app)->impl_peek_autostart_delay) {
++                return GSM_APP_GET_CLASS (app)->impl_peek_autostart_delay (app);
++        } else {
++                return 0;
++        }
++}
++
+ void
+ gsm_app_exited (GsmApp *app,
+                 guchar  exit_code)
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-app.h gnome-session-3.4.1/gnome-session/gsm-app.h
+--- gnome-session-3.4.1.orig/gnome-session/gsm-app.h	2012-04-24 14:27:37.267650300 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-app.h	2012-04-24 14:52:49.122793211 -0400
+@@ -67,6 +67,7 @@
+                                                        GError    **error);
+         gboolean    (*impl_stop)                      (GsmApp     *app,
+                                                        GError    **error);
++        int         (*impl_peek_autostart_delay)      (GsmApp     *app);
+         gboolean    (*impl_provides)                  (GsmApp     *app,
+                                                        const char *service);
+         char **     (*impl_get_provides)              (GsmApp     *app);
+@@ -122,6 +123,7 @@
+ gboolean         gsm_app_has_autostart_condition        (GsmApp     *app,
+                                                          const char *condition);
+ void             gsm_app_registered                     (GsmApp     *app);
++int              gsm_app_peek_autostart_delay           (GsmApp     *app);
+ 
+ /* exported to bus */
+ gboolean         gsm_app_get_app_id                     (GsmApp     *app,
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-autostart-app.c gnome-session-3.4.1/gnome-session/gsm-autostart-app.c
+--- gnome-session-3.4.1.orig/gnome-session/gsm-autostart-app.c	2012-04-24 14:27:37.270983615 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-autostart-app.c	2012-04-24 18:38:02.211357507 -0400
+@@ -65,6 +65,7 @@
+         char                 *condition_string;
+         gboolean              condition;
+         gboolean              autorestart;
++        int                   autostart_delay;
+ 
+         GFileMonitor         *condition_monitor;
+         guint                 condition_notify_id;
+@@ -102,6 +103,7 @@
+         app->priv->pid = -1;
+         app->priv->condition_monitor = NULL;
+         app->priv->condition = FALSE;
++        app->priv->autostart_delay = -1;
+ }
+ 
+ static gboolean
+@@ -657,6 +659,18 @@
+                                                                    NULL);
+         setup_condition_monitor (app);
+ 
++        if (phase == GSM_MANAGER_PHASE_APPLICATION) {
++                /* Only accept an autostart delay for the application phase */
++                app->priv->autostart_delay = egg_desktop_file_get_integer (app->priv->desktop_file,
++                                                                           GSM_AUTOSTART_APP_DELAY_KEY,
++                                                                           NULL);
++                if (app->priv->autostart_delay < 0) {
++                        g_warning ("Invalid autostart delay of %d for %s", app->priv->autostart_delay,
++                                   gsm_app_peek_id (GSM_APP (app)));
++                        app->priv->autostart_delay = -1;
++                }
++        }
++
+         g_object_set (app,
+                       "phase", phase,
+                       "startup-id", startup_id,
+@@ -1370,6 +1384,14 @@
+         }
+ }
+ 
++static int
++gsm_autostart_app_peek_autostart_delay (GsmApp *app)
++{
++        GsmAutostartApp *aapp = GSM_AUTOSTART_APP (app);
++
++        return aapp->priv->autostart_delay;
++}
++
+ static GObject *
+ gsm_autostart_app_constructor (GType                  type,
+                                guint                  n_construct_properties,
+@@ -1411,6 +1433,7 @@
+         app_class->impl_has_autostart_condition = gsm_autostart_app_has_autostart_condition;
+         app_class->impl_get_app_id = gsm_autostart_app_get_app_id;
+         app_class->impl_get_autorestart = gsm_autostart_app_get_autorestart;
++        app_class->impl_peek_autostart_delay = gsm_autostart_app_peek_autostart_delay;
+ 
+         g_object_class_install_property (object_class,
+                                          PROP_DESKTOP_FILENAME,
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-autostart-app.h gnome-session-3.4.1/gnome-session/gsm-autostart-app.h
+--- gnome-session-3.4.1.orig/gnome-session/gsm-autostart-app.h	2012-04-24 14:27:37.267650300 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-autostart-app.h	2012-04-24 18:45:04.742401793 -0400
+@@ -71,6 +71,7 @@
+ #define GSM_AUTOSTART_APP_DBUS_PATH_KEY   "X-GNOME-DBus-Path"
+ #define GSM_AUTOSTART_APP_DBUS_ARGS_KEY   "X-GNOME-DBus-Start-Arguments"
+ #define GSM_AUTOSTART_APP_DISCARD_KEY     "X-GNOME-Autostart-discard-exec"
++#define GSM_AUTOSTART_APP_DELAY_KEY       "X-GNOME-Autostart-Delay"
+ 
+ G_END_DECLS
+ 
+diff -Nru gnome-session-3.4.1.orig/gnome-session/gsm-manager.c gnome-session-3.4.1/gnome-session/gsm-manager.c
+--- gnome-session-3.4.1.orig/gnome-session/gsm-manager.c	2012-04-24 14:48:38.810815933 -0400
++++ gnome-session-3.4.1/gnome-session/gsm-manager.c	2012-04-24 18:44:16.335997367 -0400
+@@ -410,13 +410,16 @@
+                 } else {
+                         g_debug ("GsmManager: stopping app %s", gsm_app_peek_id (app));
+ 
+-                        /* If we don't have a client then we should try to kill the app */
++                        /* If we don't have a client then we should try to kill the app ,
++                         * if it is running */
+                         error = NULL;
+-                        res = gsm_app_stop (app, &error);
+-                        if (! res) {
+-                                g_warning ("Not able to stop app from its condition: %s",
+-                                           error->message);
+-                                g_error_free (error);
++                        if (gsm_app_is_running (app)) {
++                                res = gsm_app_stop (app, &error);
++                                if (! res) {
++                                         g_warning ("Not able to stop app from its condition: %s",
++                                                    error->message);
++                                         g_error_free (error);
++                                }
+                         }
+                 }
+         }
+@@ -725,10 +728,36 @@
+ }
+ 
+ static gboolean
++_autostart_delay_timeout (GsmApp *app)
++{
++        GError *error = NULL;
++        gboolean res;
++
++        if (!gsm_app_peek_is_disabled (app)
++            && !gsm_app_peek_is_conditionally_disabled (app)) {
++                res = gsm_app_start (app, &error);
++                if (!res) {
++                        if (error != NULL) {
++                                g_warning ("Could not launch application '%s': %s",
++                                           gsm_app_peek_app_id (app),
++                                           error->message);
++                                g_error_free (error);
++                        }
++                }
++        }
++
++        g_object_unref (app);
++
++        return FALSE;
++}
++
++static gboolean
+ _start_app (const char *id,
+             GsmApp     *app,
+             GsmManager *manager)
+ {
++        int      delay;
++
+         if (gsm_app_peek_phase (app) != manager->priv->phase) {
+                 goto out;
+         }
+@@ -746,6 +775,15 @@
+                 goto out;
+         }
+ 
++        delay = gsm_app_peek_autostart_delay (app);
++        if (delay > 0) {
++                g_timeout_add_seconds (delay,
++                                       (GSourceFunc)_autostart_delay_timeout,
++                                       g_object_ref (app));
++                g_debug ("GsmManager: %s is scheduled to start in %d seconds", id, delay);
++                goto out;
++        }
++
+         if (!start_app_or_warn (manager, app))
+                 goto out;
+ 
+@@ -1648,11 +1686,12 @@
+                 return FALSE;
+         }
+ 
+-        g_debug ("GsmManager:\tID: %s\tapp-id:%s\tis-disabled:%d\tis-conditionally-disabled:%d",
++        g_debug ("GsmManager:\tID: %s\tapp-id:%s\tis-disabled:%d\tis-conditionally-disabled:%d\tis-delayed:%d",
+                  gsm_app_peek_id (app),
+                  gsm_app_peek_app_id (app),
+                  gsm_app_peek_is_disabled (app),
+-                 gsm_app_peek_is_conditionally_disabled (app));
++                 gsm_app_peek_is_conditionally_disabled (app),
++                 (gsm_app_peek_autostart_delay (app) > 0));
+ 
+         return FALSE;
+ }

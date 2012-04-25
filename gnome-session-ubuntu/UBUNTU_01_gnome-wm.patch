@@ -1,0 +1,10 @@
+diff -Nru gnome-session-3.4.1.orig/data/gnome-fallback.session.desktop.in.in gnome-session-3.4.1/data/gnome-fallback.session.desktop.in.in
+--- gnome-session-3.4.1.orig/data/gnome-fallback.session.desktop.in.in	2012-04-24 14:27:37.270983615 -0400
++++ gnome-session-3.4.1/data/gnome-fallback.session.desktop.in.in	2012-04-24 14:28:02.600846391 -0400
+@@ -2,5 +2,5 @@
+ _Name=GNOME fallback
+ RequiredComponents=gnome-panel;gnome-settings-daemon;
+ RequiredProviders=windowmanager;notifications;
+-DefaultProvider-windowmanager=metacity
++DefaultProvider-windowmanager=gnome-wm
+ DefaultProvider-notifications=notification-daemon

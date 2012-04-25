@@ -1,0 +1,143 @@
+diff -Nru gnome-session-3.4.1.orig/capplet/gsm-properties-dialog.c gnome-session-3.4.1/capplet/gsm-properties-dialog.c
+--- gnome-session-3.4.1.orig/capplet/gsm-properties-dialog.c	2012-04-24 14:27:37.304316767 -0400
++++ gnome-session-3.4.1/capplet/gsm-properties-dialog.c	2012-04-24 14:36:23.998130089 -0400
+@@ -112,6 +112,7 @@
+                      GspApp       *app)
+ {
+         gboolean    hidden;
++        gboolean    display;
+         gboolean    enabled;
+         gboolean    shown;
+         GIcon      *icon;
+@@ -119,6 +120,7 @@
+         const char *app_name;
+ 
+         hidden      = gsp_app_get_hidden (app);
++        display     = gsp_app_get_display (app);
+         enabled     = gsp_app_get_enabled (app);
+         shown       = gsp_app_get_shown (app);
+         icon        = gsp_app_get_icon (app);
+@@ -151,7 +153,7 @@
+         }
+ 
+         gtk_list_store_set (list_store, iter,
+-                            STORE_COL_VISIBLE, !hidden && shown,
++                            STORE_COL_VISIBLE, !hidden && display && shown,
+                             STORE_COL_ENABLED, enabled,
+                             STORE_COL_GICON, icon,
+                             STORE_COL_DESCRIPTION, description,
+diff -Nru gnome-session-3.4.1.orig/capplet/gsp-app.c gnome-session-3.4.1/capplet/gsp-app.c
+--- gnome-session-3.4.1.orig/capplet/gsp-app.c	2012-04-24 14:27:37.304316767 -0400
++++ gnome-session-3.4.1/capplet/gsp-app.c	2012-04-24 14:42:50.219371083 -0400
+@@ -41,18 +41,20 @@
+ 
+ #define GSP_APP_SAVE_DELAY 2
+ 
+-#define GSP_ASP_SAVE_MASK_HIDDEN   0x0001
+-#define GSP_ASP_SAVE_MASK_ENABLED  0x0002
+-#define GSP_ASP_SAVE_MASK_NAME     0x0004
+-#define GSP_ASP_SAVE_MASK_EXEC     0x0008
+-#define GSP_ASP_SAVE_MASK_COMMENT  0x0010
+-#define GSP_ASP_SAVE_MASK_ALL      0xffff
++#define GSP_ASP_SAVE_MASK_HIDDEN     0x0001
++#define GSP_ASP_SAVE_MASK_ENABLED    0x0002
++#define GSP_ASP_SAVE_MASK_NAME       0x0004
++#define GSP_ASP_SAVE_MASK_EXEC       0x0008
++#define GSP_ASP_SAVE_MASK_COMMENT    0x0010
++#define GSP_ASP_SAVE_MASK_NO_DISPLAY 0x0020
++#define GSP_ASP_SAVE_MASK_ALL        0xffff
+ 
+ struct _GspAppPrivate {
+         char         *basename;
+         char         *path;
+ 
+         gboolean      hidden;
++        gboolean      no_display;
+         gboolean      enabled;
+         gboolean      shown;
+ 
+@@ -341,6 +343,14 @@
+                 return FALSE;
+         }
+ 
++        if (gsp_key_file_get_boolean (keyfile,
++                                      G_KEY_FILE_DESKTOP_KEY_NO_DISPLAY,
++                                      FALSE) != app->priv->no_display) {
++                g_free (path);
++                g_key_file_free (keyfile);
++                return FALSE;
++        }
++
+         str = gsp_key_file_get_locale_string (keyfile,
+                                               G_KEY_FILE_DESKTOP_KEY_NAME);
+         if (!_gsp_str_equal (str, app->priv->name)) {
+@@ -449,6 +459,12 @@
+                                           app->priv->hidden);
+         }
+ 
++        if (app->priv->save_mask & GSP_ASP_SAVE_MASK_NO_DISPLAY) {
++                gsp_key_file_set_boolean (keyfile,
++                                          G_KEY_FILE_DESKTOP_KEY_NO_DISPLAY,
++                                          app->priv->no_display);
++        }
++
+         if (app->priv->save_mask & GSP_ASP_SAVE_MASK_ENABLED) {
+                 gsp_key_file_set_boolean (keyfile,
+                                           GSP_KEY_FILE_DESKTOP_KEY_AUTOSTART_ENABLED,
+@@ -548,6 +564,14 @@
+ }
+ 
+ gboolean
++gsp_app_get_display (GspApp *app)
++{
++        g_return_val_if_fail (GSP_IS_APP (app), FALSE);
++
++        return !app->priv->no_display;
++}
++
++gboolean
+ gsp_app_get_enabled (GspApp *app)
+ {
+         g_return_val_if_fail (GSP_IS_APP (app), FALSE);
+@@ -805,6 +829,9 @@
+         app->priv->hidden = gsp_key_file_get_boolean (keyfile,
+                                                       G_KEY_FILE_DESKTOP_KEY_HIDDEN,
+                                                       FALSE);
++        app->priv->no_display = gsp_key_file_get_boolean (keyfile,
++                                                          G_KEY_FILE_DESKTOP_KEY_NO_DISPLAY,
++                                                          FALSE);
+         app->priv->enabled = gsp_key_file_get_boolean (keyfile,
+                                                        GSP_KEY_FILE_DESKTOP_KEY_AUTOSTART_ENABLED,
+                                                        TRUE);
+@@ -952,6 +979,7 @@
+                                             app->priv->basename, NULL);
+ 
+         app->priv->hidden = FALSE;
++        app->priv->no_display = FALSE;
+         app->priv->enabled = TRUE;
+         app->priv->shown = TRUE;
+ 
+@@ -1049,6 +1077,12 @@
+                 app->priv->save_mask |= GSP_ASP_SAVE_MASK_HIDDEN;
+         }
+ 
++        if (app->priv->no_display) {
++                changed = TRUE;
++                app->priv->no_display = FALSE;
++                app->priv->save_mask |= GSP_ASP_SAVE_MASK_NO_DISPLAY;
++        }
++
+         if (!app->priv->enabled) {
+                 changed = TRUE;
+                 app->priv->enabled = TRUE;
+diff -Nru gnome-session-3.4.1.orig/capplet/gsp-app.h gnome-session-3.4.1/capplet/gsp-app.h
+--- gnome-session-3.4.1.orig/capplet/gsp-app.h	2012-04-24 14:27:37.304316767 -0400
++++ gnome-session-3.4.1/capplet/gsp-app.h	2012-04-24 14:43:29.312492629 -0400
+@@ -74,6 +74,7 @@
+ const char      *gsp_app_get_path          (GspApp       *app);
+ 
+ gboolean         gsp_app_get_hidden        (GspApp       *app);
++gboolean         gsp_app_get_display       (GspApp       *app);
+ 
+ gboolean         gsp_app_get_enabled       (GspApp       *app);
+ void             gsp_app_set_enabled       (GspApp       *app,
