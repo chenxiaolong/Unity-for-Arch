@@ -10,3 +10,5 @@ src/
 TEMP/
 
 *.log
+
+mono.snk

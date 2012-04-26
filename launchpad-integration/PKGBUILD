@@ -12,7 +12,7 @@ makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'pygtk' 'mono' 'gtk-sharp-2' 'gobject-i
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver}.tar.gz"
-        "https://github.com/mono/mono/blob/master/mcs/class/mono.snk?raw=true")
+        "mono.snk::https://github.com/mono/mono/blob/master/mcs/class/mono.snk?raw=true")
 sha512sums=('78777e9b531b9626e6add3739142a81b5acc4edd3f16a9f13f7cbee2d762e69b60d79272aa4ebeedb7f03607fb7210707d9de3a04d6851f59714891ae28130d0'
             '7f3c4a3bd3eb64769a24be714f603d2c69642d8ff636792b9fb57a5be9b93479d8fbb6872e3243cdc4cc50d9dfc402f55910da339b46e2caf307c59124547541')
 
@@ -24,7 +24,6 @@ build() {
 
   # mono fix
   sed -i "/AssemblyKeyFile/ s@\".*\"@\"${srcdir}/mono.snk\"@g" lib/AssemblyInfo.cs
-  mv "${srcdir}"/mono.snk\?raw\=true "${srcdir}/mono.snk"
   sed -i '/configdir/ s@/cli@@g' Makefile.am Makefile.in
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
