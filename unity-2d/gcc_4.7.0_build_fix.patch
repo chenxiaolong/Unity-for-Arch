@@ -1,0 +1,11 @@
+diff -Nru unity-2d-5.10.0.orig/libunity-2d-private/src/unity2ddebug.cpp unity-2d-5.10.0/libunity-2d-private/src/unity2ddebug.cpp
+--- unity-2d-5.10.0.orig/libunity-2d-private/src/unity2ddebug.cpp	2012-04-21 14:25:32.468114348 -0400
++++ unity-2d-5.10.0/libunity-2d-private/src/unity2ddebug.cpp	2012-04-21 14:25:40.608070251 -0400
+@@ -33,6 +33,7 @@
+ // libc
+ #include <cstdio>
+ #include <cstdlib>
++#include <unistd.h>
+ 
+ namespace Unity2dDebug
+ {
