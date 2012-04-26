@@ -13,7 +13,7 @@ else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
@@ -28,13 +28,13 @@ source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+downloa
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
-        "launchpad_export.tar.gz::http://ubuntuone.com/1uOWRNegG0LvwZKnerHoMk" # Snapshot of translations from Launchpad as of 2012-03-03
+        "launchpad_export.tar.gz::http://ubuntuone.com/4ShN81tFVBIHi3UrapNRtw" # Snapshot of translations from Launchpad as of 2012-04-26
         'fix_gtest_directory.patch'
         'launcher_bfb.png'
         'gcc_4.7_fix.patch')
 sha512sums=('d93c3abbafe70bb09f4f4ef0d2a04072946fff59fffbff1bbf0680ce9643c039d9c07436f9746d1dacd2c0ec796eb3853b17ae3a8c47f3331b69da2a9b7e2bf3'
             '5682de20ba3df1d6681c3ad8c2bf8e7e68dd72d5d926841f9aa3090291adb828ac7750ea51cbafd403c6c15959705931ce40e043b57c435b3ed3061f24eb9e76'
-            'f80df915dfc13502a96a19b5b62c1c1a0bb626d91f4a3559b3c2877ce5356bd69e60f618f026aecc281edf87c6411196a1558763143e610d0f2d18b2892c74b8'
+            '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
             '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '387f7b737732e2ab4489d29cddec5b904d266f006d3cbbb0467914cec8b21d93618f7825741492e0f213d01a5be360605822e468baaf21c1dd00246df6eef69f')
