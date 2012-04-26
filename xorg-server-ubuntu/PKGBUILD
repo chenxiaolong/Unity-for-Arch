@@ -14,7 +14,7 @@
 #    - swapl(param1, param2) -> swapl(param1)
 
 pkgbase=xorg-server
-pkgname=('xorg-server' 'xorg-server-devel')
+pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
 pkgver=1.12.1
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -22,7 +22,7 @@ license=('custom')
 url="http://xorg.freedesktop.org"
 makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt')
 options=('!libtool')
-source=("${url}/releases/individual/xserver/${pkgname}-${pkgver}.tar.bz2"
+source=("${url}/releases/individual/xserver/${pkgbase}-${pkgver}.tar.bz2"
         'autoconfig-nvidia.patch'
         'autoconfig-sis.patch'
         '10-quirks.conf'
@@ -79,7 +79,6 @@ build() {
       --with-xkb-output=/var/lib/xkb \
       --with-fontrootdir=/usr/share/fonts
 
-  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 
   # Disable subdirs for make install rule to make splitting easier
@@ -90,13 +89,13 @@ build() {
       -i hw/Makefile
 }
 
-package_xorg-server() {
+package_xorg-server-ubuntu() {
   pkgdesc="Xorg X server"
   depends=('libdrm' 'pixman' 'libgcrypt' 'xorg-server-common' 'xf86-input-evdev')
   backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
-  provides=('x-server')
+  provides=('x-server' "xorg-server=${pkgver}")
+  conflicts=('nvidia-utils<=290.10' 'xorg-server')
   groups=('xorg')
-  conflicts=('nvidia-utils<=290.10')
 
   cd "${srcdir}/${pkgbase}-${pkgver}"
   make DESTDIR="${pkgdir}" install
@@ -124,10 +123,12 @@ package_xorg-server() {
   rm -rvf "${pkgdir}/usr/share/aclocal"
 }
 
-package_xorg-server-devel() {
+package_xorg-server-devel-ubuntu() {
   arch=('any')
   pkgdesc="Development files for the X.Org X server"
   depends=('xproto' 'randrproto' 'renderproto' 'xextproto' 'inputproto' 'kbproto' 'fontsproto' 'videoproto' 'dri2proto' 'xineramaproto' 'xorg-util-macros' 'pixman' 'libpciaccess')
+  provides=("xorg-server-devel=${pkgver}")
+  conflicts=('xorg-server-devel')
 
   cd "${srcdir}/${pkgbase}-${pkgver}"
   make DESTDIR="${pkgdir}" install
