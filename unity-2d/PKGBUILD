@@ -5,7 +5,7 @@
 pkgname=unity-2d
 _ubuntu_rel=0ubuntu1
 pkgver=5.10.0.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Unity interface for non-accelerated graphics cards"
 arch=('i686' 'x86_64')
 url="http://launchpad.net/unity-2d"
@@ -21,11 +21,11 @@ options=('!emptydirs')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
-        "launchpad-export-2d.tar.gz::http://ubuntuone.com/0SVDsqeV12zqz4FfcIVwMZ" # Snapshot of translations from Launchpad as of 2012-03-03
+        "launchpad-export-2d.tar.gz::http://ubuntuone.com/0Zbt9BBlGbHMah8y1tCjGA" # Snapshot of translations from Launchpad as of 2012-04-26
         'gcc_4.7.0_build_fix.patch')
 sha512sums=('90c82aa1a35238988fc23053022c68b81dc450af98d2f114a4fb5d42b87c49caade22f1579b9e334231c6bc7f7c5e35658aba033c0d3f0a8b41fda7c18c81376'
             '444f5d24d6ee7c260a171f0585c4ac98ee8350063171438e4ae9a01755a859e441a9d33a9e4fcb7714b67a2c3c6321693c5bd7f8a972897d1a43e2bb6d08cad1'
-            '8cfd6d7f852b7ccf759f48b788a8239e3df732a10d81ede29fc6caaf95bc106f0ba6105c192b619a08945d6286f3e4ee59b5c690837f7a74a5fe7a705c70dcbc'
+            '1912a66eb9e3f4fca8d821ecd2e077291620346b3e603201c50d9694fcad3377606434d3928a25463ece275ce9a814ba6e46fc8ccb2e94ca561fccf56b871d5a'
             '4905a05fb519e3f18a200d634e72dbf571e451090629c7d3e320d170b97f9397cd50579978f6a751bce43635f17a5d574bd640e629d7e7821789bbec359ecfdf')
 
 # https://bugs.launchpad.net/unity-2d/+bug/809205
