@@ -4,7 +4,9 @@
 
 pkgname=gnome-bluetooth-ubuntu
 _ubuntu_rel=0ubuntu5
-pkgver=3.2.2.${_ubuntu_rel}
+_ubuntu_ver=3.2.2
+_actual_ver=3.4.0
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Bluetooth Subsystem"
 arch=('i686' 'x86_64')
@@ -16,22 +18,46 @@ provides=("gnome-bluetooth=${pkgver}")
 conflicts=('gnome-bluetooth')
 options=('!libtool' '!emptydirs')
 install=gnome-bluetooth.install
-source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        '61-gnome-bluetooth-rfkill.rules')
-sha512sums=('a49200d8364d478e9011e79fa2437917a204f8fa608cd9fd829102969efbfd149b0a5878ee8259750d37047dcb70ff457e4a52e035194ba4abe81925b37211f8'
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        '61-gnome-bluetooth-rfkill.rules'
+        # Patches refreshed for gnome-bluetooth 3.4.0
+        'UBUNTU_01_use_app_indicator.patch'
+        'UBUNTU_nodisplay_autostart.patch'
+        'UBUNTU_start_in_classic_session.patch'
+        'UBUNTU_menu_update_on_rfkill.patch'
+        'UBUNTU_unity_sound_nua.patch')
+sha512sums=('817cc95a085132ddafdd779cb9f916007d5558db71594d89270ee785b45d2da01dd3e085beec64a6b5f0f385b853ab520d2f651d04d0c51e84803958cd29f52e'
             '21540dfe165af642b917befb30a5b523daf2a576601deb7cad3e0a054be75638cb30fc7b070e61f38ff3f375e6a95ca0c000559e52f4672586eeb06893dd724f'
-            '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de')
+            '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de'
+            '2da096fffd20d463254d66ce734b6c9b6edd59730308b27a1756bc6466337da6aa1a32cd2ed91d1102e81c641143d49d89d96bac03a7a24a2125737ac12f5089'
+            '7849839c6ec1d43ca19c96ae0f4cbc6405f358993f38c58deda8849e16cc763000d507d35a0fa72c39db44973638019aaeffe6b69858acc68b4e761d67c1fd02'
+            '634cb1d4db3b3f4f23c5b290fe64261318486d8c88ebb686e45b8816c65c8d31f8314086b7af53d524b2f5502f0adea55151ffa81c22b7c669441272d9d845fe'
+            '63d82895fd7bfc9933d4b339824c74c3d6ccaf42268113db824d55bbe6e1d8a54fe56ea965cb10479d3560cb8982065525a20920fb15ceb9f65db778ec5917ab'
+            '4aed86a6ce46c292e27ea4f9a2eb98f39cab186f6ad45a6302b78a20d2fe480d734a8dead7786182c833a4adf9e9a31072a7a3e00635b0a05668ee076180c6d3')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
+    # Disable patches
+      # We do not use Ubuntu's language packs
+        sed -i '/02_gettext_macros.patch/d' "${srcdir}/debian/patches/series"
+      # Breaks translations if Ubuntu's language packs aren't used
+        sed -i '/03_text_changes.patch/d' "${srcdir}/debian/patches/series"
+  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  #done
+
+  # Patches refreshed for gnome-bluetooth 3.4.0
+  patch -Np1 -i "${srcdir}/UBUNTU_01_use_app_indicator.patch"
+  patch -Np1 -i "${srcdir}/UBUNTU_nodisplay_autostart.patch"
+  patch -Np1 -i "${srcdir}/UBUNTU_start_in_classic_session.patch"
+  patch -Np1 -i "${srcdir}/UBUNTU_menu_update_on_rfkill.patch"
+  patch -Np1 -i "${srcdir}/UBUNTU_unity_sound_nua.patch"
 
   autoreconf -vfi
+  intltoolize --force
 
   ./configure \
     --prefix=/usr \
@@ -44,7 +70,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make DESTDIR="${pkgdir}/" install
 
   install -Dm644 "${srcdir}/61-gnome-bluetooth-rfkill.rules" "${pkgdir}/lib/udev/rules.d//61-gnome-bluetooth-rfkill.rules"
@@ -53,3 +79,5 @@ package() {
   install -dm755 "${pkgdir}/etc/xdg/autostart/"
   install -m644 "${srcdir}/debian/bluetooth-applet-unity.desktop" "${pkgdir}/etc/xdg/autostart/"
 }
+
+# vim:set ts=2 sw=2 et:

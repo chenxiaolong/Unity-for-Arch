@@ -13,6 +13,7 @@ UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/GNOME/sources/gnome-bluetooth/$
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
-echo -e "Upstream version: ${UPSTREAM_VER}"
-echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
+echo -e "PKGBUILD version:   ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "Upstream version:   ${UPSTREAM_VER}"
+echo -e "Arch Linux version: ${ARCHLINUX_VER[@]}"
+echo -e "Ubuntu version:     ${UBUNTU_VER[@]}"

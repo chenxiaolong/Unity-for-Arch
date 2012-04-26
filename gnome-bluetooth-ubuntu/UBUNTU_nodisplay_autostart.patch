@@ -1,0 +1,8 @@
+diff -Nru gnome-bluetooth-3.4.0.orig/applet/bluetooth-applet.desktop.in.in gnome-bluetooth-3.4.0/applet/bluetooth-applet.desktop.in.in
+--- gnome-bluetooth-3.4.0.orig/applet/bluetooth-applet.desktop.in.in	2012-04-25 15:16:14.678612145 -0400
++++ gnome-bluetooth-3.4.0/applet/bluetooth-applet.desktop.in.in	2012-04-26 02:09:46.336184360 -0400
+@@ -12,3 +12,4 @@
+ X-GNOME-Bugzilla-Component=applet
+ X-GNOME-Bugzilla-Version=@VERSION@
+ AutostartCondition=GNOME3 if-session gnome-fallback
++NoDisplay=true

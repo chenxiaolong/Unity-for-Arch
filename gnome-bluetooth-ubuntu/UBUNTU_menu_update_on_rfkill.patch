@@ -1,0 +1,11 @@
+diff -Nru gnome-bluetooth-3.4.0.orig/applet/bluetooth-applet.c gnome-bluetooth-3.4.0/applet/bluetooth-applet.c
+--- gnome-bluetooth-3.4.0.orig/applet/bluetooth-applet.c	2012-04-25 15:16:14.681945460 -0400
++++ gnome-bluetooth-3.4.0/applet/bluetooth-applet.c	2012-04-26 02:19:27.039705085 -0400
+@@ -628,6 +628,7 @@
+   BluetoothApplet *self = BLUETOOTH_APPLET (user_data);
+ 
+   g_object_notify (G_OBJECT (self), "killswitch-state");
++  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FULL_MENU]);
+ }
+ 
+ typedef struct {
