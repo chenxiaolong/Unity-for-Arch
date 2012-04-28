@@ -1,0 +1,127 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgbase=xorg-server
+pkgname=('xorg-server-ubuntu-1.11' 'xorg-server-devel-ubuntu-1.11')
+_ubuntu_rel=0ubuntu10.1
+_actual_ver=1.11.4
+pkgver=${_actual_ver}.${_ubuntu_rel}
+pkgrel=100
+arch=('i686' 'x86_64')
+license=('custom')
+url="http://xorg.freedesktop.org"
+makedepends=('pixman' 'libx11' 'mesa' 'libgl' 'xf86driproto' 'xcmiscproto' 'xtrans' 'bigreqsproto' 'randrproto' 'inputproto' 'fontsproto' 'videoproto' 'compositeproto' 'recordproto' 'scrnsaverproto' 'resourceproto' 'xineramaproto' 'libxkbfile' 'libxfont' 'renderproto' 'libpciaccess' 'libxv' 'xf86dgaproto' 'libxmu' 'libxrender' 'libxi' 'dmxproto' 'libxaw' 'libdmx' 'libxtst' 'libxres' 'xorg-xkbcomp' 'xorg-util-macros' 'xorg-font-util' 'glproto' 'dri2proto' 'udev' 'libgcrypt')
+options=('!libtool')
+source=("${url}/releases/individual/xserver/${pkgbase}-${_actual_ver}.tar.bz2"
+        '10-quirks.conf'
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xorg-server_${_actual_ver}-${_ubuntu_rel}.diff.gz")
+sha512sums=('29013ffd51ff1b6a2b5679580c490d68dc5feaebdc9201a2812a410761200f5468de76c8791ab089950504be649e61f2cccb705587fde66eef1bcd3461f537ed'
+            '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2'
+            '376e1eb20b9f19a279020515599fb412ec848c9a458690b0d8847626ef7b032433dff65a9b74de3c170b6195e8b7d14ad4be339e28c6c3995f455f9235640818')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${_actual_ver}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
+
+  autoreconf -vfi
+
+  ./configure \
+      --prefix=/usr \
+      --enable-ipv6 \
+      --enable-dri \
+      --enable-dmx \
+      --enable-xvfb \
+      --enable-xnest \
+      --enable-composite \
+      --enable-xcsecurity \
+      --enable-xorg \
+      --enable-xephyr \
+      --enable-glx-tls \
+      --enable-kdrive \
+      --enable-kdrive-evdev \
+      --enable-kdrive-kbd \
+      --enable-kdrive-mouse \
+      --enable-install-setuid \
+      --enable-config-udev \
+      --disable-config-dbus \
+      --enable-record \
+      --disable-xfbdev \
+      --disable-xfake \
+      --disable-static \
+      --sysconfdir=/etc/X11 \
+      --localstatedir=/var \
+      --with-xkb-path=/usr/share/X11/xkb \
+      --with-xkb-output=/var/lib/xkb \
+      --with-fontrootdir=/usr/share/fonts
+
+  make ${MAKEFLAGS}
+
+  # Disable subdirs for make install rule to make splitting easier
+  sed -e 's/^DMX_SUBDIRS =.*/DMX_SUBDIRS =/' \
+      -e 's/^XVFB_SUBDIRS =.*/XVFB_SUBDIRS =/' \
+      -e 's/^XNEST_SUBDIRS =.*/XNEST_SUBDIRS = /' \
+      -e 's/^KDRIVE_SUBDIRS =.*/KDRIVE_SUBDIRS =/' \
+      -i hw/Makefile
+}
+
+package_xorg-server-ubuntu-1.11() {
+  pkgdesc="Xorg X server"
+  depends=('libdrm' 'pixman' 'libgcrypt' 'xorg-server-common' 'xf86-input-evdev')
+  backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
+  provides=('x-server' "xorg-server=${_actual_ver}" "xorg-server-ubuntu=${_actual_ver}")
+  conflicts=('nvidia-utils<=290.10' 'xorg-server' 'xorg-server-ubuntu')
+  groups=('xorg')
+
+  cd "${srcdir}/${pkgbase}-${_actual_ver}"
+  make DESTDIR="${pkgdir}" install
+
+  install -dm755 "${pkgdir}/etc/X11"
+  mv "${pkgdir}/usr/share/X11/xorg.conf.d" "${pkgdir}/etc/X11/"
+  install -m644 "${srcdir}/10-quirks.conf" "${pkgdir}/etc/X11/xorg.conf.d/"
+
+  rmdir -v "${pkgdir}/usr/share/X11"
+
+  # Needed for non-mesa drivers, libgl will restore it
+  mv -v "${pkgdir}/usr/lib/xorg/modules/extensions/libglx.so" \
+        "${pkgdir}/usr/lib/xorg/modules/extensions/libglx.xorg"
+
+  rm -rvf "${pkgdir}/var"
+
+  rm -vf "${pkgdir}/usr/share/man/man1/Xserver.1"
+  rm -vf "${pkgdir}/usr/lib/xorg/protocol.txt"
+
+  install -dm755 "${pkgdir}/usr/share/licenses/xorg-server"
+  ln -svf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server/COPYING"
+
+  rm -rvf "${pkgdir}/usr/lib/pkgconfig"
+  rm -rvf "${pkgdir}/usr/include"
+  rm -rvf "${pkgdir}/usr/share/aclocal"
+}
+
+package_xorg-server-devel-ubuntu-1.11() {
+  arch=('any')
+  pkgdesc="Development files for the X.Org X server"
+  depends=('xproto' 'randrproto' 'renderproto' 'xextproto' 'inputproto' 'kbproto' 'fontsproto' 'videoproto' 'dri2proto' 'xineramaproto' 'xorg-util-macros' 'pixman' 'libpciaccess')
+  provides=("xorg-server-devel=${_actual_ver}" "xorg-server-devel-ubuntu=${_actual_ver}")
+  conflicts=('xorg-server-devel' 'xorg-server-devel-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${_actual_ver}"
+  make DESTDIR="${pkgdir}" install
+
+  rm -rvf "${pkgdir}/usr/bin"
+  rm -rvf "${pkgdir}/usr/share/man"
+  rm -rvf "${pkgdir}/usr/share/doc"
+  rm -rvf "${pkgdir}/usr/share/X11"
+  rm -rvf "${pkgdir}/usr/lib/xorg"
+  rm -rvf "${pkgdir}/var"
+
+  install -dm755 "${pkgdir}/usr/share/licenses/xorg-server-devel"
+  ln -svf ../xorg-server-common/COPYING "${pkgdir}/usr/share/licenses/xorg-server-devel/COPYING"
+}
+
+# vim:set ts=2 sw=2 et:
