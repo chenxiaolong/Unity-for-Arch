@@ -75,7 +75,7 @@ Order to compile/install:
 67: unity-lens-video               -> Unity video lens
 68: compiz-core-ubuntu             -> Compiz core components
 69: libcompizconfig-ubuntu         -> Compiz configuration system library
-70: compizconfig-backend-gconf-ubuntu * -> GConf backend for Compiz
+70: compizconfig-backend-gconf-ubuntu -> GConf backend for Compiz
 71: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
 72: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
 73: ccsm-ubuntu                    -> Compiz configuration manager
