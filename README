@@ -81,9 +81,10 @@ Order to compile/install:
 73: ccsm-ubuntu                    -> Compiz configuration manager
 74: compiz-plugins-main-ubuntu     -> Compiz main plugins
 75: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-76: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-77: unity                          -> A desktop experience designed for efficiency
-78: unity-2d                       -> 2D implementation of Unity
+76: libgdu                         -> GNOME Disk Utility library
+77: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+78: unity                          -> A desktop experience designed for efficiency
+79: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
