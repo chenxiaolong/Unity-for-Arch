@@ -3,22 +3,22 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=5.10.0
+pkgver=5.12.0
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu6
+  _ubuntu_rel=0ubuntu1
   pkgver="${pkgver}.${_ubuntu_rel}"
   _actual_ver="${pkgver%.*}"
 else
   _actual_ver="${pkgver}"
 fi
 
-pkgrel=102
+pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity/"
 license=('GPL')
-depends=('bamf' 'boost' 'ccsm-ubuntu' 'clutter-gtk' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'python2-gconf' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3')
+depends=('bamf' 'boost' 'ccsm-ubuntu' 'clutter-gtk' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'python2-gconf' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libgdu')
 makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock' 'gtest')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
@@ -29,15 +29,15 @@ BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
 source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver%.*}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
         "launchpad_export.tar.gz::http://ubuntuone.com/4ShN81tFVBIHi3UrapNRtw" # Snapshot of translations from Launchpad as of 2012-04-26
         'fix_gtest_directory.patch'
         'launcher_bfb.png'
         'gcc_4.7_fix.patch')
-sha512sums=('d93c3abbafe70bb09f4f4ef0d2a04072946fff59fffbff1bbf0680ce9643c039d9c07436f9746d1dacd2c0ec796eb3853b17ae3a8c47f3331b69da2a9b7e2bf3'
-            '5682de20ba3df1d6681c3ad8c2bf8e7e68dd72d5d926841f9aa3090291adb828ac7750ea51cbafd403c6c15959705931ce40e043b57c435b3ed3061f24eb9e76'
+sha512sums=('0960c909980b9657cba9c2428ad5ed3dbdd8125c81cb88bf448073e5861d704b1e9c64d4d05b29d52b72caa84a04778581b38ef8fa0ab748e417c902a51aeb6c'
+            '88ff40c5a3f5e45d95346e2ecf90db78f609de7e49475b33cb15fd39a34a61aa2afe144a9e9b5c092731e08485fe68d7996f53ca4ce0685b0fe0b3067b7bb2d4'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
             '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
@@ -62,7 +62,7 @@ build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver%.*}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
