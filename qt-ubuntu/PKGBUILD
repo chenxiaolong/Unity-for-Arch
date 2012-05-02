@@ -51,7 +51,7 @@ build() {
         -e '/30_webkit_unaligned_access.diff/d'                           \
         -e '/96_webkit_no_gc_sections.diff/d'                             \
         -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
-        -e '/kubuntu_01_fix_build_glib_231.diff/d'                        \
+        `# -e '/kubuntu_01_fix_build_glib_231.diff/d'`                    \
         -e '/11_build_translations.diff/d'                                \
       `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
       `# the built-in Qt webkit`                                          \
