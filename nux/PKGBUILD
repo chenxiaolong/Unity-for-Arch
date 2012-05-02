@@ -41,8 +41,17 @@ build() {
 
   # Ensure that gcc 4.6.3 is used
   PATH="${srcdir}/usr/bin:/usr/bin:/bin"
-  CC="${srcdir}/usr/bin/${CARCH}-unknown-linux-gnu-gcc-4.6"
-  CXX="${srcdir}/usr/bin/${CARCH}-unknown-linux-gnu-g++-4.6"
+  case ${CARCH} in
+    x86_64)
+      CC="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-gcc-4.6"
+      CXX="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-g++-4.6"
+      ;;
+    i686)
+      CC="${srcdir}/usr/bin/i686-pc-linux-gnu-gcc-4.6"
+      CXX="${srcdir}/usr/bin/i686-pc-linux-gnu-g++-4.6"
+      ;;
+  esac
+
   CPP="${srcdir}/usr/bin/cpp-4.6 -x c"
   CXXCPP="${srcdir}/usr/bin/cpp-4.6 -x c++"
 
