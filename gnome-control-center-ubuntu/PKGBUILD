@@ -5,7 +5,7 @@
 pkgname=gnome-control-center-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=3.4.1.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -42,6 +42,8 @@ build() {
       sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
     # Do not use Ubuntu help files
       sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
+    # Arch Linux does not use Ubuntu's language selector
+      sed -i '/52_ubuntu_language_list_mods.patch/d' "${srcdir}/debian/patches/series"
 
   # Fix patches
     # Use Arch Linux logo
