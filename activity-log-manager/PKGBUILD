@@ -1,0 +1,55 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=activity-log-manager
+_ubuntu_rel=0ubuntu3
+pkgver=0.9.4.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A graphical user interface which lets you easily control what gets logged by Zeitgeist"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/activity-log-manager"
+license=('GPL')
+groups=('unity')
+depends=('libzeitgeist' 'zeitgeist' 'libgee' 'gnome-control-center' 'polkit' 'desktop-file-utils' 'hicolor-icon-theme')
+makedepends=('vala' 'intltool')
+options=('!libtool')
+install=${pkgname}.install
+source=("https://launchpad.net/${pkgname}/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'fix_documentation_directory.patch'
+        'disable_whoopsie.patch')
+sha512sums=('6bd08e20a233e7329b796aba77d72b09833f3e807ae85a4196cf6c3f0372fdcfa06c7e0eb5dac5b4f7245129c1166945c1d044b0d9a8f1f98bf33bbd12264589'
+            '5097256a5222761695947b025905379fadf7c60ddd78e633e169f0311b18c835fe744066bc3e89639cecbaeb4219df41ee4807665b289403c593fbd765d57ec8'
+            '3c8f81c67d502e2475ec7ad65c52706125d547c43351d141253e01e4dd575c315f89c04a2e1751ccc434dac2ae4f6a15a5b7fe0b4ba7bf9f0b7e2fa9aabacb33'
+            'c45634d2d1a07256de6e6f9a86d64e3eb1e8a8058d76b2c1f991c414e0bf69b00a6ce83ce62a331b43a328312653e89d7b29ebda372daeebfb186fd44ee08dcf')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  # Fix documentation directory
+  patch -Np1 -i "${srcdir}/fix_documentation_directory.patch"
+
+  # Disable whoopsie (for Ubuntu bug reporting)
+  patch -Np1 -i "${srcdir}/disable_whoopsie.patch"
+
+  autoreconf -vfi
+
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static --with-ccpanel=yes
+  make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  make -k check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:

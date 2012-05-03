@@ -1,0 +1,24 @@
+diff -Nru activity-log-manager-0.9.4.orig/configure.ac activity-log-manager-0.9.4/configure.ac
+--- activity-log-manager-0.9.4.orig/configure.ac	2012-05-03 15:13:49.124597645 -0400
++++ activity-log-manager-0.9.4/configure.ac	2012-05-03 15:14:15.374455438 -0400
+@@ -47,7 +47,7 @@
+   [AS_HELP_STRING([--with-whoopsie],
+     [build control-center plugin Ubuntu crash reporting page @<:@default=check@:>@])],
+   [with_ccpanel=yes],
+-  [with_whoopsie=check])
++  [with_whoopsie=no])
+ AC_ARG_WITH([ccpanel],
+   [AS_HELP_STRING([--with-ccpanel],
+     [build control-center plugin @<:@default=check@:>@])],
+diff -Nru activity-log-manager-0.9.4.orig/src/Makefile.am activity-log-manager-0.9.4/src/Makefile.am
+--- activity-log-manager-0.9.4.orig/src/Makefile.am	2012-05-03 15:13:49.131264276 -0400
++++ activity-log-manager-0.9.4/src/Makefile.am	2012-05-03 15:14:49.364271300 -0400
+@@ -6,8 +6,6 @@
+ gnomeccuidir = $(datadir)/gnome-control-center/ui/
+ endif
+ 
+-SUBDIRS = diagnostics
+-
+ VALAFLAGS = \
+ 	--pkg zeitgeist-1.0 \
+ 	--pkg gtk+-3.0 \

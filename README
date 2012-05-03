@@ -26,10 +26,10 @@ Order to compile/install:
 18: ido                            -> Widgets and objects used for indicators
 19: libzeitgeist                   -> Client library to interact with Zeitgeist
 20: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-21: python2-geoclue                 -> Geoclue Python module
-22: python2-xapian                  -> Python bindings for Xapian
+21: python2-geoclue                -> Geoclue Python module
+22: python2-xapian                 -> Python bindings for Xapian
 23: zeitgeist-extensions           -> Extensions for Zeitgeist
-24: gnome-activity-journal         -> Tool for easily browsing and finding files
+24: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
 25: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
 26: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 27: gnome-session-ubuntu           -> GNOME Session Manager
