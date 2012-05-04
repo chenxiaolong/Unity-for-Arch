@@ -2,6 +2,22 @@
 # Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 
+# Cannot build if qt-ubuntu is installed
+if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ]; then
+  echo ""
+  error "qtwebkit must be temporarily removed before building."
+  msg "Please run:"
+  echo ""
+  echo "  pacman -Rdd qtwebkit"
+  echo ""
+  msg "and reinstall it after the build."
+  echo ""
+  echo "(If for some reason, you need to override this message, run:)"
+  echo ""
+  echo "  IGNORE_NO_QTWEBKIT=yes makepkg"
+  exit 1
+fi
+
 # AUR fix
 pkgname=qt-ubuntu
 pkgdesc='A cross-platform application and UI framework'
@@ -51,7 +67,7 @@ build() {
         -e '/30_webkit_unaligned_access.diff/d'                           \
         -e '/96_webkit_no_gc_sections.diff/d'                             \
         -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
-        `# -e '/kubuntu_01_fix_build_glib_231.diff/d'`                    \
+        -e '/kubuntu_01_fix_build_glib_231.diff/d'                        \
         -e '/11_build_translations.diff/d'                                \
       `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
       `# the built-in Qt webkit`                                          \

@@ -133,3 +133,11 @@ AHH! Something is wrong with Unity!
 I have an ATI graphics card that needs the AMD Catalyst/fglrx driver.
 
   Use the xorg-server-ubuntu-1.11 package instead of xorg-server-ubuntu.
+
+qt-ubuntu does not build.
+
+  Temporary remove the qtwebkit package (ignoring dependencies) by running:
+
+    pacman -Rdd qtwebkit
+
+  After the build, qtwebkit can be installed again.
