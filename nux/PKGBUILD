@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=2.10.0
-pkgrel=101
+pkgver=2.12.0
+pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
@@ -18,8 +18,8 @@ options=('!libtool' '!emptydirs')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('acbdbfd9f6c929658914141f9ba7a081d4d167ad95a7ea7e1a603fcee3ebe209ec6c6b9d3eaa0215054401a6533e7e404bca198657f2a8da5387fb8262502c96')
+source=("http://launchpad.net/nux/${pkgver%%.*}.0/${pkgver%.*}/+download/nux-${pkgver}.tar.gz")
+sha512sums=('d001fd92775c91d73edb4c2d0c6cceddfae66601e4a13212dd896832e3403d4fef1ac2cbdfd81fae5ecd16f9c5ee3682fe770760c53d16ba4fe3f484129f8482')
 
 # GPG public key:
 #   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
