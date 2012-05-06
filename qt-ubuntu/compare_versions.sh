@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname ${0})/PKGBUILD"
+IGNORE_NO_QTWEBKIT=yes source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
 UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/qt4-x11' -O - | sed -n 's/.*>qt4-x11_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
