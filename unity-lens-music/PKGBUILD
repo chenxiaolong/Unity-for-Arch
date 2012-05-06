@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-music
-pkgver=5.10.0
+pkgver=5.12.0
 pkgrel=100
 pkgdesc="Music, in the dash"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('libunity' 'banshee')
 makedepends=('vala' 'intltool')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('ffd66356d51e425c50b68ff098b305109068078cdf1723992a50b086a35678cdf306c3cebac6c7fc60f33818231d546ec32ab6825eda493f11e4e247ff7d1696')
+sha512sums=('87f68f08f3e9ba79b0cc888032be150c56836dae5153ad2f8743eec79ab272cf8fe928373abe87cb2b81606204e4ff8ff79b866f3726d49d282c6be8b3420495')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
