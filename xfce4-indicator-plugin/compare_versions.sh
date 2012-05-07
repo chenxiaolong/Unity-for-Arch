@@ -10,6 +10,6 @@ UPSTREAM_VER=$(wget -q "http://goodies.xfce.org/projects/panel-plugins/xfce4-ind
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${pkgver}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"

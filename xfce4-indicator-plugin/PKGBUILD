@@ -3,8 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=xfce4-indicator-plugin
-_ubuntu_rel=0ubuntu2
-pkgver=0.4.0.${_ubuntu_rel}
+pkgver=0.5.0
 pkgrel=100
 pkgdesc="Display indicators in the xfce4 panel"
 arch=('i686' 'x86_64')
@@ -16,18 +15,11 @@ makedepends=('intltool' 'xfce4-dev-tools')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*.*}/${pkgname}-${pkgver%.*}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('34800e56ea134f70f037bb6df6ab4fdf755d2d6171f44cc8a09c85e714e009b084e81c1f2e63293680329f8fd6d60d92e53ebff07dce1c12ee74294203628ff2'
-            '50faeb712e68bd681765fb4588833f4a37d1db0ad71168a7a79b0dbae4d1747c909ef7a3c769fb9a4f0018bc0532ed7c5424ab8a21a1af2680ccebded9af70ea')
+source=("http://archive.xfce.org/src/panel-plugins/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.bz2")
+sha512sums=('807aa9f86d41753c01f96831bdd4c42823275314c15f8e0472330edd62a47a416619a98d7624687586d42d8ea290811c58d7f826edc51c884c2a60dbbd1b72c4')
 
 build() {
-  cd ${srcdir}/${pkgname}-${pkgver%.*}
-
-  # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   /usr/bin/xdt-autogen
   ./configure \
@@ -37,11 +29,13 @@ build() {
     --localstatedir=/var \
     --disable-static \
     --disable-debug
+
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd ${srcdir}/${pkgname}-${pkgver%.*}
-  make DESTDIR=${pkgdir} install
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
 }
 
+# vim:set ts=2 sw=2 et:
