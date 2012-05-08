@@ -4,7 +4,7 @@
 pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu6
 pkgver=2.24.10.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection' 'gtk-doc')
@@ -35,6 +35,9 @@ build() {
       sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
     # Breaks pkgconfig
       sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
+    # gtk.immodules is in /etc/gtk-2.0/ in Arch Linux, not
+    # /usr/lib/gtk-2.0/2.10.0/
+      sed -i '/011_immodule-cache-dir.patch/d' "${srcdir}/debian/patches/series"
 
   # Build fix from György Balló
   patch -Np1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
