@@ -29,12 +29,12 @@ Order to compile/install:
 21: python2-geoclue                -> Geoclue Python module
 22: python2-xapian                 -> Python bindings for Xapian
 23: zeitgeist-extensions           -> Extensions for Zeitgeist
-24: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
-25: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-26: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-27: gnome-session-ubuntu           -> GNOME Session Manager
-28: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
-29: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+24: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+25: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+26: gnome-session-ubuntu           -> GNOME Session Manager
+27: pulseaudio-ubuntu              -> A featureful, general-purpose sound server
+28: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+29: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
 30: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
 31: metacity-ubuntu                -> Lightweight GTK+ window manager
 32: launchpad-integration          -> Launchpad.net integration
