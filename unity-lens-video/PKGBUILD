@@ -9,6 +9,7 @@ arch=('any')
 url="https://launchpad.net/unity-lens-videos"
 license=('GPL')
 depends=('python2')
+makedepends=('python-distutils-extra')
 groups=('unity')
 source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/unity-lens-videos/remote-videos-scope/remote-videos-${pkgver%.*}/+download/unity-scope-video-remote-${pkgver%.*}.tar.gz"
