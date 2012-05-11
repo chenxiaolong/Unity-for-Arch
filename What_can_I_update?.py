@@ -331,11 +331,15 @@ def parsePkgbuild(package):
   # Create data structure to store package info
   temp = pkgbuild(package)
 
+  # Skip checks in PKGBUILDs
+  envUpdate = {'UPDATE_SCRIPT' : 'true'}
+
   # Get information from PKGBUILD
   process = subprocess.Popen(
     ['/bin/bash', '-c', 'source ./PKGBUILD && echo "${pkgname[@]}" && echo "${pkgver}-${pkgrel}"'],
     stdout=subprocess.PIPE,
     cwd=package,
+    env=envUpdate,
     universal_newlines=True
   )
 

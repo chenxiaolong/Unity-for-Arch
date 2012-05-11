@@ -3,14 +3,14 @@
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 
 # Cannot build if qt-ubuntu is installed
-if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ]; then
+if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ] && [ "x${UPDATE_SCRIPT}" == 'x' ]; then
   echo ""
   error "qtwebkit must be temporarily removed before building."
   msg "Please run:"
   echo ""
   echo "  pacman -Rdd qtwebkit"
   echo ""
-  msg "and reinstall it after the build."
+  msg "and reinstalled after the build."
   echo ""
   echo "(If for some reason, you need to override this message, run:)"
   echo ""
