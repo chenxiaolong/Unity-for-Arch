@@ -90,7 +90,6 @@ Order to compile/install:
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
   - plasma-widget-menubar          => For KDE users who want a global menubar
   - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
-  - compizconfig-backend-gconf-ubuntu => Store Compiz settings in GConf
   - compizconfig-backend-kconfig4-ubuntu => Store Compiz settings in KConfig4
   - unity-core                     => For users that want Unity 2D, but not Unity 3D
 
