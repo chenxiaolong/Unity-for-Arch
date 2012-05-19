@@ -35,7 +35,7 @@ build() {
 
 package_liboverlay-scrollbar3() {
   pkgdesc="Scrollbar overlayed widget - GTK 3 library"
-  depends=('glib2-ubuntu' 'gtk3-ubuntu')
+  depends=('glib2-ubuntu' 'gtk3-ubuntu' 'gsettings-desktop-schemas-ubuntu')
   provides=('overlay-scrollbar')
   conflicts=('overlay-scrollbar')
 
@@ -48,7 +48,7 @@ package_liboverlay-scrollbar3() {
 
 package_liboverlay-scrollbar() {
   pkgdesc="Scrollbar overlayed widget - GTK 2 library"
-  depends=('gtk2-ubuntu')
+  depends=('gtk2-ubuntu' 'gsettings-desktop-schemas-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
   MAKEFLAGS="-j1"

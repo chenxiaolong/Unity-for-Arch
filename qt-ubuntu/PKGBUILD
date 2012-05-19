@@ -101,6 +101,8 @@ build() {
         -e '/10_config_tests_fixes.diff/d'                                \
       `# Not needed for rolling release distros`                          \
         -e '/23_permit_plugins_built_with_future_qt.diff/d'               \
+      `# Disable overlay scrollbar (not tested)`                          \
+      `# -e '/kubuntu_93_disable_overlay_scrollbars.diff/d'`              \
       \
       "${srcdir}/debian/patches/series"
 
