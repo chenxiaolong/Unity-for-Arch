@@ -3,9 +3,11 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=3.4.1.${_ubuntu_rel}
-pkgrel=101
+_ubuntu_rel=0ubuntu2
+_ubuntu_ver=3.4.1
+_actual_ver=3.4.2
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -21,19 +23,19 @@ makedepends=('gnome-doc-utils' 'intltool' 'gnome-common')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'apg: adds password generation for user accounts'
             'gnome-color-manager: for color management tasks')
-provides=("gnome-control-center=${pkgver}")
+provides=("gnome-control-center=${_actual_ver}")
 conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
-source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
-sha512sums=('09d0547dd0d76c071b14364b47f01b4a20b63a4ecec8f35b1da267c8abf73e5b1b495f74aeb3bff980d6e3c6f96e36377712cc920cd1831e22e6f98ae128f18b'
-            '2a651208a5c4e3cb755175b26c414716c358462b46bc5a94cce38a7b6bcdbcea61374b6afa92065b00d753147d0619c7da1276d4f6dc8481d5a964a1ba586a07'
+sha512sums=('78927f56f1e1af4043f0d96bae174513916e752aa3e987b545e78213f34527a25ba69ce61da43dcd21ed51aa9d1ee713cabed507853f20bb6c0b0bea82f272e6'
+            '7d7afc9290e4cb46b045a4c5d47f8ac404da92fee83af91b20adcffe0206bd97ec649c80f605911db2e3e4fdf2026aca98efc30c79845018101f6c7f214f7853'
             '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
 
@@ -71,7 +73,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   make DESTDIR="${pkgdir}" install
 
