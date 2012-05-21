@@ -23,7 +23,7 @@ if [[ "${NO_KDE}" == "true" ]]; then
 fi
 
 _ubuntu_rel="0ubuntu1"
-_actual_ver=0.9.7.6
+_actual_ver=0.9.7.8
 
 # Another AUR fix
 pkgver=${_actual_ver}.${_ubuntu_rel}
@@ -42,8 +42,8 @@ fi
 options=('emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('ceb0ccb8a4117285086c46f9fe3e7713d2e7af86ba036cb1110441c81614735d9690cee8425724c3f63df5866a1e4f16754ffca30c6003431b9399d7740846c2'
-            '9bbb4e3f685d470f27c3f1a126e7c8ea3014c66e5a9b49a66ca04316904f0016a7e673ac0fda7d55afd7fbbed3ec3c6a65d4ee31b26e44df4cc243635a3432d0')
+sha512sums=('30bb0c4a19dbeb537129e89b9b0fdafa1c7ce18c2dc25e5ec17965a991d05cedc8d6caf93dea8eab2b065a140f57252380ac142c2edd6909a9f5dcd2700a93a6'
+            'ed5b5e57f0f41e67ef26d97952cf89c24e3674576ddbce7903060d0d4784c3b213c5744be2641e5ba11f091720309abca33d55b14ffc6a86d91db9055debf0ca')
 
 build() {
   cd "${srcdir}/${pkgname%%-*}-${_actual_ver}"
