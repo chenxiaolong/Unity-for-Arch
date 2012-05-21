@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu1.1
 pkgver=3.4.1.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -13,19 +13,19 @@ license=('GPL')
 depends=('colord' 'dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libgnomekbd' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3' 'packagekit')
 makedepends=('intltool' 'gtk-doc' 'gnome-desktop' 'gnome-common' 'xf86-input-wacom')
 groups=('unity')
-provides=("gnome-settings-daemon=${pkgver}")
+provides=("gnome-settings-daemon=${pkgver%.*.*}")
 conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*.*}/${pkgname%-*}-${pkgver%.*.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch'
         'arguments.patch::http://git.gnome.org/browse/gnome-settings-daemon/patch/?id=00681573ad6ebeb127ec72ac61d30d69be6459f8'
         'mem-leak.patch::http://git.gnome.org/browse/gnome-settings-daemon/patch/?id=053f48b3b1b9a3b2ab0714d470da4354735d0c4b'
         'glist-leak.patch::http://git.gnome.org/browse/gnome-settings-daemon/patch/?id=214a832820f6448f07d438f6686267eaf8301dd1'
         'mouse-mem-leak.patch::http://git.gnome.org/browse/gnome-settings-daemon/patch/?id=09c215b42312ca5bb63b215c2f95231613b3103d')
 sha512sums=('530aa9f3a79c9b89093885c57abaf863c437aef12b77873aa6b8eac4a5f3daaf86fadeb38a5190096e400f70d322cea175025bde2b5d8c2d123601690555fe15'
-            'df62a2e012116722784fc55efd988b9b03d361e2b3cc961b7ff6caee0df4107b05f07189a35e2ebe132e207ef808eb28c2beb9219f6d74f81573c101df08fa4b'
+            'dd3b48db1cee72dd20b9ad8646f77c35e8f9e88a96e0cb3829a6f22b5a1cfd89733667be9e0ebdafd56e74017d68bcdd0256f04b59f95d671bf742038b904356'
             '6afbad62dd69e0c779ae991e9afa46c3f2c0db07f0f7d77d607198f939498a8dfa0cd46099f46ce25d6d993425d7914bb3b8098044f007485e7fe501c900fe63'
             'b4390f57871b362ff641d948f243c34a6a21f5e6eb94aad8d2d6dbef7263de806d238cc96c872aef98e299d5dbf6ecf794b9270fbcc7f280b5a3daf5b3f35d9c'
             '35e4ea828a3813af316c7a5477231cb2901d9df64deb6996ab121fe17845e3a12c614d6a0eb8218d1fc72c867672bbafa902b8271c115f647120bda75cd391d9'
@@ -33,7 +33,7 @@ sha512sums=('530aa9f3a79c9b89093885c57abaf863c437aef12b77873aa6b8eac4a5f3daaf86f
             'c19b4419d8fea8662a214dfe8524404daf7cd4ef6e2abd4905bdbb8c2e9e0bdd7380c7126958106072b755b6d2f9a231bfb9d9d993bb7c41085a52c20d277033')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}"
 
   patch -Np1 -i "${srcdir}/systemd-fallback.patch"
 
@@ -72,7 +72,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}"
   make DESTDIR="${pkgdir}" install
 
   # Install gnome-update-wallpaper-cache
