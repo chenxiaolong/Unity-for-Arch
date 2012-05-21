@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/unity-2d' -O - | sed -n 's/.*>unity-2d_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/unity-2d' -O - | sed -n 's/.*>unity-2d_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
 
 #echo "Getting latest upstream version..."
 #UPSTREAM_VER=$(wget 'https://launchpad.net/unity-2d/+download' -q -O - | sed -n 's/.*unity[-_]\([\.0-9]*[0-9]\).*\.tar\.bz2.*/\1/p' | head -n 1)
