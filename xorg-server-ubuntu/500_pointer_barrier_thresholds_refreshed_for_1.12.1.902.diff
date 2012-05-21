@@ -1,0 +1,5450 @@
+diff -Nru xorg-server-1.12.1.902.orig/configure.ac xorg-server-1.12.1.902/configure.ac
+--- xorg-server-1.12.1.902.orig/configure.ac	2012-05-20 14:40:28.196212147 -0400
++++ xorg-server-1.12.1.902/configure.ac	2012-05-20 14:40:44.206125416 -0400
+@@ -2130,6 +2130,25 @@
+ 
+ AC_CONFIG_COMMANDS([sdksyms], [touch hw/xfree86/sdksyms.dep])
+ 
++AC_PROG_CXX
++
++PKG_CHECK_MODULES(XORG_GTEST, xorg-gtest,
++        [have_xorg_gtest="yes"],
++        [AC_MSG_WARN([xorg-gtest not installed, tests will not be built])])
++AM_CONDITIONAL([HAVE_XORG_GTEST], [test "x$have_xorg_gtest" = xyes])
++AC_SUBST([XORG_GTEST_CFLAGS])
++AC_SUBST([XORG_GTEST_LIBS])
++
++PKG_CHECK_MODULES([XFIXES], xfixes, [have_xfixes="yes"], [have_xfixes="no"])
++AM_CONDITIONAL([HAVE_XFIXES], [test "x$have_xfixes" = xyes])
++AC_SUBST([XFIXES_CFLAGS])
++AC_SUBST([XFIXES_LIBS])
++
++PKG_CHECK_MODULES([XTEST], xtst, [have_xtest="yes"], [have_xtest="no"])
++AM_CONDITIONAL([HAVE_XTEST], [test "x$have_xtest" = xyes])
++AC_SUBST([XTEST_CFLAGS])
++AC_SUBST([XTEST_LIBS])
++
+ AC_OUTPUT([
+ Makefile
+ glx/Makefile
+@@ -2230,6 +2249,7 @@
+ hw/kdrive/src/Makefile
+ test/Makefile
+ test/xi2/Makefile
++test/gtest/Makefile
+ xserver.ent
+ xorg-server.pc
+ ])
+diff -Nru xorg-server-1.12.1.902.orig/dix/dixutils.c xorg-server-1.12.1.902/dix/dixutils.c
+--- xorg-server-1.12.1.902.orig/dix/dixutils.c	2012-05-20 14:40:28.246211878 -0400
++++ xorg-server-1.12.1.902/dix/dixutils.c	2012-05-20 14:40:44.206125416 -0400
+@@ -522,7 +522,7 @@
+         if ((*q->function) (q->client, q->closure)) {
+             /* remove q from the list */
+             *p = q->next;       /* don't fetch until after func called */
+-            free(q);
++	    (*q->destroyProc) (q);
+         }
+         else {
+             p = &q->next;       /* don't fetch until after func called */
+@@ -542,7 +542,7 @@
+             (void) (*q->function) (q->client, q->closure);
+             /* remove q from the list */
+             *p = q->next;       /* don't fetch until after func called */
+-            free(q);
++	    (*q->destroyProc) (q);
+         }
+         else {
+             p = &q->next;       /* don't fetch until after func called */
+@@ -551,6 +551,12 @@
+     workQueueLast = p;
+ }
+ 
++static void
++FreeWorkQueueItem (WorkQueuePtr this)
++{
++    free(this);
++}
++
+ Bool
+ QueueWorkProc(Bool (*function)
+               (ClientPtr /* pClient */ , pointer /* closure */ ),
+@@ -564,12 +570,22 @@
+     q->function = function;
+     q->client = client;
+     q->closure = closure;
++    q->destroyProc = FreeWorkQueueItem;
+     q->next = NULL;
+     *workQueueLast = q;
+     workQueueLast = &q->next;
+     return TRUE;
+ }
+ 
++Bool
++QueueWorkItem (WorkQueuePtr item)
++{
++    item->next = NULL;
++    *workQueueLast = item;
++    workQueueLast = &item->next;
++    return TRUE;
++}
++
+ /*
+  * Manage a queue of sleeping clients, awakening them
+  * when requested, by using the OS functions IgnoreClient
+diff -Nru xorg-server-1.12.1.902.orig/dix/getevents.c xorg-server-1.12.1.902/dix/getevents.c
+--- xorg-server-1.12.1.902.orig/dix/getevents.c	2012-05-20 14:40:28.242878562 -0400
++++ xorg-server-1.12.1.902/dix/getevents.c	2012-05-20 14:40:44.206125416 -0400
+@@ -79,6 +79,12 @@
+ InternalEvent *InputEventList = NULL;
+ 
+ /**
++ * xfixes/cursor.c wants the unclamped (x,y) values for velocity
++ * calculation.  Export them here.
++ */
++int unclamped_prex = -1, unclamped_prey = -1;
++
++/**
+  * Pick some arbitrary size for Xi motion history.
+  */
+ int
+@@ -910,7 +916,15 @@
+     /* miPointerSetPosition takes care of crossing screens for us, as well as
+      * clipping to the current screen. Coordinates returned are in desktop
+      * coord system */
++    /**
++     * Hack to pass the unclipped values through to the pointer barrier code.
++     * Required (for now) to calculate the velocity.
++     */
++    unclamped_prex = (int)floor(*screenx) - scr->x;
++    unclamped_prey = (int)floor(*screeny) - scr->y;
+     scr = miPointerSetPosition(dev, mode, screenx, screeny);
++    unclamped_prex = -1;
++    unclamped_prey = -1;
+ 
+     /* If we were constrained, rescale x/y from the screen coordinates so
+      * the device valuators reflect the correct position. For screen
+diff -Nru xorg-server-1.12.1.902.orig/dix/getevents.c.orig xorg-server-1.12.1.902/dix/getevents.c.orig
+--- xorg-server-1.12.1.902.orig/dix/getevents.c.orig	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/dix/getevents.c.orig	2012-05-17 13:09:02.000000000 -0400
+@@ -0,0 +1,1956 @@
++/*
++ * Copyright © 2006 Nokia Corporation
++ * Copyright © 2006-2007 Daniel Stone
++ * Copyright © 2008 Red Hat, Inc.
++ * Copyright © 2011 The Chromium Authors
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ * Authors: Daniel Stone <daniel@fooishbar.org>
++ *          Peter Hutterer <peter.hutterer@who-t.net>
++ */
++
++#ifdef HAVE_DIX_CONFIG_H
++#include <dix-config.h>
++#endif
++
++#include <X11/X.h>
++#include <X11/keysym.h>
++#include <X11/Xproto.h>
++#include <math.h>
++
++#include "misc.h"
++#include "resource.h"
++#include "inputstr.h"
++#include "scrnintstr.h"
++#include "cursorstr.h"
++#include "dixstruct.h"
++#include "globals.h"
++#include "dixevents.h"
++#include "mipointer.h"
++#include "eventstr.h"
++#include "eventconvert.h"
++#include "inpututils.h"
++#include "mi.h"
++#include "windowstr.h"
++
++#include <X11/extensions/XKBproto.h>
++#include "xkbsrv.h"
++
++#ifdef PANORAMIX
++#include "panoramiX.h"
++#include "panoramiXsrv.h"
++#endif
++
++#include <X11/extensions/XI.h>
++#include <X11/extensions/XI2.h>
++#include <X11/extensions/XIproto.h>
++#include <pixman.h>
++#include "exglobals.h"
++#include "exevents.h"
++#include "extnsionst.h"
++#include "listdev.h"            /* for sizing up DeviceClassesChangedEvent */
++
++/* Number of motion history events to store. */
++#define MOTION_HISTORY_SIZE 256
++
++/**
++ * InputEventList is the storage for input events generated by
++ * QueuePointerEvents, QueueKeyboardEvents, and QueueProximityEvents.
++ * This list is allocated on startup by the DIX.
++ */
++InternalEvent *InputEventList = NULL;
++
++/**
++ * Pick some arbitrary size for Xi motion history.
++ */
++int
++GetMotionHistorySize(void)
++{
++    return MOTION_HISTORY_SIZE;
++}
++
++void
++set_button_down(DeviceIntPtr pDev, int button, int type)
++{
++    if (type == BUTTON_PROCESSED)
++        SetBit(pDev->button->down, button);
++    else
++        SetBit(pDev->button->postdown, button);
++}
++
++void
++set_button_up(DeviceIntPtr pDev, int button, int type)
++{
++    if (type == BUTTON_PROCESSED)
++        ClearBit(pDev->button->down, button);
++    else
++        ClearBit(pDev->button->postdown, button);
++}
++
++Bool
++button_is_down(DeviceIntPtr pDev, int button, int type)
++{
++    Bool ret = FALSE;
++
++    if (type & BUTTON_PROCESSED)
++        ret = ret || BitIsOn(pDev->button->down, button);
++    if (type & BUTTON_POSTED)
++        ret = ret || BitIsOn(pDev->button->postdown, button);
++
++    return ret;
++}
++
++void
++set_key_down(DeviceIntPtr pDev, int key_code, int type)
++{
++    if (type == KEY_PROCESSED)
++        SetBit(pDev->key->down, key_code);
++    else
++        SetBit(pDev->key->postdown, key_code);
++}
++
++void
++set_key_up(DeviceIntPtr pDev, int key_code, int type)
++{
++    if (type == KEY_PROCESSED)
++        ClearBit(pDev->key->down, key_code);
++    else
++        ClearBit(pDev->key->postdown, key_code);
++}
++
++Bool
++key_is_down(DeviceIntPtr pDev, int key_code, int type)
++{
++    Bool ret = FALSE;
++
++    if (type & KEY_PROCESSED)
++        ret = ret || BitIsOn(pDev->key->down, key_code);
++    if (type & KEY_POSTED)
++        ret = ret || BitIsOn(pDev->key->postdown, key_code);
++
++    return ret;
++}
++
++static Bool
++key_autorepeats(DeviceIntPtr pDev, int key_code)
++{
++    return ! !(pDev->kbdfeed->ctrl.autoRepeats[key_code >> 3] &
++               (1 << (key_code & 7)));
++}
++
++static void
++init_event(DeviceIntPtr dev, DeviceEvent *event, Time ms)
++{
++    memset(event, 0, sizeof(DeviceEvent));
++    event->header = ET_Internal;
++    event->length = sizeof(DeviceEvent);
++    event->time = ms;
++    event->deviceid = dev->id;
++    event->sourceid = dev->id;
++}
++
++static void
++init_touch_ownership(DeviceIntPtr dev, TouchOwnershipEvent *event, Time ms)
++{
++    memset(event, 0, sizeof(TouchOwnershipEvent));
++    event->header = ET_Internal;
++    event->type = ET_TouchOwnership;
++    event->length = sizeof(TouchOwnershipEvent);
++    event->time = ms;
++    event->deviceid = dev->id;
++}
++
++static void
++init_raw(DeviceIntPtr dev, RawDeviceEvent *event, Time ms, int type, int detail)
++{
++    memset(event, 0, sizeof(RawDeviceEvent));
++    event->header = ET_Internal;
++    event->length = sizeof(RawDeviceEvent);
++    switch (type) {
++    case MotionNotify:
++        event->type = ET_RawMotion;
++        break;
++    case ButtonPress:
++        event->type = ET_RawButtonPress;
++        break;
++    case ButtonRelease:
++        event->type = ET_RawButtonRelease;
++        break;
++    case KeyPress:
++        event->type = ET_RawKeyPress;
++        break;
++    case KeyRelease:
++        event->type = ET_RawKeyRelease;
++        break;
++    case XI_TouchBegin:
++        event->type = ET_RawTouchBegin;
++        break;
++    case XI_TouchUpdate:
++        event->type = ET_RawTouchUpdate;
++        break;
++    case XI_TouchEnd:
++        event->type = ET_RawTouchEnd;
++        break;
++    }
++    event->time = ms;
++    event->deviceid = dev->id;
++    event->sourceid = dev->id;
++    event->detail.button = detail;
++}
++
++static void
++set_raw_valuators(RawDeviceEvent *event, ValuatorMask *mask, double *data)
++{
++    int i;
++
++    for (i = 0; i < valuator_mask_size(mask); i++) {
++        if (valuator_mask_isset(mask, i)) {
++            SetBit(event->valuators.mask, i);
++            data[i] = valuator_mask_get_double(mask, i);
++        }
++    }
++}
++
++static void
++set_valuators(DeviceIntPtr dev, DeviceEvent *event, ValuatorMask *mask)
++{
++    int i;
++
++    /* Set the data to the previous value for unset absolute axes. The values
++     * may be used when sent as part of an XI 1.x valuator event. */
++    for (i = 0; i < valuator_mask_size(mask); i++) {
++        if (valuator_mask_isset(mask, i)) {
++            SetBit(event->valuators.mask, i);
++            if (valuator_get_mode(dev, i) == Absolute)
++                SetBit(event->valuators.mode, i);
++            event->valuators.data[i] = valuator_mask_get_double(mask, i);
++        }
++        else if (valuator_get_mode(dev, i) == Absolute)
++            event->valuators.data[i] = dev->valuator->axisVal[i];
++    }
++}
++
++void
++CreateClassesChangedEvent(InternalEvent *event,
++                          DeviceIntPtr master, DeviceIntPtr slave, int flags)
++{
++    int i;
++    DeviceChangedEvent *dce;
++    CARD32 ms = GetTimeInMillis();
++
++    dce = &event->changed_event;
++    memset(dce, 0, sizeof(DeviceChangedEvent));
++    dce->deviceid = slave->id;
++    dce->masterid = master ? master->id : 0;
++    dce->header = ET_Internal;
++    dce->length = sizeof(DeviceChangedEvent);
++    dce->type = ET_DeviceChanged;
++    dce->time = ms;
++    dce->flags = flags;
++    dce->sourceid = slave->id;
++
++    if (slave->button) {
++        dce->buttons.num_buttons = slave->button->numButtons;
++        for (i = 0; i < dce->buttons.num_buttons; i++)
++            dce->buttons.names[i] = slave->button->labels[i];
++    }
++    if (slave->valuator) {
++        dce->num_valuators = slave->valuator->numAxes;
++        for (i = 0; i < dce->num_valuators; i++) {
++            dce->valuators[i].min = slave->valuator->axes[i].min_value;
++            dce->valuators[i].max = slave->valuator->axes[i].max_value;
++            dce->valuators[i].resolution = slave->valuator->axes[i].resolution;
++            dce->valuators[i].mode = slave->valuator->axes[i].mode;
++            dce->valuators[i].name = slave->valuator->axes[i].label;
++            dce->valuators[i].scroll = slave->valuator->axes[i].scroll;
++        }
++    }
++    if (slave->key) {
++        dce->keys.min_keycode = slave->key->xkbInfo->desc->min_key_code;
++        dce->keys.max_keycode = slave->key->xkbInfo->desc->max_key_code;
++    }
++}
++
++/**
++ * Rescale the coord between the two axis ranges.
++ */
++static double
++rescaleValuatorAxis(double coord, AxisInfoPtr from, AxisInfoPtr to,
++                    double defmin, double defmax)
++{
++    double fmin = defmin, fmax = defmax;
++    double tmin = defmin, tmax = defmax;
++
++    if (from && from->min_value < from->max_value) {
++        fmin = from->min_value;
++        fmax = from->max_value;
++    }
++    if (to && to->min_value < to->max_value) {
++        tmin = to->min_value;
++        tmax = to->max_value;
++    }
++
++    if (fmin == tmin && fmax == tmax)
++        return coord;
++
++    if (fmax == fmin)           /* avoid division by 0 */
++        return 0.0;
++
++    return (coord - fmin) * (tmax - tmin) / (fmax - fmin) + tmin;
++}
++
++/**
++ * Update all coordinates when changing to a different SD
++ * to ensure that relative reporting will work as expected
++ * without loss of precision.
++ *
++ * pDev->last.valuators will be in absolute device coordinates after this
++ * function.
++ */
++static void
++updateSlaveDeviceCoords(DeviceIntPtr master, DeviceIntPtr pDev)
++{
++    int i;
++    DeviceIntPtr lastSlave;
++
++    /* master->last.valuators[0]/[1] is in desktop-wide coords and the actual
++     * position of the pointer */
++    pDev->last.valuators[0] = master->last.valuators[0];
++    pDev->last.valuators[1] = master->last.valuators[1];
++
++    if (!pDev->valuator)
++        return;
++
++    /* scale back to device coordinates */
++    if (pDev->valuator->numAxes > 0) {
++        pDev->last.valuators[0] = rescaleValuatorAxis(pDev->last.valuators[0],
++                                                      NULL,
++                                                      pDev->valuator->axes + 0,
++                                                      screenInfo.x,
++                                                      screenInfo.width);
++    }
++    if (pDev->valuator->numAxes > 1) {
++        pDev->last.valuators[1] = rescaleValuatorAxis(pDev->last.valuators[1],
++                                                      NULL,
++                                                      pDev->valuator->axes + 1,
++                                                      screenInfo.y,
++                                                      screenInfo.height);
++    }
++
++    /* calculate the other axis as well based on info from the old
++     * slave-device. If the old slave had less axes than this one,
++     * last.valuators is reset to 0.
++     */
++    if ((lastSlave = master->last.slave) && lastSlave->valuator) {
++        for (i = 2; i < pDev->valuator->numAxes; i++) {
++            if (i >= lastSlave->valuator->numAxes) {
++                pDev->last.valuators[i] = 0;
++                valuator_mask_set_double(pDev->last.scroll, i, 0);
++            }
++            else {
++                double val = pDev->last.valuators[i];
++
++                val = rescaleValuatorAxis(val, lastSlave->valuator->axes + i,
++                                          pDev->valuator->axes + i, 0, 0);
++                pDev->last.valuators[i] = val;
++                valuator_mask_set_double(pDev->last.scroll, i, val);
++            }
++        }
++    }
++
++}
++
++/**
++ * Allocate the motion history buffer.
++ */
++void
++AllocateMotionHistory(DeviceIntPtr pDev)
++{
++    int size;
++
++    free(pDev->valuator->motion);
++
++    if (pDev->valuator->numMotionEvents < 1)
++        return;
++
++    /* An MD must have a motion history size large enough to keep all
++     * potential valuators, plus the respective range of the valuators.
++     * 3 * INT32 for (min_val, max_val, curr_val))
++     */
++    if (IsMaster(pDev))
++        size = sizeof(INT32) * 3 * MAX_VALUATORS;
++    else {
++        ValuatorClassPtr v = pDev->valuator;
++        int numAxes;
++
++        /* XI1 doesn't understand mixed mode devices */
++        for (numAxes = 0; numAxes < v->numAxes; numAxes++)
++            if (valuator_get_mode(pDev, numAxes) != valuator_get_mode(pDev, 0))
++                break;
++        size = sizeof(INT32) * numAxes;
++    }
++
++    size += sizeof(Time);
++
++    pDev->valuator->motion = calloc(pDev->valuator->numMotionEvents, size);
++    pDev->valuator->first_motion = 0;
++    pDev->valuator->last_motion = 0;
++    if (!pDev->valuator->motion)
++        ErrorF("[dix] %s: Failed to alloc motion history (%d bytes).\n",
++               pDev->name, size * pDev->valuator->numMotionEvents);
++}
++
++/**
++ * Dump the motion history between start and stop into the supplied buffer.
++ * Only records the event for a given screen in theory, but in practice, we
++ * sort of ignore this.
++ *
++ * If core is set, we only generate x/y, in INT16, scaled to screen coords.
++ */
++int
++GetMotionHistory(DeviceIntPtr pDev, xTimecoord ** buff, unsigned long start,
++                 unsigned long stop, ScreenPtr pScreen, BOOL core)
++{
++    char *ibuff = NULL, *obuff;
++    int i = 0, ret = 0;
++    int j, coord;
++    Time current;
++
++    /* The size of a single motion event. */
++    int size;
++    AxisInfo from, *to;         /* for scaling */
++    INT32 *ocbuf, *icbuf;       /* pointer to coordinates for copying */
++    INT16 *corebuf;
++    AxisInfo core_axis = { 0 };
++
++    if (!pDev->valuator || !pDev->valuator->numMotionEvents)
++        return 0;
++
++    if (core && !pScreen)
++        return 0;
++
++    if (IsMaster(pDev))
++        size = (sizeof(INT32) * 3 * MAX_VALUATORS) + sizeof(Time);
++    else
++        size = (sizeof(INT32) * pDev->valuator->numAxes) + sizeof(Time);
++
++    *buff = malloc(size * pDev->valuator->numMotionEvents);
++    if (!(*buff))
++        return 0;
++    obuff = (char *) *buff;
++
++    for (i = pDev->valuator->first_motion;
++         i != pDev->valuator->last_motion;
++         i = (i + 1) % pDev->valuator->numMotionEvents) {
++        /* We index the input buffer by which element we're accessing, which
++         * is not monotonic, and the output buffer by how many events we've
++         * written so far. */
++        ibuff = (char *) pDev->valuator->motion + (i * size);
++        memcpy(&current, ibuff, sizeof(Time));
++
++        if (current > stop) {
++            return ret;
++        }
++        else if (current >= start) {
++            if (core) {
++                memcpy(obuff, ibuff, sizeof(Time));     /* copy timestamp */
++
++                icbuf = (INT32 *) (ibuff + sizeof(Time));
++                corebuf = (INT16 *) (obuff + sizeof(Time));
++
++                /* fetch x coordinate + range */
++                memcpy(&from.min_value, icbuf++, sizeof(INT32));
++                memcpy(&from.max_value, icbuf++, sizeof(INT32));
++                memcpy(&coord, icbuf++, sizeof(INT32));
++
++                /* scale to screen coords */
++                to = &core_axis;
++                to->max_value = pScreen->width;
++                coord =
++                    rescaleValuatorAxis(coord, &from, to, 0, pScreen->width);
++
++                memcpy(corebuf, &coord, sizeof(INT16));
++                corebuf++;
++
++                /* fetch y coordinate + range */
++                memcpy(&from.min_value, icbuf++, sizeof(INT32));
++                memcpy(&from.max_value, icbuf++, sizeof(INT32));
++                memcpy(&coord, icbuf++, sizeof(INT32));
++
++                to->max_value = pScreen->height;
++                coord =
++                    rescaleValuatorAxis(coord, &from, to, 0, pScreen->height);
++                memcpy(corebuf, &coord, sizeof(INT16));
++
++            }
++            else if (IsMaster(pDev)) {
++                memcpy(obuff, ibuff, sizeof(Time));     /* copy timestamp */
++
++                ocbuf = (INT32 *) (obuff + sizeof(Time));
++                icbuf = (INT32 *) (ibuff + sizeof(Time));
++                for (j = 0; j < MAX_VALUATORS; j++) {
++                    if (j >= pDev->valuator->numAxes)
++                        break;
++
++                    /* fetch min/max/coordinate */
++                    memcpy(&from.min_value, icbuf++, sizeof(INT32));
++                    memcpy(&from.max_value, icbuf++, sizeof(INT32));
++                    memcpy(&coord, icbuf++, sizeof(INT32));
++
++                    to = (j <
++                          pDev->valuator->numAxes) ? &pDev->valuator->
++                        axes[j] : NULL;
++
++                    /* x/y scaled to screen if no range is present */
++                    if (j == 0 && (from.max_value < from.min_value))
++                        from.max_value = pScreen->width;
++                    else if (j == 1 && (from.max_value < from.min_value))
++                        from.max_value = pScreen->height;
++
++                    /* scale from stored range into current range */
++                    coord = rescaleValuatorAxis(coord, &from, to, 0, 0);
++                    memcpy(ocbuf, &coord, sizeof(INT32));
++                    ocbuf++;
++                }
++            }
++            else
++                memcpy(obuff, ibuff, size);
++
++            /* don't advance by size here. size may be different to the
++             * actually written size if the MD has less valuators than MAX */
++            if (core)
++                obuff += sizeof(INT32) + sizeof(Time);
++            else
++                obuff +=
++                    (sizeof(INT32) * pDev->valuator->numAxes) + sizeof(Time);
++            ret++;
++        }
++    }
++
++    return ret;
++}
++
++/**
++ * Update the motion history for a specific device, with the list of
++ * valuators.
++ *
++ * Layout of the history buffer:
++ *   for SDs: [time] [val0] [val1] ... [valn]
++ *   for MDs: [time] [min_val0] [max_val0] [val0] [min_val1] ... [valn]
++ *
++ * For events that have some valuators unset:
++ *      min_val == max_val == val == 0.
++ */
++static void
++updateMotionHistory(DeviceIntPtr pDev, CARD32 ms, ValuatorMask *mask,
++                    double *valuators)
++{
++    char *buff = (char *) pDev->valuator->motion;
++    ValuatorClassPtr v;
++    int i;
++
++    if (!pDev->valuator->numMotionEvents)
++        return;
++
++    v = pDev->valuator;
++    if (IsMaster(pDev)) {
++        buff += ((sizeof(INT32) * 3 * MAX_VALUATORS) + sizeof(CARD32)) *
++            v->last_motion;
++
++        memcpy(buff, &ms, sizeof(Time));
++        buff += sizeof(Time);
++
++        memset(buff, 0, sizeof(INT32) * 3 * MAX_VALUATORS);
++
++        for (i = 0; i < v->numAxes; i++) {
++            int val;
++
++            /* XI1 doesn't support mixed mode devices */
++            if (valuator_get_mode(pDev, i) != valuator_get_mode(pDev, 0))
++                break;
++            if (valuator_mask_size(mask) <= i || !valuator_mask_isset(mask, i)) {
++                buff += 3 * sizeof(INT32);
++                continue;
++            }
++            memcpy(buff, &v->axes[i].min_value, sizeof(INT32));
++            buff += sizeof(INT32);
++            memcpy(buff, &v->axes[i].max_value, sizeof(INT32));
++            buff += sizeof(INT32);
++            val = valuators[i];
++            memcpy(buff, &val, sizeof(INT32));
++            buff += sizeof(INT32);
++        }
++    }
++    else {
++
++        buff += ((sizeof(INT32) * pDev->valuator->numAxes) + sizeof(CARD32)) *
++            pDev->valuator->last_motion;
++
++        memcpy(buff, &ms, sizeof(Time));
++        buff += sizeof(Time);
++
++        memset(buff, 0, sizeof(INT32) * pDev->valuator->numAxes);
++
++        for (i = 0; i < MAX_VALUATORS; i++) {
++            int val;
++
++            if (valuator_mask_size(mask) <= i || !valuator_mask_isset(mask, i)) {
++                buff += sizeof(INT32);
++                continue;
++            }
++            val = valuators[i];
++            memcpy(buff, &val, sizeof(INT32));
++            buff += sizeof(INT32);
++        }
++    }
++
++    pDev->valuator->last_motion = (pDev->valuator->last_motion + 1) %
++        pDev->valuator->numMotionEvents;
++    /* If we're wrapping around, just keep the circular buffer going. */
++    if (pDev->valuator->first_motion == pDev->valuator->last_motion)
++        pDev->valuator->first_motion = (pDev->valuator->first_motion + 1) %
++            pDev->valuator->numMotionEvents;
++
++    return;
++}
++
++/**
++ * Returns the maximum number of events GetKeyboardEvents
++ * and GetPointerEvents will ever return.
++ *
++ * This MUST be absolutely constant, from init until exit.
++ */
++int
++GetMaximumEventsNum(void)
++{
++    /* One raw event
++     * One device event
++     * One possible device changed event
++     * Lots of possible separate button scroll events (horiz + vert)
++     * Lots of possible separate raw button scroll events (horiz + vert)
++     */
++    return 100;
++}
++
++/**
++ * Clip an axis to its bounds, which are declared in the call to
++ * InitValuatorAxisClassStruct.
++ */
++static void
++clipAxis(DeviceIntPtr pDev, int axisNum, double *val)
++{
++    AxisInfoPtr axis;
++
++    if (axisNum >= pDev->valuator->numAxes)
++        return;
++
++    axis = pDev->valuator->axes + axisNum;
++
++    /* If a value range is defined, clip. If not, do nothing */
++    if (axis->max_value <= axis->min_value)
++        return;
++
++    if (*val < axis->min_value)
++        *val = axis->min_value;
++    if (*val > axis->max_value)
++        *val = axis->max_value;
++}
++
++/**
++ * Clip every axis in the list of valuators to its bounds.
++ */
++static void
++clipValuators(DeviceIntPtr pDev, ValuatorMask *mask)
++{
++    int i;
++
++    for (i = 0; i < valuator_mask_size(mask); i++)
++        if (valuator_mask_isset(mask, i)) {
++            double val = valuator_mask_get_double(mask, i);
++
++            clipAxis(pDev, i, &val);
++            valuator_mask_set_double(mask, i, val);
++        }
++}
++
++/**
++ * Create the DCCE event (does not update the master's device state yet, this
++ * is done in the event processing).
++ * Pull in the coordinates from the MD if necessary.
++ *
++ * @param events Pointer to a pre-allocated event array.
++ * @param dev The slave device that generated an event.
++ * @param type Either DEVCHANGE_POINTER_EVENT and/or DEVCHANGE_KEYBOARD_EVENT
++ * @param num_events The current number of events, returns the number of
++ *        events if a DCCE was generated.
++ * @return The updated @events pointer.
++ */
++InternalEvent *
++UpdateFromMaster(InternalEvent *events, DeviceIntPtr dev, int type,
++                 int *num_events)
++{
++    DeviceIntPtr master;
++
++    master =
++        GetMaster(dev,
++                  (type & DEVCHANGE_POINTER_EVENT) ? MASTER_POINTER :
++                  MASTER_KEYBOARD);
++
++    if (master && master->last.slave != dev) {
++        CreateClassesChangedEvent(events, master, dev,
++                                  type | DEVCHANGE_SLAVE_SWITCH);
++        if (IsPointerDevice(master)) {
++            updateSlaveDeviceCoords(master, dev);
++            master->last.numValuators = dev->last.numValuators;
++        }
++        master->last.slave = dev;
++        (*num_events)++;
++        events++;
++    }
++    return events;
++}
++
++/**
++ * Move the device's pointer to the position given in the valuators.
++ *
++ * @param dev The device whose pointer is to be moved.
++ * @param mask Valuator data for this event.
++ */
++static void
++clipAbsolute(DeviceIntPtr dev, ValuatorMask *mask)
++{
++    int i;
++
++    for (i = 0; i < valuator_mask_size(mask); i++) {
++        double val;
++
++        if (!valuator_mask_isset(mask, i))
++            continue;
++        val = valuator_mask_get_double(mask, i);
++        clipAxis(dev, i, &val);
++        valuator_mask_set_double(mask, i, val);
++    }
++}
++
++/**
++ * Move the device's pointer by the values given in @valuators.
++ *
++ * @param dev The device whose pointer is to be moved.
++ * @param[in,out] mask Valuator data for this event, modified in-place.
++ */
++static void
++moveRelative(DeviceIntPtr dev, ValuatorMask *mask)
++{
++    int i;
++    Bool clip_xy = IsMaster(dev) || !IsFloating(dev);
++
++    /* calc other axes, clip, drop back into valuators */
++    for (i = 0; i < valuator_mask_size(mask); i++) {
++        double val = dev->last.valuators[i];
++
++        if (!valuator_mask_isset(mask, i))
++            continue;
++        val += valuator_mask_get_double(mask, i);
++        /* x & y need to go over the limits to cross screens if the SD
++         * isn't currently attached; otherwise, clip to screen bounds. */
++        if (valuator_get_mode(dev, i) == Absolute &&
++            ((i != 0 && i != 1) || clip_xy))
++            clipAxis(dev, i, &val);
++        valuator_mask_set_double(mask, i, val);
++    }
++}
++
++/**
++ * Accelerate the data in valuators based on the device's acceleration scheme.
++ *
++ * @param dev The device which's pointer is to be moved.
++ * @param valuators Valuator mask
++ * @param ms Current time.
++ */
++static void
++accelPointer(DeviceIntPtr dev, ValuatorMask *valuators, CARD32 ms)
++{
++    if (dev->valuator->accelScheme.AccelSchemeProc)
++        dev->valuator->accelScheme.AccelSchemeProc(dev, valuators, ms);
++}
++
++/**
++ * Scale from absolute screen coordinates to absolute coordinates in the
++ * device's coordinate range.
++ *
++ * @param dev The device to scale for.
++ * @param[in, out] mask The mask in desktop coordinates, modified in place
++ * to contain device coordinate range.
++ */
++static void
++scale_from_screen(DeviceIntPtr dev, ValuatorMask *mask)
++{
++    double scaled;
++    ScreenPtr scr = miPointerGetScreen(dev);
++
++    if (valuator_mask_isset(mask, 0)) {
++        scaled = valuator_mask_get_double(mask, 0) + scr->x;
++        scaled = rescaleValuatorAxis(scaled,
++                                     NULL, dev->valuator->axes + 0,
++                                     0, scr->width);
++        valuator_mask_set_double(mask, 0, scaled);
++    }
++    if (valuator_mask_isset(mask, 1)) {
++        scaled = valuator_mask_get_double(mask, 1) + scr->y;
++        scaled = rescaleValuatorAxis(scaled,
++                                     NULL, dev->valuator->axes + 1,
++                                     0, scr->height);
++        valuator_mask_set_double(mask, 1, scaled);
++    }
++}
++
++/**
++ * Scale from (absolute) device to screen coordinates here,
++ *
++ * The coordinates provided are always absolute. see fill_pointer_events for
++ * information on coordinate systems.
++ *
++ * @param dev The device to be moved.
++ * @param mask Mask of axis values for this event
++ * @param[out] devx x desktop-wide coordinate in device coordinate system
++ * @param[out] devy y desktop-wide coordinate in device coordinate system
++ * @param[out] screenx x coordinate in desktop coordinate system
++ * @param[out] screeny y coordinate in desktop coordinate system
++ */
++static ScreenPtr
++scale_to_desktop(DeviceIntPtr dev, ValuatorMask *mask,
++                 double *devx, double *devy, double *screenx, double *screeny)
++{
++    ScreenPtr scr = miPointerGetScreen(dev);
++    double x, y;
++
++    BUG_WARN(dev->valuator && dev->valuator->numAxes < 2);
++    if (!dev->valuator || dev->valuator->numAxes < 2) {
++        /* if we have no axes, last.valuators must be in screen coords
++         * anyway */
++        *devx = *screenx = dev->last.valuators[0];
++        *devy = *screeny = dev->last.valuators[1];
++        return scr;
++    }
++
++    if (valuator_mask_isset(mask, 0))
++        x = valuator_mask_get_double(mask, 0);
++    else
++        x = dev->last.valuators[0];
++    if (valuator_mask_isset(mask, 1))
++        y = valuator_mask_get_double(mask, 1);
++    else
++        y = dev->last.valuators[1];
++
++    /* scale x&y to desktop coordinates */
++    *screenx = rescaleValuatorAxis(x, dev->valuator->axes + 0, NULL,
++                                   screenInfo.x, screenInfo.width);
++    *screeny = rescaleValuatorAxis(y, dev->valuator->axes + 1, NULL,
++                                   screenInfo.y, screenInfo.height);
++
++    *devx = x;
++    *devy = y;
++
++    return scr;
++}
++
++/**
++ * If we have HW cursors, this actually moves the visible sprite. If not, we
++ * just do all the screen crossing, etc.
++ *
++ * We use the screen coordinates here, call miPointerSetPosition() and then
++ * scale back into device coordinates (if needed). miPSP will change x/y if
++ * the screen was crossed.
++ *
++ * The coordinates provided are always absolute. The parameter mode
++ * specifies whether it was relative or absolute movement that landed us at
++ * those coordinates. see fill_pointer_events for information on coordinate
++ * systems.
++ *
++ * @param dev The device to be moved.
++ * @param mode Movement mode (Absolute or Relative)
++ * @param[out] mask Mask of axis values for this event, returns the
++ * per-screen device coordinates after confinement
++ * @param[in,out] devx x desktop-wide coordinate in device coordinate system
++ * @param[in,out] devy y desktop-wide coordinate in device coordinate system
++ * @param[in,out] screenx x coordinate in desktop coordinate system
++ * @param[in,out] screeny y coordinate in desktop coordinate system
++ */
++static ScreenPtr
++positionSprite(DeviceIntPtr dev, int mode, ValuatorMask *mask,
++               double *devx, double *devy, double *screenx, double *screeny)
++{
++    ScreenPtr scr = miPointerGetScreen(dev);
++    double tmpx, tmpy;
++
++    if (!dev->valuator || dev->valuator->numAxes < 2)
++        return scr;
++
++    tmpx = *screenx;
++    tmpy = *screeny;
++
++    /* miPointerSetPosition takes care of crossing screens for us, as well as
++     * clipping to the current screen. Coordinates returned are in desktop
++     * coord system */
++    scr = miPointerSetPosition(dev, mode, screenx, screeny);
++
++    /* If we were constrained, rescale x/y from the screen coordinates so
++     * the device valuators reflect the correct position. For screen
++     * crossing this doesn't matter much, the coords would be 0 or max.
++     */
++    if (tmpx != *screenx)
++        *devx = rescaleValuatorAxis(*screenx, NULL, dev->valuator->axes + 0,
++                                    screenInfo.x, screenInfo.width);
++
++    if (tmpy != *screeny)
++        *devy = rescaleValuatorAxis(*screeny, NULL, dev->valuator->axes + 1,
++                                    screenInfo.y, screenInfo.height);
++
++    /* Recalculate the per-screen device coordinates */
++    if (valuator_mask_isset(mask, 0)) {
++        double x;
++
++        x = rescaleValuatorAxis(*screenx - scr->x, NULL,
++                                dev->valuator->axes + 0, 0, scr->width);
++        valuator_mask_set_double(mask, 0, x);
++    }
++    if (valuator_mask_isset(mask, 1)) {
++        double y;
++
++        y = rescaleValuatorAxis(*screeny - scr->y, NULL,
++                                dev->valuator->axes + 1, 0, scr->height);
++        valuator_mask_set_double(mask, 1, y);
++    }
++
++    return scr;
++}
++
++/**
++ * Update the motion history for the device and (if appropriate) for its
++ * master device.
++ * @param dev Slave device to update.
++ * @param mask Bit mask of valid valuators to append to history.
++ * @param num Total number of valuators to append to history.
++ * @param ms Current time
++ */
++static void
++updateHistory(DeviceIntPtr dev, ValuatorMask *mask, CARD32 ms)
++{
++    if (!dev->valuator)
++        return;
++
++    updateMotionHistory(dev, ms, mask, dev->last.valuators);
++    if (!IsMaster(dev) && !IsFloating(dev)) {
++        DeviceIntPtr master = GetMaster(dev, MASTER_POINTER);
++
++        updateMotionHistory(master, ms, mask, dev->last.valuators);
++    }
++}
++
++static void
++queueEventList(DeviceIntPtr device, InternalEvent *events, int nevents)
++{
++    int i;
++
++    for (i = 0; i < nevents; i++)
++        mieqEnqueue(device, &events[i]);
++}
++
++static void
++event_set_root_coordinates(DeviceEvent *event, double x, double y)
++{
++    event->root_x = trunc(x);
++    event->root_y = trunc(y);
++    event->root_x_frac = x - trunc(x);
++    event->root_y_frac = y - trunc(y);
++}
++
++/**
++ * Generate internal events representing this keyboard event and enqueue
++ * them on the event queue.
++ *
++ * This function is not reentrant. Disable signals before calling.
++ *
++ * FIXME: flags for relative/abs motion?
++ *
++ * @param device The device to generate the event for
++ * @param type Event type, one of KeyPress or KeyRelease
++ * @param keycode Key code of the pressed/released key
++ * @param mask Valuator mask for valuators present for this event.
++ *
++ */
++void
++QueueKeyboardEvents(DeviceIntPtr device, int type,
++                    int keycode, const ValuatorMask *mask)
++{
++    int nevents;
++
++    nevents = GetKeyboardEvents(InputEventList, device, type, keycode, mask);
++    queueEventList(device, InputEventList, nevents);
++}
++
++/**
++ * Returns a set of InternalEvents for KeyPress/KeyRelease, optionally
++ * also with valuator events.
++ *
++ * The DDX is responsible for allocating the event list in the first
++ * place via InitEventList(), and for freeing it.
++ *
++ * @return the number of events written into events.
++ */
++int
++GetKeyboardEvents(InternalEvent *events, DeviceIntPtr pDev, int type,
++                  int key_code, const ValuatorMask *mask_in)
++{
++    int num_events = 0;
++    CARD32 ms = 0;
++    DeviceEvent *event;
++    RawDeviceEvent *raw;
++    ValuatorMask mask;
++
++    /* refuse events from disabled devices */
++    if (!pDev->enabled)
++        return 0;
++
++    if (!events || !pDev->key || !pDev->focus || !pDev->kbdfeed ||
++        (type != KeyPress && type != KeyRelease) ||
++        (key_code < 8 || key_code > 255))
++        return 0;
++
++    if (mask_in && valuator_mask_size(mask_in) > 1) {
++        ErrorF("[dix] the server does not handle valuator masks with "
++               "keyboard events. This is a bug. You may fix it.\n");
++    }
++
++    num_events = 1;
++
++    events =
++        UpdateFromMaster(events, pDev, DEVCHANGE_KEYBOARD_EVENT, &num_events);
++
++    /* Handle core repeating, via press/release/press/release. */
++    if (type == KeyPress && key_is_down(pDev, key_code, KEY_POSTED)) {
++        /* If autorepeating is disabled either globally or just for that key,
++         * or we have a modifier, don't generate a repeat event. */
++        if (!pDev->kbdfeed->ctrl.autoRepeat ||
++            !key_autorepeats(pDev, key_code) ||
++            pDev->key->xkbInfo->desc->map->modmap[key_code])
++            return 0;
++    }
++
++    ms = GetTimeInMillis();
++
++    raw = &events->raw_event;
++    events++;
++    num_events++;
++
++    valuator_mask_copy(&mask, mask_in);
++
++    init_raw(pDev, raw, ms, type, key_code);
++    set_raw_valuators(raw, &mask, raw->valuators.data_raw);
++
++    clipValuators(pDev, &mask);
++
++    set_raw_valuators(raw, &mask, raw->valuators.data);
++
++    event = &events->device_event;
++    init_device_event(event, pDev, ms);
++    event->detail.key = key_code;
++
++    if (type == KeyPress) {
++        event->type = ET_KeyPress;
++        set_key_down(pDev, key_code, KEY_POSTED);
++    }
++    else if (type == KeyRelease) {
++        event->type = ET_KeyRelease;
++        set_key_up(pDev, key_code, KEY_POSTED);
++    }
++
++    clipValuators(pDev, &mask);
++
++    set_valuators(pDev, event, &mask);
++
++    if (!IsFloating(pDev)) {
++        DeviceIntPtr master = GetMaster(pDev, MASTER_POINTER);
++
++        event_set_root_coordinates(event,
++                                   master->last.valuators[0],
++                                   master->last.valuators[1]);
++    }
++
++    return num_events;
++}
++
++/**
++ * Initialize an event array large enough for num_events arrays.
++ * This event list is to be passed into GetPointerEvents() and
++ * GetKeyboardEvents().
++ *
++ * @param num_events Number of elements in list.
++ */
++InternalEvent *
++InitEventList(int num_events)
++{
++    InternalEvent *events = calloc(num_events, sizeof(InternalEvent));
++
++    return events;
++}
++
++/**
++ * Free an event list.
++ *
++ * @param list The list to be freed.
++ * @param num_events Number of elements in list.
++ */
++void
++FreeEventList(InternalEvent *list, int num_events)
++{
++    free(list);
++}
++
++/**
++ * Transform vector x/y according to matrix m and drop the rounded coords
++ * back into x/y.
++ */
++static void
++transform(struct pixman_f_transform *m, double *x, double *y)
++{
++    struct pixman_f_vector p = {.v = {*x, *y, 1} };
++    pixman_f_transform_point(m, &p);
++
++    *x = p.v[0];
++    *y = p.v[1];
++}
++
++/**
++ * Apply the device's transformation matrix to the valuator mask and replace
++ * the scaled values in mask. This transformation only applies to valuators
++ * 0 and 1, others will be untouched.
++ *
++ * @param dev The device the valuators came from
++ * @param[in,out] mask The valuator mask.
++ */
++static void
++transformAbsolute(DeviceIntPtr dev, ValuatorMask *mask)
++{
++    double x, y, ox, oy;
++
++    if (valuator_mask_isset(mask, 0))
++        ox = x = valuator_mask_get_double(mask, 0);
++    else
++        ox = x = dev->last.valuators[0];
++
++    if (valuator_mask_isset(mask, 1))
++        oy = y = valuator_mask_get_double(mask, 1);
++    else
++        oy = y = dev->last.valuators[1];
++
++    transform(&dev->transform, &x, &y);
++
++    if (valuator_mask_isset(mask, 0) || ox != x)
++        valuator_mask_set_double(mask, 0, x);
++
++    if (valuator_mask_isset(mask, 1) || oy != y)
++        valuator_mask_set_double(mask, 1, y);
++}
++
++static void
++storeLastValuators(DeviceIntPtr dev, ValuatorMask *mask,
++                   int xaxis, int yaxis, double devx, double devy)
++{
++    int i;
++
++    /* store desktop-wide in last.valuators */
++    if (valuator_mask_isset(mask, xaxis))
++        dev->last.valuators[0] = devx;
++    if (valuator_mask_isset(mask, yaxis))
++        dev->last.valuators[1] = devy;
++
++    for (i = 0; i < valuator_mask_size(mask); i++) {
++        if (i == xaxis || i == yaxis)
++            continue;
++
++        if (valuator_mask_isset(mask, i))
++            dev->last.valuators[i] = valuator_mask_get_double(mask, i);
++    }
++
++}
++
++/**
++ * Generate internal events representing this pointer event and enqueue them
++ * on the event queue.
++ *
++ * This function is not reentrant. Disable signals before calling.
++ *
++ * @param device The device to generate the event for
++ * @param type Event type, one of ButtonPress, ButtonRelease, MotionNotify
++ * @param buttons Button number of the buttons modified. Must be 0 for
++ * MotionNotify
++ * @param flags Event modification flags
++ * @param mask Valuator mask for valuators present for this event.
++ */
++void
++QueuePointerEvents(DeviceIntPtr device, int type,
++                   int buttons, int flags, const ValuatorMask *mask)
++{
++    int nevents;
++
++    nevents =
++        GetPointerEvents(InputEventList, device, type, buttons, flags, mask);
++    queueEventList(device, InputEventList, nevents);
++}
++
++/**
++ * Helper function for GetPointerEvents, which only generates motion and
++ * raw motion events for the slave device: does not update the master device.
++ *
++ * Should not be called by anyone other than GetPointerEvents.
++ *
++ * We use several different coordinate systems and need to switch between
++ * the three in fill_pointer_events, positionSprite and
++ * miPointerSetPosition. "desktop" refers to the width/height of all
++ * screenInfo.screens[n]->width/height added up. "screen" is ScreenRec, not
++ * output.
++ *
++ * Coordinate systems:
++ * - relative events have a mask_in in relative coordinates, mapped to
++ *   pixels. These events are mapped to the current position±delta.
++ * - absolute events have a mask_in in absolute device coordinates in
++ *   device-specific range. This range is mapped to the desktop.
++ * - POINTER_SCREEN absolute events (x86WarpCursor) are in screen-relative
++ *   screen coordinate range.
++ * - rootx/rooty in events must be be relative to the current screen's
++ *   origin (screen coordinate system)
++ * - XI2 valuators must be relative to the current screen's origin. On
++ *   the protocol the device min/max range maps to the current screen.
++ *
++ * For screen switching we need to get the desktop coordinates for each
++ * event, then map that to the respective position on each screen and
++ * position the cursor there.
++ * The device's last.valuator[] stores the last position in desktop-wide
++ * coordinates (in device range for slave devices, desktop range for master
++ * devices).
++ *
++ * screen-relative device coordinates requires scaling: A device coordinate
++ * x/y of range [n..m] that maps to positions Sx/Sy on Screen S must be
++ * rescaled to match Sx/Sy for [n..m]. In the simplest example, x of (m/2-1)
++ * is the last coordinate on the first screen and must be rescaled for the
++ * event to be m. XI2 clients that do their own coordinate mapping would
++ * otherwise interpret the position of the device elsewere to the cursor.
++ *
++ * @return the number of events written into events.
++ */
++static int
++fill_pointer_events(InternalEvent *events, DeviceIntPtr pDev, int type,
++                    int buttons, CARD32 ms, int flags,
++                    const ValuatorMask *mask_in)
++{
++    int num_events = 1;
++    DeviceEvent *event;
++    RawDeviceEvent *raw;
++    double screenx = 0.0, screeny = 0.0;        /* desktop coordinate system */
++    double devx = 0.0, devy = 0.0;      /* desktop-wide in device coords */
++    ValuatorMask mask;
++    ScreenPtr scr;
++
++    switch (type) {
++    case MotionNotify:
++        if (!pDev->valuator) {
++            ErrorF("[dix] motion events from device %d without valuators\n",
++                   pDev->id);
++            return 0;
++        }
++        if (!mask_in || valuator_mask_num_valuators(mask_in) <= 0)
++            return 0;
++        break;
++    case ButtonPress:
++    case ButtonRelease:
++        if (!pDev->button || !buttons)
++            return 0;
++        if (mask_in && valuator_mask_size(mask_in) > 0 && !pDev->valuator) {
++            ErrorF
++                ("[dix] button event with valuator from device %d without valuators\n",
++                 pDev->id);
++            return 0;
++        }
++        break;
++    default:
++        return 0;
++    }
++
++    valuator_mask_copy(&mask, mask_in);
++
++    if ((flags & POINTER_NORAW) == 0) {
++        raw = &events->raw_event;
++        events++;
++        num_events++;
++
++        init_raw(pDev, raw, ms, type, buttons);
++        set_raw_valuators(raw, &mask, raw->valuators.data_raw);
++    }
++
++    /* valuators are in driver-native format (rel or abs) */
++
++    if (flags & POINTER_ABSOLUTE) {
++        if (flags & POINTER_SCREEN)     /* valuators are in screen coords */
++            scale_from_screen(pDev, &mask);
++
++        transformAbsolute(pDev, &mask);
++        clipAbsolute(pDev, &mask);
++        if ((flags & POINTER_NORAW) == 0)
++            set_raw_valuators(raw, &mask, raw->valuators.data);
++    }
++    else {
++        if (flags & POINTER_ACCELERATE)
++            accelPointer(pDev, &mask, ms);
++        if ((flags & POINTER_NORAW) == 0)
++            set_raw_valuators(raw, &mask, raw->valuators.data);
++
++        moveRelative(pDev, &mask);
++    }
++
++    /* valuators are in device coordinate system in absolute coordinates */
++    scale_to_desktop(pDev, &mask, &devx, &devy, &screenx, &screeny);
++    scr = positionSprite(pDev, (flags & POINTER_ABSOLUTE) ? Absolute : Relative,
++                         &mask, &devx, &devy, &screenx, &screeny);
++
++    /* screenx, screeny are in desktop coordinates,
++       mask is in device coordinates per-screen (the event data)
++       devx/devy is in device coordinate desktop-wide */
++    updateHistory(pDev, &mask, ms);
++
++    clipValuators(pDev, &mask);
++
++    storeLastValuators(pDev, &mask, 0, 1, devx, devy);
++
++    /* Update the MD's co-ordinates, which are always in desktop space. */
++    if (!IsMaster(pDev) && !IsFloating(pDev)) {
++        DeviceIntPtr master = GetMaster(pDev, MASTER_POINTER);
++
++        master->last.valuators[0] = screenx;
++        master->last.valuators[1] = screeny;
++    }
++
++    event = &events->device_event;
++    init_device_event(event, pDev, ms);
++
++    if (type == MotionNotify) {
++        event->type = ET_Motion;
++        event->detail.button = 0;
++    }
++    else {
++        if (type == ButtonPress) {
++            event->type = ET_ButtonPress;
++            set_button_down(pDev, buttons, BUTTON_POSTED);
++        }
++        else if (type == ButtonRelease) {
++            event->type = ET_ButtonRelease;
++            set_button_up(pDev, buttons, BUTTON_POSTED);
++        }
++        event->detail.button = buttons;
++    }
++
++    /* root_x and root_y must be in per-screen co-ordinates */
++    event_set_root_coordinates(event, screenx - scr->x, screeny - scr->y);
++
++    if (flags & POINTER_EMULATED) {
++        raw->flags = XIPointerEmulated;
++        event->flags = XIPointerEmulated;
++    }
++
++    set_valuators(pDev, event, &mask);
++
++    return num_events;
++}
++
++/**
++ * Generate events for each scroll axis that changed between before/after
++ * for the device.
++ *
++ * @param events The pointer to the event list to fill the events
++ * @param dev The device to generate the events for
++ * @param type The real type of the event
++ * @param axis The axis number to generate events for
++ * @param mask State before this event in absolute coords
++ * @param[in,out] last Last scroll state posted in absolute coords (modified
++ * in-place)
++ * @param ms Current time in ms
++ * @param max_events Max number of events to be generated
++ * @return The number of events generated
++ */
++static int
++emulate_scroll_button_events(InternalEvent *events,
++                             DeviceIntPtr dev,
++                             int type,
++                             int axis,
++                             const ValuatorMask *mask,
++                             ValuatorMask *last, CARD32 ms, int max_events)
++{
++    AxisInfoPtr ax;
++    double delta;
++    double incr;
++    int num_events = 0;
++    double total;
++    int b;
++    int flags = 0;
++
++    if (dev->valuator->axes[axis].scroll.type == SCROLL_TYPE_NONE)
++        return 0;
++
++    if (!valuator_mask_isset(mask, axis))
++        return 0;
++
++    ax = &dev->valuator->axes[axis];
++    incr = ax->scroll.increment;
++
++    if (type != ButtonPress && type != ButtonRelease)
++        flags |= POINTER_EMULATED;
++
++    if (!valuator_mask_isset(last, axis))
++        valuator_mask_set_double(last, axis, 0);
++
++    delta =
++        valuator_mask_get_double(mask, axis) - valuator_mask_get_double(last,
++                                                                        axis);
++    total = delta;
++    b = (ax->scroll.type == SCROLL_TYPE_VERTICAL) ? 5 : 7;
++
++    if ((incr > 0 && delta < 0) || (incr < 0 && delta > 0))
++        b--;                    /* we're scrolling up or left → button 4 or 6 */
++
++    while (fabs(delta) >= fabs(incr)) {
++        int nev_tmp;
++
++        if (delta > 0)
++            delta -= fabs(incr);
++        else if (delta < 0)
++            delta += fabs(incr);
++
++        /* fill_pointer_events() generates four events: one normal and one raw
++         * event for button press and button release.
++         * We may get a bigger scroll delta than we can generate events
++         * for. In that case, we keep decreasing delta, but skip events.
++         */
++        if (num_events + 4 < max_events) {
++            if (type != ButtonRelease) {
++                nev_tmp = fill_pointer_events(events, dev, ButtonPress, b, ms,
++                                              flags, NULL);
++                events += nev_tmp;
++                num_events += nev_tmp;
++            }
++            if (type != ButtonPress) {
++                nev_tmp = fill_pointer_events(events, dev, ButtonRelease, b, ms,
++                                              flags, NULL);
++                events += nev_tmp;
++                num_events += nev_tmp;
++            }
++        }
++    }
++
++    /* We emulated, update last.scroll */
++    if (total != delta) {
++        total -= delta;
++        valuator_mask_set_double(last, axis,
++                                 valuator_mask_get_double(last, axis) + total);
++    }
++
++    return num_events;
++}
++
++/**
++ * Generate a complete series of InternalEvents (filled into the EventList)
++ * representing pointer motion, or button presses.  If the device is a slave
++ * device, also potentially generate a DeviceClassesChangedEvent to update
++ * the master device.
++ *
++ * events is not NULL-terminated; the return value is the number of events.
++ * The DDX is responsible for allocating the event structure in the first
++ * place via InitEventList() and GetMaximumEventsNum(), and for freeing it.
++ *
++ * In the generated events rootX/Y will be in absolute screen coords and
++ * the valuator information in the absolute or relative device coords.
++ *
++ * last.valuators[x] of the device is always in absolute device coords.
++ * last.valuators[x] of the master device is in absolute screen coords.
++ *
++ * master->last.valuators[x] for x > 2 is undefined.
++ */
++int
++GetPointerEvents(InternalEvent *events, DeviceIntPtr pDev, int type,
++                 int buttons, int flags, const ValuatorMask *mask_in)
++{
++    CARD32 ms = GetTimeInMillis();
++    int num_events = 0, nev_tmp;
++    ValuatorMask mask;
++    ValuatorMask scroll;
++    int i;
++    int realtype = type;
++
++    /* refuse events from disabled devices */
++    if (!pDev->enabled)
++        return 0;
++
++    if (!miPointerGetScreen(pDev))
++        return 0;
++
++    events = UpdateFromMaster(events, pDev, DEVCHANGE_POINTER_EVENT,
++                              &num_events);
++
++    valuator_mask_copy(&mask, mask_in);
++
++    /* Turn a scroll button press into a smooth-scrolling event if
++     * necessary. This only needs to cater for the XIScrollFlagPreferred
++     * axis (if more than one scrolling axis is present) */
++    if (type == ButtonPress) {
++        double val, adj;
++        int axis;
++        int h_scroll_axis = -1;
++        int v_scroll_axis = -1;
++
++        if (pDev->valuator) {
++            h_scroll_axis = pDev->valuator->h_scroll_axis;
++            v_scroll_axis = pDev->valuator->v_scroll_axis;
++        }
++
++        /* Up is negative on valuators, down positive */
++        switch (buttons) {
++        case 4:
++            adj = -1.0;
++            axis = v_scroll_axis;
++            break;
++        case 5:
++            adj = 1.0;
++            axis = v_scroll_axis;
++            break;
++        case 6:
++            adj = -1.0;
++            axis = h_scroll_axis;
++            break;
++        case 7:
++            adj = 1.0;
++            axis = h_scroll_axis;
++            break;
++        default:
++            adj = 0.0;
++            axis = -1;
++            break;
++        }
++
++        if (adj != 0.0 && axis != -1) {
++            adj *= pDev->valuator->axes[axis].scroll.increment;
++            val = valuator_mask_get_double(&mask, axis) + adj;
++            valuator_mask_set_double(&mask, axis, val);
++            type = MotionNotify;
++            buttons = 0;
++            flags |= POINTER_EMULATED;
++        }
++    }
++
++    /* First fill out the original event set, with smooth-scrolling axes. */
++    nev_tmp = fill_pointer_events(events, pDev, type, buttons, ms, flags,
++                                  &mask);
++    events += nev_tmp;
++    num_events += nev_tmp;
++
++    valuator_mask_zero(&scroll);
++
++    /* Now turn the smooth-scrolling axes back into emulated button presses
++     * for legacy clients, based on the integer delta between before and now */
++    for (i = 0; i < valuator_mask_size(&mask); i++) {
++        if (i >= pDev->valuator->numAxes)
++            break;
++
++        if (!valuator_mask_isset(&mask, i))
++            continue;
++
++        valuator_mask_set_double(&scroll, i, pDev->last.valuators[i]);
++
++        nev_tmp =
++            emulate_scroll_button_events(events, pDev, realtype, i, &scroll,
++                                         pDev->last.scroll, ms,
++                                         GetMaximumEventsNum() - num_events);
++        events += nev_tmp;
++        num_events += nev_tmp;
++    }
++
++    return num_events;
++}
++
++/**
++ * Generate internal events representing this proximity event and enqueue
++ * them on the event queue.
++ *
++ * This function is not reentrant. Disable signals before calling.
++ *
++ * @param device The device to generate the event for
++ * @param type Event type, one of ProximityIn or ProximityOut
++ * @param keycode Key code of the pressed/released key
++ * @param mask Valuator mask for valuators present for this event.
++ *
++ */
++void
++QueueProximityEvents(DeviceIntPtr device, int type, const ValuatorMask *mask)
++{
++    int nevents;
++
++    nevents = GetProximityEvents(InputEventList, device, type, mask);
++    queueEventList(device, InputEventList, nevents);
++}
++
++/**
++ * Generate ProximityIn/ProximityOut InternalEvents, accompanied by
++ * valuators.
++ *
++ * The DDX is responsible for allocating the events in the first place via
++ * InitEventList(), and for freeing it.
++ *
++ * @return the number of events written into events.
++ */
++int
++GetProximityEvents(InternalEvent *events, DeviceIntPtr pDev, int type,
++                   const ValuatorMask *mask_in)
++{
++    int num_events = 1, i;
++    DeviceEvent *event;
++    ValuatorMask mask;
++
++    /* refuse events from disabled devices */
++    if (!pDev->enabled)
++        return 0;
++
++    /* Sanity checks. */
++    if ((type != ProximityIn && type != ProximityOut) || !mask_in)
++        return 0;
++    if (!pDev->valuator || !pDev->proximity)
++        return 0;
++
++    valuator_mask_copy(&mask, mask_in);
++
++    /* ignore relative axes for proximity. */
++    for (i = 0; i < valuator_mask_size(&mask); i++) {
++        if (valuator_mask_isset(&mask, i) &&
++            valuator_get_mode(pDev, i) == Relative)
++            valuator_mask_unset(&mask, i);
++    }
++
++    /* FIXME: posting proximity events with relative valuators only results
++     * in an empty event, EventToXI() will fail to convert → no event sent
++     * to client. */
++
++    events =
++        UpdateFromMaster(events, pDev, DEVCHANGE_POINTER_EVENT, &num_events);
++
++    event = &events->device_event;
++    init_device_event(event, pDev, GetTimeInMillis());
++    event->type = (type == ProximityIn) ? ET_ProximityIn : ET_ProximityOut;
++
++    clipValuators(pDev, &mask);
++
++    set_valuators(pDev, event, &mask);
++
++    return num_events;
++}
++
++int
++GetTouchOwnershipEvents(InternalEvent *events, DeviceIntPtr pDev,
++                        TouchPointInfoPtr ti, uint8_t reason, XID resource,
++                        uint32_t flags)
++{
++    TouchClassPtr t = pDev->touch;
++    TouchOwnershipEvent *event;
++    CARD32 ms = GetTimeInMillis();
++
++    if (!pDev->enabled || !t || !ti)
++        return 0;
++
++    event = &events->touch_ownership_event;
++    init_touch_ownership(pDev, event, ms);
++
++    event->touchid = ti->client_id;
++    event->sourceid = ti->sourceid;
++    event->resource = resource;
++    event->flags = flags;
++    event->reason = reason;
++
++    return 1;
++}
++
++/**
++ * Generate internal events representing this touch event and enqueue them
++ * on the event queue.
++ *
++ * This function is not reentrant. Disable signals before calling.
++ *
++ * @param device The device to generate the event for
++ * @param type Event type, one of XI_TouchBegin, XI_TouchUpdate, XI_TouchEnd
++ * @param touchid Touch point ID
++ * @param flags Event modification flags
++ * @param mask Valuator mask for valuators present for this event.
++ */
++void
++QueueTouchEvents(DeviceIntPtr device, int type,
++                 uint32_t ddx_touchid, int flags, const ValuatorMask *mask)
++{
++    int nevents;
++
++    nevents =
++        GetTouchEvents(InputEventList, device, ddx_touchid, type, flags, mask);
++    queueEventList(device, InputEventList, nevents);
++}
++
++/**
++ * Get events for a touch. Generates a TouchBegin event if end is not set and
++ * the touch id is not active. Generates a TouchUpdate event if end is not set
++ * and the touch id is active. Generates a TouchEnd event if end is set and the
++ * touch id is active.
++ *
++ * events is not NULL-terminated; the return value is the number of events.
++ * The DDX is responsible for allocating the event structure in the first
++ * place via GetMaximumEventsNum(), and for freeing it.
++ *
++ * @param[out] events The list of events generated
++ * @param dev The device to generate the events for
++ * @param ddx_touchid The touch ID as assigned by the DDX
++ * @param type XI_TouchBegin, XI_TouchUpdate or XI_TouchEnd
++ * @param flags Event flags
++ * @param mask_in Valuator information for this event
++ */
++int
++GetTouchEvents(InternalEvent *events, DeviceIntPtr dev, uint32_t ddx_touchid,
++               uint16_t type, uint32_t flags, const ValuatorMask *mask_in)
++{
++    ScreenPtr scr = dev->spriteInfo->sprite->hotPhys.pScreen;
++    TouchClassPtr t = dev->touch;
++    ValuatorClassPtr v = dev->valuator;
++    DeviceEvent *event;
++    CARD32 ms = GetTimeInMillis();
++    ValuatorMask mask;
++    double screenx = 0.0, screeny = 0.0;        /* desktop coordinate system */
++    double devx = 0.0, devy = 0.0;      /* desktop-wide in device coords */
++    int i;
++    int num_events = 0;
++    RawDeviceEvent *raw;
++    union touch {
++        TouchPointInfoPtr dix_ti;
++        DDXTouchPointInfoPtr ti;
++    } touchpoint;
++    int need_rawevent = TRUE;
++    Bool emulate_pointer = FALSE;
++    int client_id = 0;
++
++    if (!dev->enabled || !t || !v)
++        return 0;
++
++    /* Find and/or create the DDX touch info */
++
++    if (flags & TOUCH_CLIENT_ID) {      /* A DIX-submitted TouchEnd */
++        touchpoint.dix_ti = TouchFindByClientID(dev, ddx_touchid);
++        BUG_WARN(!touchpoint.dix_ti);
++
++        if (!touchpoint.dix_ti)
++            return 0;
++
++        if (!mask_in ||
++            !valuator_mask_isset(mask_in, 0) ||
++            !valuator_mask_isset(mask_in, 1)) {
++            ErrorF
++                ("[dix] dix-submitted events must have x/y valuator information.\n");
++            return 0;
++        }
++
++        need_rawevent = FALSE;
++        client_id = touchpoint.dix_ti->client_id;
++    }
++    else {                      /* a DDX-submitted touch */
++
++        touchpoint.ti =
++            TouchFindByDDXID(dev, ddx_touchid, (type == XI_TouchBegin));
++        if (!touchpoint.ti) {
++            ErrorF("[dix] %s: unable to %s touch point %x\n", dev->name,
++                   type == XI_TouchBegin ? "begin" : "find", ddx_touchid);
++            return 0;
++        }
++        client_id = touchpoint.ti->client_id;
++    }
++
++    if (!(flags & TOUCH_CLIENT_ID))
++        emulate_pointer = touchpoint.ti->emulate_pointer;
++    else
++        emulate_pointer = ! !(flags & TOUCH_POINTER_EMULATED);
++
++    if (!IsMaster(dev))
++        events =
++            UpdateFromMaster(events, dev, DEVCHANGE_POINTER_EVENT, &num_events);
++
++    valuator_mask_copy(&mask, mask_in);
++
++    if (need_rawevent) {
++        raw = &events->raw_event;
++        events++;
++        num_events++;
++        init_raw(dev, raw, ms, type, client_id);
++        set_raw_valuators(raw, &mask, raw->valuators.data_raw);
++    }
++
++    event = &events->device_event;
++    num_events++;
++
++    init_event(dev, event, ms);
++    /* if submitted for master device, get the sourceid from there */
++    if (flags & TOUCH_CLIENT_ID) {
++        event->sourceid = touchpoint.dix_ti->sourceid;
++        /* TOUCH_CLIENT_ID implies norawevent */
++    }
++
++    switch (type) {
++    case XI_TouchBegin:
++        event->type = ET_TouchBegin;
++        /* If we're starting a touch, we must have x & y co-ordinates. */
++        if (!mask_in ||
++            !valuator_mask_isset(mask_in, 0) ||
++            !valuator_mask_isset(mask_in, 1)) {
++            ErrorF("%s: Attempted to start touch without x/y (driver bug)\n",
++                   dev->name);
++            return 0;
++        }
++        break;
++    case XI_TouchUpdate:
++        event->type = ET_TouchUpdate;
++        if (!mask_in || valuator_mask_num_valuators(mask_in) <= 0) {
++            ErrorF("%s: TouchUpdate with no valuators? Driver bug\n",
++                   dev->name);
++        }
++        break;
++    case XI_TouchEnd:
++        event->type = ET_TouchEnd;
++        /* We can end the DDX touch here, since we don't use the active
++         * field below */
++        if (!(flags & TOUCH_CLIENT_ID))
++            TouchEndDDXTouch(dev, touchpoint.ti);
++        break;
++    default:
++        return 0;
++    }
++    if (t->mode == XIDirectTouch && !(flags & TOUCH_CLIENT_ID)) {
++        if (!valuator_mask_isset(&mask, 0))
++            valuator_mask_set_double(&mask, 0,
++                                     valuator_mask_get_double(touchpoint.ti->
++                                                              valuators, 0));
++        if (!valuator_mask_isset(&mask, 1))
++            valuator_mask_set_double(&mask, 1,
++                                     valuator_mask_get_double(touchpoint.ti->
++                                                              valuators, 1));
++    }
++
++    /* Get our screen event co-ordinates (root_x/root_y/event_x/event_y):
++     * these come from the touchpoint in Absolute mode, or the sprite in
++     * Relative. */
++    if (t->mode == XIDirectTouch) {
++        transformAbsolute(dev, &mask);
++
++        if (!(flags & TOUCH_CLIENT_ID)) {
++            for (i = 0; i < valuator_mask_size(&mask); i++) {
++                double val;
++
++                if (valuator_mask_fetch_double(&mask, i, &val))
++                    valuator_mask_set_double(touchpoint.ti->valuators, i, val);
++            }
++        }
++
++        clipAbsolute(dev, &mask);
++    }
++    else {
++        screenx = dev->spriteInfo->sprite->hotPhys.x;
++        screeny = dev->spriteInfo->sprite->hotPhys.y;
++    }
++    if (need_rawevent)
++        set_raw_valuators(raw, &mask, raw->valuators.data);
++
++    /* Indirect device touch coordinates are not used for cursor positioning.
++     * They are merely informational, and are provided in device coordinates.
++     * The device sprite is used for positioning instead, and it is already
++     * scaled. */
++    if (t->mode == XIDirectTouch)
++        scr = scale_to_desktop(dev, &mask, &devx, &devy, &screenx, &screeny);
++    if (emulate_pointer)
++        scr = positionSprite(dev, Absolute, &mask,
++                             &devx, &devy, &screenx, &screeny);
++
++    /* see fill_pointer_events for coordinate systems */
++    if (emulate_pointer)
++        updateHistory(dev, &mask, ms);
++
++    clipValuators(dev, &mask);
++
++    if (emulate_pointer)
++        storeLastValuators(dev, &mask, 0, 1, devx, devy);
++
++    event->root = scr->root->drawable.id;
++
++    event_set_root_coordinates(event, screenx, screeny);
++    event->touchid = client_id;
++    event->flags = flags;
++
++    if (emulate_pointer) {
++        event->flags |= TOUCH_POINTER_EMULATED;
++        event->detail.button = 1;
++    }
++
++    set_valuators(dev, event, &mask);
++    for (i = 0; i < v->numAxes; i++) {
++        if (valuator_mask_isset(&mask, i))
++            v->axisVal[i] = valuator_mask_get(&mask, i);
++    }
++
++    return num_events;
++}
++
++/**
++ * Synthesize a single motion event for the core pointer.
++ *
++ * Used in cursor functions, e.g. when cursor confinement changes, and we need
++ * to shift the pointer to get it inside the new bounds.
++ */
++void
++PostSyntheticMotion(DeviceIntPtr pDev,
++                    int x, int y, int screen, unsigned long time)
++{
++    DeviceEvent ev;
++
++#ifdef PANORAMIX
++    /* Translate back to the sprite screen since processInputProc
++       will translate from sprite screen to screen 0 upon reentry
++       to the DIX layer. */
++    if (!noPanoramiXExtension) {
++        x += screenInfo.screens[0]->x - screenInfo.screens[screen]->x;
++        y += screenInfo.screens[0]->y - screenInfo.screens[screen]->y;
++    }
++#endif
++
++    memset(&ev, 0, sizeof(DeviceEvent));
++    init_device_event(&ev, pDev, time);
++    ev.root_x = x;
++    ev.root_y = y;
++    ev.type = ET_Motion;
++    ev.time = time;
++
++    /* FIXME: MD/SD considerations? */
++    (*pDev->public.processInputProc) ((InternalEvent *) &ev, pDev);
++}
+diff -Nru xorg-server-1.12.1.902.orig/include/dix.h xorg-server-1.12.1.902/include/dix.h
+--- xorg-server-1.12.1.902.orig/include/dix.h	2012-05-20 14:40:28.212878725 -0400
++++ xorg-server-1.12.1.902/include/dix.h	2012-05-20 14:40:44.209458731 -0400
+@@ -245,6 +245,8 @@
+                                     pointer     /*closure */
+     );
+ 
++extern _X_EXPORT Bool QueueWorkItem(WorkQueuePtr item);
++
+ typedef Bool (*ClientSleepProcPtr) (ClientPtr /*client */ ,
+                                     pointer /*closure */ );
+ 
+diff -Nru xorg-server-1.12.1.902.orig/include/dixstruct.h xorg-server-1.12.1.902/include/dixstruct.h
+--- xorg-server-1.12.1.902.orig/include/dixstruct.h	2012-05-20 14:40:28.212878725 -0400
++++ xorg-server-1.12.1.902/include/dixstruct.h	2012-05-20 14:40:44.209458731 -0400
+@@ -153,6 +153,9 @@
+         );
+     ClientPtr client;
+     pointer closure;
++    void       (*destroyProc) (
++                struct _WorkQueue * /* this */
++);
+ } WorkQueueRec;
+ 
+ extern _X_EXPORT TimeStamp currentTime;
+diff -Nru xorg-server-1.12.1.902.orig/include/protocol-versions.h xorg-server-1.12.1.902/include/protocol-versions.h
+--- xorg-server-1.12.1.902.orig/include/protocol-versions.h	2012-05-20 14:40:28.212878725 -0400
++++ xorg-server-1.12.1.902/include/protocol-versions.h	2012-05-20 14:40:44.209458731 -0400
+@@ -122,7 +122,7 @@
+ #define SERVER_XF86VIDMODE_MINOR_VERSION	2
+ 
+ /* Fixes */
+-#define SERVER_XFIXES_MAJOR_VERSION		5
++#define SERVER_XFIXES_MAJOR_VERSION		6
+ #define SERVER_XFIXES_MINOR_VERSION		0
+ 
+ /* X Input */
+diff -Nru xorg-server-1.12.1.902.orig/test/gtest/dummy.conf xorg-server-1.12.1.902/test/gtest/dummy.conf
+--- xorg-server-1.12.1.902.orig/test/gtest/dummy.conf	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/test/gtest/dummy.conf	2012-05-20 14:40:44.209458731 -0400
+@@ -0,0 +1,4 @@
++Section "Device"
++    Identifier "Dummy video device"
++    Driver "dummy"
++EndSection
+diff -Nru xorg-server-1.12.1.902.orig/test/gtest/Makefile.am xorg-server-1.12.1.902/test/gtest/Makefile.am
+--- xorg-server-1.12.1.902.orig/test/gtest/Makefile.am	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/test/gtest/Makefile.am	2012-05-20 14:40:44.209458731 -0400
+@@ -0,0 +1,27 @@
++check_PROGRAMS = xfixes_barriers
++check_DATA = dummy.conf
++
++TESTS=xfixes_barriers
++
++GTEST_SRC_DIR = /usr/src/gtest
++GTEST_SOURCES = $(GTEST_SRC_DIR)/src/gtest-all.cc
++
++xfixes_barriers_CXXFLAGS = $(AM_CXXFLAGS) \
++	-I$(GTEST_SRC_DIR) \
++	$(XORG_GTEST_CFLAGS) \
++	$(XTEST_CFLAGS) \
++	$(XFIXES_CFLAGS) \
++	-DXORG_BINARY=\"$(top_builddir)/hw/xfree86/Xorg\" \
++	-DXORG_DUMMY_CONF=\"$(abs_srcdir)/dummy.conf\"
++
++xfixes_barriers_LDADD = \
++	$(XFIXES_LIBS) \
++	$(XTEST_LIBS) \
++	$(XORG_GTEST_LIBS) \
++	-lpthread
++
++xfixes_barriers_SOURCES = \
++	xfixes_barriers.cpp
++
++nodist_xfixes_barriers_SOURCES = \
++	$(GTEST_SOURCES)
+diff -Nru xorg-server-1.12.1.902.orig/test/gtest/xfixes_barriers.cpp xorg-server-1.12.1.902/test/gtest/xfixes_barriers.cpp
+--- xorg-server-1.12.1.902.orig/test/gtest/xfixes_barriers.cpp	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/test/gtest/xfixes_barriers.cpp	2012-05-20 14:40:44.209458731 -0400
+@@ -0,0 +1,828 @@
++/*
++
++Copyright (c) 2012, Canonical Ltd
++
++Permission is hereby granted, free of charge, to any person obtaining a
++copy of this software and associated documentation files (the "Software"),
++to deal in the Software without restriction, including without limitation
++the rights to use, copy, modify, merge, publish, distribute, sublicense,
++and/or sell copies of the Software, and to permit persons to whom the
++Software is furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice (including the next
++paragraph) shall be included in all copies or substantial portions of the
++Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++DEALINGS IN THE SOFTWARE.
++*/
++
++#include <iostream>
++#include <sys/time.h>
++#include <unistd.h>
++#include <gtest/gtest.h>
++#include <xorg/gtest/test.h>
++#include <xorg/gtest/environment.h>
++#include <X11/Xlib.h>
++#include <X11/extensions/XTest.h>
++#include <X11/extensions/Xfixes.h>
++
++
++int main (int argc, char **argv)
++{
++    ::testing::InitGoogleTest (&argc, argv);
++    xorg::testing::Environment* environment = new xorg::testing::Environment ();
++    environment->set_conf_file (XORG_DUMMY_CONF);
++    environment->set_server (XORG_BINARY);
++    testing::AddGlobalTestEnvironment (environment);
++    return RUN_ALL_TESTS ();
++}
++
++class BarrierTest : public xorg::testing::Test {
++    public:
++    ::Display *dpy;
++    static XErrorEvent *lastError;
++    int xtest_eventbase;
++    int xtest_errorbase;
++    int fixes_eventbase;
++    int fixes_errorbase;
++
++    void AssertPointerPosition (int expected_x, int expected_y)
++    {
++        int x, y, unused_int;
++        unsigned int unused_uint;
++        Window unused_win;
++
++        XQueryPointer (Display (), DefaultRootWindow (Display ()),
++                       &unused_win, &unused_win, &x, &y,
++                       &unused_int, &unused_int, &unused_uint);
++
++        ASSERT_TRUE (x == expected_x && y == expected_y) <<
++            "Incorrect pointer position: Expected ("<<
++            expected_x<< ", "<<expected_y<<"), got "<<
++            "("<<x<<", "<<y<<")\n";
++    }
++
++    bool WaitForXEvent (int msTimeout = 1000)
++    {
++        fd_set fds;
++        int xfd = ConnectionNumber (Display ());
++        struct timeval tv;
++        int retval;
++
++        FD_ZERO (&fds);
++        FD_SET (xfd, &fds);
++
++        tv.tv_sec = msTimeout / 1000;
++        tv.tv_usec = (msTimeout % 1000) * 1000;
++
++        retval = select (xfd + 1, &fds, NULL, NULL, &tv);
++
++        EXPECT_NE (-1, retval)<<"Error waiting for X event";
++
++        return retval;
++    }
++
++    protected:
++    virtual void SetUp ()
++    {
++        ASSERT_NO_FATAL_FAILURE (xorg::testing::Test::SetUp());
++
++        dpy = Display ();
++        int major = 2, minor = 2;
++        ASSERT_TRUE (XTestQueryExtension (dpy,
++                                          &xtest_eventbase, &xtest_errorbase,
++                                          &major, &minor));
++        ASSERT_EQ (2, major);
++        ASSERT_TRUE (minor >= 2);
++
++        major = 6;
++        minor = 0;
++        XFixesQueryVersion (dpy, &major, &minor);
++        ASSERT_EQ (6, major);
++        ASSERT_TRUE (minor >= 0);
++
++        ASSERT_TRUE (XFixesQueryExtension (dpy,
++                                           &fixes_eventbase, &fixes_errorbase));
++
++        lastError = new XErrorEvent;
++        XSetErrorHandler (ErrorHandler);
++    }
++
++    private:
++    static int ErrorHandler (::Display *dpy, XErrorEvent *error)
++    {
++        memcpy (lastError, error, sizeof (*lastError));
++        return 0;
++    }
++};
++
++XErrorEvent *BarrierTest::lastError = NULL;
++
++TEST_F (BarrierTest, CreateVerticalBarrierSucceeds)
++{
++    PointerBarrier barrier;
++    barrier = XFixesCreatePointerBarrier (dpy, DefaultRootWindow(dpy),
++                                          100, 0,
++                                          100, 100,
++                                          0,
++                                          0, NULL);
++    ASSERT_NE(None, barrier);
++}
++
++TEST_F (BarrierTest, CreateHorizontalBarrierSucceds)
++{
++    PointerBarrier barrier;
++    barrier = XFixesCreatePointerBarrier (dpy, DefaultRootWindow(dpy),
++                                          100, 100,
++                                          200, 100,
++                                          0,
++                                          0, NULL);
++    ASSERT_NE(None, barrier);
++}
++
++TEST_F (BarrierTest, CreateNonAxisAlignedBarrierFails)
++{
++    XFixesCreatePointerBarrier (dpy, DefaultRootWindow(dpy),
++                                0, 0,
++                                100, 100,
++                                0,
++                                0, NULL);
++    XSync (Display (), false);
++    ASSERT_EQ(BadValue, lastError->error_code);
++}
++
++TEST_F (BarrierTest, VerticalBidirectionalBarrierBlocksRelativeMotion)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    int x = 200, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion should block on barrier
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y));
++}
++
++TEST_F (BarrierTest, VerticalPositiveXBarrierBlocksMotion)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                BarrierPositiveX, 0, NULL);
++    int x = 200, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in -ve X direction should block on barrier
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y + dy));
++
++    x = 0, y = 100, dx = 200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in +ve X direction should ignore barrier
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, VerticalNegativeXBarrierBlocksMotion)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                BarrierNegativeX,
++                                0, NULL);
++
++    int x = 200, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in -ve X direction should ignore barrier
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = 0, y = 100, dx = 200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in +ve X direction should block on barrier
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x - 1, y + dy));
++}
++
++TEST_F (BarrierTest, HorizontalBidirectionalBarrierBlocksRelativeMotion)
++{
++    int barrier_y = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                0,   barrier_y,
++                                300, barrier_y,
++                                0, 0, NULL);
++
++    int x = 200, y = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in +ve Y direction should block on barrier
++    int dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y - 1));
++
++    x = 100, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in -ve Y direction should block on barrier
++    dx = 0, dy = -200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y));
++}
++
++TEST_F (BarrierTest, HorizontalPositiveYBarrierBlocksMotion)
++{
++    int barrier_y = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                0,   barrier_y,
++                                300, barrier_y,
++                                BarrierPositiveY, 0, NULL);
++
++    int x = 200, y = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in +ve Y direction should ignore barrier
++    int dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = 100, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in -ve Y direction should block on barrier
++    dx = 0, dy = -200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y));
++}
++
++TEST_F (BarrierTest, HorizontalNegativeYBarrierBlocksMotion)
++{
++    int barrier_y = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                0,   barrier_y,
++                                300, barrier_y,
++                                BarrierNegativeY, 0, NULL);
++
++    int x = 200, y = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in +ve Y direction should block on barrier
++    int dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y - 1));
++
++    x = 100, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Relative motion in -ve Y direction should ignore barrier
++    dx = 0, dy = -200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, DestroyPointerBarrierSucceeds)
++{
++    int barrier_x = 100;
++    PointerBarrier barrier;
++    barrier = XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                          barrier_x, 0,
++                                          barrier_x, 300,
++                                          0, 0, NULL);
++
++    int x = 0, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Check that the barrier exists before we destroy it.
++    int dx = 200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x - 1, y + dy));
++
++    // Destroy the barrier...
++    XFixesDestroyPointerBarrier (Display (), barrier);
++
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // There should be no barrier to block this.
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, BarrierIgnoresNonsensicalDirections)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                BarrierPositiveY | BarrierNegativeY,
++                                0, NULL);
++
++    int x = 200, y = 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    int dx = -200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y + dy));
++
++    int barrier_y = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                               0,   barrier_y,
++                               400, barrier_y,
++                               BarrierPositiveX | BarrierNegativeX,
++                               0, NULL);
++
++    x = 100, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 0, dy = -200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y));
++}
++
++TEST_F (BarrierTest, VerticalBarrierEdges)
++{
++    int barrier_x = 300, barrier_y1 = 300 , barrier_y2 = 500;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, barrier_y1,
++                                barrier_x, barrier_y2,
++                                0, 0, NULL);
++
++    int x = barrier_x + 100, y = barrier_y1 - 1;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should take us past the top of the barrier...
++    int dx = -200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = barrier_x + 100, y = barrier_y1;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should hit the top of the barrier...
++    dx = -200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y + dy));
++
++    x = barrier_x + 100, y = barrier_y2;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should hit the bottom of the barrier...
++    dx = -200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y + dy));
++
++    x = barrier_x + 100, y = barrier_y2 + 1;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should take us past the bottom of the barrier...
++    dx = -200, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, HorizontalBarrierEdges)
++{
++    int barrier_x1 = 200, barrier_x2 = 500, barrier_y = 300;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x1, barrier_y,
++                                barrier_x2, barrier_y,
++                                0, 0, NULL);
++
++    int x = barrier_x1 - 1, y = barrier_y - 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should take us past the left edge of the barrier...
++    int dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = barrier_x1, y = barrier_y - 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should hit the top of the barrier...
++    dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, barrier_y - 1));
++
++    x = barrier_x2, y = barrier_y - 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should hit the bottom of the barrier...
++    dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y - 1));
++
++    x = barrier_x2 + 1, y = barrier_y - 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    // Motion should take us past the bottom of the barrier...
++    dx = 0, dy = 200;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, CornerBlocksMotion)
++{
++    int corner_x, corner_y;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                corner_x, corner_y,
++                                corner_x, corner_y + 300,
++                                0, 0, NULL);
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                corner_x, corner_y,
++                                corner_x + 300, corner_y,
++                                0, 0, NULL);
++
++    int x = corner_x + 100, y = corner_y + 100;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    XTestFakeRelativeMotionEvent (Display (), -200, -200, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (corner_x, corner_y));
++}
++
++TEST_F (BarrierTest, VerticalBarrierWithAdjacentStart)
++{
++    int barrier_x = 350;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 100,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    int x = barrier_x, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    int dx = -10, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x, y + dy));
++
++    x = barrier_x, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 10, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = barrier_x - 1, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 10, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (barrier_x - 1, y + dy));
++
++    x = barrier_x - 1, y = 200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = -10, dy = 0;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, HorizontalBarrierWithAdjacentStart)
++{
++    int barrier_y = 300;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                100, barrier_y,
++                                400, barrier_y,
++                                0, 0, NULL);
++
++    int x = 240, y = barrier_y;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    int dx = 0, dy = -10;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y));
++
++    x = 240, y = barrier_y;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 0, dy = 10;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++
++    x = 240, y = barrier_y - 1;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 0, dy = 10;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, barrier_y - 1));
++
++    x = 240, y = barrier_y - 1;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    dx = 0, dy = -10;
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x + dx, y + dy));
++}
++
++TEST_F (BarrierTest, BarrierNotifyEventFires)
++{
++    int barrier_y = 300;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                100, barrier_y,
++                                400, barrier_y,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 240, y = barrier_y + 50;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    XTestFakeRelativeMotionEvent (Display (), 0, -100, 0);
++
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                return;
++        }
++    }
++    FAIL () << "Failed to recieve BarrierNotify event";
++}
++
++TEST_F (BarrierTest, RecieveOneNotifyEventPerHit)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 200, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    /* Generate 5 barrier events */
++    for (int i = 0; i < 5; ++i) {
++        XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    }
++
++    int barrierEventCount = 0;
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                barrierEventCount++;
++                break;
++        }
++    }
++    ASSERT_EQ (5, barrierEventCount);
++}
++
++TEST_F (BarrierTest, BarrierEventHasNonZeroVelocity)
++{
++    int barrier_x = 100;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 200, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    /* One relative event to ensure the server has a non-zero
++     * last-event-time */
++    XTestFakeRelativeMotionEvent (Display (), 10, 10, 0);
++    /* Run the pointer into the barrier */
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                XFixesBarrierNotifyEvent *notify = (XFixesBarrierNotifyEvent *)&e;
++                ASSERT_LT (0, notify->velocity);
++                return;
++        }
++    }
++    FAIL () << "Failed to receive barrier event";
++}
++
++TEST_F (BarrierTest, ScreenEdgeVerticalBarrierEventHasNonZeroVelocity)
++{
++    int barrier_x = 0;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 100, y = 100, dx = -200, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    /* One relative event to ensure the server has a non-zero
++     * last-event-time */
++    XTestFakeRelativeMotionEvent (Display (), 10, 10, 0);
++    /* Run the pointer into the barrier */
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                XFixesBarrierNotifyEvent *notify = (XFixesBarrierNotifyEvent *)&e;
++                ASSERT_LT (0, notify->velocity);
++                return;
++        }
++    }
++    FAIL () << "Failed to receive barrier event";
++}
++
++TEST_F (BarrierTest, ScreenEdgeHorizontalBarrierEventHasNonZeroVelocity)
++{
++    int barrier_y = 0;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                0, barrier_y,
++                                300, barrier_y,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 100, y = 100, dx = 0, dy = -200;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    /* One relative event to ensure the server has a non-zero
++     * last-event-time */
++    XTestFakeRelativeMotionEvent (Display (), 10, 10, 0);
++    /* Run the pointer into the barrier */
++    XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                XFixesBarrierNotifyEvent *notify = (XFixesBarrierNotifyEvent *)&e;
++                ASSERT_LT (0, notify->velocity);
++                return;
++        }
++    }
++    FAIL () << "Failed to receive barrier event";
++}
++
++TEST_F (BarrierTest, ReceiveOneBarrierEventPerHitOnScreenEdge)
++{
++    int barrier_x = 0;
++    XFixesCreatePointerBarrier (Display (), DefaultRootWindow (Display ()),
++                                barrier_x, 0,
++                                barrier_x, 300,
++                                0, 0, NULL);
++
++    XFixesSelectBarrierInput (Display (), DefaultRootWindow (Display ()),
++                              XFixesBarrierHitNotifyMask);
++
++    int x = 20, y = 100, dx = -40, dy = 0;
++    XTestFakeMotionEvent (Display (), DefaultScreen (Display ()),
++                          x, y, 0);
++    ASSERT_NO_FATAL_FAILURE (AssertPointerPosition (x, y));
++
++    /* Generate 5 barrier events */
++    for (int i = 0; i < 5; ++i) {
++        XTestFakeRelativeMotionEvent (Display (), dx, dy, 0);
++    }
++
++    int barrierEventCount = 0;
++    XFlush (Display ());
++    ASSERT_TRUE (WaitForXEvent ())<<"Timed out waiting to receive X event";
++    while (XPending (Display ())) {
++        XEvent e;
++        XNextEvent (Display (), &e);
++        switch (e.xany.type - fixes_eventbase) {
++            case XFixesBarrierNotify:
++                barrierEventCount++;
++                break;
++        }
++    }
++    ASSERT_EQ (5, barrierEventCount);
++}
+diff -Nru xorg-server-1.12.1.902.orig/test/Makefile.am xorg-server-1.12.1.902/test/Makefile.am
+--- xorg-server-1.12.1.902.orig/test/Makefile.am	2012-05-20 14:40:28.726209276 -0400
++++ xorg-server-1.12.1.902/test/Makefile.am	2012-05-20 14:40:44.209458731 -0400
+@@ -5,6 +5,11 @@
+ # Tests that require at least some DDX functions in order to fully link
+ # For now, requires xf86 ddx, could be adjusted to use another
+ SUBDIRS += xi2
++
++if HAVE_XORG_GTEST
++SUBDIRS += gtest
++endif
++
+ noinst_PROGRAMS += xkb input xtest misc fixes xfree86
+ endif
+ check_LTLIBRARIES = libxservertest.la
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/cursor.c xorg-server-1.12.1.902/xfixes/cursor.c
+--- xorg-server-1.12.1.902.orig/xfixes/cursor.c	2012-05-20 14:40:28.242878562 -0400
++++ xorg-server-1.12.1.902/xfixes/cursor.c	2012-05-20 14:40:44.209458731 -0400
+@@ -61,6 +61,7 @@
+ static RESTYPE CursorHideCountType;
+ static RESTYPE CursorWindowType;
+ RESTYPE PointerBarrierType;
++static RESTYPE		PointerBarrierClientType;
+ static CursorPtr CursorCurrent[MAXDEVICES];
+ 
+ static DevPrivateKeyRec CursorScreenPrivateKeyRec;
+@@ -120,6 +121,11 @@
+     struct xorg_list entry;
+ };
+ 
++/**
++ * Pick up unclamped (x,y) coordinates from dix/getevents
++ */
++extern int unclamped_prex, unclamped_prey;
++
+ /*
+  * Wrap DisplayCursor to catch cursor change events
+  */
+@@ -130,6 +136,7 @@
+     ConstrainCursorHarderProcPtr ConstrainCursorHarder;
+     CursorHideCountPtr pCursorHideCounts;
+     struct xorg_list barriers;
++    struct xorg_list            barrierClients;
+ } CursorScreenRec, *CursorScreenPtr;
+ 
+ #define GetCursorScreen(s) ((CursorScreenPtr)dixLookupPrivate(&(s)->devPrivates, CursorScreenPrivateKey))
+@@ -1080,7 +1087,8 @@
+ 
+     /* Algorithm below doesn't handle edge cases well, hence the extra
+      * checks. */
+-    if (barrier_is_vertical(barrier)) {
++    if (barrier_is_vertical(barrier) &&
++	(dir & (BarrierPositiveX | BarrierNegativeX))) {
+         /* handle immediate barrier adjacency, moving away */
+         if (dir & BarrierPositiveX && x1 == barrier->x1)
+             return FALSE;
+@@ -1092,7 +1100,8 @@
+             return TRUE;
+         }
+     }
+-    else {
++    else if (barrier_is_horizontal(barrier) &&
++		(dir & (BarrierPositiveY | BarrierNegativeY))){
+         /* handle immediate barrier adjacency, moving away */
+         if (dir & BarrierPositiveY && y1 == barrier->y1)
+             return FALSE;
+@@ -1191,6 +1200,125 @@
+     }
+ }
+ 
++/*
++ * ConstrainCursorHarder is called from the SIGIO context.
++ * This means we cannot safely send a client event from anything in
++ * CursorConstrainCursorHarder's callgraph.
++ *
++ * Allocate a set of WorkQueue items to use.
++ */
++
++struct BarrierEventStore {
++    WorkQueueRec wq_item;
++    xXFixesBarrierNotifyEvent ev;
++    Bool in_use;
++};
++
++/* Let's guess that 100 events is enough of a buffer. */
++#define BARRIER_EVENT_QUEUE_SIZE 100
++struct BarrierEventStore barrierEventQueue[BARRIER_EVENT_QUEUE_SIZE];
++
++static void
++CursorWorkQueueDestroyProc (WorkQueuePtr this)
++{
++    struct BarrierEventStore *store;
++    store = container_of (this, struct BarrierEventStore, wq_item);
++
++    store->in_use = FALSE;
++}
++
++static Bool
++CursorSendBarrierEvent (ClientPtr client, pointer eventStore)
++{
++    struct BarrierEventStore *store = (struct BarrierEventStore *)eventStore;
++    WriteEventsToClient (client, 1, (xEvent *)&store->ev);
++
++    return TRUE;
++}
++
++static struct BarrierEventStore *
++CursorFindFreeEventStore (void)
++{
++    for (int i = 0; i < BARRIER_EVENT_QUEUE_SIZE; ++i) {
++	if (!barrierEventQueue[i].in_use) {
++	    return &barrierEventQueue[i];
++	}
++    }
++    return NULL;
++}
++
++static void
++QueueBarrierEvent(CursorScreenPtr cs, struct PointerBarrier *barrier,
++		  int x, int y, int velocity, Bool threshold_exceeded)
++{
++    PointerBarrierEventClientPtr client;
++    struct BarrierEventStore *store;
++    xorg_list_for_each_entry(client, &cs->barrierClients, entry) {
++	store = CursorFindFreeEventStore ();
++	if (store == NULL) {
++	    ErrorF ("[xfixes] Barrier event queue full.  Dropping further events\n");
++	    return;
++	}
++
++	store->in_use = TRUE;
++
++	store->ev.type = XFixesEventBase + XFixesBarrierNotify;
++	store->ev.subtype = threshold_exceeded ? XFixesBarrierThresholdExceededNotify :
++					         XFixesBarrierHitNotify;
++	store->ev.event_id = barrier->barrierEventID;
++	store->ev.barrier = barrier->barrier;
++	store->ev.x = x;
++	store->ev.y = y;
++	store->ev.velocity = velocity;
++	store->ev.timestamp = currentTime.milliseconds;
++
++	if (client->client->swapped) {
++	    swapl(&store->ev.event_id);
++	    swapl(&store->ev.barrier);
++	    swaps(&store->ev.x);
++	    swaps(&store->ev.y);
++	    swapl(&store->ev.velocity);
++	    swapl(&store->ev.timestamp);
++	}
++
++	store->wq_item.function = CursorSendBarrierEvent;
++	store->wq_item.client = client->client;
++	store->wq_item.closure = store;
++	store->wq_item.destroyProc = CursorWorkQueueDestroyProc;
++
++	QueueWorkItem (&store->wq_item); 
++    }
++}
++
++static void
++barrier_calculate_velocity_components (int x1, int y1, int x2, int y2,
++				       int *vel_x, int *vel_y)
++{
++    static CARD32 last_timestamp = 0;
++    CARD32 timestamp = GetTimeInMillis();
++    int dx, dy;
++    int dt = timestamp - last_timestamp;
++
++    if (last_timestamp == 0) {
++	/* Not much we can do for the first event */
++	*vel_x = 0;
++	*vel_y = 0;
++	last_timestamp = timestamp;
++	return;
++    }
++
++    /* Lets not divide by zero if we can avoid it */
++    dt = dt > 0 ? dt : 1;
++
++    dx = x2 - x1;
++    dy = y2 - y1;
++
++    *vel_x = abs(dx) * 1000.0 / dt;
++    *vel_y = abs(dy) * 1000.0 / dt;
++
++    last_timestamp = timestamp;
++}
++
+ static void
+ CursorConstrainCursorHarder(DeviceIntPtr dev, ScreenPtr screen, int mode,
+                             int *x, int *y)
+@@ -1200,12 +1328,23 @@
+     if (!xorg_list_is_empty(&cs->barriers) && !IsFloating(dev) &&
+         mode == Relative) {
+         int ox, oy;
++	int vel_x, vel_y;
+         int dir;
+         struct PointerBarrier *nearest = NULL;
++	PointerBarrierClientPtr c;
+ 
+         /* where are we coming from */
+         miPointerGetPosition(dev, &ox, &oy);
+ 
++	/* Use the unclamped values, if available.  If not, *x, *y
++	 * will have to do.
++	 * NOTE: We should never get here with unclamped values unset.
++	 */
++	if (unclamped_prex == -1 || unclamped_prey == -1) {
++	    unclamped_prex = *x;
++	    unclamped_prey = *y;
++	}
++
+         /* How this works:
+          * Given the origin and the movement vector, get the nearest barrier
+          * to the origin that is blocking the movement.
+@@ -1213,11 +1352,27 @@
+          * Then, check from the clamped intersection to the original
+          * destination, again finding the nearest barrier and clamping.
+          */
+-        dir = barrier_get_direction(ox, oy, *x, *y);
++	dir = barrier_get_direction(ox, oy, unclamped_prex, unclamped_prey);
++	barrier_calculate_velocity_components(ox, oy, unclamped_prex, unclamped_prey, &vel_x, &vel_y);
+ 
+-        nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
++	nearest = barrier_find_nearest(cs, dir, ox, oy, unclamped_prex, unclamped_prey);
+         if (nearest) {
+-            barrier_clamp_to_barrier(nearest, dir, x, y);
++	    int velocity = barrier_is_vertical(nearest) ? vel_x : vel_y;
++	    Bool threshold_exceeded = (nearest->velocity != 0) &&
++				      (velocity > nearest->velocity);
++
++	    if (!nearest->lastHit) {
++		/* This is the start of a new barrier event */
++		nearest->barrierEventID++;
++	    }
++
++	    if ((!threshold_exceeded || nearest->lastHit) &&
++		(nearest->barrierEventID != nearest->releaseEventID)) {
++		barrier_clamp_to_barrier(nearest, dir, x, y);
++		nearest->hit = TRUE;
++	    }
++
++	    QueueBarrierEvent(cs, nearest, *x, *y, velocity, threshold_exceeded);
+ 
+             if (barrier_is_vertical(nearest)) {
+                 dir &= ~(BarrierNegativeX | BarrierPositiveX);
+@@ -1228,11 +1383,31 @@
+                 oy = *y;
+             }
+ 
+-            nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
++	    nearest = barrier_find_nearest(cs, dir, ox, oy, unclamped_prex, unclamped_prey);
+             if (nearest) {
+-                barrier_clamp_to_barrier(nearest, dir, x, y);
++		velocity = barrier_is_vertical(nearest) ? vel_x : vel_y;
++		threshold_exceeded = (nearest->velocity != 0) &&
++				     (velocity > nearest->velocity);
++
++		if (!nearest->lastHit) {
++		    /* This is the start of a new barrier event */
++		    nearest->barrierEventID++;
++		}
++
++		if ((!threshold_exceeded || nearest->lastHit) &&
++		    (nearest->barrierEventID != nearest->releaseEventID)) {
++		    barrier_clamp_to_barrier(nearest, dir, x, y);
++		    nearest->hit = TRUE;
++		}
++
++		QueueBarrierEvent(cs, nearest, *x, *y, velocity, threshold_exceeded);
+             }
+         }
++
++	xorg_list_for_each_entry(c, &cs->barriers, entry) {
++	    c->barrier.lastHit = c->barrier.hit;
++	    c->barrier.hit = FALSE;
++	}
+     }
+ 
+     if (cs->ConstrainCursorHarder) {
+@@ -1247,15 +1422,45 @@
+                            xXFixesCreatePointerBarrierReq * stuff)
+ {
+     CursorScreenPtr cs = GetCursorScreen(screen);
+-    struct PointerBarrierClient *ret = malloc(sizeof(*ret));
++    struct PointerBarrierClient *ret = calloc(sizeof(*ret), 1);
++
++    if (ret) {
++	ret->screen = screen;
++	ret->barrier.barrier = stuff->barrier;
++	ret->barrier.x1 = min(stuff->x1, stuff->x2);
++	ret->barrier.x2 = max(stuff->x1, stuff->x2);
++	ret->barrier.y1 = min(stuff->y1, stuff->y2);
++	ret->barrier.y2 = max(stuff->y1, stuff->y2);
++	ret->barrier.directions = stuff->directions & 0x0f;
++	ret->barrier.velocity = 0;
++	ret->barrier.barrierEventID = 0;
++	if (barrier_is_horizontal(&ret->barrier))
++	    ret->barrier.directions &= ~(BarrierPositiveX | BarrierNegativeX);
++	if (barrier_is_vertical(&ret->barrier))
++	    ret->barrier.directions &= ~(BarrierPositiveY | BarrierNegativeY);
++	xorg_list_add(&ret->entry, &cs->barriers);
++    }
++
++    return ret;
++}
++
++static struct PointerBarrierClient *
++CreatePointerBarrierVelocityClient(ScreenPtr screen, ClientPtr client,
++			   xXFixesCreatePointerBarrierVelocityReq *stuff)
++{
++    CursorScreenPtr cs = GetCursorScreen(screen);
++    struct PointerBarrierClient *ret = calloc(sizeof(*ret), 1);
+ 
+     if (ret) {
+         ret->screen = screen;
++	ret->barrier.barrier = stuff->barrier;
+         ret->barrier.x1 = min(stuff->x1, stuff->x2);
+         ret->barrier.x2 = max(stuff->x1, stuff->x2);
+         ret->barrier.y1 = min(stuff->y1, stuff->y2);
+         ret->barrier.y2 = max(stuff->y1, stuff->y2);
+         ret->barrier.directions = stuff->directions & 0x0f;
++	ret->barrier.velocity = stuff->velocity;
++	ret->barrier.barrierEventID = 0;
+         if (barrier_is_horizontal(&ret->barrier))
+             ret->barrier.directions &= ~(BarrierPositiveX | BarrierNegativeX);
+         if (barrier_is_vertical(&ret->barrier))
+@@ -1328,6 +1533,68 @@
+     return ProcXFixesVector[stuff->xfixesReqType] (client);
+ }
+ 
++int
++ProcXFixesCreatePointerBarrierVelocity (ClientPtr client)
++{
++    int err;
++    WindowPtr pWin;
++    struct PointerBarrierClient *barrier;
++    struct PointerBarrier b;
++    REQUEST (xXFixesCreatePointerBarrierVelocityReq);
++
++    REQUEST_SIZE_MATCH(xXFixesCreatePointerBarrierVelocityReq);
++    LEGAL_NEW_RESOURCE(stuff->barrier, client);
++
++    err = dixLookupWindow(&pWin, stuff->window, client, DixReadAccess);
++    if (err != Success) {
++	client->errorValue = stuff->window;
++	return err;
++    }
++
++    /* This sure does need fixing. */
++    if (stuff->num_devices)
++	return BadImplementation;
++
++    b.x1 = stuff->x1;
++    b.x2 = stuff->x2;
++    b.y1 = stuff->y1;
++    b.y2 = stuff->y2;
++
++    if (!barrier_is_horizontal(&b) && !barrier_is_vertical(&b))
++	return BadValue;
++
++    /* no 0-sized barriers */
++    if (barrier_is_horizontal(&b) && barrier_is_vertical(&b))
++	return BadValue;
++
++    if (!(barrier = CreatePointerBarrierVelocityClient(pWin->drawable.pScreen,
++						       client, stuff)))
++	return BadAlloc;
++
++    if (!AddResource(stuff->barrier, PointerBarrierType, &barrier->barrier))
++	return BadAlloc;
++
++    return Success;
++}
++
++int
++SProcXFixesCreatePointerBarrierVelocity (ClientPtr client)
++{
++    REQUEST(xXFixesCreatePointerBarrierVelocityReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesCreatePointerBarrierReq);
++    swapl(&stuff->barrier);
++    swapl(&stuff->window);
++    swaps(&stuff->x1);
++    swaps(&stuff->y1);
++    swaps(&stuff->x2);
++    swaps(&stuff->y2);
++    swapl(&stuff->directions);
++    swapl(&stuff->velocity);
++    return ProcXFixesVector[stuff->xfixesReqType](client);
++}
++
+ static int
+ CursorFreeBarrier(void *data, XID id)
+ {
+@@ -1384,6 +1651,116 @@
+     return ProcXFixesVector[stuff->xfixesReqType] (client);
+ }
+ 
++static int
++CursorFreeBarrierClient(void *data, XID id)
++{
++    PointerBarrierEventClientPtr client = data, c;
++    ScreenPtr screen = client->screen;
++    CursorScreenPtr cs = GetCursorScreen(screen);
++
++    /* find and unlink from the screen private */
++    xorg_list_for_each_entry(c, &cs->barrierClients, entry) {
++	if (c == client) {
++	    xorg_list_del(&c->entry);
++	    break;
++	}
++    }
++
++    free(client);
++    return Success;
++}
++
++static struct PointerBarrierEventClient *
++CreatePointerBarrierEventClient(ScreenPtr screen, ClientPtr client,
++				   xXFixesSelectBarrierInputReq *stuff)
++{
++    CursorScreenPtr cs = GetCursorScreen(screen);
++    struct PointerBarrierEventClient *ret = malloc(sizeof(*ret));
++
++    if (ret) {
++	ret->screen = screen;
++	ret->client = client;
++	ret->eventMask = stuff->eventMask;
++	ret->window = stuff->window;
++	ret->resource = FakeClientID (client->index);
++      xorg_list_add(&ret->entry, &cs->barrierClients);
++    }
++
++    return ret;
++}
++
++int
++ProcXFixesSelectBarrierInput (ClientPtr client)
++{
++    int err;
++    WindowPtr pWin;
++    struct PointerBarrierEventClient *eventClient;
++    REQUEST (xXFixesSelectBarrierInputReq);
++
++    REQUEST_SIZE_MATCH(xXFixesSelectBarrierInputReq);
++
++    err = dixLookupWindow(&pWin	, stuff->window, client, DixReadAccess);
++    if (err != Success) {
++	client->errorValue = stuff->window;
++	return err;
++    }
++
++    if (!(eventClient = CreatePointerBarrierEventClient(pWin->drawable.pScreen,
++							client,
++							stuff)))
++      return BadAlloc;
++
++    if (!AddResource (eventClient->resource, PointerBarrierClientType, eventClient))
++      return BadAlloc;
++
++    return Success;
++}
++
++int
++SProcXFixesSelectBarrierInput (ClientPtr client)
++{
++    REQUEST(xXFixesSelectBarrierInputReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesSelectBarrierInputReq);
++    swapl(&stuff->window);
++    swapl(&stuff->eventMask);
++    return ProcXFixesVector[stuff->xfixesReqType](client);
++}
++
++int
++ProcXFixesBarrierReleasePointer (ClientPtr client)
++{
++    int err;
++    struct PointerBarrier *barrier;
++    REQUEST (xXFixesBarrierReleasePointerReq);
++    REQUEST_SIZE_MATCH(xXFixesBarrierReleasePointerReq);
++
++    err = dixLookupResourceByType((void **)&barrier, stuff->barrier,
++				  PointerBarrierType, client,
++				  DixReadAccess);
++    if (err != Success) {
++	client->errorValue = stuff->barrier;
++	return err;
++    }
++
++    barrier->releaseEventID = stuff->event_id;
++
++    return Success;
++}
++
++int
++SProcXFixesBarrierReleasePointer (ClientPtr client)
++{
++    REQUEST(xXFixesBarrierReleasePointerReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesBarrierReleasePointerReq);
++    swapl(&stuff->barrier);
++    swapl(&stuff->event_id);
++    return ProcXFixesVector[stuff->xfixesReqType](client);
++}
++
+ Bool
+ XFixesCursorInit(void)
+ {
+@@ -1403,6 +1780,7 @@
+         if (!cs)
+             return FALSE;
+         xorg_list_init(&cs->barriers);
++	xorg_list_init(&cs->barrierClients);
+         Wrap(cs, pScreen, CloseScreen, CursorCloseScreen);
+         Wrap(cs, pScreen, DisplayCursor, CursorDisplayCursor);
+         Wrap(cs, pScreen, ConstrainCursorHarder, CursorConstrainCursorHarder);
+@@ -1417,7 +1795,9 @@
+                                              "XFixesCursorWindow");
+     PointerBarrierType = CreateNewResourceType(CursorFreeBarrier,
+                                                "XFixesPointerBarrier");
++    PointerBarrierClientType = CreateNewResourceType(CursorFreeBarrierClient,
++						     "XFixesPointerBarrierClient");
+ 
+     return CursorClientType && CursorHideCountType && CursorWindowType &&
+-        PointerBarrierType;
++	   PointerBarrierType && PointerBarrierClientType;
+ }
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/cursor.c.orig xorg-server-1.12.1.902/xfixes/cursor.c.orig
+--- xorg-server-1.12.1.902.orig/xfixes/cursor.c.orig	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/xfixes/cursor.c.orig	2012-05-17 13:09:05.000000000 -0400
+@@ -0,0 +1,1423 @@
++/*
++ * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
++ * Copyright 2010 Red Hat, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ * Copyright © 2002 Keith Packard
++ *
++ * Permission to use, copy, modify, distribute, and sell this software and its
++ * documentation for any purpose is hereby granted without fee, provided that
++ * the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation, and that the name of Keith Packard not be used in
++ * advertising or publicity pertaining to distribution of the software without
++ * specific, written prior permission.  Keith Packard makes no
++ * representations about the suitability of this software for any purpose.  It
++ * is provided "as is" without express or implied warranty.
++ *
++ * KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++ * EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++ * PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifdef HAVE_DIX_CONFIG_H
++#include <dix-config.h>
++#endif
++
++#include "xfixesint.h"
++#include "scrnintstr.h"
++#include "cursorstr.h"
++#include "dixevents.h"
++#include "servermd.h"
++#include "mipointer.h"
++#include "inputstr.h"
++#include "windowstr.h"
++#include "xace.h"
++#include "list.h"
++
++static RESTYPE CursorClientType;
++static RESTYPE CursorHideCountType;
++static RESTYPE CursorWindowType;
++RESTYPE PointerBarrierType;
++static CursorPtr CursorCurrent[MAXDEVICES];
++
++static DevPrivateKeyRec CursorScreenPrivateKeyRec;
++
++#define CursorScreenPrivateKey (&CursorScreenPrivateKeyRec)
++
++static void deleteCursorHideCountsForScreen(ScreenPtr pScreen);
++
++#define VERIFY_CURSOR(pCursor, cursor, client, access)			\
++    do {								\
++	int err;							\
++	err = dixLookupResourceByType((pointer *) &pCursor, cursor,	\
++				      RT_CURSOR, client, access);	\
++	if (err != Success) {						\
++	    client->errorValue = cursor;				\
++	    return err;							\
++	}								\
++    } while (0)
++
++/*
++ * There is a global list of windows selecting for cursor events
++ */
++
++typedef struct _CursorEvent *CursorEventPtr;
++
++typedef struct _CursorEvent {
++    CursorEventPtr next;
++    CARD32 eventMask;
++    ClientPtr pClient;
++    WindowPtr pWindow;
++    XID clientResource;
++} CursorEventRec;
++
++static CursorEventPtr cursorEvents;
++
++/*
++ * Each screen has a list of clients which have requested
++ * that the cursor be hid, and the number of times each
++ * client has requested.
++*/
++
++typedef struct _CursorHideCountRec *CursorHideCountPtr;
++
++typedef struct _CursorHideCountRec {
++    CursorHideCountPtr pNext;
++    ClientPtr pClient;
++    ScreenPtr pScreen;
++    int hideCount;
++    XID resource;
++} CursorHideCountRec;
++
++typedef struct PointerBarrierClient *PointerBarrierClientPtr;
++
++struct PointerBarrierClient {
++    ScreenPtr screen;
++    struct PointerBarrier barrier;
++    struct xorg_list entry;
++};
++
++/*
++ * Wrap DisplayCursor to catch cursor change events
++ */
++
++typedef struct _CursorScreen {
++    DisplayCursorProcPtr DisplayCursor;
++    CloseScreenProcPtr CloseScreen;
++    ConstrainCursorHarderProcPtr ConstrainCursorHarder;
++    CursorHideCountPtr pCursorHideCounts;
++    struct xorg_list barriers;
++} CursorScreenRec, *CursorScreenPtr;
++
++#define GetCursorScreen(s) ((CursorScreenPtr)dixLookupPrivate(&(s)->devPrivates, CursorScreenPrivateKey))
++#define GetCursorScreenIfSet(s) GetCursorScreen(s)
++#define SetCursorScreen(s,p) dixSetPrivate(&(s)->devPrivates, CursorScreenPrivateKey, p)
++#define Wrap(as,s,elt,func)	(((as)->elt = (s)->elt), (s)->elt = func)
++#define Unwrap(as,s,elt,backup)	(((backup) = (s)->elt), (s)->elt = (as)->elt)
++
++/* The cursor doesn't show up until the first XDefineCursor() */
++static Bool CursorVisible = FALSE;
++
++Bool EnableCursor = TRUE;
++
++static Bool
++CursorDisplayCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    Bool ret;
++    DisplayCursorProcPtr backupProc;
++
++    Unwrap(cs, pScreen, DisplayCursor, backupProc);
++
++    /*
++     * Have to check ConnectionInfo to distinguish client requests from
++     * initial root window setup.  Not a great way to do it, I admit.
++     */
++    if (ConnectionInfo)
++        CursorVisible = EnableCursor;
++
++    if (cs->pCursorHideCounts != NULL || !CursorVisible) {
++        ret = (*pScreen->DisplayCursor) (pDev, pScreen, NullCursor);
++    }
++    else {
++        ret = (*pScreen->DisplayCursor) (pDev, pScreen, pCursor);
++    }
++
++    if (pCursor != CursorCurrent[pDev->id]) {
++        CursorEventPtr e;
++
++        CursorCurrent[pDev->id] = pCursor;
++        for (e = cursorEvents; e; e = e->next) {
++            if ((e->eventMask & XFixesDisplayCursorNotifyMask)) {
++                xXFixesCursorNotifyEvent ev;
++
++                ev.type = XFixesEventBase + XFixesCursorNotify;
++                ev.subtype = XFixesDisplayCursorNotify;
++                ev.window = e->pWindow->drawable.id;
++                ev.cursorSerial = pCursor ? pCursor->serialNumber : 0;
++                ev.timestamp = currentTime.milliseconds;
++                ev.name = pCursor ? pCursor->name : None;
++                WriteEventsToClient(e->pClient, 1, (xEvent *) &ev);
++            }
++        }
++    }
++    Wrap(cs, pScreen, DisplayCursor, backupProc);
++
++    return ret;
++}
++
++static Bool
++CursorCloseScreen(int index, ScreenPtr pScreen)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    Bool ret;
++    _X_UNUSED CloseScreenProcPtr close_proc;
++    _X_UNUSED DisplayCursorProcPtr display_proc;
++    ConstrainCursorHarderProcPtr constrain_proc;
++
++    Unwrap(cs, pScreen, CloseScreen, close_proc);
++    Unwrap(cs, pScreen, DisplayCursor, display_proc);
++    Unwrap(cs, pScreen, ConstrainCursorHarder, constrain_proc);
++    deleteCursorHideCountsForScreen(pScreen);
++    ret = (*pScreen->CloseScreen) (index, pScreen);
++    free(cs);
++    return ret;
++}
++
++#define CursorAllEvents (XFixesDisplayCursorNotifyMask)
++
++static int
++XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32 eventMask)
++{
++    CursorEventPtr *prev, e;
++    pointer val;
++    int rc;
++
++    for (prev = &cursorEvents; (e = *prev); prev = &e->next) {
++        if (e->pClient == pClient && e->pWindow == pWindow) {
++            break;
++        }
++    }
++    if (!eventMask) {
++        if (e) {
++            FreeResource(e->clientResource, 0);
++        }
++        return Success;
++    }
++    if (!e) {
++        e = (CursorEventPtr) malloc(sizeof(CursorEventRec));
++        if (!e)
++            return BadAlloc;
++
++        e->next = 0;
++        e->pClient = pClient;
++        e->pWindow = pWindow;
++        e->clientResource = FakeClientID(pClient->index);
++
++        /*
++         * Add a resource hanging from the window to
++         * catch window destroy
++         */
++        rc = dixLookupResourceByType(&val, pWindow->drawable.id,
++                                     CursorWindowType, serverClient,
++                                     DixGetAttrAccess);
++        if (rc != Success)
++            if (!AddResource(pWindow->drawable.id, CursorWindowType,
++                             (pointer) pWindow)) {
++                free(e);
++                return BadAlloc;
++            }
++
++        if (!AddResource(e->clientResource, CursorClientType, (pointer) e))
++            return BadAlloc;
++
++        *prev = e;
++    }
++    e->eventMask = eventMask;
++    return Success;
++}
++
++int
++ProcXFixesSelectCursorInput(ClientPtr client)
++{
++    REQUEST(xXFixesSelectCursorInputReq);
++    WindowPtr pWin;
++    int rc;
++
++    REQUEST_SIZE_MATCH(xXFixesSelectCursorInputReq);
++    rc = dixLookupWindow(&pWin, stuff->window, client, DixGetAttrAccess);
++    if (rc != Success)
++        return rc;
++    if (stuff->eventMask & ~CursorAllEvents) {
++        client->errorValue = stuff->eventMask;
++        return BadValue;
++    }
++    return XFixesSelectCursorInput(client, pWin, stuff->eventMask);
++}
++
++static int
++GetBit(unsigned char *line, int x)
++{
++    unsigned char mask;
++
++    if (screenInfo.bitmapBitOrder == LSBFirst)
++        mask = (1 << (x & 7));
++    else
++        mask = (0x80 >> (x & 7));
++    /* XXX assumes byte order is host byte order */
++    line += (x >> 3);
++    if (*line & mask)
++        return 1;
++    return 0;
++}
++
++int
++SProcXFixesSelectCursorInput(ClientPtr client)
++{
++    REQUEST(xXFixesSelectCursorInputReq);
++
++    swaps(&stuff->length);
++    swapl(&stuff->window);
++    swapl(&stuff->eventMask);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++void
++SXFixesCursorNotifyEvent(xXFixesCursorNotifyEvent * from,
++                         xXFixesCursorNotifyEvent * to)
++{
++    to->type = from->type;
++    cpswaps(from->sequenceNumber, to->sequenceNumber);
++    cpswapl(from->window, to->window);
++    cpswapl(from->cursorSerial, to->cursorSerial);
++    cpswapl(from->timestamp, to->timestamp);
++    cpswapl(from->name, to->name);
++}
++
++static void
++CopyCursorToImage(CursorPtr pCursor, CARD32 *image)
++{
++    int width = pCursor->bits->width;
++    int height = pCursor->bits->height;
++    int npixels = width * height;
++
++#ifdef ARGB_CURSOR
++    if (pCursor->bits->argb)
++        memcpy(image, pCursor->bits->argb, npixels * sizeof(CARD32));
++    else
++#endif
++    {
++        unsigned char *srcLine = pCursor->bits->source;
++        unsigned char *mskLine = pCursor->bits->mask;
++        int stride = BitmapBytePad(width);
++        int x, y;
++        CARD32 fg, bg;
++
++        fg = (0xff000000 |
++              ((pCursor->foreRed & 0xff00) << 8) |
++              (pCursor->foreGreen & 0xff00) | (pCursor->foreBlue >> 8));
++        bg = (0xff000000 |
++              ((pCursor->backRed & 0xff00) << 8) |
++              (pCursor->backGreen & 0xff00) | (pCursor->backBlue >> 8));
++        for (y = 0; y < height; y++) {
++            for (x = 0; x < width; x++) {
++                if (GetBit(mskLine, x)) {
++                    if (GetBit(srcLine, x))
++                        *image++ = fg;
++                    else
++                        *image++ = bg;
++                }
++                else
++                    *image++ = 0;
++            }
++            srcLine += stride;
++            mskLine += stride;
++        }
++    }
++}
++
++int
++ProcXFixesGetCursorImage(ClientPtr client)
++{
++/*    REQUEST(xXFixesGetCursorImageReq); */
++    xXFixesGetCursorImageReply *rep;
++    CursorPtr pCursor;
++    CARD32 *image;
++    int npixels, width, height, rc, x, y;
++
++    REQUEST_SIZE_MATCH(xXFixesGetCursorImageReq);
++    pCursor = CursorCurrent[PickPointer(client)->id];
++    if (!pCursor)
++        return BadCursor;
++    rc = XaceHook(XACE_RESOURCE_ACCESS, client, pCursor->id, RT_CURSOR,
++                  pCursor, RT_NONE, NULL, DixReadAccess);
++    if (rc != Success)
++        return rc;
++    GetSpritePosition(PickPointer(client), &x, &y);
++    width = pCursor->bits->width;
++    height = pCursor->bits->height;
++    npixels = width * height;
++    rep = malloc(sizeof(xXFixesGetCursorImageReply) + npixels * sizeof(CARD32));
++    if (!rep)
++        return BadAlloc;
++
++    rep->type = X_Reply;
++    rep->sequenceNumber = client->sequence;
++    rep->length = npixels;
++    rep->width = width;
++    rep->height = height;
++    rep->x = x;
++    rep->y = y;
++    rep->xhot = pCursor->bits->xhot;
++    rep->yhot = pCursor->bits->yhot;
++    rep->cursorSerial = pCursor->serialNumber;
++
++    image = (CARD32 *) (rep + 1);
++    CopyCursorToImage(pCursor, image);
++    if (client->swapped) {
++        swaps(&rep->sequenceNumber);
++        swapl(&rep->length);
++        swaps(&rep->x);
++        swaps(&rep->y);
++        swaps(&rep->width);
++        swaps(&rep->height);
++        swaps(&rep->xhot);
++        swaps(&rep->yhot);
++        swapl(&rep->cursorSerial);
++        SwapLongs(image, npixels);
++    }
++    WriteToClient(client, sizeof(xXFixesGetCursorImageReply) +
++                  (npixels << 2), (char *) rep);
++    free(rep);
++    return Success;
++}
++
++int
++SProcXFixesGetCursorImage(ClientPtr client)
++{
++    REQUEST(xXFixesGetCursorImageReq);
++    swaps(&stuff->length);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++int
++ProcXFixesSetCursorName(ClientPtr client)
++{
++    CursorPtr pCursor;
++    char *tchar;
++
++    REQUEST(xXFixesSetCursorNameReq);
++    Atom atom;
++
++    REQUEST_AT_LEAST_SIZE(xXFixesSetCursorNameReq);
++    VERIFY_CURSOR(pCursor, stuff->cursor, client, DixSetAttrAccess);
++    tchar = (char *) &stuff[1];
++    atom = MakeAtom(tchar, stuff->nbytes, TRUE);
++    if (atom == BAD_RESOURCE)
++        return BadAlloc;
++
++    pCursor->name = atom;
++    return Success;
++}
++
++int
++SProcXFixesSetCursorName(ClientPtr client)
++{
++    REQUEST(xXFixesSetCursorNameReq);
++
++    swaps(&stuff->length);
++    REQUEST_AT_LEAST_SIZE(xXFixesSetCursorNameReq);
++    swapl(&stuff->cursor);
++    swaps(&stuff->nbytes);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++int
++ProcXFixesGetCursorName(ClientPtr client)
++{
++    CursorPtr pCursor;
++    xXFixesGetCursorNameReply reply;
++
++    REQUEST(xXFixesGetCursorNameReq);
++    const char *str;
++    int len;
++
++    REQUEST_SIZE_MATCH(xXFixesGetCursorNameReq);
++    VERIFY_CURSOR(pCursor, stuff->cursor, client, DixGetAttrAccess);
++    if (pCursor->name)
++        str = NameForAtom(pCursor->name);
++    else
++        str = "";
++    len = strlen(str);
++
++    reply.type = X_Reply;
++    reply.length = bytes_to_int32(len);
++    reply.sequenceNumber = client->sequence;
++    reply.atom = pCursor->name;
++    reply.nbytes = len;
++    if (client->swapped) {
++        swaps(&reply.sequenceNumber);
++        swapl(&reply.length);
++        swapl(&reply.atom);
++        swaps(&reply.nbytes);
++    }
++    WriteReplyToClient(client, sizeof(xXFixesGetCursorNameReply), &reply);
++    WriteToClient(client, len, str);
++
++    return Success;
++}
++
++int
++SProcXFixesGetCursorName(ClientPtr client)
++{
++    REQUEST(xXFixesGetCursorNameReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesGetCursorNameReq);
++    swapl(&stuff->cursor);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++int
++ProcXFixesGetCursorImageAndName(ClientPtr client)
++{
++/*    REQUEST(xXFixesGetCursorImageAndNameReq); */
++    xXFixesGetCursorImageAndNameReply *rep;
++    CursorPtr pCursor;
++    CARD32 *image;
++    int npixels;
++    const char *name;
++    int nbytes, nbytesRound;
++    int width, height;
++    int rc, x, y;
++
++    REQUEST_SIZE_MATCH(xXFixesGetCursorImageAndNameReq);
++    pCursor = CursorCurrent[PickPointer(client)->id];
++    if (!pCursor)
++        return BadCursor;
++    rc = XaceHook(XACE_RESOURCE_ACCESS, client, pCursor->id, RT_CURSOR,
++                  pCursor, RT_NONE, NULL, DixReadAccess | DixGetAttrAccess);
++    if (rc != Success)
++        return rc;
++    GetSpritePosition(PickPointer(client), &x, &y);
++    width = pCursor->bits->width;
++    height = pCursor->bits->height;
++    npixels = width * height;
++    name = pCursor->name ? NameForAtom(pCursor->name) : "";
++    nbytes = strlen(name);
++    nbytesRound = pad_to_int32(nbytes);
++    rep = malloc(sizeof(xXFixesGetCursorImageAndNameReply) +
++                 npixels * sizeof(CARD32) + nbytesRound);
++    if (!rep)
++        return BadAlloc;
++
++    rep->type = X_Reply;
++    rep->sequenceNumber = client->sequence;
++    rep->length = npixels + bytes_to_int32(nbytesRound);
++    rep->width = width;
++    rep->height = height;
++    rep->x = x;
++    rep->y = y;
++    rep->xhot = pCursor->bits->xhot;
++    rep->yhot = pCursor->bits->yhot;
++    rep->cursorSerial = pCursor->serialNumber;
++    rep->cursorName = pCursor->name;
++    rep->nbytes = nbytes;
++
++    image = (CARD32 *) (rep + 1);
++    CopyCursorToImage(pCursor, image);
++    memcpy((image + npixels), name, nbytes);
++    if (client->swapped) {
++        swaps(&rep->sequenceNumber);
++        swapl(&rep->length);
++        swaps(&rep->x);
++        swaps(&rep->y);
++        swaps(&rep->width);
++        swaps(&rep->height);
++        swaps(&rep->xhot);
++        swaps(&rep->yhot);
++        swapl(&rep->cursorSerial);
++        swapl(&rep->cursorName);
++        swaps(&rep->nbytes);
++        SwapLongs(image, npixels);
++    }
++    WriteToClient(client, sizeof(xXFixesGetCursorImageAndNameReply) +
++                  (npixels << 2) + nbytesRound, (char *) rep);
++    free(rep);
++    return Success;
++}
++
++int
++SProcXFixesGetCursorImageAndName(ClientPtr client)
++{
++    REQUEST(xXFixesGetCursorImageAndNameReq);
++    swaps(&stuff->length);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++/*
++ * Find every cursor reference in the system, ask testCursor
++ * whether it should be replaced with a reference to pCursor.
++ */
++
++typedef Bool (*TestCursorFunc) (CursorPtr pOld, pointer closure);
++
++typedef struct {
++    RESTYPE type;
++    TestCursorFunc testCursor;
++    CursorPtr pNew;
++    pointer closure;
++} ReplaceCursorLookupRec, *ReplaceCursorLookupPtr;
++
++static const RESTYPE CursorRestypes[] = {
++    RT_WINDOW, RT_PASSIVEGRAB, RT_CURSOR
++};
++
++#define NUM_CURSOR_RESTYPES (sizeof (CursorRestypes) / sizeof (CursorRestypes[0]))
++
++static Bool
++ReplaceCursorLookup(pointer value, XID id, pointer closure)
++{
++    ReplaceCursorLookupPtr rcl = (ReplaceCursorLookupPtr) closure;
++    WindowPtr pWin;
++    GrabPtr pGrab;
++    CursorPtr pCursor = 0, *pCursorRef = 0;
++    XID cursor = 0;
++
++    switch (rcl->type) {
++    case RT_WINDOW:
++        pWin = (WindowPtr) value;
++        if (pWin->optional) {
++            pCursorRef = &pWin->optional->cursor;
++            pCursor = *pCursorRef;
++        }
++        break;
++    case RT_PASSIVEGRAB:
++        pGrab = (GrabPtr) value;
++        pCursorRef = &pGrab->cursor;
++        pCursor = *pCursorRef;
++        break;
++    case RT_CURSOR:
++        pCursorRef = 0;
++        pCursor = (CursorPtr) value;
++        cursor = id;
++        break;
++    }
++    if (pCursor && pCursor != rcl->pNew) {
++        if ((*rcl->testCursor) (pCursor, rcl->closure)) {
++            rcl->pNew->refcnt++;
++            /* either redirect reference or update resource database */
++            if (pCursorRef)
++                *pCursorRef = rcl->pNew;
++            else
++                ChangeResourceValue(id, RT_CURSOR, rcl->pNew);
++            FreeCursor(pCursor, cursor);
++        }
++    }
++    return FALSE;               /* keep walking */
++}
++
++static void
++ReplaceCursor(CursorPtr pCursor, TestCursorFunc testCursor, pointer closure)
++{
++    int clientIndex;
++    int resIndex;
++    ReplaceCursorLookupRec rcl;
++
++    /* 
++     * Cursors exist only in the resource database, windows and grabs.
++     * All of these are always pointed at by the resource database.  Walk
++     * the whole thing looking for cursors
++     */
++    rcl.testCursor = testCursor;
++    rcl.pNew = pCursor;
++    rcl.closure = closure;
++
++    /* for each client */
++    for (clientIndex = 0; clientIndex < currentMaxClients; clientIndex++) {
++        if (!clients[clientIndex])
++            continue;
++        for (resIndex = 0; resIndex < NUM_CURSOR_RESTYPES; resIndex++) {
++            rcl.type = CursorRestypes[resIndex];
++            /*
++             * This function walks the entire client resource database
++             */
++            LookupClientResourceComplex(clients[clientIndex],
++                                        rcl.type,
++                                        ReplaceCursorLookup, (pointer) &rcl);
++        }
++    }
++    /* this "knows" that WindowHasNewCursor doesn't depend on it's argument */
++    WindowHasNewCursor(screenInfo.screens[0]->root);
++}
++
++static Bool
++TestForCursor(CursorPtr pCursor, pointer closure)
++{
++    return (pCursor == (CursorPtr) closure);
++}
++
++int
++ProcXFixesChangeCursor(ClientPtr client)
++{
++    CursorPtr pSource, pDestination;
++
++    REQUEST(xXFixesChangeCursorReq);
++
++    REQUEST_SIZE_MATCH(xXFixesChangeCursorReq);
++    VERIFY_CURSOR(pSource, stuff->source, client,
++                  DixReadAccess | DixGetAttrAccess);
++    VERIFY_CURSOR(pDestination, stuff->destination, client,
++                  DixWriteAccess | DixSetAttrAccess);
++
++    ReplaceCursor(pSource, TestForCursor, (pointer) pDestination);
++    return Success;
++}
++
++int
++SProcXFixesChangeCursor(ClientPtr client)
++{
++    REQUEST(xXFixesChangeCursorReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesChangeCursorReq);
++    swapl(&stuff->source);
++    swapl(&stuff->destination);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++static Bool
++TestForCursorName(CursorPtr pCursor, pointer closure)
++{
++    Atom *pName = closure;
++
++    return pCursor->name == *pName;
++}
++
++int
++ProcXFixesChangeCursorByName(ClientPtr client)
++{
++    CursorPtr pSource;
++    Atom name;
++    char *tchar;
++
++    REQUEST(xXFixesChangeCursorByNameReq);
++
++    REQUEST_FIXED_SIZE(xXFixesChangeCursorByNameReq, stuff->nbytes);
++    VERIFY_CURSOR(pSource, stuff->source, client,
++                  DixReadAccess | DixGetAttrAccess);
++    tchar = (char *) &stuff[1];
++    name = MakeAtom(tchar, stuff->nbytes, FALSE);
++    if (name)
++        ReplaceCursor(pSource, TestForCursorName, &name);
++    return Success;
++}
++
++int
++SProcXFixesChangeCursorByName(ClientPtr client)
++{
++    REQUEST(xXFixesChangeCursorByNameReq);
++
++    swaps(&stuff->length);
++    REQUEST_AT_LEAST_SIZE(xXFixesChangeCursorByNameReq);
++    swapl(&stuff->source);
++    swaps(&stuff->nbytes);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++/*
++ * Routines for manipulating the per-screen hide counts list.
++ * This list indicates which clients have requested cursor hiding 
++ * for that screen.
++ */
++
++/* Return the screen's hide-counts list element for the given client */
++static CursorHideCountPtr
++findCursorHideCount(ClientPtr pClient, ScreenPtr pScreen)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    CursorHideCountPtr pChc;
++
++    for (pChc = cs->pCursorHideCounts; pChc != NULL; pChc = pChc->pNext) {
++        if (pChc->pClient == pClient) {
++            return pChc;
++        }
++    }
++
++    return NULL;
++}
++
++static int
++createCursorHideCount(ClientPtr pClient, ScreenPtr pScreen)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    CursorHideCountPtr pChc;
++
++    pChc = (CursorHideCountPtr) malloc(sizeof(CursorHideCountRec));
++    if (pChc == NULL) {
++        return BadAlloc;
++    }
++    pChc->pClient = pClient;
++    pChc->pScreen = pScreen;
++    pChc->hideCount = 1;
++    pChc->resource = FakeClientID(pClient->index);
++    pChc->pNext = cs->pCursorHideCounts;
++    cs->pCursorHideCounts = pChc;
++
++    /* 
++     * Create a resource for this element so it can be deleted
++     * when the client goes away.
++     */
++    if (!AddResource(pChc->resource, CursorHideCountType, (pointer) pChc)) {
++        free(pChc);
++        return BadAlloc;
++    }
++
++    return Success;
++}
++
++/* 
++ * Delete the given hide-counts list element from its screen list.
++ */
++static void
++deleteCursorHideCount(CursorHideCountPtr pChcToDel, ScreenPtr pScreen)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    CursorHideCountPtr pChc, pNext;
++    CursorHideCountPtr pChcLast = NULL;
++
++    pChc = cs->pCursorHideCounts;
++    while (pChc != NULL) {
++        pNext = pChc->pNext;
++        if (pChc == pChcToDel) {
++            free(pChc);
++            if (pChcLast == NULL) {
++                cs->pCursorHideCounts = pNext;
++            }
++            else {
++                pChcLast->pNext = pNext;
++            }
++            return;
++        }
++        pChcLast = pChc;
++        pChc = pNext;
++    }
++}
++
++/* 
++ * Delete all the hide-counts list elements for this screen.
++ */
++static void
++deleteCursorHideCountsForScreen(ScreenPtr pScreen)
++{
++    CursorScreenPtr cs = GetCursorScreen(pScreen);
++    CursorHideCountPtr pChc, pTmp;
++
++    pChc = cs->pCursorHideCounts;
++    while (pChc != NULL) {
++        pTmp = pChc->pNext;
++        FreeResource(pChc->resource, 0);
++        pChc = pTmp;
++    }
++    cs->pCursorHideCounts = NULL;
++}
++
++int
++ProcXFixesHideCursor(ClientPtr client)
++{
++    WindowPtr pWin;
++    CursorHideCountPtr pChc;
++
++    REQUEST(xXFixesHideCursorReq);
++    int ret;
++
++    REQUEST_SIZE_MATCH(xXFixesHideCursorReq);
++
++    ret = dixLookupResourceByType((pointer *) &pWin, stuff->window, RT_WINDOW,
++                                  client, DixGetAttrAccess);
++    if (ret != Success) {
++        client->errorValue = stuff->window;
++        return ret;
++    }
++
++    /* 
++     * Has client hidden the cursor before on this screen? 
++     * If so, just increment the count. 
++     */
++
++    pChc = findCursorHideCount(client, pWin->drawable.pScreen);
++    if (pChc != NULL) {
++        pChc->hideCount++;
++        return Success;
++    }
++
++    /* 
++     * This is the first time this client has hid the cursor 
++     * for this screen.
++     */
++    ret = XaceHook(XACE_SCREEN_ACCESS, client, pWin->drawable.pScreen,
++                   DixHideAccess);
++    if (ret != Success)
++        return ret;
++
++    ret = createCursorHideCount(client, pWin->drawable.pScreen);
++
++    if (ret == Success) {
++        DeviceIntPtr dev;
++
++        for (dev = inputInfo.devices; dev; dev = dev->next) {
++            if (IsMaster(dev) && IsPointerDevice(dev))
++                CursorDisplayCursor(dev, pWin->drawable.pScreen,
++                                    CursorCurrent[dev->id]);
++        }
++    }
++
++    return ret;
++}
++
++int
++SProcXFixesHideCursor(ClientPtr client)
++{
++    REQUEST(xXFixesHideCursorReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesHideCursorReq);
++    swapl(&stuff->window);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++int
++ProcXFixesShowCursor(ClientPtr client)
++{
++    WindowPtr pWin;
++    CursorHideCountPtr pChc;
++    int rc;
++
++    REQUEST(xXFixesShowCursorReq);
++
++    REQUEST_SIZE_MATCH(xXFixesShowCursorReq);
++
++    rc = dixLookupResourceByType((pointer *) &pWin, stuff->window, RT_WINDOW,
++                                 client, DixGetAttrAccess);
++    if (rc != Success) {
++        client->errorValue = stuff->window;
++        return rc;
++    }
++
++    /* 
++     * Has client hidden the cursor on this screen?
++     * If not, generate an error.
++     */
++    pChc = findCursorHideCount(client, pWin->drawable.pScreen);
++    if (pChc == NULL) {
++        return BadMatch;
++    }
++
++    rc = XaceHook(XACE_SCREEN_ACCESS, client, pWin->drawable.pScreen,
++                  DixShowAccess);
++    if (rc != Success)
++        return rc;
++
++    pChc->hideCount--;
++    if (pChc->hideCount <= 0) {
++        FreeResource(pChc->resource, 0);
++    }
++
++    return Success;
++}
++
++int
++SProcXFixesShowCursor(ClientPtr client)
++{
++    REQUEST(xXFixesShowCursorReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesShowCursorReq);
++    swapl(&stuff->window);
++    return (*ProcXFixesVector[stuff->xfixesReqType]) (client);
++}
++
++static int
++CursorFreeClient(pointer data, XID id)
++{
++    CursorEventPtr old = (CursorEventPtr) data;
++    CursorEventPtr *prev, e;
++
++    for (prev = &cursorEvents; (e = *prev); prev = &e->next) {
++        if (e == old) {
++            *prev = e->next;
++            free(e);
++            break;
++        }
++    }
++    return 1;
++}
++
++static int
++CursorFreeHideCount(pointer data, XID id)
++{
++    CursorHideCountPtr pChc = (CursorHideCountPtr) data;
++    ScreenPtr pScreen = pChc->pScreen;
++    DeviceIntPtr dev;
++
++    deleteCursorHideCount(pChc, pChc->pScreen);
++    for (dev = inputInfo.devices; dev; dev = dev->next) {
++        if (IsMaster(dev) && IsPointerDevice(dev))
++            CursorDisplayCursor(dev, pScreen, CursorCurrent[dev->id]);
++    }
++
++    return 1;
++}
++
++static int
++CursorFreeWindow(pointer data, XID id)
++{
++    WindowPtr pWindow = (WindowPtr) data;
++    CursorEventPtr e, next;
++
++    for (e = cursorEvents; e; e = next) {
++        next = e->next;
++        if (e->pWindow == pWindow) {
++            FreeResource(e->clientResource, 0);
++        }
++    }
++    return 1;
++}
++
++static BOOL
++barrier_is_horizontal(const struct PointerBarrier *barrier)
++{
++    return barrier->y1 == barrier->y2;
++}
++
++static BOOL
++barrier_is_vertical(const struct PointerBarrier *barrier)
++{
++    return barrier->x1 == barrier->x2;
++}
++
++/**
++ * @return The set of barrier movement directions the movement vector
++ * x1/y1 → x2/y2 represents.
++ */
++int
++barrier_get_direction(int x1, int y1, int x2, int y2)
++{
++    int direction = 0;
++
++    /* which way are we trying to go */
++    if (x2 > x1)
++        direction |= BarrierPositiveX;
++    if (x2 < x1)
++        direction |= BarrierNegativeX;
++    if (y2 > y1)
++        direction |= BarrierPositiveY;
++    if (y2 < y1)
++        direction |= BarrierNegativeY;
++
++    return direction;
++}
++
++/**
++ * Test if the barrier may block movement in the direction defined by
++ * x1/y1 → x2/y2. This function only tests whether the directions could be
++ * blocked, it does not test if the barrier actually blocks the movement.
++ *
++ * @return TRUE if the barrier blocks the direction of movement or FALSE
++ * otherwise.
++ */
++BOOL
++barrier_is_blocking_direction(const struct PointerBarrier * barrier,
++                              int direction)
++{
++    /* Barriers define which way is ok, not which way is blocking */
++    return (barrier->directions & direction) != direction;
++}
++
++/**
++ * Test if the movement vector x1/y1 → x2/y2 is intersecting with the
++ * barrier. A movement vector with the startpoint or endpoint adjacent to
++ * the barrier itself counts as intersecting.
++ *
++ * @param x1 X start coordinate of movement vector
++ * @param y1 Y start coordinate of movement vector
++ * @param x2 X end coordinate of movement vector
++ * @param y2 Y end coordinate of movement vector
++ * @param[out] distance The distance between the start point and the
++ * intersection with the barrier (if applicable).
++ * @return TRUE if the barrier intersects with the given vector
++ */
++BOOL
++barrier_is_blocking(const struct PointerBarrier * barrier,
++                    int x1, int y1, int x2, int y2, double *distance)
++{
++    BOOL rc = FALSE;
++    float ua, ub, ud;
++    int dir = barrier_get_direction(x1, y1, x2, y2);
++
++    /* Algorithm below doesn't handle edge cases well, hence the extra
++     * checks. */
++    if (barrier_is_vertical(barrier)) {
++        /* handle immediate barrier adjacency, moving away */
++        if (dir & BarrierPositiveX && x1 == barrier->x1)
++            return FALSE;
++        if (dir & BarrierNegativeX && x1 == (barrier->x1 - 1))
++            return FALSE;
++        /* startpoint adjacent to barrier, moving towards -> block */
++        if (x1 == barrier->x1 && y1 >= barrier->y1 && y1 <= barrier->y2) {
++            *distance = 0;
++            return TRUE;
++        }
++    }
++    else {
++        /* handle immediate barrier adjacency, moving away */
++        if (dir & BarrierPositiveY && y1 == barrier->y1)
++            return FALSE;
++        if (dir & BarrierNegativeY && y1 == (barrier->y1 - 1))
++            return FALSE;
++        /* startpoint adjacent to barrier, moving towards -> block */
++        if (y1 == barrier->y1 && x1 >= barrier->x1 && x1 <= barrier->x2) {
++            *distance = 0;
++            return TRUE;
++        }
++    }
++
++    /* not an edge case, compute distance */
++    ua = 0;
++    ud = (barrier->y2 - barrier->y1) * (x2 - x1) - (barrier->x2 -
++                                                    barrier->x1) * (y2 - y1);
++    if (ud != 0) {
++        ua = ((barrier->x2 - barrier->x1) * (y1 - barrier->y1) -
++              (barrier->y2 - barrier->y1) * (x1 - barrier->x1)) / ud;
++        ub = ((x2 - x1) * (y1 - barrier->y1) -
++              (y2 - y1) * (x1 - barrier->x1)) / ud;
++        if (ua < 0 || ua > 1 || ub < 0 || ub > 1)
++            ua = 0;
++    }
++
++    if (ua > 0 && ua <= 1) {
++        double ix = barrier->x1 + ua * (barrier->x2 - barrier->x1);
++        double iy = barrier->y1 + ua * (barrier->y2 - barrier->y1);
++
++        *distance = sqrt(pow(x1 - ix, 2) + pow(y1 - iy, 2));
++        rc = TRUE;
++    }
++
++    return rc;
++}
++
++/**
++ * Find the nearest barrier that is blocking movement from x1/y1 to x2/y2.
++ *
++ * @param dir Only barriers blocking movement in direction dir are checked
++ * @param x1 X start coordinate of movement vector
++ * @param y1 Y start coordinate of movement vector
++ * @param x2 X end coordinate of movement vector
++ * @param y2 Y end coordinate of movement vector
++ * @return The barrier nearest to the movement origin that blocks this movement.
++ */
++static struct PointerBarrier *
++barrier_find_nearest(CursorScreenPtr cs, int dir,
++                     int x1, int y1, int x2, int y2)
++{
++    struct PointerBarrierClient *c;
++    struct PointerBarrier *nearest = NULL;
++    double min_distance = INT_MAX;      /* can't get higher than that in X anyway */
++
++    xorg_list_for_each_entry(c, &cs->barriers, entry) {
++        struct PointerBarrier *b = &c->barrier;
++        double distance;
++
++        if (!barrier_is_blocking_direction(b, dir))
++            continue;
++
++        if (barrier_is_blocking(b, x1, y1, x2, y2, &distance)) {
++            if (min_distance > distance) {
++                min_distance = distance;
++                nearest = b;
++            }
++        }
++    }
++
++    return nearest;
++}
++
++/**
++ * Clamp to the given barrier given the movement direction specified in dir.
++ *
++ * @param barrier The barrier to clamp to
++ * @param dir The movement direction
++ * @param[out] x The clamped x coordinate.
++ * @param[out] y The clamped x coordinate.
++ */
++void
++barrier_clamp_to_barrier(struct PointerBarrier *barrier, int dir, int *x,
++                         int *y)
++{
++    if (barrier_is_vertical(barrier)) {
++        if ((dir & BarrierNegativeX) & ~barrier->directions)
++            *x = barrier->x1;
++        if ((dir & BarrierPositiveX) & ~barrier->directions)
++            *x = barrier->x1 - 1;
++    }
++    if (barrier_is_horizontal(barrier)) {
++        if ((dir & BarrierNegativeY) & ~barrier->directions)
++            *y = barrier->y1;
++        if ((dir & BarrierPositiveY) & ~barrier->directions)
++            *y = barrier->y1 - 1;
++    }
++}
++
++static void
++CursorConstrainCursorHarder(DeviceIntPtr dev, ScreenPtr screen, int mode,
++                            int *x, int *y)
++{
++    CursorScreenPtr cs = GetCursorScreen(screen);
++
++    if (!xorg_list_is_empty(&cs->barriers) && !IsFloating(dev) &&
++        mode == Relative) {
++        int ox, oy;
++        int dir;
++        struct PointerBarrier *nearest = NULL;
++
++        /* where are we coming from */
++        miPointerGetPosition(dev, &ox, &oy);
++
++        /* How this works:
++         * Given the origin and the movement vector, get the nearest barrier
++         * to the origin that is blocking the movement.
++         * Clamp to that barrier.
++         * Then, check from the clamped intersection to the original
++         * destination, again finding the nearest barrier and clamping.
++         */
++        dir = barrier_get_direction(ox, oy, *x, *y);
++
++        nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
++        if (nearest) {
++            barrier_clamp_to_barrier(nearest, dir, x, y);
++
++            if (barrier_is_vertical(nearest)) {
++                dir &= ~(BarrierNegativeX | BarrierPositiveX);
++                ox = *x;
++            }
++            else if (barrier_is_horizontal(nearest)) {
++                dir &= ~(BarrierNegativeY | BarrierPositiveY);
++                oy = *y;
++            }
++
++            nearest = barrier_find_nearest(cs, dir, ox, oy, *x, *y);
++            if (nearest) {
++                barrier_clamp_to_barrier(nearest, dir, x, y);
++            }
++        }
++    }
++
++    if (cs->ConstrainCursorHarder) {
++        screen->ConstrainCursorHarder = cs->ConstrainCursorHarder;
++        screen->ConstrainCursorHarder(dev, screen, mode, x, y);
++        screen->ConstrainCursorHarder = CursorConstrainCursorHarder;
++    }
++}
++
++static struct PointerBarrierClient *
++CreatePointerBarrierClient(ScreenPtr screen, ClientPtr client,
++                           xXFixesCreatePointerBarrierReq * stuff)
++{
++    CursorScreenPtr cs = GetCursorScreen(screen);
++    struct PointerBarrierClient *ret = malloc(sizeof(*ret));
++
++    if (ret) {
++        ret->screen = screen;
++        ret->barrier.x1 = min(stuff->x1, stuff->x2);
++        ret->barrier.x2 = max(stuff->x1, stuff->x2);
++        ret->barrier.y1 = min(stuff->y1, stuff->y2);
++        ret->barrier.y2 = max(stuff->y1, stuff->y2);
++        ret->barrier.directions = stuff->directions & 0x0f;
++        if (barrier_is_horizontal(&ret->barrier))
++            ret->barrier.directions &= ~(BarrierPositiveX | BarrierNegativeX);
++        if (barrier_is_vertical(&ret->barrier))
++            ret->barrier.directions &= ~(BarrierPositiveY | BarrierNegativeY);
++        xorg_list_add(&ret->entry, &cs->barriers);
++    }
++
++    return ret;
++}
++
++int
++ProcXFixesCreatePointerBarrier(ClientPtr client)
++{
++    int err;
++    WindowPtr pWin;
++    struct PointerBarrierClient *barrier;
++    struct PointerBarrier b;
++
++    REQUEST(xXFixesCreatePointerBarrierReq);
++
++    REQUEST_SIZE_MATCH(xXFixesCreatePointerBarrierReq);
++    LEGAL_NEW_RESOURCE(stuff->barrier, client);
++
++    err = dixLookupWindow(&pWin, stuff->window, client, DixReadAccess);
++    if (err != Success) {
++        client->errorValue = stuff->window;
++        return err;
++    }
++
++    /* This sure does need fixing. */
++    if (stuff->num_devices)
++        return BadImplementation;
++
++    b.x1 = stuff->x1;
++    b.x2 = stuff->x2;
++    b.y1 = stuff->y1;
++    b.y2 = stuff->y2;
++
++    if (!barrier_is_horizontal(&b) && !barrier_is_vertical(&b))
++        return BadValue;
++
++    /* no 0-sized barriers */
++    if (barrier_is_horizontal(&b) && barrier_is_vertical(&b))
++        return BadValue;
++
++    if (!(barrier = CreatePointerBarrierClient(pWin->drawable.pScreen,
++                                               client, stuff)))
++        return BadAlloc;
++
++    if (!AddResource(stuff->barrier, PointerBarrierType, &barrier->barrier))
++        return BadAlloc;
++
++    return Success;
++}
++
++int
++SProcXFixesCreatePointerBarrier(ClientPtr client)
++{
++    REQUEST(xXFixesCreatePointerBarrierReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesCreatePointerBarrierReq);
++    swapl(&stuff->barrier);
++    swapl(&stuff->window);
++    swaps(&stuff->x1);
++    swaps(&stuff->y1);
++    swaps(&stuff->x2);
++    swaps(&stuff->y2);
++    swapl(&stuff->directions);
++    return ProcXFixesVector[stuff->xfixesReqType] (client);
++}
++
++static int
++CursorFreeBarrier(void *data, XID id)
++{
++    struct PointerBarrierClient *b = NULL, *barrier;
++    ScreenPtr screen;
++    CursorScreenPtr cs;
++
++    barrier = container_of(data, struct PointerBarrierClient, barrier);
++
++    screen = barrier->screen;
++    cs = GetCursorScreen(screen);
++
++    /* find and unlink from the screen private */
++    xorg_list_for_each_entry(b, &cs->barriers, entry) {
++        if (b == barrier) {
++            xorg_list_del(&b->entry);
++            break;
++        }
++    }
++
++    free(barrier);
++    return Success;
++}
++
++int
++ProcXFixesDestroyPointerBarrier(ClientPtr client)
++{
++    int err;
++    void *barrier;
++
++    REQUEST(xXFixesDestroyPointerBarrierReq);
++
++    REQUEST_SIZE_MATCH(xXFixesDestroyPointerBarrierReq);
++
++    err = dixLookupResourceByType((void **) &barrier, stuff->barrier,
++                                  PointerBarrierType, client, DixDestroyAccess);
++    if (err != Success) {
++        client->errorValue = stuff->barrier;
++        return err;
++    }
++
++    FreeResource(stuff->barrier, RT_NONE);
++    return Success;
++}
++
++int
++SProcXFixesDestroyPointerBarrier(ClientPtr client)
++{
++    REQUEST(xXFixesDestroyPointerBarrierReq);
++
++    swaps(&stuff->length);
++    REQUEST_SIZE_MATCH(xXFixesDestroyPointerBarrierReq);
++    swapl(&stuff->barrier);
++    return ProcXFixesVector[stuff->xfixesReqType] (client);
++}
++
++Bool
++XFixesCursorInit(void)
++{
++    int i;
++
++    if (party_like_its_1989)
++        CursorVisible = EnableCursor;
++
++    if (!dixRegisterPrivateKey(&CursorScreenPrivateKeyRec, PRIVATE_SCREEN, 0))
++        return FALSE;
++
++    for (i = 0; i < screenInfo.numScreens; i++) {
++        ScreenPtr pScreen = screenInfo.screens[i];
++        CursorScreenPtr cs;
++
++        cs = (CursorScreenPtr) calloc(1, sizeof(CursorScreenRec));
++        if (!cs)
++            return FALSE;
++        xorg_list_init(&cs->barriers);
++        Wrap(cs, pScreen, CloseScreen, CursorCloseScreen);
++        Wrap(cs, pScreen, DisplayCursor, CursorDisplayCursor);
++        Wrap(cs, pScreen, ConstrainCursorHarder, CursorConstrainCursorHarder);
++        cs->pCursorHideCounts = NULL;
++        SetCursorScreen(pScreen, cs);
++    }
++    CursorClientType = CreateNewResourceType(CursorFreeClient,
++                                             "XFixesCursorClient");
++    CursorHideCountType = CreateNewResourceType(CursorFreeHideCount,
++                                                "XFixesCursorHideCount");
++    CursorWindowType = CreateNewResourceType(CursorFreeWindow,
++                                             "XFixesCursorWindow");
++    PointerBarrierType = CreateNewResourceType(CursorFreeBarrier,
++                                               "XFixesPointerBarrier");
++
++    return CursorClientType && CursorHideCountType && CursorWindowType &&
++        PointerBarrierType;
++}
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.c xorg-server-1.12.1.902/xfixes/xfixes.c
+--- xorg-server-1.12.1.902.orig/xfixes/xfixes.c	2012-05-20 14:40:28.242878562 -0400
++++ xorg-server-1.12.1.902/xfixes/xfixes.c	2012-05-20 14:40:44.209458731 -0400
+@@ -102,6 +102,7 @@
+     X_XFixesExpandRegion,       /* Version 3 */
+     X_XFixesShowCursor,         /* Version 4 */
+     X_XFixesDestroyPointerBarrier,      /* Version 5 */
++    X_XFixesBarrierReleasePointer, /* Version 6 */
+ };
+ 
+ #define NUM_VERSION_REQUESTS	(sizeof (version_requests) / sizeof (version_requests[0]))
+@@ -140,7 +141,12 @@
+ /*************** Version 4 ****************/
+         ProcXFixesHideCursor, ProcXFixesShowCursor,
+ /*************** Version 5 ****************/
+-ProcXFixesCreatePointerBarrier, ProcXFixesDestroyPointerBarrier,};
++ProcXFixesCreatePointerBarrier, ProcXFixesDestroyPointerBarrier,
++/*************** Version 6 ****************/
++    ProcXFixesCreatePointerBarrierVelocity,
++    ProcXFixesSelectBarrierInput,
++    ProcXFixesBarrierReleasePointer,
++};
+ 
+ static int
+ ProcXFixesDispatch(ClientPtr client)
+@@ -200,7 +206,12 @@
+ /*************** Version 4 ****************/
+         SProcXFixesHideCursor, SProcXFixesShowCursor,
+ /*************** Version 5 ****************/
+-SProcXFixesCreatePointerBarrier, SProcXFixesDestroyPointerBarrier,};
++SProcXFixesCreatePointerBarrier, SProcXFixesDestroyPointerBarrier,
++/*************** Version 6 ****************/
++    SProcXFixesCreatePointerBarrierVelocity,
++    SProcXFixesSelectBarrierInput,
++    SProcXFixesBarrierReleasePointer,
++};
+ 
+ static int
+ SProcXFixesDispatch(ClientPtr client)
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.h xorg-server-1.12.1.902/xfixes/xfixes.h
+--- xorg-server-1.12.1.902.orig/xfixes/xfixes.h	2012-05-20 14:40:28.242878562 -0400
++++ xorg-server-1.12.1.902/xfixes/xfixes.h	2012-05-20 14:40:44.212792046 -0400
+@@ -28,6 +28,7 @@
+ #define _XFIXES_H_
+ 
+ #include "resource.h"
++#include "list.h"
+ 
+ extern _X_EXPORT RESTYPE RegionResType;
+ extern _X_EXPORT RESTYPE PointerBarrierType;
+@@ -52,9 +53,25 @@
+ extern _X_EXPORT RegionPtr
+  XFixesRegionCopy(RegionPtr pRegion);
+ 
++typedef struct PointerBarrierEventClient *PointerBarrierEventClientPtr;
++
++struct PointerBarrierEventClient {
++    ScreenPtr screen;
++    ClientPtr client;
++    CARD32    eventMask;
++    XID window;
++    XID resource;
++    struct xorg_list entry;
++};
++
+ struct PointerBarrier {
++    XID    barrier;
+     CARD16 x1, x2, y1, y2;
+     CARD32 directions;
++    CARD32 velocity;
++    CARD32 barrierEventID;
++    CARD32 releaseEventID;
++    Bool   hit, lastHit;
+ };
+ 
+ extern int
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.h.orig xorg-server-1.12.1.902/xfixes/xfixes.h.orig
+--- xorg-server-1.12.1.902.orig/xfixes/xfixes.h.orig	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/xfixes/xfixes.h.orig	2012-05-17 13:09:05.000000000 -0400
+@@ -0,0 +1,71 @@
++/*
++ * Copyright © 2002 Keith Packard
++ *
++ * Permission to use, copy, modify, distribute, and sell this software and its
++ * documentation for any purpose is hereby granted without fee, provided that
++ * the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation, and that the name of Keith Packard not be used in
++ * advertising or publicity pertaining to distribution of the software without
++ * specific, written prior permission.  Keith Packard makes no
++ * representations about the suitability of this software for any purpose.  It
++ * is provided "as is" without express or implied warranty.
++ *
++ * KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++ * EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++ * PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifdef HAVE_DIX_CONFIG_H
++#include <dix-config.h>
++#endif
++
++#ifndef _XFIXES_H_
++#define _XFIXES_H_
++
++#include "resource.h"
++
++extern _X_EXPORT RESTYPE RegionResType;
++extern _X_EXPORT RESTYPE PointerBarrierType;
++extern _X_EXPORT int XFixesErrorBase;
++
++#define VERIFY_REGION(pRegion, rid, client, mode)			\
++    do {								\
++	int err;							\
++	err = dixLookupResourceByType((pointer *) &pRegion, rid,	\
++				      RegionResType, client, mode);	\
++	if (err != Success) {						\
++	    client->errorValue = rid;					\
++	    return err;							\
++	}								\
++    } while (0)
++
++#define VERIFY_REGION_OR_NONE(pRegion, rid, client, mode) { \
++    pRegion = 0; \
++    if (rid) VERIFY_REGION(pRegion, rid, client, mode); \
++}
++
++extern _X_EXPORT RegionPtr
++ XFixesRegionCopy(RegionPtr pRegion);
++
++struct PointerBarrier {
++    CARD16 x1, x2, y1, y2;
++    CARD32 directions;
++};
++
++extern int
++ barrier_get_direction(int, int, int, int);
++extern BOOL
++barrier_is_blocking(const struct PointerBarrier *, int, int, int, int,
++                    double *);
++extern BOOL barrier_is_blocking_direction(const struct PointerBarrier *, int);
++extern void
++
++barrier_clamp_to_barrier(struct PointerBarrier *barrier, int dir, int *x,
++                         int *y);
++
++#endif                          /* _XFIXES_H_ */
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixesint.h xorg-server-1.12.1.902/xfixes/xfixesint.h
+--- xorg-server-1.12.1.902.orig/xfixes/xfixesint.h	2012-05-20 14:40:28.242878562 -0400
++++ xorg-server-1.12.1.902/xfixes/xfixesint.h	2012-05-20 14:40:44.212792046 -0400
+@@ -59,6 +59,7 @@
+ #include "windowstr.h"
+ #include "selection.h"
+ #include "xfixes.h"
++#include "list.h"
+ 
+ extern int XFixesEventBase;
+ 
+@@ -295,6 +296,26 @@
+ int
+  SProcXFixesDestroyPointerBarrier(ClientPtr client);
+ 
++/* Version 6 */
++
++int
++ProcXFixesSelectBarrierInput (ClientPtr client);
++
++int
++SProcXFixesSelectBarrierInput (ClientPtr client);
++
++int
++ProcXFixesCreatePointerBarrierVelocity (ClientPtr client);
++
++int
++SProcXFixesCreatePointerBarrierVelocity (ClientPtr client);
++
++int
++ProcXFixesBarrierReleasePointer (ClientPtr client);
++
++int
++SProcXFixesBarrierReleasePointer (ClientPtr client);
++
+ /* Xinerama */
+ extern int (*PanoramiXSaveXFixesVector[XFixesNumberRequests]) (ClientPtr);
+ void PanoramiXFixesInit(void);
+diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixesint.h.orig xorg-server-1.12.1.902/xfixes/xfixesint.h.orig
+--- xorg-server-1.12.1.902.orig/xfixes/xfixesint.h.orig	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.1.902/xfixes/xfixesint.h.orig	2012-05-17 13:09:05.000000000 -0400
+@@ -0,0 +1,303 @@
++/*
++ * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
++ * Copyright 2010 Red Hat, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ * Copyright © 2002 Keith Packard
++ *
++ * Permission to use, copy, modify, distribute, and sell this software and its
++ * documentation for any purpose is hereby granted without fee, provided that
++ * the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation, and that the name of Keith Packard not be used in
++ * advertising or publicity pertaining to distribution of the software without
++ * specific, written prior permission.  Keith Packard makes no
++ * representations about the suitability of this software for any purpose.  It
++ * is provided "as is" without express or implied warranty.
++ *
++ * KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++ * EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++ * PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifdef HAVE_DIX_CONFIG_H
++#include <dix-config.h>
++#endif
++
++#ifndef _XFIXESINT_H_
++#define _XFIXESINT_H_
++
++#include <X11/X.h>
++#include <X11/Xproto.h>
++#include "misc.h"
++#include "os.h"
++#include "dixstruct.h"
++#include "extnsionst.h"
++#include <X11/extensions/xfixesproto.h>
++#include "windowstr.h"
++#include "selection.h"
++#include "xfixes.h"
++
++extern int XFixesEventBase;
++
++typedef struct _XFixesClient {
++    CARD32 major_version;
++    CARD32 minor_version;
++} XFixesClientRec, *XFixesClientPtr;
++
++#define GetXFixesClient(pClient) ((XFixesClientPtr)dixLookupPrivate(&(pClient)->devPrivates, XFixesClientPrivateKey))
++
++extern int (*ProcXFixesVector[XFixesNumberRequests]) (ClientPtr);
++
++/* Initialize extension at server startup time */
++
++void
++ XFixesExtensionInit(void);
++
++/* Save set */
++int
++ ProcXFixesChangeSaveSet(ClientPtr client);
++
++int
++ SProcXFixesChangeSaveSet(ClientPtr client);
++
++/* Selection events */
++int
++ ProcXFixesSelectSelectionInput(ClientPtr client);
++
++int
++ SProcXFixesSelectSelectionInput(ClientPtr client);
++
++void
++
++SXFixesSelectionNotifyEvent(xXFixesSelectionNotifyEvent * from,
++                            xXFixesSelectionNotifyEvent * to);
++Bool
++ XFixesSelectionInit(void);
++
++/* Cursor notification */
++Bool
++ XFixesCursorInit(void);
++
++int
++ ProcXFixesSelectCursorInput(ClientPtr client);
++
++int
++ SProcXFixesSelectCursorInput(ClientPtr client);
++
++void
++
++SXFixesCursorNotifyEvent(xXFixesCursorNotifyEvent * from,
++                         xXFixesCursorNotifyEvent * to);
++
++int
++ ProcXFixesGetCursorImage(ClientPtr client);
++
++int
++ SProcXFixesGetCursorImage(ClientPtr client);
++
++/* Cursor names (Version 2) */
++
++int
++ ProcXFixesSetCursorName(ClientPtr client);
++
++int
++ SProcXFixesSetCursorName(ClientPtr client);
++
++int
++ ProcXFixesGetCursorName(ClientPtr client);
++
++int
++ SProcXFixesGetCursorName(ClientPtr client);
++
++int
++ ProcXFixesGetCursorImageAndName(ClientPtr client);
++
++int
++ SProcXFixesGetCursorImageAndName(ClientPtr client);
++
++/* Cursor replacement (Version 2) */
++
++int
++ ProcXFixesChangeCursor(ClientPtr client);
++
++int
++ SProcXFixesChangeCursor(ClientPtr client);
++
++int
++ ProcXFixesChangeCursorByName(ClientPtr client);
++
++int
++ SProcXFixesChangeCursorByName(ClientPtr client);
++
++/* Region objects (Version 2* */
++Bool
++ XFixesRegionInit(void);
++
++int
++ ProcXFixesCreateRegion(ClientPtr client);
++
++int
++ SProcXFixesCreateRegion(ClientPtr client);
++
++int
++ ProcXFixesCreateRegionFromBitmap(ClientPtr client);
++
++int
++ SProcXFixesCreateRegionFromBitmap(ClientPtr client);
++
++int
++ ProcXFixesCreateRegionFromWindow(ClientPtr client);
++
++int
++ SProcXFixesCreateRegionFromWindow(ClientPtr client);
++
++int
++ ProcXFixesCreateRegionFromGC(ClientPtr client);
++
++int
++ SProcXFixesCreateRegionFromGC(ClientPtr client);
++
++int
++ ProcXFixesCreateRegionFromPicture(ClientPtr client);
++
++int
++ SProcXFixesCreateRegionFromPicture(ClientPtr client);
++
++int
++ ProcXFixesDestroyRegion(ClientPtr client);
++
++int
++ SProcXFixesDestroyRegion(ClientPtr client);
++
++int
++ ProcXFixesSetRegion(ClientPtr client);
++
++int
++ SProcXFixesSetRegion(ClientPtr client);
++
++int
++ ProcXFixesCopyRegion(ClientPtr client);
++
++int
++ SProcXFixesCopyRegion(ClientPtr client);
++
++int
++ ProcXFixesCombineRegion(ClientPtr client);
++
++int
++ SProcXFixesCombineRegion(ClientPtr client);
++
++int
++ ProcXFixesInvertRegion(ClientPtr client);
++
++int
++ SProcXFixesInvertRegion(ClientPtr client);
++
++int
++ ProcXFixesTranslateRegion(ClientPtr client);
++
++int
++ SProcXFixesTranslateRegion(ClientPtr client);
++
++int
++ ProcXFixesRegionExtents(ClientPtr client);
++
++int
++ SProcXFixesRegionExtents(ClientPtr client);
++
++int
++ ProcXFixesFetchRegion(ClientPtr client);
++
++int
++ SProcXFixesFetchRegion(ClientPtr client);
++
++int
++ ProcXFixesSetGCClipRegion(ClientPtr client);
++
++int
++ SProcXFixesSetGCClipRegion(ClientPtr client);
++
++int
++ ProcXFixesSetWindowShapeRegion(ClientPtr client);
++
++int
++ SProcXFixesSetWindowShapeRegion(ClientPtr client);
++
++int
++ ProcXFixesSetPictureClipRegion(ClientPtr client);
++
++int
++ SProcXFixesSetPictureClipRegion(ClientPtr client);
++
++int
++ ProcXFixesExpandRegion(ClientPtr client);
++
++int
++ SProcXFixesExpandRegion(ClientPtr client);
++
++int
++ PanoramiXFixesSetGCClipRegion(ClientPtr client);
++
++int
++ PanoramiXFixesSetWindowShapeRegion(ClientPtr client);
++
++int
++ PanoramiXFixesSetPictureClipRegion(ClientPtr client);
++
++/* Cursor Visibility (Version 4) */
++
++int
++ ProcXFixesHideCursor(ClientPtr client);
++
++int
++ SProcXFixesHideCursor(ClientPtr client);
++
++int
++ ProcXFixesShowCursor(ClientPtr client);
++
++int
++ SProcXFixesShowCursor(ClientPtr client);
++
++/* Version 5 */
++
++int
++ ProcXFixesCreatePointerBarrier(ClientPtr client);
++
++int
++ SProcXFixesCreatePointerBarrier(ClientPtr client);
++
++int
++ ProcXFixesDestroyPointerBarrier(ClientPtr client);
++
++int
++ SProcXFixesDestroyPointerBarrier(ClientPtr client);
++
++/* Xinerama */
++extern int (*PanoramiXSaveXFixesVector[XFixesNumberRequests]) (ClientPtr);
++void PanoramiXFixesInit(void);
++void PanoramiXFixesReset(void);
++
++#endif                          /* _XFIXESINT_H_ */
