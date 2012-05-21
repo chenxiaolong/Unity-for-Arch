@@ -9,7 +9,7 @@ echo "Getting latest Arch Linux version..."
 ARCHLINUX_VER=($(wget -q 'https://www.archlinux.org/packages/extra/x86_64/gnome-control-center/' -O - | sed -n '/<title>/ s/^.*gnome-control-center\ \(.*\)-\(.*\)\ (.*$/\1 \2/p'))
 
 echo "Getting latest upstream version..."
-UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/GNOME/sources/gnome-control-center/${pkgver%.*.*}/" -O - | sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p')
+UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/GNOME/sources/gnome-control-center/${_actual_ver%.*}/" -O - | sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p')
 
 echo ""
 
