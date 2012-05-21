@@ -10,6 +10,6 @@ UPSTREAM_VER=$(wget -q "http://get.qt.nokia.com/qt/source/" -O - | sed -n 's/.*>
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${_actual_ver} ${_ubuntu_rel}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"

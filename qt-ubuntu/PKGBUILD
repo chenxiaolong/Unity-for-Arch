@@ -4,17 +4,17 @@
 
 # Cannot build if qt-ubuntu is installed
 if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ] && [ "x${UPDATE_SCRIPT}" == 'x' ]; then
-  echo ""
+  echo "" >&2
   error "qtwebkit must be temporarily removed before building."
   msg "Please run:"
-  echo ""
-  echo "  pacman -Rdd qtwebkit"
-  echo ""
+  echo "" >&2
+  echo "  pacman -Rdd qtwebkit" >&2
+  echo "" >&2
   msg "and reinstalled after the build."
-  echo ""
-  echo "(If for some reason, you need to override this message, run:)"
-  echo ""
-  echo "  IGNORE_NO_QTWEBKIT=yes makepkg"
+  echo "" >&2
+  echo "(If for some reason, you need to override this message, run:)" >&2
+  echo "" >&2
+  echo "  IGNORE_NO_QTWEBKIT=yes makepkg" >&2
   exit 1
 fi
 
@@ -24,20 +24,21 @@ pkgdesc='A cross-platform application and UI framework'
 
 pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=0ubuntu4
-pkgver=4.8.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu4.1
+_actual_ver=4.8.1
+pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
 makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
 options=('!libtool')
-_pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${pkgver%.*}"
+_pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${_actual_ver}"
 source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         'gcc47.patch')
 sha512sums=('a48825a3d42c93c6d9d769d9f79b297d92b5deb9003c89c2d1f1b364b496fc6e7d307e0eb6b798ae49d7bf1928caeda6741025242499296550293518004c3d90'
-            'a67f090af9212c843e0b2697f2171681a8efb6c3eca79f939eb2d007a14a681ecaabf28fc690be5dd36ff1eaef970326b57057dedd0753600c3c315ba542fe60'
+            '5cac76f09ec64bbf8fb46121c0f5a908c2173d1ea5b1670998788d5d4521025b4b74be0cef7330245e57ad0395f89c4ad3e6ed22f28d3d619096e67da542a937'
             '992b7fbaf234448f81d405a16885c14004a9caafa19963771db08b7b971fd0981078b151b614dbf5fd849e5303d5c1443e41ece7df49d0384c54dd88b1c46535')
 
 build() {
@@ -105,6 +106,7 @@ build() {
       "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    msg "Applying patch: ${i}"
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
@@ -178,7 +180,7 @@ package_qt-ubuntu() {
   pkgdesc='A cross-platform application and UI framework'
   depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi')
   conflicts=('qt')
-  provides=("qt=${pkgver}")
+  provides=("qt=${_actual_ver}")
   optdepends=('postgresql-libs: PostgreSQL driver'
               'libmysqlclient: MySQL driver'
               'unixodbc: ODBC driver'
@@ -230,7 +232,7 @@ package_qt-private-headers-ubuntu(){
   pkgdesc="Qt private headers for development"
   depends=("qt-ubuntu=${pkgver}")
   conflicts=('qt-private-headers')
-  provides=("qt-private-headers=${pkgver}")
+  provides=("qt-private-headers=${_actual_ver}")
   options=('!emptydirs')
 
   install -d -m755 "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}
@@ -244,3 +246,5 @@ package_qt-private-headers-ubuntu(){
     cp -r "${srcdir}/${_pkgfqn}/src/${i}" "${pkgdir}/usr/src/"
   done
 }
+
+# vim:set ts=2 sw=2 et:
