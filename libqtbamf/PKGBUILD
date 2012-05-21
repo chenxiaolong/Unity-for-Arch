@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libqtbamf
-pkgver=0.2.3
+pkgver=0.2.4
 pkgrel=100
 pkgdesc="Provides a set of Qt bindings for libbamf"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('qt' 'libbamf3')
 makedepends=('cmake')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz")
-sha512sums=('97d4618daac7a42c139db678d7d19e25c73ede6bbf8f0d77eecbf3457043af23e3f00501760c3a9356557559760fb4712afe57985db2b51d9d008bc227ac1c6a')
+sha512sums=('2272e3fbc8d0d6f0c7d0edbb1b3f4bcfff11bc80ba4e18854c73b37dc9e45b9833f4d8fb7d59314ee9314103420be7203f4af54a5fdad95a4b618abfc2d0765b')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -27,3 +27,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
