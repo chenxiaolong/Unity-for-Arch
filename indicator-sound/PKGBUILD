@@ -4,7 +4,7 @@
 
 pkgbase=indicator-sound
 pkgname=('indicator-sound' 'indicator-sound-gtk2')
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu2.1
 pkgver=0.8.5.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
@@ -15,13 +15,13 @@ makedepends=('intltool' 'vala' 'libgee')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*.*}/+download/${pkgname}-${pkgver%.*.*}.tar.gz"
+        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('bca5d3d1e8ac215d7261aa1bdbfd1ed73505cc6a51da19cdfce681a3641e734f2c1a1c88de2bf3a8129b737aec976748a55e3c793e00497da5b98d004eda9c7d'
-            '3e4beaac011b85e87f890279dbdeba66cf2a0a9d2281cc092999ccd99a71da6c6484e49b2ae60106cfc23aecc58c7ab16989d1c8734cebbb2336d03584d37da9')
+            'b623ab45d6ad5de63a1e14da044a8f91d5557c094f455380933ec6341dd88b8ef95a43f81e93db77dda6177debcc607a1d98f51d630d2144a351ba084d40a496')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
@@ -49,7 +49,7 @@ build() {
 package_indicator-sound() {
   pkgdesc="A unified sound menu - GTK 3 library"
   depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'dconf')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk3"
 
   make DESTDIR="${pkgdir}/" install
 }
@@ -57,7 +57,7 @@ package_indicator-sound() {
 package_indicator-sound-gtk2() {
   pkgdesc="A unified sound menu - GTK 2 library"
   depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'indicator-sound')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk2"
 
   INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
 
