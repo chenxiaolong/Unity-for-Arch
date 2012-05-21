@@ -3,7 +3,7 @@
 pkgname=glib2-ubuntu
 _ubuntu_rel=0ubuntu2
 pkgver=2.32.1.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="Common C routines used by GTK+ 2.4 and other libs"
 url="http://www.gtk.org/"
 arch=('i686' 'x86_64')
