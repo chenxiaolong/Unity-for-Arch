@@ -97,46 +97,51 @@ All of PKGBUILD's were checked by namcap for consistency. The binary packages ha
 
 Troubleshooting:
 
-Global menus aren't working when logging in with KDM (KDE display manager).
+* Global menus aren't working when logging in with KDM (KDE display manager).
 
-  This happens because previous versions of KDM weren't patched to source the
-  /etc/X11/xinit/xinitrc.d/ directory. This is fixed in kdebase-workspace version
-  4.7.2-1, but requires the KDM configuration files to be regenerated (resetting
-  all KDM configuration options). To regenerate the configuration files, run as root
+    This happens because previous versions of KDM weren't patched to source the
+    /etc/X11/xinit/xinitrc.d/ directory. This is fixed in kdebase-workspace
+    version 4.7.2-1, but requires the KDM configuration files to be regenerated
+    (resetting all KDM configuration options). To regenerate the configuration
+    files, run as root
 
-    # rm -rvf /usr/share/config/kdm
-    # genkdmconf
+      # rm -rvf /usr/share/config/kdm
+      # genkdmconf
 
-AHH! Something is wrong with Unity!
+* AHH! Something is wrong with Unity!
 
-  Try resetting the settings for Unity and Compiz and relogin:
+    Try resetting the settings for Unity and Compiz and relogin:
 
-    $ rm -rvf ~/.compiz-1/
-    $ rm -rvf ~/.cache/compizconfig-1/
-    $ rm -rvf ~/.config/compiz-1/
-    $ gconftool-2 --recursive-unset /apps/compiz-1
-    $ gconftool-2 --recursive-unset /apps/compizconfig-1
-    $ rm -rvf ~/.gconf/apps/compiz-1/
-    $ rm -rvf ~/.gconf/apps/compizconfig-1/
-    $ rm -rvf ~/.cache/unity/
-    $ rm -vf ~/.cache/unity-lens-video
+      $ rm -rvf ~/.compiz-1/
+      $ rm -rvf ~/.cache/compizconfig-1/
+      $ rm -rvf ~/.config/compiz-1/
+      $ gconftool-2 --recursive-unset /apps/compiz-1
+      $ gconftool-2 --recursive-unset /apps/compizconfig-1
+      $ rm -rvf ~/.gconf/apps/compiz-1/
+      $ rm -rvf ~/.gconf/apps/compizconfig-1/
+      $ rm -rvf ~/.cache/unity/
+      $ rm -vf ~/.cache/unity-lens-video
 
-  If something is still wrong, please file a bug report at either:
+    If something is still wrong, please file a bug report at either:
 
-    https://github.com/chenxiaolong/Unity-for-Arch/issues
+      https://github.com/chenxiaolong/Unity-for-Arch/issues
 
-  or
+    or
 
-    https://bugs.launchpad.net/unity-for-arch
+      https://bugs.launchpad.net/unity-for-arch
 
-I have an ATI graphics card that needs the AMD Catalyst/fglrx driver.
+* I have an ATI graphics card that needs the AMD Catalyst/fglrx driver.
 
-  Use the xorg-server-ubuntu-1.11 package instead of xorg-server-ubuntu.
+    Use the xorg-server-ubuntu-1.11 package instead of xorg-server-ubuntu.
 
-qt-ubuntu does not build.
+* qt-ubuntu does not build.
 
-  Temporary remove the qtwebkit package (ignoring dependencies) by running:
+    Temporary remove the qtwebkit package (ignoring dependencies) by running:
 
-    pacman -Rdd qtwebkit
+      $ pacman -Rdd qtwebkit
 
-  After the build, qtwebkit can be installed again.
+    After the build, qtwebkit can be installed again.
+
+* The global menu does not show up for Qt applications.
+
+    Just install appmenu-qt :)
