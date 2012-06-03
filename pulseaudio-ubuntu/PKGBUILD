@@ -21,10 +21,12 @@ makedepends=('libasyncns' 'libcap' 'attr' 'libxtst' 'libsm' 'libsamplerate' 'lib
 options=('!emptydirs' '!libtool')
 source=("http://freedesktop.org/software/${pkgbase%-*}/releases/${pkgbase%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
-        "${pkgbase%-*}.xinit")
+        "${pkgbase%-*}.xinit"
+        '0001-Remove-usage-of-deprecated-udev_get_-_path.patch')
 sha512sums=('6cd24259ad27f272c9069f4474c63208e431b802858f8485e601a7335a92787701a4a51b3f6b11d3bf2c5c04b4d9ec8c3b33f8dd3c0dda674c15da7c0c78cbba'
             'ffd4f2786d4e134387b9abd41d4cad264f3b70d4e16b7b60668e2b41fcb8c463f29f0f1b2a438d10c2578f5f47c99b6e36e383fbd59fbe7761aa94e2bbecf49c'
-            'd6d2fae73a80f7e470dd858c7d5f917348d536e146f551776abf1fbea671febeeb74e44daeb1a03e2626d3fc946ce659eec78c22728f95ed4be73be9e7829f4a')
+            'd6d2fae73a80f7e470dd858c7d5f917348d536e146f551776abf1fbea671febeeb74e44daeb1a03e2626d3fc946ce659eec78c22728f95ed4be73be9e7829f4a'
+            'e8e9b3ae1a505a5cf10f525505f0086ee8c1c504a435dafb0cfdd95d8ea17368002fd266271a2240e74fdb6c36bdfde54703d5a62a89aa6d42fa108df1c353f5')
 
 build() {
   cd "${srcdir}/${pkgbase%-*}-${pkgver%.*}"
@@ -39,6 +41,8 @@ build() {
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
+
+  patch -Np1 -i "${srcdir}/0001-Remove-usage-of-deprecated-udev_get_-_path.patch"
 
   autoreconf -vfi
 
