@@ -1,37 +1,3 @@
-diff -Nru unity-lens-files-5.10.0.orig/src/daemon.vala unity-lens-files-5.10.0/src/daemon.vala
---- unity-lens-files-5.10.0.orig/src/daemon.vala	2012-04-26 12:06:39.598833926 -0400
-+++ unity-lens-files-5.10.0/src/daemon.vala	2012-04-26 12:25:35.586013089 -0400
-@@ -833,11 +833,11 @@
-         var uri = info.get_data<File> ("associated-gfile").get_uri ();
-         warn_if_fail (uri != null);
-         if (uri == null || uri in present_uris) continue;
--        var mimetype = info.get_attribute_string (FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
-+        var mimetype = info.get_attribute_string (FileAttribute.STANDARD_FAST_CONTENT_TYPE);
-         var icon_hint = Utils.check_icon_string (uri, mimetype, info);
- 
-         // check if we match the timerange
--        uint64 mtime = info.get_attribute_uint64 (FILE_ATTRIBUTE_TIME_MODIFIED) * 1000;
-+        uint64 mtime = info.get_attribute_uint64 (FileAttribute.TIME_MODIFIED) * 1000;
- 
-         if (mtime < timerange.get_start() || mtime > timerange.get_end ())
-           continue;
-@@ -891,11 +891,11 @@
-     }
-   }
- 
--  private const string ATTRS_TYPE_HIDDEN = FILE_ATTRIBUTE_STANDARD_TYPE +
--    "," + FILE_ATTRIBUTE_STANDARD_IS_HIDDEN;
--  private const string ATTRS_TYPE_SIZE_HIDDEN = FILE_ATTRIBUTE_STANDARD_TYPE +
--    "," + FILE_ATTRIBUTE_STANDARD_SIZE +
--    "," + FILE_ATTRIBUTE_STANDARD_IS_HIDDEN;
-+  private const string ATTRS_TYPE_HIDDEN = FileAttribute.STANDARD_TYPE +
-+    "," + FileAttribute.STANDARD_IS_HIDDEN;
-+  private const string ATTRS_TYPE_SIZE_HIDDEN = FileAttribute.STANDARD_TYPE +
-+    "," + FileAttribute.STANDARD_SIZE +
-+    "," + FileAttribute.STANDARD_IS_HIDDEN;
- 
-   [Flags]
-   public enum ResultFlags
 diff -Nru unity-lens-files-5.10.0.orig/src/folder.vala unity-lens-files-5.10.0/src/folder.vala
 --- unity-lens-files-5.10.0.orig/src/folder.vala	2012-04-26 12:06:39.598833926 -0400
 +++ unity-lens-files-5.10.0/src/folder.vala	2012-04-26 12:43:44.623446599 -0400
@@ -44,89 +10,9 @@ diff -Nru unity-lens-files-5.10.0.orig/src/folder.vala unity-lens-files-5.10.0/s
    {
      public string uri { get; set construct; }
      public string icon { get; set construct; }
-diff -Nru unity-lens-files-5.10.0.orig/src/locate.vala unity-lens-files-5.10.0/src/locate.vala
---- unity-lens-files-5.10.0.orig/src/locate.vala	2012-04-26 12:06:39.598833926 -0400
-+++ unity-lens-files-5.10.0/src/locate.vala	2012-04-26 12:16:06.405763269 -0400
-@@ -27,14 +27,14 @@
-   /* Careful about usage of FILE_ATTRIBUTE_STANDARD_ICON, this is the same as
-    * requesting FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE and causes reading
-    * of the target file, we just want to stat it */
--  const string ATTRIBS = FILE_ATTRIBUTE_STANDARD_IS_HIDDEN + "," +
--      FILE_ATTRIBUTE_STANDARD_IS_BACKUP + "," +
--      FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME + "," +
--      FILE_ATTRIBUTE_STANDARD_SIZE + "," +
--      FILE_ATTRIBUTE_TIME_MODIFIED + "," +
--      FILE_ATTRIBUTE_THUMBNAIL_PATH + "," +
--      FILE_ATTRIBUTE_ACCESS_CAN_WRITE + "," +
--      FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE;
-+  const string ATTRIBS = FileAttribute.STANDARD_IS_HIDDEN + "," +
-+      FileAttribute.STANDARD_IS_BACKUP + "," +
-+      FileAttribute.STANDARD_DISPLAY_NAME + "," +
-+      FileAttribute.STANDARD_SIZE + "," +
-+      FileAttribute.TIME_MODIFIED + "," +
-+      FileAttribute.THUMBNAIL_PATH + "," +
-+      FileAttribute.ACCESS_CAN_WRITE + "," +
-+      FileAttribute.STANDARD_FAST_CONTENT_TYPE;
- 
-   private BlacklistTracker blacklist_tracker;
- 
-@@ -84,7 +84,7 @@
-       var fi = yield file.query_info_async (ATTRIBS, 0, Priority.DEFAULT_IDLE,
-                                             cancellable);
-       if (fi.get_is_hidden () || fi.get_is_backup () ||
--          !fi.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) continue;
-+          !fi.get_attribute_boolean (FileAttribute.ACCESS_CAN_WRITE)) continue;
-       fi.set_data ("associated-gfile", file);
-       result.prepend (fi);
- 
 diff -Nru unity-lens-files-5.10.0.orig/src/utils.vala unity-lens-files-5.10.0/src/utils.vala
 --- unity-lens-files-5.10.0.orig/src/utils.vala	2012-04-26 12:06:39.598833926 -0400
 +++ unity-lens-files-5.10.0/src/utils.vala	2012-04-26 12:24:33.113018201 -0400
-@@ -24,21 +24,21 @@
- 
- namespace Unity.FilesLens.Utils {
- 
--    const string icon_attribs = FILE_ATTRIBUTE_PREVIEW_ICON + "," +
--                                FILE_ATTRIBUTE_STANDARD_ICON + "," +
--                                FILE_ATTRIBUTE_THUMBNAIL_PATH;
--
--    const string file_attribs = FILE_ATTRIBUTE_STANDARD_NAME + "," +
--                                FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME + "," +
--                                FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE + "," +
--                                FILE_ATTRIBUTE_STANDARD_IS_HIDDEN + "," +
--                                FILE_ATTRIBUTE_STANDARD_IS_BACKUP + "," +
--                                FILE_ATTRIBUTE_STANDARD_SIZE + "," +
--                                FILE_ATTRIBUTE_TIME_MODIFIED + "," +
--                                FILE_ATTRIBUTE_TIME_ACCESS;
-+    const string icon_attribs = FileAttribute.PREVIEW_ICON + "," +
-+                                FileAttribute.STANDARD_ICON + "," +
-+                                FileAttribute.THUMBNAIL_PATH;
-+
-+    const string file_attribs = FileAttribute.STANDARD_NAME + "," +
-+                                FileAttribute.STANDARD_DISPLAY_NAME + "," +
-+                                FileAttribute.STANDARD_CONTENT_TYPE + "," +
-+                                FileAttribute.STANDARD_IS_HIDDEN + "," +
-+                                FileAttribute.STANDARD_IS_BACKUP + "," +
-+                                FileAttribute.STANDARD_SIZE + "," +
-+                                FileAttribute.TIME_MODIFIED + "," +
-+                                FileAttribute.TIME_ACCESS;
-     
--    const string hide_attribs = FILE_ATTRIBUTE_STANDARD_IS_BACKUP + "," +
--                                FILE_ATTRIBUTE_STANDARD_IS_HIDDEN;
-+    const string hide_attribs = FileAttribute.STANDARD_IS_BACKUP + "," +
-+                                FileAttribute.STANDARD_IS_HIDDEN;
-     
-     const string all_attribs = icon_attribs + "," + file_attribs + "," + hide_attribs;
- 
-@@ -86,7 +86,7 @@
-     public string check_icon_string (string uri, string mimetype, FileInfo info)
-     {
-       Icon icon = info.get_icon ();
--      string thumbnail_path = info.get_attribute_byte_string (FILE_ATTRIBUTE_THUMBNAIL_PATH);
-+      string thumbnail_path = info.get_attribute_byte_string (FileAttribute.THUMBNAIL_PATH);
- 
-       if (thumbnail_path == null && icon != null)
-         return icon.to_string ();
 @@ -98,9 +98,8 @@
      
      public int cmp_file_info_by_mtime (FileInfo info1, FileInfo info2)
@@ -139,12 +25,3 @@ diff -Nru unity-lens-files-5.10.0.orig/src/utils.vala unity-lens-files-5.10.0/sr
        long cmp = tv1.tv_sec - tv2.tv_sec;
        return cmp < 0 ? 1 : ( cmp > 0 ? -1 : 0);
      }
-@@ -338,7 +337,7 @@
-       unowned string interpretation;
-       unowned string content_type = info.get_content_type ();
-       if (content_type == null)
--        content_type = info.get_attribute_string (FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
-+        content_type = info.get_attribute_string (FileAttribute.STANDARD_FAST_CONTENT_TYPE);
- 
-       if (content_type == null) content_type = "application/octet-stream";
- 

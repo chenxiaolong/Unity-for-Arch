@@ -16,7 +16,7 @@ install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         'vala-0.16_fix.patch')
 sha512sums=('7474afb7462db3c03b992ae2f1fe092c244733d9bab74399651542cab11f46cc190ce75af742a1a6e4e006489d04df1c9d2bd1d45d2eb9729a103f4984db727b'
-            '40beb4f7e355040005c3648c0ab5fdfaeed93abe2ddfea6aea0e6a7cf6b33c633614d39f6a404e02e876fbf0c6b9ad4ed1364662147c827090fd61f85d5a79b4')
+            '772ee710458f1047c9c33ae49d6418334c264a46987119046b679af73cad4a16f2f763aff2ed35adf473767b8cf2e4d00b8fbcb3a6cf50f94d6593f962adc0a9')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
