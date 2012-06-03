@@ -16,7 +16,7 @@
 pkgbase=xorg-server
 pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
 pkgver=1.12.1.902
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
