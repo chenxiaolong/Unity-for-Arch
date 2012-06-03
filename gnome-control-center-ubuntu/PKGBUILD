@@ -17,8 +17,7 @@ depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop'
          'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu'
          'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb'
          'network-manager-applet' 'sound-theme-freedesktop' 'upower'
-         'libsystemd' 'cheese' 'libpulse-ubuntu>=1.1.0ubuntu7-100'
-         'archlinux-artwork')
+         'libsystemd' 'cheese' 'libpulse' 'archlinux-artwork')
 makedepends=('gnome-doc-utils' 'intltool' 'gnome-common')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'apg: adds password generation for user accounts'
