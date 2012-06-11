@@ -4,13 +4,11 @@ _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
 pkgver=5.12.0
+_actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu1
+  _ubuntu_rel=0ubuntu1.1
   pkgver="${pkgver}.${_ubuntu_rel}"
-  _actual_ver="${pkgver%.*}"
-else
-  _actual_ver="${pkgver}"
 fi
 
 pkgrel=100
@@ -37,11 +35,12 @@ source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+downloa
         'launcher_bfb.png'
         'gcc_4.7_fix.patch')
 sha512sums=('0960c909980b9657cba9c2428ad5ed3dbdd8125c81cb88bf448073e5861d704b1e9c64d4d05b29d52b72caa84a04778581b38ef8fa0ab748e417c902a51aeb6c'
-            '88ff40c5a3f5e45d95346e2ecf90db78f609de7e49475b33cb15fd39a34a61aa2afe144a9e9b5c092731e08485fe68d7996f53ca4ce0685b0fe0b3067b7bb2d4'
+            '5431797a99a511804f5cc5d9298ed57c79d5587e29cc88b392ffc85ab515bb4cb376be9b6795111e0120daef23cc79520d90c951258ddf8e7a1998abc88c4f25'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
             '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '387f7b737732e2ab4489d29cddec5b904d266f006d3cbbb0467914cec8b21d93618f7825741492e0f213d01a5be360605822e468baaf21c1dd00246df6eef69f')
+
 
 # GPG public key:
 #   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
