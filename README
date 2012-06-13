@@ -144,3 +144,10 @@ Troubleshooting:
 * The global menu does not show up for Qt applications.
 
     Just install appmenu-qt :)
+
+* System Settings (gnome-control-center) does not open.
+
+    Just add the following line to ~/.xprofile and then log out and log back in
+    (thanks to phinux!):
+
+      export MALLOC_CHECK_=1
