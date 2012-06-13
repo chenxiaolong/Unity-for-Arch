@@ -2,8 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=3.4.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu0.2
+pkgver=3.4.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
@@ -11,20 +11,20 @@ url="http://www.gtk.org/"
 install=gtk3.install
 depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'glib2>=2.31.0' 'dconf' 'pango>=1.30.0')
 makedepends=('gobject-introspection>=1.32.0')
-provides=("gtk3=${pkgver%.*}")
+provides=("gtk3=${pkgver%.*.*}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*}/gtk+-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*.*}/gtk+-${pkgver%.*.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz"
         'settings.ini')
-sha512sums=('706f001b6cce9c2edbde041900d6c3f3182ef1f5e5bad56e84623171c21717f9b5a00f29098961073e1e5b38f904bff78eabf3a5046486b8d2ff46eb95204287'
-            '05e6d66e91183640490066df4054ef5a25992d148abd4ea3b08ccdd01850d2e95495f275a1c14b2de810520975c0aeb07d3f059ac5066b0cce42f8ed9013946e'
+sha512sums=('b9adf9d40db013acd23b355244cac3ca19e8d688425fb2ae99b375ad84d7e49064ed4a3660a221bfdb82164b9f46fd1eae23855cee611389d75d1383971325d4'
+            '32628ef370c60d0237a4c86e9518f66a3788f6e50fcbab531c434dc5c9ab1c06217d7af01961ba7d8f386714f4f0a5a0838823a4e92b82ade3fd9c3336936e6a'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
-  cd "${srcdir}/gtk+-${pkgver%.*}"
+  cd "${srcdir}/gtk+-${pkgver%.*.*}"
 
   # Apply Ubuntu Patches
     # Disable patches
@@ -50,7 +50,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/gtk+-${pkgver%.*}"
+  cd "${srcdir}/gtk+-${pkgver%.*.*}"
   make mkdir_p="/bin/mkdir -p" DESTDIR="${pkgdir}" install
 
   install -Dm644 "${srcdir}/settings.ini" "${pkgdir}/etc/gtk-3.0/settings.ini"
