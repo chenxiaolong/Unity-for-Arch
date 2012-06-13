@@ -51,7 +51,7 @@ build() {
 
 package() {
   cd "${srcdir}/gtk+-${pkgver%.*}"
-  make DESTDIR="${pkgdir}" install
+  make mkdir_p="/bin/mkdir -p" DESTDIR="${pkgdir}" install
 
   install -Dm644 "${srcdir}/settings.ini" "${pkgdir}/etc/gtk-3.0/settings.ini"
 }
