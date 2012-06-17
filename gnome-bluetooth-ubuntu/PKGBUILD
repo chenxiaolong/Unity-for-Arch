@@ -13,7 +13,7 @@ arch=('i686' 'x86_64')
 url="http://live.gnome.org/GnomeBluetooth"
 license=('GPL' 'LGPL')
 depends=('gtk3' 'hicolor-icon-theme' 'gvfs-obexftp' 'obexd-client' 'libappindicator3' 'libnotify')
-makedepends=('intltool' 'gnome-doc-utils' 'nautilus-sendto' 'gobject-introspection')
+makedepends=('intltool' 'gtk-doc' 'gnome-doc-utils' 'nautilus-sendto' 'gobject-introspection')
 provides=("gnome-bluetooth=${pkgver}")
 conflicts=('gnome-bluetooth')
 options=('!libtool' '!emptydirs')
