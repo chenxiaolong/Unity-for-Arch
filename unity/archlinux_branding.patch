@@ -1,0 +1,12 @@
+diff -Nru unity-5.12.0.orig/plugins/unityshell/src/PanelMenuView.cpp unity-5.12.0/plugins/unityshell/src/PanelMenuView.cpp
+--- unity-5.12.0.orig/plugins/unityshell/src/PanelMenuView.cpp	2012-06-17 14:55:36.583950981 -0400
++++ unity-5.12.0/plugins/unityshell/src/PanelMenuView.cpp	2012-06-17 14:56:46.513572140 -0400
+@@ -75,7 +75,7 @@
+     _menus_discovery_fadeout(DEFAULT_DISCOVERY_FADEOUT),
+     _fade_in_animator(_menus_fadein),
+     _fade_out_animator(_menus_fadeout),
+-    _desktop_name(_("Ubuntu Desktop"))
++    _desktop_name(_("Arch Linux Desktop"))
+ {
+   layout_->SetContentDistribution(nux::eStackLeft);
+ 

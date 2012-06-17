@@ -13,6 +13,6 @@ UPSTREAM_VER=$(wget 'https://launchpad.net/unity/+download' -q -O - | sed -n 's/
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${pkgver%.*.*} ${_ubuntu_rel}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
