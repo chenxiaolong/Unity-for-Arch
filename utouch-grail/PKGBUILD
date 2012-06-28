@@ -18,7 +18,7 @@ build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   # Static library needed for tests
-  ./configure --prefix=/usr --with-xi # --disable-static
+  ./configure --prefix=/usr # --disable-static
   MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 }
