@@ -1,6 +1,6 @@
-diff -Nru xorg-server-1.12.1.902.orig/configure.ac xorg-server-1.12.1.902/configure.ac
---- xorg-server-1.12.1.902.orig/configure.ac	2012-05-21 12:43:37.332341890 -0400
-+++ xorg-server-1.12.1.902/configure.ac	2012-05-21 12:43:48.115675725 -0400
+diff -Nru xorg-server-1.12.3.orig/configure.ac xorg-server-1.12.3/configure.ac
+--- xorg-server-1.12.3.orig/configure.ac	2012-07-13 19:56:08.943618958 -0400
++++ xorg-server-1.12.3/configure.ac	2012-07-13 19:56:23.136952957 -0400
 @@ -2130,6 +2130,25 @@
  
  AC_CONFIG_COMMANDS([sdksyms], [touch hw/xfree86/sdksyms.dep])
@@ -35,9 +35,9 @@ diff -Nru xorg-server-1.12.1.902.orig/configure.ac xorg-server-1.12.1.902/config
  xserver.ent
  xorg-server.pc
  ])
-diff -Nru xorg-server-1.12.1.902.orig/dix/dixutils.c xorg-server-1.12.1.902/dix/dixutils.c
---- xorg-server-1.12.1.902.orig/dix/dixutils.c	2012-05-21 12:43:37.332341890 -0400
-+++ xorg-server-1.12.1.902/dix/dixutils.c	2012-05-21 12:43:48.115675725 -0400
+diff -Nru xorg-server-1.12.3.orig/dix/dixutils.c xorg-server-1.12.3/dix/dixutils.c
+--- xorg-server-1.12.3.orig/dix/dixutils.c	2012-07-13 19:56:08.940285623 -0400
++++ xorg-server-1.12.3/dix/dixutils.c	2012-07-13 19:56:23.136952957 -0400
 @@ -522,7 +522,7 @@
          if ((*q->function) (q->client, q->closure)) {
              /* remove q from the list */
@@ -92,10 +92,10 @@ diff -Nru xorg-server-1.12.1.902.orig/dix/dixutils.c xorg-server-1.12.1.902/dix/
  /*
   * Manage a queue of sleeping clients, awakening them
   * when requested, by using the OS functions IgnoreClient
-diff -Nru xorg-server-1.12.1.902.orig/dix/getevents.c xorg-server-1.12.1.902/dix/getevents.c
---- xorg-server-1.12.1.902.orig/dix/getevents.c	2012-05-21 12:43:37.325675222 -0400
-+++ xorg-server-1.12.1.902/dix/getevents.c	2012-05-21 12:43:48.115675725 -0400
-@@ -79,6 +79,12 @@
+diff -Nru xorg-server-1.12.3.orig/dix/getevents.c xorg-server-1.12.3/dix/getevents.c
+--- xorg-server-1.12.3.orig/dix/getevents.c	2012-07-13 19:56:08.933618956 -0400
++++ xorg-server-1.12.3/dix/getevents.c	2012-07-13 19:56:23.140286291 -0400
+@@ -80,6 +80,12 @@
  InternalEvent *InputEventList = NULL;
  
  /**
@@ -108,7 +108,7 @@ diff -Nru xorg-server-1.12.1.902.orig/dix/getevents.c xorg-server-1.12.1.902/dix
   * Pick some arbitrary size for Xi motion history.
   */
  int
-@@ -910,7 +916,15 @@
+@@ -938,7 +944,15 @@
      /* miPointerSetPosition takes care of crossing screens for us, as well as
       * clipping to the current screen. Coordinates returned are in desktop
       * coord system */
@@ -124,9 +124,9 @@ diff -Nru xorg-server-1.12.1.902.orig/dix/getevents.c xorg-server-1.12.1.902/dix
  
      /* If we were constrained, rescale x/y from the screen coordinates so
       * the device valuators reflect the correct position. For screen
-diff -Nru xorg-server-1.12.1.902.orig/include/dix.h xorg-server-1.12.1.902/include/dix.h
---- xorg-server-1.12.1.902.orig/include/dix.h	2012-05-21 12:43:37.349008556 -0400
-+++ xorg-server-1.12.1.902/include/dix.h	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/include/dix.h xorg-server-1.12.3/include/dix.h
+--- xorg-server-1.12.3.orig/include/dix.h	2012-07-13 19:56:08.953618958 -0400
++++ xorg-server-1.12.3/include/dix.h	2012-07-13 19:56:23.140286291 -0400
 @@ -245,6 +245,8 @@
                                      pointer     /*closure */
      );
@@ -136,9 +136,9 @@ diff -Nru xorg-server-1.12.1.902.orig/include/dix.h xorg-server-1.12.1.902/inclu
  typedef Bool (*ClientSleepProcPtr) (ClientPtr /*client */ ,
                                      pointer /*closure */ );
  
-diff -Nru xorg-server-1.12.1.902.orig/include/dixstruct.h xorg-server-1.12.1.902/include/dixstruct.h
---- xorg-server-1.12.1.902.orig/include/dixstruct.h	2012-05-21 12:43:37.345675221 -0400
-+++ xorg-server-1.12.1.902/include/dixstruct.h	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/include/dixstruct.h xorg-server-1.12.3/include/dixstruct.h
+--- xorg-server-1.12.3.orig/include/dixstruct.h	2012-07-13 19:56:08.953618958 -0400
++++ xorg-server-1.12.3/include/dixstruct.h	2012-07-13 19:56:23.140286291 -0400
 @@ -153,6 +153,9 @@
          );
      ClientPtr client;
@@ -149,9 +149,9 @@ diff -Nru xorg-server-1.12.1.902.orig/include/dixstruct.h xorg-server-1.12.1.902
  } WorkQueueRec;
  
  extern _X_EXPORT TimeStamp currentTime;
-diff -Nru xorg-server-1.12.1.902.orig/include/protocol-versions.h xorg-server-1.12.1.902/include/protocol-versions.h
---- xorg-server-1.12.1.902.orig/include/protocol-versions.h	2012-05-21 12:43:37.345675221 -0400
-+++ xorg-server-1.12.1.902/include/protocol-versions.h	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/include/protocol-versions.h xorg-server-1.12.3/include/protocol-versions.h
+--- xorg-server-1.12.3.orig/include/protocol-versions.h	2012-07-13 19:56:08.946952292 -0400
++++ xorg-server-1.12.3/include/protocol-versions.h	2012-07-13 19:56:23.140286291 -0400
 @@ -122,7 +122,7 @@
  #define SERVER_XF86VIDMODE_MINOR_VERSION	2
  
@@ -161,17 +161,17 @@ diff -Nru xorg-server-1.12.1.902.orig/include/protocol-versions.h xorg-server-1.
  #define SERVER_XFIXES_MINOR_VERSION		0
  
  /* X Input */
-diff -Nru xorg-server-1.12.1.902.orig/test/gtest/dummy.conf xorg-server-1.12.1.902/test/gtest/dummy.conf
---- xorg-server-1.12.1.902.orig/test/gtest/dummy.conf	1969-12-31 19:00:00.000000000 -0500
-+++ xorg-server-1.12.1.902/test/gtest/dummy.conf	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/test/gtest/dummy.conf xorg-server-1.12.3/test/gtest/dummy.conf
+--- xorg-server-1.12.3.orig/test/gtest/dummy.conf	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.3/test/gtest/dummy.conf	2012-07-13 19:56:23.140286291 -0400
 @@ -0,0 +1,4 @@
 +Section "Device"
 +    Identifier "Dummy video device"
 +    Driver "dummy"
 +EndSection
-diff -Nru xorg-server-1.12.1.902.orig/test/gtest/Makefile.am xorg-server-1.12.1.902/test/gtest/Makefile.am
---- xorg-server-1.12.1.902.orig/test/gtest/Makefile.am	1969-12-31 19:00:00.000000000 -0500
-+++ xorg-server-1.12.1.902/test/gtest/Makefile.am	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/test/gtest/Makefile.am xorg-server-1.12.3/test/gtest/Makefile.am
+--- xorg-server-1.12.3.orig/test/gtest/Makefile.am	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.3/test/gtest/Makefile.am	2012-07-13 19:56:23.140286291 -0400
 @@ -0,0 +1,27 @@
 +check_PROGRAMS = xfixes_barriers
 +check_DATA = dummy.conf
@@ -200,9 +200,9 @@ diff -Nru xorg-server-1.12.1.902.orig/test/gtest/Makefile.am xorg-server-1.12.1.
 +
 +nodist_xfixes_barriers_SOURCES = \
 +	$(GTEST_SOURCES)
-diff -Nru xorg-server-1.12.1.902.orig/test/gtest/xfixes_barriers.cpp xorg-server-1.12.1.902/test/gtest/xfixes_barriers.cpp
---- xorg-server-1.12.1.902.orig/test/gtest/xfixes_barriers.cpp	1969-12-31 19:00:00.000000000 -0500
-+++ xorg-server-1.12.1.902/test/gtest/xfixes_barriers.cpp	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/test/gtest/xfixes_barriers.cpp xorg-server-1.12.3/test/gtest/xfixes_barriers.cpp
+--- xorg-server-1.12.3.orig/test/gtest/xfixes_barriers.cpp	1969-12-31 19:00:00.000000000 -0500
++++ xorg-server-1.12.3/test/gtest/xfixes_barriers.cpp	2012-07-13 19:56:23.143619624 -0400
 @@ -0,0 +1,828 @@
 +/*
 +
@@ -1032,9 +1032,9 @@ diff -Nru xorg-server-1.12.1.902.orig/test/gtest/xfixes_barriers.cpp xorg-server
 +    }
 +    ASSERT_EQ (5, barrierEventCount);
 +}
-diff -Nru xorg-server-1.12.1.902.orig/test/Makefile.am xorg-server-1.12.1.902/test/Makefile.am
---- xorg-server-1.12.1.902.orig/test/Makefile.am	2012-05-21 12:43:37.322341888 -0400
-+++ xorg-server-1.12.1.902/test/Makefile.am	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/test/Makefile.am xorg-server-1.12.3/test/Makefile.am
+--- xorg-server-1.12.3.orig/test/Makefile.am	2012-07-13 19:56:08.926952291 -0400
++++ xorg-server-1.12.3/test/Makefile.am	2012-07-13 19:56:23.143619624 -0400
 @@ -5,6 +5,11 @@
  # Tests that require at least some DDX functions in order to fully link
  # For now, requires xf86 ddx, could be adjusted to use another
@@ -1047,9 +1047,9 @@ diff -Nru xorg-server-1.12.1.902.orig/test/Makefile.am xorg-server-1.12.1.902/te
  noinst_PROGRAMS += xkb input xtest misc fixes xfree86
  endif
  check_LTLIBRARIES = libxservertest.la
-diff -Nru xorg-server-1.12.1.902.orig/xfixes/cursor.c xorg-server-1.12.1.902/xfixes/cursor.c
---- xorg-server-1.12.1.902.orig/xfixes/cursor.c	2012-05-21 12:43:37.682341906 -0400
-+++ xorg-server-1.12.1.902/xfixes/cursor.c	2012-05-21 12:43:48.119009059 -0400
+diff -Nru xorg-server-1.12.3.orig/xfixes/cursor.c xorg-server-1.12.3/xfixes/cursor.c
+--- xorg-server-1.12.3.orig/xfixes/cursor.c	2012-07-13 19:56:09.430285646 -0400
++++ xorg-server-1.12.3/xfixes/cursor.c	2012-07-13 19:56:23.143619624 -0400
 @@ -61,6 +61,7 @@
  static RESTYPE CursorHideCountType;
  static RESTYPE CursorWindowType;
@@ -1565,9 +1565,9 @@ diff -Nru xorg-server-1.12.1.902.orig/xfixes/cursor.c xorg-server-1.12.1.902/xfi
 -        PointerBarrierType;
 +	   PointerBarrierType && PointerBarrierClientType;
  }
-diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.c xorg-server-1.12.1.902/xfixes/xfixes.c
---- xorg-server-1.12.1.902.orig/xfixes/xfixes.c	2012-05-21 12:43:37.682341906 -0400
-+++ xorg-server-1.12.1.902/xfixes/xfixes.c	2012-05-21 12:43:48.122342394 -0400
+diff -Nru xorg-server-1.12.3.orig/xfixes/xfixes.c xorg-server-1.12.3/xfixes/xfixes.c
+--- xorg-server-1.12.3.orig/xfixes/xfixes.c	2012-07-13 19:56:09.430285646 -0400
++++ xorg-server-1.12.3/xfixes/xfixes.c	2012-07-13 19:56:23.143619624 -0400
 @@ -102,6 +102,7 @@
      X_XFixesExpandRegion,       /* Version 3 */
      X_XFixesShowCursor,         /* Version 4 */
@@ -1604,9 +1604,9 @@ diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.c xorg-server-1.12.1.902/xfi
  
  static int
  SProcXFixesDispatch(ClientPtr client)
-diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.h xorg-server-1.12.1.902/xfixes/xfixes.h
---- xorg-server-1.12.1.902.orig/xfixes/xfixes.h	2012-05-21 12:43:37.682341906 -0400
-+++ xorg-server-1.12.1.902/xfixes/xfixes.h	2012-05-21 12:43:48.122342394 -0400
+diff -Nru xorg-server-1.12.3.orig/xfixes/xfixes.h xorg-server-1.12.3/xfixes/xfixes.h
+--- xorg-server-1.12.3.orig/xfixes/xfixes.h	2012-07-13 19:56:09.430285646 -0400
++++ xorg-server-1.12.3/xfixes/xfixes.h	2012-07-13 19:56:23.143619624 -0400
 @@ -28,6 +28,7 @@
  #define _XFIXES_H_
  
@@ -1641,9 +1641,9 @@ diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixes.h xorg-server-1.12.1.902/xfi
  };
  
  extern int
-diff -Nru xorg-server-1.12.1.902.orig/xfixes/xfixesint.h xorg-server-1.12.1.902/xfixes/xfixesint.h
---- xorg-server-1.12.1.902.orig/xfixes/xfixesint.h	2012-05-21 12:43:37.682341906 -0400
-+++ xorg-server-1.12.1.902/xfixes/xfixesint.h	2012-05-21 12:43:48.122342394 -0400
+diff -Nru xorg-server-1.12.3.orig/xfixes/xfixesint.h xorg-server-1.12.3/xfixes/xfixesint.h
+--- xorg-server-1.12.3.orig/xfixes/xfixesint.h	2012-07-13 19:56:09.430285646 -0400
++++ xorg-server-1.12.3/xfixes/xfixesint.h	2012-07-13 19:56:23.143619624 -0400
 @@ -59,6 +59,7 @@
  #include "windowstr.h"
  #include "selection.h"

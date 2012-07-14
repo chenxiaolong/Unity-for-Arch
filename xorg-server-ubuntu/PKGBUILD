@@ -15,8 +15,8 @@
 
 pkgbase=xorg-server
 pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
-pkgver=1.12.1.902
-pkgrel=101
+pkgver=1.12.3
+pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
@@ -26,12 +26,12 @@ source=("${url}/releases/individual/xserver/${pkgbase}-${pkgver}.tar.bz2"
         'autoconfig-nvidia.patch'
         'autoconfig-sis.patch'
         '10-quirks.conf'
-        '500_pointer_barrier_thresholds_refreshed_for_1.12.1.902.diff')
-sha512sums=('2e7a8d5a2e243a6e6e8d65b95e778dd54f55033f4c9da49e83a4ed57d48eda7967fc002301217e8d38c02f9fb32c9d66e0f3a10ec2f17e0a15a7af0a55ffeb1f'
+        '500_pointer_barrier_thresholds_refreshed_for_1.12.3.diff')
+sha512sums=('8fa3b55a5032ec02f525656f0081aca2d2320a1d9351bae89bc70209883f88da3c264d7b4e688c89f863fb5a3a661adbfc833c1352298e7ef4e39d73177f6b5f'
             '8e0dc38e28930e1a2682d25608d62d5e8cae9360c677d44760840b2424bf00d30ee434cb141b090dc37da1458fe619011baf375b32f250bd2b46ca536ac92de6'
             '3211dbc6d8a84f3f6a77230a8e5fe13355b441768d864c2b3037b893be39f7b8d581c2a5db1e04f399ce19c4ced973b64eaad563d970ee9c7b8a93cb23a0aa18'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2'
-            '034c2e6b3b9ac281e22f8ea56b512c747534f7560ef342e10565cd166553d74202e60dd3ab1bfd57f4a5f3f8bdee82de29608a2b356ef4178f8c99361974c7b2')
+            '04cfb17de231753fe124886a1d80c864a94de9deb952189c5d6ebaa3f15bf8d679c3f94c7af289de6b4e81b9a8ec72998c19f225e75ccbafbde98b6fa5759ec2')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
