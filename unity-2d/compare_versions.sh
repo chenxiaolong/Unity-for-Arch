@@ -10,7 +10,7 @@ UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/unity-2
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${pkgver%.*.*} ${_ubuntu_rel}"
 #echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Upstream version: (none)"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
