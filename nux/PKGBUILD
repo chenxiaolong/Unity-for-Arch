@@ -25,14 +25,14 @@ sha512sums=('d001fd92775c91d73edb4c2d0c6cceddfae66601e4a13212dd896832e3403d4fef1
 #   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
 case ${CARCH} in
 i686)
-  # GPG signature: http://ompldr.org/vZGpmbw/gcc46-4.6.3-1-i686.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZGpmYw/gcc46-4.6.3-1-i686.pkg.tar.xz')
-  sha512sums+=('bf9c42d0c0ef88793c5d3ab502d61876e0094055c10b28aff843097c206cfb7abda893ce2131fcbfe709277647b05e2f20da76d9d13611eb4ee979c0393bafae')
+  # GPG signature: http://ompldr.org/vZXFsZA/gcc46-4.6.3-1-i686.pkg.tar.xz.asc
+  source+=('http://ompldr.org/vZXFsYw/gcc46-4.6.3-1-i686.pkg.tar.xz')
+  sha512sums+=('a715da56bce0cf39b28cd55d6f7d6be07324400fbb4b550e289ebf301820f2f006f68149129fd6d2842268e698d053b4d40799d2f066a47a32913db2a065de57')
   ;;
 x86_64)
-  # GPG signature: http://ompldr.org/vZGpmdg/gcc46-4.6.3-1-x86_64.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZGpmdA/gcc46-4.6.3-1-x86_64.pkg.tar.xz')
-  sha512sums+=('39e8bda36d1422472d52f820ebc600627c104afa461d47f2b2f94b889fcc3d7f604abd25887ef123b120e2933a9b4cf00b5dd601b34d6610daf55b9c891e38e2')
+  # GPG signature: http://ompldr.org/vZXFsZg/gcc46-4.6.3-1-x86_64.pkg.tar.xz.asc
+  source+=('http://ompldr.org/vZXFsaA/gcc46-4.6.3-1-x86_64.pkg.tar.xz')
+  sha512sums+=('a707fd950273140355bad5af8ca5da7c4b6c8f69ccaa6945d427f8fc1104ef308bdfbd32b46e65a62b06576ff7cecf22182579888767d6cb33d4133f2f37c4b0')
   ;;
 esac
 
