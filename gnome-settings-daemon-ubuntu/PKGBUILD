@@ -5,7 +5,7 @@
 pkgname=gnome-settings-daemon-ubuntu
 _ubuntu_rel=0ubuntu0.2
 pkgver=3.4.2.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
