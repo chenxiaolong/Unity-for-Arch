@@ -13,7 +13,7 @@ UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/GNOME/sources/gnome-control-cen
 
 echo ""
 
-echo -e "PKGBUILD version:   ${_actual_ver} Ubuntu ${_ubuntu_ver} ${_ubuntu_rel}"
+echo -e "PKGBUILD version:   ${_actual_ver} ${_ubuntu_rel}"
 echo -e "Upstream version:   ${UPSTREAM_VER}"
 echo -e "Arch Linux version: ${ARCHLINUX_VER[@]}"
 echo -e "Ubuntu version:     ${UBUNTU_VER[@]}"
