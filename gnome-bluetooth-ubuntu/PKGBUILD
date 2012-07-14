@@ -7,7 +7,7 @@ _ubuntu_rel=0ubuntu5
 _ubuntu_ver=3.2.2
 _actual_ver=3.4.0
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Bluetooth Subsystem"
 arch=('i686' 'x86_64')
 url="http://live.gnome.org/GnomeBluetooth"
@@ -73,7 +73,7 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make DESTDIR="${pkgdir}/" install
 
-  install -Dm644 "${srcdir}/61-gnome-bluetooth-rfkill.rules" "${pkgdir}/lib/udev/rules.d//61-gnome-bluetooth-rfkill.rules"
+  install -Dm644 "${srcdir}/61-gnome-bluetooth-rfkill.rules" "${pkgdir}/usr/lib/udev/rules.d//61-gnome-bluetooth-rfkill.rules"
   install -dm755 "${pkgdir}/etc/ld.so.conf.d/"
   echo "/usr/lib/gnome-bluetooth" > "${pkgdir}/etc/ld.so.conf.d/${pkgname%-*}.conf"
   install -dm755 "${pkgdir}/etc/xdg/autostart/"
