@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu1.1
 pkgver=5.12.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
@@ -14,16 +14,16 @@ depends=('libgee' 'dee' 'libdbusmenu')
 makedepends=('vala' 'python2' 'gobject-introspection')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver%.*.*}/+download/${pkgname}-${pkgver%.*.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('3e758eaed222b90a7b3064f1803102ffd0a11b652166052e89c7c60edfee14726947c01e63af7eecf1a78b4d034b70b0f1325804b4f5f3a882fdb1a1c6bc9a0f'
-            '9d4b1281fb346f94e8cdb9330c91e9c3baf81ffb4d8cea879b4082feba495067f60a4d8aae4ed12f9bb03b0856663977197a5c7f75fb9f8e76e45fab0df6ab7b')
+            '7c042641476cba595aee4b2bf7a1a0b1ecbe8dd523ee4f794aa66d70f4313aadd95e612842c8216f6d7bd4d220634dbb3e6ab4712b6a402ec562f2ec1e8f57dd')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*.*}"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.diff"
 
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
@@ -35,7 +35,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*.*}"
 
   make DESTDIR="${pkgdir}/" install
 }

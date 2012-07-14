@@ -10,6 +10,6 @@ UPSTREAM_VER=$(wget -q 'https://launchpad.net/libunity/+download' -O - | sed -n 
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${pkgver%.*.*} ${_ubuntu_rel}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
