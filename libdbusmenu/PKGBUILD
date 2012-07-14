@@ -4,8 +4,8 @@
 
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
-_ubuntu_rel=0ubuntu3
-pkgver=0.6.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu0.1
+pkgver=0.6.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
@@ -14,16 +14,16 @@ license=('LGPL')
 makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gobject-introspection' 'vala' 'python2' 'valgrind')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/dbusmenu/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('f3f88ed3e64fae434abfa1a9cf236946bec9fc387d9e77a2da0ca539bec869a350b21c35c9ff283dcccfe80a733691fc5c700d86b524147d9ae8730f8249666c'
-            'a9e3ba17b6e01e3c9b0ba682db9829c6687f28905c1522a12939a75a4c8af32b5609512d02a29464a6ef2c6bd3f844e45c0183d51abde55e06ae5e1ee64a7fdd')
+source=("http://launchpad.net/dbusmenu/${pkgver%.*.*.*}/${pkgver%.*.*}/+download/${pkgbase}-${pkgver%.*.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('575276fc7e1288ab276c106627791bd472349f6c49dc86ff7bbfa0c8ed11118cc622c181299f9df4f6031b12961b9bea8c79126a3bc6a8d208811784f40d2e31'
+            'c7fe25a3e43a165f41c1d997f334083bc62bb146e0c524ef392b73e91d4dc29e26fd13975797852e967d8bf59ff3b429b1bfb87a1ae2e1ac0a01537d79f85332')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*.*}-${_ubuntu_rel}.diff"
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/series/${i}"
   done
@@ -62,8 +62,9 @@ build() {
 package_libdbusmenu() {
   depends=('json-glib' 'gtk2-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk3"
 
+  MAKEFLAGS="-j1"
   make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
   make -C tests DESTDIR="${pkgdir}/" install
@@ -75,8 +76,9 @@ package_libdbusmenu-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
   depends=('gtk2-ubuntu' "libdbusmenu=${pkgver}")
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk2"
 
+  MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
   make -C docs/libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
@@ -85,8 +87,9 @@ package_libdbusmenu-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
   depends=('gtk3-ubuntu' "libdbusmenu=${pkgver}")
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk3"
 
+  MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
 
