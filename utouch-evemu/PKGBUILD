@@ -11,9 +11,9 @@ license=('GPL')
 depends=('glibc')
 makedepends=('xmlto' 'asciidoc')
 groups=('unity')
-source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/utouch-evemu_${pkgver}.orig.tar.xz")
 options=('!libtool')
-sha512sums=('e594267184f1f4a39087522d78dc7dbf4c7a7d28efc8013200be445d15b1a7f066160e60d4fa6b8969e7ec78b7a103cdee6024e917585912e0e63105124b0240')
+sha512sums=('ddf2535a9beed2e57236c40ee178512253e3d8fd95153f76165cca518db45e0b2474fb032ec8958a93693e45fd5f897650ad9108d2748566cf1b51d9c168a117')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
