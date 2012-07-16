@@ -46,7 +46,7 @@ build() {
   # (needed for revealing the launcher in Unity)
   # Refreshed for 1.12.0 by Xiao-Long Chen
   # Refreshed for 1.12.0.901 by ecopunk (https://github.com/ecopunk)
-  patch -Np1 -i "${srcdir}/500_pointer_barrier_thresholds_refreshed_for_1.12.1.902.diff"
+  patch -Np1 -i "${srcdir}/500_pointer_barrier_thresholds_refreshed_for_1.12.3.diff"
 
   autoreconf -vfi
 
