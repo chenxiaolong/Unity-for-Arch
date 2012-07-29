@@ -59,7 +59,7 @@ Order to compile/install:
 51: xorg-server-ubuntu             -> Xorg X server
 52: check                          -> Unit testing framework for C
 53: grail                          -> Gesture recognition and instantiation lib.
-54: utouch-geis                    -> Implementation of the GEIS interface
+54: geis                           -> Implementation of the GEIS interface
 55: nux                            -> An OpenGL toolkit
 56: unity-asset-pool               -> Design assets for Unity
 57: gnome-menus2                   -> Gnome menu specifications

@@ -1,23 +1,25 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-pkgname=utouch-geis
-pkgver=2.2.10
+pkgname=geis
+pkgver=2.2.11
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
-url="https://launchpad.net/utouch-geis"
+url="https://launchpad.net/geis"
 license=('GPL' 'LGPL')
-depends=('utouch-grail' 'xorg-xinput' 'python2' 'dbus-core')
+depends=('grail' 'xorg-xinput' 'python2' 'dbus-core')
+provides=("utouch-geis=${pkgver}")
+conflicts=('utouch-geis')
 options=('!emptydirs' '!libtool')
-source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('58d848e3462b9bf8d8d13b5c9e4935021372aefddd2f723bdd12be42d04e59d57054863fac238822f65192d168bb3e4d9889c1da12f46e1011102aead4e4be49')
+source=("https://launchpad.net/geis/trunk/2.1.11/+download/geis-${pkgver}.tar.xz")
+sha512sums=('a6131756efb79ea4200171590ce763af0a6998dbea54c05dd9bff8506277c6f1968c3123f45aeface33ea2ffc03e0681de40e9754cb67107c1197c14b9a04f87')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  PYTHON2VER=$(ls -l /usr/bin/python2 2>&1 | sed 's/^.*\(.\..\)/\1/g')
+  PYTHON2VER=$(readlink /usr/bin/python2 | sed 's/python//')
   sed -i "/python >= ${PYTHON2VER}/s/python \(>= .\..\)/python-${PYTHON2VER} \1/g" configure
-  PYTHON=/usr/bin/python2 ./configure --prefix=/usr --disable-static
+  PYTHON=python2 ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
 }
 
