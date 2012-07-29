@@ -5,7 +5,7 @@
 pkgname=gnome-bluetooth-ubuntu
 _ubuntu_rel=0ubuntu5
 _ubuntu_ver=3.2.2
-_actual_ver=3.4.0
+_actual_ver=3.4.2
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=101
 pkgdesc="The GNOME Bluetooth Subsystem"
@@ -27,7 +27,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*}/
         'UBUNTU_start_in_classic_session.patch'
         'UBUNTU_menu_update_on_rfkill.patch'
         'UBUNTU_unity_sound_nua.patch')
-sha512sums=('817cc95a085132ddafdd779cb9f916007d5558db71594d89270ee785b45d2da01dd3e085beec64a6b5f0f385b853ab520d2f651d04d0c51e84803958cd29f52e'
+sha512sums=('8b1cd88db5088b71f8b44f2c12ba96efeb13d69746e3f00d3de80568c236542710e6adeb85559045b136fbd12d2f0010639883388aacf3a740c96fa0effa4e86'
             '21540dfe165af642b917befb30a5b523daf2a576601deb7cad3e0a054be75638cb30fc7b070e61f38ff3f375e6a95ca0c000559e52f4672586eeb06893dd724f'
             '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de'
             '2da096fffd20d463254d66ce734b6c9b6edd59730308b27a1756bc6466337da6aa1a32cd2ed91d1102e81c641143d49d89d96bac03a7a24a2125737ac12f5089'
