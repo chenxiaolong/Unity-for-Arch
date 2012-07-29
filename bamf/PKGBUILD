@@ -10,7 +10,7 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'glib2-ubuntu>=2.31.14.0ubuntu1' 'gnome-common')
+makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'gnome-common')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
@@ -50,7 +50,7 @@ build() {
 
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
-  depends=('dbus-glib' 'libwnck3' 'libgtop' 'glib2-ubuntu>=2.31.14.0ubuntu1')
+  depends=('dbus-glib' 'libwnck3' 'libgtop')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3" # Doesn't matter which one
 
   install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
@@ -61,7 +61,7 @@ package_bamfdaemon() {
 
 package_libbamf() {
   pkgdesc="Window matching library for GTK 2"
-  depends=('bamfdaemon' 'gtk2-ubuntu' 'glib2-ubuntu>=2.31.14.0ubuntu1')
+  depends=('bamfdaemon' 'gtk2-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
@@ -75,7 +75,7 @@ package_libbamf() {
 
 package_libbamf3() {
   pkgdesc="Window matching library for GTK 3"
-  depends=('bamfdaemon' 'gtk3-ubuntu' 'glib2-ubuntu>=2.31.14.0ubuntu1')
+  depends=('bamfdaemon' 'gtk3-ubuntu')
   provides=("bamf=${pkgver}")
   conflicts=('bamf')
 
