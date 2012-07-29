@@ -1,0 +1,21 @@
+diff -Nru nux-3.0.0.orig/configure.ac nux-3.0.0/configure.ac
+--- nux-3.0.0.orig/configure.ac	2012-07-27 11:57:07.166057447 -0700
++++ nux-3.0.0/configure.ac	2012-07-27 11:57:13.819027753 -0700
+@@ -150,7 +150,7 @@
+                   xxf86vm
+                   sigc++-2.0
+ 		              xinerama
+-                  libutouch-geis
++                  libgeis
+                   )
+ AC_SUBST(NUX_GRAPHICS_CFLAGS)
+ AC_SUBST(NUX_GRAPHICS_LIBS)
+diff -Nru nux-3.0.0.orig/NuxGraphics/nux-graphics.pc.in nux-3.0.0/NuxGraphics/nux-graphics.pc.in
+--- nux-3.0.0.orig/NuxGraphics/nux-graphics.pc.in	2012-07-27 11:57:07.185057363 -0700
++++ nux-3.0.0/NuxGraphics/nux-graphics.pc.in	2012-07-27 11:57:27.922965389 -0700
+@@ -9,4 +9,4 @@
+ Libs: -L${libdir} -lnux-graphics-@NUX_API_VERSION@
+ Cflags: -I${includedir}/Nux-@NUX_API_VERSION@
+ 
+-Requires: glib-2.0 cairo libpng gdk-pixbuf-2.0 nux-core-@NUX_API_VERSION@ @GL_PKGS@ xxf86vm xinerama libutouch-geis
++Requires: glib-2.0 cairo libpng gdk-pixbuf-2.0 nux-core-@NUX_API_VERSION@ @GL_PKGS@ xxf86vm xinerama libgeis

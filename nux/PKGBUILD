@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=2.12.0
+pkgver=3.0.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
@@ -18,8 +18,12 @@ options=('!libtool' '!emptydirs')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=${pkgname}.install
-source=("http://launchpad.net/nux/${pkgver%%.*}.0/${pkgver%.*}/+download/nux-${pkgver}.tar.gz")
-sha512sums=('d001fd92775c91d73edb4c2d0c6cceddfae66601e4a13212dd896832e3403d4fef1ac2cbdfd81fae5ecd16f9c5ee3682fe770760c53d16ba4fe3f484129f8482')
+source=("http://launchpad.net/nux/3.0/3.0/+download/nux_${pkgver}.orig.tar.gz"
+        '0001_geis.patch'
+        '0002_disable_documentation.patch')
+sha512sums=('04131393f87d387c48e6da10358a5b3bcd8aa119ae0bfe5ab8eaeb3dd0135f6639b4172a09cc4823e787b917a2d75185402f52b8e9db412199a6879b1755854f'
+            '4c367124f8c2548f6c961c7a31057a8b850c48577c57f8bb6c4e6b929a629284cbb328c8ff8ddfed14f6f7660a00750493af5708d3e7ed14b71b56fbcee0b40d'
+            'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5')
 
 # GPG public key:
 #   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
@@ -56,6 +60,15 @@ build() {
   CXXCPP="${srcdir}/usr/bin/cpp-4.6 -x c++"
 
   export PATH CC CXX CPP CXXCPP
+
+  # utouch-geis was renamed to geis upstream
+  patch -Np1 -i "${srcdir}/0001_geis.patch"
+
+  # The documentation files causes autoreconf to fail (docs aren't packaged in
+  # Ubuntu anyway)
+  patch -Np1 -i "${srcdir}/0002_disable_documentation.patch"
+
+  autoreconf -vfi
 
   ./configure \
     --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
