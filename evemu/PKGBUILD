@@ -1,19 +1,21 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: thn81 <root@scrat>
 
-pkgname=utouch-evemu
-pkgver=1.0.9
+pkgname=evemu
+pkgver=1.0.10
 pkgrel=100
-pkgdesc="Event Emulation for the uTouch Stack"
+pkgdesc="Linux Evdev Event Emulation"
 arch=('i686' 'x86_64')
-url="https://launchpad.net/utouch-evemu"
+url="https://launchpad.net/evemu"
 license=('GPL')
 depends=('glibc')
 makedepends=('xmlto' 'asciidoc')
+provides=("utouch-evemu=${pkgver}")
+conflicts=('utouch-evemu')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/utouch-evemu_${pkgver}.orig.tar.xz")
+source=("https://launchpad.net/evemu/trunk/evemu-${pkgver}/+download/evemu-${pkgver}.tar.xz")
 options=('!libtool')
-sha512sums=('ddf2535a9beed2e57236c40ee178512253e3d8fd95153f76165cca518db45e0b2474fb032ec8958a93693e45fd5f897650ad9108d2748566cf1b51d9c168a117')
+sha512sums=('4f51a8bedceb68d7787f369be21c1262c671782897927ce9b49a865256a9c483526931554c11ac48956ceb656a304f4cb063680e32e1ddefa5a08c5cc7497b22')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -25,3 +27,5 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:

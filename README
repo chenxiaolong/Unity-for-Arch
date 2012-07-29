@@ -52,7 +52,7 @@ Order to compile/install:
 44: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
 45: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
 46: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-47: utouch-evemu                   -> Event emulation for the uTouch stack
+47: evemu                          -> Linux evdev event emulation
 48: utouch-frame                   -> Touch frame library
 49: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
 50: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
