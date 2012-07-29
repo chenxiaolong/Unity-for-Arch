@@ -3,13 +3,13 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=3.4.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=3.4.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity' 'glib2-ubuntu>=2.31.14.0ubuntu1' 'gtk3-ubuntu>=3.3.12.0ubuntu1' 'liblaunchpad-integration3' 'libzeitgeist' 'libnotify')
+depends=('gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity' 'gtk3-ubuntu>=3.3.12.0ubuntu1' 'libzeitgeist' 'libnotify')
 makedepends=('intltool' 'gobject-introspection')
 groups=('gnome')
 provides=("nautilus=${pkgver}")
@@ -19,8 +19,8 @@ options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('22367f57efea0ac041d702e63dd0feffc174825dd5bb84bd237aafca98adb9e1a455c93a79e478fd4c8e961b8e57dc13266600c89f69eaa40f0a87ff6d3fff81'
-            '8adcaf58b78b8bebf3d0b7a82e41592b277de69e8676d3e47a50362e41fb4f95d8f7da05e2aec0c704fe2c7744ef62efab619053f78b80b01527939156456cc7')
+sha512sums=('a842488f58ed5c53a24c99b0f632b58fe7b67e58e8f05d4836adc5cbf4a1fe9754e65a3bc779e35a4d6b2efca482358c1fa4f7284b3b6b5e8b31a54466e1e210'
+            '2aead1b23ac4ee1aa920b9a8205f83b1d6ce8ce74b79743f38bcc192a28b51839e8f1a72804df6c82e655846a24aed42b03e7ac3a99056a5ec8f9912c5a48975')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -30,6 +30,8 @@ build() {
   # Disable patches
     # Don't use Ubuntu help
       sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
+    # Don't use launchpad-integration
+      sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
