@@ -58,7 +58,7 @@ Order to compile/install:
 50: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
 51: xorg-server-ubuntu             -> Xorg X server
 52: check                          -> Unit testing framework for C
-53: utouch-grail                   -> Gesture recognition and instantiation lib.
+53: grail                          -> Gesture recognition and instantiation lib.
 54: utouch-geis                    -> Implementation of the GEIS interface
 55: nux                            -> An OpenGL toolkit
 56: unity-asset-pool               -> Design assets for Unity

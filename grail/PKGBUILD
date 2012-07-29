@@ -1,18 +1,20 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: thn81 <root@scrat>
 
-pkgname=utouch-grail
-pkgver=3.0.5
+pkgname=grail
+pkgver=3.0.6
 pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
-url="https://launchpad.net/utouch-grail"
+url="https://launchpad.net/grail"
 license=('GPL')
-depends=('utouch-frame' 'libxi')
+depends=('frame' 'libxi')
 makedepends=('inputproto')
+provides=("utouch-grail=${pkgver}")
+conflicts=('utouch-grail')
 options=('!libtool')
-source=("http://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('364858c966b680468d9de12986f6d5d36a82d6bf2918f6f3d75fe9da802d444d05fbee0a947e4a7387ee5d96f3071057775a67b45a766ab77faee4dabd038597')
+source=("https://launchpad.net/grail/trunk/${pkgver}/+download/grail-${pkgver}.tar.bz2")
+sha512sums=('d79bed48695d0310a3c2dfe47e3e8c146813b4cf52171919d8f5650dbaeb823e7f8887cffa6d4dd44b48632b7c062b7bb86a745c201a2dcc200bed985a413dad')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -27,3 +29,5 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
