@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=plasma-widget-menubar
-pkgver=0.1.17
+pkgver=0.1.18
 pkgrel=100
 pkgdesc="A Plasma widget to display menubar of application windows"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ optdepends=('appmenu-gtk: support for GTK+ apps'
             'appmenu-qt: support for Qt apps')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
-sha512sums=('a88c73e9f07e8d0b6e5150acf69f50e640f051eb2d3e8401a93ee4de1517e2ba2420d0b2b9ed3eec6b2c8c6aa8a483cadeb5b035ddf6ee8168539f1283d87081')
+sha512sums=('af54df818ae670bbcd3a16a6458c5b03dc0630610420563f2bc61c4b3fcf801709397e851bfd377054f3d41c6bb8d0dfc5fb710e7d1541e2fe782fde1afbf371')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -32,3 +32,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
