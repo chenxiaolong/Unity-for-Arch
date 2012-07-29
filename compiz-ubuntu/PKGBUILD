@@ -1,0 +1,177 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+# Some comments are taken from the Ubuntu packaging files
+
+# Since all parts of Compiz are now released together upstream, I will not split
+# this package anymore. There are far too many packages to split and Arch/pacman
+# makes it extremely hard to do.
+pkgname=compiz-ubuntu
+
+_ubuntu_rel="0ubuntu2"
+_actual_ver=0.9.8
+_bzr_rev=3249
+
+# Another AUR fix
+pkgver=${_actual_ver}.bzr${_bzr_rev}.${_ubuntu_rel}
+
+pkgrel=100
+pkgdesc="OpenGL window and compositing manager"
+url="http://www.compiz.org/"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'startup-notification')
+makedepends=('boost' 'cmake' 'intltool' 'libwnck' 'metacity-ubuntu')
+provides=(compiz-core{,-ubuntu}="${pkgver}"
+          compiz-gnome{,-ubuntu}="${pkgver}"
+          compiz-kde{,-ubuntu}="${pkgver}"
+          libcompizconfig{,-ubuntu}="${pkgver}"
+          compizconfig-backend-gconf{,-ubuntu}="${pkgver}"
+          compizconfig-backend-kconfig4{,-ubuntu}="${pkgver}"
+          compizconfig-python{,-ubuntu}="${pkgver}"
+          ccsm{,-ubuntu}="${pkgver}"
+          compiz-plugins-main{,-ubuntu}="${pkgver}"
+          compiz-plugins-extra{,-ubuntu}="${pkgver}")
+conflicts=(compiz-core{,-ubuntu}
+           compiz-gnome{,-ubuntu}
+           compiz-kde{,-ubuntu}
+           libcompizconfig{,-ubuntu}
+           compizconfig-backend-gconf{,-ubuntu}
+           compizconfig-backend-kconfig4{,-ubuntu}
+           compizconfig-python{,-ubuntu}
+           ccsm{,-ubuntu}
+           compiz-plugins-main{,-ubuntu}
+           compiz-plugins-extra{,-ubuntu})
+groups=('unity')
+options=('emptydirs')
+install=compiz-ubuntu.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.tar.gz"
+        'compiz.reset'
+        '0002_Fix_cmake_install_dir.patch'
+        '0003_Fix_python_install_command.patch'
+        '0004_Use_python2.patch')
+sha512sums=('2c8786e0ffeae2320e1fe53ab02fd3582cb3446e8f6353e5b39a0833d2f1ecd6fc9f6e015038daf1e877ac73b7cd2f855e51f1b6d5345e4eb7ccd1fe7377c7f7'
+            'cf0324a656e855ff26b624386d287ae4d90ede8f14d8eb7e613591de1dd90c7eb00ebfbb401802caa6e6e9aac99031e9ddd8a966ed23513b9e33b529f3b9519c'
+            '0915398c67aa1f8fa8d89e5f2efa5fe9cf1d5cfa862042b5d920aff5454bc220def92b691ae8010e8d4254adcd6199865b81584ce56b1ac0e81d00272c33e688'
+            'ff847ffcf7ff43bb54580ef0c6be549425333f078102acd516a4b03ef5de5cdf921cea6dfa650edda6d2c0080157bb20f2467b15ec1b71b8279f359880a84924'
+            'f366d1912ecfbbf6211b4b1ef5900915d6233e3d0f7de40114d0b166412f2a52d3c411bccec044932534107b1ca2f75e3e557cfb311563e4fa7adbb528cb79c4')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}+bzr${_bzr_rev}"
+
+  # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
+  patch -Np1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
+
+  # Compiz's build system appends --install-layout=deb to the python 2 install
+  # command (for python-compizconfig and ccsm) whether or not COMPIZ_DEB_BUILD
+  # is set to 1
+  patch -Np1 -i "${srcdir}/0003_Fix_python_install_command.patch"
+
+  # Use python 2
+  patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
+
+  # Apply Ubuntu patches
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
+
+  # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
+  # loaded once per plugin
+  LDFLAGS="$(echo ${LDFLAGS} | sed 's/-B[ ]*symbolic-functions//')"
+
+  # Disable rpath in Python 2 bindings
+  export COMPIZ_DISABLE_RPATH=1
+
+  # Compiz will segfault if the CMake built target is set to 'Release'
+  # Disable tests since they can't run on a headless build server
+
+  [[ -d build ]] && rm -rvf build/
+  mkdir build/
+  cd build/
+  cmake .. \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
+    -DCOMPIZ_DEFAULT_PLUGINS="ccp" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCOMPIZ_PACKAGING_ENABLED=TRUE \
+    -DUSE_GSETTINGS=OFF \
+    -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
+    -DCOMPIZ_BUILD_TESTING=OFF \
+    -DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
+    -DUSE_KDE4=OFF
+
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}+bzr${_bzr_rev}/build"
+  GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 make install DESTDIR="${pkgdir}"
+
+  # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
+  #make findcompiz_install
+  CMAKE_DIR=$(cmake --system-information | grep '^CMAKE_ROOT' \
+    | awk -F\" '{print $2}')
+  install -dm755 "${pkgdir}${CMAKE_DIR}/Modules/"
+  install -m644 ../cmake/FindCompiz.cmake \
+    "${pkgdir}${CMAKE_DIR}/Modules/"
+
+  # Install documentation
+  install -dm755 "${pkgdir}/usr/share/doc/compiz/"
+  install ../{AUTHORS,NEWS,README,TODO} \
+    "${pkgdir}/usr/share/doc/compiz/"
+
+  # Create keybindings for Compiz based on the Metacity ones
+  KEYBIND_DIR=/usr/share/gnome-control-center/keybindings
+  install -dm755 "${pkgdir}${KEYBIND_DIR}"
+  for i in launchers navigation screenshot system windows; do
+    # Keep 'package=metacity' to use translations from Metacity
+    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' \
+      "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" \
+      > "${pkgdir}${KEYBIND_DIR}/50-compiz-${i}.xml"
+  done
+
+  # Add selected keys
+  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' \
+    "${pkgdir}${KEYBIND_DIR}/50-compiz-navigation.xml"
+
+  # Install Ubuntu's files
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
+  install -dm755 "${pkgdir}/usr/share/gnome/wm-properties/"
+  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
+
+  # Install manual pages
+  install -m644 ../debian/{ccsm,compiz,gtk-window-decorator}.1 \
+    "${pkgdir}/usr/share/man/man1/"
+
+  # Window manager desktop file for GNOME
+  install -m644 \
+    "${pkgdir}/usr/share/applications/compiz.desktop" \
+    "${pkgdir}/usr/share/gnome/wm-properties/"
+
+  # Install X11 startup script
+  install -m755 ../debian/65compiz_profile-on-session \
+    "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+
+  # Unity Compiz profile configuration file
+  install -m644 ../debian/unity.ini "${pkgdir}/etc/compizconfig/"
+
+  # Install Compiz profile configuration file
+  install -m644 ../debian/config "${pkgdir}/etc/compizconfig/"
+
+  # Compiz profile upgrade helper files for ensuring smooth upgrades from older
+  # configuration files
+  pushd ../debian/profile_upgrades/
+  find . -type f -name '*.upgrade' -exec \
+    install -m644 {} "${pkgdir}"/etc/compizconfig/upgrades/{} \;
+  popd
+
+  # Default GConf settings
+  install -m644 ../debian/compiz-gnome.gconf-defaults \
+    "${pkgdir}/usr/share/gconf/defaults/10_compiz-gnome"
+
+  # Install script for resetting all of Compiz's settings
+  install "${srcdir}/compiz.reset" "${pkgdir}/usr/bin/compiz.reset"
+}
+
+# vim:set ts=2 sw=2 et:

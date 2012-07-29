@@ -70,24 +70,16 @@ Order to compile/install:
 62: unity-lens-files               -> Unity files lens
 63: unity-lens-music               -> Unity music lens
 64: unity-lens-video               -> Unity video lens
-65: compiz-core-ubuntu             -> Compiz core components
-66: libcompizconfig-ubuntu         -> Compiz configuration system library
-67: compizconfig-backend-gconf-ubuntu -> GConf backend for Compiz
-68: compizconfig-backend-kconfig4-ubuntu * -> KConfig4 backend for Compiz
-69: compizconfig-python-ubuntu     -> Compizconfig bindings for Python
-70: ccsm-ubuntu                    -> Compiz configuration manager
-71: compiz-plugins-main-ubuntu     -> Compiz main plugins
-72: compiz-plugins-extra-ubuntu    -> Compiz extra plugins
-73: libgdu                         -> GNOME Disk Utility library
-74: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-75: unity                          -> A desktop experience designed for efficiency
-76: unity-2d                       -> 2D implementation of Unity
+65: compiz-ubuntu                  -> Compiz compositing window manager
+66: libgdu                         -> GNOME Disk Utility library
+67: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+68: unity                          -> A desktop experience designed for efficiency
+69: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
   - plasma-widget-menubar          => For KDE users who want a global menubar
   - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
-  - compizconfig-backend-kconfig4-ubuntu => Store Compiz settings in KConfig4
   - unity-core                     => For users that want Unity 2D, but not Unity 3D
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
@@ -109,13 +101,7 @@ Troubleshooting:
 
     Try resetting the settings for Unity and Compiz and relogin:
 
-      $ rm -rvf ~/.compiz-1/
-      $ rm -rvf ~/.cache/compizconfig-1/
-      $ rm -rvf ~/.config/compiz-1/
-      $ gconftool-2 --recursive-unset /apps/compiz-1
-      $ gconftool-2 --recursive-unset /apps/compizconfig-1
-      $ rm -rvf ~/.gconf/apps/compiz-1/
-      $ rm -rvf ~/.gconf/apps/compizconfig-1/
+      $ compiz.reset
       $ rm -rvf ~/.cache/unity/
       $ rm -vf ~/.cache/unity-lens-video
 
