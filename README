@@ -53,7 +53,7 @@ Order to compile/install:
 45: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
 46: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
 47: evemu                          -> Linux evdev event emulation
-48: utouch-frame                   -> Touch frame library
+48: frame                          -> Touch frame library
 49: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
 50: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
 51: xorg-server-ubuntu             -> Xorg X server

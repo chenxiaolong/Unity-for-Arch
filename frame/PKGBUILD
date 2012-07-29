@@ -1,23 +1,25 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: thn81 <root@scrat>
 
-pkgname=utouch-frame
-pkgver=2.2.3
+pkgname=frame
+pkgver=2.2.4
 pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
-url="https://launchpad.net/utouch-frame"
+url="https://launchpad.net/frame"
 license=('GPL')
-depends=('utouch-evemu' 'mtdev' 'libxi')
+depends=('evemu' 'mtdev' 'libxi')
 makedepends=('asciidoc' 'xorg-server-devel')
+provides=("utouch-frame=${pkgver}")
+conflicts=('utouch-frame')
 groups=('unity')
 options=('!libtool' '!emptydirs')
-source=("https://launchpad.net/${pkgname}/trunk/${pkgname}-${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('51a094c0063a8779d0371adf0ca0a61bc067615d248947f1727e27e9748ab35534d64eedf4d64e898aa7a3bbff560cededd46faa592962dc47fc4176fbb82e64')
+source=("https://launchpad.net/frame/trunk/utouch-frame-${pkgver}/+download/frame-${pkgver}.tar.xz")
+sha512sums=('ac05adbd04af9b485bb39ee01787fcd7501dd1e710b9f3770ca5a91af5b9b89955375b598e8f414fd1179c4d17797c5bd8f98eac8422ac54b6b86727d3f5e208')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --disable-static --with-xi
+  ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
 }
 
