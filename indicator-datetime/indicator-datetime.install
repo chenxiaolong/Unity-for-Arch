@@ -1,17 +1,11 @@
 post_install() {
   glib-compile-schemas usr/share/glib-2.0/schemas
-  #This method will deal with spaces a little bit better
-  source /etc/rc.conf
-  echo "${TIMEZONE}" > /etc/timezone
-  #grep TIMEZONE\= /etc/rc.conf | sed -e 's/TIMEZONE\=\"//' | sed -e 's/\"//' > /etc/timezone
 }
 
 post_upgrade() {
-  rm /etc/timezone
-  post_install ${1}
+  post_install
 }
 
 post_remove() {
-  rm /etc/timezone
-  glib-compile-schemas usr/share/glib-2.0/schemas
+  post_install
 }
