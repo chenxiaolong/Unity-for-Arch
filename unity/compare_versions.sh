@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/unity' -O - | sed -n 's/.*>unity_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/unity' -O - | sed -n 's/.*>unity_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 # Please name the tarballs appropriately... previously is was all
@@ -13,6 +13,6 @@ UPSTREAM_VER=$(wget 'https://launchpad.net/unity/+download' -q -O - | sed -n 's/
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${_actual_ver} ${_ubuntu_rel}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"

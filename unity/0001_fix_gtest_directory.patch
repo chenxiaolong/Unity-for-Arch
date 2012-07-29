@@ -1,7 +1,7 @@
-diff -Nru unity-5.8.0.orig/CMakeLists.txt unity-5.8.0/CMakeLists.txt
---- unity-5.8.0.orig/CMakeLists.txt	2012-03-25 02:23:19.804589414 -0400
-+++ unity-5.8.0/CMakeLists.txt	2012-03-25 02:24:08.087923835 -0400
-@@ -133,23 +133,7 @@
+diff -Nru unity-6.0.0.orig/CMakeLists.txt unity-6.0.0/CMakeLists.txt
+--- unity-6.0.0.orig/CMakeLists.txt	2012-07-28 00:58:52.393179728 -0700
++++ unity-6.0.0/CMakeLists.txt	2012-07-28 00:59:00.254138047 -0700
+@@ -153,23 +153,7 @@
  # subdirs
  add_subdirectory(doc)
  

@@ -3,20 +3,20 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=5.12.0
+pkgver=6.0.0
 _actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu1.1
+  _ubuntu_rel=0ubuntu4
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
-pkgrel=101
+pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
-url="https://launchpad.net/unity/"
+url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'ccsm-ubuntu' 'clutter-gtk' 'gconf-ubuntu' 'gjs' 'glib2-ubuntu' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'python2-gconf' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libgdu' 'libxfixes-ubuntu')
+depends=('bamf' 'boost' 'compiz-ubuntu' 'clutter-gtk' 'gconf-ubuntu' 'gjs' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'python2-gconf' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libxfixes-ubuntu')
 makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock' 'gtest')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
@@ -26,22 +26,28 @@ conflicts=('unity-core')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
-source=("http://launchpad.net/unity/${_actual_ver%%.*}.0/${_actual_ver}/+download/${pkgname}-${_actual_ver}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver%.*}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/unity/6.0/6.0/+download/unity-${_actual_ver}.tar.bz2"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
         "launchpad_export.tar.gz::http://ubuntuone.com/4ShN81tFVBIHi3UrapNRtw" # Snapshot of translations from Launchpad as of 2012-04-26
-        'fix_gtest_directory.patch'
+        '0001_fix_gtest_directory.patch'
+        '0003_Ignore_deprecated_schema_path.patch'
+        '0004_geis.patch'
+        '0005_link_dbus-glib.patch'
         'launcher_bfb.png'
-        'gcc_4.7_fix.patch'
-        'archlinux_branding.patch')
-sha512sums=('0960c909980b9657cba9c2428ad5ed3dbdd8125c81cb88bf448073e5861d704b1e9c64d4d05b29d52b72caa84a04778581b38ef8fa0ab748e417c902a51aeb6c'
-            '5431797a99a511804f5cc5d9298ed57c79d5587e29cc88b392ffc85ab515bb4cb376be9b6795111e0120daef23cc79520d90c951258ddf8e7a1998abc88c4f25'
+        'archlinux_branding.patch'
+        'unity-migrate-dconf-path.desktop')
+sha512sums=('2e49c9c273db905aad4ea01b5bd71f687ba0346134e625ad650bae748b7a7116c99a2484ca2c0ad817aec40c994325943813697f4ff67ce4cfee7ae70449f80e'
+            '2595d78d4a18e77df16b0b80645ed6c0f07590af315edd33f2b790d0897423d94b21f63a9eaf37988aa2806f11a0ac05b7124f27505e2f5a7ae8a70598380504'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
-            '5a7396d02e532eaa3fe57a03646274d716c53760967f0d8caeb323e451622a1ccf8f92c71c4b40c5c602016ae62d9d5df314d9015943586149b0432a1515d6fc'
+            '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
+            '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
+            'cfa0cc004d62c657034731c905e9d306a5355c51ed3beafb06c6b4148d5f6adac0fa10a97ab88b31b802eba9ea6c15a085fc55901d555d35f6ed65cd06603ac0'
+            '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
-            '387f7b737732e2ab4489d29cddec5b904d266f006d3cbbb0467914cec8b21d93618f7825741492e0f213d01a5be360605822e468baaf21c1dd00246df6eef69f'
-            '2a1c38dcb7d372f10a135306f91dd3b7ca6a9def71194c45f047325f638d31275c5e8d31592c2790d5046f1fbd6e99e84f85929e55d8f39dfbc7440662b2690a')
+            '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
+            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
 
 
 # GPG public key:
@@ -67,14 +73,24 @@ build() {
   patch -Np1 -i "${srcdir}/archlinux_branding.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
-  # Fix gtest directory
-  patch -Np1 -i "${srcdir}/fix_gtest_directory.patch"
+  # Fix the gtest search in CMake
+  patch -Np1 -i "${srcdir}/0001_fix_gtest_directory.patch"
+
+  # Ignore error about deprecated paths in GSettings schemas
+  patch -Np1 -i "${srcdir}/0003_Ignore_deprecated_schema_path.patch"
+
+  # utouch-geis was renamed to geis upstream
+  patch -Np1 -i "${srcdir}/0004_geis.patch"
+
+  # Link against dbus-glib to avoid:
+  #  /usr/bin/ld: CMakeFiles/panel.dir/StandalonePanel.cpp.o: undefined reference to symbol 'dbus_g_thread_init'
+  patch -Np1 -i "${srcdir}/0005_link_dbus-glib.patch"
 
   # Cannot find gmodule
   CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
@@ -96,15 +112,13 @@ build() {
   popd
 
   # Disable '-Werror'
-  sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
-
-  # GCC 4.7 build fix
-  #patch -Np1 -i "${srcdir}/gcc_4.7_fix.patch"
+  #sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
 
   # Build with gcc 4.6.3
   PATH="${srcdir}/usr/bin:/usr/bin:/bin:/usr/sbin"
 
-  mkdir -p build && cd build
+  [[ -d build ]] && rm -rvf build/
+  mkdir build/ && cd build/
 
   case ${CARCH} in
     x86_64)
@@ -128,11 +142,28 @@ build() {
     ..
 
   make ${MAKEFLAGS}
+
+  # Build autopilot tests
+  pushd ../tests/autopilot/
+  python2 setup.py build
+  popd
 }
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}/build"
   make DESTDIR="${pkgdir}/" install
+
+  # Install autopilot and autopilot tests
+  pushd ../tests/autopilot/
+  python2 setup.py install --root "${pkgdir}" --skip-build --optimize=1
+  popd
+
+  # Install dconf path migration stuff
+  install -dm755 "${pkgdir}/etc/xdg/autostart/"
+  install -m644 "${srcdir}/unity-migrate-dconf-path.desktop" \
+    "${pkgdir}/etc/xdg/autostart/"
+  install -m755 ../tools/migration-scripts/01_unity_change_dconf_path \
+    "${pkgdir}/usr/lib/unity/"
 
   # Install profile upgrade helper
   install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
@@ -149,12 +180,11 @@ package() {
   # Fix Python 2 scripts
   sed -i 's|^\(#!.*python$\)|\12|g' \
     "${pkgdir}/usr/bin/unity" \
-    "${pkgdir}/usr/lib/unity/migrate_favorites.py" \
     "${pkgdir}/usr/lib/unity/makebootchart.py"
 
   # Arch Linux logo
   install -m644 "${srcdir}/launcher_bfb.png" \
-    "${pkgdir}/usr/share/unity/5/launcher_bfb.png"
+    "${pkgdir}/usr/share/unity/6/launcher_bfb.png"
 }
 
 # vim:set ts=2 sw=2 et:

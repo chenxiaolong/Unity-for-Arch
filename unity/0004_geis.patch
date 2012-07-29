@@ -1,0 +1,12 @@
+diff -Nru unity-6.0.0.orig/CMakeLists.txt unity-6.0.0/CMakeLists.txt
+--- unity-6.0.0.orig/CMakeLists.txt	2012-07-28 00:59:35.443000730 -0700
++++ unity-6.0.0/CMakeLists.txt	2012-07-28 01:12:06.499011457 -0700
+@@ -134,7 +134,7 @@
+ # Compiz Plugins
+ #
+ 
+-set (UNITY_PLUGIN_DEPS "compiz;nux-3.0>=3.0.0;libbamf3;dee-1.0;gio-2.0;gio-unix-2.0;dbusmenu-glib-0.4;x11;libstartup-notification-1.0;gthread-2.0;indicator3-0.4>=0.4.90;atk;unity-misc>=0.4.0;gconf-2.0;libutouch-geis;gtk+-3.0>=3.1;sigc++-2.0;json-glib-1.0;libnotify;xfixes")
++set (UNITY_PLUGIN_DEPS "compiz;nux-3.0>=3.0.0;libbamf3;dee-1.0;gio-2.0;gio-unix-2.0;dbusmenu-glib-0.4;x11;libstartup-notification-1.0;gthread-2.0;indicator3-0.4>=0.4.90;atk;unity-misc>=0.4.0;gconf-2.0;libgeis;gtk+-3.0>=3.1;sigc++-2.0;json-glib-1.0;libnotify;xfixes")
+ 
+ find_package (PkgConfig)
+ pkg_check_modules (CACHED_UNITY_DEPS REQUIRED ${UNITY_PLUGIN_DEPS})
