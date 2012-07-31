@@ -11,7 +11,7 @@ depends=('grail' 'xorg-xinput' 'python2' 'dbus-core')
 provides=("utouch-geis=${pkgver}")
 conflicts=('utouch-geis')
 options=('!emptydirs' '!libtool')
-source=("https://launchpad.net/geis/trunk/2.1.11/+download/geis-${pkgver}.tar.xz")
+source=("https://launchpad.net/geis/trunk/${pkgver}/+download/geis-${pkgver}.tar.xz")
 sha512sums=('a6131756efb79ea4200171590ce763af0a6998dbea54c05dd9bff8506277c6f1968c3123f45aeface33ea2ffc03e0681de40e9754cb67107c1197c14b9a04f87')
 
 build() {
