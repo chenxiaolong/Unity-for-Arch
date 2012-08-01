@@ -71,15 +71,13 @@ Order to compile/install:
 63: unity-lens-music               -> Unity music lens
 64: unity-lens-video               -> Unity video lens
 65: compiz-ubuntu                  -> Compiz compositing window manager
-66: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-67: unity                          -> A desktop experience designed for efficiency
-68: unity-2d                       -> 2D implementation of Unity
+66: unity                          -> A desktop experience designed for efficiency
+67: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
   - plasma-widget-menubar          => For KDE users who want a global menubar
   - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
-  - unity-core                     => For users that want Unity 2D, but not Unity 3D
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
 
