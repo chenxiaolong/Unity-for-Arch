@@ -71,10 +71,9 @@ Order to compile/install:
 63: unity-lens-music               -> Unity music lens
 64: unity-lens-video               -> Unity video lens
 65: compiz-ubuntu                  -> Compiz compositing window manager
-66: libgdu                         -> GNOME Disk Utility library
-67: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
-68: unity                          -> A desktop experience designed for efficiency
-69: unity-2d                       -> 2D implementation of Unity
+66: unity-core *                   -> Parts of Unity 3D needed for Unity 2D
+67: unity                          -> A desktop experience designed for efficiency
+68: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
