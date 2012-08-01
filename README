@@ -112,10 +112,6 @@ Troubleshooting:
 
       https://bugs.launchpad.net/unity-for-arch
 
-* I have an ATI graphics card that needs the AMD Catalyst/fglrx driver.
-
-    Use the xorg-server-ubuntu-1.11 package instead of xorg-server-ubuntu.
-
 * qt-ubuntu does not build.
 
     Temporary remove the qtwebkit package (ignoring dependencies) by running:
