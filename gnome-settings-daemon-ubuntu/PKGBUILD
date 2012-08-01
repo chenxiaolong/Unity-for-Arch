@@ -41,6 +41,9 @@ build() {
   done
 
   autoreconf -vfi
+
+  CFLAGS="${CFLAGS} -D_IPP_PRIVATE_STRUCTURES"
+
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
