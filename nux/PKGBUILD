@@ -31,7 +31,7 @@ source=("http://launchpad.net/nux/3.0/3.0/+download/nux_${pkgver}.orig.tar.gz"
 sha512sums=('04131393f87d387c48e6da10358a5b3bcd8aa119ae0bfe5ab8eaeb3dd0135f6639b4172a09cc4823e787b917a2d75185402f52b8e9db412199a6879b1755854f'
             '4c367124f8c2548f6c961c7a31057a8b850c48577c57f8bb6c4e6b929a629284cbb328c8ff8ddfed14f6f7660a00750493af5708d3e7ed14b71b56fbcee0b40d'
             'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
-            '2e608a1d0f41007f31cb6168d3373121fb04e321c2d2ced222e0f7f739f79f56548c3b928c171811dd38246a2cf301b222f0b857648881bb04c22167a8d6659d'
+            'b34f958ae67f50b665d73150c05bef58fd677244071a9f0057331fb16e78afed733ca19cf5947521bb9887c8c473a29c538f7cbc3fd5ed537efe648596d8079f'
             '03d7a816fde0c445c964280ac9e679a0d2dfca839e87345360adec4fdb2292b4ddfc85538954b052c538ca355e559d8ee3a5ea7ea2a99130687054a92e0df857')
 noextract=('glew-1.7.0.tgz')
 
@@ -89,6 +89,15 @@ build() {
   ar cr lib/libGLEWmx.a src/glew.mx.pic_o
   popd
 
+  cp NuxGraphics/GLResource.h{,.orig}
+  sed -i \
+    -e "s|GL/glew.h|$(pwd)/glew-1.7.0/include/GL/glew.h|g" \
+    -e "s|GL/wglew.h|$(pwd)/glew-1.7.0/include/GL/wglew.h|g" \
+    -e "s|GL/glxew.h|$(pwd)/glew-1.7.0/include/GL/glxew.h|g" \
+    -e "s|<GL/glew.h>|\"$(pwd)/glew-1.7.0/include/GL/glew.h\"|g" \
+    NuxGraphics/GLResource.h \
+    "$(pwd)/glew-1.7.0/include/GL/glxew.h"
+
   autoreconf -vfi
 
   ./configure \
@@ -101,6 +110,9 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   make DESTDIR="${pkgdir}" install
+
+  cp NuxGraphics/GLResource.h.orig \
+    "${pkgdir}/usr/include/Nux-3.0/NuxGraphics/GLResource.h"
 }
 
 # vim:set ts=2 sw=2 et:
