@@ -20,11 +20,16 @@ optdepends=('indicator-application: take menus from applications and place them 
             'indicator-sound: a unified sound menu')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/indicator-applet/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('f35a6101ee5a2b94cb22ddc5c78d86a42ac0df6bd50aa6584c22a03a7de99d3609e58133c33460cc3a2595d4d4b04be96fb88af69cc5ae9e44157e238467a170')
+source=("http://launchpad.net/indicator-applet/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+        '0001_No_gtypes.h.patch')
+sha512sums=('f35a6101ee5a2b94cb22ddc5c78d86a42ac0df6bd50aa6584c22a03a7de99d3609e58133c33460cc3a2595d4d4b04be96fb88af69cc5ae9e44157e238467a170'
+            '02a510d9776483c7d09150574798505eac36f9f49142ad891ba246890bc986af24bd8ac4a664bc6ad08ec84f3de7f1e84c04d507bd7879b931776ad778142fc7')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
+
+  # Do not include glib/gtypes.h
+  patch -Np1 -i "${srcdir}/0001_No_gtypes.h.patch"
 
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
@@ -36,3 +41,5 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
