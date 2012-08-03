@@ -19,7 +19,7 @@ pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'startup-notification' 'protobuf')
+depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'startup-notification' 'protobuf' 'pyrex')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck' 'metacity-ubuntu')
 provides=(compiz-core{,-ubuntu}="${pkgver}"
           compiz-gnome{,-ubuntu}="${pkgver}"
