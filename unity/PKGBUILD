@@ -37,7 +37,8 @@ source=("https://launchpad.net/unity/6.0/6.0/+download/unity-${_actual_ver}.tar.
         '0005_link_dbus-glib.patch'
         'launcher_bfb.png'
         'archlinux_branding.patch'
-        'unity-migrate-dconf-path.desktop')
+        'unity-migrate-dconf-path.desktop'
+        'http://downloads.sourceforge.net/project/glew/glew/1.7.0/glew-1.7.0.tgz')
 sha512sums=('2e49c9c273db905aad4ea01b5bd71f687ba0346134e625ad650bae748b7a7116c99a2484ca2c0ad817aec40c994325943813697f4ff67ce4cfee7ae70449f80e'
             '2595d78d4a18e77df16b0b80645ed6c0f07590af315edd33f2b790d0897423d94b21f63a9eaf37988aa2806f11a0ac05b7124f27505e2f5a7ae8a70598380504'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
@@ -47,7 +48,9 @@ sha512sums=('2e49c9c273db905aad4ea01b5bd71f687ba0346134e625ad650bae748b7a7116c99
             '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
-            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
+            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
+            '03d7a816fde0c445c964280ac9e679a0d2dfca839e87345360adec4fdb2292b4ddfc85538954b052c538ca355e559d8ee3a5ea7ea2a99130687054a92e0df857')
+noextract=('glew-1.7.0.tgz')
 
 
 # GPG public key:
@@ -98,6 +101,26 @@ build() {
 
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
+
+  # Build glew 1.7.0. It does not need to be installed as libraries built
+  # with glew 1.7.0 will work with glew 1.8.0.
+  [ -d "${srcdir}/glew_install" ] && rm -rv "${srcdir}/glew_install"
+  [ -d glew-1.7.0 ] && rm -rv glew-1.7.0
+  tar zxvf "${srcdir}/glew-1.7.0.tgz"
+  pushd glew-1.7.0
+  sed -i 's/lib64/lib/g' config/Makefile.linux
+  make install.all GLEW_DEST="${srcdir}/glew_install" ${MAKEFLAGS}
+  popd
+
+  if [ -z "${PKG_CONFIG_PATH}" ]; then
+    export PKG_CONFIG_PATH="${srcdir}/glew_install/lib/pkgconfig:/usr/lib/pkgconfig"
+  else
+    export PKG_CONFIG_PATH="${srcdir}/glew_install/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  fi
+
+  # Ugly hack
+  sed -i 's|\(includedir=.*\)/GL|\1|g' \
+    "${srcdir}"/glew_install/lib/pkgconfig/*.pc
 
   # Install translations from Launchpad
   pushd po
