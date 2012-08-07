@@ -26,12 +26,11 @@ install=${pkgname}.install
 source=("http://launchpad.net/nux/3.0/3.0/+download/nux_${pkgver}.orig.tar.gz"
         '0001_geis.patch'
         '0002_disable_documentation.patch'
-        'http://downloads.sourceforge.net/project/glew/glew/1.7.0/glew-1.7.0.tgz')
+        '0003_Glew_1.8.0_fix.patch')
 sha512sums=('04131393f87d387c48e6da10358a5b3bcd8aa119ae0bfe5ab8eaeb3dd0135f6639b4172a09cc4823e787b917a2d75185402f52b8e9db412199a6879b1755854f'
             '4c367124f8c2548f6c961c7a31057a8b850c48577c57f8bb6c4e6b929a629284cbb328c8ff8ddfed14f6f7660a00750493af5708d3e7ed14b71b56fbcee0b40d'
             'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
-            '03d7a816fde0c445c964280ac9e679a0d2dfca839e87345360adec4fdb2292b4ddfc85538954b052c538ca355e559d8ee3a5ea7ea2a99130687054a92e0df857')
-noextract=('glew-1.7.0.tgz')
+            '60a6fd75896af92ba6a511968e35b16697da39416877b611323e4b57f70ed6bec81ba3a0467f175dcb30aaefb8d238943f59fc57c5d462047492078bd545a90a')
 
 # GPG public key:
 #   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
@@ -76,30 +75,16 @@ build() {
   # Ubuntu anyway)
   patch -Np1 -i "${srcdir}/0002_disable_documentation.patch"
 
-  # Build glew 1.7.0. It does not need to be installed as libraries built
-  # with glew 1.7.0 will work with glew 1.8.0.
-  [ -d "${srcdir}/glew_install" ] && rm -rv "${srcdir}/glew_install"
-  [ -d glew-1.7.0 ] && rm -rv glew-1.7.0
-  tar zxvf "${srcdir}/glew-1.7.0.tgz"
-  pushd glew-1.7.0
-  sed -i 's/lib64/lib/g' config/Makefile.linux
-  make install.all GLEW_DEST="${srcdir}/glew_install" ${MAKEFLAGS}
-  popd
-
-  if [ -z "${PKG_CONFIG_PATH}" ]; then
-    export PKG_CONFIG_PATH="${srcdir}/glew_install/lib/pkgconfig:/usr/lib/pkgconfig"
-  else
-    export PKG_CONFIG_PATH="${srcdir}/glew_install/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  fi
+  # Fix glew 1.8.0 headers and build with them
+  [ -d glew-headers/ ] && rm -rv glew-headers/
+  mkdir glew-headers/
+  cp /usr/include/GL/glxew.h glew-headers/
+  patch -Np1 -i "${srcdir}/0003_Glew_1.8.0_fix.patch"
 
   cp NuxGraphics/GLResource.h{,.orig}
   sed -i \
-    -e "s|GL/glew.h|${srcdir}/glew_install/include/GL/glew.h|g" \
-    -e "s|GL/wglew.h|${srcdir}/glew_install/include/GL/wglew.h|g" \
-    -e "s|GL/glxew.h|${srcdir}/glew_install/include/GL/glxew.h|g" \
-    -e "s|<GL/glew.h>|\"${srcdir}/glew_install/include/GL/glew.h\"|g" \
-    NuxGraphics/GLResource.h \
-    "${srcdir}/glew_install/include/GL/glxew.h"
+    -e "s|GL/glxew.h|$(pwd)/glew-headers/glxew.h|g" \
+    NuxGraphics/GLResource.h
 
   # For Unity to compile
   sed -i \
