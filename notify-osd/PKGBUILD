@@ -1,0 +1,28 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=notify-osd
+pkgver=0.9.34
+pkgrel=1
+pkgdesc="Canonicals's notification agent which displays semi-transparent click-through bubbles"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/notify-osd"
+license=('GPL')
+groups=('unity-extra')
+depends=('dbus-glib' 'dconf' 'gsettings-desktop-schemas' 'libnotify' 'libwnck3')
+provides=('notification-daemon')
+install=${pkgname}.install
+source=("https://launchpad.net/notify-osd/precise/${pkgver}/+download/notify-osd-${pkgver}.tar.gz")
+sha512sums=('60ca63c2041f129d5139537242c2260908cedef633df977a608e19dcb01b75b2280ec80abe2b6da5eff76621107ee9d294742abfae301bc24eaa3aa855c56ce1')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:

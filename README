@@ -44,35 +44,36 @@ Order to compile/install:
 36: indicator-power                -> Indicator to show battery information
 37: indicator-session              -> Indicator to manage session
 38: indicator-sound                -> A unified sound menu
-39: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-40: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-41: gtest                          -> C++ testing utility based on xUnit
-42: gmock                          -> A library for writing C++ mock classes
-43: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-44: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-45: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-46: evemu                          -> Linux evdev event emulation
-47: frame                          -> Touch frame library
-48: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-49: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-50: xorg-server-ubuntu             -> Xorg X server
-51: check                          -> Unit testing framework for C
-52: grail                          -> Gesture recognition and instantiation lib.
-53: geis                           -> Implementation of the GEIS interface
-54: ibus-ubuntu                    -> Next generation input bus for Linux
-55: nux                            -> An OpenGL toolkit
-56: unity-asset-pool               -> Design assets for Unity
-57: gnome-menus2                   -> Gnome menu specifications
-58: libunity                       -> Library for integrating Unity
-59: libunity-misc                  -> Differently licensed stuff for Unity
-60: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-61: unity-lens-applications        -> Unity applications lens
-62: unity-lens-files               -> Unity files lens
-63: unity-lens-music               -> Unity music lens
-64: unity-lens-video               -> Unity video lens
-65: compiz-ubuntu                  -> Compiz compositing window manager
-66: unity                          -> A desktop experience designed for efficiency
-67: unity-2d                       -> 2D implementation of Unity
+39: notify-osd                     -> Semi-transparent notification agent
+40: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+41: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+42: gtest                          -> C++ testing utility based on xUnit
+43: gmock                          -> A library for writing C++ mock classes
+44: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+45: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+46: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+47: evemu                          -> Linux evdev event emulation
+48: frame                          -> Touch frame library
+49: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+50: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+51: xorg-server-ubuntu             -> Xorg X server
+52: check                          -> Unit testing framework for C
+53: grail                          -> Gesture recognition and instantiation lib.
+54: geis                           -> Implementation of the GEIS interface
+55: ibus-ubuntu                    -> Next generation input bus for Linux
+56: nux                            -> An OpenGL toolkit
+57: unity-asset-pool               -> Design assets for Unity
+58: gnome-menus2                   -> Gnome menu specifications
+59: libunity                       -> Library for integrating Unity
+60: libunity-misc                  -> Differently licensed stuff for Unity
+61: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+62: unity-lens-applications        -> Unity applications lens
+63: unity-lens-files               -> Unity files lens
+64: unity-lens-music               -> Unity music lens
+65: unity-lens-video               -> Unity video lens
+66: compiz-ubuntu                  -> Compiz compositing window manager
+67: unity                          -> A desktop experience designed for efficiency
+68: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
