@@ -1,0 +1,69 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Brad Fanella <bradfanella@archlinux.us>
+# Contributor: Rainy <rainylau(at)gmail(dot)com>
+# Contributor: Lee.MaRS <leemars at gmail dot com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=ibus-ubuntu
+_ubuntu_rel=7ubuntu1
+pkgver=1.4.1.${_ubuntu_rel}
+pkgrel=1
+pkgdesc='Next Generation Input Bus for Linux.'
+arch=('i686' 'x86_64')
+license=('LGPL')
+url='http://ibus.googlecode.com'
+depends=('python2-dbus' 'gconf' 'dconf' 'python2-xdg' 'iso-codes' 'librsvg' 'python-notify' 'hicolor-icon-theme')
+optdepends=('notification-daemon')
+makedepends=('intltool')
+provides=("ibus=${pkgver}")
+conflicts=('ibus')
+options=('!libtool')
+install=ibus.install
+source=("http://ibus.googlecode.com/files/${pkgname%-*}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/i/${pkgname%-*}/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        'ibus-1389-dbus-address.patch')
+sha512sums=('465f5d099ca60612e9d28c77da6a8da2435cc50c3f2f9b93c4c9258d18bb963d85b84ed9d7f9c58e90dc07a4898dc9668a6e2a3484b69074a1777761389ba468'
+            '9b1aa67d63cab7fcad27ef04ed2682ea332ba5d2ccb728dce126bf2b902c47da2af973f71f579e116211f6f295be7f85b65a0a08e06a8c3a41e05be1f663fdca'
+            '20a16e4ec5cd39ee3b6f0b225f17564efeb9876aa6bfbc83b159c35e8562039f84126a6717c10d1bbbbb2eec9d5810a5f3951cc71285d2d42cab71f483cdc2c1')
+
+build() {
+  cd "${pkgname%-*}-${pkgver%.*}"
+
+  # Apply Arch Linux's patches
+  patch -Np1 -i "${srcdir}/ibus-1389-dbus-address.patch"
+
+  # Apply Ubuntu's patches
+    # Don't need other patches
+      patch -Np1 -i "${srcdir}/debian/patches/02_title_update.patch"
+      patch -Np1 -i "${srcdir}/debian/patches/05_appindicator.patch"
+
+  #for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  #done
+
+  # Cannot find gmodule-2.0
+  #CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
+
+  export PYTHON=python2
+
+  ./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib/${pkgname%-*} \
+    --sysconfdir=/etc \
+    --with-gconf-schema-file-dir=/usr/share/gconf/schemas \
+    --enable-gtk3 \
+    --enable-surrounding-text # From debian/rules
+
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${pkgname%-*}-${pkgver%.*}"
+
+  make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/etc/xdg/autostart/"
+  ln -s /usr/share/applications/ibus.desktop "${pkgdir}/etc/xdg/autostart/"
+}
+
+# vim:set ts=2 sw=2 et:

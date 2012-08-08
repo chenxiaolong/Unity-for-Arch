@@ -59,19 +59,20 @@ Order to compile/install:
 51: check                          -> Unit testing framework for C
 52: grail                          -> Gesture recognition and instantiation lib.
 53: geis                           -> Implementation of the GEIS interface
-54: nux                            -> An OpenGL toolkit
-55: unity-asset-pool               -> Design assets for Unity
-56: gnome-menus2                   -> Gnome menu specifications
-57: libunity                       -> Library for integrating Unity
-58: libunity-misc                  -> Differently licensed stuff for Unity
-59: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-60: unity-lens-applications        -> Unity applications lens
-61: unity-lens-files               -> Unity files lens
-62: unity-lens-music               -> Unity music lens
-63: unity-lens-video               -> Unity video lens
-64: compiz-ubuntu                  -> Compiz compositing window manager
-65: unity                          -> A desktop experience designed for efficiency
-66: unity-2d                       -> 2D implementation of Unity
+54: ibus-ubuntu                    -> Next generation input bus for Linux
+55: nux                            -> An OpenGL toolkit
+56: unity-asset-pool               -> Design assets for Unity
+57: gnome-menus2                   -> Gnome menu specifications
+58: libunity                       -> Library for integrating Unity
+59: libunity-misc                  -> Differently licensed stuff for Unity
+60: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+61: unity-lens-applications        -> Unity applications lens
+62: unity-lens-files               -> Unity files lens
+63: unity-lens-music               -> Unity music lens
+64: unity-lens-video               -> Unity video lens
+65: compiz-ubuntu                  -> Compiz compositing window manager
+66: unity                          -> A desktop experience designed for efficiency
+67: unity-2d                       -> 2D implementation of Unity
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
