@@ -87,9 +87,7 @@ build() {
     NuxGraphics/GLResource.h
 
   # For Unity to compile
-  sed -i \
-    -e 's|"GL/glew.h"|<GL/glew.h>|g' \
-    -e 's|"GL/glxew.h"|<GL/glxew.h>|g' \
+  sed -i -e 's|"GL/glxew.h"|"/usr/include/GL/glxew-fixed.h"|g' \
     NuxGraphics/GLResource.h.orig
 
   autoreconf -vfi
@@ -107,6 +105,10 @@ package() {
 
   cp NuxGraphics/GLResource.h.orig \
     "${pkgdir}/usr/include/Nux-3.0/NuxGraphics/GLResource.h"
+
+  # Install patched glxew.h
+  install -dm755 "${pkgdir}/usr/include/GL/"
+  install -m644 ./glew-headers/glxew.h "${pkgdir}/usr/include/GL/glxew-fixed.h"
 }
 
 # vim:set ts=2 sw=2 et:
