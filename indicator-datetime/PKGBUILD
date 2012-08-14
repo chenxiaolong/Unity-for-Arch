@@ -2,65 +2,47 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=indicator-datetime
-pkgname=('indicator-datetime' 'indicator-datetime-gtk2')
-_ubuntu_rel=0ubuntu2
-pkgver=0.3.94.${_ubuntu_rel}
-pkgrel=101
+pkgname=indicator-datetime
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.0.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
+depends=('libindicator3' 'libdbusmenu-gtk3' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center' 'libtimezonemap')
 makedepends=('intltool' 'libtimezonemap')
 groups=('unity')
 options=('!libtool')
-install=${pkgbase}.install
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('44214a834fba00d4c810b9029bc01ca1a25dde14abfa295f5b87ee8b4aa49e37e41aa08da1e751c925020c8e93d1bbb7e9683ead29f4e504def9afd6bce94692'
-            '8a019da66a1457a581629a39e11e5478895934a97cba3d0b30cd9c18e82688499c6a0f8fec0606e9208b2bef94f0f65239b7933172e8066c85cb1b4a89fe803f')
+install=${pkgname}.install
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        '0001_Revert_port_to_EDS_3.6_API.patch')
+sha512sums=('8427eba92c8ed526a529bd40946e0607cf41a52e8bdac1799038129ec02b8531ee9649dfa4eb95c5db5687cdf40a86e6fda0d92ebd399dc4203b4795c152491a'
+            '4507f7072179dc05190fcd57aa40af3ec77671953875babb28e53b46dc73dd88b5c9f08d6404f6d6242bd19f9a3b1c645bdab713c9d3acb54033f176ff89293c'
+            '86552b1d50241e073558dccff1d0a26194de2b0bc33b31ee85ec955852d83c34ac30080fa27411eb9d1f9827f995c6bb34f3d55bebb0bfead8d305ba2f66eb2c')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  patch -Np1 -i "${srcdir}/0001_Revert_port_to_EDS_3.6_API.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
   autoreconf -vfi
 
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile --with-gtk=2
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile --with-gtk=3
-  make ${MAKEFLAGS}
-  popd
 }
 
-package_indicator-datetime() {
-  pkgdesc="A very, very simple clock - GTK 3 library"
-  depends=('libindicator3' 'libdbusmenu-gtk3' 'libido3' 'geoclue' 'evolution-data-server' 'gnome-control-center' 'libtimezonemap')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
 
   make DESTDIR="${pkgdir}/" install
-}
-
-package_indicator-datetime-gtk2() {
-  pkgdesc="A very, very simple clock - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'geoclue' 'indicator-datetime')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
-
-  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
-
-  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
-  install -m755 'src/.libs/libdatetime.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
 
 # vim:set ts=2 sw=2 et:
