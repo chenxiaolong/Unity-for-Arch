@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=3.0.0
+pkgver=3.2.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
@@ -12,10 +12,6 @@ license=('LGPL')
 depends=('gdk-pixbuf2' 'glew' 'pango' 'libsigc++' 'libxcomposite' 'ibus' 'libxdamage' 'libxxf86vm' 'geis')
 makedepends=('boost' 'glproto' 'dri2proto' 'gtest' 'gmock' 'doxygen' 'graphviz')
 
-# glew 1.7.0 dependencies
-glew_depends=('libxmu' 'libxi' 'mesa')
-depends=(${depends[@]} ${glew_depends[@]})
-
 groups=('unity')
 options=('!libtool' '!emptydirs')
 
@@ -23,12 +19,10 @@ options=('!libtool' '!emptydirs')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=${pkgname}.install
-source=("http://launchpad.net/nux/3.0/3.0/+download/nux_${pkgver}.orig.tar.gz"
-        '0001_geis.patch'
+source=("http://launchpad.net/nux/3.0/${pkgver%.*}/+download/nux-${pkgver}.tar.gz"
         '0002_disable_documentation.patch'
         '0003_Glew_1.8.0_fix.patch')
-sha512sums=('04131393f87d387c48e6da10358a5b3bcd8aa119ae0bfe5ab8eaeb3dd0135f6639b4172a09cc4823e787b917a2d75185402f52b8e9db412199a6879b1755854f'
-            '4c367124f8c2548f6c961c7a31057a8b850c48577c57f8bb6c4e6b929a629284cbb328c8ff8ddfed14f6f7660a00750493af5708d3e7ed14b71b56fbcee0b40d'
+sha512sums=('4a3ee53b792cdf6ca4add124b29931adc299ed328f695d92bf2c889df1584317447858cdb7004fdf29e10910fd93ddbb2be31dd225bb2a5728058c914629ee89'
             'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
             '60a6fd75896af92ba6a511968e35b16697da39416877b611323e4b57f70ed6bec81ba3a0467f175dcb30aaefb8d238943f59fc57c5d462047492078bd545a90a')
 
@@ -50,6 +44,8 @@ esac
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
+  patch -Np1 -i "${srcdir}/0002_disable_documentation.patch"
+
   # Ensure that gcc 4.6.3 is used
   PATH="${srcdir}/usr/bin:/usr/bin:/bin"
   case ${CARCH} in
@@ -67,13 +63,6 @@ build() {
   CXXCPP="${srcdir}/usr/bin/cpp-4.6 -x c++"
 
   export PATH CC CXX CPP CXXCPP
-
-  # utouch-geis was renamed to geis upstream
-  patch -Np1 -i "${srcdir}/0001_geis.patch"
-
-  # The documentation files causes autoreconf to fail (docs aren't packaged in
-  # Ubuntu anyway)
-  patch -Np1 -i "${srcdir}/0002_disable_documentation.patch"
 
   # Fix glew 1.8.0 headers and build with them
   [ -d glew-headers/ ] && rm -rv glew-headers/
