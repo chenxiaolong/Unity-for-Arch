@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-files
-pkgver=5.10.0
+pkgver=6.2.0
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
@@ -13,16 +13,11 @@ depends=('libzeitgeist' 'libunity' 'zeitgeist-extensions' 'libxdg-basedir' 'xdg-
 makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        'vala-0.16_fix.patch')
-sha512sums=('7474afb7462db3c03b992ae2f1fe092c244733d9bab74399651542cab11f46cc190ce75af742a1a6e4e006489d04df1c9d2bd1d45d2eb9729a103f4984db727b'
-            '772ee710458f1047c9c33ae49d6418334c264a46987119046b679af73cad4a16f2f763aff2ed35adf473767b8cf2e4d00b8fbcb3a6cf50f94d6593f962adc0a9')
+source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('e4f8d1e3d2a4356dab2f2b07c82c6a5e143dfb59ba9367db84661d819dd31baa5ab1d96c0f9ef9b59d447c7d9e6d688a599a8792369b32e0b18ba39400ee0e93')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-
-  # Fix build with vala 0.16
-  patch -Np1 -i "${srcdir}/vala-0.16_fix.patch"
 
   ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
