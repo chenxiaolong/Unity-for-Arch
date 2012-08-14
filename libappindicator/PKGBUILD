@@ -5,7 +5,7 @@
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
 _ubuntu_rel=0ubuntu1
-pkgver=0.4.92.${_ubuntu_rel}
+pkgver=12.10.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
 arch=('i686' 'x86_64')
@@ -14,10 +14,10 @@ license=('LGPL')
 makedepends=('libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgbase}/12.10/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('e6289e5db958fea5701093950c196558f20e8c1e8e4162a8d3a7f78e4e8eb3df52310843c6e4cc7cb2038fcb21d86587f08706dd36b8738343612dca6bbc979a'
-            '1f6de8cf2371cd9aef1dabd6bb905066b2c261d750a6506dae0b7ff66de492ff67b4fa54d4d87e0dea46418ba7edab86a92d6613eb2c81d614fcb1d08e2a9b3c')
+sha512sums=('317a22a23c8ed84e74207b64b2e9683992d1fb7208176637a051dfe925974f966d1cfa31e650b45eaf839ab61641dee8fbebc8a07882a09b0dd766d88b8d5b9a'
+            '56e5aa76762b9e3606b49082d094c2d4c80924db1dd23cb12e11b099d136c041c7956bbcfed464e3f92ad1e99903b0f4cdc0572ef7aeeea0d600a4e94b97a92e')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
@@ -68,3 +68,5 @@ package_libappindicator3(){
   make -C src DESTDIR="${pkgdir}/" install
   make -C bindings/vala DESTDIR="${pkgdir}/" install
 }
+
+# vim:set ts=2 sw=2 et:
