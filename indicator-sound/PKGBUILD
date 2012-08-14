@@ -2,26 +2,26 @@
 # Original Maintainer: Balló György <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=indicator-sound
-pkgname=('indicator-sound' 'indicator-sound-gtk2')
-_ubuntu_rel=0ubuntu2.1
-pkgver=0.8.5.0.${_ubuntu_rel}
+pkgname=indicator-sound
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
+depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'dconf')
 makedepends=('intltool' 'vala' 'libgee')
 groups=('unity')
 options=('!libtool')
-install=${pkgbase}.install
-source=("http://launchpad.net/${pkgname}/fifth/${pkgver%.*.*.*}/+download/${pkgname}-${pkgver%.*.*}.tar.gz"
-        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('bca5d3d1e8ac215d7261aa1bdbfd1ed73505cc6a51da19cdfce681a3641e734f2c1a1c88de2bf3a8129b737aec976748a55e3c793e00497da5b98d004eda9c7d'
-            'b623ab45d6ad5de63a1e14da044a8f91d5557c094f455380933ec6341dd88b8ef95a43f81e93db77dda6177debcc607a1d98f51d630d2144a351ba084d40a496')
+install=${pkgname}.install
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('4a344139af92324858539dd5e3189bf6d212f3d940d1e53555c6ac181856a92bfa1584b625d23e25928f32a730c5588d45668c84836ccebb3137d86a4967a5e9'
+            'c18d15dc8700e77dfea108a5479d940fb557998a1b9aeccdb7d639b34cd89433dd54c6d62b7a616cc200bbd91ca27ea576f9209574d83de292c16fa74a6671ba')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
@@ -33,36 +33,14 @@ build() {
 
   autoreconf -vfi
 
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile --with-gtk=2
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile --with-gtk=3
-  make ${MAKEFLAGS}
-  popd
 }
 
-package_indicator-sound() {
-  pkgdesc="A unified sound menu - GTK 3 library"
-  depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'dconf')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk3"
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
 
   make DESTDIR="${pkgdir}/" install
-}
-
-package_indicator-sound-gtk2() {
-  pkgdesc="A unified sound menu - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'libido' 'indicator-sound')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*.*}/build-gtk2"
-
-  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
-
-  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
-  install -m755 'src/.libs/libsoundmenu.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
 
 # vim:set ts=2 sw=2 et:
