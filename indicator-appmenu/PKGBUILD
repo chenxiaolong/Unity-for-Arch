@@ -4,7 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
-pkgver=0.3.97
+pkgver=12.10.0
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-gtk3: support for GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
 options=('!libtool' '!emptydirs')
-source=("http://launchpad.net/${pkgbase}/0.4/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('58b4fa27c42c51cfe62db149881da1bc2112e540ad5f008b64ab8ceff3c4712becad6ec0790286dd5e88b5b120e5839caad31d690c4d1f8ed5589ad1fc88aa14')
+source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
+sha512sums=('db523906019157618aaeb064a5cbdb076906bb03d515e19f3e11d59132015e88ecf65391efb6d5d8c0a6f99f3479296265cb1dc8a461982133cf56a6598c6349')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
@@ -89,3 +89,5 @@ package_indicator-appmenu-tools() {
   rm "${pkgdir}/usr/lib/indicators3/7/libappmenu.so"
   rm "${pkgdir}/usr/lib/indicator-appmenu/hud-service"
 }
+
+# vim:set ts=2 sw=2 et:
