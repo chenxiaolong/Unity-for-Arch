@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgbase=indicator-appmenu
-pkgname=('indicator-appmenu' 'indicator-appmenu-gtk2' 'indicator-appmenu-tools')
+pkgname=('indicator-appmenu' 'indicator-appmenu-tools')
 pkgver=12.10.0
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
@@ -31,17 +31,8 @@ build() {
   # Cannot find gio/gdesktopappinfo.h
   CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gio-unix-2.0)"
 
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=2
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static
   make ${MAKEFLAGS}
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=3
-  make ${MAKEFLAGS}
-  popd
 }
 
 package_indicator-appmenu() {
@@ -49,7 +40,7 @@ package_indicator-appmenu() {
   depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
   install="${pkgbase}.install"
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/"
 
   make -C data DESTDIR="${pkgdir}/" install
   make -C src DESTDIR="${pkgdir}/" install
@@ -58,28 +49,12 @@ package_indicator-appmenu() {
   rm "${pkgdir}"/usr/bin/hud-{cli,dump-application,list-applications,verify-app-info}
 }
 
-package_indicator-appmenu-gtk2() {
-  pkgdesc="Indicator for application menus - GTK 2 library"
-  depends=('libindicator' 'libdbusmenu-gtk2' 'libbamf' 'indicator-appmenu' 'libwnck')
-
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
-
-  make -C data DESTDIR="${pkgdir}/" install
-  make -C src DESTDIR="${pkgdir}/" install
-
-  # Remove files that don't belong here
-  rm "${pkgdir}"/usr/bin/hud-{cli,dump-application,list-applications,verify-app-info}
-  rm "${pkgdir}/usr/lib/indicator-appmenu/hud-service"
-  rm "${pkgdir}"/usr/share/glib-2.0/schemas/com.canonical.indicator.appmenu.{,hud.{,search.}}gschema.xml
-  rm "${pkgdir}/usr/share/dbus-1/services/com.canonical.hud.service"
-}
-
 package_indicator-appmenu-tools() {
   pkgdesc="Indicator for application menus - Tools"
   depends=('indicator-appmenu')
 
   # Doesn't matter which one is used
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${pkgver}/"
 
   make -C docs DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
