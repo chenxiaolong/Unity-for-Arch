@@ -5,7 +5,7 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _ubuntu_rel=0ubuntu1
-pkgver=0.5.0.${_ubuntu_rel}
+pkgver=12.10.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
@@ -14,10 +14,10 @@ license=('GPL')
 mekedepends=('gtk3-ubuntu')
 options=('!libtool')
 groups=('unity')
-source=("http://launchpad.net/${pkgbase}/0.5/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+source=("http://launchpad.net/${pkgbase}/12.10/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('119a7633f5bd742c49d2a0a696516a4d4df0573f32c1358a3ca74e7c8a5ae598e975364bce37ca0e0bec9a469d053426d23c30b8742db7a190d4f8d086cb84e7'
-            '9188942f876ad88c9c81274f192e8fe79d52f225c540d6eaa2ef5eaecec33b559b49d8edba4c6b47a0fac0dfc2ee5d85c144584e2a9a484d66c52cd13213d192')
+sha512sums=('c0b9dc5a6c7b3ddd9392ae5a5db40f216439b869426e5b8a307a4adee5290376c2edc32f3a0268aafe63ae8b80dc0298b125c6c539c50a5c5545d7d727679007'
+            '094e1f21c5f450b617132020aab54c856da71f26ea1d4f30257ea6a12b48d3a884e7d7d4dad05295e55fe52914c31bbe3b3a8e13f49db9df38f1825a72c41174')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
