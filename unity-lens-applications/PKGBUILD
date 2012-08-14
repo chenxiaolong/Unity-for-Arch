@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-applications
-pkgver=5.12.0
+pkgver=6.2.0
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         '10-no-db51.patch')
-sha512sums=('6c040574deeb9efe9f8a4373d53cfd788b5836a62a1ab702d8175fd6c2e9772db136c67a9b66676e429405873fce61090a13757837afba3cce8713e8fd135866'
+sha512sums=('3d34d0fde5ea0649a53aaaef3a64dfa6626a65142ff750a281e11b7af77f755a7c001653dba38c8226aabc7cb4e3183dcfadc091a6bf2df5004dfa0fc1062eee'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
