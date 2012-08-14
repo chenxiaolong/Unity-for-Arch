@@ -4,8 +4,8 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-pkgver=0.2.120
-pkgrel=101
+pkgver=0.2.122
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
@@ -15,7 +15,7 @@ groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
 source=("https://launchpad.net/bamf/${pkgver%.*}/${pkgver}/+download/bamf-${pkgver}.tar.gz")
-sha512sums=('397cd5f75c3bd75a0795fe4ca39e56916aea1c3a54967e8f68efca06afb8a511aae883152215ff91e1d6bd6d539cf923540ec139070fd8b8f9e5dbc5cdcc5233')
+sha512sums=('5509a99b845f9359bcc273e0d73262ec4d34cb1fcf155e02b3c2e457f1b4e4673d584a4e0511f49d42824523e66b71ef603191078402d15eabbcf624fefedbca')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
@@ -68,9 +68,12 @@ package_libbamf() {
   make DESTDIR="${pkgdir}/" install
 
   # Remove bamfdaemon from this package
-  rm -rvf "${pkgdir}/usr/lib/${pkgbase}/"
-  rm -rvf "${pkgdir}/usr/share/dbus-1/"
-  rm -rvf "${pkgdir}/usr/share/"
+  rm -rv "${pkgdir}/usr/lib/${pkgbase}/"
+  rm -rv "${pkgdir}/usr/share/dbus-1/"
+  rm -rv "${pkgdir}/usr/share/"
+
+  # Remove GTK 3 files from this package
+  rm -v "${pkgdir}/usr/lib/girepository-1.0/Bamf-0.2.typelib"
 }
 
 package_libbamf3() {
@@ -84,8 +87,8 @@ package_libbamf3() {
   make DESTDIR="${pkgdir}/" install
 
   # Remove bamfdaemon from this package
-  rm -rvf "${pkgdir}/usr/lib/${pkgbase}/"
-  rm -rvf "${pkgdir}/usr/share/dbus-1/"
+  rm -rv "${pkgdir}/usr/lib/${pkgbase}/"
+  rm -rv "${pkgdir}/usr/share/dbus-1/"
 }
 
 # vim:set ts=2 sw=2 et:
