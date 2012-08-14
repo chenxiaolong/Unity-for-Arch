@@ -1,0 +1,31 @@
+diff -Nru indicator-session-12.10.0.orig/src/session-dbus.c indicator-session-12.10.0/src/session-dbus.c
+--- indicator-session-12.10.0.orig/src/session-dbus.c	2012-08-13 19:29:09.349452448 -0400
++++ indicator-session-12.10.0/src/session-dbus.c	2012-08-13 19:29:50.475480220 -0400
+@@ -206,7 +206,10 @@
+ {
+ 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(object);
+ 
+-	g_clear_pointer (&priv->name, g_free);
++	if (priv->name != NULL) {
++		g_free(priv->name);
++		priv->name = NULL;
++	}
+ 
+ 	G_OBJECT_CLASS (session_dbus_parent_class)->finalize (object);
+ 	return;
+diff -Nru indicator-session-12.10.0.orig/src/users-service-dbus.c indicator-session-12.10.0/src/users-service-dbus.c
+--- indicator-session-12.10.0.orig/src/users-service-dbus.c	2012-08-13 19:29:09.350452448 -0400
++++ indicator-session-12.10.0/src/users-service-dbus.c	2012-08-13 19:37:59.743838229 -0400
+@@ -735,7 +735,11 @@
+   if (!g_strcmp0 (ssid, priv->guest_ssid))
+     {
+       g_debug ("%s removing guest session %s", G_STRLOC, ssid);
+-      g_clear_pointer (&priv->guest_ssid, g_free);
++      if (priv->guest_ssid != NULL) {
++        g_free(priv->guest_ssid);
++        priv->guest_ssid = NULL;
++      }
++
+       emit_guest_login_changed (service);
+     }
+   else

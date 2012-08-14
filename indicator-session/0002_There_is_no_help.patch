@@ -1,0 +1,16 @@
+diff -Nru indicator-session-12.10.0.orig/src/session-menu-mgr.c indicator-session-12.10.0/src/session-menu-mgr.c
+--- indicator-session-12.10.0.orig/src/session-menu-mgr.c	2012-08-14 01:43:57.250018022 -0400
++++ indicator-session-12.10.0/src/session-menu-mgr.c	2012-08-14 01:48:59.151213002 -0400
+@@ -380,10 +380,10 @@
+     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                               G_CALLBACK(action_func_spawn_async), CMD_INFO);
+ 
+-    mi = mi_new (_("Ubuntu Help"));
++    /*mi = mi_new (_("Ubuntu Help"));
+     dbusmenu_menuitem_child_append (mgr->top_mi, mi);
+     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+-                              G_CALLBACK(action_func_spawn_async), CMD_HELP);
++                              G_CALLBACK(action_func_spawn_async), CMD_HELP);*/
+ 
+     mi = mi_new_separator ();
+     mi_set_visible (mi, show_settings);
