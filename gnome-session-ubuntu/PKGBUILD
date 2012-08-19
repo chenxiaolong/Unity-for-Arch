@@ -7,7 +7,7 @@ _ubuntu_rel=0ubuntu8
 _ubuntu_ver=3.2.1
 _actual_ver=3.4.1
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -67,14 +67,17 @@ build() {
   #done
 
   # Refreshed patches for gnome-session 3.4.1
-  patch -Np1 -i "${srcdir}/UBUNTU_01_gnome-wm.patch"
+  #patch -Np1 -i "${srcdir}/UBUNTU_01_gnome-wm.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_02_fallback_desktop.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_03_display_session_capplet.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_12_no_gdm_fallback.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_20_hide_nodisplay.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_21_up_start_on_demand.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_22_support_autostart_delay.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_50_ubuntu_sessions.patch"
+  #patch -Np1 -i "${srcdir}/UBUNTU_50_ubuntu_sessions.patch"
+  cat "${srcdir}/UBUNTU_50_ubuntu_sessions.patch" | \
+    sed 's/gnome-wm/metacity/g' | \
+    patch -Np1
   patch -Np1 -i "${srcdir}/UBUNTU_51_remove_session_saving_from_gui.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_52_xdg_current_desktop.patch"
   patch -Np1 -i "${srcdir}/UBUNTU_95_dbus_request_shutdown.patch"
@@ -109,8 +112,6 @@ package() {
   # Install my version of the script (more platform-agnostic)
   install -m755 "${srcdir}/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
-  install -m755 "${srcdir}/debian/scripts/gnome-wm" "${pkgdir}/usr/bin/"
-  install -m644 "${srcdir}/debian/gnome-wm.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/gnome-session-common.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
   install -m644 "${srcdir}/debian/defaults.list" "${pkgdir}/etc/gnome/"
   ln -s '/etc/gnome/defaults.list' "${pkgdir}/usr/share/gnome/applications/defaults.list"
