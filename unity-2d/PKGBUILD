@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-2d
-_ubuntu_rel=0ubuntu1.1
+_ubuntu_rel=0ubuntu3
 pkgver=5.12.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Unity interface for non-accelerated graphics cards"
@@ -19,23 +19,24 @@ optdepends=('appmenu-gtk: Export GTK menus over DBus'
             'appmenu-qt: appmenu support for Qt')
 options=('!emptydirs')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*.*}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.diff.gz"
+# Unity 2D is officially dead. Copies of the lastest versions of Unity-2D are
+# hosted at ompldr.
+source=("http://ompldr.org/vZjV0OQ/unity-2d_5.12.0.orig.tar.gz"
+        "http://ompldr.org/vZjV0Nw/unity-2d_5.12.0-0ubuntu3.diff.gz"
         "launchpad-export-2d.tar.gz::http://ubuntuone.com/0Zbt9BBlGbHMah8y1tCjGA" # Snapshot of translations from Launchpad as of 2012-04-26
-        'gcc_4.7.0_build_fix.patch')
+)
 sha512sums=('fbc080d30fc1dcdb130c3227f862729452301fcbb5bdce89495f54612b0efbbac7109307455da13c168dcc576cf433f888fbfb43fb366486ce79cb7a018975aa'
-            '712c0c126e1db83820d8db41c94cab12188a09698f7f1944482e96520dfaeac32bee3e7a0ac7e2184c6cf72aa2815df97f90d37289093439e502c0d36cf23d29'
-            '1912a66eb9e3f4fca8d821ecd2e077291620346b3e603201c50d9694fcad3377606434d3928a25463ece275ce9a814ba6e46fc8ccb2e94ca561fccf56b871d5a'
-            '4905a05fb519e3f18a200d634e72dbf571e451090629c7d3e320d170b97f9397cd50579978f6a751bce43635f17a5d574bd640e629d7e7821789bbec359ecfdf')
+            '70566ed6ef68b1222c818b13b376c6eff986f8f832cabf794858a760e721f7ed648edd07ee4a6fd00af54a3d3e189b984963b58b33ebb6a6dd50fa61c4f37b5e'
+            '1912a66eb9e3f4fca8d821ecd2e077291620346b3e603201c50d9694fcad3377606434d3928a25463ece275ce9a814ba6e46fc8ccb2e94ca561fccf56b871d5a')
 
 # https://bugs.launchpad.net/unity-2d/+bug/809205
 export NO_PNG_PKG_MANGLE=1
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
@@ -55,9 +56,6 @@ build() {
   # Fix Qt4 imports directory
   sed -i 's|qt4/imports|qt/imports|' libunity-2d-private/Unity2d/CMakeLists.txt
 
-  # GCC 4.7.0 build fix
-  patch -Np1 -i "${srcdir}/gcc_4.7.0_build_fix.patch"
-
   mkdir build
   cd build
   cmake .. \
@@ -70,7 +68,7 @@ build() {
 }
 
 package() { 
-  cd "${srcdir}/${pkgname}-${pkgver%.*.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
   pushd build
   make DESTDIR="${pkgdir}/" install
   popd
