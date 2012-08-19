@@ -3,11 +3,11 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=6.0.0
+pkgver=6.2.0
 _actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu6
+  _ubuntu_rel=0ubuntu1
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
@@ -26,7 +26,7 @@ conflicts=('unity-core')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
-source=("https://launchpad.net/unity/6.0/6.0/+download/unity-${_actual_ver}.tar.bz2"
+source=("https://launchpad.net/unity/6.0/6.2/+download/unity-${_actual_ver}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         # No longer using ompldr - too much downtime
         # kiwi6 is terrible too
@@ -37,8 +37,8 @@ source=("https://launchpad.net/unity/6.0/6.0/+download/unity-${_actual_ver}.tar.
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
-sha512sums=('2e49c9c273db905aad4ea01b5bd71f687ba0346134e625ad650bae748b7a7116c99a2484ca2c0ad817aec40c994325943813697f4ff67ce4cfee7ae70449f80e'
-            '9e3722dc0e9e1301c1d940f96d648131a9a642162fa5a9a360f9310551d46e89dd0cc1e0fb4e16cf7fc8bd936a7ca1104d4f28ddd67a40074bf5babb039b05cd'
+sha512sums=('be56de6a900ff53e5663e0a9195feabc06de65f3a830cf2a87dde6b1ed60c8db240315e285ddbc16b5707fcea92113e593fd5f891d00b8b458231b04fdf1dbec'
+            '6444de1fa7a5f6e9a9f89a9c1cb8adbded5b53befa757d21494945019d32302558284c349cc90cc0c2a577d46c5c923abda2045a02db108dfbf85acbdf6dc0f7'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
