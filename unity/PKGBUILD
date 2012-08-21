@@ -47,21 +47,6 @@ sha512sums=('be56de6a900ff53e5663e0a9195feabc06de65f3a830cf2a87dde6b1ed60c8db240
             '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
 
-# GPG public key:
-#   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
-case ${CARCH} in
-i686)
-  # GPG signature: http://ompldr.org/vZXFsZA/gcc46-4.6.3-1-i686.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZXFsYw/gcc46-4.6.3-1-i686.pkg.tar.xz')
-  sha512sums+=('a715da56bce0cf39b28cd55d6f7d6be07324400fbb4b550e289ebf301820f2f006f68149129fd6d2842268e698d053b4d40799d2f066a47a32913db2a065de57')
-  ;;
-x86_64)
-  # GPG signature: http://ompldr.org/vZXFsZg/gcc46-4.6.3-1-x86_64.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZXFsaA/gcc46-4.6.3-1-x86_64.pkg.tar.xz')
-  sha512sums+=('a707fd950273140355bad5af8ca5da7c4b6c8f69ccaa6945d427f8fc1104ef308bdfbd32b46e65a62b06576ff7cecf22182579888767d6cb33d4133f2f37c4b0')
-  ;;
-esac
-
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}"
 
@@ -108,22 +93,8 @@ build() {
   # Disable '-Werror'
   #sed -i 's/[ ]*-Werror[ ]*//g' CMakeLists.txt services/CMakeLists.txt
 
-  # Build with gcc 4.6.3
-  PATH="${srcdir}/usr/bin:/usr/bin:/bin:/usr/sbin"
-
   [[ -d build ]] && rm -rvf build/
   mkdir build/ && cd build/
-
-  case ${CARCH} in
-    x86_64)
-      C_COMPILER="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-gcc-4.6"
-      CXX_COMPILER="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-g++-4.6"
-      ;;
-    i686)
-      C_COMPILER="${srcdir}/usr/bin/i686-pc-linux-gnu-gcc-4.6"
-      CXX_COMPILER="${srcdir}/usr/bin/i686-pc-linux-gnu-g++-4.6"
-      ;;
-  esac
 
   cmake \
     -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
@@ -131,8 +102,6 @@ build() {
     -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_C_COMPILER="${C_COMPILER}" \
-    -DCMAKE_CXX_COMPILER="${CXX_COMPILER}" \
     ..
 
   make ${MAKEFLAGS}
