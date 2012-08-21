@@ -26,43 +26,10 @@ sha512sums=('4a3ee53b792cdf6ca4add124b29931adc299ed328f695d92bf2c889df1584317447
             'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
             '60a6fd75896af92ba6a511968e35b16697da39416877b611323e4b57f70ed6bec81ba3a0467f175dcb30aaefb8d238943f59fc57c5d462047492078bd545a90a')
 
-# GPG public key:
-#   gpg --keyserver keyserver.ubuntu.com --recv-keys 90EFF32C
-case ${CARCH} in
-i686)
-  # GPG signature: http://ompldr.org/vZXFsZA/gcc46-4.6.3-1-i686.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZXFsYw/gcc46-4.6.3-1-i686.pkg.tar.xz')
-  sha512sums+=('a715da56bce0cf39b28cd55d6f7d6be07324400fbb4b550e289ebf301820f2f006f68149129fd6d2842268e698d053b4d40799d2f066a47a32913db2a065de57')
-  ;;
-x86_64)
-  # GPG signature: http://ompldr.org/vZXFsZg/gcc46-4.6.3-1-x86_64.pkg.tar.xz.asc
-  source+=('http://ompldr.org/vZXFsaA/gcc46-4.6.3-1-x86_64.pkg.tar.xz')
-  sha512sums+=('a707fd950273140355bad5af8ca5da7c4b6c8f69ccaa6945d427f8fc1104ef308bdfbd32b46e65a62b06576ff7cecf22182579888767d6cb33d4133f2f37c4b0')
-  ;;
-esac
-
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   patch -Np1 -i "${srcdir}/0002_disable_documentation.patch"
-
-  # Ensure that gcc 4.6.3 is used
-  PATH="${srcdir}/usr/bin:/usr/bin:/bin"
-  case ${CARCH} in
-    x86_64)
-      CC="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-gcc-4.6"
-      CXX="${srcdir}/usr/bin/x86_64-unknown-linux-gnu-g++-4.6"
-      ;;
-    i686)
-      CC="${srcdir}/usr/bin/i686-pc-linux-gnu-gcc-4.6"
-      CXX="${srcdir}/usr/bin/i686-pc-linux-gnu-g++-4.6"
-      ;;
-  esac
-
-  CPP="${srcdir}/usr/bin/cpp-4.6 -x c"
-  CXXCPP="${srcdir}/usr/bin/cpp-4.6 -x c++"
-
-  export PATH CC CXX CPP CXXCPP
 
   # Fix glew 1.8.0 headers and build with them
   [ -d glew-headers/ ] && rm -rv glew-headers/
