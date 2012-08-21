@@ -11,7 +11,7 @@ if [ "${_UBUNTU}" == true ]; then
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
