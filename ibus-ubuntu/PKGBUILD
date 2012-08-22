@@ -44,6 +44,9 @@ build() {
   # Cannot find gmodule-2.0
   #CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
 
+  # Fix FTBFS on some systems
+  sed -i 's|--pkg=ibus-1.0|--pkg-export=ibus-1.0|' src/Makefile.in
+
   export PYTHON=python2
 
   ./configure \
