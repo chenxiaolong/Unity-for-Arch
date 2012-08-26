@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu0.2
+_ubuntu_rel=0ubuntu10
 pkgver=3.4.2.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -13,19 +13,19 @@ license=('GPL')
 depends=('colord' 'dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libgnomekbd' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3' 'packagekit')
 makedepends=('intltool' 'gtk-doc' 'gnome-desktop' 'gnome-common' 'xf86-input-wacom')
 groups=('unity')
-provides=("gnome-settings-daemon=${pkgver%.*.*}")
+provides=("gnome-settings-daemon=${pkgver%.*}")
 conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*.*}/${pkgname%-*}-${pkgver%.*.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
 sha512sums=('4a05995511cd1b4324844c164bc2acd831d5e1b9b989ef35716bd7630126406f77b13ea93921379375790d4dea75b9cc14b6107daebdbf264fbf5157f7bd7093'
-            '35623ff320a752477b900b912d9a0d916be1743c7b814420102668f5f24953b76b81d7215c63637574696e26663c40323a1178d0eed12d3c7699bc4091a7129b'
+            '3239b9ff0e710b9259b1497904555c77ee0d23f21443c1f20ed77ec765b4ecbd841d7dabbb15f6f14988f609a7209e4f7bd5fb94fc92d50fad3db2aa37b37aba'
             '6afbad62dd69e0c779ae991e9afa46c3f2c0db07f0f7d77d607198f939498a8dfa0cd46099f46ce25d6d993425d7914bb3b8098044f007485e7fe501c900fe63')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   patch -Np1 -i "${srcdir}/systemd-fallback.patch"
 
@@ -61,7 +61,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*.*}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
   make DESTDIR="${pkgdir}" install
 
   # Install gnome-update-wallpaper-cache
