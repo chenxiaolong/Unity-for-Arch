@@ -1,9 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-pkgname=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
+pkgname=('overlay-scrollbar' 'liboverlay-scrollbar' 'liboverlay-scrollbar3')
 pkgbase=overlay-scrollbar
-pkgver=0.2.16
-pkgrel=101
+_actual_ver=0.2.16
+_bzr_rev=r353
+_ubuntu_rel=0ubuntu2
+pkgver=${_actual_ver}.${_bzr_rev}.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ayatana-scrollbar"
@@ -11,11 +14,11 @@ license=('LGPL')
 groups=('unity')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'gsettings-desktop-schemas-ubuntu')
 options=('!libtool')
-source=("http://launchpad.net/ayatana-scrollbar/${pkgver%.*}/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('c190664451ba2edf92d3e46e2353635d35ddd7dea6cda02b7e05d7effa3c2cb5cc622bae695bd88e853fd2649e1862008aa986546cf0b39fa226b23207ca721e')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}+${_bzr_rev}-${_ubuntu_rel}.tar.gz")
+sha512sums=('c1c2578f237454fbfefed4f3da2f02976a8bad33f2460f117a8d9e7ad48982ec7ac20be647428f164d2763d899a31e9e1e42b00489af9a5fe8724488221dc3d4')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}+${_bzr_rev}"
 
   sed -i 's/3\.3\.6/3.2.3/' configure.ac
   autoreconf -vfi
@@ -33,26 +36,37 @@ build() {
   popd
 }
 
+package_overlay-scrollbar() {
+  pkgdesc="Scrollbar overlayed widget"
+  depends=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
+  install=overlay-scrollbar.install
+
+  cd "${srcdir}/${pkgbase}-${_actual_ver}+${_bzr_rev}/build-gtk3"
+  make DESTDIR="${pkgdir}/" install
+
+  rm -rvf "${pkgdir}/usr/"
+}
+
 package_liboverlay-scrollbar3() {
   pkgdesc="Scrollbar overlayed widget - GTK 3 library"
   depends=('gtk3-ubuntu')
-  provides=('overlay-scrollbar')
-  conflicts=('overlay-scrollbar')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
-  MAKEFLAGS="-j1"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}+${_bzr_rev}/build-gtk3"
   make DESTDIR="${pkgdir}/" install
 
   rm -rvf "${pkgdir}/etc/"
+  rm -rvf "${pkgdir}/usr/share/glib-2.0/"
 }
 
 package_liboverlay-scrollbar() {
   pkgdesc="Scrollbar overlayed widget - GTK 2 library"
   depends=('gtk2-ubuntu')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
-  MAKEFLAGS="-j1"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}+${_bzr_rev}/build-gtk2"
   make DESTDIR="${pkgdir}/" install
 
   rm -rvf "${pkgdir}/etc/"
+  rm -rvf "${pkgdir}/usr/share/glib-2.0/"
 }
+
+# vim:set ts=2 sw=2 et:
