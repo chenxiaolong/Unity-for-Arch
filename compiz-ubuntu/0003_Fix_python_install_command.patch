@@ -1,6 +1,6 @@
-diff -Nru compiz-0.9.8+bzr3249.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake compiz-0.9.8+bzr3249/compizconfig/cmake/exec_setup_py_with_destdir.cmake
---- compiz-0.9.8+bzr3249.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-07-29 16:15:05.231483291 -0400
-+++ compiz-0.9.8+bzr3249/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-07-29 16:15:18.214817236 -0400
+diff -Nru compiz-0.9.8.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake compiz-0.9.8/compizconfig/cmake/exec_setup_py_with_destdir.cmake
+--- compiz-0.9.8.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-08-26 19:09:33.252597560 -0400
++++ compiz-0.9.8/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-08-26 19:10:27.182598769 -0400
 @@ -3,7 +3,6 @@
  set (SETUP "" CACHE FORCE "Path to setup.py")
  
@@ -9,12 +9,10 @@ diff -Nru compiz-0.9.8+bzr3249.orig/compizconfig/cmake/exec_setup_py_with_destdi
  
  set (INSTALL_ROOT $ENV{DESTDIR})
  
-@@ -15,12 +14,5 @@
+@@ -15,10 +14,5 @@
  
  cmake_policy (SET CMP0012 NEW)
  
--message (${BUILD_DEB})
--
 -if (BUILD_DEB)
 -    message ("Installing Debian Format")
 -    set (EXTRAARGS "--install-layout=deb")
