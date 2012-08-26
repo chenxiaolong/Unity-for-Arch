@@ -4,7 +4,7 @@
 
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
-pkgver=12.10.0
+pkgver=12.10.1
 pkgrel=100
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
@@ -14,7 +14,7 @@ makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-intr
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('261df26eb90e138537ac16489aada741a2f618933e433b00d1ef8f5cb860d6b8831e19d9cc25837f8cf3d0a3688937d75e16296ba466e32cbc8ef9533bd6c1dc')
+sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
