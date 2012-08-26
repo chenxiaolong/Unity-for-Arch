@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-files
-pkgver=6.2.0
+pkgver=6.4.0
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
@@ -14,7 +14,7 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('e4f8d1e3d2a4356dab2f2b07c82c6a5e143dfb59ba9367db84661d819dd31baa5ab1d96c0f9ef9b59d447c7d9e6d688a599a8792369b32e0b18ba39400ee0e93')
+sha512sums=('7b8735151bcc1e0805dd314b4be71b6f02058f7482b7663da1caa294262eb0f1f20cd0c3b40168c3a7b85de6f86833c87fffc99527829d61d986712ce267f915')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
