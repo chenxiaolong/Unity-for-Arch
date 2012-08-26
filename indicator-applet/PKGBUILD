@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-applet
-pkgver=0.5.0
+pkgver=12.10.0
 pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
@@ -20,18 +20,12 @@ optdepends=('indicator-application: take menus from applications and place them 
             'indicator-sound: a unified sound menu')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/indicator-applet/0.5/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        '0001_No_gtypes.h.patch')
-sha512sums=('f35a6101ee5a2b94cb22ddc5c78d86a42ac0df6bd50aa6584c22a03a7de99d3609e58133c33460cc3a2595d4d4b04be96fb88af69cc5ae9e44157e238467a170'
-            '02a510d9776483c7d09150574798505eac36f9f49142ad891ba246890bc986af24bd8ac4a664bc6ad08ec84f3de7f1e84c04d507bd7879b931776ad778142fc7')
+source=("http://launchpad.net/indicator-applet/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('9797045f5aeef2f33549e51e15ac66eb9873b3cfb8f8e03f7deecf5f98eb2d9101cb115a04ff207638247fa189ffd2359c8283cd74852de38773810f43a46809')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # Do not include glib/gtypes.h
-  patch -Np1 -i "${srcdir}/0001_No_gtypes.h.patch"
-
-  autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }
