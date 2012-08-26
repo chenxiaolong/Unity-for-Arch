@@ -1,0 +1,25 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-scope-video-remote
+pkgver=0.3.7
+pkgrel=100
+pkgdesc="Unity Video lens"
+arch=('any')
+url="https://launchpad.net/unity-lens-videos"
+license=('GPL')
+depends=('python2' 'unity-lens-video')
+makedepends=('python2-distutils-extra')
+groups=('unity')
+source=("https://launchpad.net/unity-lens-videos/remote-videos-scope-trunk/remote-videos-${pkgver}/+download/unity-scope-video-remote-${pkgver}.tar.gz")
+sha512sums=('e8d2e627fb3e7294fa21fcbc0cdeee4d0526882ac2f327859b2da2a8e188c387ee9486c8f0efe5aeb07c95d2ee7ba1937332de328744b15b67283d3baa1ec566')
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  python2 setup.py install --root="${pkgdir}/" --optimize=1
+
+  # Python 2 fix
+  sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}/usr/lib/unity-scope-video-remote/unity-scope-video-remote"
+}
+
+# vim:set ts=2 sw=2 et:
