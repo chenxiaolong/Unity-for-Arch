@@ -108,6 +108,17 @@ build() {
   MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 
+  # Make sure that the GSettings schema files were created
+  pushd generated/glib-2.0/schemas/
+  if \
+    [ ! -f org.compiz.networkarearegion.gschema.xml ] || \
+    [ ! -f org.compiz.unitydialog.gschema.xml ] || \
+    [ ! -f org.compiz.unitymtgrabhandles.gschema.xml ] ||
+    [ ! -f org.compiz.unityshell.gschema.xml ]; then
+    make compiz_gsettings_compile_local
+  fi
+  popd
+
   # Build autopilot tests
   pushd ../tests/autopilot/
   python2 setup.py build
@@ -149,6 +160,19 @@ package() {
   # Arch Linux logo
   install -m644 "${srcdir}/launcher_bfb.png" \
     "${pkgdir}/usr/share/unity/6/launcher_bfb.png"
+
+  # Check for missing GSettings schemas
+  pushd "${pkgdir}/usr/share/glib-2.0/schemas/"
+  if \
+    [ ! -f org.compiz.networkarearegion.gschema.xml ] || \
+    [ ! -f org.compiz.unitydialog.gschema.xml ] || \
+    [ ! -f org.compiz.unitymtgrabhandles.gschema.xml ] || \
+    [ ! -f org.compiz.unityshell.gschema.xml ]; then
+    error "GSettings schemas didn't get installed"'!'
+    error "Please tar and upload the src/ directory and report a bug."
+    exit 1
+  fi
+  popd
 }
 
 # vim:set ts=2 sw=2 et:
