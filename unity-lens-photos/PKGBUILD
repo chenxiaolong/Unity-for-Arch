@@ -1,0 +1,34 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-lens-photos
+_ubuntu_rel=0ubuntu1
+pkgver=0.2.1.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="Unity lens for browsing photos"
+arch=('any')
+url="https://launchpad.net/unity-lens-photos"
+license=('GPL')
+groups=('unity')
+depends=('python-httplib2')
+makedepends=('python' 'python-distutils-extra')
+source=("https://launchpad.net/unity-lens-photos/trunk/${pkgver%.*}/+download/unity-lens-photos-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('0a20a13c78751094ff2ba3ac4917fb7af76d7f16079baf8fc08286febce99f60414304858f189922000bd9734c5e53b22558a6e23107fc40f723ffa27f72f6e8'
+            '241fd616209508c8898171e9c28f03f5983659f30af7e8293333663ee330b5c755fbd8e0ca6939ce0510234f35f3ae63b1a7d98ef8327ae32dcbe35498e91d24')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu's patches
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  python setup.py install --root="${pkgdir}/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
