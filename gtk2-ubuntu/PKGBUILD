@@ -66,7 +66,7 @@ build() {
 
 package_gtk2-ubuntu() {
   pkgdesc="GTK+ is a multi-platform toolkit (v2)"
-  install=gtk2.install
+  install=arch_gtk2.install
   depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'libcups' 'gtk-update-icon-cache' 'python2')
   provides=("gtk2=${pkgver%.*}")
   conflicts=('gtk2')
