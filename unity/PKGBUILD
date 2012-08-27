@@ -105,6 +105,7 @@ build() {
     -DUSE_GSETTINGS=TRUE \
     ..
 
+  MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 
   # Build autopilot tests
