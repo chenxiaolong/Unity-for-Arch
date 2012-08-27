@@ -35,6 +35,7 @@ post_install() {
     gconf-schemas --register compiz-kde.schemas
   fi
   update-gconf-defaults
+  glib-compile-schemas usr/share/glib-2.0/schemas/
 }
 
 pre_remove() {
@@ -51,4 +52,8 @@ pre_upgrade() {
 
 post_upgrade() {
   post_install
+}
+
+post_remove() {
+  glib-compile-schemas usr/share/glib-2.0/schemas/
 }

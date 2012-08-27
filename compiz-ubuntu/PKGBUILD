@@ -19,8 +19,8 @@ pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'startup-notification' 'protobuf' 'pyrex')
-makedepends=('boost' 'cmake' 'intltool' 'libwnck' 'metacity-ubuntu')
+depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+makedepends=('boost' 'cmake' 'intltool' 'libwnck')
 provides=(compiz-core{,-ubuntu}="${pkgver}"
           compiz-gnome{,-ubuntu}="${pkgver}"
           compiz-kde{,-ubuntu}="${pkgver}"
@@ -49,13 +49,15 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_a
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
-        '0004_Use_python2.patch')
+        '0004_Use_python2.patch'
+        'compiz-migrate-to-dconf.desktop')
 sha512sums=('617893f776fe98f672617e77e427eb9ab512bc2a708a0868c57d20ddce6f7e9009f940c1e1d641ace04dd8ab1c146838d6cbcadafaaace3ae2f9aaea463b719e'
             '059dde01742d33ae5b5d6385a83850a4d224ba3afea1d5e425641e401d61d95fbe00c7986262a3a019a8e0d3ed0bcd03f856ccbba7c68f530ad074b4f1586e14'
             'cf0324a656e855ff26b624386d287ae4d90ede8f14d8eb7e613591de1dd90c7eb00ebfbb401802caa6e6e9aac99031e9ddd8a966ed23513b9e33b529f3b9519c'
             '0915398c67aa1f8fa8d89e5f2efa5fe9cf1d5cfa862042b5d920aff5454bc220def92b691ae8010e8d4254adcd6199865b81584ce56b1ac0e81d00272c33e688'
             '8af143fd47d6e949a2096a9f53cd25417c8f0fce8a5225084cf28deacef177383dc9ddac7b81330346f936ed05686644cacb73852fc66c39e1796a1f2a7a6937'
-            'd898b253f32ef8fbc4e83b0495572d96eb292eaf948ee4aa413524cbd50d77bbd7a82104d7f2312c21c3ce35cca640ffc3be6f8070c306b0582d1a22a8010057')
+            'd898b253f32ef8fbc4e83b0495572d96eb292eaf948ee4aa413524cbd50d77bbd7a82104d7f2312c21c3ce35cca640ffc3be6f8070c306b0582d1a22a8010057'
+            'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -97,8 +99,8 @@ build() {
     -DCOMPIZ_DEFAULT_PLUGINS="ccp" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \
-    -DUSE_GSETTINGS=OFF \
-    -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=ON \
+    -DUSE_GSETTINGS=ON \
+    -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=OFF \
     -DCOMPIZ_BUILD_TESTING=OFF \
     -DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
     -DUSE_KDE4=OFF
@@ -122,20 +124,6 @@ package() {
   install -dm755 "${pkgdir}/usr/share/doc/compiz/"
   install ../{AUTHORS,NEWS,README} \
     "${pkgdir}/usr/share/doc/compiz/"
-
-  # Create keybindings for Compiz based on the Metacity ones
-  KEYBIND_DIR=/usr/share/gnome-control-center/keybindings
-  install -dm755 "${pkgdir}${KEYBIND_DIR}"
-  for i in launchers navigation screenshot system windows; do
-    # Keep 'package=metacity' to use translations from Metacity
-    sed 's/wm_name=\"Metacity\"/wm_name=\"Compiz\"/' \
-      "/usr/share/gnome-control-center/keybindings/50-metacity-${i}.xml" \
-      > "${pkgdir}${KEYBIND_DIR}/50-compiz-${i}.xml"
-  done
-
-  # Add selected keys
-  sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' \
-    "${pkgdir}${KEYBIND_DIR}/50-compiz-navigation.xml"
 
   # Install Ubuntu's files
   install -dm755 "${pkgdir}/usr/share/man/man1/"
@@ -170,12 +158,34 @@ package() {
     install -m644 {} "${pkgdir}"/etc/compizconfig/upgrades/{} \;
   popd
 
+  install -dm755 "${pkgdir}/usr/lib/compiz/migration/"
+  pushd ../postinst/convert-files/
+  find . -type f -name '*.convert' -exec \
+    install -m644 {} "${pkgdir}"/usr/lib/compiz/migration/{} \;
+  popd
+
+  # Install keybinding files
+  install -dm755 "${pkgdir}/usr/share/gnome-control-center/keybindings/"
+  find ../*/gtk/gnome/ -name *.xml -exec install {} \
+    "${pkgdir}/usr/share/gnome-control-center/keybindings/" \;
+
   # Default GConf settings
   install -m644 ../debian/compiz-gnome.gconf-defaults \
     "${pkgdir}/usr/share/gconf/defaults/10_compiz-gnome"
 
+  # Default GSettings settings
+  install -m644 ../debian/compiz-gnome.gsettings-override \
+    "${pkgdir}/usr/share/glib-2.0/schemas/10_compiz-ubuntu.gschema.override"
+
   # Install script for resetting all of Compiz's settings
   install "${srcdir}/compiz.reset" "${pkgdir}/usr/bin/compiz.reset"
+
+  # Install script for migrating GConf settings to GSettings
+  install -dm755 "${pkgdir}/etc/xdg/autostart/"
+  install -m644 ../postinst/migration-scripts/02_migrate_to_gsettings.py \
+    "${pkgdir}/usr/lib/compiz/"
+  install -m644 "${srcdir}/compiz-migrate-to-dconf.desktop" \
+    "${pkgdir}/etc/xdg/autostart/"
 }
 
 # vim:set ts=2 sw=2 et:
