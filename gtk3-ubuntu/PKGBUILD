@@ -8,7 +8,7 @@ pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
-install=gtk3.install
+install=arch_gtk3.install
 depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'glib2>=2.31.0' 'dconf' 'pango>=1.30.0')
 makedepends=('gobject-introspection>=1.32.0')
 provides=("gtk3=${pkgver%.*.*}")
@@ -18,7 +18,7 @@ backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*.*}/gtk+-${pkgver%.*.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz"
-        'settings.ini')
+        'arch_settings.ini')
 sha512sums=('b9adf9d40db013acd23b355244cac3ca19e8d688425fb2ae99b375ad84d7e49064ed4a3660a221bfdb82164b9f46fd1eae23855cee611389d75d1383971325d4'
             '69ed586404daab3a9c2a009f9aabdef2584b7096000f5decca3d9e0874e867da3c40aa845262a9ab1d924e09ddd39bf01cc67a4056314a35229b1f6727b58c7b'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
@@ -53,7 +53,8 @@ package() {
   cd "${srcdir}/gtk+-${pkgver%.*.*}"
   make mkdir_p="/bin/mkdir -p" DESTDIR="${pkgdir}" install
 
-  install -Dm644 "${srcdir}/settings.ini" "${pkgdir}/etc/gtk-3.0/settings.ini"
+  install -Dm644 "${srcdir}/arch_settings.ini" \
+    "${pkgdir}/etc/gtk-3.0/settings.ini"
 }
 
 # vim:set ts=2 sw=2 et:
