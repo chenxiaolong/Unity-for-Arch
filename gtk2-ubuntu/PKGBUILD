@@ -12,7 +12,7 @@ options=('!libtool')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        'xid-collision-debug.patch'
+        'arch_xid-collision-debug.patch'
         'fix-ubuntumenuproxy-build.patch')
 sha512sums=('64b7281e63338bd094b1ee692638484f333b6837c8349c220182f651189c9f9be5a95ba7fb1a9940c74479fef35c3b5eb5bc4f9a9b185bfa36ae905110d4cb22'
             'f1b55b58871935bb5a51a7621c9faf2b1ffa2ae3d0065b9c260d3c0416cd82e4cc8e872a973c8220736c5f5fa6165d15294e18c97e184a1da7073da3383e09b9'
@@ -22,7 +22,7 @@ sha512sums=('64b7281e63338bd094b1ee692638484f333b6837c8349c220182f651189c9f9be5a
 build() {
   cd "${srcdir}/gtk+-${pkgver%.*}"
 
-  patch -Np1 -i "${srcdir}/xid-collision-debug.patch"
+  patch -Np1 -i "${srcdir}/arch_xid-collision-debug.patch"
 
   # Apply Ubuntu patches
 
