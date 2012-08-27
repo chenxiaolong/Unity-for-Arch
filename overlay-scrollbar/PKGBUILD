@@ -44,7 +44,7 @@ package_overlay-scrollbar() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}+${_bzr_rev}/build-gtk3"
   make DESTDIR="${pkgdir}/" install
 
-  rm -rvf "${pkgdir}/usr/"
+  rm -rvf "${pkgdir}/usr/lib/"
 }
 
 package_liboverlay-scrollbar3() {
