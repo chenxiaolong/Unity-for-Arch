@@ -7,7 +7,7 @@ pkgver=6.2.0
 _actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu3
+  _ubuntu_rel=0ubuntu4
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
@@ -38,7 +38,7 @@ source=("https://launchpad.net/unity/6.0/6.2/+download/unity-${_actual_ver}.tar.
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
 sha512sums=('be56de6a900ff53e5663e0a9195feabc06de65f3a830cf2a87dde6b1ed60c8db240315e285ddbc16b5707fcea92113e593fd5f891d00b8b458231b04fdf1dbec'
-            'f7220ff44a904e7285b36f3f83cfab1c84e64a3f64d0163250ea7be1014a560d0577f27cf86bd5d3b11513d82404df1173dfef90e15167107bcca6c2ef9dff80'
+            'f986489dcbce98b211614213cdf5a891bd66b4e1482ff578992adbbc8d5a9dab3a5ac023c2ccf9bf0aa611affa8093521163bd671d2a2b3ed78c9a6657feee75'
             '20dad43d03d4e7c8c4f16c759b55045c105390ea4fa70311f8c89b1b2e2db83538fe8307bbdc8c5e482a805d892bc8c6175084c5ca3368166a244896e1bf7796'
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
