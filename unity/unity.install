@@ -2,6 +2,8 @@ SCHEMAS="compiz-networkarearegion.schemas compiz-unitydialog.schemas compiz-unit
 
 post_install() {
   glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
+  gconf-schemas --register ${SCHEMAS}
+  update-gconf-defaults
   if [ -x $(which gtk-update-icon-cache) ]; then
     gtk-update-icon-cache -q -t -f usr/share/ccsm/icons/hicolor
   fi
