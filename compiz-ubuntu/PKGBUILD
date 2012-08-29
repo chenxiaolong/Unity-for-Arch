@@ -7,7 +7,7 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel="0ubuntu2"
+_ubuntu_rel="0ubuntu3"
 _actual_ver=0.9.8
 _bzr_rev=3319
 
@@ -52,7 +52,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_a
         '0004_Use_python2.patch'
         'compiz-migrate-to-dconf.desktop')
 sha512sums=('617893f776fe98f672617e77e427eb9ab512bc2a708a0868c57d20ddce6f7e9009f940c1e1d641ace04dd8ab1c146838d6cbcadafaaace3ae2f9aaea463b719e'
-            '059dde01742d33ae5b5d6385a83850a4d224ba3afea1d5e425641e401d61d95fbe00c7986262a3a019a8e0d3ed0bcd03f856ccbba7c68f530ad074b4f1586e14'
+            'cd346bf90a7b1652f15ddc173c63a2d53a1a250c19c6e12f58ec4a8d0880ee07379205a036dcd261db78d01a1ec01f3a2a9e6d14b51433054ee7a1b3a4a96bb1'
             'cf0324a656e855ff26b624386d287ae4d90ede8f14d8eb7e613591de1dd90c7eb00ebfbb401802caa6e6e9aac99031e9ddd8a966ed23513b9e33b529f3b9519c'
             '0915398c67aa1f8fa8d89e5f2efa5fe9cf1d5cfa862042b5d920aff5454bc220def92b691ae8010e8d4254adcd6199865b81584ce56b1ac0e81d00272c33e688'
             '8af143fd47d6e949a2096a9f53cd25417c8f0fce8a5225084cf28deacef177383dc9ddac7b81330346f936ed05686644cacb73852fc66c39e1796a1f2a7a6937'
