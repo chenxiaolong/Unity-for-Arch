@@ -1,0 +1,65 @@
+indicator-session defaults to using the system-devices-panel and
+system-shutdown-panel icons, which are only present in Ubuntu's monochrome icon
+theme. This patch will make indicator-session use those two icons if the Ubuntu
+icon theme is used or inherited and fallback to the system-shutdown icon if
+another icon theme is used.
+
+Logging out and logging back in is necessary when switching to and from the
+Ubuntu icon theme.
+diff -Nru indicator-session-12.10.1.orig/src/indicator-session.c indicator-session-12.10.1/src/indicator-session.c
+--- indicator-session-12.10.1.orig/src/indicator-session.c	2012-08-30 13:01:43.034617390 -0400
++++ indicator-session-12.10.1/src/indicator-session.c	2012-08-30 14:58:54.600661822 -0400
+@@ -132,7 +132,52 @@
+   self->entry.name_hint = PACKAGE;
+   self->entry.accessible_desc = _("Session Menu");
+   self->entry.label = GTK_LABEL (gtk_label_new ("User Name"));
+-  icon_name = greeter_mode ? GREETER_ICON_DEFAULT : ICON_DEFAULT;
++
++  gboolean okay = FALSE;
++
++  /* The system-devices-panel and system-shutdown-panel icons are only available
++   * in Ubuntu's monochrome icon themes. We'll fall back to the system-shutdown
++   * icon for other icon themes */
++  GSettings * get_stuff = g_settings_new("org.gnome.desktop.interface");
++  gchar * icon_theme = g_settings_get_string(get_stuff, "icon-theme");
++  printf("Icon Theme: %s\n", icon_theme);
++  if (g_strcmp0(icon_theme, "ubuntu-mono-dark") == 0 ||
++      g_strcmp0(icon_theme, "ubuntu-mono-light") == 0) {
++    okay = TRUE;
++  }
++
++  /* If the theme inherits the Ubuntu monochrome icon themes, that's okay too */
++  GKeyFile * icon_theme_index = g_key_file_new();
++  gchar * icon_theme_path = g_strconcat("/usr/share/icons/",
++                                        icon_theme,
++                                        "/index.theme",
++                                        NULL);
++  if (g_key_file_load_from_file(icon_theme_index,
++                                icon_theme_path,
++                                G_KEY_FILE_NONE, NULL)) {
++    gchar * icon_theme_inherits = g_key_file_get_string(icon_theme_index,
++                                                        "Icon Theme",
++                                                        "Inherits",
++                                                        NULL);
++    if (icon_theme_inherits != NULL) {
++      if (g_strstr_len(icon_theme_inherits, -1, "ubuntu-mono-dark") != NULL ||
++          g_strstr_len(icon_theme_inherits, -1, "ubuntu-mono-light") != NULL) {
++        okay = TRUE;
++      }
++    }
++    g_free(icon_theme_inherits);
++  }
++  g_free(icon_theme_path);
++  g_key_file_free(icon_theme_index);
++  g_free(icon_theme);
++
++  if (okay == TRUE) {
++    icon_name = greeter_mode ? GREETER_ICON_DEFAULT : ICON_DEFAULT;
++  }
++  else {
++    icon_name = "system-shutdown";
++  }
++
+   self->entry.image = GTK_IMAGE (gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON));
+   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
+                                                     INDICATOR_SESSION_DBUS_OBJECT));

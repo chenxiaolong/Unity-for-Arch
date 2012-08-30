@@ -17,16 +17,19 @@ options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
         '0001_Revert_new_glib_stuff.patch'
-        '0002_There_is_no_help.patch')
+        '0002_There_is_no_help.patch'
+        '0003_Workaround_disappearing_icon.patch')
 sha512sums=('0ad8552cd046471c612a3dfef149e3f5d6b50999b59baac189ff6b01fb168940ab3741d7166fe8b7c363aad51df1eb5e501649150ac982ee5b2458fe5564a974'
             '50d156022d7786dece9ddd3f06821cfe316ddf87e27ac1a496508a085e91f7595fdfeaad7879f88434c724e5ef643f648f7e3c585ccd34fb4924831326e2eb08'
-            'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d')
+            'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
+            '53b0dabc474003b62f6039709557b8e722f8083a49875979baffeaa39db64fd717c52eca1da377d3636e518649052d570293b6439357cde66905c629a1b8ae7e')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   patch -Np1 -i "${srcdir}/0001_Revert_new_glib_stuff.patch"
   patch -Np1 -i "${srcdir}/0002_There_is_no_help.patch"
+  patch -Np1 -i "${srcdir}/0003_Workaround_disappearing_icon.patch"
 
   sed -i 's/2\.33/2.22/g' configure.ac
   autoreconf -vfi
