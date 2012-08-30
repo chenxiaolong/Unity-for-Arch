@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/gnome-control-center' -O - | sed -n 's/.*>gnome-control-center_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/gnome-control-center' -O - | sed -n 's/.*>gnome-control-center_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 echo "Getting latest Arch Linux version..."
 ARCHLINUX_VER=($(wget -q 'https://www.archlinux.org/packages/extra/x86_64/gnome-control-center/' -O - | sed -n '/<title>/ s/^.*gnome-control-center\ \(.*\)-\(.*\)\ (.*$/\1 \2/p'))
