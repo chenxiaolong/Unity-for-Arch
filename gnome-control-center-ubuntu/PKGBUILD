@@ -63,7 +63,7 @@ build() {
   patch -Np1 -i "${srcdir}/systemd-fallback.patch"
 
   # Builds just fine with the stable version of clutter-gtk
-  sed -i 's/1\.11\.10/1.10.8/g' configure.ac
+  sed -i 's/1\.11\.10/1.10.6/g' configure.ac
 
   autoreconf -vfi
 
