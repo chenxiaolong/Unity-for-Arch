@@ -1,0 +1,12 @@
+diff -Nru unity_webapps-2.1.orig/src/context-daemon/unity-webapps-action-manager.c unity_webapps-2.1/src/context-daemon/unity-webapps-action-manager.c
+--- unity_webapps-2.1.orig/src/context-daemon/unity-webapps-action-manager.c	2012-09-01 16:01:30.959593639 -0400
++++ unity_webapps-2.1/src/context-daemon/unity-webapps-action-manager.c	2012-09-01 16:01:44.178598943 -0400
+@@ -1040,7 +1040,7 @@
+   UnityWebappsHasActionData *data;
+   UnityWebappsInterestTracker *tracker;
+   
+-  data = g_malloc (sizeof (data));
++  data = g_malloc (sizeof (*data));
+   data->manager = manager;
+   data->path = path;
+ 

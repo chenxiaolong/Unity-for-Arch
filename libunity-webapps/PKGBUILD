@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=libunity-webapps
+pkgver=2.1
+pkgrel=100
+pkgdesc="WebApps: Library for the integration with the Unity desktop"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libunity-webapps"
+license=('LGPL')
+groups=('unity')
+depends=('glib2' 'libdbusmenu-gtk3' 'libindicate' 'libindicate-gtk3' 'json-glib' 'libnotify' 'libsoup' 'libwnck3' 'sqlite' 'telepathy-glib' 'libunity')
+makedepends=('gobject-introspection')
+install=libunity-webapps.install
+source=("https://launchpad.net/libunity-webapps/trunk/${pkgver}/+download/unity_webapps-${pkgver}.tar.gz"
+        '0001_Fix_g_malloc.patch')
+sha512sums=('ed1ab17e0d0fd9d474a32c1ed1f4e808d99fb3f31809ecdb9d7eea2d255dd9ed9ad4d2cd06a7415665dfcda1ffb49917b87e60ccb986c1350448119950e29328'
+            '158a667af54fe78d8eb8a26888aa5e2fa231cc8f6dc3dc362fba99e6f98bee5c3e18811b36ebb761b695e60303215da84bf0a1eec56df79b43360c21a5efb5d7')
+
+build() {
+  cd "${srcdir}/unity_webapps-${pkgver}"
+
+  patch -Np1 -i "${srcdir}/0001_Fix_g_malloc.patch"
+
+  ./configure --prefix=/usr --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/unity_webapps-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
