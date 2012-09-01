@@ -7,12 +7,10 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel="0ubuntu3"
-_actual_ver=0.9.8
-_bzr_rev=3319
+_ubuntu_rel=0ubuntu1
+_actual_ver=0.9.8.0
 
-# Another AUR fix
-pkgver=${_actual_ver}.bzr${_bzr_rev}.${_ubuntu_rel}
+pkgver=${_actual_ver}.z${_ubuntu_rel}
 
 pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
@@ -44,17 +42,17 @@ conflicts=(compiz-core{,-ubuntu}
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         'compiz-migrate-to-dconf.desktop')
-sha512sums=('617893f776fe98f672617e77e427eb9ab512bc2a708a0868c57d20ddce6f7e9009f940c1e1d641ace04dd8ab1c146838d6cbcadafaaace3ae2f9aaea463b719e'
-            'cd346bf90a7b1652f15ddc173c63a2d53a1a250c19c6e12f58ec4a8d0880ee07379205a036dcd261db78d01a1ec01f3a2a9e6d14b51433054ee7a1b3a4a96bb1'
+sha512sums=('b335279afc01b638cc3073642fa250f264f34d43ff0e5865e525acf0757012cd7f0ce0c8efa136cdb1db3c8d2f30e90c8c0be539991778159faaea7d828628a0'
+            '858b9aacba030f4860d452c8a7af59fa66fa3613478f61713b418be453f8e533e556737dc52d8ada18802a2eeb8a4edc8614ff6c8bc1e0d38a0f2a969e301ac2'
             'cf0324a656e855ff26b624386d287ae4d90ede8f14d8eb7e613591de1dd90c7eb00ebfbb401802caa6e6e9aac99031e9ddd8a966ed23513b9e33b529f3b9519c'
-            '0915398c67aa1f8fa8d89e5f2efa5fe9cf1d5cfa862042b5d920aff5454bc220def92b691ae8010e8d4254adcd6199865b81584ce56b1ac0e81d00272c33e688'
+            'be5b87bb18c06fc97261ef47ce57164eb840ff4c9ef8cad6b43bcf2938ba19b260c5d59c836600ca85cdd4bd22a698ea415999634f3a2b7110448f808b6934e0'
             '8af143fd47d6e949a2096a9f53cd25417c8f0fce8a5225084cf28deacef177383dc9ddac7b81330346f936ed05686644cacb73852fc66c39e1796a1f2a7a6937'
             'd898b253f32ef8fbc4e83b0495572d96eb292eaf948ee4aa413524cbd50d77bbd7a82104d7f2312c21c3ce35cca640ffc3be6f8070c306b0582d1a22a8010057'
             'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
@@ -74,7 +72,7 @@ build() {
   patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
 
   # Apply Ubuntu patches
-  zcat "${srcdir}/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff.gz" | patch -Np1
+  zcat "${srcdir}/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.diff.gz" | patch -Np1
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
