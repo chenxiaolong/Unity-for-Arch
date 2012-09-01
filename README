@@ -16,56 +16,56 @@ Order to compile/install:
 08: libindicate-qt                 -> Qt bindings for libindicate
 09: libappindicator                -> Library to export menu bar to Unity
 10: appmenu-gtk                    -> Application menu module for GTK+
-11: bamf                           -> Application matching framework
-12: libqtbamf                      -> Qt bindings for bamf
-13: libqtdee                       -> Qt binding and QML plugin for Dee
-14: libqtgconf                     -> Qt bindings for GConf
-15: dconf-qt                       -> Qt bindings for DConf
-16: sni-qt                         -> Turns Qt tray icons into appindicators
-17: ido                            -> Widgets and objects used for indicators
-18: libzeitgeist                   -> Client library to interact with Zeitgeist
-19: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-20: python2-geoclue                -> Geoclue Python module
-21: python2-xapian                 -> Python bindings for Xapian
-22: zeitgeist-extensions           -> Extensions for Zeitgeist
-23: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-24: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-25: gnome-session-ubuntu           -> GNOME Session Manager
-26: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-27: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
-28: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-29: indicator-applet               -> GNOME panel indicator applet
-30: indicator-application          -> Takes menus and puts then in the panel
-31: indicator-appmenu              -> An indicator to host the menus from apps
-32: libtimezonemap                 -> GTK+3 timezone map widget
-33: indicator-datetime             -> A very, very simple clock
-34: indicator-messages             -> Collects messages that need a response
-35: indicator-power                -> Indicator to show battery information
-36: indicator-session              -> Indicator to manage session
-37: indicator-sound                -> A unified sound menu
-38: notify-osd                     -> Semi-transparent notification agent
-39: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-40: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-41: gtest                          -> C++ testing utility based on xUnit
-42: gmock                          -> A library for writing C++ mock classes
-43: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-44: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
-45: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-46: evemu                          -> Linux evdev event emulation
-47: frame                          -> Touch frame library
-48: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-49: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-50: xorg-server-ubuntu             -> Xorg X server
-51: check                          -> Unit testing framework for C
-52: grail                          -> Gesture recognition and instantiation lib.
-53: geis                           -> Implementation of the GEIS interface
-54: ibus-ubuntu                    -> Next generation input bus for Linux
-55: nux                            -> An OpenGL toolkit
-56: unity-asset-pool               -> Design assets for Unity
-57: gnome-menus2                   -> Gnome menu specifications
-58: libunity                       -> Library for integrating Unity
-59: libunity-misc                  -> Differently licensed stuff for Unity
-60: libunity-webapps               -> Library for integrating WebApps into Unity
+11: libunity                       -> Library for integrating Unity
+12: libunity-misc                  -> Differently licensed stuff for Unity
+13: libunity-webapps               -> Library for integrating WebApps into Unity
+14: bamf                           -> Application matching framework
+15: libqtbamf                      -> Qt bindings for bamf
+16: libqtdee                       -> Qt binding and QML plugin for Dee
+17: libqtgconf                     -> Qt bindings for GConf
+18: dconf-qt                       -> Qt bindings for DConf
+19: sni-qt                         -> Turns Qt tray icons into appindicators
+20: ido                            -> Widgets and objects used for indicators
+21: libzeitgeist                   -> Client library to interact with Zeitgeist
+22: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
+23: python2-geoclue                -> Geoclue Python module
+24: python2-xapian                 -> Python bindings for Xapian
+25: zeitgeist-extensions           -> Extensions for Zeitgeist
+26: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+27: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+28: gnome-session-ubuntu           -> GNOME Session Manager
+29: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+30: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
+31: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+32: indicator-applet               -> GNOME panel indicator applet
+33: indicator-application          -> Takes menus and puts then in the panel
+34: indicator-appmenu              -> An indicator to host the menus from apps
+35: libtimezonemap                 -> GTK+3 timezone map widget
+36: indicator-datetime             -> A very, very simple clock
+37: indicator-messages             -> Collects messages that need a response
+38: indicator-power                -> Indicator to show battery information
+39: indicator-session              -> Indicator to manage session
+40: indicator-sound                -> A unified sound menu
+41: notify-osd                     -> Semi-transparent notification agent
+42: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+43: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+44: gtest                          -> C++ testing utility based on xUnit
+45: gmock                          -> A library for writing C++ mock classes
+46: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+47: plasma-widget-menubar *        -> KDE Plasma widget to display menubar
+48: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
+49: evemu                          -> Linux evdev event emulation
+50: frame                          -> Touch frame library
+51: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+52: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+53: xorg-server-ubuntu             -> Xorg X server
+54: check                          -> Unit testing framework for C
+55: grail                          -> Gesture recognition and instantiation lib.
+56: geis                           -> Implementation of the GEIS interface
+57: ibus-ubuntu                    -> Next generation input bus for Linux
+58: nux                            -> An OpenGL toolkit
+59: unity-asset-pool               -> Design assets for Unity
+60: gnome-menus2                   -> Gnome menu specifications
 61: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 62: unity-lens-applications        -> Unity applications lens
 63: unity-lens-files               -> Unity files lens

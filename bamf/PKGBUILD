@@ -4,24 +4,24 @@
 
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf' 'libbamf3')
-pkgver=0.2.122
+pkgver=0.3.0
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'gnome-common')
+makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'gnome-common' 'libunity-webapps')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
-source=("https://launchpad.net/bamf/${pkgver%.*}/${pkgver}/+download/bamf-${pkgver}.tar.gz")
-sha512sums=('5509a99b845f9359bcc273e0d73262ec4d34cb1fcf155e02b3c2e457f1b4e4673d584a4e0511f49d42824523e66b71ef603191078402d15eabbcf624fefedbca')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${pkgver}.orig.tar.gz")
+sha512sums=('bcd69b84359c29827626e2f08fe014a9446086abd4d7c033d6d46236811398edd4fa4ef2ecc195df1c071b69bdf44651b51750ebd4aa16e3dd7c4efa8fdb806c')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   #sed -i 's/[ \t]*-Werror[ \t]*/ /g' configure.in
-  sed -i 's/-Werror/-Wno-error=implicit-function-declaration/g' configure.in
+  #sed -i 's/-Werror/-Wno-error=implicit-function-declaration/g' configure.in
 
   autoreconf -vfi
 
@@ -50,7 +50,7 @@ build() {
 
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
-  depends=('dbus-glib' 'libwnck3' 'libgtop')
+  depends=('dbus-glib' 'libwnck3' 'libgtop' 'libunity-webapps')
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3" # Doesn't matter which one
 
   install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
