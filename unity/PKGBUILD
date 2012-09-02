@@ -27,7 +27,7 @@ BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}-${_ubuntu_rel}.tar.gz"
-        "http://ompldr.org/vZmJzaA/launchpad_export.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-01
+        "launchpad_export.tar.gz::http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
         '0001_fix_gtest_directory.patch'
         '0003_Ignore_deprecated_schema_path.patch'
         '0005_link_dbus-glib.patch'
@@ -35,7 +35,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
 sha512sums=('b6106778f08ec2c8e33476a3f5afa43146c7c3186f8222ae5d4637daa8ecdce317f79f7a4812edc139553e55c768a8f305599599c6b84f99f7eff8144d7388a8'
-            'f23f987d3c0785a9445f06913e8af9bd283ef41e4f086f16a3655599e0843f8810aedfa4c8638959c43d4e2e4d43d234595efdbd8b7b0a393792349ebd804421'
+            'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
             '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
