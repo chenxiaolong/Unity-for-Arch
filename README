@@ -52,31 +52,29 @@ Order to compile/install:
 44: gtest                          -> C++ testing utility based on xUnit
 45: gmock                          -> A library for writing C++ mock classes
 46: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-47: xfce4-indicator-plugin *       -> XFCE panel plugin to display indicators
-48: evemu                          -> Linux evdev event emulation
-49: frame                          -> Touch frame library
-50: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-51: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-52: xorg-server-ubuntu             -> Xorg X server
-53: check                          -> Unit testing framework for C
-54: grail                          -> Gesture recognition and instantiation lib.
-55: geis                           -> Implementation of the GEIS interface
-56: ibus-ubuntu                    -> Next generation input bus for Linux
-57: nux                            -> An OpenGL toolkit
-58: unity-asset-pool               -> Design assets for Unity
-59: gnome-menus2                   -> Gnome menu specifications
-60: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-61: unity-lens-applications        -> Unity applications lens
-62: unity-lens-files               -> Unity files lens
-63: unity-lens-music               -> Unity music lens
-64: unity-lens-photos              -> Unity photo lens
-65: unity-lens-video               -> Unity video lens
-66: compiz-ubuntu                  -> Compiz compositing window manager
-67: unity                          -> A desktop experience designed for efficiency
+47: evemu                          -> Linux evdev event emulation
+48: frame                          -> Touch frame library
+49: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+50: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+51: xorg-server-ubuntu             -> Xorg X server
+52: check                          -> Unit testing framework for C
+53: grail                          -> Gesture recognition and instantiation lib.
+54: geis                           -> Implementation of the GEIS interface
+55: ibus-ubuntu                    -> Next generation input bus for Linux
+56: nux                            -> An OpenGL toolkit
+57: unity-asset-pool               -> Design assets for Unity
+58: gnome-menus2                   -> Gnome menu specifications
+59: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+60: unity-lens-applications        -> Unity applications lens
+61: unity-lens-files               -> Unity files lens
+62: unity-lens-music               -> Unity music lens
+63: unity-lens-photos              -> Unity photo lens
+64: unity-lens-video               -> Unity video lens
+65: compiz-ubuntu                  -> Compiz compositing window manager
+66: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
-  - xfce4-indicator-plugin         => Ayatana indicators plugin for the XFCE panel
 
 All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
 
