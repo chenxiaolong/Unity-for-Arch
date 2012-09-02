@@ -24,8 +24,8 @@ pkgdesc='A cross-platform application and UI framework'
 
 pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=0ubuntu4.1
-_actual_ver=4.8.1
+_ubuntu_rel=0ubuntu6
+_actual_ver=4.8.2
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -34,19 +34,21 @@ license=('GPL3' 'LGPL')
 makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
 options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${_actual_ver}"
-source=("http://get.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
+source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'gcc47.patch')
-sha512sums=('a48825a3d42c93c6d9d769d9f79b297d92b5deb9003c89c2d1f1b364b496fc6e7d307e0eb6b798ae49d7bf1928caeda6741025242499296550293518004c3d90'
-            '5cac76f09ec64bbf8fb46121c0f5a908c2173d1ea5b1670998788d5d4521025b4b74be0cef7330245e57ad0395f89c4ad3e6ed22f28d3d619096e67da542a937'
-            '992b7fbaf234448f81d405a16885c14004a9caafa19963771db08b7b971fd0981078b151b614dbf5fd849e5303d5c1443e41ece7df49d0384c54dd88b1c46535')
+        'fix-assistant-crash.patch'
+        'improve-cups-support.patch')
+sha512sums=('42c07c8c56c42e85241efa90fa7d1a757343a5cfcc1627bfd4a629f96885b83628a04ed911aa2250bc827f51207e61a2b52904102a6d249f10f5e708fad78b62'
+            '97bdce67aab7afa9e23b0aabecc3aac69c859691e11e8b70792e0e5984345e683c853c73df774928b884a50b29e3e2675d0a971f76d02722b200055a09866252'
+            'a5ce4c6c39a21b6b22c645d524870d6e30bc65303b84a834a01b5b91656dfc529b8738cc7ca8a2c22911aa3158cb566eeeeb51db1710aea38183ad3f7e5985ce'
+            '72ce25c8efcca2cc00e65def31156562d5f5e8eb579fb9081f91c756379be39768f347bfbd60aeebe06fb38d4b363d6465d493078c5cae8262f09e184f91ceba')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
 
   # Apply Arch Linux patches
-    # Fix build with GCC 4.7
-      patch -Np1 -i "${srcdir}/gcc47.patch"
+    patch -Np1 -i "${srcdir}/fix-assistant-crash.patch"
+    patch -Np1 -i "${srcdir}/improve-cups-support.patch"
 
   # Apply Ubuntu patches
     # Disable patches (longest command you've ever seen? :D) (can't use
@@ -73,7 +75,6 @@ build() {
       `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
       `# the built-in Qt webkit`                                          \
         -e '/20_install_qvfb.diff/d'                                      \
-        -e '/fix_qvfb_build.patch/d'                                      \
       `# Debug packages arent used in Arch Linux - remove patch to`       \
       `# default to keeping debug symbols`                                \
         -e '/12_add_nostrip_for_debug_packages.diff/d'                    \
@@ -92,6 +93,8 @@ build() {
         -e '/50_kfreebsd_Q_OS.diff/d'                                     \
         -e '/41_disable_opengl_visibility.diff/d'                         \
         -e '/40_alpha_ice.diff/d'                                         \
+        -e '/s390x_jscore.diff/d'                                         \
+        -e '/qt_atomic_sparc64.patch/d'                                   \
       `# Demos arent built on Arch Linux`                                 \
         -e '/buildable_appchooser_states_demos.patch/d'                   \
       `# This is not Debian or Ubuntu`                                    \
