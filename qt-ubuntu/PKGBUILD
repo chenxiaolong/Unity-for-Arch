@@ -48,7 +48,6 @@ build() {
 
   # Apply Arch Linux patches
     patch -Np1 -i "${srcdir}/fix-assistant-crash.patch"
-    patch -Np1 -i "${srcdir}/improve-cups-support.patch"
 
   # Apply Ubuntu patches
     # Disable patches (longest command you've ever seen? :D) (can't use
