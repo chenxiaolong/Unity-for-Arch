@@ -74,14 +74,14 @@ build() {
   patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
 
   if [ "x${GWD_GSETTINGS}" == "xtrue" ]; then
-    patch -Np1 -i "${srcdir}/0006_GWD_use_GSettings.patch"
+    patch -Np0 -i "${srcdir}/0006_GWD_use_GSettings.patch"
   fi
 
   # Apply Ubuntu patches
   zcat "${srcdir}/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.diff.gz" | patch -Np1
 
   for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np0 -i "debian/patches/${i}"
+    patch -Np1 -i "debian/patches/${i}"
   done
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
