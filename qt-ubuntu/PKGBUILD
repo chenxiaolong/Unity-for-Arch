@@ -36,12 +36,10 @@ options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${_actual_ver}"
 source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'fix-assistant-crash.patch'
-        'improve-cups-support.patch')
+        'fix-assistant-crash.patch')
 sha512sums=('42c07c8c56c42e85241efa90fa7d1a757343a5cfcc1627bfd4a629f96885b83628a04ed911aa2250bc827f51207e61a2b52904102a6d249f10f5e708fad78b62'
             '97bdce67aab7afa9e23b0aabecc3aac69c859691e11e8b70792e0e5984345e683c853c73df774928b884a50b29e3e2675d0a971f76d02722b200055a09866252'
-            'a5ce4c6c39a21b6b22c645d524870d6e30bc65303b84a834a01b5b91656dfc529b8738cc7ca8a2c22911aa3158cb566eeeeb51db1710aea38183ad3f7e5985ce'
-            '72ce25c8efcca2cc00e65def31156562d5f5e8eb579fb9081f91c756379be39768f347bfbd60aeebe06fb38d4b363d6465d493078c5cae8262f09e184f91ceba')
+            'a5ce4c6c39a21b6b22c645d524870d6e30bc65303b84a834a01b5b91656dfc529b8738cc7ca8a2c22911aa3158cb566eeeeb51db1710aea38183ad3f7e5985ce')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
