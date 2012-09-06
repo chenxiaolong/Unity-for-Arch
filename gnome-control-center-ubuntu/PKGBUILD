@@ -7,7 +7,7 @@ _ubuntu_rel=0ubuntu13
 _actual_ver=3.4.2
 # Add 'z' to force upgrade from badly named previous version
 pkgver=${_actual_ver}.z${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -55,6 +55,9 @@ build() {
   # Fix patches
     # Use Arch Linux logo
     sed -i 's/UbuntuLogo.png/archlinux-vert-dark-grad2.svg/' "${srcdir}/debian/patches/56_use_ubuntu_info_branding.patch"
+    # Do not use types defined in unreleased versions of gnome-desktop
+    # (thanks to oi_wtf!)
+    sed -i 's/gnome_rr_labeler_get_rgba_for_output/gnome_rr_labeler_get_color_for_output/;s/GdkRGBA/GdkColor/' "${srcdir}/debian/patches/51_unity_options_in_display_panel.patch"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
