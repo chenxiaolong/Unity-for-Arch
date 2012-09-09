@@ -190,13 +190,6 @@ package() {
     "${pkgdir}/usr/lib/compiz/"
   install -m644 "${srcdir}/compiz-migrate-to-dconf.desktop" \
     "${pkgdir}/etc/xdg/autostart/"
-
-  # Install gtk-window-decorator library
-  if [ "x${GWD_GSETTINGS}" == "xtrue" ]; then
-    install -m755 \
-      gtk/window-decorator/libgtk_window_decorator_settings_notified_interface.so \
-      "${pkgdir}/usr/lib/"
-  fi
 }
 
 # vim:set ts=2 sw=2 et:
