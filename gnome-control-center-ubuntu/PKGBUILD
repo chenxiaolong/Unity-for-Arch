@@ -3,11 +3,11 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu13
+_ubuntu_rel=0ubuntu14
 _actual_ver=3.4.2
 # Add 'z' to force upgrade from badly named previous version
 pkgver=${_actual_ver}.z${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -30,7 +30,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkg
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
 sha512sums=('78927f56f1e1af4043f0d96bae174513916e752aa3e987b545e78213f34527a25ba69ce61da43dcd21ed51aa9d1ee713cabed507853f20bb6c0b0bea82f272e6'
-            'd5147beefca1c444d8ef52c8e0450088c3f93f0a31eee83ea3449d7f37541ff5a259717b97db6ea9151e011acd9888541a46b2f44b4696dac735536646c10a7a'
+            '85be8591604193cc625810da3d30e64bb88caa50c850965038ef8ec82b20f7d4cc6ca861bf84610908f1f683d1a084c63aaf5accad87d1d9caf75c1f5368a099'
             '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
 
 build() {
