@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-session
-pkgver=12.10.1
+pkgver=12.10.2
 pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
@@ -19,10 +19,10 @@ source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${
         '0001_Revert_new_glib_stuff.patch'
         '0002_There_is_no_help.patch'
         '0003_Workaround_disappearing_icon.patch')
-sha512sums=('0ad8552cd046471c612a3dfef149e3f5d6b50999b59baac189ff6b01fb168940ab3741d7166fe8b7c363aad51df1eb5e501649150ac982ee5b2458fe5564a974'
+sha512sums=('51fc509a028ee31f5ad31829503f398b6b9ea34dddf53b713ea765c7170337755874c59327100299decc724d24bdedfbe6d8804e820e34bd34370a4d00ddff37'
             '50d156022d7786dece9ddd3f06821cfe316ddf87e27ac1a496508a085e91f7595fdfeaad7879f88434c724e5ef643f648f7e3c585ccd34fb4924831326e2eb08'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
-            '53b0dabc474003b62f6039709557b8e722f8083a49875979baffeaa39db64fd717c52eca1da377d3636e518649052d570293b6439357cde66905c629a1b8ae7e')
+            '11abe32e165a04ef0a035db59fe88b27cb50538dfe6051e99445cf3b852f10ac04f1a371fcb3fed9bc0114ee66a422c179ae0045411e8dc5fcf18cabcd5f43d8')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
