@@ -34,9 +34,6 @@ package() {
 
   make INSTALL_ROOT="${pkgdir}/" install
 
-  # Remove static libraries
-  find "${pkgdir}" -type f -name '*.a' -delete
-
   # Remove tests
   find "${pkgdir}" -type f -name '*tests*' -delete
 }
