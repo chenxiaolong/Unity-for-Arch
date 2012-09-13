@@ -1,0 +1,36 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+# Why are there three names?
+# - gnome-control-center-signon (Ubuntu's packaging)
+# - credentials-control-center (Source tarball)
+# - online-accounts-gnome-control-center (Website)
+
+# We'll use the same package names as Ubuntu (gnome-control-center-signon)
+
+pkgname=gnome-control-center-signon
+pkgver=0.0.15
+pkgrel=100
+pkgdesc="GNOME Control Center extension for single signon"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/online-accounts-gnome-control-center"
+license=('GPL')
+groups=('unity')
+depends=('dbus-glib' 'gobject-introspection' 'libaccounts-glib' 'gnome-control-center' 'libsignon-glib' 'signon' 'hicolor-icon-theme')
+makedepends=('gnome-common' 'gnome-doc-utils' 'gtk-doc' 'itstool' 'vala' 'yelp-tools')
+options=('!libtool')
+install=gnome-control-center-signon.install
+source=("https://launchpad.net/online-accounts-gnome-control-center/trunk/${pkgver}/+download/credentials-control-center-${pkgver}.tar.bz2")
+sha512sums=('c25a9749521e645d5cac5643540e4fc0855c907b606fcdedcca430a4cc8b797eaac7bb8659c2ac74bcc9055f27220ecf051289eb0202d97d7f0b323a413555fa')
+
+build() {
+  cd "${srcdir}/credentials-control-center-${pkgver}"
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --enable-gtk-doc
+  make -j1
+}
+
+package() {
+  cd "${srcdir}/credentials-control-center-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
