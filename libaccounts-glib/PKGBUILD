@@ -11,6 +11,7 @@ license=('LGPL')
 groups=('unity')
 depends=('dbus-glib' 'gobject-introspection' 'libxml2' 'python-gobject' 'python2-gobject' 'python2' 'python3' 'sqlite')
 makedepends=('check')
+options=('!libtool')
 source=("https://accounts-sso.googlecode.com/files/libaccounts-glib-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libaccounts-glib_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('30b2c3463bc9d021086c3dfe45addf5994435013c9ede479ab725453c2e22d7e65c3d066cd712f735925205d72727435c7910c8f2ef5517f891708f10a46333d'
