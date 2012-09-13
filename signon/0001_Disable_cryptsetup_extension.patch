@@ -1,0 +1,14 @@
+diff -Nru signon-8.41.orig/src/extensions/extensions.pro signon-8.41/src/extensions/extensions.pro
+--- signon-8.41.orig/src/extensions/extensions.pro	2012-09-13 10:09:40.867934874 -0400
++++ signon-8.41/src/extensions/extensions.pro	2012-09-13 10:21:30.971301476 -0400
+@@ -1,10 +1,6 @@
+ TEMPLATE = subdirs
+ SUBDIRS =
+ 
+-system(pkg-config --exists libcryptsetup) {
+-    SUBDIRS += cryptsetup
+-}
+-
+ system(pkg-config --exists mssf-qt) {
+     SUBDIRS += mssf-ac
+ }
