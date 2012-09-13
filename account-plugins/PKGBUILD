@@ -1,0 +1,39 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=account-plugins
+pkgver=0.7
+pkgrel=100
+pkgdesc="Online Accounts Plugins"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/online-accounts-account-plugins"
+license=('LGPL')
+groups=('unity')
+depends=('libaccounts-glib' 'libsignon-glib' 'gnome-control-center-signon' 'python-gobject' 'signon-keyring-extension' 'signon-plugin-oauth2' 'hicolor-icon-theme')
+makedepends=('vala')
+options=('!libtool')
+install=account-plugins.install
+source=("https://launchpad.net/online-accounts-account-plugins/trunk/${pkgver}/+download/account-plugins-${pkgver}.tar.gz")
+sha512sums=('47d1d99bb5888cca07b6d5fcf99fec9b80add17cf9ad96bd4b901ade894adc3e583eae1cd4a3de23a9f1df4dcb009eaf585ab50c018bc0808f8c0bab04ec4994')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+    --with-twitter-consumer-key="IOW164CqEJdlrkXlrQ17GA" \
+    --with-twitter-consumer-secret="mJ38xSp6kqUzB2XMOq9USrmTgWAXOqXpS0g6WUEk"
+
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/lib/account-plugins/"
+  mv "${pkgdir}"/usr/bin/*.sh "${pkgdir}/usr/lib/account-plugins/"
+
+  sed -i 's/\.\///g' "${pkgdir}"/usr/lib/account-plugins/*.sh
+}
+
+# vim:set ts=2 sw=2 et:
