@@ -1,0 +1,37 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+# This package (also) has three names
+# - signon-keyring-extension (Ubuntu's packaging)
+# - keyring (Tarball name)
+# - online-accounts-keyring-extension (Website)
+
+# We'll use the same name as Ubuntu (signon-keyring-extension)
+
+pkgname=signon-keyring-extension
+pkgver=0.4
+pkgrel=100
+pkgdesc="GNOME Keyring Extension for signond"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/online-accounts-keyring-extension"
+license=('LGPL')
+groups=('unity')
+depends=('gnome-keyring' 'qt' 'signon')
+source=("https://launchpad.net/online-accounts-keyring-extension/trunk/${pkgver}/+download/keyring-${pkgver}.tar.bz2")
+sha512sums=('5d70b1aa8106aba7b35b857b266841c451639e2ce03f6dc830fb34bdb5a6200d9edd6528a07f0371177c012c043e934f05efaf664f7d74d0d1bed8e83c8070e0')
+
+build() {
+  cd "${srcdir}/keyring-${pkgver}"
+
+  qmake PREFIX=/usr LIBDIR=/usr/lib QMAKE_CXXFLAGS="${CXXFLAGS}"
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/keyring-${pkgver}"
+
+  make INSTALL_ROOT="${pkgdir}/" install
+
+  rm -v "${pkgdir}/usr/bin/keyring-test"
+}
+
+# vim:set ts=2 sw=2 et:
