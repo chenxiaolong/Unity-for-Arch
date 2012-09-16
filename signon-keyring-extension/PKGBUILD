@@ -15,7 +15,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/online-accounts-keyring-extension"
 license=('LGPL')
 groups=('unity')
-depends=('gnome-keyring' 'qt' 'signon')
+depends=('libgnome-keyring' 'qt' 'signon')
 source=("https://launchpad.net/online-accounts-keyring-extension/trunk/${pkgver}/+download/keyring-${pkgver}.tar.bz2")
 sha512sums=('5d70b1aa8106aba7b35b857b266841c451639e2ce03f6dc830fb34bdb5a6200d9edd6528a07f0371177c012c043e934f05efaf664f7d74d0d1bed8e83c8070e0')
 
