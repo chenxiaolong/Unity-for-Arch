@@ -32,6 +32,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '0001_fix_gtest_directory.patch'
         '0003_Ignore_deprecated_schema_path.patch'
         '0005_link_dbus-glib.patch'
+        '0007_link_gmodule.patch'
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
@@ -41,6 +42,7 @@ sha512sums=('092e99eb520828709efa847f00270dd4988f4d20caabf96028776916403e7cdf3be
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
             '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
+            'cd9a23cdb5224111fc4892b614f7127b154369046d30ec14a245dc0ae8685f9439e04f86588aa12a57e5360f74aa7c0c3bea459b0ffd505cba34c89f50dfd5e5'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
@@ -67,6 +69,9 @@ build() {
   # Link against dbus-glib to avoid:
   #  /usr/bin/ld: CMakeFiles/panel.dir/StandalonePanel.cpp.o: undefined reference to symbol 'dbus_g_thread_init'
   patch -Np1 -i "${srcdir}/0005_link_dbus-glib.patch"
+
+  # Link against gmodule
+  patch -Np1 -i "${srcdir}/0007_link_gmodule.patch"
 
   # Cannot find gmodule
   CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
