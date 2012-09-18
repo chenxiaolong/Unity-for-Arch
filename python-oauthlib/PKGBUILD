@@ -1,0 +1,34 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=python-oauthlib
+_ubuntu_rel=0ubuntu1
+pkgver=0.3.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A Python implementation of the OAuth request-signing logic"
+arch=('any')
+url="http://pypi.python.org/pypi/oauthlib"
+license=('BSD')
+groups=('unity')
+depends=('python' 'python-crypto')
+makedepends=('python-distribute' 'python-nose')
+options=(!emptydirs)
+source=("http://pypi.python.org/packages/source/o/oauthlib/oauthlib-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/python-oauthlib_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('7f69cc80cbaa9161e7b562bef475ea912373a0a1c2a84ee7d19d724db6e0f9d0f38cc9cf95672efcbf9e9200f7b4650a75ab8205fe004e6cdebf65fbddef7771'
+            '11605e687806f5274c36a34a13005f47d81f3c5ab82ca48bda788e8d22696abfd6b15c2c87c59cc20e167e3eb3d30d71175429ccff62cabd0918f06f13acfaea')
+
+build() {
+  cd "${srcdir}/oauthlib-${pkgver%.*}"
+
+  # Apply Ubuntu's patches
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+}
+
+package() {
+  cd "${srcdir}/oauthlib-${pkgver%.*}"
+  python setup.py install --root="${pkgdir}/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
