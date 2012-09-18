@@ -13,7 +13,7 @@ _actual_ver=0.9.8.2
 
 pkgver=${_actual_ver}.${_ubuntu_rel}
 
-pkgrel=100
+pkgrel=101
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -39,7 +39,8 @@ conflicts=(compiz-core{,-ubuntu}
            compizconfig-python{,-ubuntu}
            ccsm{,-ubuntu}
            compiz-plugins-main{,-ubuntu}
-           compiz-plugins-extra{,-ubuntu})
+           compiz-plugins-extra{,-ubuntu}
+           metacity-ubuntu)
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
