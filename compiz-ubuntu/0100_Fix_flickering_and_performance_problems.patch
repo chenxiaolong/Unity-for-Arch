@@ -1,0 +1,158 @@
+=== modified file 'plugins/opengl/src/fsregion/fsregion.cpp'
+--- plugins/opengl/src/fsregion/fsregion.cpp	2012-09-06 08:01:54 +0000
++++ plugins/opengl/src/fsregion/fsregion.cpp	2012-09-18 07:54:10 +0000
+@@ -30,7 +30,8 @@
+ 
+ FullscreenRegion::FullscreenRegion (const CompRect &rect) :
+     covered (false),
+-    untouched (rect)
++    untouched (rect),
++    orig (untouched)
+ {
+ }
+ 
+@@ -50,5 +51,14 @@
+     return fullscreen;
+ }
+ 
++bool
++FullscreenRegion::allowRedirection (const CompRegion &region)
++{
++    /* Don't allow existing unredirected windows that cover this
++     * region to be redirected again as they were probably unredirected
++     * on another monitor */
++    return region.intersects (orig);
++}
++
+ } // namespace opengl
+ } // namespace compiz
+
+=== modified file 'plugins/opengl/src/fsregion/fsregion.h'
+--- plugins/opengl/src/fsregion/fsregion.h	2012-09-06 08:01:54 +0000
++++ plugins/opengl/src/fsregion/fsregion.h	2012-09-18 08:07:49 +0000
+@@ -46,10 +46,12 @@
+ 
+     // isCoveredBy is called for windows from TOP to BOTTOM
+     bool isCoveredBy (const CompRegion &region, WinFlags flags = 0);
++    bool allowRedirection (const CompRegion &region);
+ 
+ private:
+     bool covered;
+     CompRegion untouched;
++    CompRegion orig;
+ };
+ 
+ } // namespace opengl
+
+=== modified file 'plugins/opengl/src/fsregion/tests/test-fsregion.cpp'
+--- plugins/opengl/src/fsregion/tests/test-fsregion.cpp	2012-09-06 08:01:54 +0000
++++ plugins/opengl/src/fsregion/tests/test-fsregion.cpp	2012-09-18 08:09:02 +0000
+@@ -137,4 +137,14 @@
+                                        FullscreenRegion::Desktop));
+ }
+ 
++TEST (OpenGLFullscreenRegion, KeepUnredirectedStateIfNotOnMonitor)
++{
++    FullscreenRegion monitor (CompRect (0, 0, 1024, 768));
++    CompRegion       window (1025, 0, 1024, 768);
++    /* Eg, not covering the monitor, should be redirected */
++    EXPECT_FALSE (monitor.isCoveredBy (window));
++    /* Don't allow the redirection however, because we weren't
++     * covering the monitor at all. */
++    EXPECT_FALSE (monitor.allowRedirection (window));
++}
+ 
+
+=== modified file 'plugins/opengl/src/paint.cpp'
+--- plugins/opengl/src/paint.cpp	2012-09-06 09:55:05 +0000
++++ plugins/opengl/src/paint.cpp	2012-09-18 08:05:55 +0000
+@@ -27,6 +27,7 @@
+ 
+ #include "privates.h"
+ 
++#include <set>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+@@ -245,11 +246,11 @@
+     CompWindow    *w;
+     GLWindow      *gw;
+     int           windowMask, odMask;
+-    CompWindow	  *fullscreenWindow = NULL;
+     bool          status, unredirectFS;
+     bool          withOffset = false;
+     GLMatrix      vTransform;
+     CompPoint     offXY;
++    std::set<CompWindow*> unredirected;
+ 
+     CompWindowList                   pl;
+     CompWindowList::reverse_iterator rit;
+@@ -350,32 +351,40 @@
+ 	     * beneath them and so neither should be unredirected in that case.
+ 	     */
+ 	    if (unredirectFS &&
+-	        !(mask & PAINT_SCREEN_TRANSFORMED_MASK) &&
+-	        fs.isCoveredBy (w->region (), flags))
++		!(mask & PAINT_SCREEN_TRANSFORMED_MASK) &&
++		fs.isCoveredBy (w->region (), flags))
+ 	    {
+-	        fullscreenWindow = w;
++		unredirected.insert (w);
+ 	    }
+ 	    else
+ 	    {
+-	        CompositeWindow *cw = CompositeWindow::get (w);
+-	        if (!cw->redirected ())
+-	        {
+-		    // 1. GLWindow::release to force gw->priv->needsRebind
+-		    gw->release ();
+-
+-		    // 2. GLWindow::bind, which redirects the window,
+-		    //    rebinds the pixmap, and then rebinds the pixmap
+-		    //    to a texture.
+-		    gw->bind ();
+-
+-		    // 3. Your window is now redirected again with the
+-		    //    latest pixmap contents.
+-	        }
++		CompositeWindow *cw = CompositeWindow::get (w);
++		if (!cw->redirected ())
++		{
++		    if (fs.allowRedirection (w->region ()))
++		    {
++			// 1. GLWindow::release to force gw->priv->needsRebind
++			gw->release ();
++
++			// 2. GLWindow::bind, which redirects the window,
++			//    rebinds the pixmap, and then rebinds the pixmap
++			//    to a texture.
++			gw->bind ();
++
++			// 3. Your window is now redirected again with the
++			//    latest pixmap contents.
++		    }
++		    else
++		    {
++			unredirected.insert (w);
++		    }
++		}
+ 	    }
+ 	}
+     }
+ 
+-    if (fullscreenWindow)
++    /* Unredirect any redirected fullscreen windows */
++    foreach (CompWindow *fullscreenWindow, unredirected)
+ 	CompositeWindow::get (fullscreenWindow)->unredirect ();
+ 
+     if (!(mask & PAINT_SCREEN_NO_BACKGROUND_MASK))
+@@ -389,7 +398,7 @@
+ 	if (w->destroyed ())
+ 	    continue;
+ 
+-	if (w == fullscreenWindow)
++	if (unredirected.find (w) != unredirected.end ())
+ 	    continue;
+ 
+ 	if (!w->shaded ())
+

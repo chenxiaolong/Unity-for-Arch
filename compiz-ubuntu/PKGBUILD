@@ -50,6 +50,7 @@ source=("https://launchpad.net/compiz/${_actual_ver%.*}/${_actual_ver}/+download
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
+        '0100_Fix_flickering_and_performance_problems.patch'
         'compiz-migrate-to-dconf.desktop')
 sha512sums=('33f69faf91d203db34872202ac180152944579dde8fa8eb1603d45af043ce7eb6cdd9e096b811ad513ca8c07516d1cc1c41f4e238b8b64109141bb7284b21f8b'
             '858b9aacba030f4860d452c8a7af59fa66fa3613478f61713b418be453f8e533e556737dc52d8ada18802a2eeb8a4edc8614ff6c8bc1e0d38a0f2a969e301ac2'
@@ -57,6 +58,7 @@ sha512sums=('33f69faf91d203db34872202ac180152944579dde8fa8eb1603d45af043ce7eb6cd
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             'fb0b06b8d82ffe43b54b430233c1fd53649c9c28cf85a281e3e306553eb6e568efe70e0c3500399fe31bea4aedc58f4745d604ed633b5700e9173bcdba0f978a'
+            'd37e09bf44ddcb22f723ad254a6e6a736bac5b24e45a75d949a8bae6d0c210843bc215054926d022316b74c7bc53087cf2e13ae0403b78171caeae21b4bfd4a7'
             'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
 
 build() {
@@ -72,6 +74,10 @@ build() {
 
   # Use python 2
   patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
+
+  # BZR: Fix flickering and performance problems with using Unredirect
+  # Fullscreen Windows with multiple monitors. (LP: #1050749) (LP: #1051885)
+  patch -Np0 -i "${srcdir}/0100_Fix_flickering_and_performance_problems.patch"
 
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.diff" || true
