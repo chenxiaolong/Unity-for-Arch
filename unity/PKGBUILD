@@ -77,6 +77,9 @@ build() {
   CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
   CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
 
+  # Link against pthread
+  LDFLAGS="${LDFLAGS} -lpthread"
+
   # Fix pkgconfig
   #sed -i -e 's/\${libdir}/@LIBDIR@/g' -e 's/\${includedir}/@INCLUDEDIR@/g' UnityCore/unity-core.pc.cmake
 
