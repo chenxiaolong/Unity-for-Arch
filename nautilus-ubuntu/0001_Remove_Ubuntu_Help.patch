@@ -1,0 +1,80 @@
+diff -Nru debian.orig/patches/05_desktop_menu_export.patch debian/patches/05_desktop_menu_export.patch
+--- debian.orig/patches/05_desktop_menu_export.patch	2012-09-18 12:17:10.703282509 -0400
++++ debian/patches/05_desktop_menu_export.patch	2012-09-18 12:24:50.873986174 -0400
+@@ -37,7 +37,7 @@
+ ===================================================================
+ --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+ +++ nautilus-3.3.92/src/nautilus-desktop-window-ui.xml	2012-03-20 11:19:28.555758142 +0100
+-@@ -0,0 +1,14 @@
++@@ -0,0 +1,9 @@
+ +<ui>
+ +<menubar name="MenuBar">
+ +	<menu action="Edit">
+@@ -45,11 +45,6 @@
+ +			<menuitem name="Change Desktop _Background" action="Change Desktop Background"/>
+ +		</placeholder>
+ +	</menu>
+-+	<menu action="Help">
+-+		<placeholder name="Ubuntu Desktop Help">
+-+			<menuitem name="Ubuntu Documentation" action="Ubuntu Documentation"/>
+-+		</placeholder>
+-+	</menu>
+ +</menubar>
+ +</ui>
+ Index: nautilus-3.3.92/src/nautilus-desktop-window.c
+@@ -64,7 +59,7 @@
+  
+  struct NautilusDesktopWindowDetails {
+  	gulong size_changed_id;
+-@@ -44,6 +45,31 @@
++@@ -44,6 +45,21 @@
+  	gboolean loaded;
+  };
+  
+@@ -75,20 +70,10 @@
+ +	return;
+ +}
+ +
+-+static void
+-+ubuntu_docs_cb (GtkAction * action, gpointer user_data)
+-+{
+-+	g_spawn_command_line_async("yelp", NULL);
+-+	return;
+-+}
+-+
+ +static const GtkActionEntry desktop_entries[] = {
+ +	/* name, stock id, label */ { "Change Desktop Background", NULL, N_("Change Desktop _Background"),
+ +	/* accel, tooltip */          NULL, NULL,
+-+								  G_CALLBACK(desktop_background_cb)},
+-+	/* name, stock id, label */ { "Ubuntu Documentation",      NULL, N_("Ubuntu Help"),
+-+	/* accel, tooltip */          NULL, NULL,
+-+								  G_CALLBACK(ubuntu_docs_cb)}
+++								  G_CALLBACK(desktop_background_cb)}
+ +};
+ +
+ +static void set_wmspec_desktop_hint (GdkWindow *window);
+@@ -96,7 +81,7 @@
+  G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window, 
+  	       NAUTILUS_TYPE_WINDOW);
+  
+-@@ -85,6 +111,123 @@
++@@ -85,6 +101,123 @@
+  					      NAUTILUS_ACTION_NEW_TAB);
+  	gtk_action_set_sensitive (action, FALSE);
+  
+@@ -242,15 +227,6 @@
+  	</menu>
+  	<menu action="View">
+  		<menuitem name="Stop" action="Stop"/>
+-@@ -118,6 +120,8 @@
+- 		<placeholder name='LaunchpadItems'/>
+- 		<separator/>
+- 		<menuitem name="About Nautilus" action="About Nautilus"/>
+-+		<separator/>
+-+		<placeholder name="Ubuntu Desktop Help"/>
+- 	</menu>
+- </menubar>
+- <popup name="background">
+ Index: nautilus-3.3.92/src/nautilus-window.c
+ ===================================================================
+ --- nautilus-3.3.92.orig/src/nautilus-window.c	2012-02-14 03:33:13.000000000 +0100
