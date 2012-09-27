@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libindicate-qt
-_ubuntu_rel=1ubuntu3
+_ubuntu_rel=5
 pkgver=0.2.5.91.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="This project provides a set of Qt bindings for libindicate, the indicator system developed by Canonical Desktop Experience team"
@@ -16,7 +16,7 @@ groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgname%-*}-0.5/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('62b6ee0a758729f8007d0dfe6c7b9f55264f0bc110cebc8ef9f782c345fb81e45d9b652de45db06105510a232449b2427fb9a8344f86fb911d3fac1d5c552a23'
-            '12edd6e44bd25fe906a925f5239896f82d9a4c8ff07bea967897590b82654357793ab1ea7f61a7cf34961ecd915e7fab3347a381c0c6b487a37f957c0c281870')
+            '9e377d06be8b65f54bceb7fb50f83c9aefae1c5f27ca1a695997d6cd4b39ec3a1d1fe0b39322b276e1c0fc2157d5eb9a89fa3d7cc6879fbaa9d027e255c3cdc3')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
@@ -38,3 +38,5 @@ package() {
   # Not present in Ubuntu packages
   rm -rvf "${pkgdir}/usr/include/libindicate-qt/CMakeFiles"
 }
+
+# vim:set ts=2 sw=2 et:
