@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/libdbusmenu' -O - | sed -n 's/.*>libdbusmenu_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/libdbusmenu' -O - | sed -n 's/.*>libdbusmenu_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 UPSTREAM_VER=$(wget -q 'https://launchpad.net/dbusmenu/+download' -O - | sed -n 's/.*libdbusmenu-\(.*\)\.tar\.gz.*/\1/p' | head -n 1)
