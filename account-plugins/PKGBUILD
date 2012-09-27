@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=account-plugins
-pkgver=0.7
+pkgver=0.8
 pkgrel=100
 pkgdesc="Online Accounts Plugins"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ makedepends=('vala')
 options=('!libtool')
 install=account-plugins.install
 source=("https://launchpad.net/online-accounts-account-plugins/trunk/${pkgver}/+download/account-plugins-${pkgver}.tar.gz")
-sha512sums=('47d1d99bb5888cca07b6d5fcf99fec9b80add17cf9ad96bd4b901ade894adc3e583eae1cd4a3de23a9f1df4dcb009eaf585ab50c018bc0808f8c0bab04ec4994')
+sha512sums=('416031bc082f07503814ff9af3dc0115af29bb45600efc1b636ea6db34a66aacc69a83ebb3fe0a31247714acc1bdedf395e3a149c7bd852cdb686699ba300786')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -29,11 +29,6 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   make DESTDIR="${pkgdir}/" install
-
-  install -dm755 "${pkgdir}/usr/lib/account-plugins/"
-  mv "${pkgdir}"/usr/bin/*.sh "${pkgdir}/usr/lib/account-plugins/"
-
-  sed -i 's/\.\///g' "${pkgdir}"/usr/lib/account-plugins/*.sh
 }
 
 # vim:set ts=2 sw=2 et:
