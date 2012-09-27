@@ -77,8 +77,9 @@ Order to compile/install:
 69: unity-lens-music               -> Unity music lens
 70: unity-lens-photos              -> Unity photo lens
 71: unity-lens-video               -> Unity video lens
-72: compiz-ubuntu                  -> Compiz compositing window manager
-73: unity                          -> A desktop experience designed for efficiency
+72: unity-scope-video-remote       -> Remove video search for Unity video lens
+73: compiz-ubuntu                  -> Compiz compositing window manager
+74: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
