@@ -7,18 +7,18 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_ver=0.9.8.0
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.8.2
+_bzr_rev=3377
 
-pkgver=${_actual_ver}.${_ubuntu_rel}
+pkgver=${_actual_ver}.bzr${_bzr_rev}.${_ubuntu_rel}
 
-pkgrel=101
+pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'gconf-ubuntu' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
 provides=(compiz-core{,-ubuntu}="${pkgver}"
           compiz-gnome{,-ubuntu}="${pkgver}"
@@ -44,25 +44,23 @@ conflicts=(compiz-core{,-ubuntu}
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/compiz/${_actual_ver%.*}/${_actual_ver}/+download/compiz-${_actual_ver}.tar.bz2"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
-        '0100_Fix_flickering_and_performance_problems.patch'
         'compiz-migrate-to-dconf.desktop')
-sha512sums=('33f69faf91d203db34872202ac180152944579dde8fa8eb1603d45af043ce7eb6cdd9e096b811ad513ca8c07516d1cc1c41f4e238b8b64109141bb7284b21f8b'
-            '858b9aacba030f4860d452c8a7af59fa66fa3613478f61713b418be453f8e533e556737dc52d8ada18802a2eeb8a4edc8614ff6c8bc1e0d38a0f2a969e301ac2'
-            'cf0324a656e855ff26b624386d287ae4d90ede8f14d8eb7e613591de1dd90c7eb00ebfbb401802caa6e6e9aac99031e9ddd8a966ed23513b9e33b529f3b9519c'
+sha512sums=('a698c99c899c961eaf5568058cdc4747cf500dc2ebafa1bf27046d36ea62af513f2c04cdda171cd3ee8c437b7ba1bf20f9722a7b986aaef90a2c71da35011584'
+            '46cf82cfcb21a6ceb3cb1b5ecd45c4014c2f6a9e90d88578b8c1d26e25720e6b6a12ead94f463fa2526b3128736d456925b315e39bc7bef4a9ccc163f014dee3'
+            '7a97d46efde7d1cda2d1043998969aac509e453cd65ef9bb94a4edf91f71c3e6eb204b5e1729fa619bae77a2b9c949bf9e92b3d56bb7c5e791558e2d7961e154'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             'fb0b06b8d82ffe43b54b430233c1fd53649c9c28cf85a281e3e306553eb6e568efe70e0c3500399fe31bea4aedc58f4745d604ed633b5700e9173bcdba0f978a'
-            'd37e09bf44ddcb22f723ad254a6e6a736bac5b24e45a75d949a8bae6d0c210843bc215054926d022316b74c7bc53087cf2e13ae0403b78171caeae21b4bfd4a7'
             'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-0.9.8.3"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -Np1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
@@ -75,12 +73,8 @@ build() {
   # Use python 2
   patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
 
-  # BZR: Fix flickering and performance problems with using Unredirect
-  # Fullscreen Windows with multiple monitors. (LP: #1050749) (LP: #1051885)
-  patch -Np0 -i "${srcdir}/0100_Fix_flickering_and_performance_problems.patch"
-
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.diff" || true
+  patch -Np1 -i "${srcdir}/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
@@ -106,6 +100,7 @@ build() {
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \
     -DUSE_GSETTINGS=ON \
+    -DUSE_GCONF=OFF \
     -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=OFF \
     -DCOMPIZ_BUILD_TESTING=OFF \
     -DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
@@ -115,7 +110,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}/build"
+  cd "${srcdir}/${pkgname%-*}-0.9.8.3/build"
   GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
@@ -136,7 +131,6 @@ package() {
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -dm755 "${pkgdir}/etc/compizconfig/upgrades/"
   install -dm755 "${pkgdir}/usr/share/gnome/wm-properties/"
-  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
 
   # Install manual pages
   install -m644 ../debian/{ccsm,compiz,gtk-window-decorator}.1 \
@@ -175,10 +169,6 @@ package() {
   find ../*/gtk/gnome/ -name *.xml -exec install {} \
     "${pkgdir}/usr/share/gnome-control-center/keybindings/" \;
 
-  # Default GConf settings
-  install -m644 ../debian/compiz-gnome.gconf-defaults \
-    "${pkgdir}/usr/share/gconf/defaults/10_compiz-gnome"
-
   # Default GSettings settings
   install -m644 ../debian/compiz-gnome.gsettings-override \
     "${pkgdir}/usr/share/glib-2.0/schemas/10_compiz-ubuntu.gschema.override"
@@ -192,6 +182,9 @@ package() {
     "${pkgdir}/usr/lib/compiz/"
   install -m644 "${srcdir}/compiz-migrate-to-dconf.desktop" \
     "${pkgdir}/etc/xdg/autostart/"
+
+  # Remove GConf schemas
+  rm -rv "${pkgdir}/usr/share/gconf/"
 }
 
 # vim:set ts=2 sw=2 et:

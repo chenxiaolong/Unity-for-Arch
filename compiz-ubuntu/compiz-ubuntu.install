@@ -32,20 +32,16 @@ SCHEMAS=(compiz-addhelper.schemas compiz-animation.schemas
          compiz-workarounds.schemas compiz-workspacenames.schemas gwd.schemas)
 
 post_install() {
-  gconf-schemas --register ${SCHEMAS[@]}
-  if [ -f /usr/share/gconf/schemas/compiz-kde.schemas ]; then
-    gconf-schemas --register compiz-kde.schemas
-  fi
-  update-gconf-defaults
   glib-compile-schemas usr/share/glib-2.0/schemas/
 }
 
 pre_remove() {
-  gconf-schemas --unregister ${SCHEMAS[@]} ${OLD_SCHEMAS[@]}
-  if [ -f /usr/share/gconf/schemas/compiz-kde.schemas ]; then
-    gconf-schemas --unregister compiz-kde.schemas
+  if [ 0$(vercmp ${1} 0.9.8.2.bzr3377.0ubuntu1) -lt 0 ]; then
+    gconf-schemas --unregister ${SCHEMAS[@]} ${OLD_SCHEMAS[@]}
+    if [ -f /usr/share/gconf/schemas/compiz-kde.schemas ]; then
+      gconf-schemas --unregister compiz-kde.schemas
+    fi
   fi
-  update-gconf-defaults
 }
 
 pre_upgrade() {

@@ -8,8 +8,6 @@ echo ""
 echo "This program will:"
 echo "  1. Switch to the metacity window manager"
 echo "  2. Remove Compiz's configuration directories"
-echo "  3. Unset Compiz's GConf keys"
-echo "  4. Remove leftover Compiz GConf files"
 echo
 read -p "Continue (y/N) " PROCEED
 
@@ -34,18 +32,6 @@ if [ "x${PROCEED}" == "xy" ] || [ "x${PROCEED}" == "xY" ]; then
   rm -rf ~/.compiz-1/
   rm -rf ~/.cache/compizconfig-1/
   rm -rf ~/.config/compiz-1/
-  echo "DONE"
-
-  # Unset Compiz's GConf keys
-  echo -n "Unsetting Compiz's GConf keys..."
-  gconftool-2 --recursive-unset /apps/compiz-1
-  gconftool-2 --recursive-unset /apps/compizconfig-1
-  echo "DONE"
-
-  # Remove leftover Compiz GConf files
-  echo -n "Removing leftover Compiz GConf files..."
-  rm -rf ~/.gconf/apps/compiz-1/
-  rm -rf ~/.gconf/apps/compizconfig-1/
   echo "DONE"
 
   echo
