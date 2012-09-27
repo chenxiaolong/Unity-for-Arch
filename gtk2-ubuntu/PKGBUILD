@@ -2,8 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=2.24.11.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+pkgver=2.24.13.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -14,8 +14,8 @@ source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch'
         'fix-ubuntumenuproxy-build.patch')
-sha512sums=('64b7281e63338bd094b1ee692638484f333b6837c8349c220182f651189c9f9be5a95ba7fb1a9940c74479fef35c3b5eb5bc4f9a9b185bfa36ae905110d4cb22'
-            'f1b55b58871935bb5a51a7621c9faf2b1ffa2ae3d0065b9c260d3c0416cd82e4cc8e872a973c8220736c5f5fa6165d15294e18c97e184a1da7073da3383e09b9'
+sha512sums=('95cdb709b128b5fb35def329b51b14b8c8721db644831f540ed57211945147379027f7866c1463d750a05f447648fc66eb1e6e81c69fda2f90225b8e3401b717'
+            '4f0e8a78b39388271c85fc02c2b7bd65237178ed5a6fdade98ed301dcba1fba0d1ab02d93349a8bf9350689ff7da7f9a4ea30b003a08335051f7c27b361e28f4'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
             '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
 
