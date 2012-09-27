@@ -8,7 +8,7 @@
 # We'll use the same package names as Ubuntu (gnome-control-center-signon)
 
 pkgname=gnome-control-center-signon
-pkgver=0.0.15
+pkgver=0.0.17
 pkgrel=100
 pkgdesc="GNOME Control Center extension for single signon"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ makedepends=('gnome-common' 'gnome-doc-utils' 'gtk-doc' 'itstool' 'vala' 'yelp-t
 options=('!libtool')
 install=gnome-control-center-signon.install
 source=("https://launchpad.net/online-accounts-gnome-control-center/trunk/${pkgver}/+download/credentials-control-center-${pkgver}.tar.bz2")
-sha512sums=('c25a9749521e645d5cac5643540e4fc0855c907b606fcdedcca430a4cc8b797eaac7bb8659c2ac74bcc9055f27220ecf051289eb0202d97d7f0b323a413555fa')
+sha512sums=('b1fc0e81a272a685406361ca0e89f3348bd931f77075e068d2566808b82a3db0e105d1052907e0c62b77be36feb21a4f61a1d8293a6cf4c1aa1f04e3a137a1ab')
 
 build() {
   cd "${srcdir}/credentials-control-center-${pkgver}"
