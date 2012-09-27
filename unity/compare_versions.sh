@@ -9,7 +9,7 @@ echo "Getting latest upstream version..."
 # Please name the tarballs appropriately... previously is was all
 # name-version.tar.bz2 and now there's name_version.orig.tar.bz2. Please let the
 # debian source naming go in the repos only, not upstream!
-UPSTREAM_VER=$(wget 'https://launchpad.net/unity/+download' -q -O - | sed -n 's/.*unity[-_]\([\.0-9]*[0-9]\).*\.tar\.bz2.*/\1/p' | head -n 1)
+UPSTREAM_VER=$(wget 'https://launchpad.net/unity/+download' -q -O - | sed -n 's/.*unity[-_]\([\.0-9]*[0-9]\).*\.tar\.\(bz2\|gz\).*/\1/p' | head -n 1)
 
 echo ""
 
