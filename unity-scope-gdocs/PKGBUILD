@@ -1,0 +1,23 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-scope-gdocs
+pkgver=0.4
+pkgrel=100
+pkgdesc="Google Docs scope for Unity"
+arch=('any')
+url="https://launchpad.net/unity-lens-gdocs"
+license=('GPL')
+groups=('unity')
+depends=('account-plugins' 'dee' 'hicolor-icon-theme' 'libaccounts-glib' 'libgdata' 'libsignon-glib' 'libunity' 'python')
+makedepends=('python-distutils-extra')
+install=unity-scope-gdocs.install
+source=("https://launchpad.net/unity-lens-gdocs/trunk/${pkgver}/+download/unity-scope-gdocs-${pkgver}.tar.gz")
+sha512sums=('9c64a2661dec1346b31a2915988d0b92516b3f6486890d262bfd790a769b5fb9a36217778b401e5f1e4e9bdd4ad93a8d529121f2829e5db9e576d3e89921111a')
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  python setup.py install --root="${pkgdir}/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
