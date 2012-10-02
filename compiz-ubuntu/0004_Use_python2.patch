@@ -1,12 +1,21 @@
-diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/CMakeLists.txt compiz-0.9.8.2/compizconfig/ccsm/CMakeLists.txt
---- compiz-0.9.8.2.orig/compizconfig/ccsm/CMakeLists.txt	2012-09-16 13:56:38.882174236 -0400
-+++ compiz-0.9.8.2/compizconfig/ccsm/CMakeLists.txt	2012-09-16 13:57:07.872017185 -0400
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/ccsm compiz-0.9.8.4/compizconfig/ccsm/ccsm
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/ccsm	2012-10-02 14:20:36.950419021 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/ccsm	2012-10-02 14:22:53.066348284 -0400
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ # -*- coding: UTF-8 -*-
+ 
+ # This program is free software; you can redistribute it and/or
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/CMakeLists.txt compiz-0.9.8.4/compizconfig/ccsm/CMakeLists.txt
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/CMakeLists.txt	2012-10-02 14:20:36.953752336 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/CMakeLists.txt	2012-10-02 14:22:29.463142821 -0400
 @@ -12,7 +12,7 @@
  execute_process (COMMAND uname -p OUTPUT_VARIABLE PROC_ARCH)
  
  # Get Python Version
--execute_process (COMMAND python -c "import sys; print str (sys.version_info.major) + '.' + str (sys.version_info.minor)"
-+execute_process (COMMAND python2 -c "import sys; print str (sys.version_info.major) + '.' + str (sys.version_info.minor)"
+-execute_process (COMMAND python -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
++execute_process (COMMAND python2 -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
  		 OUTPUT_VARIABLE PY_VERSION)
  
  string (REPLACE "\n" "" PROC_ARCH ${PROC_ARCH})
@@ -28,9 +37,9 @@ diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/CMakeLists.txt compiz-0.9.8.2/co
  		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
  		   COMMENT "Uninstalling Python Files")
  
-diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/Makefile compiz-0.9.8.2/compizconfig/ccsm/Makefile
---- compiz-0.9.8.2.orig/compizconfig/ccsm/Makefile	2012-09-16 13:56:38.862174346 -0400
-+++ compiz-0.9.8.2/compizconfig/ccsm/Makefile	2012-09-16 13:57:28.915236518 -0400
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/Makefile compiz-0.9.8.4/compizconfig/ccsm/Makefile
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/Makefile	2012-10-02 14:20:36.883752714 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/Makefile	2012-10-02 14:22:42.059741246 -0400
 @@ -1,11 +1,11 @@
  all:
 -	@python setup.py build --prefix=${PREFIX}
@@ -46,33 +55,15 @@ diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/Makefile compiz-0.9.8.2/compizco
  
  clean:
  	rm -rf build/
-diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/ccsm compiz-0.9.8.2/compizconfig/ccsm/ccsm
---- compiz-0.9.8.2.orig/compizconfig/ccsm/ccsm	2012-09-16 13:56:38.862174346 -0400
-+++ compiz-0.9.8.2/compizconfig/ccsm/ccsm	2012-09-16 13:57:40.868505095 -0400
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python2
- # -*- coding: UTF-8 -*-
- 
- # This program is free software; you can redistribute it and/or
-diff -Nru compiz-0.9.8.2.orig/compizconfig/ccsm/setup.py compiz-0.9.8.2/compizconfig/ccsm/setup.py
---- compiz-0.9.8.2.orig/compizconfig/ccsm/setup.py	2012-09-16 13:56:38.882174236 -0400
-+++ compiz-0.9.8.2/compizconfig/ccsm/setup.py	2012-09-16 13:57:51.285115329 -0400
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python2
- 
- import sys, os, glob
- import subprocess
-diff -Nru compiz-0.9.8.2.orig/compizconfig/compizconfig-python/CMakeLists.txt compiz-0.9.8.2/compizconfig/compizconfig-python/CMakeLists.txt
---- compiz-0.9.8.2.orig/compizconfig/compizconfig-python/CMakeLists.txt	2012-09-16 13:56:38.862174346 -0400
-+++ compiz-0.9.8.2/compizconfig/compizconfig-python/CMakeLists.txt	2012-09-16 13:58:26.794922956 -0400
+diff -Nru compiz-0.9.8.4.orig/compizconfig/compizconfig-python/CMakeLists.txt compiz-0.9.8.4/compizconfig/compizconfig-python/CMakeLists.txt
+--- compiz-0.9.8.4.orig/compizconfig/compizconfig-python/CMakeLists.txt	2012-10-02 14:20:37.010418695 -0400
++++ compiz-0.9.8.4/compizconfig/compizconfig-python/CMakeLists.txt	2012-10-02 14:23:38.342769668 -0400
 @@ -12,7 +12,7 @@
  execute_process (COMMAND uname -p OUTPUT_VARIABLE PROC_ARCH)
  
  # Get Python Version
--execute_process (COMMAND python -c "import sys; print str (sys.version_info.major) + '.' + str (sys.version_info.minor)"
-+execute_process (COMMAND python2 -c "import sys; print str (sys.version_info.major) + '.' + str (sys.version_info.minor)"
+-execute_process (COMMAND python -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
++execute_process (COMMAND python2 -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
  		 OUTPUT_VARIABLE PY_VERSION)
  
  string (REPLACE "\n" "" PROC_ARCH ${PROC_ARCH})
@@ -103,9 +94,9 @@ diff -Nru compiz-0.9.8.2.orig/compizconfig/compizconfig-python/CMakeLists.txt co
  	mark_as_advanced (FORCE PYTHON_EXECUTABLE)
  
  	file (GLOB PYTHON_TESTS "tests/test_*.py")
-diff -Nru compiz-0.9.8.2.orig/compizconfig/compizconfig-python/Makefile compiz-0.9.8.2/compizconfig/compizconfig-python/Makefile
---- compiz-0.9.8.2.orig/compizconfig/compizconfig-python/Makefile	2012-09-16 13:56:38.858841030 -0400
-+++ compiz-0.9.8.2/compizconfig/compizconfig-python/Makefile	2012-09-16 13:58:45.994818942 -0400
+diff -Nru compiz-0.9.8.4.orig/compizconfig/compizconfig-python/Makefile compiz-0.9.8.4/compizconfig/compizconfig-python/Makefile
+--- compiz-0.9.8.4.orig/compizconfig/compizconfig-python/Makefile	2012-10-02 14:20:37.007085379 -0400
++++ compiz-0.9.8.4/compizconfig/compizconfig-python/Makefile	2012-10-02 14:23:53.262688839 -0400
 @@ -1,11 +1,11 @@
  all:
 -	@python setup.py build --prefix=${PREFIX}
