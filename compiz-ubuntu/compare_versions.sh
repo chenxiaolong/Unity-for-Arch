@@ -7,6 +7,6 @@ UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/compiz' -O - | 
 
 echo ""
 
-echo -e "PKGBUILD version: ${_actual_ver}+bzr${_bzr_rev} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${_actual_ver} ${_ubuntu_rel}"
 echo -e "Upstream version: (none)"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
