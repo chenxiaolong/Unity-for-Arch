@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu10
+_ubuntu_rel=0ubuntu14
 pkgver=3.4.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -21,7 +21,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         'systemd-fallback.patch')
 sha512sums=('4a05995511cd1b4324844c164bc2acd831d5e1b9b989ef35716bd7630126406f77b13ea93921379375790d4dea75b9cc14b6107daebdbf264fbf5157f7bd7093'
-            '3239b9ff0e710b9259b1497904555c77ee0d23f21443c1f20ed77ec765b4ecbd841d7dabbb15f6f14988f609a7209e4f7bd5fb94fc92d50fad3db2aa37b37aba'
+            '0aeb4d8fb133c5b579309760cb09eef83ba73d832e058475e196a015e0f60da73caaaa919d3a6d3471109aa9e525a891ba8970b5068a7dee9ae881ea9e97af2b'
             '6afbad62dd69e0c779ae991e9afa46c3f2c0db07f0f7d77d607198f939498a8dfa0cd46099f46ce25d6d993425d7914bb3b8098044f007485e7fe501c900fe63')
 
 build() {
@@ -72,10 +72,6 @@ package() {
   # Symlinks
   install -dm755 "${pkgdir}/usr/bin/"
   ln -s '/usr/lib/gnome-settings-daemon/gnome-settings-daemon' "${pkgdir}/usr/bin/"
-
-  # Gsetings override
-  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
-  install -m644 "${srcdir}/debian/gnome-settings-daemon.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
 }
 
 # vim:set ts=2 sw=2 et:
