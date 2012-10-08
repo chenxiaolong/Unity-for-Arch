@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-sound
-_ubuntu_rel=0ubuntu2
-pkgver=12.10.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.1.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -17,8 +17,8 @@ options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('4a344139af92324858539dd5e3189bf6d212f3d940d1e53555c6ac181856a92bfa1584b625d23e25928f32a730c5588d45668c84836ccebb3137d86a4967a5e9'
-            'eacc5b2a6827df65b0cc46a33cdf8c4e82694d3c7d366c1545791da566d20219bd9e8b0094dc91755ce1ecb6e96162fe038389403716ce94bfed7c347361fc94')
+sha512sums=('58563f2b269a6b6e236a5e1dca0c406a0ee35686a3e66980c4611e6f864b6855b6d13016cc9ec10f6fc38896e0d65cb9a946d799f01517d0612a8422572f1b78'
+            '565029beb7c91909be88895eb1a33e17982d6894bc69bdd5d012aeeba1ad60e2c8bad422aca165a62eb732671badd1a96ecb3e4e4a62c44bb232aeaa866fe695')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
