@@ -4,8 +4,8 @@
 
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
-_ubuntu_rel=0ubuntu2
-pkgver=12.10.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.2.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
@@ -16,8 +16,8 @@ groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/dbusmenu/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
         "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('f032ca694021fb8fda01666c345a11ae77837e8eafde0207d7095c8fe795a896eac3fd955561b0166250007a4850c86cc17b48125a15cc124db542266a7f6f56'
-            'b338accb2be7ed49e325b3a5758e70bcec46fa08b942ecb02d3c11af919b8a6b0bb53d505f53bbec4d94df544a2ae1e16d419b71c9df427c511caa1f50e67f9c')
+sha512sums=('cf2e50dc3adbf35d0a4ccdd62a3efd9fae2d079b8d06e6522b70f077f89ac2cf72188e380f476e38d184b69549e90b801bf1e32174fa94bbe612dd52aec94496'
+            'adc51642d385df567cfcbe1f703d8bfefb81bcc31891a2434e9887dd52f2e253f932b0ce5ac668ca9f31d9df1007159d5bb91fcbca31434b010cb5db67a30b50')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
