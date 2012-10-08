@@ -3,11 +3,11 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=6.6.0
+pkgver=6.8.0
 _actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu3
+  _ubuntu_rel=0ubuntu1
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
@@ -37,8 +37,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
-sha512sums=('e23c791de1e5f7076d9de8be9165f0d4ad3b0efb2c4af977497453c05eb2323a938efba76c80b49d595a59f2e371bae4b002865e47c8ff5909b7a2adfee1ce57'
-            '91f012014bfc17aaf0dde16b811da561d40289b368f98574cf9131be0ba1e6e47ba6315034226d6352e9f279ce7c5558a0295b4af7f7d025b93a8c2c31ef5115'
+sha512sums=('883fc041bbbec5fccc02b4d8a1e44ff56124545c0dc8bdd2f39d95f0af05c9a4202e0a119577accb54ade0369524b9db87794b52b151ebd46a3099207a28f163'
+            'f062853f84cf46e6252bc78422d6e25339c095f8f02702449737b6c5e57f929d217075c1af633afb77b6d19d44aa58f5e0e01c7965c4c1edcdb27433f2da926d'
             'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
