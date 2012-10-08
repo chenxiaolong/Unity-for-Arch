@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/activity-log-manager' -O - | sed -n 's/.*>activity-log-manager_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/activity-log-manager' -O - | sed -n 's/.*>activity-log-manager_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 UPSTREAM_VER=$(wget -q 'https://launchpad.net/activity-log-manager/+download' -O - | sed -n 's/.*activity-log-manager-\(.*\)\.tar\.gz.*/\1/p' | head -n 1)
