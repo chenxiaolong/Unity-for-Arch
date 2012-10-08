@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise-updates/source/libzeitgeist' -O - | sed -n 's/.*>libzeitgeist_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/libzeitgeist' -O - | sed -n 's/.*>libzeitgeist_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 UPSTREAM_VER=$(wget -q 'https://launchpad.net/libzeitgeist/+download' -O - | sed -n 's/.*libzeitgeist-\(.*\)\.tar\.gz.*/\1/p' | head -n 1)
