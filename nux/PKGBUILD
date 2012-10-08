@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nux
-pkgver=3.6.0
+pkgver=3.8.0
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
@@ -19,7 +19,7 @@ install=${pkgname}.install
 source=("http://launchpad.net/nux/3.0/${pkgver%.*}/+download/nux-${pkgver}.tar.gz"
         '0002_disable_documentation.patch'
         '0003_Glew_1.8.0_fix.patch')
-sha512sums=('9414ed9690e99cd2a11754e9dfaf4f2539608a9da50d623dac951ad283044b5a8ac20723d5e0d49b3c6f4295440cf2b02630b2482d693787075f90b119dfd814'
+sha512sums=('e99e6c35ff735154c4d241263139aa6270d44aae1d80276a441e546452005a61ae13e88ed3c5ea8f2211fdbe88cb1480ba878354d54fdcf3468444dcca58981b'
             'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
             '60a6fd75896af92ba6a511968e35b16697da39416877b611323e4b57f70ed6bec81ba3a0467f175dcb30aaefb8d238943f59fc57c5d462047492078bd545a90a')
 
