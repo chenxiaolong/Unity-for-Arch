@@ -3,10 +3,10 @@
 pkgname=('overlay-scrollbar' 'liboverlay-scrollbar' 'liboverlay-scrollbar3')
 pkgbase=overlay-scrollbar
 _actual_ver=0.2.16
-_bzr_rev=r356
-_ubuntu_rel=0ubuntu2
+_bzr_rev=r357
+_ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}.${_bzr_rev}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ayatana-scrollbar"
@@ -14,16 +14,11 @@ license=('LGPL')
 groups=('unity')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'gsettings-desktop-schemas-ubuntu')
 options=('!libtool')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}+${_bzr_rev}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}+${_bzr_rev}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c1c2578f237454fbfefed4f3da2f02976a8bad33f2460f117a8d9e7ad48982ec7ac20be647428f164d2763d899a31e9e1e42b00489af9a5fe8724488221dc3d4'
-            'fc96e2aac13dc50adf09b2179ffb6a3212faebc912366c1e1e0ee66b4b1e1dfe1944e92acd702c1eab7ff14e7882f6f3ae249045ccb3c1c8ab1e2910688e0584')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}+${_bzr_rev}-${_ubuntu_rel}.tar.gz")
+sha512sums=('af8716917ad917166e05a979917fff71b1a295d789cf34d14ecef89d2707713e2b00d2d98d68ae7e78aa57448574977dc244f0e38f206908a79a7d3bae1e3b98')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}+r353"
-
-  # Apply Ubuntu's patches
-  patch -Np1 -i "${srcdir}/overlay-scrollbar_${_actual_ver}+${_bzr_rev}-${_ubuntu_rel}.diff"
 
   sed -i 's/3\.3\.6/3.2.3/' configure.ac
   autoreconf -vfi
