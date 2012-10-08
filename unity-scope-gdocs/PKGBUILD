@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-scope-gdocs
-pkgver=0.4
+pkgver=0.5
 pkgrel=100
 pkgdesc="Google Docs scope for Unity"
 arch=('any')
@@ -12,7 +12,7 @@ depends=('account-plugins' 'dee' 'hicolor-icon-theme' 'libaccounts-glib' 'libgda
 makedepends=('python-distutils-extra')
 install=unity-scope-gdocs.install
 source=("https://launchpad.net/unity-lens-gdocs/trunk/${pkgver}/+download/unity-scope-gdocs-${pkgver}.tar.gz")
-sha512sums=('9c64a2661dec1346b31a2915988d0b92516b3f6486890d262bfd790a769b5fb9a36217778b401e5f1e4e9bdd4ad93a8d529121f2829e5db9e576d3e89921111a')
+sha512sums=('30a9922a5e3694ad36bf155a35e883a118462e1b5d31c32b7d8e29a62d180d940d716b7508ff2a293726496f3b30b06b7d5eebe498151513aad45026f1459b38')
 
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
