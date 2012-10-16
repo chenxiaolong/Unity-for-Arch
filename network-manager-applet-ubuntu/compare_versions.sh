@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/precise/source/network-manager-applet' -O - | sed -n 's/.*>network-manager-applet_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/network-manager-applet' -O - | sed -n 's/.*>network-manager-applet_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 echo "Getting latest Arch Linux version..."
 ARCHLINUX_VER=($(wget -q 'https://www.archlinux.org/packages/extra/x86_64/network-manager-applet/' -O - | sed -n '/<title>/ s/^.*network-manager-applet\ \(.*\)-\(.*\)\ (.*$/\1 \2/p'))

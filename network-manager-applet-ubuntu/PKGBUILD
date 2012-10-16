@@ -6,8 +6,8 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu2
-_actual_ver=0.9.4.1
+_ubuntu_rel=0ubuntu6
+_actual_ver=0.9.6.2
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GNOME frontends to NetWorkmanager"
@@ -25,10 +25,10 @@ options=('!libtool' '!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.acc.umu.se/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'disable_Werror.patch')
-sha512sums=('6fc9ea8c2c30beeba2c7fca443b0d065fa2eb495af54654479f9edde7bdc008ebd41ddad4f2b31bdbea8609f10168c74b34388b4cb00616431cd1259221fb2ca'
-            'fc7180b4db9e13fb5592ac2402d7db277cdac0e910de180cdcce4c22883e1d1d750ed8085f4e7f7e80c00b9a2c4d6bfa4c93a9a13ed745b3a141f35c521d25c1'
-            '9c7c2611873325a3aa3af0aad192a5ef967ff67ea5d764b085a3a420155edeb41c32f743f09395c3342895e18cc44ebe79baf60afbf15a4317ae53072f329289')
+        '0001_Disable_Werror.patch')
+sha512sums=('713ea1f6788ff106b35d39da0a9ff81af7b3c2ff9a8887be5b808317b471080967d594e3d7e02c0e9d830cacb78921a58666316fbfd0a9b1c78719fd009ef6e3'
+            'e3679960fa9036b2f57f10ec7bcf4d705f14d779777688008e99c26e1d1dd75d64373499e132898a04db1e5abe46836bf6961107f4d82ad3f9c753539c6479d4'
+            '4c3139ba8b1c813f31c759256fe7f39654179e10449367c101b71309bff2b6b7c2395b8c39b22a8b669879793bb2120a9c477f2b2b705adfa0647f394a1cea3a')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -38,9 +38,8 @@ build() {
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  patch -Np1 -i "${srcdir}/disable_Werror.patch"
+  patch -Np1 -i "${srcdir}/0001_Disable_Werror.patch"
 
-  #intltoolize -f -c
   autoreconf -vfi
 
   ./configure \
@@ -50,18 +49,16 @@ build() {
     --libexecdir=/usr/lib/networkmanager \
     --disable-static \
     --disable-maintainer-mode \
+    --disable-migration \
     --enable-indicator
 
-  make ${MAKEFLAGS}
+  #make ${MAKEFLAGS}
+  make -j1
 }
 
 package() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
-  make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}/" install
-
-  install -dm755 "${pkgdir}/usr/share/gconf/schemas/"
-  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain nm-applet "${pkgdir}"/etc/gconf/schemas/*.schemas
-  rm -vf "${pkgdir}"/etc/gconf/schemas/*.schemas
+  make DESTDIR="${pkgdir}/" install
 
   # Install Ubuntu stuff
   install -dm755 "${pkgdir}/usr/share/icons/hicolor/22x22/apps/"
