@@ -6,7 +6,7 @@ echo "Getting latest Ubuntu version..."
 UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/python-oauthlib' -O - | sed -n 's/.*>python-oauthlib_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
 
 echo "Getting latest upstream version..."
-UPSTREAM_VER=$(wget -q 'http://pypi.python.org/pypi/oauthlib' -O - | sed -n 's/.*>oauthlib-\(.*\)\.tar\.gz<.*/\1/p')
+UPSTREAM_VER=$(wget -q 'http://pypi.python.org/pypi/oauthlib' -O - | sed -n 's/.*>oauthlib-\(.*\)\.tar\.gz<.*/\1/p' | head -1)
 
 echo ""
 
