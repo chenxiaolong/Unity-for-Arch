@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=account-plugins
-pkgver=0.8
+pkgver=0.9
 pkgrel=100
 pkgdesc="Online Accounts Plugins"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ makedepends=('vala')
 options=('!libtool')
 install=account-plugins.install
 source=("https://launchpad.net/online-accounts-account-plugins/trunk/${pkgver}/+download/account-plugins-${pkgver}.tar.gz")
-sha512sums=('416031bc082f07503814ff9af3dc0115af29bb45600efc1b636ea6db34a66aacc69a83ebb3fe0a31247714acc1bdedf395e3a149c7bd852cdb686699ba300786')
+sha512sums=('5b8a3e2c9744acfc66e3763c7159221a53747192b0f767c34ae06fe4956209d92e4a83d15aee70caa422ac8e005a5285735c863d81d72bf233cca71336a4549d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
