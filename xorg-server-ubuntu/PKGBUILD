@@ -5,17 +5,10 @@
 # Changes:
 #  - Only contains the xorg-server and xorg-server-devel packages
 #  - Adds 500_pointer_barrier_thresholds.diff patch from Ubuntu
-#    - Manually refreshed for Xorg Server 1.12.0
-#    - list                -> xorg_list
-#    - list_add            -> xorg_list_add
-#    - list_del            -> xorg_list_del
-#    - list_for_each_entry -> xorg_list_for_each_entry
-#    - swaps(param1, param2) -> swaps(param1)
-#    - swapl(param1, param2) -> swapl(param1)
 
 pkgbase=xorg-server
 pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
-pkgver=1.12.4
+pkgver=1.13.0
 pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
@@ -26,12 +19,12 @@ source=("${url}/releases/individual/xserver/${pkgbase}-${pkgver}.tar.bz2"
         'autoconfig-nvidia.patch'
         'autoconfig-sis.patch'
         '10-quirks.conf'
-        '500_pointer_barrier_thresholds_refreshed_for_1.12.3.diff')
-sha512sums=('70997e8ba4f948829c158e52924753c5691a783dd14e5a86fdce4fc601638dd4e0b281590876b0315a303bf8d5195bdf43ede7113d1d569415a41ab03d938d85'
+        '500_pointer_barrier_thresholds.diff')
+sha512sums=('840a341f796386156ff4eb599c4b3b96090d3fda9cdbe70c45ff175c8d01b62cb9ba04a6c73ddde90996f8b96be1a3d925c9803a3b629cb4bc317374b7b1e014'
             '8e0dc38e28930e1a2682d25608d62d5e8cae9360c677d44760840b2424bf00d30ee434cb141b090dc37da1458fe619011baf375b32f250bd2b46ca536ac92de6'
             '3211dbc6d8a84f3f6a77230a8e5fe13355b441768d864c2b3037b893be39f7b8d581c2a5db1e04f399ce19c4ced973b64eaad563d970ee9c7b8a93cb23a0aa18'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2'
-            '04cfb17de231753fe124886a1d80c864a94de9deb952189c5d6ebaa3f15bf8d679c3f94c7af289de6b4e81b9a8ec72998c19f225e75ccbafbde98b6fa5759ec2')
+            'b97e38e19f07447deac2cbc2d2cdb8bf1fda569954ac187dae50cdd71ad3e118796b9c75872b782883cfa974b37215612f6e1630559e6a0af028d14e28eca78f')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
@@ -44,9 +37,7 @@ build() {
 
   # Patch from Ubuntu for XFixes protocol version 6
   # (needed for revealing the launcher in Unity)
-  # Refreshed for 1.12.0 by Xiao-Long Chen
-  # Refreshed for 1.12.0.901 by ecopunk (https://github.com/ecopunk)
-  patch -Np1 -i "${srcdir}/500_pointer_barrier_thresholds_refreshed_for_1.12.3.diff"
+  patch -Np1 -i "${srcdir}/500_pointer_barrier_thresholds.diff" || :
 
   autoreconf -vfi
 
