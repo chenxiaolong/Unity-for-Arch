@@ -17,40 +17,40 @@ Order to compile/install:
 09: appmenu-gtk                    -> Application menu module for GTK+
 10: libunity                       -> Library for integrating Unity
 11: libunity-misc                  -> Differently licensed stuff for Unity
-12: libunity-webapps               -> Library for integrating WebApps into Unity
-13: bamf                           -> Application matching framework
-14: libqtbamf                      -> Qt bindings for bamf
-15: libqtdee                       -> Qt binding and QML plugin for Dee
-16: libqtgconf                     -> Qt bindings for GConf
-17: dconf-qt                       -> Qt bindings for DConf
-18: sni-qt                         -> Turns Qt tray icons into appindicators
-19: ido                            -> Widgets and objects used for indicators
-20: check                          -> Unit testing framework for C
-21: libaccounts-glib               -> Account mgmt. library for GLib apps
-22: libaccounts-qt                 -> Qt library for Single Sign On
-23: signon                         -> Single Sign On Framework
-24: signon-ui                      -> Online Accounts Sign-on UI
-25: libsignon-glib                 -> Account mgmt. library for GLib apps
-26: signon-keyring-extension       -> GNOME Keyring extension for signond
-27: signon-plugin-oauth2           -> Oauth2 plugin for the SSO Framework
-28: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
-29: python2-geoclue                -> Geoclue Python module
-30: python2-xapian                 -> Python bindings for Xapian
-31: zeitgeist-extensions           -> Extensions for Zeitgeist
-32: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-33: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-34: gnome-session-ubuntu           -> GNOME Session Manager
-35: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-36: gnome-control-center-signon    -> GNOME Control Center extension for SSO
-37: account-plugins                -> Online Accounts Plugins
-38: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
-39: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-40: indicator-applet               -> GNOME panel indicator applet
-41: indicator-application          -> Takes menus and puts then in the panel
-42: indicator-appmenu              -> An indicator to host the menus from apps
-43: libtimezonemap                 -> GTK+3 timezone map widget
-44: indicator-datetime             -> A very, very simple clock
-45: indicator-messages             -> Collects messages that need a response
+12: indicator-messages             -> Collects messages that need a response
+13: libunity-webapps               -> Library for integrating WebApps into Unity
+14: bamf                           -> Application matching framework
+15: libqtbamf                      -> Qt bindings for bamf
+16: libqtdee                       -> Qt binding and QML plugin for Dee
+17: libqtgconf                     -> Qt bindings for GConf
+18: dconf-qt                       -> Qt bindings for DConf
+19: sni-qt                         -> Turns Qt tray icons into appindicators
+20: ido                            -> Widgets and objects used for indicators
+21: check                          -> Unit testing framework for C
+22: libaccounts-glib               -> Account mgmt. library for GLib apps
+23: libaccounts-qt                 -> Qt library for Single Sign On
+24: signon                         -> Single Sign On Framework
+25: signon-ui                      -> Online Accounts Sign-on UI
+26: libsignon-glib                 -> Account mgmt. library for GLib apps
+27: signon-keyring-extension       -> GNOME Keyring extension for signond
+28: signon-plugin-oauth2           -> Oauth2 plugin for the SSO Framework
+29: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
+30: python2-geoclue                -> Geoclue Python module
+31: python2-xapian                 -> Python bindings for Xapian
+32: zeitgeist-extensions           -> Extensions for Zeitgeist
+33: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+34: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+35: gnome-session-ubuntu           -> GNOME Session Manager
+36: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+37: gnome-control-center-signon    -> GNOME Control Center extension for SSO
+38: account-plugins                -> Online Accounts Plugins
+39: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
+40: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+41: indicator-applet               -> GNOME panel indicator applet
+42: indicator-application          -> Takes menus and puts then in the panel
+43: indicator-appmenu              -> An indicator to host the menus from apps
+44: libtimezonemap                 -> GTK+3 timezone map widget
+45: indicator-datetime             -> A very, very simple clock
 46: indicator-power                -> Indicator to show battery information
 47: indicator-printers             -> Indicator showing active print jobs
 48: indicator-session              -> Indicator to manage session

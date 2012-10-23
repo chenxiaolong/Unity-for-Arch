@@ -2,65 +2,32 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=indicator-messages
-pkgname=('indicator-messages' 'indicator-messages-gtk2')
-_ubuntu_rel=0ubuntu1
-pkgver=0.6.0.${_ubuntu_rel}
+pkgname=indicator-messages
+pkgver=12.10.4
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
 license=('GPL')
-depends=('libindicator3' 'libindicate' 'libdbusmenu-gtk3' 'telepathy-glib')
-makedepends=('intltool>=0.35.0')
+depends=('libdbusmenu-gtk3' 'libindicator3' 'libindicate' 'telepathy-glib')
+makedepends=('intltool')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgbase}/0.6/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('d46ee85d5ceffd794af2917f6246febb538e73b7f23ff70e6198daca9c9a200c85a385d546b2a1e8b5e51f86ac3e58d2aa17378c5077c4b30ae2f3c1a902fafe'
-            'fdfcfc8be6f115f30160d05ac4d02fa9caec1ec595c87cc7343688c98176700063701c20bd0cbb65d1970d106f17b1e164850f1134748c8e64372aca72c02cda')
+install=indicator-messages.install
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('61ae87267c72512ba524b4a8182b9e09445617aa3e0dccfec60d30a6ac3cbca44a9a6369f2a98a8e67786e18cb953dcf7940cedc031208a20fa836425ebcf5a3')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
-  done
-
-  autoreconf -vfi
-
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=2
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --with-gtk=3
-  make ${MAKEFLAGS}
-  popd
 }
 
-package_indicator-messages() {
-  pkgdesc="Indicator that collects messages that need a response - GTK 3 library"
-  depends=('libdbusmenu-gtk3' 'libindicator3' 'libindicate' 'telepathy-glib')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   make DESTDIR="${pkgdir}/" install
-}
-
-package_indicator-messages-gtk2() {
-  pkgdesc="Indicator that collects messages that need a response - GTK 2 library"
-  depends=('libdbusmenu-gtk2' 'libindicator' 'indicator-messages')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
-
-  INDICATOR_VERSION=$(ls /usr/lib | grep libindicator | grep 'libindicator.so.[0-9]$' | awk -F'.' '{print $NF}')
-
-  install -dm755 "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
-  install -m755 'src/.libs/libmessaging.so' "${pkgdir}/usr/lib/indicators/${INDICATOR_VERSION}/"
 }
 
 # vim:set ts=2 sw=2 et:
