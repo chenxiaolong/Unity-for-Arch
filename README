@@ -37,52 +37,51 @@ Order to compile/install:
 29: zeitgeist-datahub              -> Plugins that insert events into Zeitgeist
 30: python2-geoclue                -> Geoclue Python module
 31: python2-xapian                 -> Python bindings for Xapian
-32: zeitgeist-extensions           -> Extensions for Zeitgeist
-33: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-34: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-35: gnome-session-ubuntu           -> GNOME Session Manager
-36: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-37: gnome-control-center-signon    -> GNOME Control Center extension for SSO
-38: account-plugins                -> Online Accounts Plugins
-39: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
-40: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-41: indicator-applet               -> GNOME panel indicator applet
-42: indicator-application          -> Takes menus and puts then in the panel
-43: indicator-appmenu              -> An indicator to host the menus from apps
-44: libtimezonemap                 -> GTK+3 timezone map widget
-45: indicator-datetime             -> A very, very simple clock
-46: indicator-power                -> Indicator to show battery information
-47: indicator-printers             -> Indicator showing active print jobs
-48: indicator-session              -> Indicator to manage session
-49: indicator-sound                -> A unified sound menu
-50: notify-osd                     -> Semi-transparent notification agent
-51: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-52: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-53: gtest                          -> C++ testing utility based on xUnit
-54: gmock                          -> A library for writing C++ mock classes
-55: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-56: evemu                          -> Linux evdev event emulation
-57: frame                          -> Touch frame library
-58: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-59: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-60: xorg-server-ubuntu             -> Xorg X server
-61: grail                          -> Gesture recognition and instantiation lib.
-62: geis                           -> Implementation of the GEIS interface
-63: ibus-ubuntu                    -> Next generation input bus for Linux
-64: nux                            -> An OpenGL toolkit
-65: unity-asset-pool               -> Design assets for Unity
-66: gnome-menus2                   -> Gnome menu specifications
-67: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-68: python-oauthlib                -> Python implementation of OAuth 
-69: unity-lens-applications        -> Unity applications lens
-70: unity-lens-files               -> Unity files lens
-71: unity-lens-music               -> Unity music lens
-72: unity-lens-photos              -> Unity photo lens
-73: unity-lens-video               -> Unity video lens
-74: unity-scope-video-remote       -> Remove video search for Unity video lens
-75: unity-scope-gdocs              -> Google Docs scope for Unity
-76: compiz-ubuntu                  -> Compiz compositing window manager
-77: unity                          -> A desktop experience designed for efficiency
+32: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+33: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+34: gnome-session-ubuntu           -> GNOME Session Manager
+35: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+36: gnome-control-center-signon    -> GNOME Control Center extension for SSO
+37: account-plugins                -> Online Accounts Plugins
+38: activity-log-manager           -> Blacklist configuration GUI for Zeitgeist
+39: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+40: indicator-applet               -> GNOME panel indicator applet
+41: indicator-application          -> Takes menus and puts then in the panel
+42: indicator-appmenu              -> An indicator to host the menus from apps
+43: libtimezonemap                 -> GTK+3 timezone map widget
+44: indicator-datetime             -> A very, very simple clock
+45: indicator-power                -> Indicator to show battery information
+46: indicator-printers             -> Indicator showing active print jobs
+47: indicator-session              -> Indicator to manage session
+48: indicator-sound                -> A unified sound menu
+49: notify-osd                     -> Semi-transparent notification agent
+50: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+51: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+52: gtest                          -> C++ testing utility based on xUnit
+53: gmock                          -> A library for writing C++ mock classes
+54: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+55: evemu                          -> Linux evdev event emulation
+56: frame                          -> Touch frame library
+57: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+58: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+59: xorg-server-ubuntu             -> Xorg X server
+60: grail                          -> Gesture recognition and instantiation lib.
+61: geis                           -> Implementation of the GEIS interface
+62: ibus-ubuntu                    -> Next generation input bus for Linux
+63: nux                            -> An OpenGL toolkit
+64: unity-asset-pool               -> Design assets for Unity
+65: gnome-menus2                   -> Gnome menu specifications
+66: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+67: python-oauthlib                -> Python implementation of OAuth 
+68: unity-lens-applications        -> Unity applications lens
+69: unity-lens-files               -> Unity files lens
+70: unity-lens-music               -> Unity music lens
+71: unity-lens-photos              -> Unity photo lens
+72: unity-lens-video               -> Unity video lens
+73: unity-scope-video-remote       -> Remove video search for Unity video lens
+74: unity-scope-gdocs              -> Google Docs scope for Unity
+75: compiz-ubuntu                  -> Compiz compositing window manager
+76: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
