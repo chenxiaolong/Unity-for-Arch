@@ -2,10 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=ido
-pkgname=('libido' 'libido3')
-_ubuntu_rel=0ubuntu1
-pkgver=0.3.4.${_ubuntu_rel}
+pkgname=libido3
+pkgver=12.10.2
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
@@ -13,50 +11,21 @@ url="https://launchpad.net/ido"
 license=('LGPL')
 depends=('gtk3-ubuntu')
 groups=('unity')
-options=(!libtool)
-source=("http://launchpad.net/${pkgbase}/0.3/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('5c4f9902e271cfab3aad15e99f855322159ab96165830cc40ca1c5fce29798413119a473880be3d7639a227db55b2c4e8f17083b690f215e357ea6b2843310d8'
-            'de5ffd08e342aa7e414949c250ffa6c94b9e5a5c9845201c3d621bee3a2dcf642d074d72c62c2d146cb00882fc20a50831090ba2d1850ca278a8baecde07588d')
+options=('!libtool')
+source=("http://launchpad.net/ido/12.10/${pkgver}/+download/ido-${pkgver}.tar.gz")
+sha512sums=('f745380bbc8b97c739691ae4f0dc27d5903ff078e92aaa2280d2c830c77ea2ad29b3abb4a49ffc7cc928b32e3a60ad64de20087980e02e5d5233eeb22978d2dc')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/ido-${pkgver}"
 
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/series/${i}"
-  done
-
-  autoreconf -vfi
-
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --disable-static --with-gtk=2
+  ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --disable-static --with-gtk=3
-  make ${MAKEFLAGS}
-  popd
 }
 
-package_libido3() {
-  pkgdesc="Widgets and other objects used for indicators - GTK 3 library"
-  depends=('gtk3-ubuntu')
-  provides=("ido=${pkgver%.*}")
-  conflicts=('ido')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+package() {
+  cd "${srcdir}/ido-${pkgver}"
 
   make DESTDIR="${pkgdir}/" install
 }
 
-package_libido() {
-  pkgdesc="Widgets and other objects used for indicators - GTK 2 library"
-  depends=('gtk2-ubuntu')
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
-
-  make DESTDIR="${pkgdir}/" install
-}
+# vim:set ts=2 sw=2 et:
