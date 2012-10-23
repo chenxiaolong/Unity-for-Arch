@@ -1,28 +1,22 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-pkgver=2.1
-pkgrel=102
+pkgver=2.4.1
+pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-webapps"
 license=('LGPL')
 groups=('unity')
-depends=('glib2' 'libdbusmenu-gtk3' 'libindicate' 'libindicate-gtk3' 'json-glib' 'libnotify' 'libsoup' 'libwnck3' 'sqlite' 'telepathy-glib' 'libunity' 'packagekit')
+depends=('geoclue' 'glib2' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbusmenu-gtk3' 'libindicate' 'libindicate-gtk3' 'libnotify' 'libsoup' 'libunity' 'libwnck3' 'packagekit' 'polkit' 'sqlite' 'telepathy-glib')
 makedepends=('gobject-introspection')
+options=('!libtool')
 install=libunity-webapps.install
-source=("https://launchpad.net/libunity-webapps/trunk/${pkgver}/+download/unity_webapps-${pkgver}.tar.gz"
-        '0001_Fix_g_malloc.patch'
-        '0002_Fix_pkgconfig_files.patch')
-sha512sums=('ed1ab17e0d0fd9d474a32c1ed1f4e808d99fb3f31809ecdb9d7eea2d255dd9ed9ad4d2cd06a7415665dfcda1ffb49917b87e60ccb986c1350448119950e29328'
-            '158a667af54fe78d8eb8a26888aa5e2fa231cc8f6dc3dc362fba99e6f98bee5c3e18811b36ebb761b695e60303215da84bf0a1eec56df79b43360c21a5efb5d7'
-            '2a4b41e8b719a2a2a4fe57fb178e20fd3f359c283affadc27180950b57beefbcdc1fc30755b2af05004daf096ec2bfb7f2543ae8a78f81c013e06a5d1f4e5a90')
+source=("https://launchpad.net/libunity-webapps/trunk/${pkgver}/+download/unity_webapps-${pkgver}.tar.gz")
+sha512sums=('25e9024bd1e4109b284be414b3c5d010b69f359fcc4a7243d285b8e247ad4eb8bcd980d70af68436d66afafad9acfb4d5983b6dd0fa2f184fe7391b9d5254f5c')
 
 build() {
   cd "${srcdir}/unity_webapps-${pkgver}"
-
-  patch -Np1 -i "${srcdir}/0001_Fix_g_malloc.patch"
-  patch -Np1 -i "${srcdir}/0002_Fix_pkgconfig_files.patch"
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/libunity-webapps --disable-static
   make ${MAKEFLAGS}
