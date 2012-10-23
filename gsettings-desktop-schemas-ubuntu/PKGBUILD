@@ -1,24 +1,25 @@
-# Maintainer : Ionut Biru <ibiru@archlinux.org>
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Ionut Biru <ibiru@archlinux.org>
 # Contributor: Jaroslav Lichtblau <dragonlord@aur.archlinux.org>
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=3.4.1.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+pkgver=3.6.0.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"
 license=('GPL')
-depends=('glib2' 'dconf')
-makedepends=('intltool')
+depends=('glib2')
+makedepends=('intltool' 'gobject-introspection')
 provides=("${pkgname%-*}=${pkgver%.*}")
 conflicts=("${pkgname%-*}")
 install=${pkgname}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('0a2d0bae1821a94d39bb3bd7e9417d09d4392acc67260b300d565cb87021ccf48c68b0d56365dd8fb6428207666c19525cb4ceecd1db69ca0392a752262aa6bf'
-            '56a5262c87767d2bf18e87184b5f9f1481c078e62f95f21919b6e06521ea5760ec77e0cd341705cd4a8f2e10825f40ebade080717e965a6d9f139c564b4de0bb')
+sha512sums=('e13d01abd25576b20d3290b24b231aa6cf53a320b96b399fc76752dff3b56d8b34124d0c2bd7591bc0954f7eea52e0aee599db7cadf48ef2646ae30549a5997f'
+            '3e0195f29f760328418aabb0037c61ba057cfc5260588ed7bef27bacc7bcf34ed0b859c689dd47991c403ef96109b2f2dba8f02d6c3a1714caf02db50a2ac3d8')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
