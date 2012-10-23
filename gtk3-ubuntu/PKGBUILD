@@ -2,34 +2,42 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu0.4
-pkgver=3.4.2.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu3
+_ubuntu_ver=3.6.0
+_actual_ver=3.6.1
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=arch_gtk3.install
-depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'glib2>=2.31.0' 'dconf' 'pango>=1.30.0')
-makedepends=('gobject-introspection>=1.32.0')
+depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk')
+makedepends=('gobject-introspection')
 provides=("gtk3=${pkgver%.*.*}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*.*.*}/gtk+-${pkgver%.*.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver%.*.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${_actual_ver%.*}/gtk+-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
-sha512sums=('b9adf9d40db013acd23b355244cac3ca19e8d688425fb2ae99b375ad84d7e49064ed4a3660a221bfdb82164b9f46fd1eae23855cee611389d75d1383971325d4'
-            '69ed586404daab3a9c2a009f9aabdef2584b7096000f5decca3d9e0874e867da3c40aa845262a9ab1d924e09ddd39bf01cc67a4056314a35229b1f6727b58c7b'
+sha512sums=('9b6927c48550ac08860b20901880e944dc151b73b6bb10dbeff04eb17308fb15d064ec880c744f99e3139a41535c2dca31c92be06e4a69a00e267875991cedb1'
+            '34fc6add122a0d9c4415a27440b3c936f69f74f160063d2af16b64c9f212ebac18e233ba0ce4d938678a8d4149703d758e2e1b1ad1fa3b14b47a22f3bfdb2020'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
-  cd "${srcdir}/gtk+-${pkgver%.*.*}"
+  cd "${srcdir}/gtk+-${_actual_ver}"
 
   # Apply Ubuntu Patches
     # Disable patches
       # No multiarch
         sed -i '/061_multiarch_module_fallback.patch/d' "${srcdir}/debian/patches/series"
+      # Only causes problems in Ubuntu
+        sed -i '/revert_git_a11y_stopped.patch/d' "${srcdir}/debian/patches/series"
+      # Merged upstream
+        sed -i '/git_use_right_display.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/git_iconview_render_item_select.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
@@ -50,7 +58,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/gtk+-${pkgver%.*.*}"
+  cd "${srcdir}/gtk+-${_actual_ver}"
   make mkdir_p="/bin/mkdir -p" DESTDIR="${pkgdir}" install
 
   install -Dm644 "${srcdir}/arch_settings.ini" \
