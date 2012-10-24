@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/x11proto-fixes' -O - | sed -n 's/.*>x11proto-fixes_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/quantal/+source/x11proto-fixes' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 UPSTREAM_VER=$(wget -q http://xorg.freedesktop.org/releases/individual/proto/ -O - | sed -n 's/.*fixesproto-\(.*\).tar.bz2.*/\1/p' | tail -n 1)
