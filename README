@@ -67,21 +67,20 @@ Order to compile/install:
 59: xorg-server-ubuntu             -> Xorg X server
 60: grail                          -> Gesture recognition and instantiation lib.
 61: geis                           -> Implementation of the GEIS interface
-62: ibus-ubuntu                    -> Next generation input bus for Linux
-63: nux                            -> An OpenGL toolkit
-64: unity-asset-pool               -> Design assets for Unity
-65: gnome-menus2                   -> Gnome menu specifications
-66: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-67: python-oauthlib                -> Python implementation of OAuth 
-68: unity-lens-applications        -> Unity applications lens
-69: unity-lens-files               -> Unity files lens
-70: unity-lens-music               -> Unity music lens
-71: unity-lens-photos              -> Unity photo lens
-72: unity-lens-video               -> Unity video lens
-73: unity-scope-video-remote       -> Remove video search for Unity video lens
-74: unity-scope-gdocs              -> Google Docs scope for Unity
-75: compiz-ubuntu                  -> Compiz compositing window manager
-76: unity                          -> A desktop experience designed for efficiency
+62: nux                            -> An OpenGL toolkit
+63: unity-asset-pool               -> Design assets for Unity
+64: gnome-menus2                   -> Gnome menu specifications
+65: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+66: python-oauthlib                -> Python implementation of OAuth 
+67: unity-lens-applications        -> Unity applications lens
+68: unity-lens-files               -> Unity files lens
+69: unity-lens-music               -> Unity music lens
+70: unity-lens-photos              -> Unity photo lens
+71: unity-lens-video               -> Unity video lens
+72: unity-scope-video-remote       -> Remove video search for Unity video lens
+73: unity-scope-gdocs              -> Google Docs scope for Unity
+74: compiz-ubuntu                  -> Compiz compositing window manager
+75: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
