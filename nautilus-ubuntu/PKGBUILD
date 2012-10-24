@@ -3,29 +3,28 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu4
-pkgver=3.4.2.${_ubuntu_rel}
-pkgrel=101
+_ppa_rel=0ubuntu1~ubuntu12.10.2
+_actual_ver=3.6.1
+pkgver=${_actual_ver}.${_ppa_rel/~/.}
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'libtracker-sparql' 'libappindicator3' 'packagekit' 'libunity' 'gtk3-ubuntu>=3.3.12.0ubuntu1' 'libzeitgeist' 'libnotify')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libappindicator3' 'libunity' 'gtk3-ubuntu' 'libzeitgeist' 'libnotify')
 makedepends=('intltool' 'gobject-introspection')
 groups=('gnome')
-provides=("nautilus=${pkgver}")
+provides=("nautilus=${_actual_ver}")
 conflicts=('nautilus')
 url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
-        '0001_Remove_Ubuntu_Help.patch')
-sha512sums=('a842488f58ed5c53a24c99b0f632b58fe7b67e58e8f05d4836adc5cbf4a1fe9754e65a3bc779e35a4d6b2efca482358c1fa4f7284b3b6b5e8b31a54466e1e210'
-            '019487a811d3352b6e4053b6d96d59f6c368108456eed208735ff4627eb665a36932c06339a1c916aef01e775cb72c4b6ba0aceae04f61755fe35472559cda8e'
-            'a5073c9428e92a65ef391dba8eb76499bf3113056076842711d7737931455b7f02743a361fd4cc8b81ec49e9914aef5e2d8e3c8fdb1b06bde2f8022b36cc3965')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${_actual_ver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('ba49c8ddcedfff359e14ec8606e7f3ea8613f3d6908c3f7f36f34d7c7270bdb0dab3d10bed2a004dbf6b347b118f1cdbe2b818617a80b8355c624218e53e560f'
+            '632f7d63e414cfbd6462504100daf5bdacbd4886e91f632811f28b64eb9076f28a43adce1c198abe3cc66c1174cc0d8ab8ff0632357990232fd0d44bc0ae9756')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
 
@@ -34,12 +33,6 @@ build() {
       sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
     # Don't use launchpad-integration
       sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
-
-  # Fix patches
-    # Remove Ubuntu Help
-      pushd "${srcdir}/debian/"
-      patch -Np1 -i "${srcdir}/0001_Remove_Ubuntu_Help.patch"
-      popd
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
@@ -58,29 +51,23 @@ build() {
     --libexecdir=/usr/lib/nautilus \
     --disable-nst-extension \
     --disable-update-mimedb \
-    --enable-gtk-doc \
+    --disable-packagekit \
     --disable-schemas-compile
+
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make DESTDIR="${pkgdir}" install
-
-  # From debian/rules
-  echo "" > "${pkgdir}/usr/share/nautilus/nautilus.css"
 
   # Ubuntu specific stuff
   install -dm755 "${pkgdir}/usr/share/pixmaps/"
-  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   install -dm755 "${pkgdir}/usr/share/applications/"
-  install -dm755 "${pkgdir}/usr/share/menu/"
   install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
-  install -m644 "${srcdir}/debian/nautilus.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
   install -m644 "${srcdir}/debian/nautilus-home.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/mount-archive.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/debian/menu" "${pkgdir}/usr/share/menu/${pkgname%-*}.menu"
 }
 
 # vim:set ts=2 sw=2 et:
