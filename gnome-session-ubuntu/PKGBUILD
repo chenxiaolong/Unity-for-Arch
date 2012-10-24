@@ -3,15 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=0ubuntu8
-_ubuntu_ver=3.2.1
-_actual_ver=3.4.1
+_ubuntu_rel=0ubuntu1
+_ubuntu_ver=3.6.0
+_actual_ver=3.6.1
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('upower' 'gconf' 'startup-notification' 'hicolor-icon-theme' 'libxtst' 'polkit-gnome' 'libgl' 'librsvg' 'gsettings-desktop-schemas' 'consolekit' 'libsm' 'dconf' 'json-glib')
+depends=('libsystemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
 makedepends=('intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
@@ -22,70 +22,48 @@ url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         '55gnome-session_gnomerc'
-        # Refreshed patches for gnome-session 3.4.1
-        'UBUNTU_01_gnome-wm.patch'
-        'UBUNTU_02_fallback_desktop.patch'
-        'UBUNTU_03_display_session_capplet.patch'
-        'UBUNTU_12_no_gdm_fallback.patch'
-        'UBUNTU_20_hide_nodisplay.patch'
-        'UBUNTU_21_up_start_on_demand.patch'
-        'UBUNTU_22_support_autostart_delay.patch'
-        'UBUNTU_50_ubuntu_sessions.patch'
-        'UBUNTU_51_remove_session_saving_from_gui.patch'
-        'UBUNTU_52_xdg_current_desktop.patch'
-        'UBUNTU_95_dbus_request_shutdown.patch'
-        'UBUNTU_103_kill_the_fail_whale.patch'
-        'UBUNTU_104_dont_show_fallback_warning.patch'
-        'UBUNTU_105_hide_session_startup_help.patch')
-sha512sums=('9c3d71f6f86a70214bcd3a97e92dc8bb398f3b46a8c111d3dfd99b32527322044950b31ff403d4f2c4dec0f8f25878cc502e2bd2e5b8d4b1d88fe1c72541cff0'
-            'ba6595610735ab27c1e48cb1fc1b9da55c29e95cd0a5ff9c24916471148acae75dde3fcd272f6922126cce28e0ee0b8bd4c235c02b84f690ba4b7f6aad8943e1'
+        'gnome-session-3.3.1-llvmpipe.patch'
+        'timeout.patch')
+sha512sums=('17fa465ffbe36df2b64b60528bb15c0a67837ee27adc7bfbae125d2ac456a6910465358b451fad1f803096e9e6a57394ce94776db6166eb7930e65ff1b0c62d7'
+            'c79071dbb38d0b26f78fbe1567ce0efa6c6c049734423e267eaef7dff1c0f2d69fcbd167a249921b05c41a4253c95a4d2f1921f473f9bda8eeefcc99a6398e0f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
-            '441e98c64bfc751f614bcd94f40c16cce28cde4555cf58cbef1c06e4e88965450886e358d9ddd466b53866aa4be3696a37a7f476cca0a2a58cbaf9a9b57ed332'
-            '2d008aeadbfe7f7aefe7532202ab146278a691e3966c87ad5328304ca686ce500ef8bf3d42335ca99f93fe60dec6de2aad1619a03390071b71b2460bb524c0cc'
-            '31ba040e6cdbff4ecbc519e03e6bc79d7d14fa442d60eedb5036ee6970b8f122b95e22b84c41807d8b5174f2b6c58cb64eefd04f7160bb479232efaadd74d421'
-            'ba4ca69e5e334f1ce6fbd9db0000f3f2d32537b3c185a7ae76b3bdd6673ab17497dbe9ade2e9ca3ded67f5ceb61a850ed0203d1b6fcf600d84abc7672dffe47c'
-            '4acfa65c1954da40e96afc6aa46264f12ae888f8b3cb971c3463df6c13cf84f4f8ddeb5edfbcda8e3d8605ecf4781a6f0e763618a6d891d96c4dfae804c0403a'
-            '8b9a4bb6f9c3b77dbb099f7c5638dc163a617bd1d35236d6abea6d21967c26aecdbf4ce0d680fe955cd2d6e75d7da4499881285c6e65fdf722c3bbd3d33bf9c3'
-            'a53a75ed37f7c759bd211bfe40d073f44f7e96dc2bc85044184f97918072d0bd4854d475e3a235c2c0cfa31d2445c7597d2e3e70cee87b2a013ff73c7a0164c0'
-            'a05d9d913b57bd6688b765ccfb716949019cc952428a7d11f2e12cc6aa3c80558071645a94f8bce3df9daf12f17a5bd0294638dfef42c6e0c594949f897b9338'
-            '882dd013c3eec5ac5ba48cdfdfe269612bfc30c75a64d8dcfef4a4f362a2ddacf7ecc8e72ec6c426c03395385ec863590ead5ca88db342d565546bca080604aa'
-            '93b0760c6ab49e664419202202303b70a41b2796f45733f6573e978efb8e68a0c7194e28f310c575368d08e250e5a17b3dba141e0bb474403575b1eaa786a1e8'
-            'fddce078635a8b02b70b8e25e2202b0204326cb3a0c73760c5f100a27aa4d9f448e40d2817465e3a07e99a3e1c61f1072c2b51dc8cbbf9fff4e19178c28dfb46'
-            '9353923914b03e460a288289690118058437e69985c542d67535757611eb7786b07c5903dafa5387f6b518fe5ebd901e95d691d37d03142a361c333bea6fefbd'
-            '780fd1a1f217473d651c4ccb7feb466560745415d7129f56c5468a46881e27152a0fb7545450dafc53c5ff91e3ea567bf07d93608e8fb7f094ad367263deaaaa'
-            'a94c7523d09617a6deded488efd86bb581b600cf0895142e966f9316579d53142067d18678d9701cf0632f11d2202602b324502c3b02315daed0839cb8babbc4')
+            'e70432410514740cc2b6f722fbc28f7b5ea984c3bbfb08c72708b9d66ea2eb038e816152e4c2352d73d0cfbd827097195a058590598a138b5ca225bd421b9e26'
+            '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
-  # Apply Ubuntu patches
-    # Disable patches
-      # Arch doesn't use apport
-  #      sed -i '/96_no_catch_sigsegv.patch/d' "${srcdir}/debian/patches/series"
-  #for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-  #  patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  #done
+  # Allow software rendering
+  patch -Np1 -i "${srcdir}/gnome-session-3.3.1-llvmpipe.patch"
 
-  # Refreshed patches for gnome-session 3.4.1
-  #patch -Np1 -i "${srcdir}/UBUNTU_01_gnome-wm.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_02_fallback_desktop.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_03_display_session_capplet.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_12_no_gdm_fallback.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_20_hide_nodisplay.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_21_up_start_on_demand.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_22_support_autostart_delay.patch"
-  #patch -Np1 -i "${srcdir}/UBUNTU_50_ubuntu_sessions.patch"
-  cat "${srcdir}/UBUNTU_50_ubuntu_sessions.patch" | \
-    sed 's/gnome-wm/metacity/g' | \
-    patch -Np1
-  patch -Np1 -i "${srcdir}/UBUNTU_51_remove_session_saving_from_gui.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_52_xdg_current_desktop.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_95_dbus_request_shutdown.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_103_kill_the_fail_whale.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_104_dont_show_fallback_warning.patch"
-  patch -Np1 -i "${srcdir}/UBUNTU_105_hide_session_startup_help.patch"
+  # Increase timeout, for slow machines
+  patch -Np1 -i "${srcdir}/timeout.patch"
+
+  # Disable patches
+    # gnome-wm uses Debian's alternatives system (Fedora has it too, but other
+    # packages need to use it)
+      sed -i '/01_gnome-wm.patch/d' "${srcdir}/debian/patches/series"
+    # systemd should make these patches obsolete
+      sed -i '/12_no_gdm_fallback.patch/d' "${srcdir}/debian/patches/series"
+    # We're not Ubuntu, do not hide stuff
+      sed -i '/20_hide_nodisplay.patch/d' "${srcdir}/debian/patches/series"
+    # Only Ubuntu uses apport
+      sed -i '/96_no_catch_sigsegv.patch/d' "${srcdir}/debian/patches/series"
+    # Fedora does not have sessionmigration
+      sed -i '/53_add_sessionmigration.patch/d' "${srcdir}/debian/patches/series"
+    # Part of Fedora's patches
+      sed -i '/97_dont_blacklist_llvmpipe.patch/d' "${srcdir}/debian/patches/series"
+
+  # Fix patches
+    # Needed because 01_gnome-wm.patch is disabled
+      sed -i 's/gnome-wm/metacity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
 
   autoreconf -vfi
+
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -105,16 +83,11 @@ package() {
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -dm755 "${pkgdir}/usr/bin/"
   install -dm755 "${pkgdir}/usr/share/applications/"
-  install -dm755 "${pkgdir}/etc/gnome/"
   install -dm755 "${pkgdir}/usr/share/gnome/applications/"
-  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   #install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   # Install my version of the script (more platform-agnostic)
   install -m755 "${srcdir}/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
-  install -m644 "${srcdir}/debian/gnome-session-common.gsettings-override" "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname%-*}.gschema.override"
-  install -m644 "${srcdir}/debian/defaults.list" "${pkgdir}/etc/gnome/"
-  ln -s '/etc/gnome/defaults.list' "${pkgdir}/usr/share/gnome/applications/defaults.list"
 
   # symlink session files so that KDM can find them
   install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
