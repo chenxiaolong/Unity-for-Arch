@@ -3,7 +3,9 @@
 
 pkgname=gnome-screensaver-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=3.4.1.${_ubuntu_rel}
+_ubuntu_ver=3.6.0
+_actual_ver=3.6.1
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=('i686' 'x86_64')
@@ -17,15 +19,15 @@ conflicts=('gnome-screensaver')
 groups=('gnome')
 options=('!emptydirs')
 install=gnome-screensaver.install
-source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
-sha512sums=('f237a5fdaf8c87e024e78d6ffbf13a3cdae02a96c2210ef8f1b785669043f0db1d144efe27a2f7e2a06dc1213d570f882f66d51a27ac0edc0a622a346300a6f1'
-            '53bf8976db9c1ece94cf34a852f9489c747a4366443ee6d42288eb1917c5d1f7de1914447b921cc79487097a9c8792cde2f51f016e96580d71f6fc2aa272a853'
+sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
+            '8c73da786c3923135d87b393bf1ff0bbeb70a6f5a27e37ea8c1af7bcec55502e31fd54a13bad0fc9665428ceae6340edce6766742176234dac82abb0d9b9597e'
             'aed0933feed70a9b16da80d6e4716641cd45d2fd3fadbace3dfeb02b1a07124ee659f470277f8ce93492c6f7cf3cc9996bc60598724eea1955975604ff8f324d')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
@@ -46,7 +48,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
   make DESTDIR="${pkgdir}/" install
   install -Dm644 "${srcdir}/gnome-screensaver.pam" "${pkgdir}/etc/pam.d/gnome-screensaver"
 
@@ -54,3 +56,5 @@ package() {
   install -dm755 "${pkgdir}/usr/share/gnome/autostart/"
   mv "${pkgdir}/etc/xdg/autostart/gnome-screensaver.desktop" "${pkgdir}/usr/share/gnome/autostart/"
 }
+
+# vim:set ts=2 sw=2 et:
