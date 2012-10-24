@@ -4,7 +4,7 @@
 
 pkgbase=indicator-appmenu
 pkgname=('indicator-appmenu' 'indicator-appmenu-tools')
-pkgver=12.10.0
+pkgver=12.10.3
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
@@ -17,7 +17,7 @@ optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-qt: support for Qt apps')
 options=('!libtool' '!emptydirs')
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('db523906019157618aaeb064a5cbdb076906bb03d515e19f3e11d59132015e88ecf65391efb6d5d8c0a6f99f3479296265cb1dc8a461982133cf56a6598c6349')
+sha512sums=('0055c46d630f2988ff781f8224d3eb10822ebb4bf8f3ece8a808a4631a3c278580ccd19dd4d92b8438d176be6d84af30e0805b28c9507cdde1f2fbb45a579dfe')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
@@ -29,14 +29,14 @@ build() {
   CFLAGS="${CFLAGS} -Wno-error"
 
   # Cannot find gio/gdesktopappinfo.h
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gio-unix-2.0)"
+  #CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gio-unix-2.0)"
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static
   make ${MAKEFLAGS}
 }
 
 package_indicator-appmenu() {
-  pkgdesc="Indicator for application menus - GTK 3 library"
+  pkgdesc="Indicator for application menus"
   depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
   install="${pkgbase}.install"
 
