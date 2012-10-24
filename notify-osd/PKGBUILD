@@ -1,8 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=notify-osd
-pkgver=0.9.34
-pkgrel=1
+_ubuntu_rel=0ubuntu5
+pkgver=0.9.34.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Canonicals's notification agent which displays semi-transparent click-through bubbles"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/notify-osd"
@@ -11,17 +12,25 @@ groups=('unity-extra')
 depends=('dbus-glib' 'dconf' 'gsettings-desktop-schemas' 'libnotify' 'libwnck3')
 provides=('notification-daemon')
 install=${pkgname}.install
-source=("https://launchpad.net/notify-osd/precise/${pkgver}/+download/notify-osd-${pkgver}.tar.gz")
-sha512sums=('60ca63c2041f129d5139537242c2260908cedef633df977a608e19dcb01b75b2280ec80abe2b6da5eff76621107ee9d294742abfae301bc24eaa3aa855c56ce1')
+source=("https://launchpad.net/notify-osd/precise/${pkgver%.*}/+download/notify-osd-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/notify-osd_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('60ca63c2041f129d5139537242c2260908cedef633df977a608e19dcb01b75b2280ec80abe2b6da5eff76621107ee9d294742abfae301bc24eaa3aa855c56ce1'
+            '5e34a7eb1de66a3eec18fe7e6cd511fba33c1c5613b9ce9e40d90efa2839055ae7f7cce036f59621354265acc5ef0972e8242e7c2f90bd5dc4e4b14e068f784d')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu's patches
+  cp data/org.freedesktop.Notifications.service.in{,.orig}
+  patch -Np1 -i "${srcdir}/notify-osd_${pkgver%.*}-${_ubuntu_rel}.diff"
+  cp data/org.freedesktop.Notifications.service.in{.orig,}
+
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
   make DESTDIR="${pkgdir}/" install
 }
 
