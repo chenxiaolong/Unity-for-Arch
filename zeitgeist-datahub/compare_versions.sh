@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/zeitgeist-datahub' -O - | sed -n 's/.*>zeitgeist-datahub_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/quantal/+source/zeitgeist-datahub' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
 
 echo "Getting latest upstream version..."
 UPSTREAM_VER=$(wget -q 'https://launchpad.net/zeitgeist-datahub/+download' -O - | sed -n 's/.*zeitgeist-datahub-\(.*\)\.tar\.gz.*/\1/p' | head -n 1)
