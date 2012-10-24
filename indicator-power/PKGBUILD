@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=indicator-power
-pkgver=2.0
+pkgver=12.10.2
 pkgrel=100
 pkgdesc="A indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
@@ -11,8 +11,8 @@ depends=('dbus-glib' 'libindicator3' 'dconf' 'upower')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/2.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('7fed77bd3d0d0edd7e579bc13416fcd9c922ddb7397f01a832a5449ecbb8113294a0fb7dd221a3e65070379e27488afa0a2b60da6780d86e58be1352ca51b8cd')
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('bc34ebd2e78a50a241f8e8904119c55c005c7fa1951a75eac40a6f7831c1e7a94e6b26102ac245f28d041f001a933eeee62324e3a4d97347739577277edd66d8')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
