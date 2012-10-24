@@ -5,7 +5,7 @@
 pkgname=indicator-datetime
 _ubuntu_rel=0ubuntu3
 pkgver=12.10.2.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -16,12 +16,17 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        '0001_Port_to_systemd_timedated.patch')
 sha512sums=('16278347f4faaf6ab110614d129d2d8a18d90a693f7cdb48701e06d9b5f4fcf50ec05a8ddd898b0083bce371781478ed1ac8ba98075176f485abb6b33b27a093'
-            '813537af398ca68955395f1f345d55099c9669e4c911de1ddf58458cfe255d95cc88b81b9d7664d610212c36c2c7411281907f6ec6b200338b72f05c5a893268')
+            '813537af398ca68955395f1f345d55099c9669e4c911de1ddf58458cfe255d95cc88b81b9d7664d610212c36c2c7411281907f6ec6b200338b72f05c5a893268'
+            '26c144677564f206b99bc015f496e765ab0c150f9360b401425eb04a11617df5bd9ff644d6b22997ed15ce2abf6048827b80c4a641d890f6eeb5fcd7e2126d7b')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Port to systemd's timedated
+  patch -Np1 -i "${srcdir}/0001_Port_to_systemd_timedated.patch"
 
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
