@@ -1,0 +1,9 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/sound/data/gnome-sound-applet.desktop.in gnome-control-center-3.5.92/panels/sound/data/gnome-sound-applet.desktop.in
+--- gnome-control-center-3.5.92.orig/panels/sound/data/gnome-sound-applet.desktop.in	2012-09-21 19:29:50.829073023 -0400
++++ gnome-control-center-3.5.92/panels/sound/data/gnome-sound-applet.desktop.in	2012-09-21 20:20:21.140013033 -0400
+@@ -14,4 +14,4 @@
+ #X-GNOME-Autostart-Phase=Panel
+ X-GNOME-Autostart-Notify=true
+ AutostartCondition=GNOME3 if-session gnome-fallback
+-OnlyShowIn=GNOME;Unity;
++OnlyShowIn=;

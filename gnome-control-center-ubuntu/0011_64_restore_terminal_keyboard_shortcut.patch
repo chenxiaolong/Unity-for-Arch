@@ -1,0 +1,12 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/keyboard/01-launchers.xml.in gnome-control-center-3.5.92/panels/keyboard/01-launchers.xml.in
+--- gnome-control-center-3.5.92.orig/panels/keyboard/01-launchers.xml.in	2012-09-21 19:29:50.590073021 -0400
++++ gnome-control-center-3.5.92/panels/keyboard/01-launchers.xml.in	2012-09-21 19:45:38.249607022 -0400
+@@ -7,6 +7,8 @@
+ 
+ 	<KeyListEntry name="email" _description="Launch email client"/>
+ 
++	<KeyListEntry name="terminal" _description="Launch terminal"/>
++
+ 	<KeyListEntry name="www" _description="Launch web browser"/>
+ 
+ 	<KeyListEntry name="home" _description="Home folder"/>

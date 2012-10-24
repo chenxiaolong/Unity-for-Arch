@@ -3,74 +3,82 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu14
-_actual_ver=3.4.2
-# Add 'z' to force upgrade from badly named previous version
-pkgver=${_actual_ver}.z${_ubuntu_rel}
+_ubuntu_rel=0ubuntu19
+_ubuntu_ver=3.4.2
+_actual_ver=3.6.2
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop'
-         'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu'
-         'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb'
-         'network-manager-applet' 'sound-theme-freedesktop' 'upower'
-         'libsystemd' 'cheese' 'libpulse' 'archlinux-artwork')
-makedepends=('gnome-doc-utils' 'intltool' 'gnome-common')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork')
+makedepends=('gnome-doc-utils' 'intltool' 'docbook-xsl')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
-            'apg: adds password generation for user accounts'
             'gnome-color-manager: for color management tasks')
 provides=("gnome-control-center=${_actual_ver}")
 conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'systemd-fallback.patch')
-sha512sums=('78927f56f1e1af4043f0d96bae174513916e752aa3e987b545e78213f34527a25ba69ce61da43dcd21ed51aa9d1ee713cabed507853f20bb6c0b0bea82f272e6'
-            '85be8591604193cc625810da3d30e64bb88caa50c850965038ef8ec82b20f7d4cc6ca861bf84610908f1f683d1a084c63aaf5accad87d1d9caf75c1f5368a099'
-            '9e58b6f46fc58dd4f03ba569aea735e1ce5976995ad0357b9b87ed9b5773af1b26a9cf8ab4d29984286d879fdf50948b12b19ce75824260480320e73eb9a2ff3')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001_04_new_appearance_settings.patch'
+        '0002_10_keyboard_layout_on_unity.patch'
+        '0003_11_power-configure_lid_action.patch'
+        '0004_12_add_never_turn_screen_off.patch'
+        '0005_51_unity_options_in_display_panel.patch'
+        '0006_54_enable_alt_tap_in_shortcut.patch'
+        '0007_55_user_accounts_hide_controls.patch'
+        '0008_57_use_nonsymbolic_keyboard_icon.patch'
+        '0009_61_workaround_online_account.patch'
+        '0010_62_update_translations_template.patch'
+        '0011_64_restore_terminal_keyboard_shortcut.patch'
+        '0012_90_force_fallback.patch'
+        '0013_96_sound_nua_panel.patch'
+        '0014_97_unity_power_ui.patch'
+        '0015_98_default_sound_theme.patch'
+        '0016_revert_git_drop_library.patch'
+        '0017_99_add_lock-on-suspend.patch'
+        '0018_dont_download_local_image.patch'
+        '0019_fix-crash-on-user-panel.patch'
+        '0020_classic_use_sound_indicator.patch'
+        '0021_accounts_fix_unsetting_icon.patch')
+sha512sums=('2ec5f15a92956e6a0f573ba57bd5f193d48a7912cd954449a08be9e6981061b870c75695a898451f5a02d9d017285e5b36f34a8d2957f6bd0d46eeca22e5cd69'
+            'e0f4ffe7c64403eee9fb0e10a55a0b04f086c6ed6440f7374d042d4c2969a3a03c85aeb7a7f784c397ea17077398e9c349931aecfcf895f023e1b4ea32a8c17b'
+            'cfb8757f7225f259540edf08a9ecca93a722672a0ee693cf715c2a4ebb6b4e36fa6ae212d6976da0f4c91f05b9a1c5209c77b6e2d553db93181a4662db784789'
+            'b4f932fcd4a6d6794e42626fb32c47b70ac1a3f5b4bb2ac0f04c84ccba5cf15979f9952f01723271952d1050bca6f309abe79b945e0ee2073666d16521f14437'
+            'b74b660381b181bd82cbf33c5f6caf225cdccea4b2508f96823dad2be6d0cfbf1f4c2239f8a3cfd22c8c721d8d7019f27b9d684593c18b30c23beaaaf95fcd0f'
+            'ecaa1c3f30b0da932d4d8355aaa2451a495408d982222d072f179a7ed20ab103db5b67ed06b31b2c1103c2f6f7fa6160abfdab705597f3f7f92fe76637fb7590'
+            '259a1a49717afbdc5787d2df1d72f4068c3c1e0cf42c7194a07798e6159910c283fb27b8e29d2fa494a33d737852818a52e209493329eab717d32b9184a518a6'
+            '739ace7e4414eec67894dc8dffaa3cedfb112c2f612df01e433e4a17ade49a8757e4150db2e8f6af0a9449c9130682db748aad6ef81945ddf463c7e2e5337588'
+            'f8a48d03ebbbe1a2f1f7ff7ff7893123630e8ec3db3226136275ae739dd7ac983001c829c1f4d66c71e67ded02fe1021d7ee1776f89664c8eb7da513de762fe6'
+            '3b0bead1ebaa37b4be25bd694e1ca2a14ce0bacefa054476dd2945639a289e8270856c03ce7608fbdc7ee3098aa2250066c63ccf22b886fdae9949f91a67f763'
+            'f79c251faed632797ca9e77d33db043c94c4a1bba753d2fe81e2a54529cb7856153b2ce7918abc4f173c91bc8853abe2a39499414562efe9c83e106a896ac9b5'
+            '0a311f8793c432ace79889490c445efd1f781fcd7a104762d1bfc8d5f48cc65482f256f186d464b772197315745b0fbd42bd94c78c4f61be4e0b4e36f55216e9'
+            '184732dbf9561f649c50e7b59ffc3a9c5e714044ab3a62222f9c1121431ed24ae24dfe03dfc6061f3ed22b76a2f0845f908632aa4e64ab4cf76f9fa5ed77f341'
+            'a15e7323ec129dc00f9069db2f4519685c872e17ac9b63698143ab6db2ac919d3f708bf84c8712816d14a4b9449929fc2c14353ac7c07e88474f04f7e10259f4'
+            'd934f09a48dc448148ece40efa8e5b6038c3d6558194a33b76ff9a51a04271c715f3bd998cf8be51348a1a4162b4de2d9c0feb8f855db4a092a32a0eda960f51'
+            '0d7fbc169da6f495cd41ee5eff0f3268f9d9915dce30c595381597b2db0edb5e0c19a3f42141935c0fa15993a0c25a3ce007521e79edbf2d4713d4020fdf2d8b'
+            '60b457157fde54bad697bbe001324298a25ef2f69fc145c3506bec9c74fd81564335b7bc39d327c1513904eb45c75c419c4b2d84567f58e06824ad19b9d71299'
+            '4bd414778edb2916bf7ee4dea03d7182245ce48c6fe249d50138caa09ff3a48ca5b6773bc4eb01c53d137c9b36dca846a79d284d2656b9ad3c9b0cacf3a5dba1'
+            'f85a0711b0d3445f39b5e8f4e51137cf2aef9ef72c34ebd0a817667a0b21af0abbad4ec328ec05c9506d9c3c19ffa9e5b27c63df2ab091e9f015b6ff1d8b8ce0'
+            'e4bc756a81010f8c9e639f780f2069ec2eff960f0599000b472cf936c96a78fd159ac2c88297de56bf88304f8abe05969d7e7ffa587d51880df6d608acd75b10'
+            '9451b1d1d4e72dbc5a3c771768a79014da210ad106d9901dbd8e38bd6d85e5da1f3191598b3d3950b0ac9381ea9281c399c4d84d267b3d36b5320c1d86c8de01'
+            'd01399154104b14434edb610426599f32f54ab1749e7d1a57de60063301a9202a7193b39e87d6c41172a794621e77267fed435c968aa779bbef2acc33732cec0'
+            '9e5840b4ac6c2e9a396ee7b8e6f30ad02cdcdfe400b2ea5dbd2bd8ea7ed7399d3e83784a7f520dbb8a35dc932b5b3d43a34d23f383e957a7b5ebcdfe820afebf')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu patches
-
-  # Disable patches
-    # Disable using Ubuntu's update manager
-      sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
-    # Do not use Ubuntu help files
-      sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
-    # Arch Linux does not use Ubuntu's language selector
-      sed -i '/52_ubuntu_language_list_mods.patch/d' "${srcdir}/debian/patches/series"
-    # Arch Linux does not have ubuntu-system-service
-      sed -i '/50_ubuntu_systemwide_prefs.patch/d' "${srcdir}/debian/patches/series"
-    # No GNOME 3.6 yet
-      sed -i '/git_gnome_desktop_update.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/git_new_bluetooth_api.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/00git_online_accounts_gtkgrid.patch/d' "${srcdir}/debian/patches/series"
-
-  # Fix patches
-    # Use Arch Linux logo
-    sed -i 's/UbuntuLogo.png/archlinux-vert-dark-grad2.svg/' "${srcdir}/debian/patches/56_use_ubuntu_info_branding.patch"
-    # Do not use types defined in unreleased versions of gnome-desktop
-    # (thanks to oi_wtf!)
-    sed -i 's/gnome_rr_labeler_get_rgba_for_output/gnome_rr_labeler_get_color_for_output/;s/GdkRGBA/GdkColor/' "${srcdir}/debian/patches/51_unity_options_in_display_panel.patch"
-
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  for i in ${source[@]}; do
+    if [ "x${i%.patch}" != "x${i}" ]; then
+      patch -Np1 -i "${srcdir}/${i}"
+    fi
   done
 
-  patch -Np1 -i "${srcdir}/systemd-fallback.patch"
-
-  # Builds just fine with the stable version of clutter-gtk
-  sed -i 's/1\.11\.10/1.10.6/g' configure.ac
-
   autoreconf -vfi
-
-  CFLAGS="${CFLAGS} -D_IPP_PRIVATE_STRUCTURES"
 
   ./configure \
     --prefix=/usr \
@@ -80,7 +88,7 @@ build() {
     --enable-systemd \
     --with-libsocialweb \
     --disable-update-mimedb \
-    --with-clutter
+    --without-cheese
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
@@ -92,17 +100,13 @@ package() {
 
   make DESTDIR="${pkgdir}" install
 
+  # Fix a warning
+  chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
+  chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
+
   # Ubuntu specific files
-  install -dm755 "${pkgdir}/usr/share/gnome-control-center/ui/"
-  install -dm755 "${pkgdir}/usr/share/pixmaps/"
   install -dm755 "${pkgdir}/usr/share/indicators/session/applications/"
-  install -dm755 "${pkgdir}/usr/share/menu/"
-  #install -m644 "${srcdir}/debian/UbuntuLogo.png" "${pkgdir}/usr/share/gnome-control-center/ui/"
-  # Use Arch Linux branding
-  ln -s /usr/share/archlinux/logos/archlinux-vert-dark-grad2.svg "${pkgdir}/usr/share/gnome-control-center/ui/"
-  install -m644 "${srcdir}/debian/gnome-control-center.xpm" "${pkgdir}/usr/share/pixmaps/"
   ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
-  install -m644 "${srcdir}/debian/gnome-control-center.menu" "${pkgdir}/usr/share/menu/"
 }
 
 # vim:set ts=2 sw=2 et:

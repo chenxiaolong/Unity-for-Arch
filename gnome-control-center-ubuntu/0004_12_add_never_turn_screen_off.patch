@@ -1,0 +1,27 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/screen/cc-screen-panel.c gnome-control-center-3.5.92/panels/screen/cc-screen-panel.c
+--- gnome-control-center-3.5.92.orig/panels/screen/cc-screen-panel.c	2012-09-21 19:29:50.598073021 -0400
++++ gnome-control-center-3.5.92/panels/screen/cc-screen-panel.c	2012-09-21 19:31:07.770039316 -0400
+@@ -397,8 +397,7 @@
+       gtk_tree_model_get (model, &iter,
+                           1, &value_tmp,
+                           -1);
+-      if (value == value_tmp ||
+-          (value_tmp > value_prev && value < value_tmp))
++      if (value == value_tmp)
+         {
+           gtk_combo_box_set_active_iter (combo_box, &iter);
+           return;
+diff -Nru gnome-control-center-3.5.92.orig/panels/screen/screen.ui gnome-control-center-3.5.92/panels/screen/screen.ui
+--- gnome-control-center-3.5.92.orig/panels/screen/screen.ui	2012-09-21 19:29:50.597073021 -0400
++++ gnome-control-center-3.5.92/panels/screen/screen.ui	2012-09-21 19:31:07.771039318 -0400
+@@ -83,6 +83,10 @@
+         <col id="0" translatable="yes">1 hour</col>
+         <col id="1">3600</col>
+       </row>
++      <row>
++	<col id="0" translatable="yes">Never</col>
++	<col id="1">0</col>
++      </row>
+     </data>
+   </object>
+   <object class="GtkWindow" id="window1">

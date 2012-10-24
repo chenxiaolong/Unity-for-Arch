@@ -1,0 +1,12 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/sound/gvc-sound-theme-chooser.c gnome-control-center-3.5.92/panels/sound/gvc-sound-theme-chooser.c
+--- gnome-control-center-3.5.92.orig/panels/sound/gvc-sound-theme-chooser.c	2012-09-21 19:29:50.742073022 -0400
++++ gnome-control-center-3.5.92/panels/sound/gvc-sound-theme-chooser.c	2012-09-21 19:53:28.839277621 -0400
+@@ -67,7 +67,7 @@
+ #define DEFAULT_ALERT_ID        "__default"
+ #define CUSTOM_THEME_NAME       "__custom"
+ #define NO_SOUNDS_THEME_NAME    "__no_sounds"
+-#define DEFAULT_THEME           "freedesktop"
++#define DEFAULT_THEME           "ubuntu"
+ 
+ enum {
+         THEME_DISPLAY_COL,

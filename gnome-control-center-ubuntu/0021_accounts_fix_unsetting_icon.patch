@@ -1,0 +1,12 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/user-accounts/um-user.c gnome-control-center-3.5.92/panels/user-accounts/um-user.c
+--- gnome-control-center-3.5.92.orig/panels/user-accounts/um-user.c	2012-09-21 20:19:48.920030241 -0400
++++ gnome-control-center-3.5.92/panels/user-accounts/um-user.c	2012-09-21 20:21:11.839983536 -0400
+@@ -730,7 +730,7 @@
+         GVariant *result;
+         GError *error = NULL;
+ 
+-        result = g_dbus_proxy_call_sync (user->proxy, "SetIconFile", g_variant_new ("(s)", icon_file), G_DBUS_CALL_FLAGS_NONE, -1, NULL, &error);
++        result = g_dbus_proxy_call_sync (user->proxy, "SetIconFile", g_variant_new ("(s)", icon_file ? icon_file : ""), G_DBUS_CALL_FLAGS_NONE, -1, NULL, &error);
+         if (!result) {
+                 g_warning ("SetIconFile call failed: %s", error->message);
+                 g_error_free (error);

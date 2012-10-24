@@ -1,0 +1,12 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/background/bg-pictures-source.c gnome-control-center-3.5.92/panels/background/bg-pictures-source.c
+--- gnome-control-center-3.5.92.orig/panels/background/bg-pictures-source.c	2012-09-21 19:29:50.935073023 -0400
++++ gnome-control-center-3.5.92/panels/background/bg-pictures-source.c	2012-09-21 20:16:09.104193828 -0400
+@@ -335,7 +335,7 @@
+ 		"shading", G_DESKTOP_BACKGROUND_SHADING_SOLID,
+ 		"placement", G_DESKTOP_BACKGROUND_STYLE_ZOOM,
+ 		NULL);
+-  if (source_uri != NULL)
++  if (source_uri != NULL && !g_file_is_native (file))
+     g_object_set (G_OBJECT (item), "source-url", source_uri, NULL);
+ 
+   g_object_set_data (G_OBJECT (file), "item", item);

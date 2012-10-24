@@ -1,0 +1,37 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/online-accounts/gnome-online-accounts-panel.desktop.in.in gnome-control-center-3.5.92/panels/online-accounts/gnome-online-accounts-panel.desktop.in.in
+--- gnome-control-center-3.5.92.orig/panels/online-accounts/gnome-online-accounts-panel.desktop.in.in	2012-09-21 19:29:50.927073024 -0400
++++ gnome-control-center-3.5.92/panels/online-accounts/gnome-online-accounts-panel.desktop.in.in	2012-09-21 19:39:43.921779560 -0400
+@@ -7,7 +7,7 @@
+ Type=Application
+ StartupNotify=true
+ Categories=GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalSettings;
+-OnlyShowIn=GNOME;Unity;
++OnlyShowIn=GNOME;
+ X-GNOME-Bugzilla-Bugzilla=GNOME
+ X-GNOME-Bugzilla-Product=gnome-control-center
+ X-GNOME-Bugzilla-Component=Online Accounts
+diff -Nru gnome-control-center-3.5.92.orig/shell/gnome-control-center.c gnome-control-center-3.5.92/shell/gnome-control-center.c
+--- gnome-control-center-3.5.92.orig/shell/gnome-control-center.c	2012-09-21 19:29:51.039073024 -0400
++++ gnome-control-center-3.5.92/shell/gnome-control-center.c	2012-09-21 19:39:43.920779560 -0400
+@@ -997,6 +997,21 @@
+                                              &iter);
+     }
+ 
++  if (!name && g_strcmp0(start_id, "online-accounts") == 0)
++    {
++        char *desktop = "/usr/share/applications/gnome-online-accounts-panel.desktop";
++        if (!g_file_test (desktop, G_FILE_TEST_EXISTS)) 
++          {
++            g_warning ("Could not find settings panel \"%s\"", start_id);
++            return FALSE;
++          }
++        GAppInfo*appinfo = g_desktop_app_info_new_from_filename (desktop);
++        const gchar *name = g_app_info_get_name (appinfo);
++        GIcon       *icon = g_app_info_get_icon (appinfo);
++        activate_panel (GNOME_CONTROL_CENTER (shell), start_id, argv, desktop, name, icon);
++        g_object_unref(appinfo);
++    }
++
+   if (!name)
+     {
+       g_warning ("Could not find settings panel \"%s\"", start_id);

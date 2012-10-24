@@ -1,0 +1,590 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/display/cc-display-panel.c gnome-control-center-3.5.92/panels/display/cc-display-panel.c
+--- gnome-control-center-3.5.92.orig/panels/display/cc-display-panel.c	2012-09-21 19:29:50.638073023 -0400
++++ gnome-control-center-3.5.92/panels/display/cc-display-panel.c	2012-09-21 19:31:49.861017756 -0400
+@@ -54,6 +54,13 @@
+ #define MINIMUM_WIDTH 675
+ #define MINIMUM_HEIGHT 530
+ 
++#define UNITY_GSETTINGS_SCHEMA "org.compiz.unityshell"
++#define UNITY_GSETTINGS_PATH "/org/compiz/profiles/unity/plugins/unityshell/"
++#define UNITY_LAUNCHER_ALL_MONITORS_KEY "num-launchers"
++#define UNITY_STICKY_EDGE_KEY "launcher-capture-mouse"
++#define UNITY2D_GSETTINGS_MAIN "com.canonical.Unity2d"
++#define UNITY2D_GSETTINGS_LAUNCHER "com.canonical.Unity2d.Launcher"
++
+ enum {
+   TEXT_COL,
+   WIDTH_COL,
+@@ -72,6 +79,9 @@
+   GnomeRROutputInfo         *current_output;
+ 
+   GSettings      *clock_settings;
++  GSettings      *unity_settings;
++  GSettings      *unity2d_settings_main;
++  GSettings      *unity2d_settings_launcher;
+   GtkBuilder     *builder;
+   guint           focus_id;
+ 
+@@ -119,6 +129,8 @@
+ 					      guint                  n_properties,
+ 					      GObjectConstructParam *properties);
+ static void on_screen_changed (GnomeRRScreen *scr, gpointer data);
++static void refresh_unity_launcher_placement (CcDisplayPanel *self);
++static gboolean unity_launcher_on_all_monitors (GSettings *settings);
+ 
+ static void
+ cc_display_panel_get_property (GObject    *object,
+@@ -168,6 +180,13 @@
+   if (self->priv->clock_settings != NULL)
+     g_object_unref (self->priv->clock_settings);
+ 
++  if (self->priv->unity2d_settings_main != NULL)
++    g_object_unref (self->priv->unity2d_settings_main);
++  if (self->priv->unity2d_settings_launcher != NULL)
++    g_object_unref (self->priv->unity2d_settings_launcher);
++  if (self->priv->unity_settings != NULL)
++    g_object_unref (self->priv->unity_settings);
++
+   shell = cc_panel_get_shell (CC_PANEL (self));
+   if (shell != NULL)
+     {
+@@ -231,6 +250,12 @@
+ }
+ 
+ static gboolean
++is_unity_session (void)
++{
++  return (g_strcmp0 (g_getenv("XDG_CURRENT_DESKTOP"), "Unity") == 0);
++}
++
++static gboolean
+ should_show_resolution (gint output_width,
+                         gint output_height,
+                         gint width,
+@@ -270,6 +295,9 @@
+      gnome_rr_labeler_show (self->priv->labeler);
+ 
+   select_current_output_from_dialog_position (self);
++
++  if (is_unity_session ())
++    refresh_unity_launcher_placement (self);
+ }
+ 
+ static void
+@@ -607,6 +635,10 @@
+   gtk_widget_set_sensitive (self->priv->clone_checkbox, mirror_is_supported);
+   gtk_widget_set_sensitive (self->priv->clone_label, mirror_is_supported);
+ 
++  /* set inactive the launcher placement choice */
++  gtk_widget_set_sensitive (WID ("launcher_placement_combo"), !mirror_is_active);
++  gtk_widget_set_sensitive (WID ("stickyedge_switch"), !mirror_is_active);
++
+   g_signal_handlers_unblock_by_func (self->priv->clone_checkbox, G_CALLBACK (on_clone_changed), self);
+ }
+ 
+@@ -845,6 +877,7 @@
+   rebuild_on_off_radios (self);
+   rebuild_resolution_combo (self);
+   rebuild_rotation_combo (self);
++  refresh_unity_launcher_placement (self);
+ 
+   self->priv->ignore_gui_changes = FALSE;
+ }
+@@ -1729,6 +1762,10 @@
+   outputs = gnome_rr_config_get_outputs (self->priv->current_configuration);
+   for (i = 0; outputs[i] != NULL; ++i)
+     gnome_rr_output_info_set_primary (outputs[i], outputs[i] == output);
++
++  gtk_widget_queue_draw (WID ("self->priv->area"));
++  /* refresh the combobox */
++  refresh_unity_launcher_placement (self);
+ }
+ 
+ static void
+@@ -2080,7 +2117,30 @@
+   g_object_unref (layout);
+   cairo_restore (cr);
+ 
+-  if (gnome_rr_output_info_get_primary (output))
++  /* Only display a launcher on all or primary monitor */
++  if (is_unity_session ())
++    {
++      if (gnome_rr_output_info_is_active (output) && (unity_launcher_on_all_monitors (self->priv->unity_settings) || gnome_rr_output_info_get_primary (output)))
++        {
++          cairo_rectangle (cr, x, y, 10, h * scale + 0.5);
++          cairo_set_source_rgb (cr, 0, 0, 0);
++          foo_scroll_area_add_input_from_fill (FOO_SCROLL_AREA (self->priv->area),
++                                               cr,
++                                               (FooScrollAreaEventFunc) on_top_bar_event,
++                                               self);
++          cairo_fill (cr);
++
++          cairo_set_source_rgb (cr, 0.25, 0.25, 0.25);
++          cairo_rectangle (cr, x + 1, y + 6, 8, 8);
++          cairo_rectangle (cr, x + 1, y + 16, 8, 8);
++          cairo_rectangle (cr, x + 1, y + 26, 8, 8);
++          cairo_rectangle (cr, x + 1, y + 36, 8, 8);
++          cairo_rectangle (cr, x + 1, y + h * scale + 0.5 - 10, 8, 8);
++          cairo_fill (cr);
++        }
++    }
++
++  if (gnome_rr_output_info_get_primary (output) && !is_unity_session ())
+     {
+       const char *clock_format;
+       char *text;
+@@ -2563,6 +2623,233 @@
+ }
+ 
+ static void
++stickyedge_widget_refresh (GtkSwitch *switcher, GSettings *settings)
++{
++  gboolean stickyedge_enabled = g_settings_get_boolean (settings, UNITY_STICKY_EDGE_KEY);
++
++  gtk_switch_set_active (switcher, stickyedge_enabled);
++}
++
++static void
++ext_stickyedge_changed_callback (GSettings* settings,
++                                 guint key,
++                                 gpointer user_data)
++{
++  stickyedge_widget_refresh (GTK_SWITCH (user_data), settings);
++}
++
++static void
++on_stickyedge_changed (GtkSwitch *switcher, GParamSpec *pspec, gpointer user_data)
++{
++  CcDisplayPanel *self = CC_DISPLAY_PANEL (user_data);
++  gboolean enabled = gtk_switch_get_active (GTK_SWITCH (switcher));
++
++  /* 3d */
++  g_settings_set_boolean (self->priv->unity_settings, UNITY_STICKY_EDGE_KEY, enabled);
++  /* 2d */
++  if (self->priv->unity2d_settings_main)
++    g_settings_set_boolean (self->priv->unity2d_settings_main, "sticky-edges", enabled);
++}
++
++static gboolean
++unity_launcher_on_all_monitors (GSettings *settings)
++{
++  gint value = g_settings_get_int (settings, UNITY_LAUNCHER_ALL_MONITORS_KEY);
++  return (value == 0);
++}
++
++static GdkPixbuf*
++get_monitor_pixbuf (CcDisplayPanel *self, GnomeRROutputInfo *output)
++{
++  GdkRGBA color;
++  cairo_surface_t *cairo_surface;
++  cairo_t *cr;
++  int monitor_width = 30;
++  int monitor_height = 15;
++
++  gnome_rr_labeler_get_rgba_for_output (self->priv->labeler, output, &color);
++
++  cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, monitor_width, monitor_height);
++  cr = cairo_create (cairo_surface);
++  cairo_surface_destroy (cairo_surface);
++  cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
++  cairo_paint (cr);
++
++  cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
++  cairo_set_source_rgb (cr, color.red, color.green, color.blue);
++  cairo_rectangle (cr, 0.5, 0.5, monitor_width - 1, monitor_height - 1);
++  cairo_fill (cr);
++
++  cairo_set_line_width (cr, 1);
++  cairo_set_source_rgba (cr, 0, 0, 0, 1.0);
++  cairo_rectangle (cr, 0.5, 0.5, monitor_width - 1, monitor_height - 1);
++  cairo_stroke (cr);
++
++  return gdk_pixbuf_get_from_surface (cairo_get_target (cr), 0, 0, monitor_width, monitor_height);
++}
++
++static void
++refresh_unity_launcher_placement (CcDisplayPanel *self)
++{
++  GtkWidget *launcher_placement_combo = WID ("launcher_placement_combo");
++  GtkListStore *liststore;
++  GtkTreeIter iter;
++  GList *connected_outputs = NULL;
++  GList *list;
++  gboolean launcher_on_all_monitors = unity_launcher_on_all_monitors (self->priv->unity_settings);
++  gint index_of_primary_screen = 0;
++  gint i;
++
++  liststore = (GtkListStore *) gtk_builder_get_object (self->priv->builder, "available_launcher_placement_store");
++  gtk_list_store_clear (liststore);
++
++  connected_outputs = list_connected_outputs (self, NULL, NULL);
++  for (list = connected_outputs, i = 0; list != NULL; list = list->next)
++    {
++      char *monitor_name;
++      GdkPixbuf *monitor_pixbuf;
++      GnomeRROutputInfo *output = list->data;
++
++      if (!gnome_rr_output_info_is_active (output))
++        continue;
++
++      gtk_list_store_append (liststore, &iter);
++      monitor_name = g_strdup (gnome_rr_output_info_get_display_name (output));
++      monitor_pixbuf = get_monitor_pixbuf (self, output);
++
++      gtk_list_store_set (liststore, &iter, 0, monitor_pixbuf, 1, monitor_name, -1);
++
++      /* select it if primary and only one launcher */
++      if (gnome_rr_output_info_get_primary (output) && (!launcher_on_all_monitors))
++        index_of_primary_screen = i;
++      i++;
++
++      g_object_unref (monitor_pixbuf);
++      g_free (monitor_name);
++    }
++
++   // FIXME: check autosort?
++   gtk_list_store_append (liststore, &iter);
++   gtk_list_store_set (liststore, &iter, 0, NULL, 1, _("All displays"), -1);
++
++   if (launcher_on_all_monitors)
++     index_of_primary_screen = i;
++
++   gtk_combo_box_set_active (GTK_COMBO_BOX (launcher_placement_combo), index_of_primary_screen);
++}
++
++static gboolean
++switcher_set_to_launcher_on_all_monitors (CcDisplayPanel *self)
++{
++  GtkComboBox *combo = GTK_COMBO_BOX (WID ("launcher_placement_combo"));
++  gint active = gtk_combo_box_get_active (combo);
++  gint number_items = gtk_tree_model_iter_n_children (gtk_combo_box_get_model (combo),
++                                                      NULL);
++  return (active == number_items - 1);
++}
++
++static void
++ext_launcher_placement_changed_callback (GSettings* settings,
++                                         guint key,
++                                         gpointer user_data)
++{
++  // add some crazyness as 2d/3d are not using the same keys
++  CcDisplayPanel *self = CC_DISPLAY_PANEL (user_data);
++  gint launcher_unity_value = 0;
++
++  // two options support: all monitors (0)i or just primary desktop (hence set to 1, not any other number)
++  if (! switcher_set_to_launcher_on_all_monitors (self))
++    launcher_unity_value = 1;
++
++  if (g_settings_get_int (settings, UNITY_LAUNCHER_ALL_MONITORS_KEY) != launcher_unity_value)
++    refresh_unity_launcher_placement (self);
++}
++
++static void
++on_launcher_placement_combo_changed (GtkComboBox *combo, CcDisplayPanel *self)
++{
++  gint active = gtk_combo_box_get_active (combo);
++  gint i;
++  gint index_on_combo = 0;
++
++  if (active < 0)
++    return;
++  gint value = 0;
++  gboolean on_all_monitors = switcher_set_to_launcher_on_all_monitors (self);
++
++  if (!on_all_monitors) {
++    value = 1;
++    // set the primary output if needed
++    GnomeRROutputInfo **outputs = gnome_rr_config_get_outputs (self->priv->current_configuration);
++
++    for (i = 0; outputs[i] != NULL; ++i)
++      {
++        GnomeRROutputInfo *output = outputs[i];
++        if (!gnome_rr_output_info_is_active (output))
++          continue;
++
++        if ((active == index_on_combo) && !gnome_rr_output_info_get_primary (output))
++          {
++            set_primary_output (self, output);
++            break;
++          }
++        index_on_combo++;
++      }
++  }
++
++  /* 3d */
++  if (self->priv->unity_settings)
++    g_settings_set_int (self->priv->unity_settings, UNITY_LAUNCHER_ALL_MONITORS_KEY, value);
++  /* 2d */
++  if (self->priv->unity2d_settings_launcher)
++    g_settings_set_boolean (self->priv->unity2d_settings_launcher, "only-one-launcher", !on_all_monitors);
++}
++
++static void
++setup_unity_settings (CcDisplayPanel *self)
++{
++  const gchar * const *schemas;
++
++  /* Only use the unity-2d schema if it's installed */
++  schemas = g_settings_list_schemas ();
++  while (*schemas != NULL)
++    {
++      if (g_strcmp0 (*schemas, UNITY2D_GSETTINGS_LAUNCHER) == 0)
++        {
++          self->priv->unity2d_settings_main = g_settings_new (UNITY2D_GSETTINGS_MAIN);
++          self->priv->unity2d_settings_launcher = g_settings_new (UNITY2D_GSETTINGS_LAUNCHER);
++          break;
++        }
++      schemas++;
++    }
++  schemas = g_settings_list_relocatable_schemas ();
++  while (*schemas != NULL)
++    {
++      if (g_strcmp0 (*schemas, UNITY_GSETTINGS_SCHEMA) == 0)
++        {
++          self->priv->unity_settings = g_settings_new_with_path (UNITY_GSETTINGS_SCHEMA, UNITY_GSETTINGS_PATH);
++          break;
++        }
++      schemas++;
++    }
++
++  if (!self->priv->unity_settings)
++    return;
++
++  GtkWidget *sticky_edge_switch = WID ("stickyedge_switch");
++  g_signal_connect (sticky_edge_switch, "notify::active",
++                    G_CALLBACK (on_stickyedge_changed), self);
++  g_signal_connect (self->priv->unity_settings, "changed::" UNITY_STICKY_EDGE_KEY,
++                    G_CALLBACK (ext_stickyedge_changed_callback), sticky_edge_switch);
++  stickyedge_widget_refresh (GTK_SWITCH (sticky_edge_switch), self->priv->unity_settings);
++
++  g_signal_connect (G_OBJECT (WID ("launcher_placement_combo")), "changed",
++              G_CALLBACK (on_launcher_placement_combo_changed), self);
++  g_signal_connect (self->priv->unity_settings, "changed::" UNITY_LAUNCHER_ALL_MONITORS_KEY,
++                    G_CALLBACK (ext_launcher_placement_changed_callback), self);
++}
++
++static void
+ cc_display_panel_init (CcDisplayPanel *self)
+ {
+ }
+@@ -2579,7 +2866,7 @@
+   CcDisplayPanel *self;
+   CcShell *shell;
+   GtkWidget *toplevel;
+-  gchar *objects[] = {"display-panel", NULL};
++  gchar *objects[] = {"display-panel", "available_launcher_placement_store", NULL};
+ 
+   obj = G_OBJECT_CLASS (cc_display_panel_parent_class)->constructor (gtype, n_properties, properties);
+   self = CC_DISPLAY_PANEL (obj);
+@@ -2668,6 +2955,18 @@
+   g_signal_connect_swapped (WID ("apply_button"),
+                             "clicked", G_CALLBACK (apply), self);
+ 
++  /* Unity settings */
++  if (is_unity_session ())
++    setup_unity_settings (self);
++  else
++    {
++      gtk_widget_hide (WID ("unity_launcher_placement_sep"));
++      gtk_widget_hide (WID ("launcher_placement_label"));
++      gtk_widget_hide (WID ("sticky_edge_label"));
++      gtk_widget_hide (WID ("launcher_placement_combo"));
++      gtk_widget_hide (WID ("stickyedge_switch"));
++    }
++
+   gtk_widget_show (self->priv->panel);
+   gtk_container_add (GTK_CONTAINER (self), self->priv->panel);
+ 
+@@ -2682,4 +2981,3 @@
+                                   CC_TYPE_DISPLAY_PANEL,
+                                   "display", 0);
+ }
+-
+diff -Nru gnome-control-center-3.5.92.orig/panels/display/display-capplet.ui gnome-control-center-3.5.92/panels/display/display-capplet.ui
+--- gnome-control-center-3.5.92.orig/panels/display/display-capplet.ui	2012-09-21 19:29:50.636073022 -0400
++++ gnome-control-center-3.5.92/panels/display/display-capplet.ui	2012-09-21 19:31:49.862017756 -0400
+@@ -1,6 +1,14 @@
+ <?xml version="1.0"?>
+ <interface>
+   <requires lib="gtk+" version="2.16"/>
++  <object class="GtkListStore" id="available_launcher_placement_store">
++    <columns>
++      <!-- column-name MONITOR_PREVIEW -->
++      <column type="GdkPixbuf"/>
++      <!-- column-name LAUNCHER_PLACEMENT_NAME -->
++      <column type="gchararray"/>
++    </columns>
++  </object>
+   <!-- interface-naming-policy toplevel-contextual -->
+   <object class="GtkWindow" id="window1">
+     <child>
+@@ -96,56 +104,89 @@
+                     <child>
+                       <object class="GtkTable" id="table1">
+                         <property name="visible">True</property>
+-                        <property name="n_rows">3</property>
++                        <property name="n_rows">5</property>
+                         <property name="n_columns">2</property>
+                         <property name="column_spacing">12</property>
+                         <property name="row_spacing">6</property>
+                         <child>
+-                          <object class="GtkAlignment" id="alignment4">
++                          <object class="GtkLabel" id="label2">
++                            <property name="visible">True</property>
++                            <property name="xalign">1</property>
++                            <property name="label" translatable="yes">_Resolution</property>
++                            <property name="use_underline">True</property>
++                            <property name="mnemonic_widget">resolution_combo</property>
++                            <style>
++                              <class name="dim-label"/>
++                            </style>
++                          </object>
++                          <packing>
++                            <property name="x_options">GTK_FILL</property>
++                            <property name="y_options"></property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkLabel" id="label5">
++                            <property name="visible">True</property>
++                            <property name="xalign">1</property>
++                            <property name="label" translatable="yes">R_otation</property>
++                            <property name="mnemonic_widget">rotation_combo</property>
++                            <property name="use_underline">True</property>
++                            <style>
++                              <class name="dim-label"/>
++                            </style>
++                          </object>
++                          <packing>
++                            <property name="top_attach">1</property>
++                            <property name="bottom_attach">2</property>
++                            <property name="x_options">GTK_FILL</property>
++                            <property name="y_options"></property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkSeparator" id="unity_launcher_placement_sep">
+                             <property name="visible">True</property>
+-                            <child>
+-                              <placeholder/>
+-                            </child>
+                           </object>
+                           <packing>
+-                            <property name="left_attach">1</property>
+-                            <property name="right_attach">2</property>
+                             <property name="top_attach">2</property>
+                             <property name="bottom_attach">3</property>
+-                            <property name="x_options"></property>
++                            <property name="left_attach">0</property>
++						    <property name="right_attach">2</property>
++                            <property name="x_options">GTK_FILL</property>
+                             <property name="y_options"></property>
+                           </packing>
+                         </child>
+                         <child>
+-                          <object class="GtkLabel" id="label2">
++                          <object class="GtkLabel" id="launcher_placement_label">
+                             <property name="visible">True</property>
+                             <property name="xalign">1</property>
+-                            <property name="label" translatable="yes">_Resolution</property>
++                            <property name="label" translatable="yes">L_auncher placement</property>
++                            <property name="mnemonic_widget">launcher_placement_combo</property>
+                             <property name="use_underline">True</property>
+-                            <property name="mnemonic_widget">resolution_combo</property>
+                             <style>
+                               <class name="dim-label"/>
+                             </style>
+                           </object>
+                           <packing>
++                            <property name="top_attach">3</property>
++                            <property name="bottom_attach">4</property>
+                             <property name="x_options">GTK_FILL</property>
+                             <property name="y_options"></property>
+                           </packing>
+                         </child>
+                         <child>
+-                          <object class="GtkLabel" id="label5">
++                          <object class="GtkLabel" id="sticky_edge_label">
+                             <property name="visible">True</property>
+                             <property name="xalign">1</property>
+-                            <property name="label" translatable="yes">R_otation</property>
+-                            <property name="mnemonic_widget">rotation_combo</property>
++                            <property name="label" translatable="yes">S_ticky edges</property>
++                            <property name="mnemonic_widget">stickyedge_switch</property>
+                             <property name="use_underline">True</property>
+                             <style>
+                               <class name="dim-label"/>
+                             </style>
+                           </object>
+                           <packing>
+-                            <property name="top_attach">1</property>
+-                            <property name="bottom_attach">2</property>
++                            <property name="top_attach">4</property>
++                            <property name="bottom_attach">5</property>
+                             <property name="x_options">GTK_FILL</property>
+                             <property name="y_options"></property>
+                           </packing>
+@@ -179,6 +220,63 @@
+                           </packing>
+                         </child>
+                         <child>
++                          <object class="GtkComboBox" id="launcher_placement_combo">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="model">available_launcher_placement_store</property>
++                            <property name="id_column">1</property>
++                            <child>
++                              <object class="GtkCellRendererPixbuf" id="monitor_preview_renderer"/>
++                              <attributes>
++                                <attribute name="pixbuf">0</attribute>
++                              </attributes>
++                            </child>
++                            <child>
++                              <object class="GtkCellRendererText" id="launcher_placement_name_renderer"/>
++                              <attributes>
++                                <attribute name="text">1</attribute>
++                              </attributes>
++                            </child>
++                          </object>
++                          <packing>
++                            <property name="left_attach">1</property>
++                            <property name="right_attach">2</property>
++                            <property name="top_attach">3</property>
++                            <property name="bottom_attach">4</property>
++                            <property name="y_options"></property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkHBox" id="hbox4">
++                            <property name="visible">True</property>
++                            <property name="spacing">12</property>
++                            <child>
++                              <object class="GtkSwitch" id="stickyedge_switch">
++                                <property name="visible">True</property>
++                                <property name="can_focus">True</property>
++                                <property name="receives_default">False</property>
++                                <property name="active">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">False</property>
++                                <property name="pack_type">end</property>
++                                <property name="position">1</property>
++                              </packing>
++                            </child>
++                          </object>
++                          <packing>
++                            <property name="left_attach">1</property>
++                            <property name="right_attach">2</property>
++                            <property name="top_attach">4</property>
++                            <property name="bottom_attach">5</property>
++                            <property name="y_options"></property>
++                            <property name="expand">False</property>
++                            <property name="fill">False</property>
++                            <property name="position">0</property>
++                           </packing>
++                        </child>
++                        <child>
+                           <placeholder/>
+                         </child>
+                       </object>

@@ -1,0 +1,150 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/user-accounts/um-password-dialog.c gnome-control-center-3.5.92/panels/user-accounts/um-password-dialog.c
+--- gnome-control-center-3.5.92.orig/panels/user-accounts/um-password-dialog.c	2012-09-21 19:29:50.864073024 -0400
++++ gnome-control-center-3.5.92/panels/user-accounts/um-password-dialog.c	2012-09-21 19:34:19.259939929 -0400
+@@ -52,6 +52,7 @@
+         GtkWidget *ok_button;
+ 
+         UmUser *user;
++        gboolean using_ecryptfs;
+ 
+         GtkWidget *old_password_label;
+         GtkWidget *old_password_entry;
+@@ -471,6 +472,38 @@
+         }
+ }
+ 
++int _is_gdm_running = -1;
++gboolean
++is_gdm_running (void)
++{
++        if (_is_gdm_running == -1) {
++                GDBusProxy *proxy;
++                gchar *owner_name;
++
++                proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
++                                                       G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
++                                                       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS |
++                                                       G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
++                                                       NULL,
++                                                       "org.gnome.DisplayManager",
++                                                       "/org/gnome/DisplayManager/Manager",
++                                                       "org.gnome.DisplayManager.Manager",
++                                                       NULL, NULL);
++
++                if (proxy == NULL)
++                        return FALSE;
++
++                owner_name = g_dbus_proxy_get_name_owner (proxy);
++
++                g_object_unref (proxy);
++                g_free (owner_name);
++
++                _is_gdm_running = (owner_name != NULL) ? 1 : 0;
++        }
++
++        return _is_gdm_running;
++}
++
+ UmPasswordDialog *
+ um_password_dialog_new (void)
+ {
+@@ -586,6 +619,13 @@
+                           G_CALLBACK (entry_size_changed), widget);
+         um->normal_hint_label = widget;
+ 
++        if (!is_gdm_running ()) {
++                widget = (GtkWidget *) gtk_builder_get_object (builder, "password-normal-hint-label");
++                gtk_widget_hide (widget);
++                gtk_widget_hide (um->normal_hint_entry);
++                gtk_widget_hide (um->normal_hint_label);
++        }
++
+         um->strength_indicator = (GtkWidget *) gtk_builder_get_object (builder, "strength-indicator");
+ 
+         um->strength_indicator_label = (GtkWidget *) gtk_builder_get_object (builder, "strength-indicator-label");
+@@ -620,6 +660,12 @@
+ 
+                 gtk_tree_model_get (model, iter, 1, &mode, -1);
+ 
++                if (mode == 1 && !is_gdm_running ())
++                        return FALSE;
++
++                if (mode == 2 && um->using_ecryptfs)
++                        return FALSE;
++
+                 if (mode == 3 && locked)
+                         return FALSE;
+ 
+@@ -646,6 +692,8 @@
+         if (user) {
+                 um->user = g_object_ref (user);
+ 
++                um->using_ecryptfs = is_using_ecryptfs (um_user_get_user_name (user));
++
+                 pixbuf = um_user_render_icon (user, FALSE, 48);
+                 gtk_image_set_from_pixbuf (GTK_IMAGE (um->user_icon), pixbuf);
+                 g_object_unref (pixbuf);
+diff -Nru gnome-control-center-3.5.92.orig/panels/user-accounts/um-user-panel.c gnome-control-center-3.5.92/panels/user-accounts/um-user-panel.c
+--- gnome-control-center-3.5.92.orig/panels/user-accounts/um-user-panel.c	2012-09-21 19:29:50.866073025 -0400
++++ gnome-control-center-3.5.92/panels/user-accounts/um-user-panel.c	2012-09-21 19:34:19.260939928 -0400
+@@ -603,6 +603,17 @@
+ 
+         gtk_widget_set_sensitive (widget, !um_user_get_locked (user));
+ 
++        /* Check if ecryptfs is in use, because if it is, we can't allow the
++           user to shoot themselves in the foot by enabling autologin */
++        if (is_using_ecryptfs (um_user_get_user_name (user))) {
++                gtk_widget_hide (widget);
++                gtk_widget_hide (get_widget (d, "autologin-label"));
++        }
++        else {
++                gtk_widget_show (widget);
++                gtk_widget_show (get_widget (d, "autologin-label"));
++        }
++
+         widget = get_widget (d, "account-language-combo");
+         model = um_editable_combo_get_model (UM_EDITABLE_COMBO (widget));
+         cc_add_user_languages (model);
+diff -Nru gnome-control-center-3.5.92.orig/panels/user-accounts/um-utils.c gnome-control-center-3.5.92/panels/user-accounts/um-utils.c
+--- gnome-control-center-3.5.92.orig/panels/user-accounts/um-utils.c	2012-09-21 19:29:50.893073023 -0400
++++ gnome-control-center-3.5.92/panels/user-accounts/um-utils.c	2012-09-21 19:34:19.261939928 -0400
+@@ -746,3 +746,27 @@
+         g_string_free (item3, TRUE);
+         g_string_free (item4, TRUE);
+ }
++
++gboolean
++is_using_ecryptfs (const gchar *name)
++{
++        gboolean using_ecryptfs = FALSE;
++        int status;
++        gchar *prog;
++        gchar *cmd;
++
++        prog = g_find_program_in_path ("ecryptfs-verify");
++        if (prog != NULL) {
++                gchar *cmd = g_strdup_printf("'%s' -h -u '%s'", prog, name);
++
++                if (g_spawn_command_line_sync (cmd, NULL, NULL, &status, NULL)) {
++                        if (status == 0)
++                                using_ecryptfs = TRUE;
++                }
++
++                g_free (prog);
++                g_free (cmd);
++        }
++
++        return using_ecryptfs;
++}
+diff -Nru gnome-control-center-3.5.92.orig/panels/user-accounts/um-utils.h gnome-control-center-3.5.92/panels/user-accounts/um-utils.h
+--- gnome-control-center-3.5.92.orig/panels/user-accounts/um-utils.h	2012-09-21 19:29:50.893073023 -0400
++++ gnome-control-center-3.5.92/panels/user-accounts/um-utils.h	2012-09-21 19:34:19.262939929 -0400
+@@ -65,6 +65,8 @@
+ void     generate_username_choices        (const gchar     *name,
+                                            GtkListStore    *store);
+ 
++gboolean is_using_ecryptfs                (const gchar     *name);
++
+ G_END_DECLS
+ 
+ #endif

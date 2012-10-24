@@ -1,0 +1,131 @@
+diff -Nru gnome-control-center-3.6.0.orig/panels/power/cc-power-panel.c gnome-control-center-3.6.0/panels/power/cc-power-panel.c
+--- gnome-control-center-3.6.0.orig/panels/power/cc-power-panel.c	2012-10-06 15:42:20.488908388 -0400
++++ gnome-control-center-3.6.0/panels/power/cc-power-panel.c	2012-10-06 15:45:04.674872144 -0400
+@@ -39,6 +39,7 @@
+ {
+   GSettings     *lock_settings;
+   GSettings     *gsd_settings;
++  GSettings     *power_settings;
+   GCancellable  *cancellable;
+   GtkBuilder    *builder;
+   GDBusProxy    *proxy;
+@@ -89,6 +90,11 @@
+       g_object_unref (priv->gsd_settings);
+       priv->gsd_settings = NULL;
+     }
++  if (priv->power_settings)
++    {
++      g_object_unref (priv->power_settings);
++      priv->power_settings = NULL;
++    }
+   if (priv->cancellable != NULL)
+     {
+       g_cancellable_cancel (priv->cancellable);
+@@ -1109,6 +1115,26 @@
+ 
+   widget = WID (self->priv->builder, "vbox_power");
+   gtk_widget_reparent (widget, (GtkWidget *) self);
++
++  /* Set up Unity-specific controls */
++  /* References:
++   *  https://wiki.ubuntu.com/Power
++   *  https://docs.google.com/document/d/1ILTJDiDCd25Npt2AmgzF8aOnZZECxTfM0hvsbWT2BxA/edit?pli=1#heading=h.i5lg1g344bsb
++   */
++  if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0)
++    {
++      widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
++                                                   "combobox_indicator"));
++      self->priv->power_settings = g_settings_new ("com.canonical.indicator.power");
++      g_settings_bind (self->priv->power_settings, "icon-policy",
++                       widget, "active-id", G_SETTINGS_BIND_DEFAULT);
++    }
++  else
++    {
++      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "separator_indicator")));
++      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "label_indicator")));
++      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "combobox_indicator")));
++    }
+ }
+ 
+ void
+diff -Nru gnome-control-center-3.6.0.orig/panels/power/power.ui gnome-control-center-3.6.0/panels/power/power.ui
+--- gnome-control-center-3.6.0.orig/panels/power/power.ui	2012-10-06 15:42:20.489908384 -0400
++++ gnome-control-center-3.6.0/panels/power/power.ui	2012-10-06 15:43:41.545890217 -0400
+@@ -80,6 +80,28 @@
+       </row>
+     </data>
+   </object>
++  <object class="GtkListStore" id="liststore_indicator">
++    <columns>
++      <!-- column-name name -->
++      <column type="gchararray"/>
++      <!-- column-name value -->
++      <column type="gchararray"/>
++    </columns>
++    <data>
++      <row>
++        <col id="0" translatable="yes">When battery is present</col>
++        <col id="1">present</col>
++      </row>
++      <row>
++        <col id="0" translatable="yes">When battery is charging/in use</col>
++        <col id="1">charge</col>
++      </row>
++      <row>
++        <col id="0" translatable="yes">Never</col>
++        <col id="1">never</col>
++      </row>
++    </data>
++  </object>
+   <object class="GtkWindow" id="window_power">
+     <property name="can_focus">False</property>
+     <property name="resizable">False</property>
+@@ -241,6 +263,48 @@
+                 <property name="top_attach">3</property>
+               </packing>
+             </child>
++            <child>
++              <object class="GtkSeparator" id="separator_indicator">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++              </object>
++              <packing>
++                <property name="left_attach">0</property>
++                <property name="top_attach">4</property>
++                <property name="width">4</property>
++                <property name="height">1</property>
++              </packing>
++            </child>
++            <child>
++              <object class="GtkLabel" id="label_indicator">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="halign">end</property>
++                <property name="label" translatable="yes">Show battery status in the _menu bar</property>
++                <property name="use_underline">True</property>
++              </object>
++              <packing>
++                <property name="left_attach">0</property>
++                <property name="top_attach">5</property>
++              </packing>
++            </child>
++            <child>
++              <object class="GtkComboBoxText" id="combobox_indicator">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="model">liststore_indicator</property>
++                <property name="hexpand">True</property>
++                <accessibility>
++                  <relation type="labelled-by" target="label_indicator"/>
++                </accessibility>
++              </object>
++              <packing>
++                <property name="left_attach">1</property>
++                <property name="top_attach">5</property>
++                <property name="width">2</property>
++                <property name="height">1</property>
++              </packing>
++            </child>
+           </object>
+           <packing>
+             <property name="expand">False</property>

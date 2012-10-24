@@ -1,0 +1,160 @@
+diff -Nru gnome-control-center-3.5.92.orig/configure.ac gnome-control-center-3.5.92/configure.ac
+--- gnome-control-center-3.5.92.orig/configure.ac	2012-09-21 19:49:56.880468394 -0400
++++ gnome-control-center-3.5.92/configure.ac	2012-09-21 20:02:00.674824817 -0400
+@@ -19,6 +19,14 @@
+ LT_PREREQ([2.2])
+ LT_INIT
+ 
++# .so version for libgnome-control-center
++LIBGNOMECONTROLCENTER_CURRENT=1
++LIBGNOMECONTROLCENTER_REVISION=0
++LIBGNOMECONTROLCENTER_AGE=0
++AC_SUBST(LIBGNOMECONTROLCENTER_CURRENT)
++AC_SUBST(LIBGNOMECONTROLCENTER_REVISION)
++AC_SUBST(LIBGNOMECONTROLCENTER_AGE)
++
+ # Internationalization support
+ 
+ IT_PROG_INTLTOOL([0.40.1])
+@@ -295,7 +303,7 @@
+ PANEL_CFLAGS="-I\$(top_srcdir)/ -DG_LOG_DOMAIN=\"\\\"\$(cappletname)-cc-panel\\\"\""
+ AC_SUBST(PANEL_CFLAGS)
+ 
+-PANEL_LIBS=""
++PANEL_LIBS="\$(top_builddir)/shell/libgnome-control-center.la"
+ AC_SUBST(PANEL_LIBS)
+ 
+ PANEL_LDFLAGS="-export_dynamic -avoid-version -module -no-undefined -export-symbols-regex '^g_io_module_(load|unload)'"
+@@ -398,6 +406,7 @@
+ 
+ AC_OUTPUT([
+ Makefile
++shell/libgnome-control-center.pc
+ panels/Makefile
+ panels/common/Makefile
+ panels/background/Makefile
+diff -Nru gnome-control-center-3.5.92.orig/panels/common/Makefile.am gnome-control-center-3.5.92/panels/common/Makefile.am
+--- gnome-control-center-3.5.92.orig/panels/common/Makefile.am	2012-09-21 19:29:50.732073022 -0400
++++ gnome-control-center-3.5.92/panels/common/Makefile.am	2012-09-21 20:03:14.582765204 -0400
+@@ -23,9 +23,10 @@
+ 	cc-language-chooser.h
+ 
+ liblanguage_la_LIBADD = 		\
++	$(PANEL_LIBS)			    \
+ 	$(LIBLANGUAGE_LIBS)
+ 
+-liblanguage_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
++liblanguage_la_LDFLAGS = $(PANEL_LDFLAGS)
+ 
+ list_languages_SOURCES = list-languages.c
+ list_languages_LDADD = liblanguage.la
+diff -Nru gnome-control-center-3.5.92.orig/shell/gnome-control-center.c gnome-control-center-3.5.92/shell/gnome-control-center.c
+--- gnome-control-center-3.5.92.orig/shell/gnome-control-center.c	2012-09-21 19:49:56.927468396 -0400
++++ gnome-control-center-3.5.92/shell/gnome-control-center.c	2012-09-21 20:03:30.846755659 -0400
+@@ -213,7 +213,23 @@
+ 
+   if (panel_type == G_TYPE_INVALID)
+     {
+-      g_warning ("Could not find the loadable module for panel '%s'", id);
++	  GKeyFile *key_file;
++
++	  /* It might be an external panel */
++	  key_file = g_key_file_new ();
++	  if (g_key_file_load_from_file (key_file, desktop_file, G_KEY_FILE_NONE, NULL))
++	    {
++	      gchar *command;
++
++	      command = g_key_file_get_string (key_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_EXEC, NULL);
++	      if (command && command[0])
++	        {
++		  g_spawn_command_line_async (command, NULL);
++		  g_free (command);
++		}
++	    }
++
++	  g_key_file_free (key_file);
+       return FALSE;
+     }
+ 
+diff -Nru gnome-control-center-3.5.92.orig/shell/libgnome-control-center.pc.in gnome-control-center-3.5.92/shell/libgnome-control-center.pc.in
+--- gnome-control-center-3.5.92.orig/shell/libgnome-control-center.pc.in	1969-12-31 19:00:00.000000000 -0500
++++ gnome-control-center-3.5.92/shell/libgnome-control-center.pc.in	2012-09-21 20:02:14.361815576 -0400
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++extensiondir=@libdir@/control-center-1/panels
++
++Name: libgnome-control-center
++Description: A library to create GNOME Control Center extensions
++Version: @VERSION@
++Requires: glib-2.0 gio-2.0 gtk+-3.0
++Libs: -L${libdir} -lgnome-control-center
++Cflags: -I${includedir}/gnome-control-center-1
+diff -Nru gnome-control-center-3.5.92.orig/shell/Makefile.am gnome-control-center-3.5.92/shell/Makefile.am
+--- gnome-control-center-3.5.92.orig/shell/Makefile.am	2012-09-21 19:29:51.041073024 -0400
++++ gnome-control-center-3.5.92/shell/Makefile.am	2012-09-21 20:07:21.847575875 -0400
+@@ -26,20 +26,48 @@
+ 	cc-shell-item-view.h			\
+ 	cc-shell-model.c			\
+ 	cc-shell-model.h			\
+-	cc-editable-entry.c			\
+-	cc-editable-entry.h			\
+-	cc-panel.c				\
+-	cc-panel.h				\
+-	cc-shell.c				\
+-	cc-shell.h				\
+ 	$(MARSHAL_FILES)
+ 
+ gnome_control_center_LDADD =			\
++	libgnome-control-center.la		\
+ 	$(SHELL_LIBS)				\
+ 	$(CHEESE_LIBS)
+ 
+ gnome_control_center_LDFLAGS = -export-dynamic
+ 
++lib_LTLIBRARIES = libgnome-control-center.la
++
++libgnome_control_center_include_HEADERS =      \
++	cc-panel.h                              \
++	cc-shell.h                              \
++	cc-editable-entry.h			\
++	$(NULL)
++
++libgnome_control_center_la_SOURCES =		\
++	cc-panel.c				\
++	cc-panel.h				\
++	cc-shell.c				\
++	cc-shell.h				\
++	cc-editable-entry.c			\
++	cc-editable-entry.h			\
++	$(NULL)
++
++libgnome_control_center_la_LDFLAGS =		\
++	-no-undefined				\
++	-version-info $(LIBGNOMECONTROLCENTER_CURRENT):$(LIBGNOMECONTROLCENTER_REVISION):$(LIBGNOMECONTROLCENTER_AGE) \
++	$(NULL)
++
++libgnome_control_center_la_LIBADD = 		\
++	$(LIBGNOME_CONTROL_CENTER_LIBS)		\
++	$(NULL)
++
++libgnome_control_center_la_LIBTOOLFLAGS = --tag=disable-static
++
++libgnome_control_center_includedir = $(includedir)/gnome-control-center-1/libgnome-control-center
++
++pkgconfigdir=$(libdir)/pkgconfig
++pkgconfig_DATA=libgnome-control-center.pc
++
+ AM_CPPFLAGS =							\
+ 	-DGNOMELOCALEDIR="\"$(datadir)/locale\""		\
+ 	-DUIDIR="\"$(uidir)\""					\
+@@ -70,6 +98,7 @@
+ 	gnome-control-center.desktop.in.in	\
+ 	gnomecc.directory.in			\
+ 	gnomecc.menu.in				\
++	libgnome-control-center.pc.in		\
+ 	cc-shell-marshal.list
+ 
+ DISTCLEANFILES = gnome-control-center.desktop gnome-control-center.desktop.in gnomecc.directory gnomecc.menu

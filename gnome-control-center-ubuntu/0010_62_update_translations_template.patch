@@ -1,0 +1,21 @@
+diff -Nru gnome-control-center-3.5.92.orig/po/POTFILES.in gnome-control-center-3.5.92/po/POTFILES.in
+--- gnome-control-center-3.5.92.orig/po/POTFILES.in	2012-09-21 19:29:51.162073025 -0400
++++ gnome-control-center-3.5.92/po/POTFILES.in	2012-09-21 19:42:36.030699197 -0400
+@@ -135,3 +135,17 @@
+ shell/gnomecc.directory.in
+ shell/gnome-control-center.desktop.in.in
+ [type: gettext/glade]shell/shell.ui
++panels/sound-nua/applet-main.c
++panels/sound-nua/data/gnome-sound-nua-panel.desktop.in.in
++panels/sound-nua/gvc-applet.c
++panels/sound-nua/gvc-balance-bar.c
++panels/sound-nua/gvc-channel-bar.c
++panels/sound-nua/gvc-combo-box.c
++panels/sound-nua/gvc-mixer-control.c
++panels/sound-nua/gvc-mixer-dialog.c
++panels/sound-nua/gvc-sound-theme-chooser.c
++panels/sound-nua/gvc-speaker-test.c
++panels/sound-nua/gvc-stream-status-icon.c
++panels/sound-nua/sound-theme-file-utils.c
++shell/cc-shell-nav-bar.c
++

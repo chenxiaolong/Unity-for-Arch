@@ -1,0 +1,56 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/keyboard/cc-keyboard-item.c gnome-control-center-3.5.92/panels/keyboard/cc-keyboard-item.c
+--- gnome-control-center-3.5.92.orig/panels/keyboard/cc-keyboard-item.c	2012-09-21 19:29:50.593073021 -0400
++++ gnome-control-center-3.5.92/panels/keyboard/cc-keyboard-item.c	2012-09-21 19:32:58.680983066 -0400
+@@ -143,14 +143,25 @@
+               const char     *value,
+ 	      gboolean        set_backend)
+ {
++  /* don't reassign <Alt_L> or <Alt> key in the callback to the binding itself (as it's invalid for the cell renderer) */
++  if ((g_strcmp0 (value, "<Alt_L>") == 0) || (g_strcmp0 (value, "<Alt>") == 0))
++    return;
++
+   g_free (item->binding);
+   item->binding = g_strdup (value);
+   binding_from_string (item->binding, &item->keyval, &item->keycode, &item->mask);
+ 
++  const char *key;
++  char *cheated_modifier = NULL;
++  if (g_strcmp0 (item->binding, "Alt_L") == 0)
++    cheated_modifier = g_strdup_printf ("<%s>", item->binding);
++
+   if (set_backend == FALSE)
+     return;
+ 
+-  settings_set_binding (item->settings, item->key, item->binding);
++  settings_set_binding (item->settings, item->key, cheated_modifier ? cheated_modifier: item->binding);
++
++  g_free (cheated_modifier);
+ }
+ 
+ const char *
+@@ -441,6 +452,13 @@
+   item->settings = g_settings_new (item->schema);
+   item->binding = settings_get_binding (item->settings, item->key);
+   item->editable = g_settings_is_writable (item->settings, item->key);
++
++  if ((g_strcmp0 (item->binding, "<Alt>") == 0) || (g_strcmp0 (item->binding, "<Alt_L>") == 0))
++    {
++      g_free (item->binding);
++      item->binding = g_strdup ("Alt_L");
++    }
++
+   binding_from_string (item->binding, &item->keyval, &item->keycode, &item->mask);
+ 
+   signal_name = g_strdup_printf ("changed::%s", item->key);
+diff -Nru gnome-control-center-3.5.92.orig/panels/keyboard/keyboard-shortcuts.c gnome-control-center-3.5.92/panels/keyboard/keyboard-shortcuts.c
+--- gnome-control-center-3.5.92.orig/panels/keyboard/keyboard-shortcuts.c	2012-09-21 19:29:50.592073021 -0400
++++ gnome-control-center-3.5.92/panels/keyboard/keyboard-shortcuts.c	2012-09-21 19:32:58.679983066 -0400
+@@ -1696,7 +1696,7 @@
+   gtk_tree_view_append_column (treeview, column);
+ 
+   renderer = (GtkCellRenderer *) g_object_new (GTK_TYPE_CELL_RENDERER_ACCEL,
+-                                               "accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_OTHER,
++                                               "accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP,
+                                                NULL);
+ 
+   g_signal_connect (treeview, "button_press_event",

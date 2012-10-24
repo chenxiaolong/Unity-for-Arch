@@ -1,0 +1,21 @@
+diff -Nru gnome-control-center-3.5.92.orig/panels/info/info.ui gnome-control-center-3.5.92/panels/info/info.ui
+--- gnome-control-center-3.5.92.orig/panels/info/info.ui	2012-09-21 19:29:50.585073020 -0400
++++ gnome-control-center-3.5.92/panels/info/info.ui	2012-09-21 19:47:13.054558767 -0400
+@@ -1196,7 +1196,7 @@
+                             </child>
+                             <child>
+                               <object class="GtkLabel" id="fallback-label">
+-                                <property name="visible">True</property>
++                                <property name="visible">False</property>
+                                 <property name="can_focus">False</property>
+                                 <property name="xalign">1</property>
+                                 <property name="label" translatable="yes" comments="Hardware is not able to run GNOME 3's shell, so we might want to force running the 'Fallback' experience.">Forced _Fallback Mode</property>
+@@ -1245,7 +1245,7 @@
+                             </child>
+                             <child>
+                               <object class="GtkBox" id="graphics_fallback_switch_box">
+-                                <property name="visible">True</property>
++                                <property name="visible">False</property>
+                                 <property name="can_focus">False</property>
+                                 <property name="halign">start</property>
+                                 <property name="valign">center</property>

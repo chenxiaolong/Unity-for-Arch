@@ -1,0 +1,1342 @@
+diff -Nru gnome-control-center-3.6.0.orig/panels/background/background.ui gnome-control-center-3.6.0/panels/background/background.ui
+--- gnome-control-center-3.6.0.orig/panels/background/background.ui	2012-10-06 15:31:48.662224750 -0400
++++ gnome-control-center-3.6.0/panels/background/background.ui	2012-10-06 15:31:54.063222884 -0400
+@@ -1,49 +1,148 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <interface>
+   <!-- interface-requires gtk+ 3.0 -->
+-  <object class="GtkHBox" id="background-panel">
+-    <property name="visible">True</property>
++  <object class="GtkListStore" id="theme-list-store">
++    <columns>
++      <!-- column-name THEME_ID -->
++      <column type="gchararray"/>
++      <!-- column-name THEME_NAME -->
++      <column type="gchararray"/>
++    </columns>
++  </object>
++  <object class="GtkWindow" id="window1">
+     <property name="can_focus">False</property>
+-    <property name="border_width">10</property>
+-    <property name="spacing">12</property>
+     <child>
+-      <object class="GtkVBox" id="vbox3">
++      <object class="GtkNotebook" id="main-notebook">
+         <property name="visible">True</property>
+-        <property name="can_focus">False</property>
+-        <property name="spacing">6</property>
++        <property name="can_focus">True</property>
++        <property name="border_width">12</property>
+         <child>
+-          <object class="GtkAspectFrame" id="aspectframe1">
++          <object class="GtkHBox" id="background-panel">
+             <property name="visible">True</property>
+             <property name="can_focus">False</property>
+-            <property name="margin_left">12</property>
+-            <property name="label_xalign">0</property>
+-            <property name="shadow_type">none</property>
++            <property name="border_width">10</property>
++            <property name="spacing">12</property>
+             <child>
+-              <object class="GtkButton" id="background-set-button">
+-                <property name="use_action_appearance">False</property>
++              <object class="GtkVBox" id="vbox3">
+                 <property name="visible">True</property>
+-                <property name="can_focus">True</property>
+-                <property name="receives_default">True</property>
+-                <property name="valign">center</property>
++                <property name="can_focus">False</property>
++                <property name="spacing">6</property>
+                 <child>
+-                  <object class="GtkBox" id="box1">
++                  <object class="GtkAspectFrame" id="aspectframe1">
+                     <property name="visible">True</property>
+                     <property name="can_focus">False</property>
+-                    <property name="hexpand">True</property>
+-                    <property name="spacing">18</property>
++                    <property name="margin_left">12</property>
++                    <property name="label_xalign">0</property>
++                    <property name="shadow_type">none</property>
+                     <child>
+-                      <object class="GtkDrawingArea" id="background-desktop-drawingarea">
+-                        <property name="width_request">417</property>
+-                        <property name="height_request">250</property>
++                      <object class="GtkButton" id="background-set-button">
++                        <property name="use_action_appearance">False</property>
+                         <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
++                        <property name="can_focus">True</property>
++                        <property name="receives_default">True</property>
+                         <property name="valign">center</property>
+-                        <property name="margin_left">6</property>
+-                        <property name="margin_right">6</property>
+-                        <property name="margin_top">6</property>
+-                        <property name="margin_bottom">6</property>
+-                        <property name="hexpand">True</property>
+-                        <property name="vexpand">True</property>
++                        <child>
++                          <object class="GtkBox" id="box1">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="hexpand">True</property>
++                            <property name="spacing">18</property>
++                            <child>
++                              <object class="GtkDrawingArea" id="background-desktop-drawingarea">
++                                <property name="width_request">417</property>
++                                <property name="height_request">250</property>
++                                <property name="visible">True</property>
++                                <property name="can_focus">False</property>
++                                <property name="valign">center</property>
++                                <property name="margin_left">6</property>
++                                <property name="margin_right">6</property>
++                                <property name="margin_top">6</property>
++                                <property name="margin_bottom">6</property>
++                                <property name="hexpand">True</property>
++                                <property name="vexpand">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">True</property>
++                                <property name="fill">True</property>
++                                <property name="position">0</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkDrawingArea" id="background-lock-drawingarea">
++                                <property name="can_focus">False</property>
++                                <property name="no_show_all">True</property>
++                                <property name="valign">center</property>
++                                <property name="margin_left">6</property>
++                                <property name="margin_right">6</property>
++                                <property name="margin_top">6</property>
++                                <property name="hexpand">True</property>
++                                <property name="vexpand">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">True</property>
++                                <property name="fill">True</property>
++                                <property name="position">1</property>
++                              </packing>
++                            </child>
++                          </object>
++                        </child>
++                      </object>
++                    </child>
++                  </object>
++                  <packing>
++                    <property name="expand">True</property>
++                    <property name="fill">True</property>
++                    <property name="position">0</property>
++                  </packing>
++                </child>
++                <child>
++                  <object class="GtkHBox" id="bottom-hbox">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="spacing">12</property>
++                    <child>
++                      <object class="GtkHBox" id="hbox2">
++                        <property name="visible">True</property>
++                        <property name="can_focus">False</property>
++                        <property name="halign">center</property>
++                        <property name="spacing">2</property>
++                        <child>
++                          <object class="GtkImage" id="slide_image">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="icon_name">slideshow-symbolic</property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">0</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkLabel" id="slide-label">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="xalign">0</property>
++                            <property name="label" translatable="yes" comments="This refers to a slideshow background">Changes throughout the day</property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">1</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkLabel" id="strut">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="label"> </property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">1</property>
++                          </packing>
++                        </child>
+                       </object>
+                       <packing>
+                         <property name="expand">True</property>
+@@ -51,50 +150,396 @@
+                         <property name="position">0</property>
+                       </packing>
+                     </child>
++                  </object>
++                  <packing>
++                    <property name="expand">False</property>
++                    <property name="fill">True</property>
++                    <property name="position">1</property>
++                  </packing>
++                </child>
++                <child>
++                  <object class="GtkSeparator" id="separator1">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_left">5</property>
++                    <property name="margin_right">13</property>
++                  </object>
++                  <packing>
++                    <property name="expand">False</property>
++                    <property name="fill">True</property>
++                    <property name="position">2</property>
++                  </packing>
++                </child>
++                <child>
++                  <object class="GtkBox" id="theme-box">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_bottom">8</property>
++                    <property name="spacing">12</property>
++                    <child>
++                      <object class="GtkLabel" id="theme-label">
++                        <property name="visible">True</property>
++                        <property name="can_focus">False</property>
++                        <property name="xalign">0</property>
++                        <property name="xpad">6</property>
++                        <property name="label" translatable="yes">&lt;b&gt;Theme&lt;/b&gt;</property>
++                        <property name="use_markup">True</property>
++                      </object>
++                      <packing>
++                        <property name="expand">False</property>
++                        <property name="fill">True</property>
++                        <property name="padding">6</property>
++                        <property name="position">0</property>
++                      </packing>
++                    </child>
+                     <child>
+-                      <object class="GtkDrawingArea" id="background-lock-drawingarea">
++                      <object class="GtkComboBox" id="theme-selector">
++                        <property name="width_request">268</property>
++                        <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+-                        <property name="no_show_all">True</property>
+-                        <property name="valign">center</property>
+-                        <property name="margin_left">6</property>
+-                        <property name="margin_right">6</property>
+-                        <property name="margin_top">6</property>
+-                        <property name="hexpand">True</property>
+-                        <property name="vexpand">True</property>
++                        <property name="margin_right">1</property>
++                        <property name="model">theme-list-store</property>
++                        <property name="id_column">0</property>
++                        <child>
++                          <object class="GtkCellRendererText" id="theme-name-renderer"/>
++                          <attributes>
++                            <attribute name="markup">1</attribute>
++                          </attributes>
++                        </child>
+                       </object>
+                       <packing>
+-                        <property name="expand">True</property>
++                        <property name="expand">False</property>
+                         <property name="fill">True</property>
++                        <property name="padding">9</property>
++                        <property name="pack_type">end</property>
+                         <property name="position">1</property>
+                       </packing>
+                     </child>
+                   </object>
++                  <packing>
++                    <property name="expand">False</property>
++                    <property name="fill">True</property>
++                    <property name="position">3</property>
++                  </packing>
++                </child>
++                <child>
++                  <object class="GtkSeparator" id="unity-separator1">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_left">5</property>
++                    <property name="margin_right">13</property>
++                  </object>
++                  <packing>
++                    <property name="expand">False</property>
++                    <property name="fill">True</property>
++                    <property name="position">4</property>
++                  </packing>
++                </child>
++                <child>
++                  <object class="GtkBox" id="unity-iconsize-box">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="spacing">12</property>
++                    <child>
++                      <object class="GtkLabel" id="unity-iconsize-label">
++                        <property name="visible">True</property>
++                        <property name="can_focus">False</property>
++                        <property name="xalign">0</property>
++                        <property name="xpad">6</property>
++                        <property name="label" translatable="yes">&lt;b&gt;Launcher icon size&lt;/b&gt;</property>
++                        <property name="use_markup">True</property>
++                      </object>
++                      <packing>
++                        <property name="expand">False</property>
++                        <property name="fill">True</property>
++                        <property name="padding">6</property>
++                        <property name="position">0</property>
++                      </packing>
++                    </child>
++                    <child>
++                      <object class="GtkScale" id="unity-iconsize-scale">
++                        <property name="width_request">264</property>
++                        <property name="visible">True</property>
++                        <property name="can_focus">True</property>
++                        <property name="margin_right">2</property>
++                        <property name="round_digits">0</property>
++                        <property name="digits">0</property>
++                        <property name="value_pos">left</property>
++                      </object>
++                      <packing>
++                        <property name="expand">False</property>
++                        <property name="fill">True</property>
++                        <property name="padding">9</property>
++                        <property name="pack_type">end</property>
++                        <property name="position">1</property>
++                      </packing>
++                    </child>
++                  </object>
++                  <packing>
++                    <property name="expand">False</property>
++                    <property name="fill">True</property>
++                    <property name="position">5</property>
++                  </packing>
+                 </child>
+               </object>
++              <packing>
++                <property name="expand">True</property>
++                <property name="fill">True</property>
++                <property name="position">0</property>
++              </packing>
+             </child>
+           </object>
++        </child>
++        <child type="tab">
++          <object class="GtkLabel" id="appearance_label">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="label" translatable="yes">Look</property>
++          </object>
+           <packing>
+-            <property name="expand">True</property>
+-            <property name="fill">True</property>
+-            <property name="position">0</property>
++            <property name="tab_fill">False</property>
+           </packing>
+         </child>
+         <child>
+-          <object class="GtkHBox" id="bottom-hbox">
++          <object class="GtkBox" id="unity-behavior">
+             <property name="visible">True</property>
+             <property name="can_focus">False</property>
+-            <property name="spacing">12</property>
++            <property name="margin_top">3</property>
++            <property name="margin_bottom">3</property>
++            <property name="orientation">vertical</property>
++            <property name="spacing">3</property>
+             <child>
+-              <object class="GtkHBox" id="hbox2">
++              <object class="GtkBox" id="box0">
+                 <property name="visible">True</property>
+                 <property name="can_focus">False</property>
+-                <property name="halign">center</property>
+-                <property name="spacing">2</property>
++                <property name="orientation">vertical</property>
+                 <child>
+-                  <object class="GtkImage" id="slide_image">
++                  <object class="GtkBox" id="box3">
+                     <property name="visible">True</property>
+                     <property name="can_focus">False</property>
+-                    <property name="icon_name">slideshow-symbolic</property>
++                    <property name="border_width">10</property>
++                    <property name="spacing">12</property>
++                    <child>
++                      <object class="GtkBox" id="box4">
++                        <property name="visible">True</property>
++                        <property name="can_focus">False</property>
++                        <property name="orientation">vertical</property>
++                        <property name="spacing">2</property>
++                        <child>
++                          <object class="GtkLabel" id="label4">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="xalign">0</property>
++                            <property name="label" translatable="yes">&lt;b&gt;Auto-hide the Launcher&lt;/b&gt;</property>
++                            <property name="use_markup">True</property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">0</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkLabel" id="label2">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="xalign">0</property>
++                            <property name="label" translatable="yes">&lt;span size="small"&gt;The launcher will reveal when moving the pointer to the defined hot spot.&lt;/span&gt;</property>
++                            <property name="use_markup">True</property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">1</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkBox" id="reveal_location_box">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="margin_left">10</property>
++                            <property name="margin_top">9</property>
++                            <property name="orientation">vertical</property>
++                            <child>
++                              <object class="GtkLabel" id="unity_reveal_label">
++                                <property name="visible">True</property>
++                                <property name="can_focus">False</property>
++                                <property name="xalign">0</property>
++                                <property name="label" translatable="yes">Reveal location:</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">0</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkRadioButton" id="unity_reveal_spot_left">
++                                <property name="label" translatable="yes">Left side</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="visible">True</property>
++                                <property name="can_focus">True</property>
++                                <property name="receives_default">False</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="xalign">0</property>
++                                <property name="active">True</property>
++                                <property name="draw_indicator">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">1</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkRadioButton" id="unity_reveal_spot_topleft">
++                                <property name="label" translatable="yes">Top left corner</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="visible">True</property>
++                                <property name="can_focus">True</property>
++                                <property name="receives_default">False</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="xalign">0</property>
++                                <property name="active">True</property>
++                                <property name="draw_indicator">True</property>
++                                <property name="group">unity_reveal_spot_left</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">2</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkRadioButton" id="unity_reveal_spot_otheroption">
++                                <property name="label" translatable="yes">Other reveal option</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="can_focus">True</property>
++                                <property name="receives_default">False</property>
++                                <property name="no_show_all">True</property>
++                                <property name="use_action_appearance">False</property>
++                                <property name="xalign">0</property>
++                                <property name="draw_indicator">True</property>
++                                <property name="group">unity_reveal_spot_left</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">3</property>
++                              </packing>
++                            </child>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">2</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <object class="GtkBox" id="box6">
++                            <property name="visible">True</property>
++                            <property name="can_focus">False</property>
++                            <property name="spacing">6</property>
++                            <child>
++                              <object class="GtkLabel" id="unity-launcher-sensitivity-label">
++                                <property name="visible">True</property>
++                                <property name="can_focus">False</property>
++                                <property name="label" translatable="yes">Reveal sensitivity</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">0</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkLabel" id="unity-launcher-sensitivity-low-label">
++                                <property name="visible">True</property>
++                                <property name="can_focus">False</property>
++                                <property name="margin_left">5</property>
++                                <property name="label" translatable="yes">&lt;small&gt;Low&lt;/small&gt;</property>
++                                <property name="use_markup">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">1</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkScale" id="unity-launcher-sensitivity">
++                                <property name="width_request">300</property>
++                                <property name="visible">True</property>
++                                <property name="can_focus">True</property>
++                                <property name="round_digits">0</property>
++                                <property name="digits">0</property>
++                                <property name="draw_value">False</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="padding">9</property>
++                                <property name="position">2</property>
++                              </packing>
++                            </child>
++                            <child>
++                              <object class="GtkLabel" id="unity-launcher-sensitivity-high-label">
++                                <property name="visible">True</property>
++                                <property name="can_focus">False</property>
++                                <property name="label" translatable="yes">&lt;small&gt;High&lt;/small&gt;</property>
++                                <property name="use_markup">True</property>
++                              </object>
++                              <packing>
++                                <property name="expand">False</property>
++                                <property name="fill">True</property>
++                                <property name="position">3</property>
++                              </packing>
++                            </child>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">3</property>
++                          </packing>
++                        </child>
++                      </object>
++                      <packing>
++                        <property name="expand">False</property>
++                        <property name="fill">True</property>
++                        <property name="padding">5</property>
++                        <property name="position">0</property>
++                      </packing>
++                    </child>
++                    <child>
++                      <object class="GtkBox" id="box7">
++                        <property name="visible">True</property>
++                        <property name="can_focus">False</property>
++                        <property name="orientation">vertical</property>
++                        <child>
++                          <object class="GtkSwitch" id="unity_launcher_autohide">
++                            <property name="use_action_appearance">False</property>
++                            <property name="visible">True</property>
++                            <property name="can_focus">True</property>
++                            <property name="use_action_appearance">False</property>
++                            <property name="active">True</property>
++                          </object>
++                          <packing>
++                            <property name="expand">False</property>
++                            <property name="fill">True</property>
++                            <property name="position">0</property>
++                          </packing>
++                        </child>
++                        <child>
++                          <placeholder/>
++                        </child>
++                      </object>
++                      <packing>
++                        <property name="expand">False</property>
++                        <property name="fill">False</property>
++                        <property name="pack_type">end</property>
++                        <property name="position">1</property>
++                      </packing>
++                    </child>
+                   </object>
+                   <packing>
+                     <property name="expand">False</property>
+@@ -103,11 +548,12 @@
+                   </packing>
+                 </child>
+                 <child>
+-                  <object class="GtkLabel" id="slide-label">
+-                    <property name="visible">True</property>
++                  <object class="GtkLabel" id="unity-label-external-tool">
+                     <property name="can_focus">False</property>
+                     <property name="xalign">0</property>
+-                    <property name="label" translatable="yes" comments="This refers to a slideshow background">Changes throughout the day</property>
++                    <property name="xpad">12</property>
++                    <property name="label" translatable="yes">Some settings have been overriden by an external program, press "Restore Default Behaviors"  to reset the behavior and return control to this panel.</property>
++                    <property name="wrap">True</property>
+                   </object>
+                   <packing>
+                     <property name="expand">False</property>
+@@ -115,40 +561,82 @@
+                     <property name="position">1</property>
+                   </packing>
+                 </child>
++              </object>
++              <packing>
++                <property name="expand">False</property>
++                <property name="fill">True</property>
++                <property name="position">0</property>
++              </packing>
++            </child>
++            <child>
++              <object class="GtkSeparator" id="separator3">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++              </object>
++              <packing>
++                <property name="expand">False</property>
++                <property name="fill">True</property>
++                <property name="position">1</property>
++              </packing>
++            </child>
++            <child>
++              <object class="GtkBox" id="box5">
++                <property name="height_request">36</property>
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
+                 <child>
+-                  <object class="GtkLabel" id="strut">
++                  <object class="GtkButton" id="button-restore-unitybehavior">
++                    <property name="label" translatable="yes">Restore Default Behaviours</property>
++                    <property name="use_action_appearance">False</property>
++                    <property name="width_request">136</property>
+                     <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="label"> </property>
++                    <property name="can_focus">True</property>
++                    <property name="receives_default">True</property>
++                    <property name="use_action_appearance">False</property>
+                   </object>
+                   <packing>
+                     <property name="expand">False</property>
+                     <property name="fill">True</property>
+-                    <property name="position">1</property>
++                    <property name="padding">10</property>
++                    <property name="position">0</property>
+                   </packing>
+                 </child>
++                <child>
++                  <placeholder/>
++                </child>
+               </object>
+               <packing>
+-                <property name="expand">True</property>
++                <property name="expand">False</property>
+                 <property name="fill">True</property>
+-                <property name="position">0</property>
++                <property name="position">2</property>
+               </packing>
+             </child>
++            <child>
++              <placeholder/>
++            </child>
++            <child>
++              <placeholder/>
++            </child>
++          </object>
++          <packing>
++            <property name="position">1</property>
++          </packing>
++        </child>
++        <child type="tab">
++          <object class="GtkLabel" id="behavior_label">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="label" translatable="yes">Behavior</property>
+           </object>
+           <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">True</property>
+-            <property name="position">2</property>
++            <property name="position">1</property>
++            <property name="tab_fill">False</property>
+           </packing>
+         </child>
+       </object>
+-      <packing>
+-        <property name="expand">True</property>
+-        <property name="fill">True</property>
+-        <property name="position">0</property>
+-      </packing>
+     </child>
+   </object>
++  <!-- interface-naming-policy project-wide -->
+   <object class="GtkListStore" id="sources-liststore">
+     <columns>
+       <!-- column-name source-name -->
+diff -Nru gnome-control-center-3.6.0.orig/panels/background/cc-background-panel.c gnome-control-center-3.6.0/panels/background/cc-background-panel.c
+--- gnome-control-center-3.6.0.orig/panels/background/cc-background-panel.c	2012-10-06 15:31:48.663224749 -0400
++++ gnome-control-center-3.6.0/panels/background/cc-background-panel.c	2012-10-06 15:40:31.999951383 -0400
+@@ -55,6 +55,11 @@
+   GDBusConnection *connection;
+ 
+   GSettings *settings;
++  GSettings *interface_settings;
++  GSettings *canonical_interface_settings;
++  GSettings *wm_theme_settings;
++  GSettings *unity_settings;
++  GSettings *unity2d_settings;
+ 
+   GnomeDesktopThumbnailFactory *thumb_factory;
+ 
+@@ -68,6 +73,29 @@
+   char *screenshot_path;
+ };
+ 
++#define UNITY_GSETTINGS_SCHEMA "org.compiz.unityshell"
++#define UNITY_GSETTINGS_PATH "/org/compiz/profiles/unity/plugins/unityshell/"
++#define UNITY_ICONSIZE_KEY "icon-size"
++#define UNITY_LAUNCHERSENSITIVITY_KEY "edge-responsiveness"
++#define UNITY_LAUNCHERHIDE_KEY "launcher-hide-mode"
++#define UNITY_LAUNCHERREVEAL_KEY "reveal-trigger"
++#define UNITY2D_GSETTINGS_LAUNCHER "com.canonical.Unity2d.Launcher"
++#define CANONICAL_DESKTOP_INTERFACE "com.canonical.desktop.interface"
++
++#define MIN_ICONSIZE 32.0
++#define MAX_ICONSIZE 64.0
++
++#define MIN_LAUNCHER_SENSIVITY 0.2
++#define MAX_LAUNCHER_SENSIVITY 8.0
++
++typedef struct
++{
++  gdouble min;
++  gdouble max;
++} MinMax;
++static MinMax iconsize_values;
++static MinMax launchersensitivity_values;
++
+ #define WID(y) (GtkWidget *) gtk_builder_get_object (priv->builder, y)
+ 
+ static const char *
+@@ -87,6 +115,11 @@
+   priv->spinner = NULL;
+ 
+   g_clear_object (&priv->settings);
++  g_clear_object (&priv->interface_settings);
++  g_clear_object (&priv->canonical_interface_settings);
++  g_clear_object (&priv->wm_theme_settings);
++  g_clear_object (&priv->unity_settings);
++  g_clear_object (&priv->unity2d_settings);
+ 
+   if (priv->copy_cancellable)
+     {
+@@ -659,11 +692,505 @@
+   update_preview (self->priv, NULL);
+ }
+ 
++static gchar *themes_id[] = { "Adwaita", "Ambiance", "Radiance", "HighContrast", "HighContrastInverse" };
++static gchar *themes_name[] = { "Adwaita", "Ambiance", "Radiance", "High Contrast", "High Contrast Inverse" };
++
++static gboolean
++get_theme_data (const gchar *theme_name,
++		gchar **gtk_theme,
++		gchar **icon_theme,
++		gchar **window_theme,
++		gchar **cursor_theme)
++{
++  gchar *path;
++  GKeyFile *theme_file;
++  GError *error = NULL;
++  gboolean result = FALSE;
++
++  *gtk_theme = *icon_theme = *window_theme = *cursor_theme = NULL;
++
++  theme_file = g_key_file_new ();
++  path = g_build_filename ("/usr/share/themes", theme_name, "index.theme", NULL);
++  if (g_key_file_load_from_file (theme_file, path, G_KEY_FILE_NONE, &error))
++    {
++      *gtk_theme = g_key_file_get_string (theme_file, "X-GNOME-Metatheme", "GtkTheme", NULL);
++      *icon_theme = g_key_file_get_string (theme_file, "X-GNOME-Metatheme", "IconTheme", NULL);
++      *window_theme = g_key_file_get_string (theme_file, "X-GNOME-Metatheme", "MetacityTheme", NULL);
++      *cursor_theme = g_key_file_get_string (theme_file, "X-GNOME-Metatheme", "CursorTheme", NULL);
++
++      result = TRUE;
++    }
++  else
++    {
++      g_warning ("Could not load %s: %s", path, error->message);
++      g_error_free (error);
++    }
++
++  g_key_file_free (theme_file);
++  g_free (path);
++
++  return result;
++}
++
++static void
++theme_selection_changed (GtkComboBox *combo, CcBackgroundPanel *self)
++{
++  gint active;
++  gchar *gtk_theme, *icon_theme, *window_theme, *cursor_theme;
++
++  active = gtk_combo_box_get_active (combo);
++  g_return_if_fail (active >= 0 && active < G_N_ELEMENTS (themes_id));
++
++  if (!get_theme_data (gtk_combo_box_get_active_id (combo),
++                       &gtk_theme, &icon_theme, &window_theme, &cursor_theme))
++    return;
++
++  g_settings_delay (self->priv->interface_settings);
++  g_settings_delay (self->priv->canonical_interface_settings);
++
++  g_settings_set_string (self->priv->interface_settings, "gtk-theme", gtk_theme);
++  g_settings_set_string (self->priv->interface_settings, "icon-theme", icon_theme);
++  g_settings_set_string (self->priv->interface_settings, "cursor-theme", cursor_theme);
++  g_settings_set_string (self->priv->wm_theme_settings, "theme", window_theme);
++
++
++  /* disable overlay scrollbars for a11y if installed*/
++  if (self->priv->canonical_interface_settings)
++    {
++      if (g_strcmp0 (gtk_theme, "HighContrast") == 0 ||
++          g_strcmp0 (gtk_theme, "HighContrastInverse") == 0)
++        g_settings_set_string (self->priv->canonical_interface_settings, "scrollbar-mode", "normal");
++      else
++        g_settings_reset (self->priv->canonical_interface_settings, "scrollbar-mode");
++      g_settings_apply (self->priv->canonical_interface_settings);
++    }
++
++  g_settings_apply (self->priv->interface_settings);
++
++  g_free (gtk_theme);
++  g_free (icon_theme);
++  g_free (window_theme);
++  g_free (cursor_theme);
++}
++
++static void
++setup_theme_selector (CcBackgroundPanel *self)
++{
++  gchar *current_gtk_theme;
++  gchar *default_gtk_theme;
++  gint i, current_theme_index = 0;
++  GtkWidget *widget;
++  GtkWidget *liststore;
++  const gchar * const *schemas;
++  CcBackgroundPanelPrivate *priv = self->priv;
++  GSettings *defaults_settings = g_settings_new ("org.gnome.desktop.interface");
++
++  priv->interface_settings = g_settings_new ("org.gnome.desktop.interface");
++
++  schemas = g_settings_list_schemas ();
++  while (*schemas != NULL)
++    {
++      if (g_strcmp0 (*schemas, CANONICAL_DESKTOP_INTERFACE) == 0)
++        {
++          priv->canonical_interface_settings = g_settings_new (CANONICAL_DESKTOP_INTERFACE);
++          break;
++        }
++      schemas++;
++    }
++
++  priv->wm_theme_settings = g_settings_new ("org.gnome.desktop.wm.preferences");
++  current_gtk_theme = g_settings_get_string (priv->interface_settings, "gtk-theme");
++
++  /* gettint the default for the theme */
++  g_settings_delay (defaults_settings);
++  g_settings_reset (defaults_settings, "gtk-theme");
++  default_gtk_theme = g_settings_get_string (defaults_settings, "gtk-theme");
++  g_object_unref (defaults_settings);
++
++  widget = WID ("theme-selector");
++  liststore = WID ("theme-list-store");
++
++  for (i = 0; i < G_N_ELEMENTS (themes_id); i++, current_theme_index++)
++    {
++      gchar *gtk_theme, *icon_theme, *window_theme, *cursor_theme, *new_theme_name;
++      GtkTreeIter iter;
++
++      if (!get_theme_data (themes_id[i], &gtk_theme, &icon_theme, &window_theme, &cursor_theme))
++        {
++          current_theme_index--;
++          continue;
++        }
++
++      if (g_strcmp0 (gtk_theme, default_gtk_theme) == 0)
++        new_theme_name = g_strdup_printf ("%s <small><i>(%s)</i></small>", themes_name[i], _("default"));
++      else
++        new_theme_name = g_strdup (themes_name[i]);
++
++      gtk_list_store_append (GTK_LIST_STORE (liststore), &iter);
++      gtk_list_store_set (GTK_LIST_STORE (liststore), &iter, 0, themes_id[i], 1, new_theme_name, -1);
++
++      if (g_strcmp0 (gtk_theme, current_gtk_theme) == 0)
++	  /* This is the current theme, so select item in the combo box */
++         gtk_combo_box_set_active (GTK_COMBO_BOX (widget), current_theme_index);
++
++      g_free (gtk_theme);
++      g_free (new_theme_name);
++      g_free (icon_theme);
++      g_free (window_theme);
++      g_free (cursor_theme);
++    }
++    g_free (current_gtk_theme);
++    g_free (default_gtk_theme);
++
++    g_signal_connect (G_OBJECT (widget), "changed",
++		      G_CALLBACK (theme_selection_changed), self);
++}
++
++static void
++iconsize_widget_refresh (GtkAdjustment *iconsize_adj, GSettings *unity_settings)
++{
++  gint value = g_settings_get_int (unity_settings, UNITY_ICONSIZE_KEY);
++  gtk_adjustment_set_value (iconsize_adj, (gdouble)value);
++}
++
++static void
++ext_iconsize_changed_callback (GSettings* settings,
++                               guint key,
++                               gpointer user_data)
++{
++  iconsize_widget_refresh (GTK_ADJUSTMENT (user_data), settings);
++}
++
++static void
++on_iconsize_changed (GtkAdjustment *adj, GSettings *unity_settings)
++{
++  g_settings_set_int (unity_settings, UNITY_ICONSIZE_KEY, (gint)gtk_adjustment_get_value (adj));
++}
++
++static void
++refresh_was_modified_by_external_tool (CcBackgroundPanel *self)
++{
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gboolean modified_ext_tool = FALSE;
++
++  // reveal side
++  modified_ext_tool = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_otheroption")));
++
++  // autohide mode
++  if (!modified_ext_tool && (!gtk_widget_get_sensitive (WID ("unity_launcher_autohide"))))
++    modified_ext_tool = TRUE;
++
++  gtk_widget_set_visible (WID ("unity-label-external-tool"), modified_ext_tool);
++}
++
++static void
++hidelauncher_set_sensitivity_reveal (CcBackgroundPanel *self, gboolean autohide)
++{
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gtk_widget_set_sensitive (WID ("unity_reveal_label"), autohide);
++  gtk_widget_set_sensitive (WID ("unity_reveal_spot_topleft"), autohide);
++  gtk_widget_set_sensitive (WID ("unity_reveal_spot_left"), autohide);
++  gtk_widget_set_sensitive (WID ("unity-launcher-sensitivity"), autohide);
++  gtk_widget_set_sensitive (WID ("unity-launcher-sensitivity-label"), autohide);
++  gtk_widget_set_sensitive (WID ("unity-launcher-sensitivity-low-label"), autohide);
++  gtk_widget_set_sensitive (WID ("unity-launcher-sensitivity-high-label"), autohide);
++  gtk_widget_set_sensitive (WID ("unity-launcher-sensitivity-high-label"), autohide);
++}
++
++static void
++hidelauncher_widget_refresh (CcBackgroundPanel *self)
++{
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gint value = g_settings_get_int (priv->unity_settings, UNITY_LAUNCHERHIDE_KEY);
++  gboolean autohide = (value != 0);
++
++  // handle not supported value
++  if (value != 0 && value != 1)
++    {
++      gtk_widget_set_sensitive (WID ("unity_launcher_autohide"), FALSE);
++    }
++  else
++    {
++      gtk_widget_set_sensitive (WID ("unity_launcher_autohide"), TRUE);
++      gtk_switch_set_active (GTK_SWITCH (WID ("unity_launcher_autohide")), autohide);
++    }
++
++  hidelauncher_set_sensitivity_reveal (self, autohide);
++  refresh_was_modified_by_external_tool (self);
++}
++
++static void
++ext_hidelauncher_changed_callback (GSettings* settings,
++                                   guint key,
++                                   gpointer user_data)
++{
++  hidelauncher_widget_refresh (CC_BACKGROUND_PANEL (user_data));
++}
++
++static void
++on_hidelauncher_changed (GtkSwitch *switcher, gboolean enabled, gpointer user_data)
++{
++  gint value = 0;
++  CcBackgroundPanel *self = CC_BACKGROUND_PANEL (user_data);
++
++  gint unity_value = g_settings_get_int (self->priv->unity_settings, UNITY_LAUNCHERHIDE_KEY);
++  gboolean unity_autohide_enabled;
++
++  unity_autohide_enabled = (unity_value != 0);
++  if (gtk_switch_get_active (switcher))
++    {
++      /* change value to "active" if activation isn't due to gsettings switching to any value */
++      if (unity_autohide_enabled)
++        return;
++      value = 1;
++    }
++
++  /* 3d */
++  g_settings_set_int (self->priv->unity_settings, UNITY_LAUNCHERHIDE_KEY, value);
++  hidelauncher_set_sensitivity_reveal (self, (value != -1));
++}
++
++static void
++reveallauncher_widget_refresh (CcBackgroundPanel *self)
++{
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gint value = g_settings_get_int (priv->unity_settings, UNITY_LAUNCHERREVEAL_KEY);
++
++  if (value == 1)
++    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_topleft")), TRUE);
++  else if (value == 0)
++    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_left")), TRUE);
++  else
++    /* this is a hidden spot when another option is selected (through ccsm) */
++    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_otheroption")), TRUE);
++
++  refresh_was_modified_by_external_tool (self);
++}
++
++static void
++ext_reveallauncher_changed_callback (GSettings* settings,
++                                     guint key,
++                                     gpointer user_data)
++{
++  reveallauncher_widget_refresh (CC_BACKGROUND_PANEL (user_data));
++}
++
++static void
++on_reveallauncher_changed (GtkToggleButton *button, gpointer user_data)
++{
++  CcBackgroundPanel *self = CC_BACKGROUND_PANEL (user_data);
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gint reveal_spot = 0;
++
++  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_topleft"))))
++    reveal_spot = 1;
++  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (WID ("unity_reveal_spot_left"))))
++    reveal_spot = 0;
++
++  g_settings_set_int (priv->unity_settings, UNITY_LAUNCHERREVEAL_KEY, reveal_spot);
++  if (priv->unity2d_settings)
++    g_settings_set_int (priv->unity2d_settings, "reveal-mode", reveal_spot);
++  reveallauncher_widget_refresh (self);
++}
++
++static void
++launcher_sensitivity_widget_refresh (GtkAdjustment *launcher_sensitivity_adj, GSettings *unity_settings)
++{
++  gdouble value = g_settings_get_double (unity_settings, UNITY_LAUNCHERSENSITIVITY_KEY);
++  gtk_adjustment_set_value (launcher_sensitivity_adj, (gdouble)value);
++}
++
++static void
++ext_launchersensitivity_changed_callback (GSettings* settings,
++                                          guint key,
++                                          gpointer user_data)
++{
++  launcher_sensitivity_widget_refresh (GTK_ADJUSTMENT (user_data), settings);
++}
++
++static void
++on_launchersensitivity_changed (GtkAdjustment *adj, gpointer user_data)
++{
++  CcBackgroundPanel *self = CC_BACKGROUND_PANEL (user_data);
++  CcBackgroundPanelPrivate *priv = self->priv;
++  gdouble value = gtk_adjustment_get_value (adj);
++
++  g_settings_set_double (priv->unity_settings, UNITY_LAUNCHERSENSITIVITY_KEY, value);
++  if (priv->unity2d_settings)
++    g_settings_set_double (priv->unity2d_settings, "edge-responsiveness", value);
++}
++
++static void
++on_restore_defaults_page2_clicked (GtkButton *button, gpointer user_data)
++{
++  CcBackgroundPanel *self = CC_BACKGROUND_PANEL (user_data);
++  CcBackgroundPanelPrivate *priv = self->priv;
++
++  /* reset defaut for the profile and get the default */
++  g_settings_reset (priv->unity_settings, UNITY_LAUNCHERHIDE_KEY);
++  g_settings_reset (priv->unity_settings, UNITY_LAUNCHERSENSITIVITY_KEY);
++  g_settings_reset (priv->unity_settings, UNITY_LAUNCHERREVEAL_KEY);
++
++  if (priv->unity2d_settings)
++    {
++      g_settings_reset (priv->unity2d_settings, "hide-mode");
++      g_settings_reset (priv->unity2d_settings, "reveal-mode");
++      g_settings_reset (priv->unity2d_settings, "edge-responsiveness");
++    }
++}
++
++static gboolean
++background_is_unity_session (void)
++{
++  return (g_strcmp0 (g_getenv("XDG_CURRENT_DESKTOP"), "Unity") == 0);
++}
++
++/* <hacks> */
++
++/* Get scrolling in the right direction */
++static gboolean
++on_scale_scroll_event (GtkWidget      *widget,
++                       GdkEventScroll *event,
++                       gpointer *data)
++{
++  gdouble value;
++  GtkAdjustment *adj = gtk_range_get_adjustment (GTK_RANGE (widget));
++  MinMax *iconsize_values = (MinMax *) data;
++  gdouble delta = iconsize_values->max - iconsize_values->min;
++
++  value = gtk_adjustment_get_value (adj);
++
++  if ((event->direction == GDK_SCROLL_UP) ||
++     (event->direction == GDK_SCROLL_SMOOTH && event->delta_y < 0))
++    {
++      if (value + delta/8 > iconsize_values->max)
++        value = iconsize_values->max;
++      else
++        value = value + delta/8;
++      gtk_adjustment_set_value (adj, value);
++    }
++  else if ((event->direction == GDK_SCROLL_DOWN) ||
++           (event->direction == GDK_SCROLL_SMOOTH && event->delta_y > 0))
++    {
++      if (value - delta/8 < iconsize_values->min)
++        value = iconsize_values->min;
++      else
++        value = value - delta/8;
++      gtk_adjustment_set_value (adj, value);
++    }
++
++  return TRUE;
++}
++
++/* </hacks> */
++
++static void
++setup_unity_settings (CcBackgroundPanel *self)
++{
++  CcBackgroundPanelPrivate *priv = self->priv;
++  GtkAdjustment* iconsize_adj;
++  GtkAdjustment* launcher_sensitivity_adj;
++  GtkScale* iconsize_scale;
++  GtkScale* launcher_sensitivity_scale;
++  const gchar * const *schemas;
++
++  /* Only use the unity-2d schema if it's installed */
++  schemas = g_settings_list_schemas ();
++  while (*schemas != NULL)
++    {
++      if (g_strcmp0 (*schemas, UNITY2D_GSETTINGS_LAUNCHER) == 0)
++        {
++          priv->unity2d_settings = g_settings_new (UNITY2D_GSETTINGS_LAUNCHER);
++          break;
++        }
++      schemas++;
++    }
++  schemas = g_settings_list_relocatable_schemas ();
++  while (*schemas != NULL)
++    {
++      if (g_strcmp0 (*schemas, UNITY_GSETTINGS_SCHEMA) == 0)
++        {
++          priv->unity_settings = g_settings_new_with_path (UNITY_GSETTINGS_SCHEMA, UNITY_GSETTINGS_PATH);
++          break;
++        }
++      schemas++;
++    }
++
++  if (!self->priv->unity_settings)
++    return;
++
++
++  /* Option not supported in unity-2d */
++  if (g_strcmp0(g_getenv("DESKTOP_SESSION"), "ubuntu-2d") != 0)
++    {
++      /* Icon size change */
++      iconsize_values.min = MIN_ICONSIZE;
++      iconsize_values.max = MAX_ICONSIZE;
++      iconsize_adj = gtk_adjustment_new (48, iconsize_values.min, iconsize_values.max, 1, 5, 0);
++      iconsize_scale = GTK_SCALE (WID ("unity-iconsize-scale"));
++      gtk_range_set_adjustment (GTK_RANGE (iconsize_scale), iconsize_adj);
++      gtk_scale_add_mark (iconsize_scale, 48, GTK_POS_BOTTOM, NULL);
++      g_signal_connect (priv->unity_settings, "changed::" UNITY_ICONSIZE_KEY,
++                        G_CALLBACK (ext_iconsize_changed_callback), iconsize_adj);
++
++      g_signal_connect (iconsize_adj, "value_changed",
++                        G_CALLBACK (on_iconsize_changed), priv->unity_settings);
++      g_signal_connect (G_OBJECT (iconsize_scale), "scroll-event",
++                        G_CALLBACK (on_scale_scroll_event), &iconsize_values);
++      iconsize_widget_refresh (iconsize_adj, priv->unity_settings);
++    }
++  else
++    {
++      gtk_widget_hide (GTK_WIDGET (WID ("unity-separator1")));
++      gtk_widget_hide (GTK_WIDGET (WID ("unity-iconsize-box")));
++    }
++
++  /* Reveal spot setting */
++  g_signal_connect (priv->unity_settings, "changed::" UNITY_LAUNCHERREVEAL_KEY,
++                    G_CALLBACK (ext_reveallauncher_changed_callback), self);
++  g_signal_connect (WID ("unity_reveal_spot_topleft"), "toggled",
++                     G_CALLBACK (on_reveallauncher_changed), self);
++  g_signal_connect (WID ("unity_reveal_spot_left"), "toggled",
++                     G_CALLBACK (on_reveallauncher_changed), self);
++  reveallauncher_widget_refresh (self);
++
++  /* Launcher reveal */
++  launchersensitivity_values.min = MIN_LAUNCHER_SENSIVITY;
++  launchersensitivity_values.max = MAX_LAUNCHER_SENSIVITY;
++  launcher_sensitivity_adj = gtk_adjustment_new (2, launchersensitivity_values.min, launchersensitivity_values.max, 0.1, 1, 0);
++  launcher_sensitivity_scale = GTK_SCALE (WID ("unity-launcher-sensitivity"));
++  gtk_range_set_adjustment (GTK_RANGE (launcher_sensitivity_scale), launcher_sensitivity_adj);
++  gtk_scale_add_mark (launcher_sensitivity_scale, 2, GTK_POS_BOTTOM, NULL);
++  g_signal_connect (priv->unity_settings, "changed::" UNITY_LAUNCHERSENSITIVITY_KEY,
++                    G_CALLBACK (ext_launchersensitivity_changed_callback), launcher_sensitivity_adj);
++  g_signal_connect (launcher_sensitivity_adj, "value_changed",
++                    G_CALLBACK (on_launchersensitivity_changed), self);
++  g_signal_connect (G_OBJECT (launcher_sensitivity_scale), "scroll-event",
++                    G_CALLBACK (on_scale_scroll_event), &launchersensitivity_values);
++  launcher_sensitivity_widget_refresh (launcher_sensitivity_adj, priv->unity_settings);
++
++  /* Autohide launcher setting */
++  g_signal_connect (priv->unity_settings, "changed::" UNITY_LAUNCHERHIDE_KEY,
++                    G_CALLBACK (ext_hidelauncher_changed_callback), self);
++  g_signal_connect (WID ("unity_launcher_autohide"), "notify::active",
++                    G_CALLBACK (on_hidelauncher_changed), self);
++  hidelauncher_widget_refresh (self);
++
++  /* Restore defaut on second page */
++  g_signal_connect (WID ("button-restore-unitybehavior"), "clicked",
++                    G_CALLBACK (on_restore_defaults_page2_clicked), self);
++}
++
++
++
+ static void
+ cc_background_panel_init (CcBackgroundPanel *self)
+ {
+   CcBackgroundPanelPrivate *priv;
+-  gchar *objects[] = {"background-panel", NULL };
++  gchar *objects[] = {"background-panel", "theme-list-store", NULL };
++  gchar *objects_unity[] = {"style-liststore", "sources-liststore",
++                            "theme-list-store", "main-notebook",
++                            "sizegroup", NULL };
+   GError *err = NULL;
+   GtkWidget *widget;
+ 
+@@ -672,9 +1199,15 @@
+   priv->builder = gtk_builder_new ();
+   priv->connection = g_application_get_dbus_connection (g_application_get_default ());
+ 
+-  gtk_builder_add_objects_from_file (priv->builder,
+-                                     UIDIR"/background.ui",
+-                                     objects, &err);
++  if (background_is_unity_session ())
++    gtk_builder_add_objects_from_file (priv->builder,
++                                       UIDIR"/background.ui",
++                                       objects_unity, &err);
++  else
++    gtk_builder_add_objects_from_file (priv->builder,
++                                       UIDIR"/background.ui",
++                                       objects, &err);
++
+ 
+   if (err)
+     {
+@@ -687,7 +1220,10 @@
+   g_settings_delay (priv->settings);
+ 
+   /* add the top level widget */
+-  widget = WID ("background-panel");
++  if (background_is_unity_session ())
++    widget = WID ("main-notebook");
++  else
++    widget = WID ("background-panel");
+ 
+   gtk_container_add (GTK_CONTAINER (self), widget);
+   gtk_widget_show_all (GTK_WIDGET (self));
+@@ -708,6 +1244,18 @@
+ 
+   widget = WID ("background-set-button");
+   g_signal_connect (widget, "clicked", G_CALLBACK (on_background_button_clicked), self);
++
++  /* Setup theme selector */
++  setup_theme_selector (self);
++
++  /* Setup unity settings */
++  if (background_is_unity_session ())
++    setup_unity_settings (self);
++  else
++  {
++    gtk_widget_hide (GTK_WIDGET (WID ("unity-separator1")));
++    gtk_widget_hide (GTK_WIDGET (WID ("unity-iconsize-box")));
++  }
+ }
+ 
+ void
+diff -Nru gnome-control-center-3.6.0.orig/panels/background/gnome-background-panel.desktop.in.in gnome-control-center-3.6.0/panels/background/gnome-background-panel.desktop.in.in
+--- gnome-control-center-3.6.0.orig/panels/background/gnome-background-panel.desktop.in.in	2012-10-06 15:31:48.664224744 -0400
++++ gnome-control-center-3.6.0/panels/background/gnome-background-panel.desktop.in.in	2012-10-06 15:31:54.064222883 -0400
+@@ -1,6 +1,6 @@
+ [Desktop Entry]
+-_Name=Background
+-_Comment=Change the background
++_Name=Appearance
++_Comment=Change the background and theme
+ Exec=gnome-control-center background
+ Icon=preferences-desktop-wallpaper
+ Terminal=false
+@@ -10,4 +10,4 @@
+ OnlyShowIn=GNOME;Unity;
+ X-GNOME-Settings-Panel=background
+ # Translators: those are keywords for the background control-center panel
+-_Keywords=Wallpaper;Screen;Desktop;
++_Keywords=Wallpaper;Screen;Desktop;Theme;Appearance;Launcher;Unity;Menus;
