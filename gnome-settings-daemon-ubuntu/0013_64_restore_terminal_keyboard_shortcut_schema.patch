@@ -1,0 +1,73 @@
+Index: gnome-settings-daemon-3.4.2/data/org.gnome.settings-daemon.plugins.media-keys.gschema.xml.in.in
+===================================================================
+--- gnome-settings-daemon-3.4.2.orig/data/org.gnome.settings-daemon.plugins.media-keys.gschema.xml.in.in	2012-05-15 06:14:45.000000000 -0400
++++ gnome-settings-daemon-3.4.2/data/org.gnome.settings-daemon.plugins.media-keys.gschema.xml.in.in	2012-08-26 01:20:36.672802081 -0400
+@@ -130,6 +130,11 @@
+       <_summary>Copy a screenshot of an area to clipboard</_summary>
+       <_description>Binding to copy a screenshot of an area to clipboard.</_description>
+     </key>
++    <key name="terminal" type="s">
++      <default>'&lt;Primary&gt;&lt;Alt&gt;t'</default>
++      <_summary>Launch terminal</_summary>
++      <_description>Binding to launch the terminal.</_description>
++    </key>
+     <key name="www" type="s">
+       <default>'XF86WWW'</default>
+       <_summary>Launch web browser</_summary>
+Index: gnome-settings-daemon-3.4.2/plugins/media-keys/gsd-media-keys-manager.c
+===================================================================
+--- gnome-settings-daemon-3.4.2.orig/plugins/media-keys/gsd-media-keys-manager.c	2012-08-26 01:20:36.464801049 -0400
++++ gnome-settings-daemon-3.4.2/plugins/media-keys/gsd-media-keys-manager.c	2012-08-26 01:20:47.880857664 -0400
+@@ -895,6 +895,22 @@
+ }
+ 
+ static void
++do_terminal_action (GsdMediaKeysManager *manager)
++{
++        GSettings *settings;
++        char *term;
++
++        settings = g_settings_new ("org.gnome.desktop.default-applications.terminal");
++        term = g_settings_get_string (settings, "exec");
++
++        if (term)
++        execute (manager, term, FALSE);
++
++        g_free (term);
++        g_object_unref (settings);
++}
++
++static void
+ gnome_session_shutdown (GsdMediaKeysManager *manager)
+ {
+ 	GError *error = NULL;
+@@ -2071,6 +2087,9 @@
+         case AREA_SCREENSHOT_CLIP_KEY:
+                 execute (manager, "gnome-screenshot --area --clipboard", FALSE);
+                 break;
++        case TERMINAL_KEY:
++                do_terminal_action (manager);
++                break;
+         case WWW_KEY:
+                 do_url_action (manager, "http", timestamp);
+                 break;
+Index: gnome-settings-daemon-3.4.2/plugins/media-keys/shortcuts-list.h
+===================================================================
+--- gnome-settings-daemon-3.4.2.orig/plugins/media-keys/shortcuts-list.h	2012-05-15 06:14:45.000000000 -0400
++++ gnome-settings-daemon-3.4.2/plugins/media-keys/shortcuts-list.h	2012-08-26 01:21:22.077027223 -0400
+@@ -50,6 +50,7 @@
+         SCREENSHOT_CLIP_KEY,
+         WINDOW_SCREENSHOT_CLIP_KEY,
+         AREA_SCREENSHOT_CLIP_KEY,
++        TERMINAL_KEY,
+         WWW_KEY,
+         PLAY_KEY,
+         PAUSE_KEY,
+@@ -113,6 +114,7 @@
+         { SCREENSHOT_CLIP_KEY, "screenshot-clip", NULL },
+         { WINDOW_SCREENSHOT_CLIP_KEY, "window-screenshot-clip", NULL },
+         { AREA_SCREENSHOT_CLIP_KEY, "area-screenshot-clip", NULL },
++        { TERMINAL_KEY, "terminal", NULL },
+         { WWW_KEY, "www", NULL },
+         { PLAY_KEY, "play", NULL },
+         { PAUSE_KEY, "pause", NULL },

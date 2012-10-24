@@ -1,0 +1,463 @@
+diff -Nru gnome-settings-daemon-3.5.92.orig/configure.ac gnome-settings-daemon-3.5.92/configure.ac
+--- gnome-settings-daemon-3.5.92.orig/configure.ac	2012-09-20 23:06:15.529075506 -0400
++++ gnome-settings-daemon-3.5.92/configure.ac	2012-09-20 23:24:35.107418409 -0400
+@@ -202,7 +202,7 @@
+ dnl - media-keys plugin stuff
+ dnl ---------------------------------------------------------------------------
+ 
+-PKG_CHECK_MODULES(MEDIA_KEYS, [gio-unix-2.0 libpulse >= $PA_REQUIRED_VERSION $GUDEV_PKG libpulse-mainloop-glib >= $PA_REQUIRED_VERSION libcanberra])
++PKG_CHECK_MODULES(MEDIA_KEYS, [gio-unix-2.0 libpulse >= $PA_REQUIRED_VERSION $GUDEV_PKG libpulse-mainloop-glib >= $PA_REQUIRED_VERSION libcanberra libnotify])
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl - xrandr plugin stuff
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/media-keys/gsd-media-keys-manager.c gnome-settings-daemon-3.5.92/plugins/media-keys/gsd-media-keys-manager.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/media-keys/gsd-media-keys-manager.c	2012-09-20 23:06:15.622075497 -0400
++++ gnome-settings-daemon-3.5.92/plugins/media-keys/gsd-media-keys-manager.c	2012-09-20 23:24:21.422425847 -0400
+@@ -58,6 +58,8 @@
+ #include <pulse/pulseaudio.h>
+ #include "gvc-mixer-control.h"
+ 
++#include <libnotify/notify.h>
++
+ #define GSD_DBUS_PATH "/org/gnome/SettingsDaemon"
+ #define GSD_DBUS_NAME "org.gnome.SettingsDaemon"
+ #define GSD_MEDIA_KEYS_DBUS_PATH GSD_DBUS_PATH "/MediaKeys"
+@@ -166,6 +168,11 @@
+         GCancellable    *cancellable;
+ 
+         guint            start_idle_id;
++
++        /* Ubuntu notifications */
++        NotifyNotification *volume_notification;
++        NotifyNotification *brightness_notification;
++        NotifyNotification *kb_backlight_notification;
+ };
+ 
+ static void     gsd_media_keys_manager_class_init  (GsdMediaKeysManagerClass *klass);
+@@ -179,6 +186,132 @@
+ 
+ static gpointer manager_object = NULL;
+ 
++#define NOTIFY_CAP_PRIVATE_SYNCHRONOUS "x-canonical-private-synchronous"
++#define NOTIFY_CAP_PRIVATE_ICON_ONLY "x-canonical-private-icon-only"
++#define NOTIFY_HINT_TRUE "true"
++
++typedef struct {
++        GsdMediaKeysManager *manager;
++        MediaKeyType type;
++        guint old_percentage;
++        
++} GsdBrightnessActionData;
++
++static const char *volume_icons[] = {
++        "notification-audio-volume-muted",
++        "notification-audio-volume-low",
++        "notification-audio-volume-medium",
++        "notification-audio-volume-high",
++        NULL
++};
++
++static const char *brightness_icons[] = {
++        "notification-display-brightness-off",
++	"notification-display-brightness-low",
++	"notification-display-brightness-medium",
++	"notification-display-brightness-high",
++	"notification-display-brightness-full",
++        NULL
++};
++
++static const char *kb_backlight_icons[] = {
++        "notification-keyboard-brightness-off",
++        "notification-keyboard-brightness-low",
++        "notification-keyboard-brightness-medium",
++        "notification-keyboard-brightness-high",
++        "notification-keyboard-brightness-full",
++        NULL
++};
++
++static const char *
++calculate_icon_name (gint value, const char **icon_names)
++{
++        value = CLAMP (value, 0, 100);
++        gint length = g_strv_length (icon_names);
++        gint s = (length - 1) * value / 100 + 1;
++        s = CLAMP (s, 1, length - 1);
++
++        return icon_names[s];
++}
++
++static gboolean
++ubuntu_osd_notification_is_supported (void)
++{
++        GList *caps;
++        gboolean has_cap;
++
++        caps = notify_get_server_caps ();
++        has_cap = (g_list_find_custom (caps, NOTIFY_CAP_PRIVATE_SYNCHRONOUS, (GCompareFunc) g_strcmp0) != NULL);
++        g_list_foreach (caps, (GFunc) g_free, NULL);
++        g_list_free (caps);
++
++        return has_cap;
++}
++
++static gboolean
++ubuntu_osd_notification_show_icon (const char *icon,
++                                   const char *hint)
++{
++        if (!ubuntu_osd_notification_is_supported ())
++                return FALSE;
++
++        NotifyNotification *notification = notify_notification_new (" ", "", icon);
++        notify_notification_set_hint_string (notification, NOTIFY_CAP_PRIVATE_SYNCHRONOUS, hint);
++        notify_notification_set_hint_string (notification, NOTIFY_CAP_PRIVATE_ICON_ONLY, NOTIFY_HINT_TRUE);
++
++        gboolean res = notify_notification_show (notification, NULL);
++        g_object_unref (notification);
++
++        return res;
++}
++
++static gboolean
++ubuntu_osd_do_notification (NotifyNotification **notification,
++                            const char *hint,
++                            gint value,
++                            gboolean muted,
++                            const char **icon_names)
++{
++        if (!ubuntu_osd_notification_is_supported ())
++                return FALSE;
++
++        if (!*notification) {
++                *notification = notify_notification_new (" ", "", NULL);
++                notify_notification_set_hint_string (*notification, NOTIFY_CAP_PRIVATE_SYNCHRONOUS, hint);
++        }
++
++        value = CLAMP (value, -1, 101);
++        const char *icon = muted ? icon_names[0] : calculate_icon_name (value, icon_names);
++        notify_notification_set_hint_int32 (*notification, "value", value);
++        notify_notification_update (*notification, " ", "", icon);
++
++        return notify_notification_show (*notification, NULL);
++}
++
++static gboolean
++ubuntu_osd_notification_show_volume (GsdMediaKeysManager *manager,
++                                     gint value,
++                                     gboolean muted)
++{
++        return ubuntu_osd_do_notification (&manager->priv->volume_notification,
++                                           "volume", value, muted, volume_icons);
++}
++
++static gboolean
++ubuntu_osd_notification_show_brightness (GsdMediaKeysManager *manager,
++                                         gint value)
++{
++        return ubuntu_osd_do_notification (&manager->priv->brightness_notification,
++                                           "brightness", value, value <= 0, brightness_icons);
++}
++
++static gboolean
++ubuntu_osd_notification_show_kb_backlight (GsdMediaKeysManager *manager,
++                                           gint value)
++{
++        return ubuntu_osd_do_notification (&manager->priv->kb_backlight_notification,
++                                           "keyboard", value, value <= 0, kb_backlight_icons);
++}
+ 
+ static void
+ init_screens (GsdMediaKeysManager *manager)
+@@ -837,11 +970,13 @@
+         }
+ 
+         /* Show the dialogue */
+-        dialog_init (manager);
+-        gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                 "media-eject-symbolic",
+-                                                 FALSE);
+-        dialog_show (manager);
++        if (!ubuntu_osd_notification_show_icon ("notification-device-eject", "Eject")) {
++                dialog_init (manager);
++                gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                         "media-eject-symbolic",
++                                                         FALSE);
++                dialog_show (manager);
++        }
+ 
+         /* Clean up the drive selection and exit if no suitable
+          * drives are found */
+@@ -899,11 +1034,13 @@
+ static void
+ do_touchpad_osd_action (GsdMediaKeysManager *manager, gboolean state)
+ {
+-        dialog_init (manager);
+-        gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                 state ? "input-touchpad-symbolic" : "touchpad-disabled-symbolic",
+-                                                 FALSE);
+-        dialog_show (manager);
++        if (!ubuntu_osd_notification_show_icon ((!state) ? "touchpad-disabled-symbolic" : "input-touchpad-symbolic", "Touchpad")) {
++                dialog_init (manager);
++                gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                         state ? "input-touchpad-symbolic" : "touchpad-disabled-symbolic",
++                                                         FALSE);
++                dialog_show (manager);
++        }
+ }
+ 
+ static void
+@@ -934,12 +1071,10 @@
+                gboolean             sound_changed,
+                gboolean             quiet)
+ {
+-        if (!muted) {
+-                vol = (int) (100 * (double) vol / PA_VOLUME_NORM);
+-                vol = CLAMP (vol, 0, 100);
+-        } else {
+-                vol = 0.0;
+-        }
++        if (ubuntu_osd_notification_show_volume (manager, vol, muted))
++                goto done;
++
++        vol = CLAMP (vol, 0, 100);
+ 
+         dialog_init (manager);
+         gsd_osd_window_set_volume_muted (GSD_OSD_WINDOW (manager->priv->dialog),
+@@ -949,6 +1084,7 @@
+                                           GSD_OSD_WINDOW_ACTION_VOLUME);
+         dialog_show (manager);
+ 
++done: 
+         if (quiet == FALSE && sound_changed != FALSE && muted == FALSE) {
+                 ca_context_change_device (manager->priv->ca,
+                                           gvc_mixer_stream_get_name (stream));
+@@ -1071,7 +1207,7 @@
+ {
+ 	GvcMixerStream *stream;
+         gboolean old_muted, new_muted;
+-        guint old_vol, new_vol, norm_vol_step;
++        guint old_vol, new_vol, norm_vol_step, osd_vol;
+         gboolean sound_changed;
+ 
+         /* Find the stream that corresponds to the device, if any */
+@@ -1122,7 +1258,16 @@
+                 }
+         }
+ 
+-        update_dialog (manager, stream, new_vol, new_muted, sound_changed, quiet);
++        if (type == VOLUME_DOWN_KEY && old_vol == 0 && old_muted)
++                osd_vol = -1;
++        else if (type == VOLUME_UP_KEY && old_vol == PA_VOLUME_NORM && !old_muted)
++                osd_vol = 101;
++        else if (!new_muted)
++                osd_vol = (int) (100 * (double) new_vol / PA_VOLUME_NORM);
++        else
++                osd_vol = 0;
++
++        update_dialog (manager, stream, osd_vol, new_muted, sound_changed, quiet);
+ }
+ 
+ static void
+@@ -1428,8 +1573,11 @@
+ 
+ static gboolean
+ do_multimedia_player_action (GsdMediaKeysManager *manager,
++                             const char          *icon,
+                              const char          *key)
+ {
++        if (icon != NULL)
++                ubuntu_osd_notification_show_icon (icon, key);
+         return gsd_media_player_key_pressed (manager, key);
+ }
+ 
+@@ -1654,7 +1802,8 @@
+         GError *error = NULL;
+         guint percentage;
+         GVariant *new_percentage;
+-        GsdMediaKeysManager *manager = GSD_MEDIA_KEYS_MANAGER (user_data);
++        GsdBrightnessActionData *data = (GsdBrightnessActionData *) user_data;
++        GsdMediaKeysManager *manager = data->manager;
+ 
+         new_percentage = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+                                                    res, &error);
+@@ -1662,22 +1811,68 @@
+                 g_warning ("Failed to set new screen percentage: %s",
+                            error->message);
+                 g_error_free (error);
++                g_free (data);
+                 return;
+         }
+ 
+         /* update the dialog with the new value */
+         g_variant_get (new_percentage, "(u)", &percentage);
+-        dialog_init (manager);
+-        gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                 "display-brightness-symbolic",
+-                                                 TRUE);
+-        gsd_osd_window_set_volume_level (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                percentage);
+-        dialog_show (manager);
++
++        guint osd_percentage;
++        if (data->old_percentage == 100 && data->type == SCREEN_BRIGHTNESS_UP_KEY)
++                osd_percentage = 101;
++        else if (data->old_percentage == 0 && data->type == SCREEN_BRIGHTNESS_DOWN_KEY)
++                osd_percentage = -1;
++        else
++                osd_percentage = CLAMP (percentage, 0, 100);
++
++        if (!ubuntu_osd_notification_show_brightness (manager, osd_percentage)) {
++                dialog_init (manager);
++                gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                  "display-brightness-symbolic",
++                                                  TRUE);
++                gsd_osd_window_set_volume_level (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                 percentage);
++                dialog_show (manager);
++        }
++        g_free (data);
+         g_variant_unref (new_percentage);
+ }
+ 
+ static void
++do_screen_brightness_action_real (GObject       *source_object,
++                                  GAsyncResult  *res,
++                                  gpointer       user_data)
++{
++        GsdBrightnessActionData *data = (GsdBrightnessActionData *) user_data;
++        GsdMediaKeysManager *manager = data->manager;
++        GError *error = NULL;
++
++        GVariant *old_percentage = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
++                                                             res, &error);
++        if (old_percentage == NULL) {
++                g_warning ("Failed to get old screen percentage: %s", error->message);
++                g_error_free (error);
++                g_free (data);
++                return;
++        }
++
++        g_variant_get (old_percentage, "(u)", &data->old_percentage);
++
++        /* call into the power plugin */
++        g_dbus_proxy_call (manager->priv->power_screen_proxy,
++                           data->type == SCREEN_BRIGHTNESS_UP_KEY ? "StepUp" : "StepDown",
++                           NULL,
++                           G_DBUS_CALL_FLAGS_NONE,
++                           -1,
++                           NULL,
++                           update_screen_cb,
++                           data);
++
++        g_variant_unref (old_percentage);
++}
++
++static void
+ do_screen_brightness_action (GsdMediaKeysManager *manager,
+                              MediaKeyType type)
+ {
+@@ -1687,15 +1882,18 @@
+                 return;
+         }
+ 
+-        /* call into the power plugin */
++        GsdBrightnessActionData *data = g_new0 (GsdBrightnessActionData, 1);
++        data->manager = manager;
++        data->type = type;
++
+         g_dbus_proxy_call (manager->priv->power_screen_proxy,
+-                           type == SCREEN_BRIGHTNESS_UP_KEY ? "StepUp" : "StepDown",
++                           "GetPercentage",
+                            NULL,
+                            G_DBUS_CALL_FLAGS_NONE,
+                            -1,
+                            NULL,
+-                           update_screen_cb,
+-                           manager);
++                           do_screen_brightness_action_real,
++                           data);
+ }
+ 
+ static void
+@@ -1719,13 +1917,17 @@
+ 
+         /* update the dialog with the new value */
+         g_variant_get (new_percentage, "(u)", &percentage);
+-        dialog_init (manager);
+-        gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                 "keyboard-brightness-symbolic",
+-                                                 TRUE);
+-        gsd_osd_window_set_volume_level (GSD_OSD_WINDOW (manager->priv->dialog),
+-                                                percentage);
+-        dialog_show (manager);
++        /* FIXME: No overshoot effect for keyboard, as the power plugin has no interface
++         *        to get the old brightness */
++        if (!ubuntu_osd_notification_show_kb_backlight (manager, CLAMP (percentage, 0, 100))) {
++                dialog_init (manager);
++                gsd_osd_window_set_action_custom (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                  "keyboard-brightness-symbolic",
++                                                  TRUE);
++                gsd_osd_window_set_volume_level (GSD_OSD_WINDOW (manager->priv->dialog),
++                                                 percentage);
++                dialog_show (manager);
++        }
+         g_variant_unref (new_percentage);
+ }
+ 
+@@ -1896,23 +2098,23 @@
+                 do_execute_desktop (manager, "gcalctool.desktop", timestamp);
+                 break;
+         case PLAY_KEY:
+-                return do_multimedia_player_action (manager, "Play");
++                return do_multimedia_player_action (manager, NULL, "Play");
+         case PAUSE_KEY:
+-                return do_multimedia_player_action (manager, "Pause");
++                return do_multimedia_player_action (manager, NULL, "Pause");
+         case STOP_KEY:
+-                return do_multimedia_player_action (manager, "Stop");
++                return do_multimedia_player_action (manager, NULL, "Stop");
+         case PREVIOUS_KEY:
+-                return do_multimedia_player_action (manager, "Previous");
++                return do_multimedia_player_action (manager, NULL, "Previous");
+         case NEXT_KEY:
+-                return do_multimedia_player_action (manager, "Next");
++                return do_multimedia_player_action (manager, NULL, "Next");
+         case REWIND_KEY:
+-                return do_multimedia_player_action (manager, "Rewind");
++                return do_multimedia_player_action (manager, NULL, "Rewind");
+         case FORWARD_KEY:
+-                return do_multimedia_player_action (manager, "FastForward");
++                return do_multimedia_player_action (manager, NULL, "FastForward");
+         case REPEAT_KEY:
+-                return do_multimedia_player_action (manager, "Repeat");
++                return do_multimedia_player_action (manager, NULL, "Repeat");
+         case RANDOM_KEY:
+-                return do_multimedia_player_action (manager, "Shuffle");
++                return do_multimedia_player_action (manager, NULL, "Shuffle");
+         case VIDEO_OUT_KEY:
+                 do_video_out_action (manager, timestamp);
+                 break;
+@@ -2291,6 +2493,24 @@
+                 priv->connection = NULL;
+         }
+ 
++        if (priv->volume_notification != NULL) {
++                notify_notification_close (priv->volume_notification, NULL);
++                g_object_unref (priv->volume_notification);
++                priv->volume_notification = NULL;
++        }
++
++        if (priv->brightness_notification != NULL) {
++                notify_notification_close (priv->brightness_notification, NULL);
++                g_object_unref (priv->brightness_notification);
++                priv->brightness_notification = NULL;
++        }
++
++        if (priv->kb_backlight_notification != NULL) {
++                notify_notification_close (priv->kb_backlight_notification, NULL);
++                g_object_unref (priv->kb_backlight_notification);
++                priv->kb_backlight_notification = NULL;
++        }
++
+         if (priv->keys != NULL) {
+                 gdk_error_trap_push ();
+                 for (i = 0; i < priv->keys->len; ++i) {

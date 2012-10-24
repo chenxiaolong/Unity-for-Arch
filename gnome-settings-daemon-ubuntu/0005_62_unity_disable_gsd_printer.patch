@@ -1,0 +1,52 @@
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/print-notifications/gsd-print-notifications-plugin.c gnome-settings-daemon-3.5.92/plugins/print-notifications/gsd-print-notifications-plugin.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/print-notifications/gsd-print-notifications-plugin.c	2012-09-20 23:06:15.548075505 -0400
++++ gnome-settings-daemon-3.5.92/plugins/print-notifications/gsd-print-notifications-plugin.c	2012-09-20 23:50:13.180795304 -0400
+@@ -38,6 +38,12 @@
+ static void
+ gsd_print_notifications_plugin_init (GsdPrintNotificationsPlugin *plugin)
+ {
++        if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0) {
++            plugin->priv = NULL;
++            g_debug ("GsdPrintNotificationsPlugin: Disabling for Unity, using system-config-printer");
++            return;
++        }
++
+         plugin->priv = GSD_PRINT_NOTIFICATIONS_PLUGIN_GET_PRIVATE (plugin);
+ 
+         plugin->priv->manager = gsd_print_notifications_manager_new ();
+@@ -55,6 +61,11 @@
+ 
+         plugin = GSD_PRINT_NOTIFICATIONS_PLUGIN (object);
+ 
++        if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0) {
++            G_OBJECT_CLASS (gsd_print_notifications_plugin_parent_class)->finalize (object);
++            return;
++        }
++
+         g_return_if_fail (plugin->priv != NULL);
+ 
+         if (plugin->priv->manager != NULL) {
+@@ -70,6 +81,11 @@
+         gboolean res;
+         GError  *error;
+ 
++        if (GSD_PRINT_NOTIFICATIONS_PLUGIN (plugin)->priv == NULL) {
++            g_debug ("Not activating disabled print-notifications plugin");
++            return;
++        }
++
+         g_debug ("Activating print-notifications plugin");
+ 
+         error = NULL;
+@@ -83,6 +99,11 @@
+ static void
+ impl_deactivate (GnomeSettingsPlugin *plugin)
+ {
++        if (GSD_PRINT_NOTIFICATIONS_PLUGIN (plugin)->priv == NULL) {
++            g_debug ("Not deactivating disabled print-notifications plugin");
++            return;
++        }
++
+         g_debug ("Deactivating print_notifications plugin");
+         gsd_print_notifications_manager_stop (GSD_PRINT_NOTIFICATIONS_PLUGIN (plugin)->priv->manager);
+ }

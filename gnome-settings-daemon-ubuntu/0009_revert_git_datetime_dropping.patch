@@ -1,0 +1,2754 @@
+diff -Nru gnome-settings-daemon-3.5.92.orig/configure.ac gnome-settings-daemon-3.5.92/configure.ac
+--- gnome-settings-daemon-3.5.92.orig/configure.ac	2012-09-20 23:26:57.274347128 -0400
++++ gnome-settings-daemon-3.5.92/configure.ac	2012-09-21 00:05:22.491472443 -0400
+@@ -117,6 +117,24 @@
+ AC_SUBST(LIBNOTIFY_LIBS)
+ 
+ dnl ---------------------------------------------------------------------------
++dnl - Check for D-Bus
++dnl ---------------------------------------------------------------------------
++
++dnl - Are we specifying a different dbus root ?
++AC_ARG_WITH(dbus-sys,
++        [AC_HELP_STRING([--with-dbus-sys=<dir>],
++        [where D-BUS system.d directory is])])
++AC_ARG_WITH(dbus-services,
++        [AC_HELP_STRING([--with-dbus-services=<dir>],
++        [where D-BUS services directory is])])
++if ! test -z "$with_dbus_sys" ; then
++        DBUS_SYS_DIR="$with_dbus_sys"
++else
++        DBUS_SYS_DIR='${sysconfdir}/dbus-1/system.d'
++fi
++AC_SUBST(DBUS_SYS_DIR)
++
++dnl ---------------------------------------------------------------------------
+ dnl - GUdev integration (default enabled)
+ dnl ---------------------------------------------------------------------------
+ GUDEV_PKG=""
+@@ -360,6 +378,42 @@
+ AM_CONDITIONAL(WITH_SYSTEMD, [test "$with_systemd" = "yes"], [Using systemd])
+ 
+ # ---------------------------------------------------------------------------
++# PolicyKit for the date & time mechanism
++# ---------------------------------------------------------------------------
++
++POLKIT_REQUIRED=0.97
++DBUS_REQUIRED=1.1.2
++
++# PolicyKit detection; defaults to 'auto' (use it if it's available)
++#
++POLKIT_CFLAGS=
++POLKIT_LIBS=
++AC_ARG_ENABLE(polkit,
++              AS_HELP_STRING([--enable-polkit],
++                             [Enable PolicyKit support (auto)]),
++              enable_polkit=$enableval,
++              enable_polkit=auto)
++
++if test "x$enable_polkit" = "xno" ; then
++  HAVE_POLKIT=no
++else
++  HAVE_POLKIT=no
++  PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= $POLKIT_REQUIRED dbus-1 >= $DBUS_REQUIRED dbus-glib-1, HAVE_POLKIT=yes, HAVE_POLKIT=no)
++
++  if test "x$enable_polkit" = "xyes" -a "x$HAVE_POLKIT" = "xno" ; then
++    AC_MSG_ERROR(PolicyKit support explicity enabled but not available)
++  fi
++
++  if test "x$HAVE_POLKIT" = "xyes" ; then
++    AC_DEFINE(HAVE_POLKIT, 1, [Defined if PolicyKit support is enabled])
++  fi
++fi
++AM_CONDITIONAL(HAVE_POLKIT, test "x$HAVE_POLKIT" = "xyes")
++AC_SUBST(POLKIT_CFLAGS)
++AC_SUBST(POLKIT_LIBS)
++
++
++# ---------------------------------------------------------------------------
+ # CUPS
+ # ---------------------------------------------------------------------------
+ 
+@@ -506,6 +560,7 @@
+ plugins/color/Makefile
+ plugins/common/Makefile
+ plugins/cursor/Makefile
++plugins/datetime/Makefile
+ plugins/dummy/Makefile
+ plugins/power/Makefile
+ plugins/housekeeping/Makefile
+@@ -564,6 +619,8 @@
+         cflags:                   ${CFLAGS}
+         Maintainer mode:          ${USE_MAINTAINER_MODE}
+ 
++        dbus-1 system.d dir:      ${DBUS_SYS_DIR}
++        PolicyKit support:        ${HAVE_POLKIT}
+         Session tracking:         ${SESSION_TRACKING}
+         LCMS DICT support:        ${have_new_lcms}
+         IBus support:             ${enable_ibus}
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.c gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.c	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.c	2012-09-21 00:05:22.492472443 -0400
+@@ -0,0 +1,755 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2007 David Zeuthen <david@fubar.dk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#ifdef HAVE_CONFIG_H
++#  include "config.h"
++#endif
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <string.h>
++#include <sys/wait.h>
++#include <errno.h>
++#include <sys/time.h>
++
++#include <glib.h>
++#include <glib-object.h>
++
++#include <dbus/dbus-glib.h>
++#include <dbus/dbus-glib-lowlevel.h>
++
++#include <polkit/polkit.h>
++
++#include "system-timezone.h"
++
++#include "gsd-datetime-mechanism.h"
++#include "gsd-datetime-mechanism-glue.h"
++
++/* NTP helper functions for various distributions */
++#include "gsd-datetime-mechanism-debian.h"
++
++static gboolean
++do_exit (gpointer user_data)
++{
++        g_debug ("Exiting due to inactivity");
++        exit (1);
++        return FALSE;
++}
++
++static void
++reset_killtimer (void)
++{
++        static guint timer_id = 0;
++
++        if (timer_id > 0) {
++                g_source_remove (timer_id);
++        }
++        g_debug ("Setting killtimer to 30 seconds...");
++        timer_id = g_timeout_add_seconds (30, do_exit, NULL);
++}
++
++struct GsdDatetimeMechanismPrivate
++{
++        DBusGConnection *system_bus_connection;
++        DBusGProxy      *system_bus_proxy;
++        PolkitAuthority *auth;
++};
++
++static void     gsd_datetime_mechanism_finalize    (GObject     *object);
++
++G_DEFINE_TYPE (GsdDatetimeMechanism, gsd_datetime_mechanism, G_TYPE_OBJECT)
++
++#define GSD_DATETIME_MECHANISM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_DATETIME_TYPE_MECHANISM, GsdDatetimeMechanismPrivate))
++
++GQuark
++gsd_datetime_mechanism_error_quark (void)
++{
++        static GQuark ret = 0;
++
++        if (ret == 0) {
++                ret = g_quark_from_static_string ("gsd_datetime_mechanism_error");
++        }
++
++        return ret;
++}
++
++
++#define ENUM_ENTRY(NAME, DESC) { NAME, "" #NAME "", DESC }
++
++GType
++gsd_datetime_mechanism_error_get_type (void)
++{
++        static GType etype = 0;
++        
++        if (etype == 0)
++        {
++                static const GEnumValue values[] =
++                        {
++                                ENUM_ENTRY (GSD_DATETIME_MECHANISM_ERROR_GENERAL, "GeneralError"),
++                                ENUM_ENTRY (GSD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED, "NotPrivileged"),
++                                ENUM_ENTRY (GSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE, "InvalidTimezoneFile"),
++                                { 0, 0, 0 }
++                        };
++                
++                g_assert (GSD_DATETIME_MECHANISM_NUM_ERRORS == G_N_ELEMENTS (values) - 1);
++                
++                etype = g_enum_register_static ("GsdDatetimeMechanismError", values);
++        }
++        
++        return etype;
++}
++
++
++static GObject *
++gsd_datetime_mechanism_constructor (GType                  type,
++                                    guint                  n_construct_properties,
++                                    GObjectConstructParam *construct_properties)
++{
++        GsdDatetimeMechanism      *mechanism;
++
++        mechanism = GSD_DATETIME_MECHANISM (G_OBJECT_CLASS (gsd_datetime_mechanism_parent_class)->constructor (
++                                                type,
++                                                n_construct_properties,
++                                                construct_properties));
++
++        return G_OBJECT (mechanism);
++}
++
++static void
++gsd_datetime_mechanism_class_init (GsdDatetimeMechanismClass *klass)
++{
++        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
++
++        object_class->constructor = gsd_datetime_mechanism_constructor;
++        object_class->finalize = gsd_datetime_mechanism_finalize;
++
++        g_type_class_add_private (klass, sizeof (GsdDatetimeMechanismPrivate));
++
++        dbus_g_object_type_install_info (GSD_DATETIME_TYPE_MECHANISM, &dbus_glib_gsd_datetime_mechanism_object_info);
++
++        dbus_g_error_domain_register (GSD_DATETIME_MECHANISM_ERROR, NULL, GSD_DATETIME_MECHANISM_TYPE_ERROR);
++
++}
++
++static void
++gsd_datetime_mechanism_init (GsdDatetimeMechanism *mechanism)
++{
++        mechanism->priv = GSD_DATETIME_MECHANISM_GET_PRIVATE (mechanism);
++
++}
++
++static void
++gsd_datetime_mechanism_finalize (GObject *object)
++{
++        GsdDatetimeMechanism *mechanism;
++
++        g_return_if_fail (object != NULL);
++        g_return_if_fail (GSD_DATETIME_IS_MECHANISM (object));
++
++        mechanism = GSD_DATETIME_MECHANISM (object);
++
++        g_return_if_fail (mechanism->priv != NULL);
++
++        g_object_unref (mechanism->priv->system_bus_proxy);
++
++        G_OBJECT_CLASS (gsd_datetime_mechanism_parent_class)->finalize (object);
++}
++
++static gboolean
++register_mechanism (GsdDatetimeMechanism *mechanism)
++{
++        GError *error = NULL;
++
++        mechanism->priv->auth = polkit_authority_get_sync (NULL, &error);
++        if (mechanism->priv->auth == NULL) {
++                if (error != NULL) {
++                        g_critical ("error getting system bus: %s", error->message);
++                        g_error_free (error);
++                }
++                goto error;
++        }
++
++        mechanism->priv->system_bus_connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
++        if (mechanism->priv->system_bus_connection == NULL) {
++                if (error != NULL) {
++                        g_critical ("error getting system bus: %s", error->message);
++                        g_error_free (error);
++                }
++                goto error;
++        }
++
++        dbus_g_connection_register_g_object (mechanism->priv->system_bus_connection, "/", 
++                                             G_OBJECT (mechanism));
++
++        mechanism->priv->system_bus_proxy = dbus_g_proxy_new_for_name (mechanism->priv->system_bus_connection,
++                                                                      DBUS_SERVICE_DBUS,
++                                                                      DBUS_PATH_DBUS,
++                                                                      DBUS_INTERFACE_DBUS);
++
++        reset_killtimer ();
++
++        return TRUE;
++
++error:
++        return FALSE;
++}
++
++
++GsdDatetimeMechanism *
++gsd_datetime_mechanism_new (void)
++{
++        GObject *object;
++        gboolean res;
++
++        object = g_object_new (GSD_DATETIME_TYPE_MECHANISM, NULL);
++
++        res = register_mechanism (GSD_DATETIME_MECHANISM (object));
++        if (! res) {
++                g_object_unref (object);
++                return NULL;
++        }
++
++        return GSD_DATETIME_MECHANISM (object);
++}
++
++static gboolean
++_check_polkit_for_action (GsdDatetimeMechanism *mechanism, DBusGMethodInvocation *context)
++{
++        const char *action = "org.gnome.settingsdaemon.datetimemechanism.configure";
++        const char *sender;
++        GError *error;
++        PolkitSubject *subject;
++        PolkitAuthorizationResult *result;
++
++        error = NULL;
++
++        /* Check that caller is privileged */
++        sender = dbus_g_method_get_sender (context);
++        subject = polkit_system_bus_name_new (sender);
++
++        result = polkit_authority_check_authorization_sync (mechanism->priv->auth,
++                                                            subject,
++                                                            action,
++                                                            NULL,
++                                                            POLKIT_CHECK_AUTHORIZATION_FLAGS_ALLOW_USER_INTERACTION,
++                                                            NULL, &error);
++        g_object_unref (subject);
++
++        if (error) {
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++
++                return FALSE;
++        }
++
++        if (!polkit_authorization_result_get_is_authorized (result)) {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED,
++                                     "Not Authorized for action %s", action);
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                g_object_unref (result);
++
++                return FALSE;
++        }
++
++        g_object_unref (result);
++
++        return TRUE;
++}
++
++static gboolean
++_sync_hwclock (DBusGMethodInvocation *context)
++{
++        GError *error;
++
++        error = NULL;
++
++        if (g_file_test ("/usr/sbin/hwclock",
++                         G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_EXECUTABLE)) {
++                int exit_status;
++                if (!g_spawn_command_line_sync ("/usr/sbin/hwclock --systohc", NULL, NULL, &exit_status, &error)) {
++                        GError *error2;
++                        error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning /usr/sbin/hwclock: %s", error->message);
++                        g_error_free (error);
++                        dbus_g_method_return_error (context, error2);
++                        g_error_free (error2);
++                        return FALSE;
++                }
++                if (WEXITSTATUS (exit_status) != 0) {
++                        error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                             GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                             "/usr/sbin/hwclock returned %d", exit_status);
++                        dbus_g_method_return_error (context, error);
++                        g_error_free (error);
++                        return FALSE;
++                }
++        }
++
++        return TRUE;
++}
++
++static gboolean
++_set_time (GsdDatetimeMechanism  *mechanism,
++           const struct timeval  *tv,
++           DBusGMethodInvocation *context)
++{
++        GError *error;
++
++        if (!_check_polkit_for_action (mechanism, context))
++                return FALSE;
++
++        if (settimeofday (tv, NULL) != 0) {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Error calling settimeofday({%lld,%lld}): %s",
++                                     (gint64) tv->tv_sec, (gint64) tv->tv_usec,
++                                     strerror (errno));
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++
++        if (!_sync_hwclock (context))
++                return FALSE;
++
++        dbus_g_method_return (context);
++        return TRUE;
++}
++
++static gboolean
++_set_date (GsdDatetimeMechanism  *mechanism,
++           guint                  day,
++           guint                  month,
++           guint                  year,
++           DBusGMethodInvocation *context)
++{
++        GDateTime *time;
++        char *date_str, *time_str;
++        char *date_cmd;
++        int exit_status;
++        GError *error;
++
++        date_str = g_strdup_printf ("%02d/%02d/%d", month, day, year);
++        error = NULL;
++
++        time = g_date_time_new_now_local ();
++        time_str = g_date_time_format (time, "%R:%S");
++        g_date_time_unref (time);
++
++        date_cmd = g_strdup_printf ("/usr/bin/date -s \"%s %s\" +\"%%D %%R:%%S\"", date_str, time_str);
++        g_free (date_str);
++        g_free (time_str);
++
++        if (!g_spawn_command_line_sync (date_cmd, NULL, NULL, &exit_status, &error)) {
++                GError *error2;
++                error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                      GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                      "Error spawning /usr/bin/date: %s", error->message);
++                g_error_free (error);
++                dbus_g_method_return_error (context, error2);
++                g_error_free (error2);
++                g_free (date_cmd);
++                return FALSE;
++        }
++        g_free (date_cmd);
++        if (WEXITSTATUS (exit_status) != 0) {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "/usr/bin/date returned %d", exit_status);
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++
++        if (!_sync_hwclock (context))
++                return FALSE;
++
++        return TRUE;
++}
++
++/* exported methods */
++
++gboolean
++gsd_datetime_mechanism_set_time (GsdDatetimeMechanism  *mechanism,
++                                 gint64                 seconds_since_epoch,
++                                 DBusGMethodInvocation *context)
++{
++        struct timeval tv;
++
++        reset_killtimer ();
++        g_debug ("SetTime(%" G_GINT64_FORMAT ") called", seconds_since_epoch);
++
++        tv.tv_sec = (time_t) seconds_since_epoch;
++        tv.tv_usec = 0;
++        return _set_time (mechanism, &tv, context);
++}
++
++gboolean
++gsd_datetime_mechanism_set_date (GsdDatetimeMechanism  *mechanism,
++                                 guint                  day,
++                                 guint                  month,
++                                 guint                  year,
++                                 DBusGMethodInvocation *context)
++{
++        reset_killtimer ();
++        g_debug ("SetDate(%d, %d, %d) called", day, month, year);
++
++        return _set_date (mechanism, day, month, year, context);
++}
++
++gboolean
++gsd_datetime_mechanism_adjust_time (GsdDatetimeMechanism  *mechanism,
++                                    gint64                 seconds_to_add,
++                                    DBusGMethodInvocation *context)
++{
++        struct timeval tv;
++
++        reset_killtimer ();
++        g_debug ("AdjustTime(%" G_GINT64_FORMAT " ) called", seconds_to_add);
++
++        if (gettimeofday (&tv, NULL) != 0) {
++                GError *error;
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Error calling gettimeofday(): %s", strerror (errno));
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++
++        tv.tv_sec += (time_t) seconds_to_add;
++        return _set_time (mechanism, &tv, context);
++}
++
++static gboolean
++gsd_datetime_check_tz_name (const char *tz,
++                            GError    **error)
++{
++        GFile *file;
++        char *tz_path, *actual_path;
++        gboolean retval;
++
++        retval = TRUE;
++        tz_path = g_build_filename (SYSTEM_ZONEINFODIR, tz, NULL);
++
++        /* Get the actual resolved path */
++        file = g_file_new_for_path (tz_path);
++        actual_path = g_file_get_path (file);
++        g_object_unref (file);
++
++        /* The tz name passed had relative paths in it */
++        if (g_strcmp0 (tz_path, actual_path) != 0) {
++                g_set_error (error, GSD_DATETIME_MECHANISM_ERROR,
++                             GSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE,
++                             "Timezone file '%s' was invalid.",
++                             tz);
++                retval = FALSE;
++        }
++
++        g_free (tz_path);
++        g_free (actual_path);
++
++        return retval;
++}
++
++gboolean
++gsd_datetime_mechanism_set_timezone (GsdDatetimeMechanism  *mechanism,
++                                     const char            *tz,
++                                     DBusGMethodInvocation *context)
++{
++        GError *error;
++
++        reset_killtimer ();
++        g_debug ("SetTimezone('%s') called", tz);
++
++        if (!_check_polkit_for_action (mechanism, context))
++                return FALSE;
++
++        error = NULL;
++
++        if (!gsd_datetime_check_tz_name (tz, &error))
++                return FALSE;
++
++        if (!system_timezone_set (tz, &error)) {
++                GError *error2;
++                int     code;
++
++                if (error->code == SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE)
++                        code = GSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE;
++                else
++                        code = GSD_DATETIME_MECHANISM_ERROR_GENERAL;
++
++                error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                      code, "%s", error->message);
++
++                g_error_free (error);
++
++                dbus_g_method_return_error (context, error2);
++                g_error_free (error2);
++
++                return FALSE;
++        }
++
++        dbus_g_method_return (context);
++        return TRUE;
++}
++
++
++gboolean
++gsd_datetime_mechanism_get_timezone (GsdDatetimeMechanism   *mechism,
++                                     DBusGMethodInvocation  *context)
++{
++  gchar *timezone;
++
++  reset_killtimer ();
++
++  timezone = system_timezone_find ();
++
++  dbus_g_method_return (context, timezone);
++
++  return TRUE;
++}
++
++gboolean
++gsd_datetime_mechanism_get_hardware_clock_using_utc (GsdDatetimeMechanism  *mechanism,
++                                                     DBusGMethodInvocation *context)
++{
++        char **lines;
++        char *data;
++        gsize len;
++        GError *error;
++        gboolean is_utc;
++
++        error = NULL;
++
++        if (!g_file_get_contents ("/etc/adjtime", &data, &len, &error)) {
++                GError *error2;
++                error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                      GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                      "Error reading /etc/adjtime file: %s", error->message);
++                g_error_free (error);
++                dbus_g_method_return_error (context, error2);
++                g_error_free (error2);
++                return FALSE;
++        }
++
++        lines = g_strsplit (data, "\n", 0);
++        g_free (data);
++
++        if (g_strv_length (lines) < 3) {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Cannot parse /etc/adjtime");
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                g_strfreev (lines);
++                return FALSE;
++        }
++
++        if (strcmp (lines[2], "UTC") == 0) {
++                is_utc = TRUE;
++        } else if (strcmp (lines[2], "LOCAL") == 0) {
++                is_utc = FALSE;
++        } else {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Expected UTC or LOCAL at line 3 of /etc/adjtime; found '%s'", lines[2]);
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                g_strfreev (lines);
++                return FALSE;
++        }
++        g_strfreev (lines);
++        dbus_g_method_return (context, is_utc);
++        return TRUE;
++}
++
++gboolean
++gsd_datetime_mechanism_set_hardware_clock_using_utc (GsdDatetimeMechanism  *mechanism,
++                                                     gboolean               using_utc,
++                                                     DBusGMethodInvocation *context)
++{
++        GError *error;
++
++        error = NULL;
++
++        if (!_check_polkit_for_action (mechanism, context))
++                return FALSE;
++
++        if (g_file_test ("/usr/sbin/hwclock", 
++                         G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_EXECUTABLE)) {
++                int exit_status;
++                char *cmd;
++                cmd = g_strdup_printf ("/usr/sbin/hwclock %s --systohc", using_utc ? "--utc" : "--localtime");
++                if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &error)) {
++                        GError *error2;
++                        error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning /usr/sbin/hwclock: %s", error->message);
++                        g_error_free (error);
++                        dbus_g_method_return_error (context, error2);
++                        g_error_free (error2);
++                        g_free (cmd);
++                        return FALSE;
++                }
++                g_free (cmd);
++                if (WEXITSTATUS (exit_status) != 0) {
++                        error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                             GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                             "/usr/sbin/hwclock returned %d", exit_status);
++                        dbus_g_method_return_error (context, error);
++                        g_error_free (error);
++                        return FALSE;
++                }
++
++        }
++        dbus_g_method_return (context);
++        return TRUE;
++}
++
++gboolean
++gsd_datetime_mechanism_get_using_ntp  (GsdDatetimeMechanism    *mechanism,
++                                       DBusGMethodInvocation   *context)
++{
++        GError *error = NULL;
++        gboolean ret;
++
++        if (g_file_test ("/usr/sbin/update-rc.d", G_FILE_TEST_EXISTS)) /* Debian */
++                ret = _get_using_ntp_debian (context);
++        else {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Error enabling NTP: OS variant not supported");
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++
++        return ret;
++}
++
++gboolean
++gsd_datetime_mechanism_set_using_ntp  (GsdDatetimeMechanism    *mechanism,
++                                       gboolean                 using_ntp,
++                                       DBusGMethodInvocation   *context)
++{
++        GError *error;
++        gboolean ret;
++
++        error = NULL;
++
++        if (!_check_polkit_for_action (mechanism, context))
++                return FALSE;
++
++        if (g_file_test ("/usr/sbin/update-rc.d", G_FILE_TEST_EXISTS)) /* Debian */
++                ret = _set_using_ntp_debian (context, using_ntp);
++        else {
++                error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                     GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                     "Error enabling NTP: OS variant not supported");
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++
++        return ret;
++}
++
++static void
++check_can_do (GsdDatetimeMechanism  *mechanism,
++              const char            *action,
++              DBusGMethodInvocation *context)
++{
++        const char *sender;
++        PolkitSubject *subject;
++        PolkitAuthorizationResult *result;
++        GError *error;
++
++        /* Check that caller is privileged */
++        sender = dbus_g_method_get_sender (context);
++        subject = polkit_system_bus_name_new (sender);
++
++        error = NULL;
++        result = polkit_authority_check_authorization_sync (mechanism->priv->auth,
++                                                            subject,
++                                                            action,
++                                                            NULL,
++                                                            0,
++                                                            NULL,
++                                                            &error);
++        g_object_unref (subject);
++
++        if (error) {
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return;
++        }
++
++        if (polkit_authorization_result_get_is_authorized (result)) {
++                dbus_g_method_return (context, 2);
++        }
++        else if (polkit_authorization_result_get_is_challenge (result)) {
++                dbus_g_method_return (context, 1);
++        }
++        else {
++                dbus_g_method_return (context, 0);
++        }
++
++        g_object_unref (result);
++}
++
++
++gboolean
++gsd_datetime_mechanism_can_set_time (GsdDatetimeMechanism  *mechanism,
++                                     DBusGMethodInvocation *context)
++{
++        check_can_do (mechanism,
++                      "org.gnome.settingsdaemon.datetimemechanism.configure",
++                      context);
++
++        return TRUE;
++}
++
++gboolean
++gsd_datetime_mechanism_can_set_timezone (GsdDatetimeMechanism  *mechanism,
++                                         DBusGMethodInvocation *context)
++{
++        check_can_do (mechanism,
++                      "org.gnome.settingsdaemon.datetimemechanism.configure",
++                      context);
++
++        return TRUE;
++}
++
++gboolean
++gsd_datetime_mechanism_can_set_using_ntp (GsdDatetimeMechanism  *mechanism,
++                                          DBusGMethodInvocation *context)
++{
++        check_can_do (mechanism,
++                      "org.gnome.settingsdaemon.datetimemechanism.configure",
++                      context);
++
++        return TRUE;
++}
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-debian.c gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-debian.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-debian.c	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-debian.c	2012-09-21 00:05:22.493472443 -0400
+@@ -0,0 +1,200 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2007 David Zeuthen <david@fubar.dk>
++ * Copyright (C) 2011 Bastien Nocera <hadess@hadess.net>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#ifdef HAVE_CONFIG_H
++#  include "config.h"
++#endif
++
++#include "gsd-datetime-mechanism-debian.h"
++#include "gsd-datetime-mechanism.h"
++
++static void
++_get_using_ntpdate (gboolean *can_use, gboolean *is_using, GError ** error)
++{
++        if (!g_file_test ("/usr/sbin/ntpdate-debian", G_FILE_TEST_EXISTS))
++                return;
++
++        *can_use = TRUE;
++
++        if (g_file_test ("/etc/network/if-up.d/ntpdate", G_FILE_TEST_EXISTS))
++                *is_using = TRUE;
++}
++
++static void
++_get_using_ntpd (gboolean *can_use, gboolean *is_using, GError ** error)
++{
++        int exit_status;
++        GError *tmp_error = NULL;
++
++        if (!g_file_test ("/usr/sbin/ntpd", G_FILE_TEST_EXISTS))
++                return;
++
++        *can_use = TRUE;
++
++        if (!g_spawn_command_line_sync ("/usr/sbin/service ntp status",
++                                        NULL, NULL, &exit_status, &tmp_error)) {
++                if (error != NULL && *error == NULL) {
++                        *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning /usr/sbin/service: %s",
++                                              tmp_error->message);
++                }
++                g_error_free (tmp_error);
++                return;
++        }
++
++        if (exit_status == 0)
++                *is_using = TRUE;
++}
++
++gboolean
++_get_using_ntp_debian (DBusGMethodInvocation   *context)
++{
++        gboolean can_use_ntp = FALSE;
++        gboolean is_using_ntp = FALSE;
++        GError *error = NULL;
++
++        /* In Debian, ntpdate is used whenever the network comes up. So if
++           either ntpdate or ntpd is installed and available, can_use is true.
++           If either is active, is_using is true. */
++        _get_using_ntpdate (&can_use_ntp, &is_using_ntp, &error);
++        _get_using_ntpd (&can_use_ntp, &is_using_ntp, &error);
++
++        if (error == NULL) {
++                dbus_g_method_return (context, can_use_ntp, is_using_ntp);
++                return TRUE;
++        } else {
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++}
++
++static void
++_set_using_ntpdate (gboolean using_ntp, GError **error)
++{
++        const gchar *cmd = NULL;
++        GError  *tmp_error = NULL;
++
++        /* Debian uses an if-up.d script to sync network time when an interface
++           comes up.  This is a separate mechanism from ntpd altogether. */
++
++#define NTPDATE_ENABLED  "/etc/network/if-up.d/ntpdate"
++#define NTPDATE_DISABLED "/etc/network/if-up.d/ntpdate.disabled"
++
++        if (using_ntp && g_file_test (NTPDATE_DISABLED, G_FILE_TEST_EXISTS))
++                cmd = "/usr/bin/mv -f "NTPDATE_DISABLED" "NTPDATE_ENABLED;
++        else if (!using_ntp && g_file_test (NTPDATE_ENABLED, G_FILE_TEST_EXISTS))
++                cmd = "/usr/bin/mv -f "NTPDATE_ENABLED" "NTPDATE_DISABLED;
++        else
++                 return;
++
++        if (!g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &tmp_error)) {
++                if (error != NULL && *error == NULL) {
++                        *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning /usr/bin/mv: %s",
++                                              tmp_error->message);
++                }
++                g_error_free (tmp_error);
++                return;
++        }
++
++        /* Kick start ntpdate to sync time immediately */
++        if (using_ntp &&
++            !g_spawn_command_line_sync ("/etc/network/if-up.d/ntpdate",
++                                        NULL, NULL, NULL, &tmp_error)) {
++                if (error != NULL && *error == NULL) {
++                        *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning /etc/network/if-up.d/ntpdate: %s",
++                                              tmp_error->message);
++                }
++                g_error_free (tmp_error);
++                return;
++        }
++}
++
++static void
++_set_using_ntpd (gboolean using_ntp, GError **error)
++{
++        GError *tmp_error = NULL;
++        int exit_status;
++        char *cmd;
++
++        if (!g_file_test ("/usr/sbin/ntpd", G_FILE_TEST_EXISTS))
++                return;
++
++        cmd = g_strconcat ("/usr/sbin/update-rc.d ntp ", using_ntp ? "enable" : "disable", NULL);
++
++        if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &tmp_error)) {
++                if (error != NULL && *error == NULL) {
++                        *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning '%s': %s",
++                                              cmd, tmp_error->message);
++                }
++                g_error_free (tmp_error);
++                g_free (cmd);
++                return;
++        }
++
++        g_free (cmd);
++
++        cmd = g_strconcat ("/usr/sbin/service ntp ", using_ntp ? "restart" : "stop", NULL);;
++
++        if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &tmp_error)) {
++                if (error != NULL && *error == NULL) {
++                        *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
++                                              GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++                                              "Error spawning '%s': %s",
++                                              cmd, tmp_error->message);
++                }
++                g_error_free (tmp_error);
++                g_free (cmd);
++                return;
++        }
++
++        g_free (cmd);
++}
++
++gboolean
++_set_using_ntp_debian  (DBusGMethodInvocation   *context,
++                        gboolean                 using_ntp)
++{
++        GError *error = NULL;
++
++        /* In Debian, ntpdate and ntpd may be installed separately, so don't
++           assume both are valid. */
++
++        _set_using_ntpdate (using_ntp, &error);
++        _set_using_ntpd (using_ntp, &error);
++
++        if (error == NULL) {
++                dbus_g_method_return (context);
++                return TRUE;
++        } else {
++                dbus_g_method_return_error (context, error);
++                g_error_free (error);
++                return FALSE;
++        }
++}
++
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-debian.h gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-debian.h
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-debian.h	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-debian.h	2012-09-21 00:05:22.493472443 -0400
+@@ -0,0 +1,27 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2007 David Zeuthen <david@fubar.dk>
++ * Copyright (C) 2011 Bastien Nocera <hadess@hadess.net>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#include <glib.h>
++#include <dbus/dbus-glib.h>
++
++gboolean _get_using_ntp_debian (DBusGMethodInvocation   *context);
++gboolean _set_using_ntp_debian  (DBusGMethodInvocation   *context,
++                                 gboolean                 using_ntp);
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.h gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.h
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.h	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.h	2012-09-21 00:05:22.494472443 -0400
+@@ -0,0 +1,112 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2007 David Zeuthen <david@fubar.dk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#ifndef GSD_DATETIME_MECHANISM_H
++#define GSD_DATETIME_MECHANISM_H
++
++#include <glib-object.h>
++#include <dbus/dbus-glib.h>
++
++G_BEGIN_DECLS
++
++#define GSD_DATETIME_TYPE_MECHANISM         (gsd_datetime_mechanism_get_type ())
++#define GSD_DATETIME_MECHANISM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GSD_DATETIME_TYPE_MECHANISM, GsdDatetimeMechanism))
++#define GSD_DATETIME_MECHANISM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GSD_DATETIME_TYPE_MECHANISM, GsdDatetimeMechanismClass))
++#define GSD_DATETIME_IS_MECHANISM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GSD_DATETIME_TYPE_MECHANISM))
++#define GSD_DATETIME_IS_MECHANISM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GSD_DATETIME_TYPE_MECHANISM))
++#define GSD_DATETIME_MECHANISM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GSD_DATETIME_TYPE_MECHANISM, GsdDatetimeMechanismClass))
++
++typedef struct GsdDatetimeMechanismPrivate GsdDatetimeMechanismPrivate;
++
++typedef struct
++{
++        GObject        parent;
++        GsdDatetimeMechanismPrivate *priv;
++} GsdDatetimeMechanism;
++
++typedef struct
++{
++        GObjectClass   parent_class;
++} GsdDatetimeMechanismClass;
++
++typedef enum
++{
++        GSD_DATETIME_MECHANISM_ERROR_GENERAL,
++        GSD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED,
++        GSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE,
++        GSD_DATETIME_MECHANISM_NUM_ERRORS
++} GsdDatetimeMechanismError;
++
++#define GSD_DATETIME_MECHANISM_ERROR gsd_datetime_mechanism_error_quark ()
++
++GType gsd_datetime_mechanism_error_get_type (void);
++#define GSD_DATETIME_MECHANISM_TYPE_ERROR (gsd_datetime_mechanism_error_get_type ())
++
++
++GQuark                     gsd_datetime_mechanism_error_quark         (void);
++GType                      gsd_datetime_mechanism_get_type            (void);
++GsdDatetimeMechanism      *gsd_datetime_mechanism_new                 (void);
++
++/* exported methods */
++gboolean            gsd_datetime_mechanism_get_timezone (GsdDatetimeMechanism   *mechanism,
++                                                         DBusGMethodInvocation  *context);
++gboolean            gsd_datetime_mechanism_set_timezone (GsdDatetimeMechanism   *mechanism,
++                                                         const char             *zone_file,
++                                                         DBusGMethodInvocation  *context);
++
++gboolean            gsd_datetime_mechanism_can_set_timezone (GsdDatetimeMechanism  *mechanism,
++                                                             DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_set_time     (GsdDatetimeMechanism  *mechanism,
++                                                         gint64                 seconds_since_epoch,
++                                                         DBusGMethodInvocation *context);
++
++gboolean             gsd_datetime_mechanism_set_date     (GsdDatetimeMechanism  *mechanism,
++                                                          guint                  day,
++                                                          guint                  month,
++                                                          guint                  year,
++                                                          DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_can_set_time (GsdDatetimeMechanism  *mechanism,
++                                                         DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_adjust_time  (GsdDatetimeMechanism  *mechanism,
++                                                         gint64                 seconds_to_add,
++                                                         DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_get_hardware_clock_using_utc  (GsdDatetimeMechanism  *mechanism,
++                                                                          DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_set_hardware_clock_using_utc  (GsdDatetimeMechanism  *mechanism,
++                                                                          gboolean               using_utc,
++                                                                          DBusGMethodInvocation *context);
++
++gboolean            gsd_datetime_mechanism_get_using_ntp  (GsdDatetimeMechanism    *mechanism,
++                                                           DBusGMethodInvocation   *context);
++
++gboolean            gsd_datetime_mechanism_set_using_ntp  (GsdDatetimeMechanism    *mechanism,
++                                                           gboolean                 using_ntp,
++                                                           DBusGMethodInvocation   *context);
++
++gboolean            gsd_datetime_mechanism_can_set_using_ntp (GsdDatetimeMechanism  *mechanism,
++                                                              DBusGMethodInvocation *context);
++G_END_DECLS
++
++#endif /* GSD_DATETIME_MECHANISM_H */
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-main.c gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-main.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism-main.c	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism-main.c	2012-09-21 00:05:22.494472443 -0400
+@@ -0,0 +1,171 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2007 David Zeuthen <david@fubar.dk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#ifdef HAVE_CONFIG_H
++#  include "config.h"
++#endif
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <signal.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++
++#include <glib.h>
++#include <glib-object.h>
++
++#include <dbus/dbus-glib.h>
++#include <dbus/dbus-glib-lowlevel.h>
++
++
++#include "gsd-datetime-mechanism.h"
++
++static DBusGProxy *
++get_bus_proxy (DBusGConnection *connection)
++{
++        DBusGProxy *bus_proxy;
++
++	bus_proxy = dbus_g_proxy_new_for_name (connection,
++                                               DBUS_SERVICE_DBUS,
++                                               DBUS_PATH_DBUS,
++                                               DBUS_INTERFACE_DBUS);
++        return bus_proxy;
++}
++
++#define BUS_NAME "org.gnome.SettingsDaemon.DateTimeMechanism"
++
++static gboolean
++acquire_name_on_proxy (DBusGProxy *bus_proxy)
++{
++        GError     *error;
++        guint       result;
++        gboolean    res;
++        gboolean    ret;
++
++        ret = FALSE;
++
++        if (bus_proxy == NULL) {
++                goto out;
++        }
++
++        error = NULL;
++	res = dbus_g_proxy_call (bus_proxy,
++                                 "RequestName",
++                                 &error,
++                                 G_TYPE_STRING, BUS_NAME,
++                                 G_TYPE_UINT, 0,
++                                 G_TYPE_INVALID,
++                                 G_TYPE_UINT, &result,
++                                 G_TYPE_INVALID);
++        if (! res) {
++                if (error != NULL) {
++                        g_warning ("Failed to acquire %s: %s", BUS_NAME, error->message);
++                        g_error_free (error);
++                } else {
++                        g_warning ("Failed to acquire %s", BUS_NAME);
++                }
++                goto out;
++	}
++
++ 	if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
++                if (error != NULL) {
++                        g_warning ("Failed to acquire %s: %s", BUS_NAME, error->message);
++                        g_error_free (error);
++                } else {
++                        g_warning ("Failed to acquire %s", BUS_NAME);
++                }
++                goto out;
++        }
++
++        ret = TRUE;
++
++ out:
++        return ret;
++}
++
++static DBusGConnection *
++get_system_bus (void)
++{
++        GError          *error;
++        DBusGConnection *bus;
++
++        error = NULL;
++        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
++        if (bus == NULL) {
++                g_warning ("Couldn't connect to system bus: %s", error->message);
++                g_error_free (error);
++        }
++        return bus;
++}
++
++int
++main (int argc, char **argv)
++{
++        GMainLoop             *loop;
++        GsdDatetimeMechanism  *mechanism;
++        DBusGProxy            *bus_proxy;
++        DBusGConnection       *connection;
++        int                    ret;
++
++        ret = 1;
++
++        if (! g_thread_supported ()) {
++                g_thread_init (NULL);
++        }
++        dbus_g_thread_init ();
++        g_type_init ();
++
++        connection = get_system_bus ();
++        if (connection == NULL) {
++                goto out;
++        }
++
++        bus_proxy = get_bus_proxy (connection);
++        if (bus_proxy == NULL) {
++                g_warning ("Could not construct bus_proxy object; bailing out");
++                goto out;
++        }
++
++        if (!acquire_name_on_proxy (bus_proxy) ) {
++                g_warning ("Could not acquire name; bailing out");
++                goto out;
++        }
++
++        mechanism = gsd_datetime_mechanism_new ();
++
++        if (mechanism == NULL) {
++                goto out;
++        }
++
++        loop = g_main_loop_new (NULL, FALSE);
++
++        g_main_loop_run (loop);
++
++        g_object_unref (mechanism);
++        g_main_loop_unref (loop);
++        ret = 0;
++
++out:
++        return ret;
++}
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.xml gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.xml
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/gsd-datetime-mechanism.xml	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/gsd-datetime-mechanism.xml	2012-09-21 00:05:22.495472443 -0400
+@@ -0,0 +1,129 @@
++<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
++<node name="/">
++  <interface name="org.gnome.SettingsDaemon.DateTimeMechanism">
++    <method name="SetTimezone">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="tz" direction="in" type="s"/>
++    </method>
++
++    <method name="GetTimezone">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="timezone" direction="out" type="s"/>
++    </method>
++
++    <method name="CanSetTimezone">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="value" direction="out" type="i">
++        <doc:doc>
++          <doc:summary>Whether the caller can set the timezone</doc:summary>
++          <doc:description>
++            <doc:para>
++              The return value is not a boolean, but an integer with the following meaning:
++              <doc:list>
++                <doc:item>
++                  <doc:term>0</doc:term>
++                  <doc:definition>the caller cannot set the timezone</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>1</doc:term>
++                  <doc:definition>the caller will be challenged before being able to set the timezone</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>2</doc:term>
++                  <doc:definition>the caller is authorized to set the timezone</doc:definition>
++                </doc:item>
++              </doc:list>
++            </doc:para>
++          </doc:description>
++        </doc:doc>
++      </arg>
++    </method>
++    <method name="SetDate">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="day" direction="in" type="u"/>
++      <arg name="month" direction="in" type="u"/>
++      <arg name="year" direction="in" type="u"/>
++    </method>
++    <method name="SetTime">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="seconds_since_epoch" direction="in" type="x"/>
++    </method>
++    <method name="CanSetTime">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="value" direction="out" type="i">
++        <doc:doc>
++          <doc:summary>Whether the caller can set the time</doc:summary>
++          <doc:description>
++            <doc:para>
++              The return value is not a boolean, but an integer with the following meaning:
++              <doc:list>
++                <doc:item>
++                  <doc:term>0</doc:term>
++                  <doc:definition>the caller cannot set the time</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>1</doc:term>
++                  <doc:definition>the caller will be challenged before being able to set the time</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>2</doc:term>
++                  <doc:definition>the caller is authorized to set the time</doc:definition>
++                </doc:item>
++              </doc:list>
++            </doc:para>
++          </doc:description>
++        </doc:doc>
++      </arg>
++    </method>
++    <method name="AdjustTime">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="seconds_to_add" direction="in" type="x"/>
++    </method>
++
++    <method name="GetHardwareClockUsingUtc">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="is_using_utc" direction="out" type="b"/>
++    </method>
++    <method name="SetHardwareClockUsingUtc">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="is_using_utc" direction="in" type="b"/>
++    </method>
++
++    <method name="GetUsingNtp">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="can_use_ntp" direction="out" type="b"/>
++      <arg name="is_using_ntp" direction="out" type="b"/>
++    </method>
++    <method name="SetUsingNtp">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="is_using_ntp" direction="in" type="b"/>
++    </method>
++    <method name="CanSetUsingNtp">
++      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
++      <arg name="value" direction="out" type="i">
++        <doc:doc>
++          <doc:summary>Whether the caller can set the "use NTP" setting</doc:summary>
++          <doc:description>
++            <doc:para>
++              The return value is not a boolean, but an integer with the following meaning:
++              <doc:list>
++                <doc:item>
++                  <doc:term>0</doc:term>
++                  <doc:definition>the caller cannot change the "use NTP" setting</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>1</doc:term>
++                  <doc:definition>the caller will be challenged before being able to change "use NTP" setting</doc:definition>
++                </doc:item>
++                <doc:item>
++                  <doc:term>2</doc:term>
++                  <doc:definition>the caller is authorized to change the "use NTP" setting</doc:definition>
++                </doc:item>
++              </doc:list>
++            </doc:para>
++          </doc:description>
++        </doc:doc>
++      </arg>
++    </method>
++  </interface>
++</node>
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/Makefile.am gnome-settings-daemon-3.5.92/plugins/datetime/Makefile.am
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/Makefile.am	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/Makefile.am	2012-09-21 00:05:22.495472443 -0400
+@@ -0,0 +1,68 @@
++plugin_name = datetime
++
++dbus_servicesdir = $(datadir)/dbus-1/system-services
++dbus_confdir = $(sysconfdir)/dbus-1/system.d
++polkitdir = $(datadir)/polkit-1/actions
++
++dbus_services_in_files = org.gnome.SettingsDaemon.DateTimeMechanism.service.in
++polkit_in_files = org.gnome.settingsdaemon.datetimemechanism.policy.in
++
++gsd-datetime-mechanism-glue.h: $(srcdir)/gsd-datetime-mechanism.xml
++	$(AM_V_GEN) dbus-binding-tool \
++			--prefix=gsd_datetime_mechanism --mode=glib-server	\
++			--output=gsd-datetime-mechanism-glue.h			\
++			$(srcdir)/gsd-datetime-mechanism.xml
++
++
++if HAVE_POLKIT
++libexec_PROGRAMS = gsd-datetime-mechanism
++noinst_PROGRAMS = test-system-timezone
++endif
++
++gsd_datetime_mechanism_SOURCES =		\
++	gsd-datetime-mechanism.c		\
++	gsd-datetime-mechanism.h		\
++	gsd-datetime-mechanism-debian.c		\
++	gsd-datetime-mechanism-debian.h		\
++	gsd-datetime-mechanism-main.c		\
++	system-timezone.c			\
++	system-timezone.h
++
++
++if HAVE_POLKIT
++BUILT_SOURCES = gsd-datetime-mechanism-glue.h
++endif
++
++AM_CFLAGS = $(POLKIT_CFLAGS)
++gsd_datetime_mechanism_LDADD = $(POLKIT_LIBS)
++
++test_system_timezone_SOURCES = test-system-timezone.c system-timezone.c system-timezone.h
++test_system_timezone_LDADD = $(POLKIT_LIBS)
++
++if HAVE_POLKIT
++dbus_services_DATA = $(dbus_services_in_files:.service.in=.service)
++
++$(dbus_services_DATA): $(dbus_services_in_files)
++	$(AM_V_GEN)sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
++
++dbus_conf_DATA = org.gnome.SettingsDaemon.DateTimeMechanism.conf
++
++@INTLTOOL_POLICY_RULE@
++polkit_DATA = $(polkit_in_files:.policy.in=.policy)
++
++else
++dbus_services_DATA =
++dbus_conf_DATA =
++polkit_DATA =
++endif
++
++EXTRA_DIST =						\
++	$(dbus_services_in_files)			\
++	org.gnome.SettingsDaemon.DateTimeMechanism.conf	\
++	$(polkit_in_files)				\
++	gsd-datetime-mechanism.xml
++
++CLEANFILES = 		\
++	org.gnome.SettingsDaemon.DateTimeMechanism.service	\
++	org.gnome.settingsdaemon.datetimemechanism.policy	\
++	$(BUILT_SOURCES)
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.conf gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.conf
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.conf	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.conf	2012-09-21 00:05:22.496472443 -0400
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
++
++<!DOCTYPE busconfig PUBLIC
++ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
++ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
++<busconfig>
++
++  <!-- Only root can own the service -->
++  <policy user="root">
++    <allow own="org.gnome.SettingsDaemon.DateTimeMechanism"/>
++    <allow send_destination="org.gnome.SettingsDaemon.DateTimeMechanism"/>
++  </policy>
++
++  <!-- Allow anyone to invoke methods on the interfaces -->
++  <policy context="default">
++    <allow send_destination="org.gnome.SettingsDaemon.DateTimeMechanism"/>
++  </policy>
++
++</busconfig>
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.settingsdaemon.datetimemechanism.policy.in gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.settingsdaemon.datetimemechanism.policy.in
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.settingsdaemon.datetimemechanism.policy.in	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.settingsdaemon.datetimemechanism.policy.in	2012-09-21 00:05:22.496472443 -0400
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE policyconfig PUBLIC
++ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
++ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
++
++<policyconfig>
++  <vendor>The GNOME Project</vendor>
++  <vendor_url>http://www.gnome.org/</vendor_url>
++  <icon_name>gnome-panel-clock</icon_name>
++
++  <action id="org.gnome.settingsdaemon.datetimemechanism.configure">
++    <_description>Change system time and date settings</_description>
++    <_message>To change time or date settings, you need to authenticate.</_message>
++    <defaults>
++      <allow_any>no</allow_any>
++      <allow_inactive>no</allow_inactive>
++      <allow_active>auth_admin_keep</allow_active>
++    </defaults>
++  </action>
++
++</policyconfig>
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.service.in gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.service.in
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.service.in	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/org.gnome.SettingsDaemon.DateTimeMechanism.service.in	2012-09-21 00:05:22.497472443 -0400
+@@ -0,0 +1,4 @@
++[D-BUS Service]
++Name=org.gnome.SettingsDaemon.DateTimeMechanism
++Exec=@LIBEXECDIR@/gsd-datetime-mechanism
++User=root
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/system-timezone.c gnome-settings-daemon-3.5.92/plugins/datetime/system-timezone.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/system-timezone.c	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/system-timezone.c	2012-09-21 00:05:22.498472443 -0400
+@@ -0,0 +1,924 @@
++/* System timezone handling
++ *
++ * Copyright (C) 2008 Novell, Inc.
++ *
++ * Authors: Vincent Untz <vuntz@gnome.org>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
++ * 
++ * Some code is based on previous code in clock-location.c and on code from
++ * tz.c (shipped with version <= 2.22.0). Those files were under the same
++ * license, with those authors and copyrights:
++ * 
++ * clock-location.c:
++ * ================
++ * No header, but most of the work was done (AFAIK) by
++ * Federico Mena Quintero <federico@novell.com>
++ * Matthias Clasen <mclasen@redhat.com>
++ *
++ * tz.c:
++ * ====
++ * Copyright (C) 2000-2001 Ximian, Inc.
++ * Copyright (C) 2004 Sun Microsystems, Inc.
++ *
++ * Authors: Hans Petter Jansson <hpj@ximian.com>
++ *	    additional functions by Erwann Chenede <erwann.chenede@sun.com>
++ *	    reworked by Vincent Untz <vuntz@gnome.org>
++ * 
++ * Largely based on Michael Fulbright's work on Anaconda.
++ */
++
++/* FIXME: it'd be nice to filter out the timezones that we might get when
++ * parsing config files that are not in zone.tab. Note that it's also wrong
++ * in some cases: eg, in tzdata2008b, Asia/Calcutta got renamed to
++ * Asia/Kolkata and the old name is not in zone.tab. */
++
++#include <string.h>
++#include <unistd.h>
++
++#include <glib.h>
++#include <glib/gstdio.h>
++#include <gio/gio.h>
++
++#include "system-timezone.h"
++
++/* Files that we look at */
++#define ETC_TIMEZONE        "/etc/timezone"
++#define ETC_TIMEZONE_MAJ    "/etc/TIMEZONE"
++#define ETC_RC_CONF         "/etc/rc.conf"
++#define ETC_SYSCONFIG_CLOCK "/etc/sysconfig/clock"
++#define ETC_CONF_D_CLOCK    "/etc/conf.d/clock"
++#define ETC_LOCALTIME       "/etc/localtime"
++
++/* The first 4 characters in a timezone file, from tzfile.h */
++#define TZ_MAGIC "TZif"
++
++static GObject *systz_singleton = NULL;
++
++G_DEFINE_TYPE (SystemTimezone, system_timezone, G_TYPE_OBJECT)
++
++typedef struct {
++        char *tz;
++        char *env_tz;
++} SystemTimezonePrivate;
++
++static GObject *system_timezone_constructor (GType                  type,
++                                             guint                  n_construct_properties,
++                                             GObjectConstructParam *construct_properties);
++static void system_timezone_finalize (GObject *obj);
++
++#define PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), SYSTEM_TIMEZONE_TYPE, SystemTimezonePrivate))
++
++SystemTimezone *
++system_timezone_new (void)
++{
++        return g_object_new (SYSTEM_TIMEZONE_TYPE, NULL);
++}
++
++const char *
++system_timezone_get (SystemTimezone *systz)
++{
++        SystemTimezonePrivate *priv;
++
++        g_return_val_if_fail (IS_SYSTEM_TIMEZONE (systz), NULL);
++
++        priv = PRIVATE (systz);
++        return priv->tz;
++}
++
++const char *
++system_timezone_get_env (SystemTimezone *systz)
++{
++        SystemTimezonePrivate *priv;
++
++        g_return_val_if_fail (IS_SYSTEM_TIMEZONE (systz), NULL);
++
++        priv = PRIVATE (systz);
++        return priv->env_tz;
++}
++
++static void
++system_timezone_class_init (SystemTimezoneClass *class)
++{
++        GObjectClass *g_obj_class = G_OBJECT_CLASS (class);
++
++        g_obj_class->constructor = system_timezone_constructor;
++        g_obj_class->finalize = system_timezone_finalize;
++
++        g_type_class_add_private (class, sizeof (SystemTimezonePrivate));
++}
++
++static void
++system_timezone_init (SystemTimezone *systz)
++{
++        SystemTimezonePrivate *priv = PRIVATE (systz);
++
++        priv->tz = NULL;
++        priv->env_tz = NULL;
++}
++
++static GObject *
++system_timezone_constructor (GType                  type,
++                             guint                  n_construct_properties,
++                             GObjectConstructParam *construct_properties)
++{
++        GObject *obj;
++        SystemTimezonePrivate *priv;
++
++        /* This is a singleton, we don't need to have it per-applet */
++        if (systz_singleton)
++                return g_object_ref (systz_singleton);
++
++        obj = G_OBJECT_CLASS (system_timezone_parent_class)->constructor (
++                                                type,
++                                                n_construct_properties,
++                                                construct_properties);
++
++        priv = PRIVATE (obj);
++
++        priv->tz = system_timezone_find ();
++
++        priv->env_tz = g_strdup (g_getenv ("TZ"));
++
++        systz_singleton = obj;
++
++        return systz_singleton;
++}
++
++static void
++system_timezone_finalize (GObject *obj)
++{
++        SystemTimezonePrivate *priv = PRIVATE (obj);
++
++        if (priv->tz) {
++                g_free (priv->tz);
++                priv->tz = NULL;
++        }
++
++        if (priv->env_tz) {
++                g_free (priv->env_tz);
++                priv->env_tz = NULL;
++        }
++
++        G_OBJECT_CLASS (system_timezone_parent_class)->finalize (obj);
++
++        g_assert (obj == systz_singleton);
++
++        systz_singleton = NULL;
++}
++
++/*
++ * Code to deal with the system timezone on all distros.
++ * There's no dependency on the SystemTimezone GObject here.
++ *
++ * Here's what we know:
++ *
++ *  + /etc/localtime contains the binary data of the timezone.
++ *    It can be a symlink to the actual data file, a hard link to the data
++ *    file, or just a copy. So we can determine the timezone with this
++ *    (reading the symlink, comparing inodes, or comparing content).
++ *
++ *  + However, most distributions also have the timezone setting
++ *    configured somewhere else. This might be better to read it from there.
++ *
++ *    Debian/Ubuntu/Gentoo (new): content of /etc/timezone
++ *    Fedora/Mandriva: the ZONE key in /etc/sysconfig/clock
++ *    openSUSE: the TIMEZONE key in /etc/sysconfig/clock
++ *    Solaris/OpenSolaris: the TZ key in /etc/TIMEZONE
++ *    Arch Linux: the TIMEZONE key in /etc/rc.conf
++ *    Gentoo (old): the ZONE key in /etc/conf.d/clock
++ *
++ *    FIXME: reading the system-tools-backends, it seems there's this too:
++ *           Solaris: the TZ key in /etc/default/init
++ *                    /etc/TIMEZONE seems to be a link to /etc/default/init
++ *
++ * First, some functions to handle those system config files.
++ *
++ */
++
++/* This works for Debian and derivatives (including Ubuntu), and new Gentoo */
++static char *
++system_timezone_read_etc_timezone (void)
++{
++        FILE    *etc_timezone;
++        GString *reading;
++        int      c;
++
++        etc_timezone = g_fopen (ETC_TIMEZONE, "r");
++        if (!etc_timezone)
++                return NULL;
++
++        reading = g_string_new ("");
++
++        c = fgetc (etc_timezone);
++        /* only get the first line, we'll validate the value later */
++        while (c != EOF && !g_ascii_isspace (c)) {
++                reading = g_string_append_c (reading, c);
++                c = fgetc (etc_timezone);
++        }
++
++        fclose (etc_timezone);
++
++        if (reading->str && reading->str[0] != '\0')
++                return g_string_free (reading, FALSE);
++        else
++                g_string_free (reading, TRUE);
++
++        return NULL;
++}
++
++static gboolean
++system_timezone_write_etc_timezone (const char  *tz,
++                                    GError     **error)
++{
++        char     *content;
++        GError   *our_error;
++        gboolean  retval;
++
++        if (!g_file_test (ETC_TIMEZONE, G_FILE_TEST_IS_REGULAR))
++                return TRUE;
++
++        content = g_strdup_printf ("%s\n", tz);
++
++        our_error = NULL;
++        retval = g_file_set_contents (ETC_TIMEZONE, content, -1, &our_error);
++        g_free (content);
++
++        if (!retval) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_GENERAL,
++                             ETC_TIMEZONE" cannot be overwritten: %s",
++                             our_error->message);
++                g_error_free (our_error);
++        }
++
++        return retval;
++}
++
++
++/* Read a file that looks like a key-file (but there's no need for groups)
++ * and get the last value for a specific key */
++static char *
++system_timezone_read_key_file (const char *filename,
++                               const char *key)
++{
++        GIOChannel *channel;
++        char       *key_eq;
++        char       *line;
++        char       *retval;
++
++        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
++                return NULL;
++
++        channel = g_io_channel_new_file (filename, "r", NULL);
++        if (!channel)
++                return NULL;
++
++        key_eq = g_strdup_printf ("%s=", key);
++        retval = NULL;
++
++        while (g_io_channel_read_line (channel, &line, NULL,
++                                       NULL, NULL) == G_IO_STATUS_NORMAL) {
++                if (g_str_has_prefix (line, key_eq)) {
++                        char *value;
++                        int   len;
++
++                        value = line + strlen (key_eq);
++                        g_strstrip (value);
++
++                        len = strlen (value);
++
++                        if (value[0] == '\"') {
++                                if (value[len - 1] == '\"') {
++                                        if (retval)
++                                                g_free (retval);
++
++                                        retval = g_strndup (value + 1,
++                                                            len - 2);
++                                }
++                        } else {
++                                if (retval)
++                                        g_free (retval);
++
++                                retval = g_strdup (line + strlen (key_eq));
++                        }
++
++                        g_strstrip (retval);
++                }
++
++                g_free (line);
++        }
++
++        g_free (key_eq);
++        g_io_channel_unref (channel);
++
++        return retval;
++}
++
++static gboolean
++system_timezone_write_key_file (const char  *filename,
++                                const char  *key,
++                                const char  *value,
++                                GError     **error)
++{
++        GError    *our_error;
++        char      *content;
++        gsize      len;
++        char      *key_eq;
++        char     **lines;
++        gboolean   replaced;
++        gboolean   retval;
++        int        n;
++        
++        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
++                return TRUE;
++
++        our_error = NULL;
++
++        if (!g_file_get_contents (filename, &content, &len, &our_error)) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_GENERAL,
++                             "%s cannot be read: %s",
++                             filename, our_error->message);
++                g_error_free (our_error);
++                return FALSE;
++        }
++
++        lines = g_strsplit (content, "\n", 0);
++        g_free (content);
++
++        key_eq = g_strdup_printf ("%s=", key);
++        replaced = FALSE;
++
++        for (n = 0; lines[n] != NULL; n++) {
++                if (g_str_has_prefix (lines[n], key_eq)) {
++                        char     *old_value;
++                        gboolean  use_quotes;
++
++                        old_value = lines[n] + strlen (key_eq);
++                        g_strstrip (old_value);
++                        use_quotes = old_value[0] == '\"';
++
++                        g_free (lines[n]);
++
++                        if (use_quotes)
++                                lines[n] = g_strdup_printf ("%s\"%s\"",
++                                                            key_eq, value);
++                        else
++                                lines[n] = g_strdup_printf ("%s%s",
++                                                            key_eq, value);
++
++                        replaced = TRUE;
++                }
++        }
++
++        g_free (key_eq);
++
++        if (!replaced) {
++                g_strfreev (lines);
++                return TRUE;
++        }
++
++        content = g_strjoinv ("\n", lines);
++        g_strfreev (lines);
++
++        retval = g_file_set_contents (filename, content, -1, &our_error);
++        g_free (content);
++
++        if (!retval) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_GENERAL,
++                             "%s cannot be overwritten: %s",
++                             filename, our_error->message);
++                g_error_free (our_error);
++        }
++
++        return retval;
++}
++
++/* This works for Solaris/OpenSolaris */
++static char *
++system_timezone_read_etc_TIMEZONE (void)
++{
++        return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
++                                              "TZ");
++}
++
++static gboolean
++system_timezone_write_etc_TIMEZONE (const char  *tz,
++                                    GError     **error)
++{
++        return system_timezone_write_key_file (ETC_TIMEZONE_MAJ,
++                                               "TZ", tz, error);
++}
++
++/* This works for Fedora and Mandriva */
++static char *
++system_timezone_read_etc_sysconfig_clock (void)
++{
++        return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
++                                              "ZONE");
++}
++
++static gboolean
++system_timezone_write_etc_sysconfig_clock (const char  *tz,
++                                           GError     **error)
++{
++        return system_timezone_write_key_file (ETC_SYSCONFIG_CLOCK,
++                                               "ZONE", tz, error);
++}
++
++/* This works for openSUSE */
++static char *
++system_timezone_read_etc_sysconfig_clock_alt (void)
++{
++        return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
++                                              "TIMEZONE");
++}
++
++static gboolean
++system_timezone_write_etc_sysconfig_clock_alt (const char  *tz,
++                                               GError     **error)
++{
++        return system_timezone_write_key_file (ETC_SYSCONFIG_CLOCK,
++                                               "TIMEZONE", tz, error);
++}
++
++/* This works for old Gentoo */
++static char *
++system_timezone_read_etc_conf_d_clock (void)
++{
++        return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
++                                              "TIMEZONE");
++}
++
++static gboolean
++system_timezone_write_etc_conf_d_clock (const char  *tz,
++                                        GError     **error)
++{
++        return system_timezone_write_key_file (ETC_CONF_D_CLOCK,
++                                               "TIMEZONE", tz, error);
++}
++
++/* This works for Arch Linux */
++static char *
++system_timezone_read_etc_rc_conf (void)
++{
++        return system_timezone_read_key_file (ETC_RC_CONF,
++                                              "TIMEZONE");
++}
++
++static gboolean
++system_timezone_write_etc_rc_conf (const char  *tz,
++                                   GError     **error)
++{
++        return system_timezone_write_key_file (ETC_RC_CONF,
++                                               "TIMEZONE", tz, error);
++}
++
++/*
++ *
++ * First, getting the timezone.
++ *
++ */
++
++static char *
++system_timezone_strip_path_if_valid (const char *filename)
++{
++        int skip;
++
++        if (!filename || !g_str_has_prefix (filename, SYSTEM_ZONEINFODIR"/"))
++                return NULL;
++
++        /* Timezone data files also live under posix/ and right/ for some
++         * reason.
++         * FIXME: make sure accepting those files is valid. I think "posix" is
++         * okay, not sure about "right" */
++        if (g_str_has_prefix (filename, SYSTEM_ZONEINFODIR"/posix/"))
++                skip = strlen (SYSTEM_ZONEINFODIR"/posix/");
++        else if (g_str_has_prefix (filename, SYSTEM_ZONEINFODIR"/right/"))
++                skip = strlen (SYSTEM_ZONEINFODIR"/right/");
++        else
++                skip = strlen (SYSTEM_ZONEINFODIR"/");
++
++        return g_strdup (filename + skip);
++}
++
++/* Read the soft symlink from /etc/localtime */
++static char *
++system_timezone_read_etc_localtime_softlink (void)
++{
++        char *file;
++        char *tz;
++
++        if (!g_file_test (ETC_LOCALTIME, G_FILE_TEST_IS_SYMLINK))
++                return NULL;
++
++        file = g_file_read_link (ETC_LOCALTIME, NULL);
++        tz = system_timezone_strip_path_if_valid (file);
++        g_free (file);
++
++        return tz;
++}
++
++typedef gboolean (*CompareFiles) (struct stat *a_stat,
++                                  struct stat *b_stat,
++                                  const char  *a_content,
++                                  gsize        a_content_len,
++                                  const char  *b_filename);
++
++static char *
++recursive_compare (struct stat  *localtime_stat,
++                   const char   *localtime_content,
++                   gsize         localtime_content_len,
++                   char         *file,
++                   CompareFiles  compare_func)
++{
++        struct stat file_stat;
++
++        if (g_stat (file, &file_stat) != 0)
++                return NULL;
++
++        if (S_ISREG (file_stat.st_mode)) {
++                if (compare_func (localtime_stat,
++                                  &file_stat,
++                                  localtime_content,
++                                  localtime_content_len,
++                                  file))
++                        return system_timezone_strip_path_if_valid (file);
++                else
++                        return NULL;
++        } else if (S_ISDIR (file_stat.st_mode)) {
++                GDir       *dir = NULL;
++                char       *ret = NULL;
++                const char *subfile = NULL;
++                char       *subpath = NULL;
++
++                dir = g_dir_open (file, 0, NULL);
++                if (dir == NULL)
++                        return NULL;
++
++                while ((subfile = g_dir_read_name (dir)) != NULL) {
++                        subpath = g_build_filename (file, subfile, NULL);
++
++                        ret = recursive_compare (localtime_stat,
++                                                 localtime_content,
++                                                 localtime_content_len,
++                                                 subpath,
++                                                 compare_func);
++
++                        g_free (subpath);
++
++                        if (ret != NULL)
++                                break;
++                }
++
++                g_dir_close (dir);
++
++                return ret;
++        }
++
++        return NULL;
++}
++
++
++static gboolean
++files_are_identical_inode (struct stat *a_stat,
++                           struct stat *b_stat,
++                           const char  *a_content,
++                           gsize        a_content_len,
++                           const char  *b_filename)
++{
++        return (a_stat->st_ino == b_stat->st_ino);
++}
++
++
++/* Determine if /etc/localtime is a hard link to some file, by looking at
++ * the inodes */
++static char *
++system_timezone_read_etc_localtime_hardlink (void)
++{
++        struct stat stat_localtime;
++
++        if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
++                return NULL;
++
++        if (!S_ISREG (stat_localtime.st_mode))
++                return NULL;
++
++        return recursive_compare (&stat_localtime,
++                                  NULL,
++                                  0,
++                                  SYSTEM_ZONEINFODIR,
++                                  files_are_identical_inode);
++}
++
++static gboolean
++files_are_identical_content (struct stat *a_stat,
++                             struct stat *b_stat,
++                             const char  *a_content,
++                             gsize        a_content_len,
++                             const char  *b_filename)
++{
++        char  *b_content = NULL;
++        gsize  b_content_len = -1;
++        int    cmp;
++
++        if (a_stat->st_size != b_stat->st_size)
++                return FALSE;
++
++        if (!g_file_get_contents (b_filename,
++                                  &b_content, &b_content_len, NULL))
++                return FALSE;
++
++        if (a_content_len != b_content_len) {
++                g_free (b_content);
++                return FALSE;
++        }
++
++        cmp = memcmp (a_content, b_content, a_content_len);
++        g_free (b_content);
++
++        return (cmp == 0);
++}
++
++/* Determine if /etc/localtime is a copy of a timezone file */
++static char *
++system_timezone_read_etc_localtime_content (void)
++{
++        struct stat  stat_localtime;
++        char        *localtime_content = NULL;
++        gsize        localtime_content_len = -1;
++        char        *retval;
++
++        if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
++                return NULL;
++
++        if (!S_ISREG (stat_localtime.st_mode))
++                return NULL;
++
++        if (!g_file_get_contents (ETC_LOCALTIME,
++                                  &localtime_content,
++                                  &localtime_content_len,
++                                  NULL))
++                return NULL;
++
++        retval = recursive_compare (&stat_localtime,
++                                   localtime_content,
++                                   localtime_content_len,
++                                   SYSTEM_ZONEINFODIR,
++                                   files_are_identical_content);
++
++        g_free (localtime_content);
++
++        return retval;
++}
++
++typedef char * (*GetSystemTimezone) (void);
++/* The order of the functions here define the priority of the methods used
++ * to find the timezone. First method has higher priority. */
++static GetSystemTimezone get_system_timezone_methods[] = {
++        /* cheap and "more correct" than data from a config file */
++        system_timezone_read_etc_localtime_softlink,
++        /* reading various config files */
++        system_timezone_read_etc_timezone,
++        system_timezone_read_etc_sysconfig_clock,
++        system_timezone_read_etc_sysconfig_clock_alt,
++        system_timezone_read_etc_TIMEZONE,
++        system_timezone_read_etc_rc_conf,
++        /* reading deprecated config files */
++        system_timezone_read_etc_conf_d_clock,
++        /* reading /etc/timezone directly. Expensive since we have to stat
++         * many files */
++        system_timezone_read_etc_localtime_hardlink,
++        system_timezone_read_etc_localtime_content,
++        NULL
++};
++
++static gboolean
++system_timezone_is_valid (const char *tz)
++{
++        const char *c;
++
++        if (!tz)
++                return FALSE;
++
++        for (c = tz; *c != '\0'; c++) {
++                if (!(g_ascii_isalnum (*c) ||
++                      *c == '/' || *c == '-' || *c == '_'))
++                        return FALSE;
++        }
++
++        return TRUE;
++}
++
++char *
++system_timezone_find (void)
++{
++        char *tz;
++        int   i;
++
++        for (i = 0; get_system_timezone_methods[i] != NULL; i++) {
++                tz = get_system_timezone_methods[i] ();
++
++                if (system_timezone_is_valid (tz))
++                        return tz;
++
++                g_free (tz);
++        }
++
++        return g_strdup ("UTC");
++}
++
++/*
++ *
++ * Now, setting the timezone.
++ *
++ */
++
++static gboolean
++system_timezone_is_zone_file_valid (const char  *zone_file,
++                                    GError     **error)
++{
++        GError     *our_error;
++        GIOChannel *channel;
++        char        buffer[strlen (TZ_MAGIC)];
++        gsize       read;
++
++        /* First, check the zone_file is properly rooted */
++        if (!g_str_has_prefix (zone_file, SYSTEM_ZONEINFODIR"/")) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
++                             "Timezone file needs to be under "SYSTEM_ZONEINFODIR);
++                return FALSE;
++        }
++
++        /* Second, check it's a regular file that exists */
++        if (!g_file_test (zone_file, G_FILE_TEST_IS_REGULAR)) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
++                             "No such timezone file %s", zone_file);
++                return FALSE;
++        }
++
++        /* Third, check that it's a tzfile (see tzfile(5)). The file has a 4
++         * bytes header which is TZ_MAGIC.
++         *
++         * TODO: is there glibc API for this? */
++        our_error = NULL;
++        channel = g_io_channel_new_file (zone_file, "r", &our_error);
++        if (!our_error)
++                g_io_channel_read_chars (channel,
++                                         buffer, strlen (TZ_MAGIC),
++                                         &read, &our_error);
++        if (channel)
++                g_io_channel_unref (channel);
++
++        if (our_error) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
++                             "Timezone file %s cannot be read: %s",
++                             zone_file, our_error->message);
++                g_error_free (our_error);
++                return FALSE;
++        }
++
++        if (read != strlen (TZ_MAGIC) || strncmp (buffer, TZ_MAGIC, strlen (TZ_MAGIC)) != 0) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
++                             "%s is not a timezone file",
++                             zone_file);
++                return FALSE;
++        }
++
++        return TRUE;
++}
++
++static gboolean
++system_timezone_set_etc_timezone (const char  *zone_file,
++                                  GError     **error)
++{
++        GError *our_error;
++        char   *content;
++        gsize   len;
++
++        if (!system_timezone_is_zone_file_valid (zone_file, error))
++                return FALSE;
++
++        /* If /etc/localtime is a symlink, write a symlink */
++        if (g_file_test (ETC_LOCALTIME, G_FILE_TEST_IS_SYMLINK)) {
++                if (g_unlink (ETC_LOCALTIME) == 0 &&
++                    symlink (zone_file, ETC_LOCALTIME) == 0)
++                        return TRUE;
++
++                /* If we couldn't symlink the file, we'll just fallback on
++                 * copying it */
++        }
++
++        /* Else copy the file to /etc/localtime. We explicitly avoid doing
++         * hard links since they break with different partitions */
++        our_error = NULL;
++        if (!g_file_get_contents (zone_file, &content, &len, &our_error)) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_GENERAL,
++                             "Timezone file %s cannot be read: %s",
++                             zone_file, our_error->message);
++                g_error_free (our_error);
++                return FALSE;
++        }
++
++        if (!g_file_set_contents (ETC_LOCALTIME, content, len, &our_error)) {
++                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
++                             SYSTEM_TIMEZONE_ERROR_GENERAL,
++                             ETC_LOCALTIME" cannot be overwritten: %s",
++                             our_error->message);
++                g_error_free (our_error);
++                g_free (content);
++                return FALSE;
++        }
++
++        g_free (content);
++
++        return TRUE;
++}
++
++typedef gboolean (*SetSystemTimezone) (const char  *tz,
++                                       GError     **error);
++/* The order here does not matter too much: we'll try to change all files
++ * that already have a timezone configured. It matters in case of error,
++ * since the process will be stopped and the last methods won't be called.
++ * So we use the same order as in get_system_timezone_methods */
++static SetSystemTimezone set_system_timezone_methods[] = {
++        /* writing various config files if they exist and have the
++         * setting already present */
++        system_timezone_write_etc_timezone,
++        system_timezone_write_etc_sysconfig_clock,
++        system_timezone_write_etc_sysconfig_clock_alt,
++        system_timezone_write_etc_TIMEZONE,
++        system_timezone_write_etc_rc_conf,
++        /* writing deprecated config files if they exist and have the
++         * setting already present */
++        system_timezone_write_etc_conf_d_clock,
++        NULL
++};
++
++static gboolean
++system_timezone_update_config (const char  *tz,
++                               GError     **error)
++{
++        int i;
++
++        for (i = 0; set_system_timezone_methods[i] != NULL; i++) {
++                if (!set_system_timezone_methods[i] (tz, error))
++                        return FALSE;
++                /* FIXME: maybe continue to change all config files if
++                 * possible? */
++        }
++
++        return TRUE;
++}
++
++gboolean
++system_timezone_set (const char  *tz,
++                     GError     **error)
++{
++        char     *zone_file;
++        gboolean  retval;
++
++        g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
++
++        zone_file = g_build_filename (SYSTEM_ZONEINFODIR, tz, NULL);
++
++        /* FIXME: is it right to return FALSE even when /etc/localtime was
++         * changed but not the config files? */
++        retval = system_timezone_set_etc_timezone (zone_file, error) &&
++                 system_timezone_update_config (tz, error);
++
++        g_free (zone_file);
++
++        return retval;
++}
++
++GQuark
++system_timezone_error_quark (void)
++{
++        static GQuark ret = 0;
++
++        if (ret == 0) {
++                ret = g_quark_from_static_string ("system-timezone-error");
++        }
++
++        return ret;
++}
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/system-timezone.h gnome-settings-daemon-3.5.92/plugins/datetime/system-timezone.h
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/system-timezone.h	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/system-timezone.h	2012-09-21 00:05:22.498472443 -0400
+@@ -0,0 +1,80 @@
++/* System timezone handling
++ *
++ * Copyright (C) 2008 Novell, Inc.
++ *
++ * Authors: Vincent Untz <vuntz@gnome.org>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
++ */
++
++#ifndef __SYSTEM_TIMEZONE_H__
++#define __SYSTEM_TIMEZONE_H__
++
++#include <glib.h>
++#include <glib-object.h>
++
++G_BEGIN_DECLS
++
++#ifdef HAVE_SOLARIS
++#define SYSTEM_ZONEINFODIR "/usr/share/lib/zoneinfo/tab"
++#else
++#define SYSTEM_ZONEINFODIR "/usr/share/zoneinfo"
++#endif
++
++
++#define SYSTEM_TIMEZONE_TYPE         (system_timezone_get_type ())
++#define SYSTEM_TIMEZONE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), SYSTEM_TIMEZONE_TYPE, SystemTimezone))
++#define SYSTEM_TIMEZONE_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST ((c), SYSTEM_TIMEZONE_TYPE, SystemTimezoneClass))
++#define IS_SYSTEM_TIMEZONE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), SYSTEM_TIMEZONE_TYPE))
++#define IS_SYSTEM_TIMEZONE_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), SYSTEM_TIMEZONE_TYPE))
++#define SYSTEM_TIMEZONE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), SYSTEM_TIMEZONE_TYPE, SystemTimezoneClass))
++
++typedef struct
++{
++        GObject g_object;
++} SystemTimezone;
++
++typedef struct
++{
++        GObjectClass g_object_class;
++} SystemTimezoneClass;
++
++GType system_timezone_get_type (void);
++
++SystemTimezone *system_timezone_new (void);
++
++const char *system_timezone_get (SystemTimezone *systz);
++const char *system_timezone_get_env (SystemTimezone *systz);
++
++/* Functions to set the timezone. They won't be used by the applet, but
++ * by a program with more privileges */
++
++#define SYSTEM_TIMEZONE_ERROR system_timezone_error_quark ()
++GQuark system_timezone_error_quark (void);
++
++typedef enum
++{
++        SYSTEM_TIMEZONE_ERROR_GENERAL,
++        SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
++        SYSTEM_TIMEZONE_NUM_ERRORS
++} SystemTimezoneError;
++
++char *system_timezone_find (void);
++
++gboolean system_timezone_set (const char  *tz,
++                              GError     **error);
++
++G_END_DECLS
++#endif /* __SYSTEM_TIMEZONE_H__ */
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/datetime/test-system-timezone.c gnome-settings-daemon-3.5.92/plugins/datetime/test-system-timezone.c
+--- gnome-settings-daemon-3.5.92.orig/plugins/datetime/test-system-timezone.c	1969-12-31 19:00:00.000000000 -0500
++++ gnome-settings-daemon-3.5.92/plugins/datetime/test-system-timezone.c	2012-09-21 00:05:22.499472444 -0400
+@@ -0,0 +1,93 @@
++/* Test for system timezone handling
++ *
++ * Copyright (C) 2008-2010 Novell, Inc.
++ *
++ * Authors: Vincent Untz <vuntz@gnome.org>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
++ */
++
++#include <glib.h>
++#include "system-timezone.h"
++
++static void
++timezone_print (void)
++{
++	SystemTimezone *systz;
++
++	systz = system_timezone_new ();
++        g_print ("Current timezone: %s\n", system_timezone_get (systz));
++	g_object_unref (systz);
++}
++
++static int
++timezone_set (const char *new_tz)
++{
++        GError *error;
++
++        error = NULL;
++        if (!system_timezone_set (new_tz, &error)) {
++                g_printerr ("%s\n", error->message);
++                g_error_free (error);
++                return 1;
++        }
++
++	return 0;
++}
++
++int
++main (int    argc,
++      char **argv)
++{
++	int      retval;
++
++	gboolean  get = FALSE;
++	char     *tz_set = NULL;
++
++	GError         *error;
++	GOptionContext *context;
++        GOptionEntry options[] = {
++                { "get", 'g', 0, G_OPTION_ARG_NONE, &get, "Get the current timezone", NULL },
++                { "set", 's', 0, G_OPTION_ARG_STRING, &tz_set, "Set the timezone to TIMEZONE", "TIMEZONE" },
++                { NULL, 0, 0, 0, NULL, NULL, NULL }
++        };
++
++	retval = 0;
++
++	g_type_init ();
++
++	context = g_option_context_new ("");
++	g_option_context_add_main_entries (context, options, NULL);
++
++	error = NULL;
++	if (!g_option_context_parse (context, &argc, &argv, &error)) {
++		g_printerr ("%s\n", error->message);
++		g_error_free (error);
++		g_option_context_free (context);
++
++		return 1;
++	}
++
++	g_option_context_free (context);
++
++	if (get || (!tz_set))
++		timezone_print ();
++	else if (tz_set)
++		retval = timezone_set (tz_set);
++	else
++		g_assert_not_reached ();
++
++        return retval;
++}
+diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/Makefile.am gnome-settings-daemon-3.5.92/plugins/Makefile.am
+--- gnome-settings-daemon-3.5.92.orig/plugins/Makefile.am	2012-09-20 23:06:15.562075504 -0400
++++ gnome-settings-daemon-3.5.92/plugins/Makefile.am	2012-09-21 00:05:22.499472444 -0400
+@@ -8,6 +8,7 @@
+ 	clipboard	\
+ 	color		\
+ 	cursor		\
++	datetime	\
+ 	dummy		\
+ 	power		\
+ 	housekeeping    \
