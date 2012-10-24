@@ -4,7 +4,7 @@
 
 pkgname=indicator-session
 pkgver=12.10.4
-pkgrel=100
+pkgrel=101
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -16,19 +16,15 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        '0001_Revert_new_glib_stuff.patch'
         '0002_There_is_no_help.patch')
 sha512sums=('06269af75271cd69d4385e6d0f095cf52033c0449002c26b25d34e507f70d1b8ecdc248d0b9a16c8f5cdfea51abb024faa4d03cf65adc359b966be6670c9254b'
-            '7889156ac9a16035d033d81a9eb12480d6b78f0fd566ffae58971dec7c95357cff4c81c507b2e027f4e665ad9588ad07aaa65815c8ccc888df7b1a072fa5bc7e'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  patch -Np1 -i "${srcdir}/0001_Revert_new_glib_stuff.patch"
   patch -Np1 -i "${srcdir}/0002_There_is_no_help.patch"
 
-  sed -i 's/2\.33/2.22/g' configure.ac
   autoreconf -vfi
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile
