@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/xorg-server' -O - | sed -n 's/.*>xorg-server_\(.*\)-\(.*\)\.diff\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/quantal/+source/xorg-server' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
 
 echo "Getting latest Arch Linux version..."
 ARCHLINUX_VER=($(wget -q 'https://www.archlinux.org/packages/extra/x86_64/xorg-server/' -O - | sed -n '/<title>/ s/^.*xorg-server\ \(.*\)-\(.*\)\ (.*$/\1 \2/p'))
