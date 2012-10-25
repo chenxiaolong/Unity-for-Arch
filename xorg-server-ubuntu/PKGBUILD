@@ -9,7 +9,7 @@
 pkgbase=xorg-server
 pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
 pkgver=1.13.0
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
@@ -84,7 +84,8 @@ package_xorg-server-ubuntu() {
   pkgdesc="Xorg X server"
   depends=('libdrm' 'pixman' 'libgcrypt' 'xorg-server-common' 'xf86-input-evdev')
   backup=('etc/X11/xorg.conf.d/10-evdev.conf' 'etc/X11/xorg.conf.d/10-quirks.conf')
-  provides=('x-server' "xorg-server=${pkgver}")
+  # see xorg-server-1.13.0/hw/xfree86/common/xf86Module.h for ABI versions - we provide major numbers that drivers can depend on
+  provides=('X-ABI-VIDEODRV_VERSION=13' 'X-ABI-XINPUT_VERSION=18' 'X-ABI-EXTENSION_VERSION=7.0' 'x-server' "xorg-server=${pkgver}")
   conflicts=('nvidia-utils<=290.10' 'xorg-server')
   groups=('xorg')
 
