@@ -19,7 +19,7 @@ depends=('dbus-glib' 'gobject-introspection' 'libaccounts-glib' 'gnome-control-c
 makedepends=('gnome-common' 'gnome-doc-utils' 'gtk-doc' 'itstool' 'vala' 'yelp-tools')
 options=('!libtool')
 install=gnome-control-center-signon.install
-source=("https://launchpad.net/online-accounts-gnome-control-center/trunk/${pkgver}/+download/credentials-control-center-${pkgver}.tar.bz2")
+source=("https://launchpad.net/online-accounts-gnome-control-center/12.10/${pkgver}/+download/credentials-control-center-${pkgver}.tar.bz2")
 sha512sums=('a9508109167846496d5498248983c6aad6bb9ff2ec7e2281b61799788cc72ef7bb1f808f7a1f2457192092dadd4118bfe6b301c9f1e60a23df676d4a9b207c40')
 
 build() {
