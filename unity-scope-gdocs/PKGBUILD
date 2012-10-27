@@ -11,7 +11,7 @@ groups=('unity')
 depends=('account-plugins' 'dee' 'hicolor-icon-theme' 'libaccounts-glib' 'libgdata' 'libsignon-glib' 'libunity' 'python')
 makedepends=('python-distutils-extra')
 install=unity-scope-gdocs.install
-source=("https://launchpad.net/unity-lens-gdocs/trunk/${pkgver}/+download/unity-scope-gdocs-${pkgver}.tar.gz")
+source=("https://launchpad.net/unity-lens-gdocs/12.10/${pkgver}/+download/unity-scope-gdocs-${pkgver}.tar.gz")
 sha512sums=('0c65eb24460385ac2c1829db56a4712340962fde404b298c51b91c341b872d2df1d84af849cce47bc4c43df987c491cb0a3edb0d89b4fe22dd1643cc30742bda')
 
 package() {
