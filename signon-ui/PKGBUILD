@@ -9,7 +9,7 @@ url="https://launchpad.net/online-accounts-signon-ui"
 license=('GPL')
 groups=('unity')
 depends=('libaccounts-qt' 'libnotify' 'libproxy' 'qtwebkit' 'signon')
-source=("https://launchpad.net/online-accounts-signon-ui/trunk/${pkgver}/+download/signon-ui-${pkgver}.tar.bz2")
+source=("https://launchpad.net/online-accounts-signon-ui/12.10/${pkgver}/+download/signon-ui-${pkgver}.tar.bz2")
 sha512sums=('07302fc2ed77b218584ee53bc869876a60f592ef7027baacf47ed4bd6c739ead881665734a7f2bc16182afc24e40b2da94fcd79183bca0636b39d051cc22cf93')
 
 build() {
