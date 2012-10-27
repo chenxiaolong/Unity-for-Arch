@@ -12,7 +12,7 @@ depends=('libaccounts-glib' 'libsignon-glib' 'gnome-control-center-signon' 'pyth
 makedepends=('vala')
 options=('!libtool')
 install=account-plugins.install
-source=("https://launchpad.net/online-accounts-account-plugins/trunk/${pkgver}/+download/account-plugins-${pkgver}.tar.gz")
+source=("https://launchpad.net/online-accounts-account-plugins/12.10/${pkgver}/+download/account-plugins-${pkgver}.tar.gz")
 sha512sums=('5b8a3e2c9744acfc66e3763c7159221a53747192b0f767c34ae06fe4956209d92e4a83d15aee70caa422ac8e005a5285735c863d81d72bf233cca71336a4549d')
 
 build() {
