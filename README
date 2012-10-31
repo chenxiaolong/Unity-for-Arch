@@ -36,39 +36,38 @@ Order to compile/install:
 28: indicator-applet               -> GNOME panel indicator applet
 29: indicator-application          -> Takes menus and puts then in the panel
 30: indicator-appmenu              -> An indicator to host the menus from apps
-31: libtimezonemap                 -> GTK+3 timezone map widget
-32: indicator-datetime             -> A very, very simple clock
-33: indicator-power                -> Indicator to show battery information
-34: indicator-printers             -> Indicator showing active print jobs
-35: indicator-session              -> Indicator to manage session
-36: indicator-sound                -> A unified sound menu
-37: notify-osd                     -> Semi-transparent notification agent
-38: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-39: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-40: gtest                          -> C++ testing utility based on xUnit
-41: gmock                          -> A library for writing C++ mock classes
-42: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-43: evemu                          -> Linux evdev event emulation
-44: frame                          -> Touch frame library
-45: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-46: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-47: xorg-server-ubuntu             -> Xorg X server
-48: grail                          -> Gesture recognition and instantiation lib.
-49: geis                           -> Implementation of the GEIS interface
-50: nux                            -> An OpenGL toolkit
-51: unity-asset-pool               -> Design assets for Unity
-52: gnome-menus2                   -> Gnome menu specifications
-53: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-54: python-oauthlib                -> Python implementation of OAuth 
-55: unity-lens-applications        -> Unity applications lens
-56: unity-lens-files               -> Unity files lens
-57: unity-lens-music               -> Unity music lens
-58: unity-lens-photos              -> Unity photo lens
-59: unity-lens-video               -> Unity video lens
-60: unity-scope-video-remote       -> Remove video search for Unity video lens
-61: unity-scope-gdocs              -> Google Docs scope for Unity
-62: compiz-ubuntu                  -> Compiz compositing window manager
-63: unity                          -> A desktop experience designed for efficiency
+31: indicator-datetime             -> A very, very simple clock
+32: indicator-power                -> Indicator to show battery information
+33: indicator-printers             -> Indicator showing active print jobs
+34: indicator-session              -> Indicator to manage session
+35: indicator-sound                -> A unified sound menu
+36: notify-osd                     -> Semi-transparent notification agent
+37: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+38: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+39: gtest                          -> C++ testing utility based on xUnit
+40: gmock                          -> A library for writing C++ mock classes
+41: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+42: evemu                          -> Linux evdev event emulation
+43: frame                          -> Touch frame library
+44: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+45: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+46: xorg-server-ubuntu             -> Xorg X server
+47: grail                          -> Gesture recognition and instantiation lib.
+48: geis                           -> Implementation of the GEIS interface
+49: nux                            -> An OpenGL toolkit
+50: unity-asset-pool               -> Design assets for Unity
+51: gnome-menus2                   -> Gnome menu specifications
+52: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+53: python-oauthlib                -> Python implementation of OAuth 
+54: unity-lens-applications        -> Unity applications lens
+55: unity-lens-files               -> Unity files lens
+56: unity-lens-music               -> Unity music lens
+57: unity-lens-photos              -> Unity photo lens
+58: unity-lens-video               -> Unity video lens
+59: unity-scope-video-remote       -> Remove video search for Unity video lens
+60: unity-scope-gdocs              -> Google Docs scope for Unity
+61: compiz-ubuntu                  -> Compiz compositing window manager
+62: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
