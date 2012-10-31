@@ -39,15 +39,6 @@ build() {
   popd
 }
 
-# Disable tests: they require Xorg to be running
-#check() {
-#  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
-#  make check
-#
-#  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
-#  make check
-#}
-
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
   depends=('dbus-glib' 'libwnck3' 'libgtop' 'libunity-webapps')

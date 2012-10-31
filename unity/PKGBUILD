@@ -17,7 +17,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
 depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.8.4' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libxfixes-ubuntu')
-makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'gmock' 'gtest' 'python2-distribute')
+makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
