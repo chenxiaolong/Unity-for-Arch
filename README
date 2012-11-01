@@ -21,48 +21,47 @@ Order to compile/install:
 13: libunity-webapps               -> Library for integrating WebApps into Unity
 14: bamf                           -> Application matching framework
 15: libqtbamf                      -> Qt bindings for bamf
-16: libqtgconf                     -> Qt bindings for GConf
-17: dconf-qt                       -> Qt bindings for DConf
-18: sni-qt                         -> Turns Qt tray icons into appindicators
-19: ido                            -> Widgets and objects used for indicators
-20: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-21: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-22: gnome-session-ubuntu           -> GNOME Session Manager
-23: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-24: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-25: indicator-applet               -> GNOME panel indicator applet
-26: indicator-application          -> Takes menus and puts then in the panel
-27: indicator-appmenu              -> An indicator to host the menus from apps
-28: indicator-datetime             -> A very, very simple clock
-29: indicator-power                -> Indicator to show battery information
-30: indicator-printers             -> Indicator showing active print jobs
-31: indicator-session              -> Indicator to manage session
-32: indicator-sound                -> A unified sound menu
-33: notify-osd                     -> Semi-transparent notification agent
-34: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-35: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-36: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-37: evemu                          -> Linux evdev event emulation
-38: frame                          -> Touch frame library
-39: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-40: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-41: xorg-server-ubuntu             -> Xorg X server
-42: grail                          -> Gesture recognition and instantiation lib.
-43: geis                           -> Implementation of the GEIS interface
-44: nux                            -> An OpenGL toolkit
-45: unity-asset-pool               -> Design assets for Unity
-46: gnome-menus2                   -> Gnome menu specifications
-47: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-48: python-oauthlib                -> Python implementation of OAuth 
-49: unity-lens-applications        -> Unity applications lens
-50: unity-lens-files               -> Unity files lens
-51: unity-lens-music               -> Unity music lens
-52: unity-lens-photos              -> Unity photo lens
-53: unity-lens-video               -> Unity video lens
-54: unity-scope-video-remote       -> Remove video search for Unity video lens
-55: unity-scope-gdocs              -> Google Docs scope for Unity
-56: compiz-ubuntu                  -> Compiz compositing window manager
-57: unity                          -> A desktop experience designed for efficiency
+16: dconf-qt                       -> Qt bindings for DConf
+17: sni-qt                         -> Turns Qt tray icons into appindicators
+18: ido                            -> Widgets and objects used for indicators
+19: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+20: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+21: gnome-session-ubuntu           -> GNOME Session Manager
+22: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+23: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+24: indicator-applet               -> GNOME panel indicator applet
+25: indicator-application          -> Takes menus and puts then in the panel
+26: indicator-appmenu              -> An indicator to host the menus from apps
+27: indicator-datetime             -> A very, very simple clock
+28: indicator-power                -> Indicator to show battery information
+29: indicator-printers             -> Indicator showing active print jobs
+30: indicator-session              -> Indicator to manage session
+31: indicator-sound                -> A unified sound menu
+32: notify-osd                     -> Semi-transparent notification agent
+33: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+34: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+35: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+36: evemu                          -> Linux evdev event emulation
+37: frame                          -> Touch frame library
+38: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+39: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+40: xorg-server-ubuntu             -> Xorg X server
+41: grail                          -> Gesture recognition and instantiation lib.
+42: geis                           -> Implementation of the GEIS interface
+43: nux                            -> An OpenGL toolkit
+44: unity-asset-pool               -> Design assets for Unity
+45: gnome-menus2                   -> Gnome menu specifications
+46: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+47: python-oauthlib                -> Python implementation of OAuth 
+48: unity-lens-applications        -> Unity applications lens
+49: unity-lens-files               -> Unity files lens
+50: unity-lens-music               -> Unity music lens
+51: unity-lens-photos              -> Unity photo lens
+52: unity-lens-video               -> Unity video lens
+53: unity-scope-video-remote       -> Remove video search for Unity video lens
+54: unity-scope-gdocs              -> Google Docs scope for Unity
+55: compiz-ubuntu                  -> Compiz compositing window manager
+56: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
