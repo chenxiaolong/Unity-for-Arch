@@ -38,8 +38,7 @@ conflicts=(compiz-core{,-ubuntu}
            compizconfig-python{,-ubuntu}
            ccsm{,-ubuntu}
            compiz-plugins-main{,-ubuntu}
-           compiz-plugins-extra{,-ubuntu}
-           metacity)
+           compiz-plugins-extra{,-ubuntu})
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
