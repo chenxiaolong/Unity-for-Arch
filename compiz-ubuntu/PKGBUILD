@@ -7,7 +7,7 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _actual_ver=0.9.8.4
 
 pkgver=${_actual_ver}.${_ubuntu_rel}
@@ -17,7 +17,7 @@ pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas' 'python2-gconf')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas' 'python2-gconf')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
 provides=(compiz-core{,-ubuntu}="${pkgver}"
           compiz-gnome{,-ubuntu}="${pkgver}"
@@ -38,8 +38,7 @@ conflicts=(compiz-core{,-ubuntu}
            compizconfig-python{,-ubuntu}
            ccsm{,-ubuntu}
            compiz-plugins-main{,-ubuntu}
-           compiz-plugins-extra{,-ubuntu}
-           metacity-ubuntu)
+           compiz-plugins-extra{,-ubuntu})
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
@@ -51,7 +50,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_a
         '0004_Use_python2.patch'
         'compiz-migrate-to-dconf.desktop')
 sha512sums=('d5d2fff32d144c366feca733f44e06271b693cd9aec2b729ac1e3f739e8cdbd3436b9c9d662ac9fec78dda887b08cdacf329e0f79c10274594b0feaeda7b35dd'
-            '951ae883da6c471161bd1f9b4f476607c5ebd8dbc10ac40dfb235557c7e4e8408117ae7697f4625ca8fc2b97916389fc99a947b898e9e1cd0f121f766a1d5113'
+            '18b82bd4941371c355b92ea1abcac590218ca1f6a53d0a022630a95c0f773bd4209f76f4328f478f2361bb883ef194a7d1d4c0328d08598858ffeaecde567634'
             '7a97d46efde7d1cda2d1043998969aac509e453cd65ef9bb94a4edf91f71c3e6eb204b5e1729fa619bae77a2b9c949bf9e92b3d56bb7c5e791558e2d7961e154'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
