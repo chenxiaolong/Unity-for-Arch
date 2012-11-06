@@ -1,0 +1,58 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: thn81 <root@scrat>
+
+pkgname=metacity-ubuntu
+_ubuntu_rel=0ubuntu4
+pkgver=2.34.8.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A window manager for GNOME with Ubuntu's patches"
+arch=('i686' 'x86_64')
+url="http://www.gnome.org"
+license=('GPL')
+depends=('startup-notification' 'gconf' 'zenity' 'libcanberra' 'libgtop'
+         'libwnck' 'libsm')
+makedepends=('intltool' 'pkgconfig' 'gnome-doc-utils')
+groups=('gnome')
+provides=("metacity=${pkgver}")
+conflicts=('metacity')
+options=('!libtool' '!emptydirs')
+install=metacity.install
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('be0db11009fb8066ee60cb6a19f1a238def0f53680f78c84c226baddd7f966466a9a19fb7535e263ef2db95a0453897f66927db2d4470ce76a76a56f46be3ff7'
+            'e4c4dc5928d7797c27d6c64f03f247eda598d10505f3645e55b45f204da82e0516e4afa3e37678f5699799616399ab6c81681eb18edb8a8b3d9b0381f4d5459e')
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libexecdir=/usr/lib/metacity \
+    --localstatedir=/var \
+    --disable-static \
+    --disable-schemas-compile \
+    --enable-startup-notifications=yes # from debian/rules
+
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
+  make GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR="${pkgdir}" install
+
+  #install -dm755 "${pkgdir}/usr/share/gconf/schemas"
+  #gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname%-*}.schemas" --domain metacity "${pkgdir}"/etc/gconf/schemas/*.schemas
+  #rm -f "${pkgdir}"/etc/gconf/schemas/*.schemas
+
+  # Install Ubuntu stuff
+  install -dm755 "${pkgdir}/usr/share/sgml/metacity-common/"
+  install -dm755 "${pkgdir}/usr/share/gconf/defaults/"
+  install -m644 "doc/metacity-theme.dtd" "${pkgdir}/usr/share/sgml/metacity-common/"
+  install -m644 "${srcdir}/debian/metacity-common.catalog" "${pkgdir}/usr/share/sgml/metacity-common/"
+}
