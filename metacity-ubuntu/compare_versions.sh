@@ -3,7 +3,7 @@
 source "$(dirname ${0})/PKGBUILD"
 
 echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q 'http://packages.ubuntu.com/quantal/source/metacity' -O - | sed -n 's/.*>metacity_\(.*\)-\(.*\)\.debian\.tar\.gz<.*/\1 \2/p'))
+UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/quantal/+source/metacity' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
 
 echo "Getting latest Arch Linux version..."
 ARCHLINUX_VER=($(wget -q 'https://www.archlinux.org/packages/extra/x86_64/metacity/' -O - | sed -n '/<title>/ s/^.*metacity\ \(.*\)-\(.*\)\ (.*$/\1 \2/p'))
