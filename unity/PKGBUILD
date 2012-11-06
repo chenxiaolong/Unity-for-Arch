@@ -3,11 +3,11 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=6.8.0
+pkgver=6.10.0
 _actual_ver="${pkgver}"
 
 if [ "${_UBUNTU}" == true ]; then
-  _ubuntu_rel=0ubuntu1
+  _ubuntu_rel=0ubuntu2
   pkgver="${pkgver}.${_ubuntu_rel}"
 fi
 
@@ -30,6 +30,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}-${_ubuntu_rel}.diff.gz"
         "launchpad_export.tar.gz::http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
         '0001_fix_gtest_directory.patch'
+        '0002_CMake_workaround.patch'
         '0003_Ignore_deprecated_schema_path.patch'
         '0005_link_dbus-glib.patch'
         '0007_link_gmodule.patch'
@@ -37,10 +38,11 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
-sha512sums=('883fc041bbbec5fccc02b4d8a1e44ff56124545c0dc8bdd2f39d95f0af05c9a4202e0a119577accb54ade0369524b9db87794b52b151ebd46a3099207a28f163'
-            'f062853f84cf46e6252bc78422d6e25339c095f8f02702449737b6c5e57f929d217075c1af633afb77b6d19d44aa58f5e0e01c7965c4c1edcdb27433f2da926d'
+sha512sums=('2c937d34722a18e1905220f3e518293b5dd585c2c87544b53b164b81302a369434c477036883014609fe27f57e482089b73afac733615ddfcbc582d362646411'
+            'cfa937f117ac26df8b730b28734eb2fc320d741317923d1410fac7a2c781098ac7ef42ad9e0c79ad4c152c35de3689793f25eb19d04fc7de2a01ea076e445747'
             'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
             '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
+            'fe69db9bdbb4fabd765f8d95fef66775c517df201d8f038adc79e92f79d890f4f540e8148fa7bb0268cc79ddbed82b32cc3fda9f95dcc83abecc85249dea77da'
             '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
             '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
             'cd9a23cdb5224111fc4892b614f7127b154369046d30ec14a245dc0ae8685f9439e04f86588aa12a57e5360f74aa7c0c3bea459b0ffd505cba34c89f50dfd5e5'
@@ -64,6 +66,9 @@ build() {
 
   # Fix the gtest search in CMake
   patch -Np1 -i "${srcdir}/0001_fix_gtest_directory.patch"
+
+  # Work around bug in CMake
+  patch -Np1 -i "${srcdir}/0002_CMake_workaround.patch"
 
   # Ignore error about deprecated paths in GSettings schemas
   patch -Np1 -i "${srcdir}/0003_Ignore_deprecated_schema_path.patch"
