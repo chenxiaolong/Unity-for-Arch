@@ -12,7 +12,7 @@ url="http://www.gnome.org"
 license=('GPL')
 depends=('startup-notification' 'gconf' 'zenity' 'libcanberra' 'libgtop'
          'libwnck' 'libsm')
-makedepends=('intltool' 'pkgconfig' 'gnome-doc-utils')
+makedepends=('intltool' 'pkgconfig' 'gnome-doc-utils' 'itstool')
 groups=('gnome')
 provides=("metacity=${pkgver}")
 conflicts=('metacity')
