@@ -10,9 +10,8 @@ pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('startup-notification' 'gconf' 'zenity' 'libcanberra' 'libgtop'
-         'libwnck' 'libsm')
-makedepends=('intltool' 'pkgconfig' 'gnome-doc-utils' 'itstool')
+depends=('dconf' 'gtk2' 'gsettings-desktop-schemas' 'libcanberra' 'libgtop' 'libsm' 'startup-notification' 'zenity')
+makedepends=('intltool' 'yelp-tools')
 groups=('gnome')
 provides=("metacity=${pkgver}")
 conflicts=('metacity')
