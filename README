@@ -48,18 +48,17 @@ Order to compile/install:
 40: geis                           -> Implementation of the GEIS interface
 41: nux                            -> An OpenGL toolkit
 42: unity-asset-pool               -> Design assets for Unity
-43: gnome-menus2                   -> Gnome menu specifications
-44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: python-oauthlib                -> Python implementation of OAuth 
-46: unity-lens-applications        -> Unity applications lens
-47: unity-lens-files               -> Unity files lens
-48: unity-lens-music               -> Unity music lens
-49: unity-lens-photos              -> Unity photo lens
-50: unity-lens-video               -> Unity video lens
-51: unity-scope-video-remote       -> Remove video search for Unity video lens
-52: unity-scope-gdocs              -> Google Docs scope for Unity
-53: compiz-ubuntu                  -> Compiz compositing window manager
-54: unity                          -> A desktop experience designed for efficiency
+43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+44: python-oauthlib                -> Python implementation of OAuth 
+45: unity-lens-applications        -> Unity applications lens
+46: unity-lens-files               -> Unity files lens
+47: unity-lens-music               -> Unity music lens
+48: unity-lens-photos              -> Unity photo lens
+49: unity-lens-video               -> Unity video lens
+50: unity-scope-video-remote       -> Remove video search for Unity video lens
+51: unity-scope-gdocs              -> Google Docs scope for Unity
+52: compiz-ubuntu                  -> Compiz compositing window manager
+53: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
