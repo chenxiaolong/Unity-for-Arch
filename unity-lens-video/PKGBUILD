@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-lens-video
-pkgver=0.3.12
+pkgver=0.3.14
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
@@ -11,10 +11,10 @@ depends=('python2')
 makedepends=('python2-distutils-extra')
 groups=('unity')
 source=("https://launchpad.net/unity-lens-videos/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('675a15786dbcd6e1e8dacfef35c9f52600c790e06d78846020f4309f90c26f5ba3de4a16faa2a3b3034c03680a31958ec0060712966a7d27e34665b49ce08922')
+sha512sums=('665bd9b121a8d3104a63cb8373ede72d1f6fa3172bb85b2111cfd0a8c68d6d6352b71fbf2a6ee75289f8fc4a69325e799fe144ea15dd3657ef6787df30df92f3')
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}s-${pkgver}"
 
   python2 setup.py install --root="${pkgdir}/" --optimize=1
 
