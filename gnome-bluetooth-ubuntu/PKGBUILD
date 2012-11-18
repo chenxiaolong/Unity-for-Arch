@@ -4,7 +4,7 @@
 
 pkgname=gnome-bluetooth-ubuntu
 _ubuntu_rel=0ubuntu1
-_actual_ver=3.6.0
+_actual_ver=3.6.1
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Bluetooth Subsystem"
@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 url="http://live.gnome.org/GnomeBluetooth"
 license=('GPL' 'LGPL')
 depends=('gtk3' 'hicolor-icon-theme' 'gvfs-obexftp' 'obexd-client' 'dconf' 'libappindicator3' 'libnotify')
-makedepends=('intltool' 'nautilus-sendto' 'gobject-introspection' 'itstool' 'docbook-xsl')
+makedepends=('intltool' 'nautilus-sendto' 'gobject-introspection' 'itstool' 'docbook-xsl' 'gtk-doc')
 provides=("gnome-bluetooth=${pkgver}")
 conflicts=('gnome-bluetooth')
 options=('!libtool' '!emptydirs')
@@ -20,8 +20,8 @@ install=gnome-bluetooth.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         '61-gnome-bluetooth-rfkill.rules')
-sha512sums=('367e6b811e7c9dda4b2f86a9beade2a50e11250f67081f3f13ff23fa716f274647d12ae88c7fcb5f257de8c2bee9fd7875f9126290c31cb6697a04843477ee46'
-            '8814dea3d653ab03d3a715b2c56a5ddfa8aa15aa874a5b15ba6916b1415e869301f6a471ee0ffbf7dccd10d8b9720557dd43a779c9a9905a5935ba3f103399d1'
+sha512sums=('9ae64b7d2edc308244a2ece81b1700524da89730a04df9dfbf81999af601ab23f7ed1bf6056bf39787a153f8c59fd354ac4713b54ef31bd4ec530d60fd229a62'
+            '39e9eea012e6f88e828f3cd93f84d9ecfffe97f60b74738d720827f97985e189ebb4a58af2589410ce616ed57e80488776b2c65f161db7c09d5c95e41e287970'
             '80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de')
 
 build() {
