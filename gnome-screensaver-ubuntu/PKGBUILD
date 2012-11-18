@@ -2,7 +2,7 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=gnome-screensaver-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _ubuntu_ver=3.6.0
 _actual_ver=3.6.1
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
@@ -23,7 +23,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${_actual_ver%.*}/
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
 sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
-            '8c73da786c3923135d87b393bf1ff0bbeb70a6f5a27e37ea8c1af7bcec55502e31fd54a13bad0fc9665428ceae6340edce6766742176234dac82abb0d9b9597e'
+            'ac71b12cfd1edef182f80b89e83368f728077095e8affe7d97826ae8a7bfdcb4d6ee4f0e5c5efcedba9bbb30da0051861e832738379649390a9001674262e5f8'
             'aed0933feed70a9b16da80d6e4716641cd45d2fd3fadbace3dfeb02b1a07124ee659f470277f8ce93492c6f7cf3cc9996bc60598724eea1955975604ff8f324d')
 
 build() {
