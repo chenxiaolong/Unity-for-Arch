@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=geis
-pkgver=2.2.12
+pkgver=2.2.14
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
@@ -12,7 +12,7 @@ provides=("utouch-geis=${pkgver}")
 conflicts=('utouch-geis')
 options=('!emptydirs' '!libtool')
 source=("https://launchpad.net/geis/trunk/${pkgver}/+download/geis-${pkgver}.tar.xz")
-sha512sums=('5630d99d1645e6ade86b7a7ac766c89a6e97ff230eea8bda5dd0609c3d3aba095966d8aa83017b11ac9a2ba5cdffcd5b7cec1c48577c036f5b06ead1d431b198')
+sha512sums=('913ae48dc899cabe4746d8d7bcb89339b1f9ada2ed09904ae3651780a3375041aea3a1f13e3f65ccb1dd2e8b7662b709d7848cf47f460deceecad3aea311c9cb')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
