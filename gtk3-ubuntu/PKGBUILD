@@ -4,7 +4,7 @@
 pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu3.1
 _ubuntu_ver=3.6.0
-_actual_ver=3.6.1
+_actual_ver=3.6.2
 pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
@@ -21,7 +21,7 @@ license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${_actual_ver%.*}/gtk+-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
-sha512sums=('9b6927c48550ac08860b20901880e944dc151b73b6bb10dbeff04eb17308fb15d064ec880c744f99e3139a41535c2dca31c92be06e4a69a00e267875991cedb1'
+sha512sums=('3b67c75e1de29679f2d3ffb095d7999a89967c77673b9daa574f63c8553fab9075627c892f92a4e5caf618c8736a5b476994eb13cedd4b29dadcab19b1a5d5aa'
             'db902dea732ea27f2f802cc3e873024390e27f5e2b191657929234949757627cb0ef521c30d65ea486a261324ead65b3ca8f6c9c868c5572cf4f1bba2d7851cc'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
