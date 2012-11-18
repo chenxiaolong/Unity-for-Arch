@@ -203,6 +203,9 @@ class pkgbuild:
       temp.append(i.get_pkgname())
     return(temp)
 
+  def get_pkgbase(self):
+    return(self._pkgbase)
+
   def find_package(self, pkgname):
     for i in self._subpackages:
       if i.get_pkgname() == pkgname:
@@ -492,9 +495,15 @@ def main():
   for i in pkginfo:
     for j in i.get():
       if j.get_upgrade():
-        print("Package name        : " + j.get_pkgname())
-        print("  PKGBUILD version  : " + j.get_pkgver())
-        print("  Installed version : " + j.get_instver())
+        if "pkgdir" in show:
+          print("Package base        : " + i.get_pkgbase())
+          print("  PKGBUILD version  : " + j.get_pkgver())
+          print("  Installed version : " + j.get_instver())
+          break
+        else:
+          print("Package name        : " + j.get_pkgname())
+          print("  PKGBUILD version  : " + j.get_pkgver())
+          print("  Installed version : " + j.get_instver())
 
 ### Begin program ###
 if __name__ == '__main__':
