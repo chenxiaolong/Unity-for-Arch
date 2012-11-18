@@ -2,7 +2,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=frame
-pkgver=2.2.4
+pkgver=2.4.3
 pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
@@ -14,8 +14,8 @@ provides=("utouch-frame=${pkgver}")
 conflicts=('utouch-frame')
 groups=('unity')
 options=('!libtool' '!emptydirs')
-source=("https://launchpad.net/frame/trunk/utouch-frame-${pkgver}/+download/frame-${pkgver}.tar.xz")
-sha512sums=('ac05adbd04af9b485bb39ee01787fcd7501dd1e710b9f3770ca5a91af5b9b89955375b598e8f414fd1179c4d17797c5bd8f98eac8422ac54b6b86727d3f5e208')
+source=("https://launchpad.net/frame/trunk/v${pkgver}/+download/frame-${pkgver}.tar.xz")
+sha512sums=('6605c27d9aa98593ff4b7b6be05e4d76cdbd025af6d31e49c762d227cd4e12adc416c1eb8dc213fd6e5fadb4cad91bbadf537d6b4a712a8b83f4c49f3018d688')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
