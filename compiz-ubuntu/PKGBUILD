@@ -7,10 +7,11 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu1
 _actual_ver=0.9.8.4
+_bzr_rev=3412
 
-pkgver=${_actual_ver}.${_ubuntu_rel}
+pkgver=${_actual_ver}.bzr${_bzr_rev}.${_ubuntu_rel}
 
 pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
@@ -42,15 +43,15 @@ conflicts=(compiz-core{,-ubuntu}
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         'compiz-migrate-to-dconf.desktop')
-sha512sums=('d5d2fff32d144c366feca733f44e06271b693cd9aec2b729ac1e3f739e8cdbd3436b9c9d662ac9fec78dda887b08cdacf329e0f79c10274594b0feaeda7b35dd'
-            '18b82bd4941371c355b92ea1abcac590218ca1f6a53d0a022630a95c0f773bd4209f76f4328f478f2361bb883ef194a7d1d4c0328d08598858ffeaecde567634'
+sha512sums=('05931a265ea47d3a977e1e419782bc84f1a833365100dad5a5ed68a97b803f5375a901e41ebf4538cd281edafc9559351f7dda09002a2716df6a820fd0ea9a00'
+            'e0e5f5b0bc63043e2a3afd5ff55c06debaddb4f90a31019f7aeaf32f195182f85f7d569c75b179ce00da66f0f7f2937aa6368f6fbf3e904791c89c10fefde9fb'
             '7a97d46efde7d1cda2d1043998969aac509e453cd65ef9bb94a4edf91f71c3e6eb204b5e1729fa619bae77a2b9c949bf9e92b3d56bb7c5e791558e2d7961e154'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
@@ -58,7 +59,7 @@ sha512sums=('d5d2fff32d144c366feca733f44e06271b693cd9aec2b729ac1e3f739e8cdbd3436
             'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-0.9.8.5"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -Np1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
@@ -72,7 +73,7 @@ build() {
   patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
@@ -95,7 +96,8 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
     -DCOMPIZ_DEFAULT_PLUGINS="ccp" \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    `# -DCMAKE_BUILD_TYPE=RelWithDebInfo` \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \
     -DUSE_GSETTINGS=ON \
     -DUSE_GCONF=OFF \
@@ -104,11 +106,11 @@ build() {
     -DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
     -DUSE_KDE4=OFF
 
-  make ${MAKEFLAGS}
+  make -j1
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}/build"
+  cd "${srcdir}/${pkgname%-*}-0.9.8.5/build"
   GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
