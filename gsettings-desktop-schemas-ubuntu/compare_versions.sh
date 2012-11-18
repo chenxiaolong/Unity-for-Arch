@@ -10,6 +10,6 @@ UPSTREAM_VER=$(wget -q "http://ftp.gnome.org/pub/gnome/sources/gsettings-desktop
 
 echo ""
 
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
+echo -e "PKGBUILD version: ${_actual_ver} Ubuntu ${_ubuntu_ver} ${_ubuntu_rel}"
 echo -e "Upstream version: ${UPSTREAM_VER}"
 echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
