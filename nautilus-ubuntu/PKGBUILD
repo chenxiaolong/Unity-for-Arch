@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ppa_rel=0ubuntu1~ubuntu12.10.2
-_actual_ver=3.6.1
-pkgver=${_actual_ver}.${_ppa_rel/~/.}
+_ubuntu_rel=0ubuntu1
+_actual_ver=3.6.3
+pkgver=${_actual_ver}.${_ubuntu_rel/~/.}
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -19,14 +19,14 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${_actual_ver}-${_ppa_rel}.debian.tar.gz")
-sha512sums=('ba49c8ddcedfff359e14ec8606e7f3ea8613f3d6908c3f7f36f34d7c7270bdb0dab3d10bed2a004dbf6b347b118f1cdbe2b818617a80b8355c624218e53e560f'
-            '632f7d63e414cfbd6462504100daf5bdacbd4886e91f632811f28b64eb9076f28a43adce1c198abe3cc66c1174cc0d8ab8ff0632357990232fd0d44bc0ae9756')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
+            '050fdf83f2ceacf2ecfbca65ea1b0d44bc3d4725ce23d721b59c4a75ab7fd02bab977715e519786bcef1c6b4cba23e3e007f21144701618ec2be439326e4e744')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
-  # Apply Ubuntu patches
+  # Apply Ubuntu's patches
 
   # Disable patches
     # Don't use Ubuntu help
