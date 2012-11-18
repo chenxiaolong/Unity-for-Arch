@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-scope-video-remote
-pkgver=0.3.9
+pkgver=0.3.10
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
@@ -11,7 +11,7 @@ depends=('python2' 'unity-lens-video')
 makedepends=('python2-distutils-extra')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-video-remote_${pkgver}.orig.tar.gz")
-sha512sums=('74e7e6948e3d76648494fe1cc1025f2f3181c0fb331880b2b180d6d6841f270d48f617c0c7d078bd96091fb33bbff626405fd55861c01540a53e07129e7b5a6c')
+sha512sums=('dfcbf0cddb7a3e8e499631707941c2fb70d3c8af5151db8df05ca9fde38a352e86f72a7bb02c0b36f4e5a8006f1fcd64657ba2688c521d85b80b37771eacfcaf')
 
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
