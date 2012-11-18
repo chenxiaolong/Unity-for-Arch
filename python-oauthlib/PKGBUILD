@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=python-oauthlib
-_ubuntu_rel=0ubuntu1
-pkgver=0.3.0.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+pkgver=0.3.3.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A Python implementation of the OAuth request-signing logic"
 arch=('any')
@@ -14,8 +14,8 @@ makedepends=('python-distribute' 'python-nose')
 options=(!emptydirs)
 source=("http://pypi.python.org/packages/source/o/oauthlib/oauthlib-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/python-oauthlib_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('7f69cc80cbaa9161e7b562bef475ea912373a0a1c2a84ee7d19d724db6e0f9d0f38cc9cf95672efcbf9e9200f7b4650a75ab8205fe004e6cdebf65fbddef7771'
-            '11605e687806f5274c36a34a13005f47d81f3c5ab82ca48bda788e8d22696abfd6b15c2c87c59cc20e167e3eb3d30d71175429ccff62cabd0918f06f13acfaea')
+sha512sums=('a33fd37c531ca95c3b5556248d0ad57c83187766f6a4f99ebb21f22ac325ef046f8e753253e05667892fa6ee90a719568fbf5d627450b37b6e1d00cbe321e9fc'
+            '4a0e1cb26ccf72ff418bd5c6541b297f8791a270ffd1c27fbc6be2bfe7aa111bb3799aef07da6aeea6de9a85018eb05d2c8731ae5097ac8eea3819c8e755ff9d')
 
 build() {
   cd "${srcdir}/oauthlib-${pkgver%.*}"
