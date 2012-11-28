@@ -27,25 +27,24 @@ Order to compile/install:
 19: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
 20: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
 21: evemu                          -> Linux evdev event emulation
-22: frame                          -> Touch frame library
-23: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-24: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-25: xorg-server-ubuntu             -> Xorg X server
-26: grail                          -> Gesture recognition and instantiation lib.
-27: geis                           -> Implementation of the GEIS interface
-28: nux                            -> An OpenGL toolkit
-29: unity-asset-pool               -> Design assets for Unity
-30: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-31: python-oauthlib                -> Python implementation of OAuth 
-32: unity-lens-applications        -> Unity applications lens
-33: unity-lens-files               -> Unity files lens
-34: unity-lens-music               -> Unity music lens
-35: unity-lens-photos              -> Unity photo lens
-36: unity-lens-video               -> Unity video lens
-37: unity-scope-video-remote       -> Remove video search for Unity video lens
-38: unity-scope-gdocs              -> Google Docs scope for Unity
-39: compiz-ubuntu                  -> Compiz compositing window manager
-40: unity                          -> A desktop experience designed for efficiency
+22: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+23: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+24: xorg-server-ubuntu             -> Xorg X server
+25: grail                          -> Gesture recognition and instantiation lib.
+26: geis                           -> Implementation of the GEIS interface
+27: nux                            -> An OpenGL toolkit
+28: unity-asset-pool               -> Design assets for Unity
+29: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+30: python-oauthlib                -> Python implementation of OAuth 
+31: unity-lens-applications        -> Unity applications lens
+32: unity-lens-files               -> Unity files lens
+33: unity-lens-music               -> Unity music lens
+34: unity-lens-photos              -> Unity photo lens
+35: unity-lens-video               -> Unity video lens
+36: unity-scope-video-remote       -> Remove video search for Unity video lens
+37: unity-scope-gdocs              -> Google Docs scope for Unity
+38: compiz-ubuntu                  -> Compiz compositing window manager
+39: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
