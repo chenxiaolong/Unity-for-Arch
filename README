@@ -27,29 +27,28 @@ Order to compile/install:
 19: metacity-ubuntu	               -> Window manager for GNOME
 20: indicator-datetime             -> A very, very simple clock
 21: indicator-session              -> Indicator to manage session
-22: indicator-sound                -> A unified sound menu
-23: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-24: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-25: evemu                          -> Linux evdev event emulation
-26: frame                          -> Touch frame library
-27: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-28: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-29: xorg-server-ubuntu             -> Xorg X server
-30: grail                          -> Gesture recognition and instantiation lib.
-31: geis                           -> Implementation of the GEIS interface
-32: nux                            -> An OpenGL toolkit
-33: unity-asset-pool               -> Design assets for Unity
-34: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-35: python-oauthlib                -> Python implementation of OAuth 
-36: unity-lens-applications        -> Unity applications lens
-37: unity-lens-files               -> Unity files lens
-38: unity-lens-music               -> Unity music lens
-39: unity-lens-photos              -> Unity photo lens
-40: unity-lens-video               -> Unity video lens
-41: unity-scope-video-remote       -> Remove video search for Unity video lens
-42: unity-scope-gdocs              -> Google Docs scope for Unity
-43: compiz-ubuntu                  -> Compiz compositing window manager
-44: unity                          -> A desktop experience designed for efficiency
+22: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+23: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+24: evemu                          -> Linux evdev event emulation
+25: frame                          -> Touch frame library
+26: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+27: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+28: xorg-server-ubuntu             -> Xorg X server
+29: grail                          -> Gesture recognition and instantiation lib.
+30: geis                           -> Implementation of the GEIS interface
+31: nux                            -> An OpenGL toolkit
+32: unity-asset-pool               -> Design assets for Unity
+33: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+34: python-oauthlib                -> Python implementation of OAuth 
+35: unity-lens-applications        -> Unity applications lens
+36: unity-lens-files               -> Unity files lens
+37: unity-lens-music               -> Unity music lens
+38: unity-lens-photos              -> Unity photo lens
+39: unity-lens-video               -> Unity video lens
+40: unity-scope-video-remote       -> Remove video search for Unity video lens
+41: unity-scope-gdocs              -> Google Docs scope for Unity
+42: compiz-ubuntu                  -> Compiz compositing window manager
+43: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
