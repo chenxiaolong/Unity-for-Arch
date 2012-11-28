@@ -30,18 +30,17 @@ Order to compile/install:
 22: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
 23: xorg-server-ubuntu             -> Xorg X server
 24: nux                            -> An OpenGL toolkit
-25: unity-asset-pool               -> Design assets for Unity
-26: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-27: python-oauthlib                -> Python implementation of OAuth 
-28: unity-lens-applications        -> Unity applications lens
-29: unity-lens-files               -> Unity files lens
-30: unity-lens-music               -> Unity music lens
-31: unity-lens-photos              -> Unity photo lens
-32: unity-lens-video               -> Unity video lens
-33: unity-scope-video-remote       -> Remove video search for Unity video lens
-34: unity-scope-gdocs              -> Google Docs scope for Unity
-35: compiz-ubuntu                  -> Compiz compositing window manager
-36: unity                          -> A desktop experience designed for efficiency
+25: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+26: python-oauthlib                -> Python implementation of OAuth 
+27: unity-lens-applications        -> Unity applications lens
+28: unity-lens-files               -> Unity files lens
+29: unity-lens-music               -> Unity music lens
+30: unity-lens-photos              -> Unity photo lens
+31: unity-lens-video               -> Unity video lens
+32: unity-scope-video-remote       -> Remove video search for Unity video lens
+33: unity-scope-gdocs              -> Google Docs scope for Unity
+34: compiz-ubuntu                  -> Compiz compositing window manager
+35: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
