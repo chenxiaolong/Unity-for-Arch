@@ -32,9 +32,8 @@ Order to compile/install:
 24: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 25: python-oauthlib                -> Python implementation of OAuth 
 26: unity-scope-video-remote       -> Remove video search for Unity video lens
-27: unity-scope-gdocs              -> Google Docs scope for Unity
-28: compiz-ubuntu                  -> Compiz compositing window manager
-29: unity                          -> A desktop experience designed for efficiency
+27: compiz-ubuntu                  -> Compiz compositing window manager
+28: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
