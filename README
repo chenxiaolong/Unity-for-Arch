@@ -12,35 +12,34 @@ Order to compile/install:
 04: libindicate                    -> Libraries for apps to raise 'flags' on DBus
 05: libindicate-qt                 -> Qt bindings for libindicate
 06: appmenu-gtk                    -> Application menu module for GTK+
-07: libunity                       -> Library for integrating Unity
-08: libunity-webapps               -> Library for integrating WebApps into Unity
-09: sni-qt                         -> Turns Qt tray icons into appindicators
-10: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-11: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-12: gnome-session-ubuntu           -> GNOME Session Manager
-13: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-14: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-15: metacity-ubuntu	               -> Window manager for GNOME
-16: indicator-datetime             -> A very, very simple clock
-17: indicator-session              -> Indicator to manage session
-18: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-19: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-20: evemu                          -> Linux evdev event emulation
-21: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-22: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-23: xorg-server-ubuntu             -> Xorg X server
-24: nux                            -> An OpenGL toolkit
-25: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-26: python-oauthlib                -> Python implementation of OAuth 
-27: unity-lens-applications        -> Unity applications lens
-28: unity-lens-files               -> Unity files lens
-29: unity-lens-music               -> Unity music lens
-30: unity-lens-photos              -> Unity photo lens
-31: unity-lens-video               -> Unity video lens
-32: unity-scope-video-remote       -> Remove video search for Unity video lens
-33: unity-scope-gdocs              -> Google Docs scope for Unity
-34: compiz-ubuntu                  -> Compiz compositing window manager
-35: unity                          -> A desktop experience designed for efficiency
+07: libunity-webapps               -> Library for integrating WebApps into Unity
+08: sni-qt                         -> Turns Qt tray icons into appindicators
+09: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+10: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+11: gnome-session-ubuntu           -> GNOME Session Manager
+12: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+13: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+14: metacity-ubuntu	               -> Window manager for GNOME
+15: indicator-datetime             -> A very, very simple clock
+16: indicator-session              -> Indicator to manage session
+17: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+18: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+19: evemu                          -> Linux evdev event emulation
+20: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+21: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+22: xorg-server-ubuntu             -> Xorg X server
+23: nux                            -> An OpenGL toolkit
+24: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+25: python-oauthlib                -> Python implementation of OAuth 
+26: unity-lens-applications        -> Unity applications lens
+27: unity-lens-files               -> Unity files lens
+28: unity-lens-music               -> Unity music lens
+29: unity-lens-photos              -> Unity photo lens
+30: unity-lens-video               -> Unity video lens
+31: unity-scope-video-remote       -> Remove video search for Unity video lens
+32: unity-scope-gdocs              -> Google Docs scope for Unity
+33: compiz-ubuntu                  -> Compiz compositing window manager
+34: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
