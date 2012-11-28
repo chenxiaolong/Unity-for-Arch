@@ -49,21 +49,6 @@ Troubleshooting:
       # rm -rvf /usr/share/config/kdm
       # genkdmconf
 
-* AHH! Something is wrong with Unity!
-
-    Try resetting the settings for Unity and Compiz and relogin:
-
-      $ compiz.reset
-      $ rm -rvf ~/.cache/unity/
-
-    If something is still wrong, please file a bug report at either:
-
-      https://github.com/chenxiaolong/Unity-for-Arch/issues
-
-    or
-
-      https://bugs.launchpad.net/unity-for-arch
-
 * qt-ubuntu does not build.
 
     Temporary remove the qtwebkit package (ignoring dependencies) by running:
