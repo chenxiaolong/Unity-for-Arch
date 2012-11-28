@@ -31,15 +31,14 @@ Order to compile/install:
 23: nux                            -> An OpenGL toolkit
 24: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 25: python-oauthlib                -> Python implementation of OAuth 
-26: unity-lens-applications        -> Unity applications lens
-27: unity-lens-files               -> Unity files lens
-28: unity-lens-music               -> Unity music lens
-29: unity-lens-photos              -> Unity photo lens
-30: unity-lens-video               -> Unity video lens
-31: unity-scope-video-remote       -> Remove video search for Unity video lens
-32: unity-scope-gdocs              -> Google Docs scope for Unity
-33: compiz-ubuntu                  -> Compiz compositing window manager
-34: unity                          -> A desktop experience designed for efficiency
+26: unity-lens-files               -> Unity files lens
+27: unity-lens-music               -> Unity music lens
+28: unity-lens-photos              -> Unity photo lens
+29: unity-lens-video               -> Unity video lens
+30: unity-scope-video-remote       -> Remove video search for Unity video lens
+31: unity-scope-gdocs              -> Google Docs scope for Unity
+32: compiz-ubuntu                  -> Compiz compositing window manager
+33: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
