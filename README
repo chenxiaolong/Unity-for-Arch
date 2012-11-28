@@ -31,20 +31,19 @@ Order to compile/install:
 23: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
 24: xorg-server-ubuntu             -> Xorg X server
 25: grail                          -> Gesture recognition and instantiation lib.
-26: geis                           -> Implementation of the GEIS interface
-27: nux                            -> An OpenGL toolkit
-28: unity-asset-pool               -> Design assets for Unity
-29: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-30: python-oauthlib                -> Python implementation of OAuth 
-31: unity-lens-applications        -> Unity applications lens
-32: unity-lens-files               -> Unity files lens
-33: unity-lens-music               -> Unity music lens
-34: unity-lens-photos              -> Unity photo lens
-35: unity-lens-video               -> Unity video lens
-36: unity-scope-video-remote       -> Remove video search for Unity video lens
-37: unity-scope-gdocs              -> Google Docs scope for Unity
-38: compiz-ubuntu                  -> Compiz compositing window manager
-39: unity                          -> A desktop experience designed for efficiency
+26: nux                            -> An OpenGL toolkit
+27: unity-asset-pool               -> Design assets for Unity
+28: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+29: python-oauthlib                -> Python implementation of OAuth 
+30: unity-lens-applications        -> Unity applications lens
+31: unity-lens-files               -> Unity files lens
+32: unity-lens-music               -> Unity music lens
+33: unity-lens-photos              -> Unity photo lens
+34: unity-lens-video               -> Unity video lens
+35: unity-scope-video-remote       -> Remove video search for Unity video lens
+36: unity-scope-gdocs              -> Google Docs scope for Unity
+37: compiz-ubuntu                  -> Compiz compositing window manager
+38: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
