@@ -19,46 +19,44 @@ Order to compile/install:
 11: libunity-misc                  -> Differently licensed stuff for Unity
 12: indicator-messages             -> Collects messages that need a response
 13: libunity-webapps               -> Library for integrating WebApps into Unity
-14: bamf                           -> Application matching framework
-15: sni-qt                         -> Turns Qt tray icons into appindicators
-16: ido                            -> Widgets and objects used for indicators
-17: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-18: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-19: gnome-session-ubuntu           -> GNOME Session Manager
-20: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-21: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
-22: metacity-ubuntu	               -> Window manager for GNOME
-23: indicator-applet               -> GNOME panel indicator applet
-24: indicator-application          -> Takes menus and puts then in the panel
-25: indicator-appmenu              -> An indicator to host the menus from apps
-26: indicator-datetime             -> A very, very simple clock
-27: indicator-power                -> Indicator to show battery information
-28: indicator-printers             -> Indicator showing active print jobs
-29: indicator-session              -> Indicator to manage session
-30: indicator-sound                -> A unified sound menu
-31: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-32: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
-33: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-34: evemu                          -> Linux evdev event emulation
-35: frame                          -> Touch frame library
-36: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-37: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-38: xorg-server-ubuntu             -> Xorg X server
-39: grail                          -> Gesture recognition and instantiation lib.
-40: geis                           -> Implementation of the GEIS interface
-41: nux                            -> An OpenGL toolkit
-42: unity-asset-pool               -> Design assets for Unity
-43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-44: python-oauthlib                -> Python implementation of OAuth 
-45: unity-lens-applications        -> Unity applications lens
-46: unity-lens-files               -> Unity files lens
-47: unity-lens-music               -> Unity music lens
-48: unity-lens-photos              -> Unity photo lens
-49: unity-lens-video               -> Unity video lens
-50: unity-scope-video-remote       -> Remove video search for Unity video lens
-51: unity-scope-gdocs              -> Google Docs scope for Unity
-52: compiz-ubuntu                  -> Compiz compositing window manager
-53: unity                          -> A desktop experience designed for efficiency
+14: sni-qt                         -> Turns Qt tray icons into appindicators
+15: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+16: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+17: gnome-session-ubuntu           -> GNOME Session Manager
+18: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+19: gnome-screensaver-ubuntu       -> Screensaver and screen locking for GNOME
+20: metacity-ubuntu	               -> Window manager for GNOME
+21: indicator-applet               -> GNOME panel indicator applet
+22: indicator-application          -> Takes menus and puts then in the panel
+23: indicator-appmenu              -> An indicator to host the menus from apps
+24: indicator-datetime             -> A very, very simple clock
+25: indicator-power                -> Indicator to show battery information
+26: indicator-printers             -> Indicator showing active print jobs
+27: indicator-session              -> Indicator to manage session
+28: indicator-sound                -> A unified sound menu
+29: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+30: gnome-bluetooth-ubuntu         -> Gnome bluetooth applet with indicator support
+31: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+32: evemu                          -> Linux evdev event emulation
+33: frame                          -> Touch frame library
+34: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+35: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+36: xorg-server-ubuntu             -> Xorg X server
+37: grail                          -> Gesture recognition and instantiation lib.
+38: geis                           -> Implementation of the GEIS interface
+39: nux                            -> An OpenGL toolkit
+40: unity-asset-pool               -> Design assets for Unity
+41: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+42: python-oauthlib                -> Python implementation of OAuth 
+43: unity-lens-applications        -> Unity applications lens
+44: unity-lens-files               -> Unity files lens
+45: unity-lens-music               -> Unity music lens
+46: unity-lens-photos              -> Unity photo lens
+47: unity-lens-video               -> Unity video lens
+48: unity-scope-video-remote       -> Remove video search for Unity video lens
+49: unity-scope-gdocs              -> Google Docs scope for Unity
+50: compiz-ubuntu                  -> Compiz compositing window manager
+51: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
