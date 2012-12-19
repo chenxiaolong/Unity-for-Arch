@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libido3
+pkgver=12.10.2
+pkgrel=100
+pkgdesc="Widgets and other objects used for indicators"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/ido"
+license=('LGPL')
+depends=('gtk3-ubuntu')
+groups=('unity')
+options=('!libtool')
+source=("http://launchpad.net/ido/12.10/${pkgver}/+download/ido-${pkgver}.tar.gz")
+sha512sums=('f745380bbc8b97c739691ae4f0dc27d5903ff078e92aaa2280d2c830c77ea2ad29b3abb4a49ffc7cc928b32e3a60ad64de20087980e02e5d5233eeb22978d2dc')
+
+build() {
+  cd "${srcdir}/ido-${pkgver}"
+
+  ./configure --prefix=/usr --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/ido-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:

@@ -15,22 +15,23 @@ Order to compile/install:
 07: libunity-webapps               -> Library for integrating WebApps into Unity
 08: bamf                           -> Application matching framework
 09: sni-qt                         -> Turns Qt tray icons into appindicators
-10: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-11: gnome-session-ubuntu           -> GNOME Session Manager
-12: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-13: metacity-ubuntu	               -> Window manager for GNOME
-14: indicator-datetime             -> A very, very simple clock
-15: indicator-session              -> Indicator to manage session
-16: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-17: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-18: evemu                          -> Linux evdev event emulation
-19: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-20: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-21: xorg-server-ubuntu             -> Xorg X server
-22: nux                            -> An OpenGL toolkit
-23: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-24: compiz-ubuntu                  -> Compiz compositing window manager
-25: unity                          -> A desktop experience designed for efficiency
+10: ido                            -> Widgets and objects used for indicators
+11: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+12: gnome-session-ubuntu           -> GNOME Session Manager
+13: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+14: metacity-ubuntu	               -> Window manager for GNOME
+15: indicator-datetime             -> A very, very simple clock
+16: indicator-session              -> Indicator to manage session
+17: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+18: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+19: evemu                          -> Linux evdev event emulation
+20: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+21: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+22: xorg-server-ubuntu             -> Xorg X server
+23: nux                            -> An OpenGL toolkit
+24: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+25: compiz-ubuntu                  -> Compiz compositing window manager
+26: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
