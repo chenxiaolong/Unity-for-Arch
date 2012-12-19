@@ -3,24 +3,33 @@
 
 pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu2
-pkgver=2.24.13.${_ubuntu_rel}
+_ubuntu_ver=2.24.13
+_actual_ver=2.24.14
+pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
 pkgrel=100
+pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
-makedepends=('pkg-config' 'atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection' 'gtk-doc')
-options=('!libtool')
 license=('LGPL')
-source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'libcups' 'gtk-update-icon-cache' 'python2')
+makedepends=('pkg-config' 'gobject-introspection' 'gtk-doc')
+provides=("gtk2=${_actual_ver}")
+conflicts=('gtk2')
+replaces=('gtk2-docs')
+backup=('etc/gtk-2.0/gtkrc')
+options=('!libtool')
+install=arch_gtk2.install
+source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${_actual_ver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch'
         'fix-ubuntumenuproxy-build.patch')
-sha512sums=('95cdb709b128b5fb35def329b51b14b8c8721db644831f540ed57211945147379027f7866c1463d750a05f447648fc66eb1e6e81c69fda2f90225b8e3401b717'
+sha512sums=('f262ddd728ca2d93889bb1b113866932edf7d61ab3248ca11f2c83dbb181fcc0eaab900e6ed4933e4b597cac1ed1bf622711a617e0867ec10730c934d21dc911'
             '4f0e8a78b39388271c85fc02c2b7bd65237178ed5a6fdade98ed301dcba1fba0d1ab02d93349a8bf9350689ff7da7f9a4ea30b003a08335051f7c27b361e28f4'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
             '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
 
 build() {
-  cd "${srcdir}/gtk+-${pkgver%.*}"
+  cd "${srcdir}/gtk+-${_actual_ver}"
 
   patch -Np1 -i "${srcdir}/arch_xid-collision-debug.patch"
 
@@ -47,7 +56,7 @@ build() {
   done
 
   # Cannot find gmodule-2.0
-  CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
+  #CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
 
   autoreconf -vfi
 
@@ -64,16 +73,8 @@ build() {
   make ${MAKEFLAGS}
 }
 
-package_gtk2-ubuntu() {
-  pkgdesc="GTK+ is a multi-platform toolkit (v2)"
-  install=arch_gtk2.install
-  depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'libcups' 'gtk-update-icon-cache' 'python2')
-  provides=("gtk2=${pkgver%.*}")
-  conflicts=('gtk2')
-  replaces=('gtk2-docs')
-  backup=('etc/gtk-2.0/gtkrc')
-
-  cd "${srcdir}/gtk+-${pkgver%.*}"
+package() {
+  cd "${srcdir}/gtk+-${_actual_ver}"
 
   make DESTDIR="${pkgdir}" install
   sed -i "s#env python#env python2#" "${pkgdir}/usr/bin/gtk-builder-convert"
