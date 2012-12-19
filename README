@@ -19,19 +19,20 @@ Order to compile/install:
 11: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 12: gnome-session-ubuntu           -> GNOME Session Manager
 13: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-14: metacity-ubuntu	               -> Window manager for GNOME
-15: indicator-datetime             -> A very, very simple clock
-16: indicator-session              -> Indicator to manage session
-17: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-18: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-19: evemu                          -> Linux evdev event emulation
-20: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-21: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-22: xorg-server-ubuntu             -> Xorg X server
-23: nux                            -> An OpenGL toolkit
-24: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-25: compiz-ubuntu                  -> Compiz compositing window manager
-26: unity                          -> A desktop experience designed for efficiency
+14: metacity-ubuntu                -> Window manager for GNOME
+15: indicator-applet               -> GNOME panel indicator applet
+16: indicator-datetime             -> A very, very simple clock
+17: indicator-session              -> Indicator to manage session
+18: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+19: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+20: evemu                          -> Linux evdev event emulation
+21: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+22: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+23: xorg-server-ubuntu             -> Xorg X server
+24: nux                            -> An OpenGL toolkit
+25: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+26: compiz-ubuntu                  -> Compiz compositing window manager
+27: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar

@@ -1,0 +1,39 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=indicator-applet
+pkgver=12.10.1
+pkgrel=100
+pkgdesc="A small applet to display information from various applications consistently in the panel"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-applet"
+license=('GPL')
+depends=('libindicator3' 'xdg-utils' 'gnome-panel')
+makedepends=('intltool')
+optdepends=('indicator-application: take menus from applications and place them in the panel'
+            'indicator-appmenu: host the menus from an application'
+            'indicator-datetime: a very, very simple clock'
+            'indicator-messages: a place on the users desktop that collects messages that need a response'
+            'indicator-power: show the power status of your devices'
+            'indicator-session: change your status, switch users'
+            'indicator-sound: a unified sound menu')
+groups=('unity')
+install=${pkgname}.install
+source=("http://launchpad.net/indicator-applet/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('35d479c334579dcf347d9dc494ef550bac097ae77e2642f5aaefb4e1307b26830ac83adabdfa30c1e342e9a07118d1bfd5ad0f9eca0bab0fdacec21dc36e182e')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
