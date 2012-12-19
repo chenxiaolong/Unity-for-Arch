@@ -11,6 +11,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
 makedepends=('gobject-introspection' 'libwnck3' 'libwnck' 'libgtop' 'gnome-common' 'libunity-webapps' 'gtk-doc')
+provides=('FEATURE-bamf-webapps')
 groups=('unity')
 options=(!libtool)
 install=${pkgbase}.install
@@ -19,9 +20,6 @@ sha512sums=('dd2a932c00edf0b4ae2da1a06fe35920a5d245ef846cedfecef60f696b6f632af96
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-
-  #sed -i 's/[ \t]*-Werror[ \t]*/ /g' configure.in
-  #sed -i 's/-Werror/-Wno-error=implicit-function-declaration/g' configure.in
 
   autoreconf -vfi
 
