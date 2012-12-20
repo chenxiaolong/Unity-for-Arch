@@ -3,15 +3,14 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=0ubuntu1
-_ubuntu_ver=3.6.0
+_ubuntu_rel=0ubuntu2
 _actual_ver=3.6.2
-pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
+pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('libsystemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
+depends=('libsystemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
 makedepends=('intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
@@ -20,12 +19,12 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         '55gnome-session_gnomerc'
         'gnome-session-3.3.1-llvmpipe.patch'
         'timeout.patch')
 sha512sums=('3ae043a241695e26bbcfe70cb58263e74bfb62c1859d46828118740e3580df516f17c73d5a348d381ead7886333c71eb9bca2bed6e494f234b8d733a9fd37083'
-            'c79071dbb38d0b26f78fbe1567ce0efa6c6c049734423e267eaef7dff1c0f2d69fcbd167a249921b05c41a4253c95a4d2f1921f473f9bda8eeefcc99a6398e0f'
+            '26d930a0e01f7bd70af84e01d612f919f0d05058132b8473390123bf6a09bcf0d6ff837994785a545a246f0536098597fbc48dd7b14c6d8c8daec11b60de0b5a'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             'e70432410514740cc2b6f722fbc28f7b5ea984c3bbfb08c72708b9d66ea2eb038e816152e4c2352d73d0cfbd827097195a058590598a138b5ca225bd421b9e26'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
@@ -53,6 +52,8 @@ build() {
       sed -i '/53_add_sessionmigration.patch/d' "${srcdir}/debian/patches/series"
     # Part of Fedora's patches
       sed -i '/97_dont_blacklist_llvmpipe.patch/d' "${srcdir}/debian/patches/series"
+    # ConsoleKit is deprecated
+      sed -i '/04_consolekit_init_upower.patch/d' "${srcdir}/debian/patches/series"
 
   # Fix patches
     # Needed because 01_gnome-wm.patch is disabled
