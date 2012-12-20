@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=indicator-messages
+pkgver=12.10.5
+pkgrel=100
+pkgdesc="A place on the user's desktop that collects messages that need a response"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-messages"
+license=('GPL')
+depends=('libdbusmenu-gtk3' 'libindicator3' 'libindicate' 'telepathy-glib')
+makedepends=('intltool')
+groups=('unity')
+options=('!libtool')
+install=indicator-messages.install
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('bb7cb4c72a29cdd7fd3896d7e48b9c6f8433547f90d484bd2b20ae7d35ffd0d144c55cb8d93373f0dbfd7f54b04093125419e66a9166c779e5c2d4013324892e')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
