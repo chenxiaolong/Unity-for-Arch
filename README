@@ -29,18 +29,19 @@ Order to compile/install:
 21: metacity-ubuntu                -> Window manager for GNOME
 22: indicator-applet               -> GNOME panel indicator applet
 23: indicator-application          -> Takes menus and puts then in the panel
-24: indicator-datetime             -> A very, very simple clock
-25: indicator-session              -> Indicator to manage session
-26: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-27: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-28: evemu                          -> Linux evdev event emulation
-29: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-30: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-31: xorg-server-ubuntu             -> Xorg X server
-32: nux                            -> An OpenGL toolkit
-33: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-34: compiz-ubuntu                  -> Compiz compositing window manager
-35: unity                          -> A desktop experience designed for efficiency
+24: indicator-appmenu              -> An indicator to host the menus from apps
+25: indicator-datetime             -> A very, very simple clock
+26: indicator-session              -> Indicator to manage session
+27: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+28: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+29: evemu                          -> Linux evdev event emulation
+30: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+31: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+32: xorg-server-ubuntu             -> Xorg X server
+33: nux                            -> An OpenGL toolkit
+34: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+35: compiz-ubuntu                  -> Compiz compositing window manager
+36: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
