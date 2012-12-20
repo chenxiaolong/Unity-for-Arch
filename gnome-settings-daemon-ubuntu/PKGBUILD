@@ -3,16 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu14
-_ubuntu_ver=3.4.2
-_actual_ver=3.6.1
-pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu4
+_actual_ver=3.6.3
+pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'ibus' 'libappindicator3' 'gnome-desktop')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
 groups=('unity')
 provides=("gnome-settings-daemon=${_actual_ver}")
@@ -20,54 +19,39 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        #'screensaver.patch'
-        #'0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch'
-        '0001_16_use_synchronous_notifications.patch'
-        '0002_51_lock_screen_on_suspend.patch'
-        '0003_52_sync_background_to_accountsservice.patch'
-        '0004_60_unity_hide_status_icon.patch'
-        '0005_62_unity_disable_gsd_printer.patch'
-        '0006_63_unity_start_mounter.patch'
-        '0007_90_set_gmenus_xsettings.patch'
-        '0008_disable_three_touch_tap.patch'
-        '0009_revert_git_datetime_dropping.patch'
-        '0010_correct_logout_action.patch'
-        '0011_power-no-fallback-notifications.patch'
-        '0012_power-check-null-devices.patch'
-        '0013_64_restore_terminal_keyboard_shortcut_schema.patch')
-sha512sums=('44438fa6d6c3a62391da9f320cd11020cbaa8cf5e7f989919629ae94f8795b5af3d9ae832f1ef58a9fb2a6898d9b4a03b1e6732bfc14a9493b4d7deec2551c83'
-            #'08d32e1caf11436a9211b38af3a05838e10d86eedb7ecb44b05f0416187e7cd0b4ba701a9e87aa7d02f8172111225abd7f5ade2ff8e7a643be217cab9ead0780'
-            #'61507a6c8ff335557d4cd2d8f6cf0cadda6fda78c1a99c47114a29cfb7ace77f0a439030e06df5d44d1f8b2c5a735bba43eb1d3f8180aedc9c615f0eaa5623f7'
-            '3ff6c49511e70661ff0e70f0863fdce6f5705a6da6a7c6013fa24071c96b47fad7ba1e92dcad95024be530a3a34456c9b18667c675ada9972eadb3fef72b64d5'
-            '97a8a2657d0c06da88e4eb5a322caa6bf47e286e10e26362cc1fc4bb7d3b90bfe84e05e85a0dbc28b4af04d7fd1f5b648a5e872517ecdfcaf21fdfef7b53d0d2'
-            '82b9acce3015f1a27240df44ab939dd46a3d87941dd50b153c303b75d089c277a35a952db4ead76a548bb84272af3e26351a4397e545f91eef317342b876c951'
-            '8a9c56690f9f108b452efc2f44bfedab57ade65c5b39886f3344b41675d188f02315dcf60ef4934f058b924b364f8d044c4a4c6816faf53cc2719aaeee250196'
-            'c502449f903fd93ec5e10ce568d5ccff3a0068400bc0aeec58bfbc29c67d97a007f9c636281561eb0b12432747ba5e1c3916bfbd807bedeaaf07922ed22ecec4'
-            '7035ac7cb01468acc9e4f523570561459b84a29dd44218e4ef679e7fefddc741d433616baa890798a8c4f374542dcc4e61dd93329d874fc443d460a8d4be38a5'
-            '439159916dd5d223ac712e2bcaa382e912f78ad979dd64bb4c15e3c3644499ccab65ec1a11f9cc2e1f8b02806918c3d2728a1e41141d2ab5597aee18bfe4e427'
-            '186e3051b47dbe766daea840dfc4da0e1231db742529004e3aac631b64060c80a8542d09e6a388843306804992c8b120226fadaf147a0f40fdc2dc8500812f4c'
-            '64fbfbf91e76b049e569064e5d0a9c1ceb941e22e2324be6770910bc63db3070470e18872bfc71a4c528c72b99b7f29f3c4de46e036f17e6325f33b771f65298'
-            'ae7418df57fa92296e3cd6486102804d79a207a3bbe4fc76144f9b0ffbc93c03c7084ba878f1b33ce1dc9ea1a786372bda433e37b346db9a7b1356f39a2af26a'
-            'c2ce4b7268662c24fe4912f56a1feb0ea66f61e005f84441bf46d3dec18822306495a4515da1977477e5356cdc6b08b0aabdfbf341cb56031e67829d2efced3f'
-            '8e9db38bdf77326186465824c41d3d994bb1721e9f4f0821b7e8318085b50d3f8f3028a28867ff65f037a0259007b381ba2b3bb140935cdb29c0c38b13b8d2c0'
-            '530809b67e261d86a27d2fbb65a7c681121f83bd56e75f302f7b2d011f43250ee95edcfe3d22eec0376a8fc7e2b7200bf5c8012843e00e8f81a65791a8a9b060')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
+sha512sums=('45b7a0a2162d8419ba9c9d248b87374f9d2012b43b9667f34d3a125567b45e2c2dde5535091cf7cd170e982b07ec7594803cba2628774aefae9ce9f3e672a49a'
+            '61dabdb0ed6d9b5a1a22410b8ab1d7793936c9c16f0d2d7d4dad915da24269e03a07d386d18b6a8b9d821bb479a451b0eae85a2597428f392902ddf6cc74fcec'
+            '8dfff4992ad21cf5325e411d526cb0b19ff74f393685ff82f28a8f31c229245d03730fd9057c114f3b6cfce18891c4433b48ebe57916f07cb64d68f7b7477fe8')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
-  # Disable X's built-in screensaver
-  #patch -Np1 -i ../screensaver.patch
-
   # logind key handling FS#31801, patch from Fedora
-  # rebased onto screensaver.patch
-  #patch -Np1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
+  patch -Np1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
 
   # Apply Ubuntu's patches
-  for i in ${source[@]}; do
-    if [ "x${i%.patch}" != "x${i}" ]; then
-      msg "Applying patch: ${i}"
-      patch -Np1 -i "${srcdir}/${i}"
-    fi
+    # Disable patches
+      # Ubuntu specific
+        sed -i '/sync_keyboard_layout_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/61_revert_libgnomekbd_drop/d' "${srcdir}/debian/patches/series"
+        sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
+      # Ubuntu is too lazy to port their patches to the latest IBus release
+        sed -i '/revert_new_ibus_use.patch/d' "${srcdir}/debian/patches/series"
+      # systemd should make this obsolete
+        sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
+      # We do use PackageKit in Arch Linux
+        sed -i '/53_update_schemas_warning.patch/d' "${srcdir}/debian/patches/series"
+      # Merged upstream. How does Debian/Ubuntu's quilt not error out, I have no
+      # idea. https://launchpadlibrarian.net/124034045/buildlog_ubuntu-raring-amd64.gnome-settings-daemon_3.6.3-0ubuntu2_BUILDING.txt.gz
+        sed -i '/48_register_client_before_idle_callbacks.patch/d' "${srcdir}/debian/patches/series"
+      # Conflicts with Fedora's patches
+        sed -i '/51_lock_screen_on_suspend.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/bugzilla_segfault_dpms.patch/d' "${srcdir}/debian/patches/series"
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   autoreconf -vfi
@@ -78,10 +62,12 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/${pkgname%-*} \
     --disable-static \
-    --enable-systemd
+    --enable-systemd \
+    --disable-ibus
       
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
   make ${MAKEFLAGS}
 }
 

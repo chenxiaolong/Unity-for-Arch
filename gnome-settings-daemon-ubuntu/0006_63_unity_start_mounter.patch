@@ -1,9 +1,0 @@
-diff -Nru gnome-settings-daemon-3.5.92.orig/plugins/automount/gnome-fallback-mount-helper.desktop.in.in gnome-settings-daemon-3.5.92/plugins/automount/gnome-fallback-mount-helper.desktop.in.in
---- gnome-settings-daemon-3.5.92.orig/plugins/automount/gnome-fallback-mount-helper.desktop.in.in	2012-09-20 23:06:15.551075504 -0400
-+++ gnome-settings-daemon-3.5.92/plugins/automount/gnome-fallback-mount-helper.desktop.in.in	2012-09-20 23:51:28.223763470 -0400
-@@ -9,4 +9,4 @@
- NoDisplay=true
- OnlyShowIn=GNOME;Unity;
- X-GNOME-Autostart-Notify=true
--AutostartCondition=GNOME3 if-session gnome-fallback
-+AutostartCondition=GNOME3 unless-session gnome
