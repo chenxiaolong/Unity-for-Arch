@@ -15,28 +15,29 @@ Order to compile/install:
 07: libindicate-qt                 -> Qt bindings for libindicate
 08: libappindicator                -> Library to export menu bar to Unity
 09: appmenu-gtk                    -> Application menu module for GTK+
-10: libunity-webapps               -> Library for integrating WebApps into Unity
-11: bamf                           -> Application matching framework
-12: sni-qt                         -> Turns Qt tray icons into appindicators
-13: ido                            -> Widgets and objects used for indicators
-14: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-15: gnome-session-ubuntu           -> GNOME Session Manager
-16: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-17: metacity-ubuntu                -> Window manager for GNOME
-18: indicator-applet               -> GNOME panel indicator applet
-19: indicator-application          -> Takes menus and puts then in the panel
-20: indicator-datetime             -> A very, very simple clock
-21: indicator-session              -> Indicator to manage session
-22: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-23: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-24: evemu                          -> Linux evdev event emulation
-25: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-26: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-27: xorg-server-ubuntu             -> Xorg X server
-28: nux                            -> An OpenGL toolkit
-29: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-30: compiz-ubuntu                  -> Compiz compositing window manager
-31: unity                          -> A desktop experience designed for efficiency
+10: libunity                       -> Library for integrating Unity
+11: libunity-webapps               -> Library for integrating WebApps into Unity
+12: bamf                           -> Application matching framework
+13: sni-qt                         -> Turns Qt tray icons into appindicators
+14: ido                            -> Widgets and objects used for indicators
+15: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+16: gnome-session-ubuntu           -> GNOME Session Manager
+17: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+18: metacity-ubuntu                -> Window manager for GNOME
+19: indicator-applet               -> GNOME panel indicator applet
+20: indicator-application          -> Takes menus and puts then in the panel
+21: indicator-datetime             -> A very, very simple clock
+22: indicator-session              -> Indicator to manage session
+23: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+24: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+25: evemu                          -> Linux evdev event emulation
+26: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+27: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+28: xorg-server-ubuntu             -> Xorg X server
+29: nux                            -> An OpenGL toolkit
+30: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+31: compiz-ubuntu                  -> Compiz compositing window manager
+32: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar

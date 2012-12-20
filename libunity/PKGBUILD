@@ -1,0 +1,43 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=libunity
+_ubuntu_rel=0ubuntu1
+pkgver=6.12.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libunity"
+license=('LGPL')
+depends=('libgee' 'dee' 'libdbusmenu')
+makedepends=('vala' 'python2' 'gobject-introspection')
+groups=('unity')
+options=('!libtool')
+source=("http://launchpad.net/${pkgname}/6.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('465ca8e913fafedd993aa719eca5ac2cb9b7eae530a78404e5e2ca4ceaf66d96c3833057705d655928ab5723a9d5a467fc63683a1cbb0d1c1128ed1f7a82dd1d'
+            'c84612c8c0f6ab4e12ffca4246ab0415f8a33663caade0f4dc30c3cbbf1f07b7dadaf247b077a1dc691cba068b4dd40e94181edf010e49424f5b75acec7bfa35')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+
+  for i in $(cat 'debian/patches/series' | grep -v '#'); do
+    patch -Np1 -i "debian/patches/${i}"
+  done
+
+  autoreconf -vfi
+  ./configure --prefix=/usr --disable-static PYTHON=python2
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
