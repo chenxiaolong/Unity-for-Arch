@@ -1,0 +1,35 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=indicator-printers
+_ubuntu_rel=0ubuntu3
+_actual_ver=0.1.6
+pkgver=${_actual_ver}.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="Indicator showing active print jobs"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-printers"
+license=('GPL')
+groups=('unity')
+depends=('cups' 'libdbusmenu' 'libdbusmenu-gtk3' 'libindicator3')
+options=('!libtool')
+source=("https://launchpad.net/indicator-printers/0.1/${_actual_ver}/+download/indicator-printers-${_actual_ver}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}-${_ubuntu_rel}.diff.gz")
+sha512sums=('1811727829c2a522fed4e24c73612886f7f0b518f3b6ea8a7681d1e3e2619500509a69a194e42cea8ce235aa0532ad50b9c5625c9bc57c469fecacfe5ad5dc42'
+            'e6fa61b116bd0b9d26efb679b5e0ea919c3a7ab4e839b74b76fee43fee1cc9915fa640f8685add080242c26c18ee04e2f672dac7fc49c22c2194fb39de676c79')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}"
+
+  # Apply Ubuntu's patches
+  patch -Np1 -i "${srcdir}/indicator-printers_${_actual_ver}-${_ubuntu_rel}.diff"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
