@@ -1,0 +1,96 @@
+# Maintainer: Xiao-Long Chen
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=libdbusmenu
+pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.2.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/dbusmenu"
+license=('LGPL')
+makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gobject-introspection' 'vala' 'python2' 'valgrind')
+groups=('unity')
+options=('!libtool')
+source=("http://launchpad.net/dbusmenu/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('cf2e50dc3adbf35d0a4ccdd62a3efd9fae2d079b8d06e6522b70f077f89ac2cf72188e380f476e38d184b69549e90b801bf1e32174fa94bbe612dd52aec94496'
+            'adc51642d385df567cfcbe1f703d8bfefb81bcc31891a2434e9887dd52f2e253f932b0ce5ac668ca9f31d9df1007159d5bb91fcbca31434b010cb5db67a30b50')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  for i in $(cat debian/patches/series | grep -v '#'); do
+    patch -Np1 -i "debian/patches/series/${i}"
+  done
+
+  autoreconf -vfi
+
+  # Add '-lgmodule-2.0' to linker command line
+  CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
+
+  # Python2 fix
+  sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench
+
+  # libdbusmenu-gtk2 won't install if libdbusmenu-glib is missing
+  sed -i 's|$(DBUSMENUGTK_CFLAGS)|$(DBUSMENUGTK_CFLAGS) -L../libdbusmenu-glib/.libs|' libdbusmenu-gtk/Makefile.{am,in}
+
+  # Is the GTK 2 version still needed? It's not included in Ubuntu 11.10 anymore:
+    # http://packages.ubuntu.com/search?keywords=dbusmenu&searchon=names&suite=oneiric&section=all
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static
+  make ${MAKEFLAGS}
+  popd
+}
+
+# I've modified thn81's PKGBUILD so that the directory structure of the packages
+#   are identical to Ubuntu's. It should have better compatibility will other
+#   packages that depend on libdbusmenu.
+
+package_libdbusmenu() {
+  depends=('json-glib' 'gtk2-ubuntu')
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+
+  MAKEFLAGS="-j1"
+  make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
+  make -C tools DESTDIR="${pkgdir}/" install
+  make -C tests DESTDIR="${pkgdir}/" install
+  make -C docs/libdbusmenu-glib DESTDIR="${pkgdir}/" install
+  make -C po DESTDIR="${pkgdir}/" install
+}
+
+package_libdbusmenu-gtk2() {
+  pkgdesc+=" (GTK+ 2 library)"
+  depends=('gtk2-ubuntu' "libdbusmenu=${pkgver}")
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+
+  MAKEFLAGS="-j1"
+  make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
+  make -C docs/libdbusmenu-gtk DESTDIR="${pkgdir}/" install
+}
+
+package_libdbusmenu-gtk3(){
+  pkgdesc+=" (GTK+ 3 library)"
+  depends=('gtk3-ubuntu' "libdbusmenu=${pkgver}")
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+
+  MAKEFLAGS="-j1"
+  make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
