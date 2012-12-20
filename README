@@ -25,21 +25,22 @@ Order to compile/install:
 17: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 18: gnome-session-ubuntu           -> GNOME Session Manager
 19: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-20: metacity-ubuntu                -> Window manager for GNOME
-21: indicator-applet               -> GNOME panel indicator applet
-22: indicator-application          -> Takes menus and puts then in the panel
-23: indicator-datetime             -> A very, very simple clock
-24: indicator-session              -> Indicator to manage session
-25: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
-26: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-27: evemu                          -> Linux evdev event emulation
-28: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-29: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-30: xorg-server-ubuntu             -> Xorg X server
-31: nux                            -> An OpenGL toolkit
-32: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-33: compiz-ubuntu                  -> Compiz compositing window manager
-34: unity                          -> A desktop experience designed for efficiency
+20: gnome-control-center-unity     -> Change some Unity settings with GCC
+21: metacity-ubuntu                -> Window manager for GNOME
+22: indicator-applet               -> GNOME panel indicator applet
+23: indicator-application          -> Takes menus and puts then in the panel
+24: indicator-datetime             -> A very, very simple clock
+25: indicator-session              -> Indicator to manage session
+26: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+27: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+28: evemu                          -> Linux evdev event emulation
+29: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+30: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+31: xorg-server-ubuntu             -> Xorg X server
+32: nux                            -> An OpenGL toolkit
+33: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+34: compiz-ubuntu                  -> Compiz compositing window manager
+35: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar

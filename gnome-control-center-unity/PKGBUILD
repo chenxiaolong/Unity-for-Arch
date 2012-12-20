@@ -1,0 +1,38 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=gnome-control-center-unity
+pkgver=1.0
+pkgrel=1
+pkgdesc="A set of settings panels for configuring the Unity desktop"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/gnome-control-center-unity"
+license=('GPL')
+groups=('unity')
+depends=('gnome-control-center-ubuntu' 'gsettings-desktop-schemas' 'libnotify' 'libxml2')
+makedepends=('gnome-common' 'intltool')
+options=('!libtool')
+install=${pkgname}.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-control-center-unity_1.0.orig.tar.gz")
+sha512sums=('ac80b774630ddf9db56a5618ffbe4bf8dd9802c78488b12342850b224ed4585520d07fba0507f9bf9486e05d9d48ae2c6f534bc4a7a8d8f24928e2b2667cb3c4')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  autoreconf -vfi
+  intltoolize -f
+
+  ./configure --prefix=/usr
+  make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make -k check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
