@@ -38,13 +38,15 @@ Order to compile/install:
 30: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
 31: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
 32: evemu                          -> Linux evdev event emulation
-33: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-34: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-35: xorg-server-ubuntu             -> Xorg X server
-36: nux                            -> An OpenGL toolkit
-37: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-38: compiz-ubuntu                  -> Compiz compositing window manager
-39: unity                          -> A desktop experience designed for efficiency
+33: frame                          -> ??????????????????????????????????????????
+34: grail                          -> Gesture recognition and instantiation lib.
+35: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+36: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+37: xorg-server-ubuntu             -> Xorg X server
+38: nux                            -> An OpenGL toolkit
+39: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+40: compiz-ubuntu                  -> Compiz compositing window manager
+41: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
