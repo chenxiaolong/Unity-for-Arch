@@ -21,7 +21,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
 
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
 }
 
