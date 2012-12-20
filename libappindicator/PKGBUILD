@@ -1,0 +1,72 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgbase=libappindicator
+pkgname=('libappindicator' 'libappindicator3')
+_ubuntu_rel=0ubuntu1
+pkgver=12.10.0.${_ubuntu_rel}
+pkgrel=100
+pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libappindicator"
+license=('LGPL')
+makedepends=('libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml')
+groups=('unity')
+options=('!libtool')
+source=("http://launchpad.net/${pkgbase}/12.10/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+sha512sums=('317a22a23c8ed84e74207b64b2e9683992d1fb7208176637a051dfe925974f966d1cfa31e650b45eaf839ab61641dee8fbebc8a07882a09b0dd766d88b8d5b9a'
+            '56e5aa76762b9e3606b49082d094c2d4c80924db1dd23cb12e11b099d136c041c7956bbcfed464e3f92ad1e99903b0f4cdc0572ef7aeeea0d600a4e94b97a92e')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  # Apply Ubuntu patches
+  patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
+
+  # nunit renamed to mono-nunit in /usr/lib/pkgconfig/mono-nunit.pc
+  sed -i 's/nunit >= 2\.4\.7/mono-nunit >= 2.4.7/' configure{,.ac}
+
+  # The /usr/lib/cli location for Mono bindings is specific to Ubuntu
+  sed -i 's|assemblydir = $(libdir)/cli/appindicator-sharp-0.1|assemblydir = $(libdir)/appindicator-sharp-0.1|' bindings/mono/Makefile.{am,in}
+  sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
+
+  autoreconf -vfi
+
+  [[ -d build-gtk2 ]] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --with-gtk=2 --disable-static PYTHON=python2
+  MAKEFLAGS="-j1"
+  make ${MAKEFLAGS}
+  popd
+
+  [[ -d build-gtk3 ]] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --with-gtk=3 --disable-static PYTHON=python2
+  make ${MAKEFLAGS}
+  popd
+}
+
+package_libappindicator() {
+  pkgdesc+=" (GTK+ 2 library)"
+  depends=('libindicator' 'libdbusmenu-gtk2')
+  conflicts=('indicator-application<0.2.91')
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk2"
+
+  MAKEFLAGS="-j1"
+  make DESTDIR="${pkgdir}/" install
+}
+
+package_libappindicator3(){
+  pkgdesc+=" (GTK+ 3 library)"
+  depends=('libindicator3' 'libdbusmenu-gtk3')
+
+  cd "${srcdir}/${pkgbase}-${pkgver%.*}/build-gtk3"
+
+  make -C src DESTDIR="${pkgdir}/" install
+  make -C bindings/vala DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
