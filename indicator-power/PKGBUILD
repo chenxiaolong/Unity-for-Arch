@@ -3,7 +3,7 @@
 pkgname=indicator-power
 pkgver=12.10.5
 pkgrel=100
-pkgdesc="A indicator to show the power status of your devices"
+pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
 license=('GPL')
