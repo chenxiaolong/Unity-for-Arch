@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-_ubuntu_rel=0ubuntu3.1
+_ubuntu_rel=0ubuntu3.2
 _actual_ver=2.4.1
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -17,7 +17,7 @@ install=libunity-webapps.install
 source=("https://launchpad.net/libunity-webapps/trunk/${_actual_ver}/+download/unity_webapps-${_actual_ver}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('25e9024bd1e4109b284be414b3c5d010b69f359fcc4a7243d285b8e247ad4eb8bcd980d70af68436d66afafad9acfb4d5983b6dd0fa2f184fe7391b9d5254f5c'
-            '7013d07728d8722893cbc166293b66ec90b1b45f2c4bad826375ff81814ebe00b305f5653bf55833a1226896e380ae11e218cf0f65480725a8c0e4bdfcbd634a')
+            '234728cd07ce8e1780f06f946ca26f043467bc010936205acd96de938c722f5446d3832accb941906ada7cfabc333db5dd05875bc9bf0a1b832e3355f7bb8a37')
 
 build() {
   cd "${srcdir}/unity_webapps-${_actual_ver}"
