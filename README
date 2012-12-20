@@ -43,10 +43,11 @@ Order to compile/install:
 35: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
 36: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
 37: xorg-server-ubuntu             -> Xorg X server
-38: nux                            -> An OpenGL toolkit
-39: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-40: compiz-ubuntu                  -> Compiz compositing window manager
-41: unity                          -> A desktop experience designed for efficiency
+38: geis                           -> Implementation of the GEIS interface
+39: nux                            -> An OpenGL toolkit
+40: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+41: compiz-ubuntu                  -> Compiz compositing window manager
+42: unity                          -> A desktop experience designed for efficiency
 
 * Optional packages
   - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
