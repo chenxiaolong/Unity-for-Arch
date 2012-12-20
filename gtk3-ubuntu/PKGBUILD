@@ -5,7 +5,7 @@ pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu1
 _actual_ver=3.6.2
 pkgver=${_actual_ver}.z${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -39,6 +39,8 @@ build() {
         sed -i '/071_fix-installation-of-HTML-images.patch/d' "${srcdir}/debian/patches/series"
       # Drop git patches
         sed -i '/git/d' "${srcdir}/debian/patches/series"
+        # Except this one
+          echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
