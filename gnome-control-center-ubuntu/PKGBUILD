@@ -3,10 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu19
-_ubuntu_ver=3.4.2
-_actual_ver=3.6.2
-pkgver=${_actual_ver}.ubuntu${_ubuntu_ver}.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu9
+_actual_ver=3.6.3
+pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -22,60 +21,39 @@ conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
-        '0001_04_new_appearance_settings.patch'
-        '0002_10_keyboard_layout_on_unity.patch'
-        '0003_11_power-configure_lid_action.patch'
-        '0004_12_add_never_turn_screen_off.patch'
-        '0005_51_unity_options_in_display_panel.patch'
-        '0006_54_enable_alt_tap_in_shortcut.patch'
-        '0007_55_user_accounts_hide_controls.patch'
-        '0008_57_use_nonsymbolic_keyboard_icon.patch'
-        '0009_61_workaround_online_account.patch'
-        '0010_62_update_translations_template.patch'
-        '0011_64_restore_terminal_keyboard_shortcut.patch'
-        '0012_90_force_fallback.patch'
-        '0013_96_sound_nua_panel.patch'
-        '0014_97_unity_power_ui.patch'
-        '0015_98_default_sound_theme.patch'
-        '0016_revert_git_drop_library.patch'
-        '0017_99_add_lock-on-suspend.patch'
-        '0018_dont_download_local_image.patch'
-        '0019_fix-crash-on-user-panel.patch'
-        '0020_classic_use_sound_indicator.patch'
-        '0021_accounts_fix_unsetting_icon.patch')
-sha512sums=('2ec5f15a92956e6a0f573ba57bd5f193d48a7912cd954449a08be9e6981061b870c75695a898451f5a02d9d017285e5b36f34a8d2957f6bd0d46eeca22e5cd69'
-            'e0f4ffe7c64403eee9fb0e10a55a0b04f086c6ed6440f7374d042d4c2969a3a03c85aeb7a7f784c397ea17077398e9c349931aecfcf895f023e1b4ea32a8c17b'
-            'cfb8757f7225f259540edf08a9ecca93a722672a0ee693cf715c2a4ebb6b4e36fa6ae212d6976da0f4c91f05b9a1c5209c77b6e2d553db93181a4662db784789'
-            'b4f932fcd4a6d6794e42626fb32c47b70ac1a3f5b4bb2ac0f04c84ccba5cf15979f9952f01723271952d1050bca6f309abe79b945e0ee2073666d16521f14437'
-            'b74b660381b181bd82cbf33c5f6caf225cdccea4b2508f96823dad2be6d0cfbf1f4c2239f8a3cfd22c8c721d8d7019f27b9d684593c18b30c23beaaaf95fcd0f'
-            'ecaa1c3f30b0da932d4d8355aaa2451a495408d982222d072f179a7ed20ab103db5b67ed06b31b2c1103c2f6f7fa6160abfdab705597f3f7f92fe76637fb7590'
-            '259a1a49717afbdc5787d2df1d72f4068c3c1e0cf42c7194a07798e6159910c283fb27b8e29d2fa494a33d737852818a52e209493329eab717d32b9184a518a6'
-            '739ace7e4414eec67894dc8dffaa3cedfb112c2f612df01e433e4a17ade49a8757e4150db2e8f6af0a9449c9130682db748aad6ef81945ddf463c7e2e5337588'
-            'f8a48d03ebbbe1a2f1f7ff7ff7893123630e8ec3db3226136275ae739dd7ac983001c829c1f4d66c71e67ded02fe1021d7ee1776f89664c8eb7da513de762fe6'
-            '3b0bead1ebaa37b4be25bd694e1ca2a14ce0bacefa054476dd2945639a289e8270856c03ce7608fbdc7ee3098aa2250066c63ccf22b886fdae9949f91a67f763'
-            'f79c251faed632797ca9e77d33db043c94c4a1bba753d2fe81e2a54529cb7856153b2ce7918abc4f173c91bc8853abe2a39499414562efe9c83e106a896ac9b5'
-            '0a311f8793c432ace79889490c445efd1f781fcd7a104762d1bfc8d5f48cc65482f256f186d464b772197315745b0fbd42bd94c78c4f61be4e0b4e36f55216e9'
-            '184732dbf9561f649c50e7b59ffc3a9c5e714044ab3a62222f9c1121431ed24ae24dfe03dfc6061f3ed22b76a2f0845f908632aa4e64ab4cf76f9fa5ed77f341'
-            'a15e7323ec129dc00f9069db2f4519685c872e17ac9b63698143ab6db2ac919d3f708bf84c8712816d14a4b9449929fc2c14353ac7c07e88474f04f7e10259f4'
-            'd934f09a48dc448148ece40efa8e5b6038c3d6558194a33b76ff9a51a04271c715f3bd998cf8be51348a1a4162b4de2d9c0feb8f855db4a092a32a0eda960f51'
-            '0d7fbc169da6f495cd41ee5eff0f3268f9d9915dce30c595381597b2db0edb5e0c19a3f42141935c0fa15993a0c25a3ce007521e79edbf2d4713d4020fdf2d8b'
-            '60b457157fde54bad697bbe001324298a25ef2f69fc145c3506bec9c74fd81564335b7bc39d327c1513904eb45c75c419c4b2d84567f58e06824ad19b9d71299'
-            '4bd414778edb2916bf7ee4dea03d7182245ce48c6fe249d50138caa09ff3a48ca5b6773bc4eb01c53d137c9b36dca846a79d284d2656b9ad3c9b0cacf3a5dba1'
-            'f85a0711b0d3445f39b5e8f4e51137cf2aef9ef72c34ebd0a817667a0b21af0abbad4ec328ec05c9506d9c3c19ffa9e5b27c63df2ab091e9f015b6ff1d8b8ce0'
-            'e4bc756a81010f8c9e639f780f2069ec2eff960f0599000b472cf936c96a78fd159ac2c88297de56bf88304f8abe05969d7e7ffa587d51880df6d608acd75b10'
-            '9451b1d1d4e72dbc5a3c771768a79014da210ad106d9901dbd8e38bd6d85e5da1f3191598b3d3950b0ac9381ea9281c399c4d84d267b3d36b5320c1d86c8de01'
-            'd01399154104b14434edb610426599f32f54ab1749e7d1a57de60063301a9202a7193b39e87d6c41172a794621e77267fed435c968aa779bbef2acc33732cec0'
-            '9e5840b4ac6c2e9a396ee7b8e6f30ad02cdcdfe400b2ea5dbd2bd8ea7ed7399d3e83784a7f520dbb8a35dc932b5b3d43a34d23f383e957a7b5ebcdfe820afebf')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        'pulse3.0.patch')
+sha512sums=('77cd68349dc7f58714fbd121a34ec73a5c3e67c7a42a08c20a8dfdcfc9cefdec47af0f09130b7e3f0407cb7a786234b2619fdb76462c3bdb2bbc548294bfd444'
+            'e6999466d9f19c416b399a74d78a1fc62e6b4ebc15149fb123aaafd53de262adc74ae03cd349522a70f4fa03ece77654a8c05fd05b18c91176741ddafe84e85e'
+            '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
-  # Apply Ubuntu patches
-  for i in ${source[@]}; do
-    if [ "x${i%.patch}" != "x${i}" ]; then
-      patch -Np1 -i "${srcdir}/${i}"
-    fi
+  # Apply Arch Linux's patches
+    patch -p1 -i "${srcdir}/pulse3.0.patch"
+
+  # Apply Ubuntu's patches
+    # Disable patches
+      # Ubuntu is too lazy to port their patches to the latest version of IBus
+        sed -i '/revert_new_ibus_keyboard_use.patch/d' "${srcdir}/debian/patches/series"
+      # systemd should make this obsolete
+        sed -i '/revert_git_datetime_port.patch/d' "${srcdir}/debian/patches/series"
+      # The gnome-settings-daemon-ubuntu patch for this conflicts with Arch
+      # Linux's patches
+        sed -i '/99_add_lock-on-suspend.patch/d' "${srcdir}/debian/patches/series"
+      # Arch Linux uses PackageKit
+        sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
+      # Ubuntu specific
+        sed -i '/10_keyboard_layout_on_unity.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/50_ubuntu_systemwide_proxy.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/52_ubuntu_language_list_mods.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   autoreconf -vfi
@@ -88,7 +66,8 @@ build() {
     --enable-systemd \
     --with-libsocialweb \
     --disable-update-mimedb \
-    --without-cheese
+    --without-cheese \
+    --disable-ibus
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
@@ -106,7 +85,8 @@ package() {
 
   # Ubuntu specific files
   install -dm755 "${pkgdir}/usr/share/indicators/session/applications/"
-  ln -s '/usr/share/applications/gnome-control-center.desktop' "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
+  ln -s '/usr/share/applications/gnome-control-center.desktop' \
+    "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
