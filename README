@@ -11,7 +11,7 @@ Order to compile/install:
 03: qt-ubuntu                      -> Qt toolkit with Ubuntu patches
 04: libdbusmenu                    -> Library for passing menus over DBus
 05: libindicator                   -> Symbols and functions for indicators
-06: libindicate                    -> Libraries for apps to raise 'flags' on DBus
+06: libindicate                    -> Libraries to raise 'flags' on DBus
 07: libindicate-qt                 -> Qt bindings for libindicate
 08: libappindicator                -> Library to export menu bar to Unity
 09: appmenu-gtk                    -> Application menu module for GTK+
@@ -33,26 +33,26 @@ Order to compile/install:
 25: indicator-datetime             -> A very, very simple clock
 26: indicator-power                -> Indicator to show battery information
 27: indicator-printers             -> Indicator showing active print jobs
-28: indicator-session              -> Indicator to manage session
-29: indicator-sound                -> A unified sound menu
-30: network-manager-applet-ubuntu  -> Network Manager applet with indicator support
+28: indicator-session              -> Indicator for session management
+29: indicator-sound                -> Indicator displaying a unified sound menu
+30: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
 31: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-32: evemu                          -> Linux evdev event emulation
-33: frame                          -> ??????????????????????????????????????????
-34: grail                          -> Gesture recognition and instantiation lib.
-35: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-36: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-37: xorg-server-ubuntu             -> Xorg X server
+32: evemu                          -> Linux Evdev Event Emulation Library
+33: frame                          -> Open Input Framework Frame Library
+34: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+35: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+36: xorg-server-ubuntu             -> Xorg X server
+37: grail                          -> Gesture recognition and instantiation lib.
 38: geis                           -> Implementation of the GEIS interface
 39: nux                            -> An OpenGL toolkit
 40: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 41: compiz-ubuntu                  -> Compiz compositing window manager
-42: unity                          -> A desktop experience designed for efficiency
+42: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
-  - overlay-scrollbar              => For GNOME/Unity users who want a space saving scrollbar
 
-All of PKGBUILD's were checked by namcap for consistency. The binary packages have not been checked yet.
+All of PKGBUILD's were checked by namcap for consistency. The binary packages
+have not been checked yet.
 
 Troubleshooting:
 
