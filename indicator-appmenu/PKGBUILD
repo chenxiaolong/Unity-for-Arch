@@ -2,28 +2,31 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=indicator-appmenu
-pkgname=('indicator-appmenu' 'indicator-appmenu-tools')
+pkgname=indicator-appmenu
 _ubuntu_rel=0ubuntu3
 pkgver=12.10.3.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
 license=('GPL')
 groups=('unity')
+depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
 makedepends=('vala>=0.16.0')
 optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-gtk3: support for GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
+provides=('indicator-appmenu-tools')
+conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
-source=("http://launchpad.net/${pkgbase}/12.10/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
+install="${pkgname}.install"
+source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
 sha512sums=('0055c46d630f2988ff781f8224d3eb10822ebb4bf8f3ece8a808a4631a3c278580ccd19dd4d92b8438d176be6d84af30e0805b28c9507cdde1f2fbb45a579dfe'
             '5322ac57e73499e998a2005308167f05489d5ce6bcfaa63ad3102cb1b53fcec76f7f4e62990d6370662f797210f7da47a9226e4efd20295e7b03b8900a0194af')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   # Apply Ubuntu's patches
   patch -p1 -i "${srcdir}/indicator-appmenu_${pkgver%.*}-${_ubuntu_rel}.diff"
@@ -37,41 +40,14 @@ build() {
   # Disable -Werror
   CFLAGS="${CFLAGS} -Wno-error"
 
-  # Cannot find gio/gdesktopappinfo.h
-  #CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gio-unix-2.0)"
-
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }
 
-package_indicator-appmenu() {
-  pkgdesc="Indicator for application menus"
-  depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
-  install="${pkgbase}.install"
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
 
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/"
-
-  make -C data DESTDIR="${pkgdir}/" install
-  make -C src DESTDIR="${pkgdir}/" install
-
-  # Remove files that go in indicator-appmenu-tools
-  rm "${pkgdir}"/usr/bin/hud-{cli,dump-application,list-applications,verify-app-info}
-}
-
-package_indicator-appmenu-tools() {
-  pkgdesc="Indicator for application menus - Tools"
-  depends=('indicator-appmenu')
-
-  # Doesn't matter which one is used
-  cd "${srcdir}/${pkgbase}-${pkgver%.*}/"
-
-  make -C docs DESTDIR="${pkgdir}/" install
-  make -C tools DESTDIR="${pkgdir}/" install
-  make -C src DESTDIR="${pkgdir}/" install
-
-  # Remove files that belong in the other packages
-  rm "${pkgdir}/usr/lib/indicators3/7/libappmenu.so"
-  rm "${pkgdir}/usr/lib/indicator-appmenu/hud-service"
+  make DESTDIR="${pkgdir}/" install
 }
 
 # vim:set ts=2 sw=2 et:
