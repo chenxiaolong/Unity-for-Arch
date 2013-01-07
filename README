@@ -46,10 +46,11 @@ Order to compile/install:
 38: geis                           -> Implementation of the GEIS interface
 39: nux                            -> An OpenGL toolkit
 40: unity-lens-applications        -> Unity applications lens
-41: unity-asset-pool               -> Design assets for Unity
-42: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-43: compiz-ubuntu                  -> Compiz compositing window manager
-44: unity                          -> Desktop shell designed for efficiency
+41: unity-lens-files               -> Unity files lens
+42: unity-asset-pool               -> Design assets for Unity
+43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+44: compiz-ubuntu                  -> Compiz compositing window manager
+45: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
