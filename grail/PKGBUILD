@@ -12,8 +12,6 @@ url="https://launchpad.net/grail"
 license=('LGPL')
 depends=('frame' 'libxi')
 makedepends=('inputproto')
-provides=("utouch-grail=${pkgver}")
-conflicts=('utouch-grail')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('8f58dfafdc889f1be15dfefbbb321b79865d3700f1a23dc4a96eabc363501113377694979ea15520895555a4a0631a8e7951958ba74da94a1cb72f7aff7daf3e')
