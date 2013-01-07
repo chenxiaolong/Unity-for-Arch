@@ -3,9 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-appmenu
-_ubuntu_rel=0ubuntu3
-pkgver=12.10.3.${_ubuntu_rel}
-pkgrel=101
+_actual_ver=12.10.4
+_extra_ver=daily12.12.14
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -20,25 +21,18 @@ provides=('indicator-appmenu-tools')
 conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
 install="${pkgname}.install"
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('0055c46d630f2988ff781f8224d3eb10822ebb4bf8f3ece8a808a4631a3c278580ccd19dd4d92b8438d176be6d84af30e0805b28c9507cdde1f2fbb45a579dfe'
-            '5322ac57e73499e998a2005308167f05489d5ce6bcfaa63ad3102cb1b53fcec76f7f4e62990d6370662f797210f7da47a9226e4efd20295e7b03b8900a0194af'
+sha512sums=('e861be4d1bbfa994f4699691f65a9dcb4098c038b1cc44017ce6df54cd16d843dd05a5a50d3a0a2e55b74eed9e82a79217d7fa9728c8465de9a8308168a1f3a2'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
-  # Apply Ubuntu's patches
-  patch -p1 -i "${srcdir}/indicator-appmenu_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(grep -v '#' debian/patches/series); do
-    patch -p1 -i "debian/patches/${i}"
-  done
-
+  gtkdocize
   autoreconf -vfi
   intltoolize -f
 
@@ -50,7 +44,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 }
