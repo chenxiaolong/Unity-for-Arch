@@ -3,7 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-messages
-pkgver=12.10.5
+_actual_ver=12.10.6
+_extra_ver=daily12.11.22
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -14,12 +16,19 @@ makedepends=('intltool')
 groups=('unity')
 options=('!libtool')
 install=indicator-messages.install
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('bb7cb4c72a29cdd7fd3896d7e48b9c6f8433547f90d484bd2b20ae7d35ffd0d144c55cb8d93373f0dbfd7f54b04093125419e66a9166c779e5c2d4013324892e')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_autoconf.patch')
+sha512sums=('87028005f193c3c90e981a591daa3efec5f3b7671fe04732f706710264b8d57b0ada430f1d6735a4f413fed5b1710330e91fc0c883bef5532a4bc3482b2a88fe'
+            '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  gtkdocize
+  intltoolize -f
+  autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }

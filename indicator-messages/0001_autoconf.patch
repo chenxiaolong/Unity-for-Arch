@@ -1,0 +1,12 @@
+diff -Nru indicator-messages-12.10.6daily12.11.22.orig/configure.ac indicator-messages-12.10.6daily12.11.22/configure.ac
+--- indicator-messages-12.10.6daily12.11.22.orig/configure.ac	2013-01-07 15:23:33.911302976 -0500
++++ indicator-messages-12.10.6daily12.11.22/configure.ac	2013-01-07 15:23:53.694533246 -0500
+@@ -3,7 +3,7 @@
+ 
+ AC_PREREQ(2.62)
+ 
+-AM_CONFIG_HEADER(config.h)
++AC_CONFIG_HEADERS(config.h)
+ AM_INIT_AUTOMAKE([check-news])
+ 
+ AM_MAINTAINER_MODE
