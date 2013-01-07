@@ -45,15 +45,16 @@ Order to compile/install:
 37: grail                          -> Gesture recognition and instantiation lib.
 38: geis                           -> Implementation of the GEIS interface
 39: nux                            -> An OpenGL toolkit
-40: python-oauthlib                -> Python implementation of OAuth 
-41: unity-lens-applications        -> Unity applications lens
-42: unity-lens-files               -> Unity files lens
-43: unity-lens-music               -> Unity music lens
-44: unity-lens-photos              -> Unity photo lens
-45: unity-asset-pool               -> Design assets for Unity
-46: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-47: compiz-ubuntu                  -> Compiz compositing window manager
-48: unity                          -> Desktop shell designed for efficiency
+40: unity-asset-pool               -> Design assets for Unity
+41: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+42: python-oauthlib                -> Python implementation of OAuth 
+43: unity-lens-applications        -> Unity applications lens
+44: unity-lens-files               -> Unity files lens
+45: unity-lens-music               -> Unity music lens
+46: unity-lens-photos              -> Unity photo lens
+47: unity-lens-video               -> Unity video lens
+48: compiz-ubuntu                  -> Compiz compositing window manager
+49: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
@@ -73,6 +74,25 @@ Troubleshooting:
       # rm -rvf /usr/share/config/kdm
       # genkdmconf
 
+<<<<<<< HEAD
+=======
+* AHH! Something is wrong with Unity!
+
+    Try resetting the settings for Unity and Compiz and relogin:
+
+      $ compiz.reset
+      $ rm -rvf ~/.cache/unity/
+      $ rm -vf ~/.cache/unity-lens-video
+
+    If something is still wrong, please file a bug report at either:
+
+      https://github.com/chenxiaolong/Unity-for-Arch/issues
+
+    or
+
+      https://bugs.launchpad.net/unity-for-arch
+
+>>>>>>> parent of a6d0942... [unity-lens-video] Removed: https://bbs.archlinux.org/viewtopic.php?pid=1199369#p1199369
 * qt-ubuntu does not build.
 
     Temporary remove the qtwebkit package (ignoring dependencies) by running:
