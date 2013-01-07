@@ -53,8 +53,9 @@ Order to compile/install:
 45: unity-lens-music               -> Unity music lens
 46: unity-lens-photos              -> Unity photo lens
 47: unity-lens-video               -> Unity video lens
-48: compiz-ubuntu                  -> Compiz compositing window manager
-49: unity                          -> Desktop shell designed for efficiency
+48: unity-scope-video-remote       -> Remove video search for Unity video lens
+49: compiz-ubuntu                  -> Compiz compositing window manager
+50: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
