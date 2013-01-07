@@ -3,7 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-files
-pkgver=6.6.0
+_actual_ver=6.6.0
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
@@ -13,18 +15,21 @@ depends=('libzeitgeist' 'libunity' 'libxdg-basedir' 'xdg-user-dirs' 'pyxdg' 'dco
 makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('b20e82ed4466f7b0a9209cc20a7072d7c72067b5e621752a0a3a65b15c4602b85d402a212aa7d875c252c3082f8ecba14fb193cb32258674505754ebc370437b')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('fdf1f6d9830ee8b597468e14eab09b2e0937eac9efa13b6d3cb2960c04c0adb4ef14d614d08fbb12d4a47f6e27611ee557ff0893e6db1166831810493d0a1020')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  aclocal --install --force
+  autoreconf -vfi
+  intltoolize -f
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
