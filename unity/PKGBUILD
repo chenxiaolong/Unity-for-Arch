@@ -5,10 +5,11 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
+_extra_ver="daily12.12.05"
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
-  pkgver="${pkgver}.${_ubuntu_rel}"
+  pkgver="${_actual_ver}${_extra_ver}.${_ubuntu_rel}"
 fi
 
 pkgrel=100
@@ -26,62 +27,36 @@ conflicts=('unity-core')
 BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         "launchpad_export.tar.gz::http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
-        '0001_fix_gtest_directory.patch'
-        '0002_CMake_workaround.patch'
-        '0003_Ignore_deprecated_schema_path.patch'
-        '0005_link_dbus-glib.patch'
-        '0007_link_gmodule.patch'
-        '0008_Revert_port_to_atk-bridge-2.0.patch'
+        '0001_Remove_gtest.patch'
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop')
-sha512sums=('104fb7c7eb8989f18a14f3aba33b7e4ceeaf11721bf73065ea784052d0597efc5690dd20378f6a5d3a02dc870bfa39c5cf3d0c01abed3c2a34a6163afe5cfb88'
-            'a4a400b73743be8717560b0ef7307f04769787c225ae9c12fb181be4842988e17b8daafa12fd1777fa81115a3fd4ba7a88620938142b9c1568649942dcaf5103'
+sha512sums=('02593e9839f7c3f668c631c60093d566fc61ad6aea243164dc49f7579cdd1247cb9834beb5c6823ad709b52102282fb3bf14ad1e8ac89501f1004e728b27539c'
+            'c48de8d599dc757bf19e47cde02a0cbdd988b26148a8d42deef33dd308c2485be94791e67d23dcfeb573198c3f5c387d12035b85521f3fc2c5d4909fc642891b'
             'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
-            '17c7a3b6ba44d4edd50b9fca8b730c0ecfbe70f95ffa386c92992e057dedaed48b88d4b6c593c370514e49b81c003cfc5aad4e8ada9c4332824d862fe2fd6323'
-            'fe69db9bdbb4fabd765f8d95fef66775c517df201d8f038adc79e92f79d890f4f540e8148fa7bb0268cc79ddbed82b32cc3fda9f95dcc83abecc85249dea77da'
-            '0c71d841876a9d9382f8b36bc97918f039d9ab69823bb6b1407d0ca432f215ccef5494eae351481a92274e6063c0d19a1f41d44677f430c7a3cc12cba79a3398'
-            '68e4bd38170130e43a61593e31db3246377734a928675465dbeca05215cff73fe65c8fc46c82b3c7f7e86a06bf468bbdc9103cb1dab21ce9b2eb87689af13db6'
-            'cd9a23cdb5224111fc4892b614f7127b154369046d30ec14a245dc0ae8685f9439e04f86588aa12a57e5360f74aa7c0c3bea459b0ffd505cba34c89f50dfd5e5'
-            '1803598fbbdd1993a4dbf59722d5ec60f959a0dfda017e1edcd4180a99fd66bd2b4a0f03b02b721c30ea82a9e58a31398ae7a53e748bf6a78d4ac0bb62398959'
+            '97dc982a0d148e2b1b3e86a16f0ef3dd78fe3c319bce7e985e8009a2d3743259ae9aaf50d0489a277fd4206a912966ed31cf85f867d4e24af6ce48ebd35b6dd8'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Arch Linux branding: "Ubuntu Desktop" -> "Arch Linux Desktop"
   # (thanks to qiuwei!)
-  patch -Np1 -i "${srcdir}/archlinux_branding.patch"
+  patch -p1 -i "${srcdir}/archlinux_branding.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/unity_${_actual_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
   for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
+    patch -p1 -i "debian/patches/${i}"
   done
 
-  # Fix the gtest search in CMake
-  patch -Np1 -i "${srcdir}/0001_fix_gtest_directory.patch"
-
-  # Work around bug in CMake
-  patch -Np1 -i "${srcdir}/0002_CMake_workaround.patch"
-
-  # Ignore error about deprecated paths in GSettings schemas
-  patch -Np1 -i "${srcdir}/0003_Ignore_deprecated_schema_path.patch"
-
-  # Link against dbus-glib to avoid:
-  #  /usr/bin/ld: CMakeFiles/panel.dir/StandalonePanel.cpp.o: undefined reference to symbol 'dbus_g_thread_init'
-  patch -Np1 -i "${srcdir}/0005_link_dbus-glib.patch"
-
-  # Link against gmodule
-  patch -Np1 -i "${srcdir}/0007_link_gmodule.patch"
-
-  # Revert port to atk-bridge-2.0 (part of GNOME 3.6)
-  patch -Np1 -i "${srcdir}/0008_Revert_port_to_atk-bridge-2.0.patch"
+  # Disable gtest: depends highly on Ubuntu's packaging of gtest
+  patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
 
   # Cannot find gmodule
   CXXFLAGS="${CXXFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
@@ -141,7 +116,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}/build"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 
   # Install autopilot and autopilot tests
