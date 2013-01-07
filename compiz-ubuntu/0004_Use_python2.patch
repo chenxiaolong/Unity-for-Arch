@@ -1,0 +1,114 @@
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/ccsm compiz-0.9.8.4/compizconfig/ccsm/ccsm
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/ccsm	2012-10-02 14:20:36.950419021 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/ccsm	2012-10-02 14:22:53.066348284 -0400
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ # -*- coding: UTF-8 -*-
+ 
+ # This program is free software; you can redistribute it and/or
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/CMakeLists.txt compiz-0.9.8.4/compizconfig/ccsm/CMakeLists.txt
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/CMakeLists.txt	2012-10-02 14:20:36.953752336 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/CMakeLists.txt	2012-10-02 14:22:29.463142821 -0400
+@@ -12,7 +12,7 @@
+ execute_process (COMMAND uname -p OUTPUT_VARIABLE PROC_ARCH)
+ 
+ # Get Python Version
+-execute_process (COMMAND python -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
++execute_process (COMMAND python2 -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
+ 		 OUTPUT_VARIABLE PY_VERSION)
+ 
+ string (REPLACE "\n" "" PROC_ARCH ${PROC_ARCH})
+@@ -36,7 +36,7 @@
+ set (VERSION ${COMPIZ_RELEASE_VERSION})
+ 
+ add_custom_command (OUTPUT ${PY_CCSM_LIB}
+-		    COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build --build-base=${CMAKE_CURRENT_BINARY_DIR}/build --version=${VERSION}
++		    COMMAND python2 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build --build-base=${CMAKE_CURRENT_BINARY_DIR}/build --version=${VERSION}
+ 		    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+ 		    COMMENT "Generating Python Bytecode")
+ 
+@@ -44,7 +44,7 @@
+                    ${PY_CCSM_LIB})
+ 
+ add_custom_target (uninstall
+-		   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/setup.py uninstall --prefix=${CMAKE_INSTALL_PREFIX}
++		   COMMAND python2 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py uninstall --prefix=${CMAKE_INSTALL_PREFIX}
+ 		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+ 		   COMMENT "Uninstalling Python Files")
+ 
+diff -Nru compiz-0.9.8.4.orig/compizconfig/ccsm/Makefile compiz-0.9.8.4/compizconfig/ccsm/Makefile
+--- compiz-0.9.8.4.orig/compizconfig/ccsm/Makefile	2012-10-02 14:20:36.883752714 -0400
++++ compiz-0.9.8.4/compizconfig/ccsm/Makefile	2012-10-02 14:22:42.059741246 -0400
+@@ -1,11 +1,11 @@
+ all:
+-	@python setup.py build --prefix=${PREFIX}
++	@python2 setup.py build --prefix=${PREFIX}
+ 
+ install: all
+-	@python setup.py install --prefix=${PREFIX}
++	@python2 setup.py install --prefix=${PREFIX}
+ 
+ uninstall:
+-	@python setup.py uninstall --prefix=${PREFIX}
++	@python2 setup.py uninstall --prefix=${PREFIX}
+ 
+ clean:
+ 	rm -rf build/
+diff -Nru compiz-0.9.8.4.orig/compizconfig/compizconfig-python/CMakeLists.txt compiz-0.9.8.4/compizconfig/compizconfig-python/CMakeLists.txt
+--- compiz-0.9.8.4.orig/compizconfig/compizconfig-python/CMakeLists.txt	2012-10-02 14:20:37.010418695 -0400
++++ compiz-0.9.8.4/compizconfig/compizconfig-python/CMakeLists.txt	2012-10-02 14:23:38.342769668 -0400
+@@ -12,7 +12,7 @@
+ execute_process (COMMAND uname -p OUTPUT_VARIABLE PROC_ARCH)
+ 
+ # Get Python Version
+-execute_process (COMMAND python -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
++execute_process (COMMAND python2 -c "import sys; print str (sys.version_info[0]) + '.' + str (sys.version_info[1])"
+ 		 OUTPUT_VARIABLE PY_VERSION)
+ 
+ string (REPLACE "\n" "" PROC_ARCH ${PROC_ARCH})
+@@ -37,7 +37,7 @@
+                 ${CMAKE_CURRENT_BINARY_DIR}/compizconfig-python.pc)
+ 
+ add_custom_command (OUTPUT ${PY_COMPIZCONFIG_LIB}
+-		    COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build --build-base=${CMAKE_CURRENT_BINARY_DIR}/build --version=${VERSION}
++		    COMMAND python2 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build --build-base=${CMAKE_CURRENT_BINARY_DIR}/build --version=${VERSION}
+ 		    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+ 		    DEPENDS ${PY_COMPIZCONFIG_SRC} ${PY_COMPIZCONFIG_VERSION} compizconfig
+ 		    COMMENT "Generating Python Bytecode")
+@@ -46,7 +46,7 @@
+                    ${PY_COMPIZCONFIG_LIB})
+ 
+ add_custom_target (uninstall
+-		   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/setup.py uninstall --prefix=${CMAKE_INSTALL_PREFIX}
++		   COMMAND python2 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py uninstall --prefix=${CMAKE_INSTALL_PREFIX}
+ 		   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+ 		   COMMENT "Uninstalling Python Files")
+ 
+@@ -60,7 +60,7 @@
+ if (COMPIZ_BUILD_TESTING)
+ 
+         find_program (BASH_EXECUTABLE bash)
+-	find_program (PYTHON_EXECUTABLE python)
++	find_program (PYTHON_EXECUTABLE python2)
+ 	mark_as_advanced (FORCE PYTHON_EXECUTABLE)
+ 
+ 	file (GLOB PYTHON_TESTS "tests/test_*.py")
+diff -Nru compiz-0.9.8.4.orig/compizconfig/compizconfig-python/Makefile compiz-0.9.8.4/compizconfig/compizconfig-python/Makefile
+--- compiz-0.9.8.4.orig/compizconfig/compizconfig-python/Makefile	2012-10-02 14:20:37.007085379 -0400
++++ compiz-0.9.8.4/compizconfig/compizconfig-python/Makefile	2012-10-02 14:23:53.262688839 -0400
+@@ -1,11 +1,11 @@
+ all:
+-	@python setup.py build --prefix=${PREFIX}
++	@python2 setup.py build --prefix=${PREFIX}
+ 
+ install: all
+-	@python setup.py install --prefix=${PREFIX}
++	@python2 setup.py install --prefix=${PREFIX}
+ 
+ uninstall:
+-	@python setup.py uninstall --prefix=${PREFIX}
++	@python2 setup.py uninstall --prefix=${PREFIX}
+ 
+ clean:
+ 	rm -rf build/

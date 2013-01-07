@@ -1,0 +1,23 @@
+diff -Nru compiz-0.9.8.2.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake compiz-0.9.8.2/compizconfig/cmake/exec_setup_py_with_destdir.cmake
+--- compiz-0.9.8.2.orig/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-09-14 09:12:02.570519812 -0400
++++ compiz-0.9.8.2/compizconfig/cmake/exec_setup_py_with_destdir.cmake	2012-09-14 09:14:13.013261387 -0400
+@@ -4,7 +4,6 @@
+ set (VERSION "" CACHE FORCE "Version")
+ 
+ set (EXTRAARGS "")
+-set (BUILD_DEB $ENV{COMPIZ_DEB_BUILD})
+ 
+ set (INSTALL_ROOT $ENV{DESTDIR})
+ 
+@@ -16,10 +15,5 @@
+ 
+ cmake_policy (SET CMP0012 NEW)
+ 
+-if (BUILD_DEB)
+-    message ("Installing Debian Format")
+-    set (EXTRAARGS "--install-layout=deb")
+-endif (BUILD_DEB)
+-
+-execute_process (COMMAND python ${SETUP} install ${EXTRAARGS} --prefix=${PREFIX} --version=${VERSION} ${INSTALL_ROOT_ARGS}
++execute_process (COMMAND python2 ${SETUP} install ${EXTRAARGS} --prefix=${PREFIX} --version=${VERSION} ${INSTALL_ROOT_ARGS}
+ 	 		   WORKING_DIRECTORY ${WDIR})

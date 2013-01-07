@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Migrate Compiz settings to DConf
+Comment=Migrate Compiz settings from GConf to GSettings
+Exec=python2 /usr/lib/compiz/02_migrate_to_gsettings.py
+Terminal=false
+Type=Application
+Categories=
+OnlyShowIn=Unity;

@@ -75,8 +75,6 @@ Troubleshooting:
       # rm -rvf /usr/share/config/kdm
       # genkdmconf
 
-<<<<<<< HEAD
-=======
 * AHH! Something is wrong with Unity!
 
     Try resetting the settings for Unity and Compiz and relogin:
@@ -93,7 +91,6 @@ Troubleshooting:
 
       https://bugs.launchpad.net/unity-for-arch
 
->>>>>>> parent of a6d0942... [unity-lens-video] Removed: https://bbs.archlinux.org/viewtopic.php?pid=1199369#p1199369
 * qt-ubuntu does not build.
 
     Temporary remove the qtwebkit package (ignoring dependencies) by running:
