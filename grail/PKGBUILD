@@ -2,22 +2,26 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=grail
-pkgver=3.0.9
+_actual_ver=3.0.9
+_extra_ver=daily12.12.07.1
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/grail"
-license=('GPL')
+license=('LGPL')
 depends=('frame' 'libxi')
 makedepends=('inputproto')
 provides=("utouch-grail=${pkgver}")
 conflicts=('utouch-grail')
 options=('!libtool')
-source=("https://launchpad.net/grail/trunk/${pkgver}/+download/grail-${pkgver}.tar.bz2")
-sha512sums=('24e7ed6d0ce902bd130a0fcf8f68070b0411068590b35efd7054fa88da67ed517abd9b29e81f9aa04856f08e5c078055c7a3e3ee74adf5b912643cdaf43bd896')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('8f58dfafdc889f1be15dfefbbb321b79865d3700f1a23dc4a96eabc363501113377694979ea15520895555a4a0631a8e7951958ba74da94a1cb72f7aff7daf3e')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  autoreconf -vfi
 
   # Static library needed for tests
   ./configure --prefix=/usr # --disable-static
@@ -26,7 +30,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
 
