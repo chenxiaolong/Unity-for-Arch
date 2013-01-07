@@ -1,7 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=indicator-power
-pkgver=12.10.5
+_actual_ver=12.10.6
+_extra_ver=daily12.11.21.1
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
@@ -11,18 +13,20 @@ depends=('dbus-glib' 'libindicator3' 'dconf' 'upower')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('a05861367398057c19326dbc2d582b5b9ffea9a715ea8daf16a3a7c04052597c9aaa245a8001fb206e33d9cdfdccf1dba133950d0d9b538b7ff1445afb7ca860')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('128332dfc90ec30c2177cc3e13ba0e8b7689adf48aeb3c2aadd3a2757b6116ec3fcd58e2b538c34153b918ef47d8f35abd885172dd8213dfafd6a3819a04d819')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  autoreconf -vfi
+  intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
