@@ -37,3 +37,16 @@ get_pypi_version() {
   wget -q -O - "http://pypi.python.org/pypi/${1}" | \
     sed -n "s/.*>${1}-\(.*\)\.tar.*<.*/\1/p" | head -n 1
 }
+
+get_gnome_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  if [ -z "${2}" ]; then
+    echo "No major version was provided"
+    exit 1
+  fi
+  wget -q -O - "http://ftp.gnome.org/pub/GNOME/sources/${1}/${2}/" | \
+    sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p'
+}
