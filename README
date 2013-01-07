@@ -54,8 +54,9 @@ Order to compile/install:
 46: unity-lens-photos              -> Unity photo lens
 47: unity-lens-video               -> Unity video lens
 48: unity-scope-video-remote       -> Remove video search for Unity video lens
-49: compiz-ubuntu                  -> Compiz compositing window manager
-50: unity                          -> Desktop shell designed for efficiency
+49: unity-scope-gdocs              -> Google Docs scope for Unity
+50: compiz-ubuntu                  -> Compiz compositing window manager
+51: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
