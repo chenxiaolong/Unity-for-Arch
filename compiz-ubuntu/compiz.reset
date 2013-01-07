@@ -8,6 +8,7 @@ echo ""
 echo "This program will:"
 echo "  1. Switch to the metacity window manager"
 echo "  2. Remove Compiz's configuration directories"
+echo "  3. Reset Compiz's dconf/GSettings settings"
 echo
 read -p "Continue (y/N) " PROCEED
 
@@ -21,7 +22,7 @@ if [ "x${PROCEED}" == "xy" ] || [ "x${PROCEED}" == "xY" ]; then
 
   # Wait for Compiz to exit
   echo -n "Waiting for Compiz to exit..."
-  while $(pgrep compiz.bin &>/dev/null); do
+  while $(pgrep compiz &>/dev/null); do
     sleep 0.1
   done
   echo "DONE"
@@ -32,6 +33,10 @@ if [ "x${PROCEED}" == "xy" ] || [ "x${PROCEED}" == "xY" ]; then
   rm -rf ~/.compiz-1/
   rm -rf ~/.cache/compizconfig-1/
   rm -rf ~/.config/compiz-1/
+  echo "DONE"
+
+  echo -n "Resetting Compiz's dconf/GSettings settings..."
+  dconf reset -f /org/compiz/
   echo "DONE"
 
   echo

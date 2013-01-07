@@ -7,76 +7,59 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu1
-_actual_ver=0.9.8.4
-_bzr_rev=3412
+_ubuntu_rel=0ubuntu2
+_actual_ver=0.9.9
+_extra_ver=\~daily12.12.05
 
-pkgver=${_actual_ver}.bzr${_bzr_rev}.${_ubuntu_rel}
+pkgver=${_actual_ver}${_extra_ver/\~/.}.${_ubuntu_rel}
 
 pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas' 'python2-gconf')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
-provides=(compiz-core{,-ubuntu}="${pkgver}"
-          compiz-gnome{,-ubuntu}="${pkgver}"
-          compiz-kde{,-ubuntu}="${pkgver}"
-          libcompizconfig{,-ubuntu}="${pkgver}"
-          compizconfig-backend-gconf{,-ubuntu}="${pkgver}"
-          compizconfig-backend-kconfig4{,-ubuntu}="${pkgver}"
-          compizconfig-python{,-ubuntu}="${pkgver}"
-          ccsm{,-ubuntu}="${pkgver}"
-          compiz-plugins-main{,-ubuntu}="${pkgver}"
-          compiz-plugins-extra{,-ubuntu}="${pkgver}")
-conflicts=(compiz-core{,-ubuntu}
-           compiz-gnome{,-ubuntu}
-           compiz-kde{,-ubuntu}
-           libcompizconfig{,-ubuntu}
-           compizconfig-backend-gconf{,-ubuntu}
-           compizconfig-backend-kconfig4{,-ubuntu}
-           compizconfig-python{,-ubuntu}
-           ccsm{,-ubuntu}
-           compiz-plugins-main{,-ubuntu}
-           compiz-plugins-extra{,-ubuntu})
 groups=('unity')
 options=('emptydirs')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
-        'compiz-migrate-to-dconf.desktop')
-sha512sums=('05931a265ea47d3a977e1e419782bc84f1a833365100dad5a5ed68a97b803f5375a901e41ebf4538cd281edafc9559351f7dda09002a2716df6a820fd0ea9a00'
-            'e0e5f5b0bc63043e2a3afd5ff55c06debaddb4f90a31019f7aeaf32f195182f85f7d569c75b179ce00da66f0f7f2937aa6368f6fbf3e904791c89c10fefde9fb'
-            '7a97d46efde7d1cda2d1043998969aac509e453cd65ef9bb94a4edf91f71c3e6eb204b5e1729fa619bae77a2b9c949bf9e92b3d56bb7c5e791558e2d7961e154'
+        '0005_Disable_Werror.patch')
+sha512sums=('ff81ebcc50dfca5658909440039408461d3b071de89de40e92296c01d7fb78ea5aa313fd92231aaaf0c081ba6d189c0c0b65109cc3388077c9325f9fdd603460'
+            'f6276d5fd2aeed53d777ed60aec523df1416d86e94de211d95635f4faa2588045d3c359e48a56cfb4d3b155a0400deb715c3b4696d13be02ed3d49dc45417e24'
+            'a287d10d1261923a9aa5c672554ba43d73d9f4d9c04a95bd99b70fac686bbec9031fa406bc68ebf64c81eb4f0f5dec7672dcdaf4e605767ab99bc336a6fda188'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
-            '037a30c8dcba1167a2aca7361d7bdc49095ce9c0710ccc6aae011367a867b775c0bdfc409b9e52ead908cbb7d94ad88de1501a5277779728d71410248870af16'
-            'affbff2a8ce7d5f223ce86407ef0e80769f9df47228b7acdf25d0ac82b70b80a9b0bce4507df928b9738ef69d1dc8ab3a3622094b2e765f89d54db2b10899cc8')
+            '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
+            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-0.9.8.5"
+  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
-  patch -Np1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
+  patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
 
   # Compiz's build system appends --install-layout=deb to the python 2 install
   # command (for python-compizconfig and ccsm) whether or not COMPIZ_DEB_BUILD
   # is set to 1
-  patch -Np1 -i "${srcdir}/0003_Fix_python_install_command.patch"
+  patch -p1 -i "${srcdir}/0003_Fix_python_install_command.patch"
 
   # Use python 2
-  patch -Np1 -i "${srcdir}/0004_Use_python2.patch"
+  patch -p1 -i "${srcdir}/0004_Use_python2.patch"
+
+  # Don't treat warnings as errors
+  patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname%-*}_${_actual_ver}+bzr${_bzr_rev}-${_ubuntu_rel}.diff"
+  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
+    patch -p1 -i "debian/patches/${i}"
   done
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
@@ -104,14 +87,18 @@ build() {
     -DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=OFF \
     -DCOMPIZ_BUILD_TESTING=OFF \
     -DCOMPIZ_DISABLE_PLUGIN_KDE=ON \
-    -DUSE_KDE4=OFF
+    -DUSE_KDE4=OFF \
+    `# Necessary for new versions of Compiz` \
+    `# https://bugs.launchpad.net/compiz/+bug/1070211` \
+    -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
+    -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
 
-  make -j1
+  make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-0.9.8.5/build"
-  GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 make install DESTDIR="${pkgdir}"
+  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
+  make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
   #make findcompiz_install
@@ -175,13 +162,6 @@ package() {
 
   # Install script for resetting all of Compiz's settings
   install "${srcdir}/compiz.reset" "${pkgdir}/usr/bin/compiz.reset"
-
-  # Install script for migrating GConf settings to GSettings
-  install -dm755 "${pkgdir}/etc/xdg/autostart/"
-  install -m644 ../postinst/migration-scripts/02_migrate_to_gsettings.py \
-    "${pkgdir}/usr/lib/compiz/"
-  install -m644 "${srcdir}/compiz-migrate-to-dconf.desktop" \
-    "${pkgdir}/etc/xdg/autostart/"
 
   # Remove GConf schemas
   rm -rv "${pkgdir}/usr/share/gconf/"
