@@ -22,7 +22,7 @@ if [ "x${PROCEED}" == "xy" ] || [ "x${PROCEED}" == "xY" ]; then
 
   # Wait for Compiz to exit
   echo -n "Waiting for Compiz to exit..."
-  while $(pgrep compiz &>/dev/null); do
+  while $(pgrep compiz$ &>/dev/null); do
     sleep 0.1
   done
   echo "DONE"
