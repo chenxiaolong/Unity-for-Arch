@@ -67,3 +67,16 @@ get_archlinux_version() {
   wget -q -O - "https://www.archlinux.org/packages/${2}/${3}/${1}/" | \
     sed -n "/<title>/ s/^.*${1}\ \(.*\)-\(.*\)\ (.*$/\1 \2/p"
 }
+
+get_xorg_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  if [ -z "${2}" ]; then
+    echo "No category was provided"
+    exit 1
+  fi
+  wget -q -O - "http://xorg.freedesktop.org/releases/individual/${2}/" |
+    sed -n "s/.*${1}-\(.*\)\.tar.*/\1/p" | tail -n 1
+}
