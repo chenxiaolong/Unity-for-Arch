@@ -3,33 +3,39 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-applications
-pkgver=6.10.0
+_actual_ver=6.10.0
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
 license=('GPL')
-depends=('dconf' 'libzeitgeist' 'libunity' 'gnome-menus2' 'xapian-core')
+depends=('dconf' 'libzeitgeist' 'libunity' 'xapian-core')
 makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '10-no-db51.patch')
-sha512sums=('4865c4f618b4998a08670836b610d44da377307c71b805a9cafe447bbda6175971980a2369a6fbf7104f50336c58e7649934b04da16b4475da28261710157b3a'
+sha512sums=('052718e3616143e6e89673c055700250667b7103f1cd30d4bbe5a1e0e84f7591857721516b75ec8d83f44e97f47e675cfb61012dfcbb0e222d51f07b5376a92d'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Remove check for db version 5.1
   patch -Np1 -i "${srcdir}/10-no-db51.patch"
 
-  ./autogen.sh --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname} --disable-schemas-compile
+  aclocal --install --force
+  autoreconf -vfi
+  intltoolize -f
+
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static --libexecdir=/usr/lib/${pkgname} --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
