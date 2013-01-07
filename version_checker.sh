@@ -23,3 +23,12 @@ get_launchpad_version() {
   wget -q -O - "https://launchpad.net/${1}/+download" | \
     sed -n "s/.*${1}-\(.*\)\.tar.*/\1/p" | head -n 1
 }
+
+get_pypi_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  wget -q -O - "http://pypi.python.org/pypi/${1}" | \
+    sed -n "s/.*>${1}-\(.*\)\.tar.*<.*/\1/p" | head -n 1
+}
