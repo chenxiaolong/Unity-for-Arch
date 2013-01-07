@@ -20,8 +20,13 @@ get_launchpad_version() {
     echo "No package was provided"
     exit 1
   fi
-  wget -q -O - "https://launchpad.net/${1}/+download" | \
-    sed -n "s/.*${1}-\(.*\)\.tar.*/\1/p" | head -n 1
+  local PACKAGE=${1}
+  local TARBALL=${1}
+  if [ ! -z "${2}" ]; then
+    TARBALL=${2}
+  fi
+  wget -q -O - "https://launchpad.net/${PACKAGE}/+download" | \
+    sed -n "s/.*${TARBALL}-\(.*\)\.tar.*/\1/p" | head -n 1
 }
 
 get_pypi_version() {
