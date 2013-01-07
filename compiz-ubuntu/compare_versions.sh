@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
 source "$(dirname ${0})/PKGBUILD"
-
-echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/raring/+source/compiz' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
-
-echo ""
+source "$(dirname ${0})/../version_checker.sh"
 
 echo -e "PKGBUILD version: ${_actual_ver}+bzr${_bzr_rev} ${_ubuntu_rel}"
-echo -e "Upstream version: (none)"
-echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
+echo -e "Upstream version: $(get_launchpad_version compiz)"
+echo -e "Ubuntu version:   $(get_ubuntu_version compiz raring)"
