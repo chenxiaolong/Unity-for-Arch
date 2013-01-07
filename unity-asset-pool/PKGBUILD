@@ -3,7 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-asset-pool
-pkgver=0.8.24
+_actual_ver=0.8.24
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Design assets for Unity"
 arch=('any')
@@ -12,15 +14,15 @@ license=('GPL')
 depends=('gnome-icon-theme')
 makedepends=('icon-naming-utils')
 groups=('unity')
-source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-asset-pool_${_actual_ver}${_extra_ver}.orig.tar.gz"
         'archlinux-icon-tango-22.png'
         'archlinux-icon-tango-24.png')
-sha512sums=('cb0b0c28ddbe0dab6ad140acc7dd7540819f9f201d574f6ced41d5f7ab69470154b0461d3aa102736dccdaf8dca3a59abeb6331abb64c7232d21061377739728'
+sha512sums=('c0700f1bb97a7763b6dbc593eda4703ccc33ad24966c77331f30fc364eddab9247a4a6bc11ac23913550823e50e111cefd94842b9077a3e9338ddb325dd497c5'
             '39d4bdec83581562c17e232b29af92596cd838509983581f5637dc7534e51330c794918df4190dd54b4b5b641a5687aef914f68159ea9ec2ca4e377f707eb681'
             '37021e5f93371cb78ea71d150dee840cb76f4590de79b057a6a72a60d88168b09c2ef7fe96ec552cfe977b3a416437e700efc82876aaefb75c4b4745659e0993')
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   install -dm755 "${pkgdir}/usr/share/unity/themes/"
   install -m644 launcher/* "${pkgdir}/usr/share/unity/themes/"
