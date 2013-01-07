@@ -1,32 +1,31 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=geis
-pkgver=2.2.14
+_actual_ver=2.2.15
+_extra_ver=daily12.12.10
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/geis"
 license=('GPL' 'LGPL')
-depends=('grail' 'xorg-xinput' 'python2' 'dbus-core')
-provides=("utouch-geis=${pkgver}")
-conflicts=('utouch-geis')
+depends=('grail' 'xorg-xinput' 'python3' 'dbus-core')
 options=('!emptydirs' '!libtool')
-source=("https://launchpad.net/geis/trunk/${pkgver}/+download/geis-${pkgver}.tar.xz")
-sha512sums=('913ae48dc899cabe4746d8d7bcb89339b1f9ada2ed09904ae3651780a3375041aea3a1f13e3f65ccb1dd2e8b7662b709d7848cf47f460deceecad3aea311c9cb')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('aaa33c0cc499ae9792e1e04aa7a1dcf9d35218661c8cb6e9a77965854eff9ff9b1124cdef5dc8f8aad4724a17a0ddce2fac91ecd56287a1069530a24f8759bb2')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  PYTHON2VER=$(readlink /usr/bin/python2 | sed 's/python//')
-  sed -i "/python >= ${PYTHON2VER}/s/python \(>= .\..\)/python-${PYTHON2VER} \1/g" configure
-  PYTHON=python2 ./configure --prefix=/usr --disable-static
+  autoreconf -vfi
+
+  ./configure --prefix=/usr --disable-static
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
-  sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}"/usr/bin/{geisview,pygeis} "${pkgdir}/usr/lib/python2.7/site-packages/geisview/__init__.py"
 }
 
 # vim:set ts=2 sw=2 et:
