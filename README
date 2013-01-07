@@ -48,10 +48,11 @@ Order to compile/install:
 40: unity-lens-applications        -> Unity applications lens
 41: unity-lens-files               -> Unity files lens
 42: unity-lens-music               -> Unity music lens
-43: unity-asset-pool               -> Design assets for Unity
-44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: compiz-ubuntu                  -> Compiz compositing window manager
-46: unity                          -> Desktop shell designed for efficiency
+43: unity-lens-photos              -> Unity photo lens
+44: unity-asset-pool               -> Design assets for Unity
+45: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+46: compiz-ubuntu                  -> Compiz compositing window manager
+47: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
