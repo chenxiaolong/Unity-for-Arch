@@ -53,8 +53,7 @@ build() {
 
   autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
 
   make ${MAKEFLAGS}
 }
