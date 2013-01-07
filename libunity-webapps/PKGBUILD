@@ -1,9 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-_ubuntu_rel=0ubuntu3.2
-_actual_ver=2.4.1
-pkgver=${_actual_ver}.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu2
+_actual_ver=2.4.3
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
@@ -14,25 +15,29 @@ depends=('geoclue' 'glib2' 'hicolor-icon-theme' 'indicator-messages' 'json-glib'
 makedepends=('gobject-introspection' 'intltool')
 options=('!libtool')
 install=libunity-webapps.install
-source=("https://launchpad.net/libunity-webapps/trunk/${_actual_ver}/+download/unity_webapps-${_actual_ver}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('25e9024bd1e4109b284be414b3c5d010b69f359fcc4a7243d285b8e247ad4eb8bcd980d70af68436d66afafad9acfb4d5983b6dd0fa2f184fe7391b9d5254f5c'
-            '234728cd07ce8e1780f06f946ca26f043467bc010936205acd96de938c722f5446d3832accb941906ada7cfabc333db5dd05875bc9bf0a1b832e3355f7bb8a37')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
+sha512sums=('8427348684c7aff1a8b1e456187ca6fdc3239e3a8960f4b7e409ee2e9b0f608e87b0647ffd1506165cad528dabac2e8cc67389733f0787f46d0936141f50bb96'
+            '8444fc7e15c12d1f9e8454226387c2cf036cd081bbdac54d1a660a86d6260eb9f26b2dac2e56ed84920d48751319d68f2eebaf0d862aee72f28065c6338e8a99')
 
 build() {
-  cd "${srcdir}/unity_webapps-${_actual_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Apply Ubuntu's patches
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
+  patch -p1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  #for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  #  patch -p1 -i "${srcdir}/debian/patches/${i}"
+  #done
+
+  autoreconf -vfi
+  intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/libunity-webapps --disable-static
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/unity_webapps-${_actual_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
 
