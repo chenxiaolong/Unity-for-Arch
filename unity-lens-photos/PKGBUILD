@@ -1,7 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-lens-photos
-pkgver=0.9
+_actual_ver=0.9
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Unity lens for browsing photos"
 arch=('any')
@@ -10,11 +12,11 @@ license=('GPL')
 groups=('unity')
 depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'libaccounts-glib' 'libsignon-glib' 'dee' 'libunity' 'libsoup' 'libsoup-gnome')
 makedepends=('python' 'python-distutils-extra')
-source=("https://launchpad.net/unity-lens-photos/trunk/${pkgver}/+download/unity-lens-photos-${pkgver}.tar.gz")
-sha512sums=('1c04ae40dd51cf5cfee3775380fabd67d74d51853b52b0bb98f46f63b5a559875debf2e9b0362e27d0d611bfbc89f9f8c0eba4a73d8406411e86b420b1a9d42b')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('8059827cdb6f7c652478654e734a62de467c7857582fa6373f561a972023b03325f76876baec4073032b2751ab0f61bee1060df4984ce3a50b482ec821ff2cb2')
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   python setup.py install --root="${pkgdir}/" --optimize=1
 }
