@@ -4,19 +4,25 @@
 
 pkgbase=appmenu-gtk
 pkgname=('appmenu-gtk2' 'appmenu-gtk3')
-pkgver=12.10.2
+_actual_ver=12.10.3
+_extra_ver=daily12.11.28
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 arch=('i686' 'x86_64')
 url="https://launchpad.net/appmenu-gtk"
 license=('LGPL')
 makedepends=('gnome-common' 'gtk2-ubuntu' 'gtk3-ubuntu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 groups=('unity')
-options=(!libtool)
-source=("http://launchpad.net/appmenu-gtk/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz")
-sha512sums=('5c3e3b82c9d18de5fa2013dad5cb1240e547a7f97295b01ce08b9f03ebaa5e165ed326271ceed7d7014dd0f5c7960e6633090bddf5d18bdf8306157acf39ccdd')
+options=('!libtool')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/appmenu-gtk_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_autoconf.patch')
+sha512sums=('b82b8cdd5edd77210613324aa247b904bdcd50642541451ae71daae1c9d15b8f16be307bc8ccedf97b6bdf1b41cc465f94bba3f02f9be091ac7b2488b93de996'
+            '82011361d720d8712ba3ece7dd2340694eab226f21263f861d8629ed39c343c873f1fb49f5c9cb302a6a5486fca098f36013b480c19d3bbe8745ccca84baa657')
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   autoreconf -vfi
 
@@ -37,22 +43,22 @@ package_appmenu-gtk2() {
   pkgdesc="Adds appmenu support for GTK+ 2 apps"
   depends=('libdbusmenu-gtk2')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2/"
 
   make DESTDIR="${pkgdir}/" install
   install -Dm755 "${pkgdir}/etc/X11/Xsession.d/80appmenu" "${pkgdir}/etc/X11/xinit/xinitrc.d/80appmenu"
-  rm -rvf "${pkgdir}/etc/X11/Xsession.d"
+  rm -rvf "${pkgdir}/etc/X11/Xsession.d/"
 }
 
 package_appmenu-gtk3() {
   pkgdesc="Adds appmenu support for GTK+ 3 apps"
   depends=('libdbusmenu-gtk3')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
 
   make DESTDIR="${pkgdir}/" install
   install -Dm755 "${pkgdir}/etc/X11/Xsession.d/80appmenu-gtk3" "${pkgdir}/etc/X11/xinit/xinitrc.d/80appmenu-gtk3"
-  rm -rvf "${pkgdir}/etc/X11/Xsession.d"
+  rm -rvf "${pkgdir}/etc/X11/Xsession.d/"
 }
 
 # vim:set ts=2 sw=2 et:
