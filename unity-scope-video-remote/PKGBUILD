@@ -1,7 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-scope-video-remote
-pkgver=0.3.10
+_actual_ver=0.3.10
+_extra_ver=daily12.12.05
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
@@ -10,11 +12,11 @@ license=('GPL')
 depends=('python2' 'unity-lens-video')
 makedepends=('python2-distutils-extra')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-video-remote_${pkgver}.orig.tar.gz")
-sha512sums=('dfcbf0cddb7a3e8e499631707941c2fb70d3c8af5151db8df05ca9fde38a352e86f72a7bb02c0b36f4e5a8006f1fcd64657ba2688c521d85b80b37771eacfcaf')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-video-remote_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('a8a40542eb91c4ab1f976bb7db749584bf73a48b73d7c41637ddef6ae630726387ff862fcaf688de15ffc799dd395bf2614c043af4b2f97d63d01653c1fc972c')
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   python2 setup.py install --root="${pkgdir}/" --optimize=1
 
