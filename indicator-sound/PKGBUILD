@@ -3,42 +3,37 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-sound
-_ubuntu_rel=0ubuntu1
-pkgver=12.10.1.${_ubuntu_rel}
+_actual_ver=12.10.2
+_extra_ver=daily12.11.21.1
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
-depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'ido' 'libnotify' 'libgee' 'dconf')
+depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'libido3' 'libnotify' 'libgee' 'dconf')
 makedepends=('intltool' 'vala' 'libgee')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "http://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('58563f2b269a6b6e236a5e1dca0c406a0ee35686a3e66980c4611e6f864b6855b6d13016cc9ec10f6fc38896e0d65cb9a946d799f01517d0612a8422572f1b78'
-            '565029beb7c91909be88895eb1a33e17982d6894bc69bdd5d012aeeba1ad60e2c8bad422aca165a62eb732671badd1a96ecb3e4e4a62c44bb232aeaa866fe695')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('f607ec5ab8710919d562edd65918fde65bb4e910bd0a793bd52e86840ab9bf7f657c8bc08972e2e3de9f517c69f85bbf562bdbd43c4040ea30ecd2bbe527868a')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
-
-  # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
-  done
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Fix build
-  CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+  #CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
 
   autoreconf -vfi
+  intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
-  make ${MAKEFLAGS}
+  make -j1
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 }
