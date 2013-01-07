@@ -50,3 +50,20 @@ get_gnome_version() {
   wget -q -O - "http://ftp.gnome.org/pub/GNOME/sources/${1}/${2}/" | \
     sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p'
 }
+
+get_archlinux_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  if [ -z "${2}" ]; then
+    echo "No repository was provided"
+    exit 1
+  fi
+  if [ -z "${3}" ]; then
+    echo "No architecture was provided"
+    exit 1
+  fi
+  wget -q -O - "https://www.archlinux.org/packages/${2}/${3}/${1}/" | \
+    sed -n "/<title>/ s/^.*${1}\ \(.*\)-\(.*\)\ (.*$/\1 \2/p"
+}
