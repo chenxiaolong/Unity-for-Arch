@@ -45,14 +45,15 @@ Order to compile/install:
 37: grail                          -> Gesture recognition and instantiation lib.
 38: geis                           -> Implementation of the GEIS interface
 39: nux                            -> An OpenGL toolkit
-40: unity-lens-applications        -> Unity applications lens
-41: unity-lens-files               -> Unity files lens
-42: unity-lens-music               -> Unity music lens
-43: unity-lens-photos              -> Unity photo lens
-44: unity-asset-pool               -> Design assets for Unity
-45: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-46: compiz-ubuntu                  -> Compiz compositing window manager
-47: unity                          -> Desktop shell designed for efficiency
+40: python-oauthlib                -> Python implementation of OAuth 
+41: unity-lens-applications        -> Unity applications lens
+42: unity-lens-files               -> Unity files lens
+43: unity-lens-music               -> Unity music lens
+44: unity-lens-photos              -> Unity photo lens
+45: unity-asset-pool               -> Design assets for Unity
+46: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+47: compiz-ubuntu                  -> Compiz compositing window manager
+48: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
