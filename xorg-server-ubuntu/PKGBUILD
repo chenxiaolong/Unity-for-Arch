@@ -8,8 +8,8 @@
 
 pkgbase=xorg-server
 pkgname=('xorg-server-ubuntu' 'xorg-server-devel-ubuntu')
-pkgver=1.13.0
-pkgrel=101
+pkgver=1.13.1
+pkgrel=100
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
@@ -19,25 +19,15 @@ source=("${url}/releases/individual/xserver/${pkgbase}-${pkgver}.tar.bz2"
         'autoconfig-nvidia.patch'
         'autoconfig-sis.patch'
         '10-quirks.conf'
-        '500_pointer_barrier_thresholds.diff'
-        'git-fixes.patch'
-        'use-pixman-glyph-cache.patch')
-sha512sums=('840a341f796386156ff4eb599c4b3b96090d3fda9cdbe70c45ff175c8d01b62cb9ba04a6c73ddde90996f8b96be1a3d925c9803a3b629cb4bc317374b7b1e014'
+        '500_pointer_barrier_thresholds.diff')
+sha512sums=('8732be86efdf430bfefe3fea02892042da214d0eb018f12496329b20d7282697d4d92cfb59e35ecabe6a6ca9b034cb12c02e67f44ab4538917c470064719fa45'
             '8e0dc38e28930e1a2682d25608d62d5e8cae9360c677d44760840b2424bf00d30ee434cb141b090dc37da1458fe619011baf375b32f250bd2b46ca536ac92de6'
             '3211dbc6d8a84f3f6a77230a8e5fe13355b441768d864c2b3037b893be39f7b8d581c2a5db1e04f399ce19c4ced973b64eaad563d970ee9c7b8a93cb23a0aa18'
             '9a1a5568be751435daea720cfc4bad209d62545cc10ea2f49113c41669c8130809a680492256ef331757fe8539d2e0e5e9e67a36f7c48c8d92d9b3e957d28fa2'
-            'b97e38e19f07447deac2cbc2d2cdb8bf1fda569954ac187dae50cdd71ad3e118796b9c75872b782883cfa974b37215612f6e1630559e6a0af028d14e28eca78f'
-            '7e5dd44c2a7e35b2e041a0e90468b6cdfc91cf80da3913fabb53126d306ff5cede693ccc4e5a38ea13ad0eae1ca6bbad1957506cf0ba309ebb10a5a6c2551f82'
-            '90b4a3cac98b1ad4c71af8d4fc71e3a56282d15541a4d948146b75fea1d47b4d00c121853f7622a2b9e13fb0e7dac54e4025d6a352412c25ba8e0b41c7875876')
+            'b97e38e19f07447deac2cbc2d2cdb8bf1fda569954ac187dae50cdd71ad3e118796b9c75872b782883cfa974b37215612f6e1630559e6a0af028d14e28eca78f')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-
-  # Apply upstream fixes from server-1.13 branch
-  patch -Np1 -i "${srcdir}/git-fixes.patch"
-
-  # Use pixman 0.28.0 glyph cache - backported from git master
-  patch -Np1 -i "${srcdir}/use-pixman-glyph-cache.patch"
 
   # Use nouveau/nv/nvidia drivers for nvidia devices
   patch -Np1 -i "${srcdir}/autoconfig-nvidia.patch"
@@ -128,7 +118,12 @@ package_xorg-server-ubuntu() {
 package_xorg-server-devel-ubuntu() {
   arch=('any')
   pkgdesc="Development files for the X.Org X server"
-  depends=('xproto' 'randrproto' 'renderproto' 'xextproto' 'inputproto' 'kbproto' 'fontsproto' 'videoproto' 'dri2proto' 'xineramaproto' 'xorg-util-macros' 'pixman' 'libpciaccess' 'resourceproto' 'scrnsaverproto' 'xorg-util-macros')
+  depends=(# see pkgdir/usr/lib/pkgconfig/xorg-server.pc
+           xproto randrproto renderproto xextproto inputproto kbproto
+           fontsproto pixman videoproto xf86driproto glproto
+           mesa dri2proto xineramaproto libpciaccess
+           # not technically required but almost every Xorg pkg needs it to build
+           xorg-util-macros)
   provides=("xorg-server-devel=${pkgver}")
   conflicts=('xorg-server-devel')
 
