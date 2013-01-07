@@ -3,8 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
+_actual_ver=6.90.0
+_extra_ver=daily12.12.05
 _ubuntu_rel=0ubuntu1
-pkgver=6.12.0.${_ubuntu_rel}
+pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
@@ -14,28 +16,33 @@ depends=('libgee' 'dee' 'libdbusmenu')
 makedepends=('vala' 'python2' 'gobject-introspection')
 groups=('unity')
 options=('!libtool')
-source=("http://launchpad.net/${pkgname}/6.0/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
-sha512sums=('465ca8e913fafedd993aa719eca5ac2cb9b7eae530a78404e5e2ca4ceaf66d96c3833057705d655928ab5723a9d5a467fc63683a1cbb0d1c1128ed1f7a82dd1d'
-            'c84612c8c0f6ab4e12ffca4246ab0415f8a33663caade0f4dc30c3cbbf1f07b7dadaf247b077a1dc691cba068b4dd40e94181edf010e49424f5b75acec7bfa35')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
+        '0001_autoconf.patch')
+sha512sums=('fc336350aaeb339acae940d10e1cf827af2f2c94af9e763a924b8f60fbb464921f51e2e208efd33a08571e5e84d5679da47462911d1425634e2862102c40137e'
+            '6718f4a55a5e2d2672a282f623ef93ad5610d370f8de619557b15284ac83c616b63f2bd5924f4e4cf604abdbec0e341a0e602a5188c22ecdd97491f37a2513e7'
+            '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
+  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
     patch -Np1 -i "debian/patches/${i}"
   done
 
+  intltoolize -f
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static PYTHON=python2
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
