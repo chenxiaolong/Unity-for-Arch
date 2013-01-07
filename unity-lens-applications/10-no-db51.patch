@@ -1,0 +1,15 @@
+diff -Nru unity-lens-applications-5.6.0.orig/src/unity-ratings-db.c unity-lens-applications-5.6.0/src/unity-ratings-db.c
+--- unity-lens-applications-5.6.0.orig/src/unity-ratings-db.c	2012-03-13 14:46:15.043631999 -0400
++++ unity-lens-applications-5.6.0/src/unity-ratings-db.c	2012-03-13 14:47:11.020301366 -0400
+@@ -23,9 +23,9 @@
+ 
+ /* Hacky check, but we *really* need to have the same libdb version as the
+  * software-center is using to avoid a cascade of fail */
+-#if DB_VERSION_MAJOR != 5 || DB_VERSION_MINOR != 1
++/* #if DB_VERSION_MAJOR != 5 || DB_VERSION_MINOR != 1
+   #error "unity-lens-applications only compiles and works against libdb-5.1. Please install the package libdb5.1-dev"
+-#endif
++#endif */
+ 
+ struct _UnityRatingsDatabase {
+   DB_ENV  *env;
