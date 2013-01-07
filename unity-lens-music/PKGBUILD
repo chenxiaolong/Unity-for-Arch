@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-lens-music
+pkgver=6.8.1
+pkgrel=100
+pkgdesc="Music, in the dash"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-place-music"
+license=('GPL')
+depends=('libunity' 'gstreamer0.10' 'gstreamer0.10-base')
+makedepends=('vala' 'intltool')
+groups=('unity')
+source=("http://launchpad.net/${pkgname}/${pkgver%%.*}.0/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('0895d4adb6d63df7ac9520718cafde838afa3364fc8f821ce1a9556894fb610bfdaefe81adaa0b8421871da956518db5c1b03fd41741b1e9e12f7c8a20cc118e')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+  make ${MAKEFLAGS}
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
