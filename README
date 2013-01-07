@@ -45,9 +45,10 @@ Order to compile/install:
 37: grail                          -> Gesture recognition and instantiation lib.
 38: geis                           -> Implementation of the GEIS interface
 39: nux                            -> An OpenGL toolkit
-40: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-41: compiz-ubuntu                  -> Compiz compositing window manager
-42: unity                          -> Desktop shell designed for efficiency
+40: unity-asset-pool               -> Design assets for Unity
+41: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+42: compiz-ubuntu                  -> Compiz compositing window manager
+43: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
