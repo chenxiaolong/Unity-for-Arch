@@ -106,3 +106,12 @@ get_qt4_version() {
     sed -n 's/.*>\ qt-everywhere-opensource-src-\(.*\)\.tar\.gz<.*/\1/p' | \
     tail -n 1
 }
+
+get_freedesktop_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  wget -q -O - "http://cgit.freedesktop.org/${1}/" | \
+    sed -n "s/.*>${1}-\(.*\)\.tar\.gz<.*/\1/p" | head -n 1
+}
