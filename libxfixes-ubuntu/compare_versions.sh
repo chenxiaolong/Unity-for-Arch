@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
 
 source "$(dirname ${0})/PKGBUILD"
-
-echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/quantal/+source/libxfixes' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
-
-echo "Getting latest upstream version..."
-UPSTREAM_VER=$(wget -q http://xorg.freedesktop.org/releases/individual/lib/ -O - | sed -n 's/.*libXfixes-\(.*\).tar.bz2.*/\1/p' | tail -n 1)
-
-echo ""
+source "$(dirname ${0})/../version_checker.sh"
 
 echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
-echo -e "Upstream version: ${UPSTREAM_VER}"
-echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
+echo -e "Upstream version: $(get_xorg_version libXfixes lib)"
+echo -e "Ubuntu version:   $(get_ubuntu_version libxfixes ${1:-raring})"

@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
 
 source "$(dirname ${0})/PKGBUILD"
+source "$(dirname ${0})/../version_checker.sh"
 
-echo "Getting latest Ubuntu version..."
-UBUNTU_VER=($(wget -q -O - 'https://launchpad.net/ubuntu/raring/+source/libunity' | sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'))
-
-echo "Getting latest upstream version..."
-UPSTREAM_VER=$(wget -q 'https://launchpad.net/libunity/+download' -O - | sed -n 's/.*libunity-\(.*\)\.tar\.gz.*/\1/p' | head -n 1)
-
-echo ""
-
-echo -e "PKGBUILD version: ${pkgver%.*} ${_ubuntu_rel}"
-echo -e "Upstream version: ${UPSTREAM_VER}"
-echo -e "Ubuntu version:   ${UBUNTU_VER[@]}"
+echo -e "PKGBUILD version: ${_actual_ver}${_extra_ver} ${_ubuntu_rel}"
+echo -e "Upstream version: $(get_launchpad_version ${pkgname})"
+echo -e "Ubuntu version:   $(get_ubuntu_version ${pkgname} ${1:-raring})"
