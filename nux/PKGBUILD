@@ -36,21 +36,6 @@ build() {
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
   patch -p1 -i "${srcdir}/0002_disable_documentation.patch"
 
-  # Fix glew 1.8.0 headers and build with them
-  #[ -d glew-headers/ ] && rm -rv glew-headers/
-  #mkdir glew-headers/
-  #cp /usr/include/GL/glxew.h glew-headers/
-  #patch -Np1 -i "${srcdir}/0003_Glew_1.8.0_fix.patch"
-
-  #cp NuxGraphics/GLResource.h{,.orig}
-  #sed -i \
-  #  -e "s|GL/glxew.h|$(pwd)/glew-headers/glxew.h|g" \
-  #  NuxGraphics/GLResource.h
-
-  # For Unity to compile
-  #sed -i -e 's|"GL/glxew.h"|"/usr/include/GL/glxew-fixed.h"|g' \
-  #  NuxGraphics/GLResource.h.orig
-
   autoreconf -vfi
 
   ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
@@ -62,13 +47,6 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}" install
-
-  #cp NuxGraphics/GLResource.h.orig \
-  #  "${pkgdir}/usr/include/Nux-3.0/NuxGraphics/GLResource.h"
-
-  # Install patched glxew.h
-  #install -dm755 "${pkgdir}/usr/include/GL/"
-  #install -m644 ./glew-headers/glxew.h "${pkgdir}/usr/include/GL/glxew-fixed.h"
 }
 
 # vim:set ts=2 sw=2 et:
