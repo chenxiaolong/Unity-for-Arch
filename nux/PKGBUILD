@@ -22,13 +22,11 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch'
-        '0002_disable_documentation.patch'
-        '0003_Glew_1.8.0_fix.patch')
+        '0002_disable_documentation.patch')
 sha512sums=('a921eb8732e60ac4ca6f409d420464c9ad4dc8000872fbe35d5e02190747f22020aa4682cbc57415ab0cb63122ca00e0f2d88cc6b520a799cf0a8cb75408258c'
             'feadad8e98c925e760f00bd269df47105fd7028c5a45827a47e90e2ed833151d2493358c8a227903644a0fd7ff93b25af36ae58b5866a7ae6efcdb4694d325dd'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
-            'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5'
-            '60a6fd75896af92ba6a511968e35b16697da39416877b611323e4b57f70ed6bec81ba3a0467f175dcb30aaefb8d238943f59fc57c5d462047492078bd545a90a')
+            'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
