@@ -11,8 +11,13 @@ get_ubuntu_version() {
     echo "No Ubuntu version was provided"
     exit 1
   fi
-  wget -q -O - "https://launchpad.net/ubuntu/${2}/+source/${1}" | \
-    sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'
+  if [ "x${3}" == "xnative" ]; then
+    wget -q -O - "https://launchpad.net/ubuntu/${2}/+source/${1}" | \
+      sed -n 's/^.*current\ release\ (\(.*\)).*$/\1/p'
+  else
+    wget -q -O - "https://launchpad.net/ubuntu/${2}/+source/${1}" | \
+      sed -n 's/^.*current\ release\ (\(.*\)-\(.*\)).*$/\1 \2/p'
+  fi
 }
 
 get_launchpad_version() {
