@@ -1,7 +1,7 @@
-diff -Nru indicator-datetime-12.10.2.orig/configure.ac indicator-datetime-12.10.2/configure.ac
---- indicator-datetime-12.10.2.orig/configure.ac	2012-10-24 00:11:06.786413645 -0400
-+++ indicator-datetime-12.10.2/configure.ac	2012-10-24 14:09:16.798765812 -0400
-@@ -51,7 +51,6 @@
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/configure.ac indicator-datetime-12.10.3daily12.11.23/configure.ac
+--- indicator-datetime-12.10.3daily12.11.23.orig/configure.ac	2013-01-07 18:51:44.749541649 -0500
++++ indicator-datetime-12.10.3daily12.11.23/configure.ac	2013-01-07 18:53:07.129112325 -0500
+@@ -52,7 +52,6 @@
  DBUSMENUGTK_REQUIRED_VERSION=0.5.90
  GIO_REQUIRED_VERSION=2.25.11
  INDICATOR_DISPLAY_OBJECTS=0.2.2
@@ -9,7 +9,7 @@ diff -Nru indicator-datetime-12.10.2.orig/configure.ac indicator-datetime-12.10.
  ECAL_REQUIRED_VERSION=3.5
  EDS_REQUIRED_VERSION=3.5
  ICAL_REQUIRED_VERSION=0.48
-@@ -72,7 +71,6 @@
+@@ -73,7 +72,6 @@
                             dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                             libido3-0.1 >= $INDICATOR_DISPLAY_OBJECTS
                             gio-2.0 >= $GIO_REQUIRED_VERSION
@@ -17,7 +17,7 @@ diff -Nru indicator-datetime-12.10.2.orig/configure.ac indicator-datetime-12.10.
                             libecal-1.2 >= $ECAL_REQUIRED_VERSION
                             libical >= $ICAL_REQUIRED_VERSION
                             libedataserver-1.2 >= EDS_REQUIRED_VERSION
-@@ -92,15 +90,11 @@
+@@ -93,15 +91,11 @@
     PKG_CHECK_MODULES([PREF],
                       [gio-2.0 >= $GIO_REQUIRED_VERSION
                        gtk+-3.0 >= $GTK3_REQUIRED_VERSION
@@ -34,9 +34,9 @@ diff -Nru indicator-datetime-12.10.2.orig/configure.ac indicator-datetime-12.10.
     fi
     if test x${with_ccpanel} = xyes && test x${have_ccpanel} = xno; then
       AC_MSG_ERROR([Control Center panel configured but not found])
-diff -Nru indicator-datetime-12.10.2.orig/data/com.canonical.indicator.datetime.gschema.xml indicator-datetime-12.10.2/data/com.canonical.indicator.datetime.gschema.xml
---- indicator-datetime-12.10.2.orig/data/com.canonical.indicator.datetime.gschema.xml	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/data/com.canonical.indicator.datetime.gschema.xml	2012-10-24 13:43:49.813542986 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/data/com.canonical.indicator.datetime.gschema.xml indicator-datetime-12.10.3daily12.11.23/data/com.canonical.indicator.datetime.gschema.xml
+--- indicator-datetime-12.10.3daily12.11.23.orig/data/com.canonical.indicator.datetime.gschema.xml	2013-01-07 18:52:21.219350731 -0500
++++ indicator-datetime-12.10.3daily12.11.23/data/com.canonical.indicator.datetime.gschema.xml	2013-01-07 18:53:29.092331627 -0500
 @@ -85,34 +85,5 @@
  			  Shows events from Evolution in indicator-datetime's menu.
  			</description>
@@ -72,9 +72,9 @@ diff -Nru indicator-datetime-12.10.2.orig/data/com.canonical.indicator.datetime.
 -		</key>
  	</schema>
  </schemalist>
-diff -Nru indicator-datetime-12.10.2.orig/data/datetime-dialog.ui indicator-datetime-12.10.2/data/datetime-dialog.ui
---- indicator-datetime-12.10.2.orig/data/datetime-dialog.ui	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/data/datetime-dialog.ui	2012-10-24 01:57:45.842959159 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/data/datetime-dialog.ui indicator-datetime-12.10.3daily12.11.23/data/datetime-dialog.ui
+--- indicator-datetime-12.10.3daily12.11.23.orig/data/datetime-dialog.ui	2013-01-07 18:51:44.752874965 -0500
++++ indicator-datetime-12.10.3daily12.11.23/data/datetime-dialog.ui	2013-01-07 18:53:50.692219948 -0500
 @@ -7,152 +7,6 @@
      <property name="step_increment">86400</property>
      <property name="page_increment">864000</property>
@@ -595,9 +595,9 @@ diff -Nru indicator-datetime-12.10.2.orig/data/datetime-dialog.ui indicator-date
 -    </widgets>
 -  </object>
  </interface>
-diff -Nru indicator-datetime-12.10.2.orig/po/POTFILES.in indicator-datetime-12.10.2/po/POTFILES.in
---- indicator-datetime-12.10.2.orig/po/POTFILES.in	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/po/POTFILES.in	2012-10-24 07:31:07.566522962 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/po/POTFILES.in indicator-datetime-12.10.3daily12.11.23/po/POTFILES.in
+--- indicator-datetime-12.10.3daily12.11.23.orig/po/POTFILES.in	2013-01-07 18:51:44.749541649 -0500
++++ indicator-datetime-12.10.3daily12.11.23/po/POTFILES.in	2013-01-07 18:54:04.862146422 -0500
 @@ -1,7 +1,6 @@
  src/indicator-datetime.c
  src/datetime-service.c
@@ -606,9 +606,9 @@ diff -Nru indicator-datetime-12.10.2.orig/po/POTFILES.in indicator-datetime-12.1
  src/utils.c
  src/settings-shared.h
  [type: gettext/glade]data/datetime-dialog.ui
-diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs.c indicator-datetime-12.10.2/src/datetime-prefs.c
---- indicator-datetime-12.10.2.orig/src/datetime-prefs.c	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/src/datetime-prefs.c	2012-10-24 01:57:27.282944095 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs.c indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs.c
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs.c	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs.c	2013-01-07 19:03:39.925831282 -0500
 @@ -7,6 +7,7 @@
  Authors:
      Ted Gould <ted@canonical.com>
@@ -824,7 +824,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs.c indicator-datetim
 -    g_dbus_proxy_call (priv->proxy, "GetUsingNtp", NULL, G_DBUS_CALL_FLAGS_NONE, -1,
 -                       priv->ntp_query_cancel, (GAsyncReadyCallback)ntp_query_answered, self);
 -  }
--  if (priv->tz_query_cancel == NULL); {
+-  if (priv->tz_query_cancel == NULL) {
 -    priv->tz_query_cancel = g_cancellable_new();
 -    g_dbus_proxy_call (priv->proxy, "GetTimezone", NULL, G_DBUS_CALL_FLAGS_NONE, -1,
 -                       priv->tz_query_cancel, (GAsyncReadyCallback)tz_query_answered, self);
@@ -1308,9 +1308,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs.c indicator-datetim
  
    G_OBJECT_CLASS (indicator_datetime_panel_parent_class)->dispose (object);
  }
-diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.c indicator-datetime-12.10.2/src/datetime-prefs-locations.c
---- indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.c	2012-10-24 00:11:06.793080317 -0400
-+++ indicator-datetime-12.10.2/src/datetime-prefs-locations.c	1969-12-31 19:00:00.000000000 -0500
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs-locations.c indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs-locations.c
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs-locations.c	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs-locations.c	1969-12-31 19:00:00.000000000 -0500
 @@ -1,673 +0,0 @@
 -/* -*- Mode: C; coding: utf-8; indent-tabs-mode: nil; tab-width: 2 -*-
 -
@@ -1985,9 +1985,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.c indicat
 -  return dlg;
 -}
 -
-diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.h indicator-datetime-12.10.2/src/datetime-prefs-locations.h
---- indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.h	2012-10-24 00:11:06.793080317 -0400
-+++ indicator-datetime-12.10.2/src/datetime-prefs-locations.h	1969-12-31 19:00:00.000000000 -0500
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs-locations.h indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs-locations.h
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-prefs-locations.h	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/datetime-prefs-locations.h	1969-12-31 19:00:00.000000000 -0500
 @@ -1,35 +0,0 @@
 -/* -*- Mode: C; coding: utf-8; indent-tabs-mode: nil; tab-width: 2 -*-
 -
@@ -2024,9 +2024,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-prefs-locations.h indicat
 -G_END_DECLS
 -
 -#endif
-diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datetime-12.10.2/src/datetime-service.c
---- indicator-datetime-12.10.2.orig/src/datetime-service.c	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/src/datetime-service.c	2012-10-24 14:00:55.188712353 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c indicator-datetime-12.10.3daily12.11.23/src/datetime-service.c
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c	2013-01-07 18:52:21.219350731 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/datetime-service.c	2013-01-07 19:14:53.365664497 -0500
 @@ -35,9 +35,6 @@
  #include <libdbusmenu-glib/client.h>
  #include <libdbusmenu-glib/menuitem.h>
@@ -2037,15 +2037,12 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  #include <time.h>
  #include <libecal/libecal.h>
  #include <libical/ical.h>
-@@ -65,15 +62,10 @@
-  #define SETTINGS_APP_INVOCATION "gnome-control-center datetime"
+@@ -66,12 +63,9 @@
  #endif
  
--static void geo_create_client (GeoclueMaster * master, GeoclueMasterClient * client, gchar * path, GError * error, gpointer user_data);
  static gboolean update_appointment_menu_items (gpointer user_data);
 -static void update_location_menu_items (void);
  static void day_timer_reset (void);
--static void geo_client_invalid (GeoclueMasterClient * client, gpointer user_data);
  static gboolean get_greeter_mode (void);
  
 -static void quick_set_tz (DbusmenuMenuitem * menuitem, guint timestamp, gpointer user_data);
@@ -2053,7 +2050,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  static IndicatorService * service = NULL;
  static GMainLoop * mainloop = NULL;
  static DbusmenuServer * server = NULL;
-@@ -88,7 +80,6 @@
+@@ -86,7 +80,6 @@
  static DbusmenuMenuitem * locations_separator = NULL;
  static DbusmenuMenuitem * add_appointment = NULL;
  static DbusmenuMenuitem * appointments[MAX_APPOINTMENT_MENUITEMS];
@@ -2061,21 +2058,17 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  static GList            * comp_instances = NULL;
  static gboolean           updating_appointments = FALSE;
  static time_t             start_time_appointments = (time_t) 0;
-@@ -97,13 +88,7 @@
+@@ -95,9 +88,7 @@
  static GList            * appointment_sources = NULL;
  
  
--/* Geoclue trackers */
--static GeoclueMasterClient * geo_master = NULL;
--static GeoclueAddress * geo_address = NULL;
--
 -/* Our 2 important timezones */
  static gchar 			* current_timezone = NULL;
 -static gchar 			* geo_timezone = NULL;
  
  struct comp_instance {
          ECalComponent *comp;
-@@ -112,150 +97,6 @@
+@@ -106,150 +97,6 @@
          ESource *source;
  };
  
@@ -2226,7 +2219,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  /* Update the current timezone */
  static void
  update_current_timezone (void) {
-@@ -272,69 +113,6 @@
+@@ -266,69 +113,6 @@
  
  	g_debug("System timezone is: %s", current_timezone);
  
@@ -2296,7 +2289,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  	return;
  }
  
-@@ -989,13 +767,6 @@
+@@ -987,13 +771,6 @@
  }
  
  static void
@@ -2310,7 +2303,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  time_format_changed (void)
  {
  	update_appointment_menu_items(NULL);
-@@ -1035,11 +806,6 @@
+@@ -1033,11 +810,6 @@
  		dbusmenu_menuitem_property_set_bool (locations_separator, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
  		dbusmenu_menuitem_child_append(root, locations_separator);
  
@@ -2322,35 +2315,44 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
  		g_signal_connect (conf, "changed::" SETTINGS_SHOW_EVENTS_S, G_CALLBACK (show_events_changed), NULL);
  		g_signal_connect (conf, "changed::" SETTINGS_TIME_FORMAT_S, G_CALLBACK (time_format_changed), NULL);
  
-@@ -1196,170 +962,6 @@
- 	g_signal_connect(proxy, "g-signal", G_CALLBACK(session_active_change_cb), user_data);
+@@ -1195,177 +967,6 @@
  }
  
+ 
+-/****
+-*****  GEOCLUE
+-****/
+-
+-static void geo_start (void);
+-static void geo_stop (void);
+-static void geo_create_client (GeoclueMaster * master, GeoclueMasterClient * client, gchar * path, GError * error, gpointer user_data);
+-static void geo_client_invalid (GeoclueMasterClient * client, gpointer user_data);
+-
+-static GeoclueMaster * geo_master = NULL;
+-static GeoclueMasterClient * geo_client = NULL;
+-static GeoclueAddress * geo_address = NULL;
+-
+-static void
+-geo_set_timezone (const gchar * timezone)
+-{
+-	if (geo_timezone != timezone) {
+-		g_clear_pointer (&geo_timezone, g_free);
+-		geo_timezone = g_strdup (timezone);
+-		g_debug("Geoclue timezone is: %s", timezone ? timezone : "(Null)");
+-		update_location_menu_items();
+-	}
+-}
+-
 -/* Callback from getting the address */
 -static void
 -geo_address_cb (GeoclueAddress * address, int timestamp, GHashTable * addy_data, GeoclueAccuracy * accuracy, GError * error, gpointer user_data)
 -{
--	if (error != NULL) {
+-	if (error == NULL) {
+-		geo_set_timezone (g_hash_table_lookup (addy_data, "timezone"));
+-	} else {
 -		g_warning("Unable to get Geoclue address: %s", error->message);
 -		g_clear_error (&error);
--		return;
 -	}
--
--	g_debug("Geoclue timezone is: %s", (gchar *)g_hash_table_lookup(addy_data, "timezone"));
--
--	if (geo_timezone != NULL) {
--		g_free(geo_timezone);
--		geo_timezone = NULL;
--	}
--
--	gpointer tz_hash = g_hash_table_lookup(addy_data, "timezone");
--	if (tz_hash != NULL) {
--		geo_timezone = g_strdup((gchar *)tz_hash);
--	}
--
--	update_location_menu_items();
--
--	return;
 -}
 -
 -/* Clean up the reference we kept to the address and make sure to
@@ -2358,16 +2360,10 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -static void
 -geo_address_clean (void)
 -{
--	if (geo_address == NULL) {
--		return;
+-	if (geo_address != NULL) {
+-		g_signal_handlers_disconnect_by_func (geo_address, geo_address_cb, NULL);
+-		g_clear_object (&geo_address);
 -	}
--
--	g_signal_handlers_disconnect_by_func(G_OBJECT(geo_address), geo_address_cb, NULL);
--	g_object_unref(G_OBJECT(geo_address));
--
--	geo_address = NULL;
--
--	return;
 -}
 -
 -/* Clean up and remove all signal handlers from the client as we
@@ -2375,16 +2371,10 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -static void
 -geo_client_clean (void)
 -{
--	if (geo_master == NULL) {
--		return;
+-	if (geo_client != NULL) {
+-		g_signal_handlers_disconnect_by_func (geo_client, geo_client_invalid, NULL);
+-		g_clear_object (&geo_client);
 -	}
--
--	g_signal_handlers_disconnect_by_func(G_OBJECT(geo_master), geo_client_invalid, NULL);
--	g_object_unref(G_OBJECT(geo_master));
--
--	geo_master = NULL;
--
--	return;
 -}
 -
 -/* Callback from creating the address */
@@ -2404,14 +2394,11 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -	geo_address_clean();
 -
 -	g_debug("Created Geoclue Address");
--	geo_address = address;
--	g_object_ref(G_OBJECT(geo_address));
+-	geo_address = g_object_ref (address);
 -
--	geoclue_address_get_address_async(geo_address, geo_address_cb, NULL);
+-	geoclue_address_get_address_async (geo_address, geo_address_cb, NULL);
 -
--	g_signal_connect(G_OBJECT(address), "address-changed", G_CALLBACK(geo_address_cb), NULL);
--
--	return;
+-	g_signal_connect (address, "address-changed", G_CALLBACK(geo_address_cb), NULL);
 -}
 -
 -/* Callback from setting requirements */
@@ -2422,7 +2409,6 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -		g_warning("Unable to set Geoclue requirements: %s", error->message);
 -		g_clear_error (&error);
 -	}
--	return;
 -}
 -
 -/* Client is killing itself rather oddly */
@@ -2430,25 +2416,28 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -geo_client_invalid (GeoclueMasterClient * client, gpointer user_data)
 -{
 -	g_warning("Master client invalid, rebuilding.");
+-	geo_stop ();
+-	geo_start ();
+-}
 -
--	/* Client changes we can assume the address is now invalid so we
--	   need to unreference the one we had. */
--	geo_address_clean();
+-static void
+-geo_stop (void)
+-{
+-	geo_set_timezone (NULL);
 -
--	/* And our master client is invalid */
--	geo_client_clean();
+-	geo_address_clean ();
+-	geo_client_clean ();
+-	g_clear_object (&geo_master);
+-}
 -
--	GeoclueMaster * master = geoclue_master_get_default();
--	geoclue_master_create_client_async(master, geo_create_client, NULL);
+-static void
+-geo_start (void)
+-{
+-	g_warn_if_fail (geo_master == NULL);
 -
--	if (geo_timezone != NULL) {
--		g_free(geo_timezone);
--		geo_timezone = NULL;
--	}
--
--	update_location_menu_items();
--
--	return;
+-	g_clear_object (&geo_master);
+-	geo_master = geoclue_master_get_default();
+-	geoclue_master_create_client_async (geo_master, geo_create_client, NULL);
 -}
 -
 -/* Callback from creating the client */
@@ -2457,7 +2446,7 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -{
 -	g_debug("Created Geoclue client at: %s", path);
 -
--	geo_master = client;
+-	geo_client = client;
 -
 -	if (error != NULL) {
 -		g_warning("Unable to get a GeoClue client!  '%s'  Geolocation based timezone support will not be available.", error->message);
@@ -2465,17 +2454,17 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -		return;
 -	}
 -
--	if (geo_master == NULL) {
+-	if (client == NULL) {
 -		g_warning(_("Unable to get a GeoClue client!  Geolocation based timezone support will not be available."));
 -		return;
 -	}
 -
--	g_object_ref(G_OBJECT(geo_master));
+-	g_object_ref (geo_client);
 -
 -	/* New client, make sure we don't have an address hanging on */
 -	geo_address_clean();
 -
--	geoclue_master_client_set_requirements_async(geo_master,
+-	geoclue_master_client_set_requirements_async(geo_client,
 -	                                             GEOCLUE_ACCURACY_LEVEL_REGION,
 -	                                             0,
 -	                                             FALSE,
@@ -2483,56 +2472,67 @@ diff -Nru indicator-datetime-12.10.2.orig/src/datetime-service.c indicator-datet
 -	                                             geo_req_set,
 -	                                             NULL);
 -
--	geoclue_master_client_create_address_async(geo_master, geo_create_address, NULL);
+-	geoclue_master_client_create_address_async(geo_client, geo_create_address, NULL);
 -
--	g_signal_connect(G_OBJECT(client), "invalidated", G_CALLBACK(geo_client_invalid), NULL);
--
--	return;
+-	g_signal_connect(client, "invalidated", G_CALLBACK(geo_client_invalid), NULL);
 -}
+-
+-static void
+-on_use_geoclue_changed_cb (GSettings * settings, gchar * key, gpointer unused G_GNUC_UNUSED)
+-{
+-	geo_stop ();
+-
+-	if (g_settings_get_boolean (conf, SETTINGS_SHOW_DETECTED_S))
+-		geo_start ();
+-}
+-
+-/****
+-*****
+-****/
 -
  static gboolean
  get_greeter_mode (void)
  {
-@@ -1449,10 +1051,6 @@
+@@ -1430,8 +1031,6 @@
+ 
+ 	/* Set up GSettings */
+ 	conf = g_settings_new(SETTINGS_INTERFACE);
+-	g_signal_connect (conf, "changed::show-auto-detected-location",
+-                          G_CALLBACK(on_use_geoclue_changed_cb), NULL);
+ 	// TODO Add a signal handler to catch other gsettings changes and respond to them
+ 
+ 	/* Build our list of appointment calendar sources.
+@@ -1457,10 +1056,6 @@
  	/* Cache the timezone */
  	update_current_timezone();
  
 -	/* Setup geoclue */
--	GeoclueMaster * master = geoclue_master_get_default();
--	geoclue_master_create_client_async(master, geo_create_client, NULL);
+-	if (g_settings_get_boolean (conf, SETTINGS_SHOW_DETECTED_S))
+-		geo_start ();
 -
  	/* Setup dbus interface */
  	dbus = g_object_new(DATETIME_INTERFACE_TYPE, NULL);
  
-@@ -1482,7 +1080,6 @@
- 	free_appointment_sources();
- 
- 	g_object_unref(G_OBJECT(conf));
--	g_object_unref(G_OBJECT(master));
- 	g_object_unref(G_OBJECT(dbus));
- 	g_object_unref(G_OBJECT(service));
- 	g_object_unref(G_OBJECT(server));
-@@ -1491,8 +1088,5 @@
+@@ -1498,7 +1093,5 @@
  
  	icaltimezone_free_builtin_timezones();
  
--	geo_address_clean();
--	geo_client_clean();
+-	geo_stop ();
 -
  	return 0;
  }
-diff -Nru indicator-datetime-12.10.2.orig/src/dbus-shared.h indicator-datetime-12.10.2/src/dbus-shared.h
---- indicator-datetime-12.10.2.orig/src/dbus-shared.h	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/src/dbus-shared.h	2012-10-24 13:42:46.133556601 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/dbus-shared.h indicator-datetime-12.10.3daily12.11.23/src/dbus-shared.h
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/dbus-shared.h	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/dbus-shared.h	2013-01-07 18:55:46.348286598 -0500
 @@ -38,5 +38,4 @@
  
  #define TIMEZONE_MENUITEM_TYPE             "timezone-item"	
  #define TIMEZONE_MENUITEM_PROP_ZONE        "timezone-zone"	
 -#define TIMEZONE_MENUITEM_PROP_NAME        "timezone-name"
  #define TIMEZONE_MENUITEM_PROP_RADIO       "timezone-radio"
-diff -Nru indicator-datetime-12.10.2.orig/src/indicator-datetime.c indicator-datetime-12.10.2/src/indicator-datetime.c
---- indicator-datetime-12.10.2.orig/src/indicator-datetime.c	2012-10-24 00:11:06.793080317 -0400
-+++ indicator-datetime-12.10.2/src/indicator-datetime.c	2012-10-24 13:45:25.270682747 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/indicator-datetime.c indicator-datetime-12.10.3daily12.11.23/src/indicator-datetime.c
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/indicator-datetime.c	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/indicator-datetime.c	2013-01-07 18:55:35.975007069 -0500
 @@ -1130,9 +1130,6 @@
  timezone_update_labels (indicator_item_t * mi_data)
  {
@@ -2552,9 +2552,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/indicator-datetime.c indicator-dat
  	} else if (!g_strcmp0(prop, TIMEZONE_MENUITEM_PROP_RADIO)) {
  		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mi_data->gmi), g_variant_get_boolean(value));
  	}
-diff -Nru indicator-datetime-12.10.2.orig/src/Makefile.am indicator-datetime-12.10.2/src/Makefile.am
---- indicator-datetime-12.10.2.orig/src/Makefile.am	2012-10-24 00:11:06.793080317 -0400
-+++ indicator-datetime-12.10.2/src/Makefile.am	2012-10-24 01:41:59.668555871 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/Makefile.am indicator-datetime-12.10.3daily12.11.23/src/Makefile.am
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/Makefile.am	2013-01-07 18:52:21.222684047 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/Makefile.am	2013-01-07 18:55:21.475082318 -0500
 @@ -54,8 +54,6 @@
  if BUILD_CCPANEL
  libindicator_datetime_la_SOURCES =\
@@ -2564,9 +2564,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/Makefile.am indicator-datetime-12.
  	timedate1.c \
  	timedate1.h \
  	utils.c \
-diff -Nru indicator-datetime-12.10.2.orig/src/settings-shared.h indicator-datetime-12.10.2/src/settings-shared.h
---- indicator-datetime-12.10.2.orig/src/settings-shared.h	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/src/settings-shared.h	2012-10-24 13:43:34.403508231 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/settings-shared.h indicator-datetime-12.10.3daily12.11.23/src/settings-shared.h
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/settings-shared.h	2013-01-07 18:51:44.746208333 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/settings-shared.h	2013-01-07 18:55:10.225140733 -0500
 @@ -32,10 +32,6 @@
  #define SETTINGS_SHOW_CALENDAR_S        "show-calendar"
  #define SETTINGS_SHOW_WEEK_NUMBERS_S    "show-week-numbers"
@@ -2578,9 +2578,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/settings-shared.h indicator-dateti
  
  enum {
  	SETTINGS_TIME_LOCALE = 0,
-diff -Nru indicator-datetime-12.10.2.orig/src/utils.c indicator-datetime-12.10.2/src/utils.c
---- indicator-datetime-12.10.2.orig/src/utils.c	2012-10-24 00:11:06.793080317 -0400
-+++ indicator-datetime-12.10.2/src/utils.c	2012-10-24 13:52:37.798335132 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/utils.c indicator-datetime-12.10.3daily12.11.23/src/utils.c
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/utils.c	2013-01-07 18:52:21.222684047 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/utils.c	2013-01-07 18:54:58.565201305 -0500
 @@ -51,73 +51,6 @@
  	return TRUE;
  }
@@ -2655,9 +2655,9 @@ diff -Nru indicator-datetime-12.10.2.orig/src/utils.c indicator-datetime-12.10.2
  gchar *
  read_timezone ()
  {
-diff -Nru indicator-datetime-12.10.2.orig/src/utils.h indicator-datetime-12.10.2/src/utils.h
---- indicator-datetime-12.10.2.orig/src/utils.h	2012-10-24 00:11:06.796413654 -0400
-+++ indicator-datetime-12.10.2/src/utils.h	2012-10-24 13:52:43.248349563 -0400
+diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/utils.h indicator-datetime-12.10.3daily12.11.23/src/utils.h
+--- indicator-datetime-12.10.3daily12.11.23.orig/src/utils.h	2013-01-07 18:51:44.742875017 -0500
++++ indicator-datetime-12.10.3daily12.11.23/src/utils.h	2013-01-07 18:54:46.245265282 -0500
 @@ -28,8 +28,6 @@
  G_BEGIN_DECLS
  

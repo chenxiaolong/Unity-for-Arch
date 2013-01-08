@@ -3,29 +3,28 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-datetime
-_ubuntu_rel=0ubuntu3
-pkgver=12.10.2.${_ubuntu_rel}
-pkgrel=101
+_actual_ver=12.10.3
+_extra_ver=daily12.11.23
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
-depends=('libindicator3' 'libdbusmenu-gtk3' 'ido' 'evolution-data-server' 'gnome-control-center')
+depends=('libindicator3' 'libdbusmenu-gtk3' 'libido3' 'evolution-data-server' 'gnome-control-center')
 makedepends=('intltool')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
         '0002_Remove_timezone_functionality.patch')
-sha512sums=('16278347f4faaf6ab110614d129d2d8a18d90a693f7cdb48701e06d9b5f4fcf50ec05a8ddd898b0083bce371781478ed1ac8ba98075176f485abb6b33b27a093'
-            '813537af398ca68955395f1f345d55099c9669e4c911de1ddf58458cfe255d95cc88b81b9d7664d610212c36c2c7411281907f6ec6b200338b72f05c5a893268'
-            '26c144677564f206b99bc015f496e765ab0c150f9360b401425eb04a11617df5bd9ff644d6b22997ed15ce2abf6048827b80c4a641d890f6eeb5fcd7e2126d7b'
-            'd7d2ddc45ae4ce0a9dbee447159980c9f38bf63fcfef270a50d97178f63bd2b7e7a77148c52186263002467f1b231d6e344e8cde5b0e034b2b89a11a914d97e5')
+sha512sums=('3db708d087c7a642b06a2de3bbf1035148c9f72c56b708962f1b24ac6f620fbf99fd96f979158a6d47d810872f8df7895155bbbbf9e6d5120194f6dc73b4ed25'
+            '1a931f25552b916229cd9e773423910803cc453a8a088e70b0b8f889d235e75d985264e90f2045b2c40246245c20b29017ae861386264d46eb317976d87f8039'
+            '79b563e7d31e1f0c56c9b592fd370e1b5f3efd82f84b52fcee937e35306cdf74966de5f2c3997cddd9078ac9cfd3e60233832be8efac27bb80e043fa13964838')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Port to systemd's timedated
   patch -Np1 -i "${srcdir}/0001_Port_to_systemd_timedated.patch"
@@ -39,20 +38,15 @@ build() {
   # - Removes ability to changes timezone based on physical location
   patch -Np1 -i "${srcdir}/0002_Remove_timezone_functionality.patch"
 
-  # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${pkgver%.*}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
-  done
-
   autoreconf -vfi
+  intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver%.*}/"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 }
