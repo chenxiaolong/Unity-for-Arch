@@ -92,5 +92,12 @@ get_ppa_version() {
   fi
   wget -q -O - \
     "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
-    sed -n "s/.*>${1}_\(.*\)-\(.*\)\.\(debian\|diff\)\.[a-z\.]\+<.*/\1 \2/p" | tail -n 1
+    sed -n "s/.*>${1}_\(.*\)-\(.*\)\.\(debian\|diff\)\.[a-z\.]\+<.*/\1 \2/p" | \
+    tail -n 1
+}
+
+get_qt4_version() {
+  wget -q -O - 'http://releases.qt-project.org/qt4/source/' | \
+    sed -n 's/.*>\ qt-everywhere-opensource-src-\(.*\)\.tar\.gz<.*/\1/p' | \
+    tail -n 1
 }
