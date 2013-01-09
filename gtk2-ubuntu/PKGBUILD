@@ -22,16 +22,19 @@ install=arch_gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch'
-        'fix-ubuntumenuproxy-build.patch')
+        'fix-ubuntumenuproxy-build.patch'
+        '0001_autoconf.patch')
 sha512sums=('f262ddd728ca2d93889bb1b113866932edf7d61ab3248ca11f2c83dbb181fcc0eaab900e6ed4933e4b597cac1ed1bf622711a617e0867ec10730c934d21dc911'
             '4f0e8a78b39388271c85fc02c2b7bd65237178ed5a6fdade98ed301dcba1fba0d1ab02d93349a8bf9350689ff7da7f9a4ea30b003a08335051f7c27b361e28f4'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
-            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
+            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24'
+            '4c777ce140fda4a9d27de4eb2465f7ba2a8cf081225556996382bf1c450ddcd05b9e7ed08fe9e7fa293d7c336991c1baf3bb26f5b2af99db5b57f29ef22403b9')
 
 build() {
   cd "${srcdir}/gtk+-${_actual_ver}"
 
-  patch -Np1 -i "${srcdir}/arch_xid-collision-debug.patch"
+  patch -p1 -i "${srcdir}/arch_xid-collision-debug.patch"
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
 
@@ -49,10 +52,10 @@ build() {
       sed -i '/011_immodule-cache-dir.patch/d' "${srcdir}/debian/patches/series"
 
   # Build fix from György Balló
-  patch -Np1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
+  patch -p1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   # Cannot find gmodule-2.0
@@ -84,3 +87,8 @@ package() {
 }
 
 # vim:set ts=2 sw=2 et:
+sha512sums=('f262ddd728ca2d93889bb1b113866932edf7d61ab3248ca11f2c83dbb181fcc0eaab900e6ed4933e4b597cac1ed1bf622711a617e0867ec10730c934d21dc911'
+            '4f0e8a78b39388271c85fc02c2b7bd65237178ed5a6fdade98ed301dcba1fba0d1ab02d93349a8bf9350689ff7da7f9a4ea30b003a08335051f7c27b361e28f4'
+            '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
+            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24'
+            'a841e4cdae3ac1bc3a671b17101a5928d444e5a3581334f602b20ca84609f57d1903bf04d1d17061af18a8ba2e24d0e5cd33a6c0a5ecb17d8dccf272ec203b76')
