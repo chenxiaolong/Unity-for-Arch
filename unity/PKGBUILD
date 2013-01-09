@@ -12,7 +12,7 @@ if [ "${_UBUNTU}" == true ]; then
   pkgver="${_actual_ver}${_extra_ver}.${_ubuntu_rel}"
 fi
 
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
@@ -24,7 +24,7 @@ provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 
 # Do not use ccache or distcc
-BUILDENV=(fakeroot !distcc color !ccache check !sign)
+#BUILDENV=(fakeroot !distcc color !ccache check !sign)
 
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -33,14 +33,16 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '0001_Remove_gtest.patch'
         'launcher_bfb.png'
         'archlinux_branding.patch'
-        'unity-migrate-dconf-path.desktop')
+        'unity-migrate-dconf-path.desktop'
+        '10_unity.gschema.override')
 sha512sums=('02593e9839f7c3f668c631c60093d566fc61ad6aea243164dc49f7579cdd1247cb9834beb5c6823ad709b52102282fb3bf14ad1e8ac89501f1004e728b27539c'
             'c48de8d599dc757bf19e47cde02a0cbdd988b26148a8d42deef33dd308c2485be94791e67d23dcfeb573198c3f5c387d12035b85521f3fc2c5d4909fc642891b'
             'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
             '97dc982a0d148e2b1b3e86a16f0ef3dd78fe3c319bce7e985e8009a2d3743259ae9aaf50d0489a277fd4206a912966ed31cf85f867d4e24af6ce48ebd35b6dd8'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
-            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7')
+            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
+            '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -163,6 +165,11 @@ package() {
     exit 1
   fi
   popd
+
+  # Change window dragging key back to Alt. Super conflicts with Unity's other
+  # hotkeys.
+  install -m644 "${srcdir}/10_unity.gschema.override" \
+    "${pkgdir}/usr/share/glib-2.0/schemas/"
 }
 
 # vim:set ts=2 sw=2 et:
