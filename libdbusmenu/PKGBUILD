@@ -6,7 +6,7 @@ pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 _ubuntu_rel=0ubuntu1
 pkgver=12.10.2.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -15,12 +15,16 @@ makedepends=('json-glib>=0.12.6' 'gtk2-ubuntu' 'gtk3-ubuntu' 'intltool' 'gnome-d
 groups=('unity')
 options=('!libtool')
 source=("http://launchpad.net/dbusmenu/${pkgver%.*.*}/${pkgver%.*}/+download/${pkgbase}-${pkgver%.*}.tar.gz"
-        "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz")
+        "http://archive.ubuntu.com/ubuntu/pool/main/libd/${pkgbase}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff.gz"
+        '0001_autoconf.patch')
 sha512sums=('cf2e50dc3adbf35d0a4ccdd62a3efd9fae2d079b8d06e6522b70f077f89ac2cf72188e380f476e38d184b69549e90b801bf1e32174fa94bbe612dd52aec94496'
-            'adc51642d385df567cfcbe1f703d8bfefb81bcc31891a2434e9887dd52f2e253f932b0ce5ac668ca9f31d9df1007159d5bb91fcbca31434b010cb5db67a30b50')
+            'adc51642d385df567cfcbe1f703d8bfefb81bcc31891a2434e9887dd52f2e253f932b0ce5ac668ca9f31d9df1007159d5bb91fcbca31434b010cb5db67a30b50'
+            '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver%.*}"
+
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgbase}_${pkgver%.*}-${_ubuntu_rel}.diff"
