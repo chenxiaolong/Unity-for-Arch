@@ -1,0 +1,12 @@
+diff -Nru libindicate-12.10.1.orig/configure.ac libindicate-12.10.1/configure.ac
+--- libindicate-12.10.1.orig/configure.ac	2013-01-10 05:16:58.676314212 -0500
++++ libindicate-12.10.1/configure.ac	2013-01-10 05:17:11.416245960 -0500
+@@ -3,7 +3,7 @@
+ 
+ AC_PREREQ(2.53)
+ 
+-AM_CONFIG_HEADER(config.h)
++AC_CONFIG_HEADERS(config.h)
+ AM_INIT_AUTOMAKE(libindicate, 12.10.1)
+ 
+ AM_MAINTAINER_MODE
