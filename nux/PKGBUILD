@@ -4,7 +4,7 @@
 
 pkgname=nux
 _actual_ver=4.0.0
-_extra_ver=daily12.12.05
+_extra_ver=daily13.01.11
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -21,18 +21,15 @@ options=('!libtool' '!emptydirs')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        '0001_autoconf.patch'
-        '0002_disable_documentation.patch')
-sha512sums=('a921eb8732e60ac4ca6f409d420464c9ad4dc8000872fbe35d5e02190747f22020aa4682cbc57415ab0cb63122ca00e0f2d88cc6b520a799cf0a8cb75408258c'
-            'feadad8e98c925e760f00bd269df47105fd7028c5a45827a47e90e2ed833151d2493358c8a227903644a0fd7ff93b25af36ae58b5866a7ae6efcdb4694d325dd'
-            'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
-            'd8e12b012c68e2726d88470cbd3f3c04e441db3ab3a625212347d2861f600d0f8bbb46a326dcac95f40d314cb57782a15bf5c95c1b9b56b60fb9b876f01781b5')
+        '0001_autoconf.patch')
+sha512sums=('7d1cd695b0f4efa67c4f98f3c08f59b002abd6be073a915694d95cbde10a9e06dbef1f0af6e3c53676e8b908ae3d74b1dc8acb25bd108349e84b3437c2a11e9f'
+            '511ed3d055e4eb94f62836db90025a0389bdaf2dac1beed684b579696f19f9bc5b300ea2354206a5896c25a2d99c4a57b230c8edaf209e24ddc4e443082c4f7f'
+            'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
-  patch -p1 -i "${srcdir}/0002_disable_documentation.patch"
 
   autoreconf -vfi
 
