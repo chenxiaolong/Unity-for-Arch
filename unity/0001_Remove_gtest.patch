@@ -1,6 +1,5 @@
-diff -Nru unity-6.12.0daily12.12.05.orig/CMakeLists.txt unity-6.12.0daily12.12.05/CMakeLists.txt
---- unity-6.12.0daily12.12.05.orig/CMakeLists.txt	2013-01-07 13:26:04.461287949 -0500
-+++ unity-6.12.0daily12.12.05/CMakeLists.txt	2013-01-07 13:50:25.047043090 -0500
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
 @@ -232,33 +232,6 @@
  
  # subdirs

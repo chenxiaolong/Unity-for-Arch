@@ -5,14 +5,14 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
-_extra_ver="daily12.12.05"
+_extra_ver="daily13.01.11.2"
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
   pkgver="${_actual_ver}${_extra_ver}.${_ubuntu_rel}"
 fi
 
-pkgrel=101
+pkgrel=100
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
@@ -35,12 +35,12 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('02593e9839f7c3f668c631c60093d566fc61ad6aea243164dc49f7579cdd1247cb9834beb5c6823ad709b52102282fb3bf14ad1e8ac89501f1004e728b27539c'
-            'c48de8d599dc757bf19e47cde02a0cbdd988b26148a8d42deef33dd308c2485be94791e67d23dcfeb573198c3f5c387d12035b85521f3fc2c5d4909fc642891b'
+sha512sums=('6fe895788980e346be8f62e4020403dc6e75b9fa73cdb8265107e1d07465a5db8fb01d7e80e773b7fc330f7d6208aacc76d659b000e7285283aed668ae20b0ab'
+            '338931290d02a59c46fa5ee516c97f05fbd142c7c1e407f975783fc49ef16957a24fbe650ce92c3d197857ff57788c025f0e72f73f0c017428ee43200728d172'
             'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
-            '97dc982a0d148e2b1b3e86a16f0ef3dd78fe3c319bce7e985e8009a2d3743259ae9aaf50d0489a277fd4206a912966ed31cf85f867d4e24af6ce48ebd35b6dd8'
+            'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
-            '81461a337a0768035774e2d6a27f1468f9ce3ca62385b2f24dcafeddbff52e1c42bef3a8f8c338b34608a47535a9d037056bd318a6f46b8bf04a67ae55f125bf'
+            '2043f51dcf65062a760fa47dd4c847a9c96d6b285400e103f46715839150e76757e85f50ca1be85f66434f8c4e011129620794a53c46ddd23e0d92c282bf0acf'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1')
 
@@ -95,9 +95,10 @@ build() {
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DUSE_GSETTINGS=TRUE \
+    -Duse_pch=OFF \
     ..
 
-  MAKEFLAGS="-j1"
+  #MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
 
   # Make sure that the GSettings schema files were created
