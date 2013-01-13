@@ -24,28 +24,32 @@ pkgdesc='A cross-platform application and UI framework'
 
 pkgbase=qt-ubuntu
 true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
-_ubuntu_rel=0ubuntu6
-_actual_ver=4.8.2
-pkgver=${_actual_ver}.${_ubuntu_rel}
+_ubuntu_rel=0ubuntu1
+_actual_ver=4.8.4
+_extra_ver=+dfsg
+pkgver=${_actual_ver}${_extra_ver/+/.}.${_ubuntu_rel}
 pkgrel=100
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
-makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'freetds' 'libfbclient')
+makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient')
 options=('!libtool')
 _pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${_actual_ver}"
 source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'fix-assistant-crash.patch')
-sha512sums=('42c07c8c56c42e85241efa90fa7d1a757343a5cfcc1627bfd4a629f96885b83628a04ed911aa2250bc827f51207e61a2b52904102a6d249f10f5e708fad78b62'
-            '97bdce67aab7afa9e23b0aabecc3aac69c859691e11e8b70792e0e5984345e683c853c73df774928b884a50b29e3e2675d0a971f76d02722b200055a09866252'
-            'a5ce4c6c39a21b6b22c645d524870d6e30bc65303b84a834a01b5b91656dfc529b8738cc7ca8a2c22911aa3158cb566eeeeb51db1710aea38183ad3f7e5985ce')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('472972b63b5cad83b4c4656b23e95b6d4923cc31a518138e25d5921982b14abc835883356c2b779a7972cb77cf73fe25b46630be7c6a86a917b364186aa17496'
+            '84954b2dba277772a9801b4a5c8343c9360cafcbfdfe05de549a92da7b8b233fce786588cc0c7f927359f4742fec5a6a7cbaacc3efbc88661e5b1181d30763a9')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
 
   # Apply Arch Linux patches
-    patch -Np1 -i "${srcdir}/fix-assistant-crash.patch"
+    # (FS#28381) (KDEBUG#180051)
+      # Arch Linux: improve-cups-support.patch
+      #  == Ubuntu: kubuntu_37_cups_settings.diff
+    # (FS#29469)
+      # Arch Linux: fix-crash-in-assistant.patch
+      #  == Ubuntu: QTBUG-25324_assistant_segfault_on_start_with_gcc_4.7.patch
 
   # Apply Ubuntu patches
     # Disable patches (longest command you've ever seen? :D) (can't use
@@ -67,7 +71,8 @@ build() {
         -e '/30_webkit_unaligned_access.diff/d'                           \
         -e '/96_webkit_no_gc_sections.diff/d'                             \
         -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
-        -e '/kubuntu_01_fix_build_glib_231.diff/d'                        \
+        -e '/kubuntu_34_no_gold_check.diff/d'                             \
+      `# Fix FTBFS in buildd`                                             \
         -e '/11_build_translations.diff/d'                                \
       `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
       `# the built-in Qt webkit`                                          \
@@ -91,7 +96,6 @@ build() {
         -e '/41_disable_opengl_visibility.diff/d'                         \
         -e '/40_alpha_ice.diff/d'                                         \
         -e '/s390x_jscore.diff/d'                                         \
-        -e '/qt_atomic_sparc64.patch/d'                                   \
       `# Demos arent built on Arch Linux`                                 \
         -e '/buildable_appchooser_states_demos.patch/d'                   \
       `# This is not Debian or Ubuntu`                                    \
@@ -102,26 +106,15 @@ build() {
         -e '/10_config_tests_fixes.diff/d'                                \
       `# Not needed for rolling release distros`                          \
         -e '/23_permit_plugins_built_with_future_qt.diff/d'               \
+      `# Do not hide stuff from the user`                                 \
+        -e '/no_libicu_message.diff/d'                                    \
       \
       "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     msg "Applying patch: ${i}"
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  # Workaround the error:
-  # error: ‘struct’ tag used in naming ‘union _GMutex’
-  #CFLAGS="${CFLAGS} -fpermissive"
-  #CXXFLAGS="${CXXFLAGS} -fpermissive"
-
-  # Workaround error with new glib
-  #CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
-  #CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations"
-
-  # More workarounds
-  #CFLAGS="${CFLAGS} -Wno-error"
-  #CXXFLAGS="${CXXFLAGS} -Wno-error"
 
   export QT4DIR="${srcdir}/${_pkgfqn}"
   export LD_LIBRARY_PATH="${QT4DIR}/lib:${LD_LIBRARY_PATH}"
@@ -150,6 +143,7 @@ build() {
     -sysconfdir /etc/xdg \
     -translationdir /usr/share/qt/translations \
     `# Enable features` \
+    -plugin-sql-ibase \
     -plugin-sql-mysql \
     -plugin-sql-odbc \
     -plugin-sql-psql \
@@ -178,17 +172,17 @@ build() {
 
 package_qt-ubuntu() {
   pkgdesc='A cross-platform application and UI framework'
-  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libxi')
+  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils')
   conflicts=('qt')
   provides=("qt=${_actual_ver}")
   optdepends=('postgresql-libs: PostgreSQL driver'
               'libmysqlclient: MySQL driver'
               'unixodbc: ODBC driver'
-              'freetds: Sybase and MS SQL driver'
-              'libfbclient: Firebird driver'
+              'libfbclient: Firebird/iBase driver'
               'libxinerama: Xinerama support'
               'libxcursor: Xcursor support'
-              'libxfixes: Xfixes support')
+              'libxfixes: Xfixes support'
+              'icu: Unicode support')
   install='qt.install'
 
   cd "${srcdir}/${_pkgfqn}"
@@ -198,34 +192,47 @@ package_qt-ubuntu() {
   install -d -m755 "${pkgdir}/usr/share/applications/"
 
   # Qt Designer
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/designer-qt4.desktop" > "${pkgdir}/usr/share/applications/designer.desktop"
-  install -p -D -m644 tools/designer/src/designer/images/designer.png "${pkgdir}/usr/share/pixmaps/designer.png"
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/designer-qt4.desktop" \
+                  > "${pkgdir}/usr/share/applications/designer.desktop"
+  install -p -D -m644 tools/designer/src/designer/images/designer.png \
+                    "${pkgdir}/usr/share/pixmaps/designer.png"
   # Qt Assistant
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/assistant-qt4.desktop" > "${pkgdir}/usr/share/applications/assistant.desktop"
-  install -p -D -m644 tools/assistant/tools/assistant/images/assistant.png "${pkgdir}/usr/share/pixmaps/assistant.png"
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/assistant-qt4.desktop" \
+                  > "${pkgdir}/usr/share/applications/assistant.desktop"
+  install -p -D -m644 tools/assistant/tools/assistant/images/assistant-128.png \
+                    "${pkgdir}/usr/share/pixmaps/assistant.png"
   # Qt Linguist
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/linguist-qt4.desktop" > "${pkgdir}/usr/share/applications/linguist.desktop"
-  install -p -D -m644 tools/linguist/linguist/images/icons/linguist-128-32.png "${pkgdir}/usr/share/pixmaps/linguist.png"
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/linguist-qt4.desktop" \
+                  > "${pkgdir}/usr/share/applications/linguist.desktop"
+  install -p -D -m644 tools/linguist/linguist/images/icons/linguist-128-32.png \
+                    "${pkgdir}/usr/share/pixmaps/linguist.png"
   # Qt Config
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/qtconfig-qt4.desktop" > "${pkgdir}/usr/share/applications/qtconfig.desktop"
-  install -p -D -m644 src/gui/dialogs/images/qtlogo-64.png "${pkgdir}/usr/share/pixmaps/qtconfig.png"
+  sed 's/-qt4//g' < "${srcdir}/debian/desktop/qtconfig-qt4.desktop" \
+                  > "${pkgdir}/usr/share/applications/qtconfig.desktop"
+  install -p -D -m644 src/gui/dialogs/images/qtlogo-64.png \
+                    "${pkgdir}/usr/share/pixmaps/qtconfig.png"
 
   ### Install manpages from Debian ###
   install -d -m755 "${pkgdir}/usr/share/man/man1/"
   for i in "${srcdir}"/debian/manpages/*.1; do
     FILENAME="${i##*/}"
     FILENAME="${FILENAME/-qt4/}"
-    sed -e 's/-qt4//g' -e 's/-QT4//g' < "${i}" > "${pkgdir}/usr/share/man/man1/${FILENAME}"
+    sed -e 's/-qt4//g' -e 's/-QT4//g' \
+      < "${i}" \
+      > "${pkgdir}/usr/share/man/man1/${FILENAME}"
   done
 
   ### Install license files ###
-  install -D -m644 LGPL_EXCEPTION.txt "${pkgdir}/usr/share/licenses/qt/LGPL_EXCEPTION.txt"
+  install -D -m644 LGPL_EXCEPTION.txt \
+    "${pkgdir}/usr/share/licenses/qt/LGPL_EXCEPTION.txt"
 
   ### Fix path in pkgconfig files ###
-  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' -exec perl -pi -e "s, -L${srcdir}/?\S+,,g" {} \;
+  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' -exec \
+    perl -pi -e "s, -L${srcdir}/?\S+,,g" {} \;
 
   ### Fix path in prl files ###
-  find "${pkgdir}/usr/lib" -type f -name '*.prl' -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;
+  find "${pkgdir}/usr/lib" -type f -name '*.prl' -exec \
+    sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;
 }
 
 package_qt-private-headers-ubuntu(){
@@ -233,13 +240,13 @@ package_qt-private-headers-ubuntu(){
   depends=("qt-ubuntu=${pkgver}")
   conflicts=('qt-private-headers')
   provides=("qt-private-headers=${_actual_ver}")
-  options=('!emptydirs')
 
   install -d -m755 "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}
   install -d -m755 "${pkgdir}"/usr/src/{corelib,declarative,gui,script}
     
   for i in QtCore QtDeclarative QtGui QtScript; do
-    cp -r "${srcdir}/${_pkgfqn}/include/${i}/private/" "${pkgdir}/usr/include/${i}/"
+    cp -r "${srcdir}/${_pkgfqn}/include/${i}/private/" \
+          "${pkgdir}/usr/include/${i}/"
   done
 
   for i in corelib declarative gui script; do
