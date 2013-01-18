@@ -11,7 +11,9 @@ _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
 _extra_ver=\~daily13.01.14
 
-pkgver=${_actual_ver}${_extra_ver/\~/.}.${_ubuntu_rel}
+# AUR Fix
+pkgver=0.9.9.e.aurfix1
+true && pkgver=${_actual_ver}${_extra_ver/\~/.}.${_ubuntu_rel}
 
 pkgrel=100
 pkgdesc="OpenGL window and compositing manager"
