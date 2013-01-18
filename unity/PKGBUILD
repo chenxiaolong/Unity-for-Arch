@@ -12,12 +12,12 @@ if [ "${_UBUNTU}" == true ]; then
   pkgver="${_actual_ver}${_extra_ver}.${_ubuntu_rel}"
 fi
 
-pkgrel=100
+pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.8.4' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libxfixes-ubuntu')
+depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.8.4' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'nux' 'unity-asset-pool' 'vala' 'xorg-server>=1.12.0-100' 'libindicator3' 'libxfixes-ubuntu' 'gnome-screensaver')
 makedepends=('cmake' 'intltool' 'pkg-config' 'doxygen' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
@@ -171,6 +171,14 @@ package() {
   # hotkeys.
   install -m644 "${srcdir}/10_unity.gschema.override" \
     "${pkgdir}/usr/share/glib-2.0/schemas/"
+
+  # GNOME screensaver autostart file
+  install -dm755 "${pkgdir}/etc/xdg/autostart/"
+  sed \
+    -e '/AutostartCondition/d' \
+    -e 's/OnlyShowIn=.*/OnlyShowIn=Unity;/g' \
+    < /etc/xdg/autostart/gnome-screensaver.desktop \
+    > "${pkgdir}/etc/xdg/autostart/gnome-screensaver-unity.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
