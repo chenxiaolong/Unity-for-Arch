@@ -4,7 +4,7 @@
 pkgname=grail
 _actual_ver=3.0.9
 _extra_ver=daily12.12.07.1
-pkgver=${_actual_ver}${_extra_ver}
+pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
