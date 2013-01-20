@@ -5,7 +5,7 @@
 pkgname=unity-lens-files
 _actual_ver=6.6.0
 _extra_ver=daily12.12.05
-pkgver=${_actual_ver}${_extra_ver}
+pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
