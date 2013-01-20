@@ -5,14 +5,15 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
-_extra_ver="daily13.01.11.2"
+_extra_ver="daily13.01.18"
+pkgrel=100
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
-  pkgver="${_actual_ver}${_extra_ver}.${_ubuntu_rel}"
+  pkgver="${_actual_ver}.${_extra_ver}"
+  pkgrel="${pkgrel}.${_ubuntu_rel}"
 fi
 
-pkgrel=101
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
@@ -23,21 +24,19 @@ groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
 
-# Do not use ccache or distcc
-#BUILDENV=(fakeroot !distcc color !ccache check !sign)
-
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        "launchpad_export.tar.gz::http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
+        #"http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
+        "unity-i18n-launchpad-export-20130120.tar.gz::http://ubuntuone.com/6GxarcWdEEk88kf4m3f7ZZ" # Snapshot of translations from Launchpad as of 2013-01-20
         '0001_Remove_gtest.patch'
         'launcher_bfb.png'
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('6fe895788980e346be8f62e4020403dc6e75b9fa73cdb8265107e1d07465a5db8fb01d7e80e773b7fc330f7d6208aacc76d659b000e7285283aed668ae20b0ab'
-            '338931290d02a59c46fa5ee516c97f05fbd142c7c1e407f975783fc49ef16957a24fbe650ce92c3d197857ff57788c025f0e72f73f0c017428ee43200728d172'
-            'e60c35ea08c50093e8ce473f3ad32f76a5f19b05b006fc2a4b076eedca92ec8b9b9e58337c8a7901ccfe7ac4e337a6c2043abb9f0505c9521c885102b64a6dd6'
+sha512sums=('3726054a20a4f004dcca805ee0b960ef43101fc802f0417185979a2296e34698537be92c435f4e53a66630a3119344784113b09be94d4ef997c3bf86f195cecf'
+            '6412edb5493e3fe31e551cbe38bd2033211a4a682994e46e9b0e20bc47f8f8d170b117cc1546c28e9503054bdc493fb42252f18002eae79db51db2cc7278555c'
+            'a70f14aa85b37a2a009791a3c0f9971e571c273ab94d7115f3fca449bc4b0e4a102bd9ca21e6dbbda67e3f1f858b0212e59fbb86c67ce35682b42d73a7239191'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             '9f5469c0300d0c33e26db670771803efd3d821e82689fbb1391a31b8fd0e280a12ea010fe6f32a702a5d1797918d416c8adabfccf6049e43b496ebb6dbe2c054'
             '2043f51dcf65062a760fa47dd4c847a9c96d6b285400e103f46715839150e76757e85f50ca1be85f66434f8c4e011129620794a53c46ddd23e0d92c282bf0acf'
