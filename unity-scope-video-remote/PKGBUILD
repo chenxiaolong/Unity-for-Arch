@@ -3,7 +3,7 @@
 pkgname=unity-scope-video-remote
 _actual_ver=0.3.10
 _extra_ver=daily12.12.05
-pkgver=${_actual_ver}${_extra_ver}
+pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
