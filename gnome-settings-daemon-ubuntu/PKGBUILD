@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu4
-_actual_ver=3.6.3
+_ubuntu_rel=0ubuntu1
+_actual_ver=3.6.4
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -21,9 +21,9 @@ install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
-sha512sums=('45b7a0a2162d8419ba9c9d248b87374f9d2012b43b9667f34d3a125567b45e2c2dde5535091cf7cd170e982b07ec7594803cba2628774aefae9ce9f3e672a49a'
-            '61dabdb0ed6d9b5a1a22410b8ab1d7793936c9c16f0d2d7d4dad915da24269e03a07d386d18b6a8b9d821bb479a451b0eae85a2597428f392902ddf6cc74fcec'
-            '8dfff4992ad21cf5325e411d526cb0b19ff74f393685ff82f28a8f31c229245d03730fd9057c114f3b6cfce18891c4433b48ebe57916f07cb64d68f7b7477fe8')
+sha512sums=('f8d263f9a22934e015ff642f9ac93c09764b89151260887242d6b946250d50a2400404f61376a34ec903606bf4061c9733ddb42f0ed92ecc42f873fafb766af7'
+            '5e075a095e8c549360cba9b2b0f3382544535e95838bf22febf4de66057b50bf6270a464bacd9d912ab5dfe1ab945547aa8f3298d87032bf038e2fb85eee49b4'
+            'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -41,14 +41,11 @@ build() {
         sed -i '/revert_new_ibus_use.patch/d' "${srcdir}/debian/patches/series"
       # systemd should make this obsolete
         sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
-      # We do use PackageKit in Arch Linux
-        sed -i '/53_update_schemas_warning.patch/d' "${srcdir}/debian/patches/series"
       # Merged upstream. How does Debian/Ubuntu's quilt not error out, I have no
       # idea. https://launchpadlibrarian.net/124034045/buildlog_ubuntu-raring-amd64.gnome-settings-daemon_3.6.3-0ubuntu2_BUILDING.txt.gz
         sed -i '/48_register_client_before_idle_callbacks.patch/d' "${srcdir}/debian/patches/series"
       # Conflicts with Fedora's patches
         sed -i '/51_lock_screen_on_suspend.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/bugzilla_segfault_dpms.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
