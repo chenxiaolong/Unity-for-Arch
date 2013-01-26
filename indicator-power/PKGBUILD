@@ -2,7 +2,7 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=daily12.11.21.1
+_extra_ver=daily13.01.25
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="An indicator to show the power status of your devices"
@@ -13,11 +13,15 @@ depends=('dbus-glib' 'libindicator3' 'dconf' 'upower')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('128332dfc90ec30c2177cc3e13ba0e8b7689adf48aeb3c2aadd3a2757b6116ec3fcd58e2b538c34153b918ef47d8f35abd885172dd8213dfafd6a3819a04d819')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        'revert_r161.patch')
+sha512sums=('b1363b0e8ea40fd8797ec11205902c8126c822546766353efd15dca0cead903aa2758e18c8427c99c924d8d10b4350fcd3673358e744f5de4c2cbcfda115e32e'
+            '10181e8ef9495cd646e9207cf406398de38942977f2228f16693cc024c94499c35e00028134724e6444075a7bb3b55949710594179cf38fa8c02d1d3c9e0e0e7')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p0 -i "${srcdir}/revert_r161.patch"
 
   autoreconf -vfi
   intltoolize -f
