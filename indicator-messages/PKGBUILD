@@ -4,7 +4,7 @@
 
 pkgname=indicator-messages
 _actual_ver=12.10.6
-_extra_ver=daily12.11.22
+_extra_ver=daily13.01.25
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
@@ -17,14 +17,17 @@ groups=('unity')
 options=('!libtool')
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch')
-sha512sums=('87028005f193c3c90e981a591daa3efec5f3b7671fe04732f706710264b8d57b0ada430f1d6735a4f413fed5b1710330e91fc0c883bef5532a4bc3482b2a88fe'
-            '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
+        '0001_autoconf.patch'
+        'revert_r335.patch')
+sha512sums=('26bb88d71ab46b08f15b15fa44233ac5eb966c0cee957460333ec3b190a51a8c214603cf7d4e34ab629bbc139fe5ae7b062da8feba7720dd9c065286cb1b4f4a'
+            '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a'
+            'dce4fb905aca4e1b9c2e75d50addc57268500b3f4f013ebd1c3c07f6ee5209fcd1026803eadba6ac5e685cc65caeb6815e34630dc4d97d791c77195f1e38173c')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p0 -i "${srcdir}/revert_r335.patch"
 
   gtkdocize
   intltoolize -f
