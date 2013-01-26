@@ -4,7 +4,7 @@
 
 pkgname=indicator-appmenu
 _actual_ver=12.10.4
-_extra_ver=daily13.01.11
+_extra_ver=daily13.01.25
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="An indicator to host the menus from an application"
@@ -22,15 +22,19 @@ conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch')
-sha512sums=('b06129e657d8e0a090d1db523c519e44a7ab238a9f1a0a21830ea1e53ff7d9829d0fbe205ea81cc79e3033df1207df3396d34482276b717e4ea8c02fd3b04d20'
-            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
+        '0001_autoconf.patch'
+        'revert_r229.patch')
+sha512sums=('46bbc2cbf858ff57da45d90991bd10d1e730ca74704c36c4cdb05b460e2259df4fbd42dc4d5dc67296b801d5444bc59768f4aeb719938788bb254bf1922dd105'
+            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8'
+            '7752e92933f2dca8eeab4df54930e15e7550c2ba14e1e0fa6e53a2ef59dbdabf5e74ec460f65ed9c58007cf6560dc49a868f4a2047065c87c11998903348404a')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  patch -p0 -i "${srcdir}/revert_r229.patch"
 
   gtkdocize
   autoreconf -vfi

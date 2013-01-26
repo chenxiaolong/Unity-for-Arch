@@ -1,0 +1,200 @@
+Reverts:
+------------------------------------------------------------
+revno: 229 [merge]
+author: Charles Kerr <charles.kerr@canonical.com>
+committer: Tarmac
+branch nick: trunk.13.04
+timestamp: Wed 2013-01-23 07:46:45 +0000
+message:
+  add an explicit glib minimum version; remove deprecated calls to g_type_init(). Fixes: https://bugs.launchpad.net/bugs/1103087.
+  
+  Approved by Lars Uebernickel, PS Jenkins bot.
+------------------------------------------------------------
+=== modified file 'configure.ac'
+--- configure.ac	2013-01-22 20:39:37 +0000
++++ configure.ac	2012-12-27 15:50:33 +0000
+@@ -57,18 +57,15 @@
+ # Dependencies
+ ###########################
+ 
+-
+-GLIB_REQUIRED_VERSION=2.35.4
++GTK_REQUIRED_VERSION=3.0
+ GIO_REQUIRED_VERSION=2.26
+-GTK_REQUIRED_VERSION=3.0
+ INDICATOR_REQUIRED_VERSION=0.3.90
+ DBUSMENUGTK_REQUIRED_VERSION=0.5.90
+ BAMF_REQUIRED_VERSION=0.2.53
+ 
+ PKG_CHECK_MODULES(gtk, gtk+-3.0 >= $GTK_REQUIRED_VERSION)
+-PKG_CHECK_MODULES(INDICATOR,  glib-2.0 >= $GLIB_REQUIRED_VERSION
++PKG_CHECK_MODULES(INDICATOR,  gtk+-3.0 >= $GTK_REQUIRED_VERSION
+                               gio-2.0 >= $GIO_REQUIRED_VERSION
+-                              gtk+-3.0 >= $GTK_REQUIRED_VERSION
+                               indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                               dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                               libbamf3 >= $BAMF_REQUIRED_VERSION)
+
+=== modified file 'src/hud-cli.c'
+--- src/hud-cli.c	2013-01-22 20:39:37 +0000
++++ src/hud-cli.c	2012-12-03 17:40:45 +0000
+@@ -45,6 +45,9 @@
+ int
+ main (int argc, char *argv[])
+ {
++
++	g_type_init();
++
+ 	int single_char;
+ 	int pos = 0;
+ 	
+
+=== modified file 'src/hud-service.c'
+--- src/hud-service.c	2013-01-22 20:39:37 +0000
++++ src/hud-service.c	2012-12-03 17:40:45 +0000
+@@ -275,6 +275,8 @@
+   HudWindowSource *window_source;
+   HudSourceList *source_list;
+ 
++  g_type_init ();
++
+   setlocale (LC_ALL, "");
+   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+   textdomain (GETTEXT_PACKAGE);
+
+=== modified file 'src/hud-verify-app-info.c'
+--- src/hud-verify-app-info.c	2013-01-22 20:39:37 +0000
++++ src/hud-verify-app-info.c	2012-12-03 17:40:45 +0000
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = NULL;
+ 	gint tmpfile = g_file_open_tmp("hud-verify-app-info-temp-db-XXXXXX", &filename, NULL);
+ 
+
+=== modified file 'tests/hud-performance.c'
+--- tests/hud-performance.c	2013-01-22 20:39:37 +0000
++++ tests/hud-performance.c	2012-12-03 17:40:45 +0000
+@@ -269,8 +269,9 @@
+ int
+ main (int argc, char **argv)
+ {
++  g_type_init ();
++
+   g_test_init (&argc, &argv, NULL);
+-
+   if (g_test_perf ())
+     g_test_add_func ("/hud/query-performance", test_query_performance);
+ 
+
+=== modified file 'tests/test-bad-app-info.c'
+--- tests/test-bad-app-info.c	2013-01-22 20:39:37 +0000
++++ tests/test-bad-app-info.c	2012-12-03 17:40:45 +0000
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = NULL;
+ 	gint tmpfile = g_file_open_tmp("hud-test-bad-app-info-temp-db-XXXXXX", &filename, NULL);
+ 
+
+=== modified file 'tests/test-distance.c'
+--- tests/test-distance.c	2013-01-22 20:39:37 +0000
++++ tests/test-distance.c	2012-12-03 17:40:45 +0000
+@@ -258,6 +258,9 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
+=== modified file 'tests/test-load-app-info.c'
+--- tests/test-load-app-info.c	2013-01-22 20:39:37 +0000
++++ tests/test-load-app-info.c	2012-12-03 17:40:45 +0000
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = argc[1];
+ 
+ 	sqlite3 * db = NULL;
+
+=== modified file 'tests/test-result-highlighting.c'
+--- tests/test-result-highlighting.c	2013-01-22 20:39:37 +0000
++++ tests/test-result-highlighting.c	2012-12-03 17:40:45 +0000
+@@ -189,6 +189,9 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
+=== modified file 'tests/test-usage-db-ancient.c'
+--- tests/test-usage-db-ancient.c	2013-01-22 20:39:37 +0000
++++ tests/test-usage-db-ancient.c	2012-12-03 17:40:45 +0000
+@@ -33,6 +33,7 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	g_type_init();
+ 	UsageTracker * tracker = usage_tracker_new();
+ 	g_object_unref(tracker);
+ 	return 0;
+
+=== modified file 'tests/test-usage-db-old.c'
+--- tests/test-usage-db-old.c	2013-01-22 20:39:37 +0000
++++ tests/test-usage-db-old.c	2012-12-03 17:40:45 +0000
+@@ -71,6 +71,9 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
+=== modified file 'tests/test-usage-db-simple.c'
+--- tests/test-usage-db-simple.c	2013-01-22 20:39:37 +0000
++++ tests/test-usage-db-simple.c	2012-12-03 17:40:45 +0000
+@@ -97,6 +97,9 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
+=== modified file 'tests/test-usage-db-testapp.c'
+--- tests/test-usage-db-testapp.c	2013-01-22 20:39:37 +0000
++++ tests/test-usage-db-testapp.c	2012-12-03 17:40:45 +0000
+@@ -71,6 +71,9 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
