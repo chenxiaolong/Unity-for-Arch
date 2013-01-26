@@ -13,3 +13,5 @@ TEMP/
 *.log
 
 mono.snk
+
+bzr/
