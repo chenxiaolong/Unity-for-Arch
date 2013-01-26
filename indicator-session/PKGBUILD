@@ -3,39 +3,42 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-session
-pkgver=12.10.4
-pkgrel=101
+_actual_ver=12.10.5
+_extra_ver=daily13.01.25
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
 license=('GPL')
-depends=('libindicator3' 'libdbusmenu-gtk3' 'dbus-glib' 'dconf' 'gnome-packagekit')
-makedepends=('intltool' 'packagekit')
+depends=('libindicator3' 'libdbusmenu-gtk3' 'dconf')
+makedepends=('intltool')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("http://launchpad.net/${pkgname}/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz"
-        '0001_autoconf.patch'
-        '0002_There_is_no_help.patch')
-sha512sums=('06269af75271cd69d4385e6d0f095cf52033c0449002c26b25d34e507f70d1b8ecdc248d0b9a16c8f5cdfea51abb024faa4d03cf65adc359b966be6670c9254b'
-            '9e23944ef364d8defc968f8619dd37f784711edb3c600c1dbc9da2286566a1e2698f41621f16040384c6b430156d36563a4a432a06713fdf4ea83ae68c4c1ef4'
-            'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0002_There_is_no_help.patch'
+        'revert_r382.patch')
+sha512sums=('0c70e5eca2de1c01f1c62aad1eff91ac547834cd0ba09700330db56ac6f6857775ba19c8faa265f7e93252b792675341fc858b8bb523275e8f2ae5b3bd8d470c'
+            'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
+            '0bae670655e2cebd82f702bd7e804828729f0a23eac8212637875ebe19b56151066add500e6580e856f6820dc4304327b609a0b5fe82b7c119769373eaa38018')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001_autoconf.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
+  patch -p0 -i "${srcdir}/revert_r382.patch"
 
   autoreconf -vfi
+  intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
 }
 
 package() {
-  cd "${srcdir}/${pkgbase}-${pkgver}/"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 }
