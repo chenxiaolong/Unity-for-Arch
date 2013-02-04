@@ -5,9 +5,8 @@
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf3')
 _actual_ver=0.4.0
-_extra_ver=daily13.01.11
-_ubuntu_rel=0ubuntu1
-pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
+_extra_ver=daily13.02.01
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
@@ -18,19 +17,11 @@ provides=('FEATURE-bamf-webapps')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('13b43cc5c01a8bcd47cbc9b48ebe1e589bbb6a2d3eed646bfc73cadbed51e0d6a85c98cedd6891189f35ba58c1c3da05ff48a3f486f102610f9c0acc9d9e3c71'
-            '4806a0e236ea03a2d63e07d563c564956a041e743b8d1e73e5f858fea3b685c1b59ef94e72dfccbdecc92f2b1ca96d9ba5f8bd5ef56f37ebe60f3f711255855a')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('48ee1d5c885305aef9ab50d455bad25035c55b00c22e876e21db4f1559e337042fefe54af5845010360cf387d19dd50cbb282546660978e7e1acd02869f760ba')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
-
-  # Apply Ubuntu's patches
-  #patch -p1 -i "${srcdir}/bamf_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
-  #for i in $(grep -v '#' debian/patches/series); do
-  #  patch -p1 -i "debian/patches/${i}"
-  #done
 
   gtkdocize
   autoreconf -vfi
