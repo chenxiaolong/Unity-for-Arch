@@ -31,32 +31,33 @@ Order to compile/install:
 23: indicator-applet               -> GNOME panel indicator applet
 24: indicator-application          -> Takes menus and puts then in the panel
 25: indicator-appmenu              -> An indicator to host the menus from apps
-26: indicator-datetime             -> A very, very simple clock
-27: indicator-power                -> Indicator to show battery information
-28: indicator-printers             -> Indicator showing active print jobs
-29: indicator-session              -> Indicator for session management
-30: indicator-sound                -> Indicator displaying a unified sound menu
-31: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-32: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-33: evemu                          -> Linux Evdev Event Emulation Library
-34: frame                          -> Open Input Framework Frame Library
-35: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-36: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-37: xorg-server-ubuntu             -> Xorg X server
-38: grail                          -> Gesture recognition and instantiation lib.
-39: geis                           -> Implementation of the GEIS interface
-40: nux                            -> An OpenGL toolkit
-41: unity-asset-pool               -> Design assets for Unity
-42: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-43: python-oauthlib                -> Python implementation of OAuth 
-44: unity-lens-applications        -> Unity applications lens
-45: unity-lens-files               -> Unity files lens
-46: unity-lens-music               -> Unity music lens
-47: unity-lens-photos              -> Unity photo lens
-48: unity-lens-video               -> Unity video lens
-49: unity-scope-video-remote       -> Remove video search for Unity video lens
-50: compiz-ubuntu                  -> Compiz compositing window manager
-51: unity                          -> Desktop shell designed for efficiency
+26: indicator-bluetooth            -> Indicator for bluetooth status
+27: indicator-datetime             -> A very, very simple clock
+28: indicator-power                -> Indicator to show battery information
+29: indicator-printers             -> Indicator showing active print jobs
+30: indicator-session              -> Indicator for session management
+31: indicator-sound                -> Indicator displaying a unified sound menu
+32: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+33: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+34: evemu                          -> Linux Evdev Event Emulation Library
+35: frame                          -> Open Input Framework Frame Library
+36: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
+37: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
+38: xorg-server-ubuntu             -> Xorg X server
+39: grail                          -> Gesture recognition and instantiation lib.
+40: geis                           -> Implementation of the GEIS interface
+41: nux                            -> An OpenGL toolkit
+42: unity-asset-pool               -> Design assets for Unity
+43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+44: python-oauthlib                -> Python implementation of OAuth 
+45: unity-lens-applications        -> Unity applications lens
+46: unity-lens-files               -> Unity files lens
+47: unity-lens-music               -> Unity music lens
+48: unity-lens-photos              -> Unity photo lens
+49: unity-lens-video               -> Unity video lens
+50: unity-scope-video-remote       -> Remove video search for Unity video lens
+51: compiz-ubuntu                  -> Compiz compositing window manager
+52: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 

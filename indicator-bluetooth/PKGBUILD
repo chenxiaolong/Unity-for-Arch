@@ -1,0 +1,36 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=indicator-bluetooth
+pkgver=0.0.5
+pkgrel=100
+pkgdesc="Bluetooth status indicator"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/indicator-bluetooth"
+license=('GPL')
+groups=('unity')
+depends=('gnome-bluetooth' 'ido' 'libdbusmenu-gtk3' 'libindicator3')
+makedepends=('gnome-common' 'vala')
+# We don't want two bluetooth indicators
+conflicts=('gnome-bluetooth-ubuntu')
+options=('!libtool')
+# Ubuntu finally using xz sources? It's a miracle!
+source=("https://launchpad.net/indicator-bluetooth/13.04/${pkgver}/+download/indicator-bluetooth-${pkgver}.tar.xz")
+sha512sums=('745587e77e0b8e9126a5a67621952277a865607bd7b4d596eb26d0287fbd5a21aef8b4e6dc6054f9bd43b71740e45c02d28916d8fce286525d86701e629f7011')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-bluetooth --disable-static
+  make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:
