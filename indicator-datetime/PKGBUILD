@@ -4,7 +4,7 @@
 
 pkgname=indicator-datetime
 _actual_ver=12.10.3
-_extra_ver=daily13.01.25
+_extra_ver=daily13.02.01
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A very, very simple clock"
@@ -20,7 +20,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         '0001_Port_to_systemd_timedated.patch'
         '0002_Remove_timezone_functionality.patch'
         'revert_r201.patch')
-sha512sums=('f0f138853c0d454fa3854c9a05a92afabc33496aa9b5d89f083cb7911d8bb314478eaf70b9853adc98e01a730e56e2236e17f3b79b79c13c720e898a5ee03371'
+sha512sums=('bf5968400fd506d385ddfe0a5f06dd7fa676e5895cf1ca500a2cd71adb96612b0e4a49dbe10fcbef01ff4de33ac05d41628831af0b6adf13bdb7e4326461dd5a'
             '1a931f25552b916229cd9e773423910803cc453a8a088e70b0b8f889d235e75d985264e90f2045b2c40246245c20b29017ae861386264d46eb317976d87f8039'
             '79b563e7d31e1f0c56c9b592fd370e1b5f3efd82f84b52fcee937e35306cdf74966de5f2c3997cddd9078ac9cfd3e60233832be8efac27bb80e043fa13964838'
             'eb3d061dbaa9451373f25a977eb3280b903fd9b046fa26246a08bae0a214afc2aa54cc474e9c135aa1f5f2488751fdb29e1fa5239c69a48f5b8907a8c7d4826c')
