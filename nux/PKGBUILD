@@ -4,10 +4,9 @@
 
 pkgname=nux
 _actual_ver=4.0.0
-_extra_ver=daily13.01.25
-_ubuntu_rel=0ubuntu1
+_extra_ver=daily13.02.04
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100.${_ubuntu_rel}
+pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
@@ -20,10 +19,8 @@ options=('!libtool' '!emptydirs')
 
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch')
-sha512sums=('38a5184d33f10ea85721050cf19ca142117d25a129a76032e833fa06d43b04291c503ed74e89ca7524269d9d8240d6719b92124aa67f2f8125a5b6646c538b85'
-            'dd3c895cf72dae61f98fbe877b25d82ec155a23bb34b30454c97459b6542e76ec1bda15fa3d9defba350e8fa25d8ff16a02f01a18eb6dda200ef6b3fba33fb2d'
+sha512sums=('b8fb3c74332617cfd8337dc61f782d48661e9fbec3d6b660ddd488e64871d31e96c55e09947072db6992323372e1180ea6071aa2ce7223aaa5c5f06ea0c1049c'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2')
 
 build() {
