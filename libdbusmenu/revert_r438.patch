@@ -1,0 +1,362 @@
+=== modified file 'configure.ac'
+--- configure.ac	2013-01-21 16:04:47 +0000
++++ configure.ac	2012-12-17 21:59:01 +0000
+@@ -34,7 +34,7 @@
+ # Dependencies - GLib
+ ###########################
+ 
+-GLIB_REQUIRED_VERSION=2.35.4
++GLIB_REQUIRED_VERSION=2.26
+ 
+ PKG_CHECK_MODULES(DBUSMENUGLIB, glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                 gio-2.0 >= $GLIB_REQUIRED_VERSION)
+
+=== modified file 'docs/libdbusmenu-glib/reference/Makefile.am'
+--- docs/libdbusmenu-glib/reference/Makefile.am	2013-01-21 16:04:47 +0000
++++ docs/libdbusmenu-glib/reference/Makefile.am	2012-12-17 22:01:25 +0000
+@@ -21,7 +21,7 @@
+ DOC_SOURCE_DIR=$(abs_top_srcdir)/libdbusmenu-glib $(abs_top_builddir)/libdbusmenu-glib
+ 
+ # Extra options to pass to gtkdoc-scangobj. Not normally needed.
+-SCANGOBJ_OPTIONS=--nogtkinit
++SCANGOBJ_OPTIONS=--nogtkinit --type-init-func="g_type_init()"
+ 
+ # Extra options to supply to gtkdoc-scan.
+ # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
+
+=== modified file 'docs/libdbusmenu-glib/reference/libdbusmenu-glib-docs.sgml'
+--- docs/libdbusmenu-glib/reference/libdbusmenu-glib-docs.sgml	2013-01-21 16:25:13 +0000
++++ docs/libdbusmenu-glib/reference/libdbusmenu-glib-docs.sgml	2011-02-24 15:38:18 +0000
+@@ -15,6 +15,9 @@
+     <xi:include href="xml/menuitem-proxy.xml"/>
+     <xi:include href="xml/menuitem.xml"/>
+     <xi:include href="xml/client.xml"/>
++    <xi:include href="xml/client-menuitem.xml"/>
++    <xi:include href="xml/dbusmenu-client.xml"/>
++    <xi:include href="xml/dbusmenu-server.xml"/>
+     <xi:include href="xml/types.xml"/>
+ 
+   </chapter>
+
+=== modified file 'docs/libdbusmenu-gtk/reference/Makefile.am'
+--- docs/libdbusmenu-gtk/reference/Makefile.am	2013-01-21 16:04:47 +0000
++++ docs/libdbusmenu-gtk/reference/Makefile.am	2012-12-17 22:01:25 +0000
+@@ -28,7 +28,7 @@
+ DOC_SOURCE_DIR=$(abs_top_srcdir)/libdbusmenu-gtk
+ 
+ # Extra options to pass to gtkdoc-scangobj. Not normally needed.
+-SCANGOBJ_OPTIONS=--nogtkinit
++SCANGOBJ_OPTIONS=--nogtkinit --type-init-func="g_type_init()"
+ 
+ # Extra options to supply to gtkdoc-scan.
+ # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
+
+=== modified file 'docs/libdbusmenu-gtk/reference/libdbusmenu-gtk-docs.sgml'
+--- docs/libdbusmenu-gtk/reference/libdbusmenu-gtk-docs.sgml	2013-01-21 16:25:13 +0000
++++ docs/libdbusmenu-gtk/reference/libdbusmenu-gtk-docs.sgml	2011-02-21 20:55:01 +0000
+@@ -15,6 +15,7 @@
+     <xi:include href="xml/menuitem.xml"/>
+     <xi:include href="xml/client.xml"/>
+     <xi:include href="xml/parser.xml"/>
++    <xi:include href="xml/serializablemenuitem.xml"/>
+ 
+   </chapter>
+   <chapter id="object-tree">
+
+=== modified file 'tests/glib-server-nomenu.c'
+--- tests/glib-server-nomenu.c	2013-01-21 16:04:47 +0000
++++ tests/glib-server-nomenu.c	2009-05-15 20:23:34 +0000
+@@ -27,6 +27,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuServer * server = dbusmenu_server_new("/org/test");
+ 	DbusmenuMenuitem * menuitem = dbusmenu_menuitem_new();
+ 	dbusmenu_menuitem_property_set(menuitem, "test", "test");
+
+=== modified file 'tests/test-glib-events-client.c'
+--- tests/test-glib-events-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-events-client.c	2010-11-18 20:42:25 +0000
+@@ -114,6 +114,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), GINT_TO_POINTER(USER_VALUE));
+
+=== modified file 'tests/test-glib-events-nogroup-client.c'
+--- tests/test-glib-events-nogroup-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-events-nogroup-client.c	2012-04-03 14:55:04 +0000
+@@ -118,6 +118,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_EVENT_RESULT, G_CALLBACK(event_status), GINT_TO_POINTER(USER_VALUE));
+
+=== modified file 'tests/test-glib-events-server.c'
+--- tests/test-glib-events-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-events-server.c	2010-11-16 19:46:26 +0000
+@@ -68,6 +68,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "org.dbusmenu.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-glib-layout-client.c'
+--- tests/test-glib-layout-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-layout-client.c	2011-02-15 04:33:02 +0000
+@@ -114,6 +114,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+ 
+
+=== modified file 'tests/test-glib-layout-server.c'
+--- tests/test-glib-layout-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-layout-server.c	2010-12-07 15:45:41 +0000
+@@ -90,6 +90,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "org.dbusmenu.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-glib-objects.c'
+--- tests/test-glib-objects.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-objects.c	2011-01-06 02:49:47 +0000
+@@ -324,6 +324,7 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	g_type_init();
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+
+=== modified file 'tests/test-glib-properties-client.c'
+--- tests/test-glib-properties-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-properties-client.c	2010-08-12 21:25:40 +0000
+@@ -152,6 +152,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	/* Make sure the server starts up and all that */
+ 	g_usleep(500000);
+ 
+
+=== modified file 'tests/test-glib-properties-server.c'
+--- tests/test-glib-properties-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-properties-server.c	2010-11-16 21:47:10 +0000
+@@ -86,6 +86,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	server = dbusmenu_server_new("/org/test");
+ 
+ 	timer_func(NULL);
+
+=== modified file 'tests/test-glib-proxy-client.c'
+--- tests/test-glib-proxy-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-proxy-client.c	2012-01-30 22:23:04 +0000
+@@ -159,6 +159,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuClient * client = dbusmenu_client_new("test.proxy.first_proxy", "/org/test");
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+ 
+
+=== modified file 'tests/test-glib-proxy-proxy.c'
+--- tests/test-glib-proxy-proxy.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-proxy-proxy.c	2010-11-23 19:27:13 +0000
+@@ -49,6 +49,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	if (argc != 3) {
+ 		g_error ("Need two params");
+ 		return 1;
+
+=== modified file 'tests/test-glib-proxy-server.c'
+--- tests/test-glib-proxy-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-proxy-server.c	2010-11-19 23:08:52 +0000
+@@ -120,6 +120,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "test.proxy.server",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-glib-simple-items.c'
+--- tests/test-glib-simple-items.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-simple-items.c	2010-11-16 23:16:45 +0000
+@@ -32,6 +32,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++    g_type_init();
++
+     DbusmenuServer * server = dbusmenu_server_new("/test/object");
+     root_menuitem = dbusmenu_menuitem_new();
+     dbusmenu_server_set_root(server, root_menuitem);
+
+=== modified file 'tests/test-glib-submenu-client.c'
+--- tests/test-glib-submenu-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-submenu-client.c	2010-06-08 20:48:01 +0000
+@@ -97,6 +97,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	DbusmenuClient * client = dbusmenu_client_new("org.dbusmenu.test", "/org/test");
+ 	g_signal_connect(G_OBJECT(client), DBUSMENU_CLIENT_SIGNAL_LAYOUT_UPDATED, G_CALLBACK(layout_updated), NULL);
+ 
+
+=== modified file 'tests/test-glib-submenu-server.c'
+--- tests/test-glib-submenu-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-glib-submenu-server.c	2010-11-16 23:16:45 +0000
+@@ -90,6 +90,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "org.dbusmenu.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-gtk-label-server.c'
+--- tests/test-gtk-label-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-gtk-label-server.c	2010-11-16 23:16:45 +0000
+@@ -71,6 +71,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	JsonParser * parser = json_parser_new();
+ 	GError * error = NULL;
+ 	if (!json_parser_load_from_file(parser, argv[1], &error)) {
+
+=== modified file 'tests/test-gtk-reorder-server.c'
+--- tests/test-gtk-reorder-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-gtk-reorder-server.c	2010-11-16 23:16:45 +0000
+@@ -99,6 +99,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "glib.label.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-gtk-shortcut-server.c'
+--- tests/test-gtk-shortcut-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-gtk-shortcut-server.c	2011-06-17 18:34:02 +0000
+@@ -83,6 +83,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "glib.label.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-gtk-submenu-server.c'
+--- tests/test-gtk-submenu-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-gtk-submenu-server.c	2012-02-22 10:02:01 +0000
+@@ -92,6 +92,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "glib.label.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tests/test-json-client.c'
+--- tests/test-json-client.c	2013-01-21 16:04:47 +0000
++++ tests/test-json-client.c	2012-03-29 04:13:48 +0000
+@@ -53,6 +53,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_timeout_add_seconds(1, timeout_func, argv);
+ 
+ 	mainloop = g_main_loop_new(NULL, FALSE);
+
+=== modified file 'tests/test-json-server.c'
+--- tests/test-json-server.c	2013-01-21 16:04:47 +0000
++++ tests/test-json-server.c	2012-03-29 04:13:48 +0000
+@@ -76,6 +76,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	g_bus_own_name(G_BUS_TYPE_SESSION,
+ 	               "org.dbusmenu.test",
+ 	               G_BUS_NAME_OWNER_FLAGS_NONE,
+
+=== modified file 'tools/dbusmenu-dumper.c'
+--- tools/dbusmenu-dumper.c	2013-01-21 16:04:47 +0000
++++ tools/dbusmenu-dumper.c	2012-10-07 15:35:50 +0000
+@@ -388,6 +388,7 @@
+ int
+ main (int argc, char ** argv)
+ {
++	g_type_init();
+ 	GError * error = NULL;
+ 	GOptionContext * context;
+ 
+
+=== modified file 'tools/testapp/main.c'
+--- tools/testapp/main.c	2013-01-21 16:04:47 +0000
++++ tools/testapp/main.c	2010-11-16 22:31:51 +0000
+@@ -135,6 +135,8 @@
+ 
+ int main (int argc, char ** argv)
+ {
++	g_type_init();
++
+ 	if (argc != 2) {
+ 		g_warning(USAGE);
+ 		return 1;
+
