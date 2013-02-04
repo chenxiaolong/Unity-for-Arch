@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu3
 _actual_ver=3.6.4
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
 sha512sums=('f8d263f9a22934e015ff642f9ac93c09764b89151260887242d6b946250d50a2400404f61376a34ec903606bf4061c9733ddb42f0ed92ecc42f873fafb766af7'
-            '5e075a095e8c549360cba9b2b0f3382544535e95838bf22febf4de66057b50bf6270a464bacd9d912ab5dfe1ab945547aa8f3298d87032bf038e2fb85eee49b4'
+            '0c4f1cdd4df50cdbf9795f10a7bb522224aab32f875f8d3a3a2155b45cb43da0a2dfe682d474226d99d3552982df15d20afbcc63a62a7aa702086b143661b9c2'
             'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
 
 build() {
