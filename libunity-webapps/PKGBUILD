@@ -1,10 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-_ubuntu_rel=0ubuntu1
 _actual_ver=2.4.3
-_extra_ver=daily13.01.10
-pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
+_extra_ver=daily13.02.04.1
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
@@ -15,19 +14,11 @@ depends=('geoclue' 'glib2' 'hicolor-icon-theme' 'indicator-messages' 'json-glib'
 makedepends=('gobject-introspection' 'intltool')
 options=('!libtool')
 install=libunity-webapps.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('adaa0b7760d8144fc72a2f9ba38353b56e004607a2898661bcf76994e36f8acfd54f98aa91896e085057c2340b9a6b657ce7a8e78cedd5c99dec2ec2267aa443'
-            '376bee0979ddb5f678da48f1b9367681244de4ec0aa0d2b0ff9389e5619f75c31d3d48acee84ab8e35f9ac0f0a8e79cf04bbd0853be167e5abe8eb1ede4ced7c')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('f50fbe70274e1d9f539db7d00f19a35fc1724c10acee27eceaf583abc6daf08c8922cd825619568525765d7ae2823156b76a14956b13784167c1abf3543645ef')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  # Apply Ubuntu's patches
-  patch -p1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
-  #for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-  #  patch -p1 -i "${srcdir}/debian/patches/${i}"
-  #done
 
   autoreconf -vfi
   intltoolize -f
