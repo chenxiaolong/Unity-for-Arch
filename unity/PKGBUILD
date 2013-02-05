@@ -5,7 +5,7 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
-_extra_ver="daily13.01.25.1"
+_extra_ver="daily13.02.04.1"
 pkgrel=100
 
 if [ "${_UBUNTU}" == true ]; then
@@ -34,8 +34,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('51516e1bd32ca386cc556f22e66c66019a6dbe7a267c8b05b64e7921be178e25c54187e81502734725190846f4e438176b8e254856a712a6bb6e0174e16c4756'
-            'c78601781d35cc0eda40fb79696e18380209b1dec50214374624661d34313527042c6b4c1fcad1c87b39b9b503a505d3cc0a8bf9c2e69f19b74942ab017ec573'
+sha512sums=('1188b05fb82cd696e916aff4cbbf258f3e87ca260a7b47d758051c4d1d6516e125e8c6526c4a57e49fc5a3fe96dc5cb1c1084891b10ab7a0c1c4dec011897a00'
+            '1f4803195af13f89fda11167efba60fe065c1c3e638c6231b22e43af31267085197416be4d4ae39c498e08f95b0e2da63866f9ddaa5076885001ab03b351d36a'
             'a70f14aa85b37a2a009791a3c0f9971e571c273ab94d7115f3fca449bc4b0e4a102bd9ca21e6dbbda67e3f1f858b0212e59fbb86c67ce35682b42d73a7239191'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             'dc93362a6f1532dc478c45e774d124aa54f18b8a445770d43134d212ac4811514264f16ebc308e2512c01b04dbaf0708e5a29011dd75e7ed9385cfdf869f1b26'
