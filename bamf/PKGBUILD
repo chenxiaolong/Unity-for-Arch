@@ -5,7 +5,7 @@
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf3')
 _actual_ver=0.4.0
-_extra_ver=daily13.02.01
+_extra_ver=daily13.02.06
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
@@ -18,7 +18,7 @@ groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('48ee1d5c885305aef9ab50d455bad25035c55b00c22e876e21db4f1559e337042fefe54af5845010360cf387d19dd50cbb282546660978e7e1acd02869f760ba')
+sha512sums=('24275dbaac6d4f9d1bdc4b04e169b8cc6e7b4ad883508f67fce5a263f34bb24be0be962a33bd98c7ba886954970f21d90dc49f0299d2d35e4a0e6f4d1404b269')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
