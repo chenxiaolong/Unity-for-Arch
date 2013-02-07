@@ -1,6 +1,5 @@
-diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/data/com.canonical.indicator.datetime.gschema.xml indicator-datetime-12.10.3daily12.11.23/data/com.canonical.indicator.datetime.gschema.xml
---- indicator-datetime-12.10.3daily12.11.23.orig/data/com.canonical.indicator.datetime.gschema.xml	2013-01-07 18:51:44.752874965 -0500
-+++ indicator-datetime-12.10.3daily12.11.23/data/com.canonical.indicator.datetime.gschema.xml	2013-01-07 18:51:56.916144606 -0500
+--- a/data/com.canonical.indicator.datetime.gschema.xml
++++ b/data/com.canonical.indicator.datetime.gschema.xml
 @@ -89,7 +89,7 @@
  			<default>false</default>
  			<summary>Show the auto-detected location in the indicator</summary>
@@ -10,9 +9,8 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/data/com.canonical.indica
  			</description>
  		</key>
  		<key name="show-locations" type="b">
-diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c indicator-datetime-12.10.3daily12.11.23/src/datetime-service.c
---- indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c	2013-01-07 18:51:44.746208333 -0500
-+++ indicator-datetime-12.10.3daily12.11.23/src/datetime-service.c	2013-01-07 18:51:56.916144606 -0500
+--- a/src/datetime-service.c
++++ b/src/datetime-service.c
 @@ -50,6 +50,7 @@
  #include "dbus-shared.h"
  #include "settings-shared.h"
@@ -21,7 +19,7 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c in
  
  /* how often to check for clock skew */
  #define SKEW_CHECK_INTERVAL_SEC 10
-@@ -1072,7 +1073,7 @@
+@@ -1074,7 +1075,7 @@
  
  /* Run when the timezone file changes */
  static void
@@ -30,7 +28,7 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c in
  {
  	update_current_timezone();
  	on_clock_skew();
-@@ -1083,14 +1084,28 @@
+@@ -1085,15 +1086,28 @@
  static void
  build_timezone (DatetimeInterface * dbus)
  {
@@ -61,13 +59,13 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/datetime-service.c in
 +	if (error) {
 +		g_error_free(error);
  	}
+-	g_object_unref(timezonefile);
 +
  	return;
  }
  
-diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/Makefile.am indicator-datetime-12.10.3daily12.11.23/src/Makefile.am
---- indicator-datetime-12.10.3daily12.11.23.orig/src/Makefile.am	2013-01-07 18:51:44.746208333 -0500
-+++ indicator-datetime-12.10.3daily12.11.23/src/Makefile.am	2013-01-07 18:51:56.916144606 -0500
+--- a/src/Makefile.am
++++ b/src/Makefile.am
 @@ -11,6 +11,8 @@
  	datetime-interface.h \
  	gen-datetime-service.xml.c \
@@ -155,9 +153,8 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/Makefile.am indicator
  EXTRA_DIST = \
 +	timedate1-interface.xml \
  	datetime-service.xml
-diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/timedate1-interface.xml indicator-datetime-12.10.3daily12.11.23/src/timedate1-interface.xml
---- indicator-datetime-12.10.3daily12.11.23.orig/src/timedate1-interface.xml	1969-12-31 19:00:00.000000000 -0500
-+++ indicator-datetime-12.10.3daily12.11.23/src/timedate1-interface.xml	2013-01-07 18:51:56.916144606 -0500
+--- a/src/timedate1-interface.xml
++++ b/src/timedate1-interface.xml
 @@ -0,0 +1,59 @@
 +<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
 +"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
@@ -218,9 +215,8 @@ diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/timedate1-interface.x
 + </method>
 +</interface>
 +</node>
-diff -Nru indicator-datetime-12.10.3daily12.11.23.orig/src/utils.c indicator-datetime-12.10.3daily12.11.23/src/utils.c
---- indicator-datetime-12.10.3daily12.11.23.orig/src/utils.c	2013-01-07 18:51:44.746208333 -0500
-+++ indicator-datetime-12.10.3daily12.11.23/src/utils.c	2013-01-07 18:51:56.919477922 -0500
+--- a/src/utils.c
++++ b/src/utils.c
 @@ -31,6 +31,7 @@
  #include <string.h>
  #include "utils.h"
