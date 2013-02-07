@@ -5,7 +5,7 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
-_extra_ver="daily13.02.04.1"
+_extra_ver="daily13.02.07"
 pkgrel=100
 
 if [ "${_UBUNTU}" == true ]; then
@@ -30,16 +30,18 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         #"http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
         "unity-i18n-launchpad-export-20130120.tar.gz::http://ubuntuone.com/6GxarcWdEEk88kf4m3f7ZZ" # Snapshot of translations from Launchpad as of 2013-01-20
         '0001_Remove_gtest.patch'
+        '0002_ArchLinux_Branding.patch'
+        '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
         'launcher_bfb.png'
-        'archlinux_branding.patch'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('1188b05fb82cd696e916aff4cbbf258f3e87ca260a7b47d758051c4d1d6516e125e8c6526c4a57e49fc5a3fe96dc5cb1c1084891b10ab7a0c1c4dec011897a00'
-            '1f4803195af13f89fda11167efba60fe065c1c3e638c6231b22e43af31267085197416be4d4ae39c498e08f95b0e2da63866f9ddaa5076885001ab03b351d36a'
+sha512sums=('f4e37b06c4a1713ef74a9c30936c1091fdd91802ac6d1bcf90fc1dda87be5817d24b41580a8e778d37d1e0b20dd6063f561e1b423bb3cc38eb4eb1ea60289057'
+            '57620961b6c44ad8f4a6ec4c73afd3abc13aaeae3376cb4e388e1b7775cfe687b33c163f85203ff57d0eab1fe545ee5d64911b0ce385347e382ddc992d01a099'
             'a70f14aa85b37a2a009791a3c0f9971e571c273ab94d7115f3fca449bc4b0e4a102bd9ca21e6dbbda67e3f1f858b0212e59fbb86c67ce35682b42d73a7239191'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
+            '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
+            'a5e58f44c4a4c20dc577bf79bc949598c0762cc104f71ea1dac13711df1f20e1088aaec179e7e6f36830f704033ec26adc3572c6cf8a862a4a272b24dd4ac01e'
             'dc93362a6f1532dc478c45e774d124aa54f18b8a445770d43134d212ac4811514264f16ebc308e2512c01b04dbaf0708e5a29011dd75e7ed9385cfdf869f1b26'
-            '2043f51dcf65062a760fa47dd4c847a9c96d6b285400e103f46715839150e76757e85f50ca1be85f66434f8c4e011129620794a53c46ddd23e0d92c282bf0acf'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1')
 
@@ -48,7 +50,10 @@ build() {
 
   # Arch Linux branding: "Ubuntu Desktop" -> "Arch Linux Desktop"
   # (thanks to qiuwei!)
-  patch -p1 -i "${srcdir}/archlinux_branding.patch"
+  patch -p1 -i "${srcdir}/0002_ArchLinux_Branding.patch"
+
+  # Upstream support for the systray whitelist was removed
+  patch -p0 -i "${srcdir}/0003_Revert_r3134_Remove_Systray_Whitelist.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"

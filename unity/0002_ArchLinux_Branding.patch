@@ -11,12 +11,12 @@
    , menus_discovery_(DEFAULT_MENUS_DISCOVERY)
 --- a/tests/autopilot/unity/tests/launcher/test_keynav.py
 +++ b/tests/autopilot/unity/tests/launcher/test_keynav.py
-@@ -148,7 +148,7 @@
+@@ -151,7 +151,7 @@
          self.launcher_instance.key_nav_activate()
          self.addCleanup(self.keybinding, "expo/cancel")
  
--        self.assertThat(self.panels.get_active_panel().title, Eventually(Equals("Ubuntu Desktop")))
-+        self.assertThat(self.panels.get_active_panel().title, Eventually(Equals("Arch Linux Desktop")))
+-        self.assertThat(self.unity.panels.get_active_panel().title, Eventually(Equals("Ubuntu Desktop")))
++        self.assertThat(self.unity.panels.get_active_panel().title, Eventually(Equals("Arch Linux Desktop")))
  
      def test_launcher_keynav_expo_exit_on_esc(self):
          """Esc should quit expo when entering it from KeyNav."""

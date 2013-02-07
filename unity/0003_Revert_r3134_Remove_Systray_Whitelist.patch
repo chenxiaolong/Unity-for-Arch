@@ -1,0 +1,228 @@
+=== modified file 'com.canonical.Unity.gschema.xml'
+--- com.canonical.Unity.gschema.xml	2013-02-06 11:07:00 +0000
++++ com.canonical.Unity.gschema.xml	2013-02-01 22:53:51 +0000
+@@ -54,6 +54,13 @@
+       <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
+     </key>
+   </schema>
++  <schema path="/com/canonical/unity/panel/" id="com.canonical.Unity.Panel" gettext-domain="unity">
++    <key type="as" name="systray-whitelist">
++      <default>[ 'JavaEmbeddedFrame', 'Wine', 'Update-notifier' ]</default>
++      <summary>List of client names, resource classes or wm classes to allow in the Panel's systray implementation.</summary>
++      <description>"" (empty) will not allow any tray icons, "all" will allow all tray icons, otherwise there will be an attempt to match each icon to a value here.</description>
++    </key>
++  </schema>
+   <schema path="/com/canonical/unity/devices/" id="com.canonical.Unity.Devices" gettext-domain="unity">
+     <key type="as" name="blacklist">
+         <default>[]</default>
+
+=== modified file 'panel/PanelTray.cpp'
+--- panel/PanelTray.cpp	2013-02-06 12:32:28 +0000
++++ panel/PanelTray.cpp	2012-11-06 18:19:09 +0000
+@@ -17,8 +17,6 @@
+  *              Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
+  */
+ 
+-#include <array>
+-
+ #include "PanelTray.h"
+ #include "unity-shared/PanelStyle.h"
+ 
+@@ -30,7 +28,6 @@
+ {
+ const std::string SETTINGS_NAME = "com.canonical.Unity.Panel";
+ const int PADDING = 3;
+-const std::array<std::string, 2> WHITELIST {{ "JavaEmbeddedFrame", "Wine" }};
+ }
+ 
+ namespace unity
+@@ -38,10 +35,17 @@
+ 
+ PanelTray::PanelTray()
+   : View(NUX_TRACKER_LOCATION)
++  , settings_(g_settings_new(SETTINGS_NAME.c_str()))
+   , window_(gtk_window_new(GTK_WINDOW_TOPLEVEL))
++  , whitelist_(g_settings_get_strv(settings_, "systray-whitelist"))
+ {
+   int panel_height = panel::Style::Instance().panel_height;
+ 
++  whitelist_changed_.Connect(settings_, "changed::systray-whitelist", [&] (GSettings*, gchar*) {
++    g_strfreev(whitelist_);
++    whitelist_ = g_settings_get_strv(settings_, "systray-whitelist");
++  });
++
+   auto gtkwindow = glib::object_cast<GtkWindow>(window_);
+   gtk_window_set_type_hint(gtkwindow, GDK_WINDOW_TYPE_HINT_DOCK);
+   gtk_window_set_has_resize_grip(gtkwindow, FALSE);
+@@ -77,6 +81,8 @@
+ 
+ PanelTray::~PanelTray()
+ {
++  g_strfreev(whitelist_);
++
+   if (gtk_widget_get_realized(window_))
+   {
+     // We call Release since we're deleting the window here manually,
+@@ -127,13 +133,38 @@
+ 
+ gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTray* self)
+ {
++  int i = 0;
++  bool accept = false;
++  const char *name = nullptr;
++
+   glib::String title(na_tray_child_get_title(icon));
+ 
+   glib::String res_class;
+   glib::String res_name;
+   na_tray_child_get_wm_class(icon, &res_name, &res_class);
+ 
+-  bool accept = FilterTray(title.Str(), res_name.Str(), res_class.Str());
++  while ((name = self->whitelist_[i]))
++  {
++    if (g_strcmp0(name, "all") == 0)
++    {
++      accept = true;
++      break;
++    }
++    else if (!name || name[0] == '\0')
++    {
++      accept = false;
++      break;
++    }
++    else if ((title && g_str_has_prefix(title, name))
++             || (res_name && g_str_has_prefix(res_name, name))
++             || (res_class && g_str_has_prefix(res_class, name)))
++    {
++      accept = true;
++      break;
++    }
++
++    i++;
++  }
+ 
+   if (accept)
+   {
+@@ -152,15 +183,6 @@
+   return accept ? TRUE : FALSE;
+ }
+ 
+-bool PanelTray::FilterTray(std::string const& title, std::string const& res_name, std::string const& res_class)
+-{
+-  for (auto const& item : WHITELIST)
+-    if (title.find(item) == 0 || res_name.find(item) == 0 || res_class.find(item) == 0)
+-      return true;
+-
+-  return false;
+-}
+-
+ void PanelTray::OnTrayIconRemoved(NaTrayManager* manager, NaTrayChild* removed)
+ {
+   for (auto child : children_)
+
+=== modified file 'panel/PanelTray.h'
+--- panel/PanelTray.h	2013-02-06 12:32:28 +0000
++++ panel/PanelTray.h	2012-07-09 08:03:04 +0000
+@@ -46,8 +46,6 @@
+   void Sync();
+   Window xid();
+ 
+-  static bool FilterTray(std::string const& title, std::string const& res_name, std::string const& res_class);
+-
+ protected:
+   void Draw(nux::GraphicsEngine& gfx_content, bool force_draw);
+   std::string GetName() const;
+@@ -61,8 +59,10 @@
+ 
+   int WidthOfTray();
+ 
++  glib::Object<GSettings> settings_;
+   glib::Object<GtkWidget> window_;
+   glib::Object<NaTray> tray_;
++  char** whitelist_;
+ 
+   glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
+   glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
+
+=== modified file 'tests/CMakeLists.txt'
+--- tests/CMakeLists.txt	2013-02-06 20:30:18 +0000
++++ tests/CMakeLists.txt	2013-02-06 16:45:06 +0000
+@@ -217,7 +217,6 @@
+                  test_panel_indicators_view.cpp
+                  test_panel_menu_view.cpp
+                  test_panel_style.cpp
+-                 test_panel_tray.cpp
+                  test_places_group.cpp
+                  test_previews_application.cpp
+                  test_previews_generic.cpp
+
+=== removed file 'tests/test_panel_tray.cpp'
+--- tests/test_panel_tray.cpp	2013-02-06 17:03:37 +0000
++++ tests/test_panel_tray.cpp	1970-01-01 00:00:00 +0000
+@@ -1,65 +0,0 @@
+-/*
+- * Copyright 2013 Canonical Ltd.
+- *
+- * This program is free software: you can redistribute it and/or modify it
+- * under the terms of the GNU General Public License version 3, as published
+- * by the  Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranties of
+- * MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR
+- * PURPOSE.  See the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * version 3 along with this program.  If not, see
+- * <http://www.gnu.org/licenses/>
+- *
+- * Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+- *
+- */
+-
+-#include <gtest/gtest.h>
+-
+-#include "panel/PanelTray.h"
+-
+- TEST(TestPanelTray, FilterTray)
+- {
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("JavaEmbeddedFrame", "", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "JavaEmbeddedFrame", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "", "JavaEmbeddedFrame"));
+-
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("Wine", "", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "Wine", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "", "Wine"));
+-
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("JavaEmbeddedFrameUbuntu", "", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "JavaEmbeddedFrameUbuntu", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "", "JavaEmbeddedFrameUbuntu"));
+-
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("WineUbuntu", "", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "WineUbuntu", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("", "", "WineUbuntu"));
+-
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("UbuntuJavaEmbeddedFrame", "", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "UbuntuJavaEmbeddedFrame", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "", "UbuntuJavaEmbeddedFrame"));
+-
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("UbuntuWine", "", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "UbuntuWine", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "", "UbuntuWine"));
+-
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("UbuntuJavaEmbeddedFrameUbuntu", "", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "UbuntuJavaEmbeddedFrameUbuntu", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "", "UbuntuJavaEmbeddedFrameUbuntu"));
+-
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("UbuntuWineUbuntu", "", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "UbuntuWineUbuntu", ""));
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("", "", "UbuntuWineUbuntu"));
+-
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("Wine", "Ubuntu", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("Ubuntu", "JavaEmbeddedFrame", ""));
+-  EXPECT_TRUE(unity::PanelTray::FilterTray("Wine", "JavaEmbeddedFrame", "Ubuntu"));
+-
+-  EXPECT_FALSE(unity::PanelTray::FilterTray("Ubuntu", "Unity", "Hello world!"));
+-}
+-
+
