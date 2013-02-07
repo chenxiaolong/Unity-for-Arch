@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.8.1
-_extra_ver=daily13.01.11
+_extra_ver=daily13.02.07
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Music, in the dash"
@@ -15,7 +15,7 @@ depends=('libunity' 'gstreamer' 'gst-plugins-base' 'liboauth' 'libsoup')
 makedepends=('vala' 'intltool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('5a5f4da2aaed773c8e6041e57a0acdc47f2ae6b4ac0da5d92464457ff8d2c34c301219141f8a79124c7bfbba5b016ac479f43201f4167e4a063de1b614c50252')
+sha512sums=('9d77ee64cec637c5c51787072c708d9398b65f7199014efd794b565995647f4140321a1db96d6a99d8ac9039d46857e8f23abb9f2d66f8bf557e32982fce2813')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
