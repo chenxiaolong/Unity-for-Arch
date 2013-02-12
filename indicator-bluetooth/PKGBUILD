@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=indicator-bluetooth
-pkgver=0.0.5
+pkgver=0.0.6
 pkgrel=100
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ conflicts=('gnome-bluetooth-ubuntu')
 options=('!libtool')
 # Ubuntu finally using xz sources? It's a miracle!
 source=("https://launchpad.net/indicator-bluetooth/13.04/${pkgver}/+download/indicator-bluetooth-${pkgver}.tar.xz")
-sha512sums=('745587e77e0b8e9126a5a67621952277a865607bd7b4d596eb26d0287fbd5a21aef8b4e6dc6054f9bd43b71740e45c02d28916d8fce286525d86701e629f7011')
+sha512sums=('0756856ccd12a9b390014ffad863c91993399c407d466e5685ed6ea20da9213db3527ce426e933884aeff33b3dcd04d6aa34590a68a132c2fcccefa165321f95')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
