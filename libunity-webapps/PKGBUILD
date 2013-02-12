@@ -2,7 +2,7 @@
 
 pkgname=libunity-webapps
 _actual_ver=2.4.3
-_extra_ver=daily13.02.04.1
+_extra_ver=daily13.02.12
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
@@ -15,7 +15,7 @@ makedepends=('gobject-introspection' 'intltool')
 options=('!libtool')
 install=libunity-webapps.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('f50fbe70274e1d9f539db7d00f19a35fc1724c10acee27eceaf583abc6daf08c8922cd825619568525765d7ae2823156b76a14956b13784167c1abf3543645ef')
+sha512sums=('90bf5ea6726f963cfc034a3a7f9feee4669248126bd65934926cadf54bb11f91a9866d30405026360c0c091596e09f24c146acbe55a3207b1b7c7e10e980412f')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
