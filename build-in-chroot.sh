@@ -124,5 +124,12 @@ mkarchroot \
 rm -f ${LOCALREPO}/*.db*
 rm -f ${LOCALREPO}/*.files*
 mv ${CHROOT}${RESULT_DIR}/* ${LOCALREPO}/
-# TODO: Enable signing
-repo-add ${LOCALREPO}/Unity-for-Arch.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
+
+# Update repo. Make sure that a lock is acquired before performing the operation
+echo "Attempting to acquire lock on local repo..."
+(
+  flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
+  echo "Acquired lock on local repo"
+  # TODO: Enable signing
+  repo-add ${LOCALREPO}/Unity-for-Arch.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
+) 123>${LOCALREPO}/repo.lock
