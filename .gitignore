@@ -15,3 +15,5 @@ TEMP/
 mono.snk
 
 bzr/
+
+build-in-chroot.conf
