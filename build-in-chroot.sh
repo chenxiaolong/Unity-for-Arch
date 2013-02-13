@@ -81,11 +81,11 @@ mkdir ${CHROOT}/tmp/${PACKAGE}/
 cp -v "${PACKAGE_DIR}/PKGBUILD" ${CHROOT}/tmp/${PACKAGE}/
 install=$(bash -c "source ${PACKAGE_DIR}/PKGBUILD && echo \${install}")
 sources=$(bash -c "source ${PACKAGE_DIR}/PKGBUILD && echo \${source[@]}")
-if [ -f "${install}" ]; then
+if [ -f "${PACKAGE_DIR}/${install}" ]; then
   cp -v "${PACKAGE_DIR}/${install}" ${CHROOT}/tmp/${PACKAGE}/
 fi
 for i in ${sources}; do
-  if [ -e "${PACKAGE_DIR}/${i}" ]; then
+  if [ -f "${PACKAGE_DIR}/${i}" ]; then
     cp -v "${PACKAGE_DIR}/${i}" ${CHROOT}/tmp/${PACKAGE}/
   fi
 done
