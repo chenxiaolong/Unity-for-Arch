@@ -33,7 +33,7 @@ fi
 
 source "$(dirname ${0})/build-in-chroot.conf"
 
-set -e
+set -ex
 
 cleanup() {
   umount ${CHROOT}${LOCALREPO}/ || true &>/dev/null
@@ -115,7 +115,8 @@ fi
 mkarchroot \
   -r "
   su - builder -c 'cd /tmp/${PACKAGE} && \
-                   makepkg --clean --syncdeps --check --sign --noconfirm'
+                   makepkg --clean --syncdeps --check \
+                           --sign --noconfirm --nocolor'
   " \
   ${CHROOT}
 
