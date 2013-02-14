@@ -12,7 +12,7 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('gobject-introspection' 'libwnck3' 'libgtop' 'gnome-common' 'libunity-webapps' 'gtk-doc')
+makedepends=('dbus-glib' 'gnome-common' 'gobject-introspection' 'gtk-doc' 'libgtop' 'libunity-webapps' 'libwnck3')
 provides=('FEATURE-bamf-webapps')
 groups=('unity')
 options=('!libtool')
@@ -32,7 +32,7 @@ build() {
 
 package_bamfdaemon() {
   pkgdesc="Window matching library daemon"
-  depends=('dbus-glib' 'libwnck3' 'libgtop' 'libunity-webapps')
+  depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3')
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
 
   install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
@@ -43,7 +43,7 @@ package_bamfdaemon() {
 
 package_libbamf3() {
   pkgdesc="Window matching library for GTK 3"
-  depends=('bamfdaemon' 'gtk3-ubuntu')
+  depends=('bamfdaemon')
   provides=("bamf=${pkgver}")
   conflicts=('bamf')
 
