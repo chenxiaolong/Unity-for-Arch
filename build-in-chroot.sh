@@ -31,6 +31,13 @@ if [ "x$(whoami)" != "xroot" ]; then
   exit 1
 fi
 
+# Check if the shell is interactive
+if tty -s; then
+  PROGRESSBAR="--noprogressbar"
+else
+  PROGRESSBAR=""
+fi
+
 source "$(dirname ${0})/build-in-chroot.conf"
 
 set -ex
@@ -68,10 +75,11 @@ GPGKEY="${GPGKEY}"
 EOF
 
 # Set up /etc/pacman.conf if local repo already exists
+# TODO: Enable signature verification
 if [ -f ${LOCALREPO}/Unity-for-Arch.db ]; then
   cat >> ${CHROOT}/etc/pacman.conf << EOF
 [Unity-for-Arch]
-SigLevel = Optional TrustAll
+SigLevel = Never
 Server = file://$(readlink -f ${LOCALREPO})
 EOF
 fi
@@ -108,15 +116,16 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 if [ -f ${LOCALREPO}/Unity-for-Arch.db ]; then
-  mkarchroot -r "pacman -Sy" ${CHROOT}
+  mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
 fi
 
 # Build package
+# TODO: Enable signing
 mkarchroot \
   -r "
   su - builder -c 'cd /tmp/${PACKAGE} && \
                    makepkg --clean --syncdeps --check \
-                           --sign --noconfirm --nocolor'
+                           --noconfirm --nocolor ${PROGRESSBAR}'
   " \
   ${CHROOT}
 
@@ -130,6 +139,15 @@ echo "Attempting to acquire lock on local repo..."
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
   echo "Acquired lock on local repo"
+  # We must clear out existing packages in the cache. Rebuilds without changing
+  # the package version and release will cause the sha256sums in ${LOCALREPO}
+  # and /var/cache/pacman/pkg/ to mismatch causing pacman to fail. It would be
+  # better if it was possible to tell pacman not to cache the local repo.
+  for i in ${LOCALREPO}/*.pkg.tar.xz; do
+    if [ -f /var/cache/pacman/pkg/$(basename ${i}) ]; then
+      rm /var/cache/pacman/pkg/$(basename ${i})
+    fi
+  done
   # TODO: Enable signing
   repo-add ${LOCALREPO}/Unity-for-Arch.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
