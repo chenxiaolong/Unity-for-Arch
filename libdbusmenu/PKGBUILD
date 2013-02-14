@@ -39,7 +39,7 @@ build() {
   #" # Stupid vim highlighting
 
   # libdbusmenu-gtk2 won't install if libdbusmenu-glib is missing
-  #sed -i 's|$(DBUSMENUGTK_CFLAGS)|$(DBUSMENUGTK_CFLAGS) -L../libdbusmenu-glib/.libs|' libdbusmenu-gtk/Makefile.{am,in}
+  sed -i 's|$(DBUSMENUGTK_CFLAGS)|$(DBUSMENUGTK_CFLAGS) -L../libdbusmenu-glib/.libs|' libdbusmenu-gtk/Makefile.{am,in}
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
