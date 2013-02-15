@@ -9,7 +9,7 @@ url="https://launchpad.net/indicator-bluetooth"
 license=('GPL')
 groups=('unity')
 depends=('gnome-bluetooth' 'ido' 'libdbusmenu-gtk3' 'libindicator3')
-makedepends=('gnome-common' 'vala')
+makedepends=('gnome-common' 'intltool' 'vala')
 # We don't want two bluetooth indicators
 conflicts=('gnome-bluetooth-ubuntu')
 options=('!libtool')
