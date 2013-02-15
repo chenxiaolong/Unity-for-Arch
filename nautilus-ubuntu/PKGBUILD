@@ -10,7 +10,7 @@ pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libappindicator3' 'libunity' 'gtk3-ubuntu' 'libzeitgeist' 'libnotify')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libunity' 'gtk3-ubuntu' 'libzeitgeist' 'libnotify')
 makedepends=('intltool' 'gobject-introspection')
 groups=('gnome')
 provides=("nautilus=${_actual_ver}")
