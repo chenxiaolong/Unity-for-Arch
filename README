@@ -26,7 +26,7 @@ Order to compile/install:
 18: gnome-session-ubuntu           -> GNOME Session Manager
 19: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
 20: gnome-control-center-unity     -> Change some Unity settings with GCC
-21: credentials-preferences        -> Ubuntu Online Accounts Settings Panel
+21: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
 22: metacity-ubuntu                -> Window manager for GNOME
 23: indicator-applet               -> GNOME panel indicator applet
 24: indicator-application          -> Takes menus and puts then in the panel
