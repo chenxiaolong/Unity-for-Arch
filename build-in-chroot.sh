@@ -95,6 +95,7 @@ mkdir ${CHROOT}/tmp/${PACKAGE}/
 cp -v "${PACKAGE_DIR}/PKGBUILD" ${CHROOT}/tmp/${PACKAGE}/
 install=$(bash -c "source ${PACKAGE_DIR}/PKGBUILD && echo \${install}")
 sources=$(bash -c "source ${PACKAGE_DIR}/PKGBUILD && echo \${source[@]}")
+extrafiles=$(bash -c "source ${PACKAGE_DIR}/PKGBUILD && echo \${extrafiles[@]}")
 if [ -f "${PACKAGE_DIR}/${install}" ]; then
   cp -v "${PACKAGE_DIR}/${install}" ${CHROOT}/tmp/${PACKAGE}/
 fi
@@ -102,6 +103,9 @@ for i in ${sources}; do
   if [ -f "${PACKAGE_DIR}/${i}" ]; then
     cp -v "${PACKAGE_DIR}/${i}" ${CHROOT}/tmp/${PACKAGE}/
   fi
+done
+for i in ${extrafiles}; do
+  cp -v "${PACKAGE_DIR}/${i}" ${CHROOT}/tmp/${PACKAGE}/
 done
 
 # Create new user
