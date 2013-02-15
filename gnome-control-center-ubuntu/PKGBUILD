@@ -13,7 +13,7 @@ groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
 depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork')
-makedepends=('gnome-doc-utils' 'intltool' 'docbook-xsl')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'gnome-color-manager: for color management tasks')
 provides=("gnome-control-center=${_actual_ver}" 'FEATURE-libgnome-control-center')
