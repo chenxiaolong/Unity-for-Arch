@@ -12,6 +12,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"
 license=('LGPL')
 depends=('gtk3')
+makedepends=('gobject-introspection')
 groups=('unity')
 options=('!libtool')
 provides=('ido3')
