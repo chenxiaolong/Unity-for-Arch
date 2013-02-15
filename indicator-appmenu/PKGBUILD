@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
 license=('GPL')
 groups=('unity')
-depends=('dconf' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
+depends=('dconf' 'libappindicator3' 'libindicator3' 'libdbusmenu-gtk3' 'libbamf3')
 makedepends=('vala>=0.16.0')
 optdepends=('appmenu-gtk2: support for GTK+ 2 apps'
             'appmenu-gtk3: support for GTK+ 3 apps'
