@@ -18,7 +18,7 @@ pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.8.4' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes-ubuntu' 'nux' 'unity-asset-pool' 'xorg-server>=1.12.0-100')
+depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.8.4' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes-ubuntu' 'libzeitgeist' 'nux' 'unity-asset-pool' 'xorg-server>=1.12.0-100')
 makedepends=('cmake' 'doxygen' 'intltool' 'pkg-config' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
