@@ -11,7 +11,7 @@ pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL har
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
 license=('LGPL')
-depends=('gdk-pixbuf2' 'glew' 'pango' 'libsigc++' 'libxcomposite' 'ibus' 'libxdamage' 'libxxf86vm' 'geis')
+depends=('gdk-pixbuf2' 'glew' 'pango' 'libgl' 'libsigc++' 'libxcomposite' 'ibus' 'libxdamage' 'libxxf86vm' 'geis')
 makedepends=('boost' 'glproto' 'dri2proto' 'doxygen' 'graphviz')
 
 groups=('unity')
