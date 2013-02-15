@@ -16,7 +16,7 @@ url="http://www.gnome.org/projects/NetworkManager/"
 license=('GPL')
 depends=('networkmanager>=0.9.4.0' 'libgnome-keyring' 'polkit-gnome' 'gtk3'
          'libnotify' 'gnome-icon-theme' 'mobile-broadband-provider-info'
-         'gconf' 'iso-codes' 'libappindicator')
+         'gconf' 'iso-codes' 'libappindicator3')
 makedepends=('intltool' 'gnome-bluetooth')
 optdepends=('gnome-bluetooth: for PAN/DUN support')
 provides=("network-manager-applet=${pkgver}")
