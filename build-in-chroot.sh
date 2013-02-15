@@ -33,9 +33,9 @@ fi
 
 # Check if the shell is interactive
 if tty -s; then
-  PROGRESSBAR="--noprogressbar"
-else
   PROGRESSBAR=""
+else
+  PROGRESSBAR="--noprogressbar"
 fi
 
 source "$(dirname ${0})/build-in-chroot.conf"
