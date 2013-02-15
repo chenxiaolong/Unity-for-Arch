@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Note to developers modifying this script: Do not break the script! Please make
-# sure that it works for every single package.
-
 # Please add the following to build-in-chroot.conf:
 # 
 # PACKAGER="Your Name <your@email>"
@@ -10,6 +7,15 @@
 # LOCALREPO="/path/to/repo"
 
 ################################################################################
+
+# Note to developers modifying this script: Do not break the script! Please make
+# sure that it works for every single package.
+
+# Please make sure that the script:
+# * Locks ${LOCALREPO}/cache.lock before touching anything in
+#   /var/cache/pacman/pkg/
+#   - Separate download actions if necessary
+# * Locks ${LOCALREPO}/repo.lock before updating the local repo
 
 if [ -z "${1}" ]; then
   echo "No argument provided!"
@@ -116,16 +122,31 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 if [ -f ${LOCALREPO}/Unity-for-Arch.db ]; then
-  mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
+  (
+    flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
+    mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
+  ) 321>${LOCALREPO}/cache.lock
 fi
+
+# Download sources and install build dependencies
+(
+  flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
+  mkarchroot \
+    -r "
+    su - builder -c 'cd /tmp/${PACKAGE} && \
+                     makepkg --syncdeps --nobuild --nocolor --noconfirm \
+                             ${PROGRESSBAR}'
+    " \
+    ${CHROOT}
+) 321>${LOCALREPO}/cache.lock
 
 # Build package
 # TODO: Enable signing
 mkarchroot \
   -r "
   su - builder -c 'cd /tmp/${PACKAGE} && \
-                   makepkg --clean --syncdeps --check \
-                           --noconfirm --nocolor ${PROGRESSBAR}'
+                   makepkg --clean --check --noconfirm --nocolor --noextract \
+                           ${PROGRESSBAR}'
   " \
   ${CHROOT}
 
@@ -143,11 +164,14 @@ echo "Attempting to acquire lock on local repo..."
   # the package version and release will cause the sha256sums in ${LOCALREPO}
   # and /var/cache/pacman/pkg/ to mismatch causing pacman to fail. It would be
   # better if it was possible to tell pacman not to cache the local repo.
-  for i in ${LOCALREPO}/*.pkg.tar.xz; do
-    if [ -f /var/cache/pacman/pkg/$(basename ${i}) ]; then
-      rm /var/cache/pacman/pkg/$(basename ${i})
-    fi
-  done
+  (
+    flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
+    for i in ${LOCALREPO}/*.pkg.tar.xz; do
+      if [ -f /var/cache/pacman/pkg/$(basename ${i}) ]; then
+        rm /var/cache/pacman/pkg/$(basename ${i})
+      fi
+    done
+  ) 321>${LOCALREPO}/cache.lock
   # TODO: Enable signing
   repo-add ${LOCALREPO}/Unity-for-Arch.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
