@@ -4,7 +4,8 @@
 # 
 # PACKAGER="Your Name <your@email>"
 # GPGKEY=""
-# LOCALREPO="/path/to/repo/@ARCH@" # The @ARCH@ is required
+# REPO="Unity-for-Arch"
+# LOCALREPO="/path/to/${REPO}/@ARCH@" # The @ARCH@ is required
 
 ################################################################################
 
@@ -141,9 +142,9 @@ EOF
 
 # Set up /etc/pacman.conf if local repo already exists
 # TODO: Enable signature verification
-if [ -f ${LOCALREPO}/Unity-for-Arch.db ]; then
+if [ -f ${LOCALREPO}/${REPO}.db ]; then
   cat >> ${CHROOT}/etc/pacman.conf << EOF
-[Unity-for-Arch]
+[${REPO}]
 SigLevel = Never
 Server = file://$(readlink -f ${LOCALREPO})
 EOF
@@ -184,7 +185,7 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 # Make sure local repo exists
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
-if [ -f ${LOCALREPO}/Unity-for-Arch.db ]; then
+if [ -f ${LOCALREPO}/${REPO}.db ]; then
   (
     flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
     mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
@@ -236,5 +237,5 @@ echo "Attempting to acquire lock on local repo..."
     done
   ) 321>${LOCALREPO}/cache.lock
   # TODO: Enable signing
-  repo-add ${LOCALREPO}/Unity-for-Arch.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
+  repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
