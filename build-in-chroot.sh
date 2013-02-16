@@ -24,13 +24,15 @@ show_help() {
   echo "Options:"
   echo "  -p,--package  Path to the directory containing the PKGBUILD file"
   echo "  -a,--arch     Architecture to build for"
+  echo "  -k,--keepcopy Keep a copy of the built packages in the directory of the"
+  echo "                PKGBUILD file"
 }
 
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
 
-ARGS=$(getopt -o p:a: -l package:arch -n build-in-chroot.sh -- "${@}")
+ARGS=$(getopt -o p:a:k -l package:arch:keep -n build-in-chroot.sh -- "${@}")
 
 if [ ${?} -ne 0 ]; then
   echo "Failed to parse arguments!"
@@ -52,6 +54,10 @@ while true; do
     PACKAGE_DIR="${1}"
     shift
     ;;
+  -k|--keep)
+    KEEP_COPY=true
+    shift
+    ;;
   --)
     shift
     break
@@ -67,17 +73,19 @@ fi
 
 if [ -z "${ARCH}" ]; then
   ARCH=$(uname -m)
-  SUPPORTED=false
-  for i in ${ARCH_SUPPORTED[@]}; do
-    if [ "x${i}" == "x${ARCH}" ]; then
-      SUPPORTED=true
-      break
-    fi
-  done
-  if [ "x${SUPPORTED}" != "xtrue" ]; then
-    echo "Unsupported architecture ${ARCH}!"
-    exit 1
+fi
+
+# Make sure architecture is supported
+SUPPORTED=false
+for i in ${ARCH_SUPPORTED[@]}; do
+  if [ "x${i}" == "x${ARCH}" ]; then
+    SUPPORTED=true
+    break
   fi
+done
+if [ "x${SUPPORTED}" != "xtrue" ]; then
+  echo "Unsupported architecture ${ARCH}!"
+  exit 1
 fi
 
 PACKAGE_DIR="$(readlink -f ${PACKAGE_DIR})"
@@ -130,7 +138,7 @@ RESULT_DIR=/tmp/packages
 chmod -R 0755 ${CHROOT}
 
 # Create base chroot
-mkarchroot -f ${CHROOT} base base-devel sudo curl
+setarch ${ARCH} mkarchroot -f ${CHROOT} base base-devel sudo curl
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
@@ -188,14 +196,14 @@ mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 if [ -f ${LOCALREPO}/${REPO}.db ]; then
   (
     flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
-    mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
+    setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" ${CHROOT}
   ) 321>${LOCALREPO}/cache.lock
 fi
 
 # Download sources and install build dependencies
 (
   flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
-  mkarchroot \
+  setarch ${ARCH} mkarchroot \
     -r "
     su - builder -c 'cd /tmp/${PACKAGE} && \
                      makepkg --syncdeps --nobuild --nocolor --noconfirm \
@@ -206,7 +214,7 @@ fi
 
 # Build package
 # TODO: Enable signing
-mkarchroot \
+setarch ${ARCH} mkarchroot \
   -r "
   su - builder -c 'cd /tmp/${PACKAGE} && \
                    makepkg --clean --check --noconfirm --nocolor --noextract \
@@ -217,7 +225,10 @@ mkarchroot \
 # Move out packages
 rm -f ${LOCALREPO}/*.db*
 rm -f ${LOCALREPO}/*.files*
-mv ${CHROOT}${RESULT_DIR}/* ${LOCALREPO}/
+cp ${CHROOT}${RESULT_DIR}/* ${LOCALREPO}/
+if [ "x${KEEP_COPY}" = "xtrue" ]; then
+  cp ${CHROOT}${RESULT_DIR}/* ${PACKAGE_DIR}/
+fi
 
 # Update repo. Make sure that a lock is acquired before performing the operation
 echo "Attempting to acquire lock on local repo..."
