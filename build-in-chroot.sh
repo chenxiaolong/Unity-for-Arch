@@ -4,7 +4,7 @@
 # 
 # PACKAGER="Your Name <your@email>"
 # GPGKEY=""
-# LOCALREPO="/path/to/repo"
+# LOCALREPO="/path/to/repo/@ARCH@" # The @ARCH@ is required
 
 ################################################################################
 
@@ -17,13 +17,73 @@
 #   - Separate download actions if necessary
 # * Locks ${LOCALREPO}/repo.lock before updating the local repo
 
-if [ -z "${1}" ]; then
-  echo "No argument provided!"
+show_help() {
+  echo "Usage build-in-chroot.sh -p <package> [-a <arch>]"
+  echo ""
+  echo "Options:"
+  echo "  -p,--package  Path to the directory containing the PKGBUILD file"
+  echo "  -a,--arch     Architecture to build for"
+}
+
+ARCH_SUPPORTED=('i686' 'x86_64')
+ARCH=""
+PACKAGE_DIR=""
+
+ARGS=$(getopt -o p:a: -l package:arch -n build-in-chroot.sh -- "${@}")
+
+if [ ${?} -ne 0 ]; then
+  echo "Failed to parse arguments!"
+  show_help
   exit 1
 fi
 
-if [ ! -f "${1}/PKGBUILD" ]; then
-  echo "${1} does not contain PKGBUILD!"
+eval set -- "${ARGS}"
+
+while true; do
+  case "${1}" in
+  -a|--arch)
+    shift
+    ARCH="${1}"
+    shift
+    ;;
+  -p|--package)
+    shift
+    PACKAGE_DIR="${1}"
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+if [ -z "${PACKAGE_DIR}" ]; then
+  echo "No package was provided!"
+  show_help
+  exit 1
+fi
+
+if [ -z "${ARCH}" ]; then
+  ARCH=$(uname -m)
+  SUPPORTED=false
+  for i in ${ARCH_SUPPORTED[@]}; do
+    if [ "x${i}" == "x${ARCH}" ]; then
+      SUPPORTED=true
+      break
+    fi
+  done
+  if [ "x${SUPPORTED}" != "xtrue" ]; then
+    echo "Unsupported architecture ${ARCH}!"
+    exit 1
+  fi
+fi
+
+PACKAGE_DIR="$(readlink -f ${PACKAGE_DIR})"
+PACKAGE=$(basename ${PACKAGE_DIR})
+
+if [ ! -f "${PACKAGE_DIR}/PKGBUILD" ]; then
+  echo "${PACKAGE_DIR} does not contain PKGBUILD!"
   exit 1
 fi
 
@@ -46,6 +106,8 @@ fi
 
 source "$(dirname ${0})/build-in-chroot.conf"
 
+LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
+
 set -ex
 
 cleanup() {
@@ -57,9 +119,6 @@ cleanup() {
 }
 
 trap "cleanup" SIGINT SIGTERM SIGKILL EXIT
-
-PACKAGE_DIR="$(readlink -f ${1})"
-PACKAGE=$(basename ${PACKAGE_DIR})
 
 CHROOT=$(mktemp -d --tmpdir=.)
 CHROOT=$(basename ${CHROOT})
