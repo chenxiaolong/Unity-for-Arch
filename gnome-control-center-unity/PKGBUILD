@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=gnome-control-center-unity
-pkgver=1.2
+pkgver=1.2daily13.02.15
 pkgrel=1
 pkgdesc="A set of settings panels for configuring the Unity desktop"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ makedepends=('gnome-common' 'intltool')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-control-center-unity_${pkgver}.orig.tar.gz")
-sha512sums=('11a113ce00b1a42e828e18a86b9e5539c888aa633a39b63ffe357e0a983668d00bc65c151e21ff89a94ba5a19419b293f36f943e632c8d933b02b6ec1881c049')
+sha512sums=('f49800f6c522cd6fbcca30926405bca469fc75b512f7e265f8ff49fc25a39e7b6dbe41b3957f8152f1df010d8012f1f95d8e7b8cf7d35d0d093fd852718bafd0')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
