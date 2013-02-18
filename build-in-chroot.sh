@@ -264,16 +264,17 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 # Make sure local repo exists
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
-if [ -f ${LOCALREPO}/${REPO}.db ]; then
-  setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" \
-                             -c ${CACHE_DIR} ${CHROOT}
-fi
 
-# Download sources and install build dependencies
 # Must lock the local repo or (local repo) packages may be deleted as they are
 # being downloaded
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
+  if [ -f ${LOCALREPO}/${REPO}.db ]; then
+    setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" \
+                               -c ${CACHE_DIR} ${CHROOT}
+  fi
+
+  # Download sources and install build dependencies
   setarch ${ARCH} mkarchroot \
     -r "
     su - builder -c 'cd /tmp/${PACKAGE} && \
