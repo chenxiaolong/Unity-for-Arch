@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Must update host cache before downloading!!!
+
 # Please add the following to build-in-chroot.conf:
 # 
 # PACKAGER="Your Name <your@email>"
@@ -268,14 +270,19 @@ if [ -f ${LOCALREPO}/${REPO}.db ]; then
 fi
 
 # Download sources and install build dependencies
-setarch ${ARCH} mkarchroot \
-  -r "
-  su - builder -c 'cd /tmp/${PACKAGE} && \
-                   makepkg --syncdeps --nobuild --nocolor --noconfirm \
-                           ${PROGRESSBAR}'
-  " \
-  -c ${CACHE_DIR} \
-  ${CHROOT}
+# Must lock the local repo or (local repo) packages may be deleted as they are
+# being downloaded
+(
+  flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
+  setarch ${ARCH} mkarchroot \
+    -r "
+    su - builder -c 'cd /tmp/${PACKAGE} && \
+                     makepkg --syncdeps --nobuild --nocolor --noconfirm \
+                             ${PROGRESSBAR}'
+    " \
+    -c ${CACHE_DIR} \
+    ${CHROOT}
+) 123>${LOCALREPO}/repo.lock
 
 # Build package
 # TODO: Enable signing
