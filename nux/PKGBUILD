@@ -4,7 +4,7 @@
 
 pkgname=nux
 _actual_ver=4.0.0
-_extra_ver=daily13.02.04
+_extra_ver=daily13.02.19
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
@@ -20,7 +20,7 @@ options=('!libtool' '!emptydirs')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('b8fb3c74332617cfd8337dc61f782d48661e9fbec3d6b660ddd488e64871d31e96c55e09947072db6992323372e1180ea6071aa2ce7223aaa5c5f06ea0c1049c'
+sha512sums=('650f124c2f1a61ee279da51fc93467631aba73dd3dc3e133dde84828f37bae0af68d5740e2f9d41d65aa77427590c7bc1da651601c7feb7e9200fe6b8d25778c'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2')
 
 build() {
