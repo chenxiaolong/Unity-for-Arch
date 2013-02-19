@@ -6,6 +6,7 @@
 # 
 # PACKAGER="Your Name <your@email>"
 # GPGKEY=""
+# MAKEFLAGS=""
 # REPO="Unity-for-Arch"
 # LOCALREPO="/path/to/${REPO}/@ARCH@" # The @ARCH@ is required
 
@@ -215,6 +216,7 @@ INTEGRITY_CHECK=(sha512)
 PKGDEST="${RESULT_DIR}"
 PACKAGER="${PACKAGER}"
 GPGKEY="${GPGKEY}"
+MAKEFLAGS="${MAKEFLAGS}"
 EOF
 
 # Set up /etc/pacman.conf if local repo already exists
