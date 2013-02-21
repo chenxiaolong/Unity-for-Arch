@@ -22,11 +22,12 @@
 # * Locks ${LOCALREPO}/repo.lock before updating the local repo
 
 show_help() {
-  echo "Usage build-in-chroot.sh -p <package> [-a <arch>]"
+  echo "Usage build-in-chroot.sh -p <package> [-a <arch>] [-c <config>]"
   echo ""
   echo "Options:"
   echo "  -p,--package  Path to the directory containing the PKGBUILD file"
   echo "  -a,--arch     Architecture to build for"
+  echo "  -c,--config   Use this file instead of build-in-chroot.conf as the config"
   echo "  -k,--keepcopy Keep a copy of the built packages in the directory of the"
   echo "                PKGBUILD file"
 }
@@ -35,8 +36,9 @@ ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
 CHROOT_PACKAGES=('base' 'base-devel' 'sudo' 'curl')
+CONFIG_FILE="$(dirname ${0})/build-in-chroot.conf"
 
-ARGS=$(getopt -o p:a:k -l package:arch:keep -n build-in-chroot.sh -- "${@}")
+ARGS=$(getopt -o p:a:c:k -l package:arch:config:keep -n build-in-chroot.sh -- "${@}")
 
 if [ ${?} -ne 0 ]; then
   echo "Failed to parse arguments!"
@@ -56,6 +58,11 @@ while true; do
   -p|--package)
     shift
     PACKAGE_DIR="${1}"
+    shift
+    ;;
+  -c|--config)
+    shift
+    CONFIG_FILE="${1}"
     shift
     ;;
   -k|--keep)
@@ -100,8 +107,8 @@ if [ ! -f "${PACKAGE_DIR}/PKGBUILD" ]; then
   exit 1
 fi
 
-if [ ! -f "$(dirname ${0})/build-in-chroot.conf" ]; then
-  echo "$(dirname ${0})/build-in-chroot.conf is missing! Please see the comment in this script."
+if [ ! -f "${CONFIG_FILE}" ]; then
+  echo "${CONFIG_FILE} is missing! Please see the comment in this script."
   exit 1
 fi
 
@@ -117,7 +124,7 @@ else
   PROGRESSBAR="--noprogressbar"
 fi
 
-source "$(dirname ${0})/build-in-chroot.conf"
+source "${CONFIG_FILE}"
 
 LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
 
