@@ -9,6 +9,8 @@
 # MAKEFLAGS=""
 # REPO="Unity-for-Arch"
 # LOCALREPO="/path/to/${REPO}/@ARCH@" # The @ARCH@ is required
+# OTHERREPOS=('Unity-for-Arch::file:///path/to/repo/@ARCH@'
+#             'My-Favorite-Repo::http://www.something.org/pub/@ARCH@')
 
 ################################################################################
 
@@ -133,6 +135,16 @@ set -ex
 cleanup() {
   umount ${CHROOT}${LOCALREPO}/ || true &>/dev/null
 
+  for i in ${OTHERREPOS[@]}; do
+    LOCATION=${i#*::}
+    TYPE=${LOCATION%://*}
+    LOCATION=${LOCATION#*://}
+    LOCATION=${LOCATION/@ARCH@/${ARCH}}
+    if [ "x${TYPE}" = "xfile" ]; then
+      umount ${CHROOT}${LOCATION}/ || true &>/dev/null
+    fi
+  done
+
   # Clean up chroot
   rm -rf ${CHROOT}
   rm -f ${CHROOT}.lock
@@ -236,6 +248,15 @@ Server = file://$(readlink -f ${LOCALREPO})
 EOF
 fi
 
+for i in ${OTHERREPOS[@]}; do
+  i=${i/@ARCH@/${ARCH}}
+  cat >> ${CHROOT}/etc/pacman.conf << EOF
+[${i%::*}]
+SigLevel = Never
+Server = ${i#*::}
+EOF
+done
+
 # Copy packaging
 mkdir ${CHROOT}/tmp/${PACKAGE}/
 cp -v "${PACKAGE_DIR}/PKGBUILD" ${CHROOT}/tmp/${PACKAGE}/
@@ -273,6 +294,16 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 # Make sure local repo exists
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
+for i in ${OTHERREPOS[@]}; do
+  LOCATION=${i#*::}
+  TYPE=${LOCATION%://*}
+  LOCATION=${LOCATION#*://}
+  LOCATION=${LOCATION/@ARCH@/${ARCH}}
+  if [ "x${TYPE}" = "xfile" ]; then
+    mkdir -p ${CHROOT}${LOCATION}/
+    mount --bind ${LOCATION}/ ${CHROOT}${LOCATION}/
+  fi
+done
 
 # Must lock the local repo or (local repo) packages may be deleted as they are
 # being downloaded
