@@ -309,7 +309,7 @@ done
 # being downloaded
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
-  if [ -f ${LOCALREPO}/${REPO}.db ]; then
+  if [ -f ${LOCALREPO}/${REPO}.db ] || [ ! -z "${OTHERREPOS[@]}" ]; then
     setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" \
                                -c ${CACHE_DIR} ${CHROOT}
   fi
