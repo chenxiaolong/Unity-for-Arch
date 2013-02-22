@@ -325,6 +325,16 @@ done
     ${CHROOT}
 ) 123>${LOCALREPO}/repo.lock
 
+# Workaround makepkg bug for SCM packages
+setarch ${ARCH} mkarchroot \
+  -r "
+  su - builder -c 'cd /tmp/${PACKAGE} && \
+                   find -maxdepth 1 -type d -empty -name src \
+                        -exec touch {}/stupid-makepkg \\;'
+  " \
+  -c ${CACHE_DIR} \
+  ${CHROOT}
+
 # Build package
 # TODO: Enable signing
 setarch ${ARCH} mkarchroot \
