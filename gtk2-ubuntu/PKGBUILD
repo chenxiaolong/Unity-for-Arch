@@ -2,8 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=0ubuntu1
-_actual_ver=2.24.14
+_ubuntu_rel=1ubuntu2
+_actual_ver=2.24.16
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
@@ -21,19 +21,16 @@ install=arch_gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch'
-        'fix-ubuntumenuproxy-build.patch'
-        '0001_autoconf.patch')
-sha512sums=('f262ddd728ca2d93889bb1b113866932edf7d61ab3248ca11f2c83dbb181fcc0eaab900e6ed4933e4b597cac1ed1bf622711a617e0867ec10730c934d21dc911'
-            '01d22d46339156d874362f71597c23c6308c2f6325a585e7ed7afd669b22c4af5e926c8be9a577929be756064aaf0b714c851695b7a56af1c94a0b40172848fb'
+        'fix-ubuntumenuproxy-build.patch')
+sha512sums=('0b3b7be3eea1372b9fe1a9a4ddaaabaf92ed1437d3c3c281f936b847cd9cb5a1e97f4b8496009faec00c182719a16767b9061efffbd03c0770b35c099f43cccf'
+            '9bbdf9ff1f72c7c167273093484bf092c1edde6d63d04a0d3c2ac838812c70284b5c635542c89f32fbc7d452d6b2b34f51e459b9a7e1c13c1232d32f3d0ff59a'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
-            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24'
-            'a841e4cdae3ac1bc3a671b17101a5928d444e5a3581334f602b20ca84609f57d1903bf04d1d17061af18a8ba2e24d0e5cd33a6c0a5ecb17d8dccf272ec203b76')
+            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
 
 build() {
   cd "${srcdir}/gtk+-${_actual_ver}"
 
   patch -p1 -i "${srcdir}/arch_xid-collision-debug.patch"
-  patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
 
