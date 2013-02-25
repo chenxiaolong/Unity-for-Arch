@@ -5,7 +5,7 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
-_extra_ver=daily13.02.15
+_extra_ver=daily13.02.25
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
@@ -16,7 +16,7 @@ makedepends=('gtk2-ubuntu' 'gtk3-ubuntu')
 options=('!libtool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('2dd89b3896816ccb8b3931bcb3f6d9b3b2733f0f34d1e8801a5329fd4d7f8dc8c6d6595be9223f58ab9d998bf28a71987ebd85e9c95b5cc9bf29edb21851aeca')
+sha512sums=('147ef167aa531f0d2f4fcbc0ea6290042582f8f00432747587a955d252c0c21549f933489493fa8db8847b4ee9681e63203bad06a4a8c9a0493da666fd57a948')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
