@@ -22,19 +22,15 @@ conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch'
-        'revert_r229.patch')
+        '0001_autoconf.patch')
 sha512sums=('f71e02491c3fc46195cfbfb45431787a1accf2a7ee7ef66f2297ed48f08ee1d74e05b6fcbf00c1abc382dc76d2414fd4d7eacb248f0b6319d63b8651c049dccd'
-            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8'
-            '7752e92933f2dca8eeab4df54930e15e7550c2ba14e1e0fa6e53a2ef59dbdabf5e74ec460f65ed9c58007cf6560dc49a868f4a2047065c87c11998903348404a')
+            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
-
-  patch -p0 -i "${srcdir}/revert_r229.patch"
 
   gtkdocize
   autoreconf -vfi
