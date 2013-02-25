@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -58,7 +58,7 @@
+ ###########################
+ 
+ 
+-GLIB_REQUIRED_VERSION=2.35.4
++GLIB_REQUIRED_VERSION=2.34.0
+ GIO_REQUIRED_VERSION=2.26
+ GTK_REQUIRED_VERSION=3.0
+ INDICATOR_REQUIRED_VERSION=0.3.90
