@@ -2,8 +2,8 @@
 
 pkgname=python-oauthlib
 _ubuntu_rel=0ubuntu1
-pkgver=0.3.5.${_ubuntu_rel}
-pkgrel=100
+pkgver=0.3.7
+pkgrel=100.${_ubuntu_rel}
 pkgdesc="A Python implementation of the OAuth request-signing logic"
 arch=('any')
 url="http://pypi.python.org/pypi/oauthlib"
@@ -12,13 +12,13 @@ groups=('unity')
 depends=('python' 'python-crypto')
 makedepends=('python-distribute' 'python-nose')
 options=(!emptydirs)
-source=("http://pypi.python.org/packages/source/o/oauthlib/oauthlib-${pkgver%.*}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/python-oauthlib_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+source=("http://pypi.python.org/packages/source/o/oauthlib/oauthlib-${pkgver}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/python-oauthlib_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('41b771ccd1fe2d6ae46266a26f97408ea6adde43aba96cae18dac6bb22e0da28aa16755f4bd6ba757e89850ce89c11c80ed9bb1415241d9fe0dc7cde945a69f9'
             '3618c399e51cbf2a5460aba4f00f99d772066eee0ad27a741368b40a60f8fba28ba8b3d5ccf470f407d4cf254881fe93db139ed956ca1fff9f0ec79eb4effeb7')
 
 build() {
-  cd "${srcdir}/oauthlib-${pkgver%.*}"
+  cd "${srcdir}/oauthlib-${pkgver}"
 
   # Apply Ubuntu's patches
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
@@ -27,7 +27,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/oauthlib-${pkgver%.*}"
+  cd "${srcdir}/oauthlib-${pkgver}"
   python setup.py install --root="${pkgdir}/" --optimize=1
 }
 
