@@ -3,7 +3,7 @@
 
 pkgname=evemu
 _actual_ver=1.0.11
-_extra_ver=daily12.11.29.1
+_extra_ver=daily13.02.20
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Linux Evdev Event Emulation"
@@ -15,7 +15,7 @@ makedepends=('xmlto' 'asciidoc')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/evemu_${_actual_ver}${_extra_ver}.orig.tar.gz")
 options=('!libtool')
-sha512sums=('2c474e06a2d695b018875bd88e171944c152ad3d2c7f5c7a85577681ec18bce902a46e578123b067787a1734c6fcc059def587fc03acfca013a646dc445ee5c1')
+sha512sums=('f9ceb2d69e0459f12055f3937a337a49e999ebfc7ebe673e9326e83a0787e2a2af01a6a0118f89eca03788b844a1157d9f50556e09e6c1a804ba58e435b1e082')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
