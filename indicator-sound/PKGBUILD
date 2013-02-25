@@ -4,7 +4,7 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=daily12.11.21.1
+_extra_ver=daily13.02.25
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A unified sound menu"
@@ -17,7 +17,7 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('f607ec5ab8710919d562edd65918fde65bb4e910bd0a793bd52e86840ab9bf7f657c8bc08972e2e3de9f517c69f85bbf562bdbd43c4040ea30ecd2bbe527868a')
+sha512sums=('3cdd982e9d1b4bac2edef98215b850cab873fa1784709a82bbde0161b3182cfd6270c248a643749efff8a0d8abfdb612a0299305fb392f39fc9186e586f59f66')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
