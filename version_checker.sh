@@ -115,3 +115,17 @@ get_freedesktop_version() {
   wget -q -O - "http://cgit.freedesktop.org/${1}/" | \
     sed -n "s/.*>${1}-\(.*\)\.tar\.gz<.*/\1/p" | head -n 1
 }
+
+get_googlecode_version() {
+  if [ -z "${1}" ]; then
+    echo "No package was provided"
+    exit 1
+  fi
+  local PACKAGE=${1}
+  local TARBALL=${1}
+  if [ ! -z "${2}" ]; then
+    TARBALL=${2}
+  fi
+  wget -q -O - "https://code.google.com/p/${PACKAGE}/downloads/list" | \
+    sed -n "s/.*${TARBALL}-\(.*\)\.\(tar\.\|zip\).*/\1/p" | head -n 1
+}
