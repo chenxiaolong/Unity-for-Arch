@@ -4,6 +4,8 @@ Please make sure you don't already have modified versions of the dependencies in
 
 Packages ending with "-ubuntu" contain Ubuntu patches and REPLACE Arch Linux versions of those packages.
 
+Note: Some packages include tests that require packages from the "TESTS" directory. These tests can be skipped by passing "--nocheck" to makepkg.
+
 Order to compile/install:
 
 01: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
