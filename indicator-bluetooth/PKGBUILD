@@ -1,7 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=indicator-bluetooth
-pkgver=0.0.6
+_actual_ver=0.0.6
+_extra_ver=daily13.02.19
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
@@ -14,22 +16,24 @@ makedepends=('gnome-common' 'intltool' 'vala')
 conflicts=('gnome-bluetooth-ubuntu')
 options=('!libtool')
 # Ubuntu finally using xz sources? It's a miracle!
-source=("https://launchpad.net/indicator-bluetooth/13.04/${pkgver}/+download/indicator-bluetooth-${pkgver}.tar.xz")
-sha512sums=('0756856ccd12a9b390014ffad863c91993399c407d466e5685ed6ea20da9213db3527ce426e933884aeff33b3dcd04d6aa34590a68a132c2fcccefa165321f95')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-bluetooth_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('1f5418104d6f3d74bb2003474347a8dc386abd37d2ae9ee86f7d290d1934eca4dbc5acce5d618f14cf98be6ef7ee67d0952b46af3ba2843ba7b127803cfcb2f0')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  autoreconf -vfi
+  intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-bluetooth --disable-static
   make ${MAKEFLAGS}
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make check
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
 
