@@ -2,8 +2,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=grail
-_actual_ver=3.0.9
-_extra_ver=daily12.12.07.1
+_actual_ver=3.1.0
+_extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
@@ -12,9 +12,10 @@ url="https://launchpad.net/grail"
 license=('LGPL')
 depends=('frame' 'libxi')
 makedepends=('inputproto')
+checkdepends=('xorg-gtest')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('8f58dfafdc889f1be15dfefbbb321b79865d3700f1a23dc4a96eabc363501113377694979ea15520895555a4a0631a8e7951958ba74da94a1cb72f7aff7daf3e')
+sha512sums=('72572dc7b75957127ddadc8ee1e0509098a3ea11a2e20349d2b77f97cdea920dc34f86261d501fd5c6efcc64c20bf5e6ecc57c41ad76c5c79934f372060aede6')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -22,9 +23,15 @@ build() {
   autoreconf -vfi
 
   # Static library needed for tests
-  ./configure --prefix=/usr # --disable-static
+  ./configure --prefix=/usr --with-x11 # --disable-static
   MAKEFLAGS="-j1"
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  # Tests currently fail on Ubuntu as well
+  make -j1 check || :
 }
 
 package() {
