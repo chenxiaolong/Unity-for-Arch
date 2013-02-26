@@ -69,7 +69,14 @@ check() {
   popd
 
   # bustle
-  wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${CARCH}.tar.bz2"
+  case ${CARCH} in
+  i*86)
+    wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-i486.tar.bz2"
+    ;;
+  *)
+    wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${CARCH}.tar.bz2"
+    ;;
+  esac
   tar jxvf bustle-0.4.1-${CARCH}.tar.bz2
   EXTRAPATH+=":$(pwd)/bustle-0.4.1-${CARCH}/bin"
   EXTRALIBS+=":$(pwd)/bustle-0.4.1-${CARCH}/lib"
