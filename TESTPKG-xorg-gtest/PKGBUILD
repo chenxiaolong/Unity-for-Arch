@@ -9,7 +9,7 @@ arch=('any')
 url="https://launchpad.net/xorg-gtest"
 license=('GPL')
 groups=('unity-tests')
-depends=('gtest' 'libx11' 'libxi' 'xf86-video-dummy')
+depends=('gtest-ubuntu' 'libx11' 'libxi' 'xf86-video-dummy')
 makedepends=('doxygen' 'valgrind' 'xorg-server-devel')
 source=("https://launchpad.net/xorg-gtest/trunk/${pkgver}/+download/xorg-gtest-${pkgver}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xorg-gtest_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
