@@ -4,7 +4,7 @@ pkgname=hud
 _actual_ver=13.04.0
 _extra_ver=daily13.02.20
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
@@ -15,6 +15,7 @@ makedepends=('gnome-doc-utils' 'gtk-doc' 'intltool' 'vala')
 checkdepends=('xorg-server-xvfb' 'libxslt' 'wget')
 optdepends=('indicator-appmenu: HUD support')
 conflicts=('indicator-appmenu<13')
+install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autotools.patch'
         '0002_No_GLib_2.35.patch'
@@ -32,7 +33,7 @@ build() {
   gtkdocize
   autoreconf -vfi
   intltoolize -f
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --libexecdir=/usr/lib/hud
   make
 }
 
