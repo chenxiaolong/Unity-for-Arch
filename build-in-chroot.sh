@@ -238,16 +238,6 @@ GPGKEY="${GPGKEY}"
 MAKEFLAGS="${MAKEFLAGS}"
 EOF
 
-# Set up /etc/pacman.conf if local repo already exists
-# TODO: Enable signature verification
-if [ -f ${LOCALREPO}/${REPO}.db ]; then
-  cat >> ${CHROOT}/etc/pacman.conf << EOF
-[${REPO}]
-SigLevel = Never
-Server = file://$(readlink -f ${LOCALREPO})
-EOF
-fi
-
 for i in ${OTHERREPOS[@]}; do
   i=${i/@ARCH@/${ARCH}}
   cat >> ${CHROOT}/etc/pacman.conf << EOF
@@ -310,6 +300,16 @@ done
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
   if [ -f ${LOCALREPO}/${REPO}.db ] || [ ! -z "${OTHERREPOS[@]}" ]; then
+    # Set up /etc/pacman.conf if local repo already exists
+    # TODO: Enable signature verification
+    if [ -f ${LOCALREPO}/${REPO}.db ]; then
+      cat >> ${CHROOT}/etc/pacman.conf << EOF
+[${REPO}]
+SigLevel = Never
+Server = file://$(readlink -f ${LOCALREPO})
+EOF
+    fi
+
     setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" \
                                -c ${CACHE_DIR} ${CHROOT}
   fi
