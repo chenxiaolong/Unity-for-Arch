@@ -49,15 +49,15 @@ check() {
   pushd "${srcdir}/bin/"
 
   # gtester2xunit
-  curl -O 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester2xunit-20121028102712-vb10md6zm7ydek6w-2/gtester2xunit'
-  curl -O 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester.xsl-20121028102712-vb10md6zm7ydek6w-3/gtester.xsl'
+  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester2xunit-20121028102712-vb10md6zm7ydek6w-2/gtester2xunit'
+  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester.xsl-20121028102712-vb10md6zm7ydek6w-3/gtester.xsl'
   chmod +x gtester2xunit
   sed -i -e 's|^\(#!.*python$\)|\12|g' \
          -e "s|/usr/share/gtester2xunit/gtester.xsl|$(pwd)/gtester.xsl|g" \
       gtester2xunit
 
   # dbus-test-runner
-  curl -O 'https://launchpad.net/dbus-test-runner/12.10/12.10.1/+download/dbus-test-runner-12.10.1.tar.gz'
+  wget 'https://launchpad.net/dbus-test-runner/12.10/12.10.1/+download/dbus-test-runner-12.10.1.tar.gz'
   tar zxvf dbus-test-runner-12.10.1.tar.gz
   pushd dbus-test-runner-12.10.1/
   export CFLAGS="-Wno-error"
@@ -69,7 +69,7 @@ check() {
   popd
 
   # bustle
-  curl -O "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${CARCH}.tar.bz2"
+  wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${CARCH}.tar.bz2"
   tar jxvf bustle-0.4.1-${CARCH}.tar.bz2
   EXTRAPATH+=":$(pwd)/bustle-0.4.1-${CARCH}/bin"
   EXTRALIBS+=":$(pwd)/bustle-0.4.1-${CARCH}/lib"
