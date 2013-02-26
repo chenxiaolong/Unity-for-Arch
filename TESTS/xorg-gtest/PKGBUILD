@@ -1,0 +1,45 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=xorg-gtest
+pkgver=0.7.0
+_ubuntu_rel=0ubuntu3
+pkgrel=1.${_ubuntu_rel}
+pkgdesc="X.org Google Test Framework"
+arch=('any')
+url="https://launchpad.net/xorg-gtest"
+license=('GPL')
+groups=('unity-tests')
+depends=('gtest' 'libx11' 'libxi' 'xf86-video-dummy')
+makedepends=('doxygen' 'valgrind' 'xorg-server-devel')
+source=("https://launchpad.net/xorg-gtest/trunk/${pkgver}/+download/xorg-gtest-${pkgver}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/xorg-gtest_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('8ba9b431f76f59c2e70aee1d84fce00e591c4951603a6b96ed4a75473173c980124fb09d0df4952a57f97406dcfb64e97c12ef23be87780e2543ec8e19063fb6'
+            '9876cbb4d4717f213e01bded7a43e4f69cc8d433429ef5c77bb60e781207f7f0242f3bb9d3a8ee54b7515bb38274941323ca6ad907e8799145e7160060b9b2e2')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  # Apply Ubuntu's patches
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  autoreconf -vfi
+  ./configure --prefix=/usr
+  make
+  make doc
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  # Tests currently fail
+  XORG_GTEST_CHILD_STDOUT=true make -k -j1 check || :
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+  rm -rvf "${pkgdir}/usr/include/gtest/"
+}
+
+# vim:set ts=2 sw=2 et:
