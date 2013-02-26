@@ -50,11 +50,11 @@ for package in "${packages[@]}"; do
 	cd "${package}"
 	rm -rf src
 	if [ "$NOCONFIRM" == "true" ];then
-		makepkg -fsic --noconfirm
+		makepkg --nocheck -fsic --noconfirm
 	elif [ "$NOINSTALL" == "true" ]; then
-		makepkg -fc
+		makepkg --nocheck -fc
 	else
-		makepkg -fsic
+		makepkg --nocheck -fsic
 	fi
 	cd ..
 done
