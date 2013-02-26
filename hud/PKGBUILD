@@ -1,0 +1,89 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=hud
+_actual_ver=13.04.0
+_extra_ver=daily13.02.20
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=100
+pkgdesc="Backend for the Unity HUD"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/hud"
+license=('GPL')
+groups=('unity')
+depends=('libbamf3' 'libdbusmenu-gtk3' 'sqlite')
+makedepends=('gnome-doc-utils' 'gtk-doc' 'intltool' 'vala')
+checkdepends=('xorg-server-xvfb' 'libxslt')
+optdepends=('indicator-appmenu: HUD support')
+conflicts=('indicator-appmenu<13')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_autotools.patch'
+        '0002_No_GLib_2.35.patch'
+        '0003_Include_string.h.patch')
+sha512sums=('2ec16626c29940c2067a90c6efd9775d8258d37f6c9f910f93472bff9f2bf1f765c68c0dc860b35fc4080327d5d900066900b42d109b32470d6bf24567460546'
+            '2fb93095182e736fcf1a45b6dbe5707688e7724688969848a9d0fbf24b4b6b761061963ec94b667ae3e23048299af2e09e50691d6dd6e01889d47e7fb4afa375'
+            '45cdef4eb239eee4c4013655fde7588cdde4a3fbde87997b21104f517f8a6447de6434fbe2dacae9bd27aadbcbc200ca0f84e6033d1e9ce0b5088fa5b326b8bd'
+            '047124d0a324212d67aa2f33dcd83b9112323e17dc784198ff4d9d10c0fd8613466a78739fa3c78c59e183a6b03db13fadcd01496a1d1b93e48427756cf2c3cd')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  patch -p1 -i "${srcdir}/0001_autotools.patch"
+  patch -p1 -i "${srcdir}/0002_No_GLib_2.35.patch"
+  patch -p1 -i "${srcdir}/0003_Include_string.h.patch"
+  gtkdocize
+  autoreconf -vfi
+  intltoolize -f
+  ./configure --prefix=/usr
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  # Tests require gtester2xunit, dbus-test-runner, and bustle
+
+  local EXTRAPATH="${srcdir}/bin"
+  local EXTRALIBS=""
+
+  rm -rf "${srcdir}/bin/"
+  mkdir "${srcdir}/bin/"
+  pushd "${srcdir}/bin/"
+
+  # gtester2xunit
+  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester2xunit-20121028102712-vb10md6zm7ydek6w-2/gtester2xunit'
+  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester.xsl-20121028102712-vb10md6zm7ydek6w-3/gtester.xsl'
+  chmod +x gtester2xunit
+  sed -i -e 's|^\(#!.*python$\)|\12|g' \
+         -e "s|/usr/share/gtester2xunit/gtester.xsl|$(pwd)/gtester.xsl|g" \
+      gtester2xunit
+
+  # dbus-test-runner
+  wget 'https://launchpad.net/dbus-test-runner/12.10/12.10.1/+download/dbus-test-runner-12.10.1.tar.gz'
+  tar zxvf dbus-test-runner-12.10.1.tar.gz
+  pushd dbus-test-runner-12.10.1/
+  export CFLAGS="-Wno-error"
+  ./configure --prefix=$(pwd)/INSTALLED
+  make
+  make install
+  EXTRAPATH+=":$(pwd)/INSTALLED/bin"
+  EXTRALIBS+=":$(pwd)/INSTALLED/lib"
+  popd
+
+  # bustle
+  wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${CARCH}.tar.bz2"
+  tar jxvf bustle-0.4.1-${CARCH}.tar.bz2
+  EXTRAPATH+=":$(pwd)/bustle-0.4.1-${CARCH}/bin"
+  EXTRALIBS+=":$(pwd)/bustle-0.4.1-${CARCH}/lib"
+
+  popd
+
+  LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${EXTRALIBS}" \
+    PATH="${PATH}:${EXTRAPATH}" \
+    make check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:

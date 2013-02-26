@@ -1,0 +1,141 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -57,7 +57,7 @@
+ # Dependencies
+ ###########################
+ 
+-GLIB_REQUIRED_VERSION=2.35.4
++GLIB_REQUIRED_VERSION=2.34.0
+ DBUSMENU_GLIB_REQUIRED_VERSION=0.4.0
+ BAMF_REQUIRED_VERSION=0.2.53
+ SQLITE_REQUIRED_VERSION=0.0
+--- a/src/hud-cli.c
++++ b/src/hud-cli.c
+@@ -45,6 +45,7 @@
+ int
+ main (int argc, char *argv[])
+ {
++	g_type_init();
+ 
+ 	int single_char;
+ 	int pos = 0;
+--- a/src/hud-service.c
++++ b/src/hud-service.c
+@@ -283,6 +283,8 @@
+   HudWindowSource *window_source;
+   HudSourceList *source_list;
+ 
++  g_type_init();
++
+   setlocale (LC_ALL, "");
+   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+   textdomain (GETTEXT_PACKAGE);
+--- a/src/hud-verify-app-info.c
++++ b/src/hud-verify-app-info.c
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = NULL;
+ 	gint tmpfile = g_file_open_tmp("hud-verify-app-info-temp-db-XXXXXX", &filename, NULL);
+ 
+--- a/tests/hud-performance.c
++++ b/tests/hud-performance.c
+@@ -269,6 +269,8 @@
+ int
+ main (int argc, char **argv)
+ {
++  g_type_init ();
++
+   g_test_init (&argc, &argv, NULL);
+   if (g_test_perf ())
+     g_test_add_func ("/hud/query-performance", test_query_performance);
+--- a/tests/test-bad-app-info.c
++++ b/tests/test-bad-app-info.c
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = NULL;
+ 	gint tmpfile = g_file_open_tmp("hud-test-bad-app-info-temp-db-XXXXXX", &filename, NULL);
+ 
+--- a/tests/test-distance.c
++++ b/tests/test-distance.c
+@@ -259,6 +259,8 @@
+ main (gint argc, gchar * argv[])
+ {
+ 	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+--- a/tests/test-load-app-info.c
++++ b/tests/test-load-app-info.c
+@@ -53,6 +53,8 @@
+ 		return 1;
+ 	}
+ 
++	g_type_init();
++
+ 	gchar * filename = argc[1];
+ 
+ 	sqlite3 * db = NULL;
+--- a/tests/test-result-highlighting.c
++++ b/tests/test-result-highlighting.c
+@@ -190,6 +190,8 @@
+ main (gint argc, gchar * argv[])
+ {
+ 	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+--- a/tests/test-usage-db-ancient.c
++++ b/tests/test-usage-db-ancient.c
+@@ -33,6 +33,7 @@
+ gint
+ main (gint argc, gchar * argv[])
+ {
++	g_type_init();
+ 	UsageTracker * tracker = usage_tracker_new();
+ 	g_object_unref(tracker);
+ 	return 0;
+--- a/tests/test-usage-db-old.c
++++ b/tests/test-usage-db-old.c
+@@ -72,6 +72,8 @@
+ main (gint argc, gchar * argv[])
+ {
+ 	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+--- a/tests/test-usage-db-simple.c
++++ b/tests/test-usage-db-simple.c
+@@ -98,6 +98,8 @@
+ main (gint argc, gchar * argv[])
+ {
+ 	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
+--- a/tests/test-usage-db-testapp.c
++++ b/tests/test-usage-db-testapp.c
+@@ -72,6 +72,8 @@
+ main (gint argc, gchar * argv[])
+ {
+ 	//gtk_init(&argc, &argv);
++	g_type_init();
++
+ 	g_test_init(&argc, &argv, NULL);
+ 
+ 	/* Test suites */
