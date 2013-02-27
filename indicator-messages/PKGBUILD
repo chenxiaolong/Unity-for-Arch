@@ -6,7 +6,7 @@ pkgname=indicator-messages
 _actual_ver=12.10.6
 _extra_ver=daily13.02.13
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -34,6 +34,12 @@ build() {
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make check
 }
 
 package() {
