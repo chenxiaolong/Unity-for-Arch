@@ -7,12 +7,13 @@ pkgname=('bamfdaemon' 'libbamf3')
 _actual_ver=0.4.0
 _extra_ver=daily13.02.06
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
 makedepends=('dbus-glib' 'gnome-common' 'gobject-introspection' 'gtk-doc' 'libgtop' 'libunity-webapps' 'libwnck3' 'vala')
+checkdepends=('xorg-server-xvfb')
 provides=('FEATURE-bamf-webapps')
 groups=('unity')
 options=('!libtool')
@@ -26,8 +27,14 @@ build() {
   gtkdocize
   autoreconf -vfi
 
-  ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc
+  ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  make check
 }
 
 package_bamfdaemon() {
