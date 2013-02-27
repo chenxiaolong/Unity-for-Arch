@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.8.1
-_extra_ver=daily13.02.07
+_extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Music, in the dash"
@@ -15,7 +15,7 @@ depends=('libunity' 'gstreamer' 'gst-plugins-base' 'liboauth' 'libsoup' 'tdb')
 makedepends=('vala' 'intltool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('9d77ee64cec637c5c51787072c708d9398b65f7199014efd794b565995647f4140321a1db96d6a99d8ac9039d46857e8f23abb9f2d66f8bf557e32982fce2813')
+sha512sums=('becb87b8f21c97716a01b104c9246efe1da9f6e27cc2b4618c746131b27929ef4abaa96bf05d0732fa614b274a0b4d1017b893bc50a6b03130715572d053178f')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -25,6 +25,12 @@ build() {
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  make check
 }
 
 package() {
