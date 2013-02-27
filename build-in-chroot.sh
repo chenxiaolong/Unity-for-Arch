@@ -205,9 +205,11 @@ chmod -R 0755 ${CACHE_DIR}
                                     echo \${depends[@]}")
   makedepends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
                                         echo \${makedepends[@]}")
+  checkdepends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
+                                         echo \${checkdepends[@]}")
   available="$(pacman -Sl core extra community | cut -d' ' -f2)"
   list=""
-  for i in ${depends} ${makedepends}; do
+  for i in ${depends} ${makedepends} ${checkdepends}; do
     if echo "${available}" | tr ' ' '\n' | grep -q "^${i}$"; then
       list+=" ${i}"
     fi
