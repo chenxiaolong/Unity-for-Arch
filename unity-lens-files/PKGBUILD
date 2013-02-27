@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-files
 _actual_ver=6.6.0
-_extra_ver=daily12.12.05
+_extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
@@ -16,7 +16,7 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('fdf1f6d9830ee8b597468e14eab09b2e0937eac9efa13b6d3cb2960c04c0adb4ef14d614d08fbb12d4a47f6e27611ee557ff0893e6db1166831810493d0a1020')
+sha512sums=('a041025ed58058ddb75c528b6d4350aae9f6f9adf0ff0dfc47403b88966d211c917cd0336cfba1b600012775989660f123dc273e532fa15b8c34d8b819e5e132')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -26,6 +26,12 @@ build() {
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  make check
 }
 
 package() {
