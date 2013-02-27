@@ -1,0 +1,11 @@
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -44,7 +44,7 @@
+ TESTS += test-indicator
+ check_PROGRAMS += test-indicator
+ test_indicator_SOURCES = test-indicator.cc
+-test_indicator_LDADD = $(TEST_LIBS)
++test_indicator_LDADD = $(TEST_LIBS) -lpthread
+ test_indicator_CPPFLAGS = $(TEST_CPPFLAGS) -DSCHEMA_DIR="\"$(top_builddir)/tests/\""
+ 
+ ###
