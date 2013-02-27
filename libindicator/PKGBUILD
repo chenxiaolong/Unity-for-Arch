@@ -7,12 +7,13 @@ pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
 _extra_ver=daily13.02.25
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
 license=('GPL')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu')
+checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
@@ -35,6 +36,15 @@ build() {
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --disable-static
   make ${MAKEFLAGS}
   popd
+}
+
+# Ubuntu/Debian's dh_auto_test is not being run for this package (probably a
+# packaging mistake)
+check() {
+  # test-indicator-ng fails under GTK 3
+  #cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
+  make check
 }
 
 package_libindicator() {
