@@ -5,12 +5,13 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=100
+pkgrel=101
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
 license=('LGPL')
 makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
+checkdepends=('dbus-test-runner')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
@@ -47,6 +48,14 @@ build() {
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
   make ${MAKEFLAGS}
   popd
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  make check
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  make check
 }
 
 package_libindicate() {
