@@ -4,7 +4,7 @@
 
 pkgname=nux
 _actual_ver=4.0.0
-_extra_ver=daily13.02.19
+_extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
@@ -13,32 +13,43 @@ url="https://launchpad.net/nux"
 license=('LGPL')
 depends=('gdk-pixbuf2' 'glew' 'pango' 'mesa' 'libsigc++' 'libxcomposite' 'ibus' 'libxdamage' 'libxxf86vm' 'geis')
 makedepends=('boost' 'glproto' 'dri2proto' 'doxygen' 'graphviz')
+checkdepends=('gmock-ubuntu')
 
 groups=('unity')
 options=('!libtool' '!emptydirs')
 
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch')
-sha512sums=('650f124c2f1a61ee279da51fc93467631aba73dd3dc3e133dde84828f37bae0af68d5740e2f9d41d65aa77427590c7bc1da651601c7feb7e9200fe6b8d25778c'
-            'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2')
+        '0001_autoconf.patch'
+        '01_blacklist_llvmpipe.patch')
+sha512sums=('98548ab3650b95221029e7c16bc8056a9f57369e56f5ede2dc752cd59b8064878441d516f28196d38b5a496421e8e3ca4ea5d8baade85ca95fce8a3cafbf49f9'
+            'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
+            'a6122d47bef574df7e4f3aa3ddff34ca7a6e291878665f3dfdbb9ea071394180ab31aadcb79efd53ebb1ec2a86a15d53c9394478305c3fd5f10ece049265b374')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p1 -i "${srcdir}/01_blacklist_llvmpipe.patch"
 
   autoreconf -vfi
 
   ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
 
-  make ${MAKEFLAGS}
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make check-headless
 }
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}" install
+
+  rm -rv "${pkgdir}/usr/share/nux/gputests/"
 }
 
 # vim:set ts=2 sw=2 et:
