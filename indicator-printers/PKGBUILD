@@ -4,7 +4,7 @@ pkgname=indicator-printers
 _ubuntu_rel=0ubuntu3
 _actual_ver=0.1.6
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="Indicator showing active print jobs"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-printers"
@@ -26,6 +26,12 @@ build() {
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}"
+
+  make check
 }
 
 package() {
