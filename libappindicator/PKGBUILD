@@ -7,19 +7,24 @@ pkgname=('libappindicator' 'libappindicator3')
 _actual_ver=12.10.1
 _extra_ver=daily13.02.15
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libappindicator"
 license=('LGPL')
 makedepends=('dbus-glib' 'libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml' 'gtk-doc')
+checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('d48586239b45f90b93fa67e6aa45b5a9037e769ed27c28eb0e389c2520de5d2d3dc9abb6d36019281dce7cc000cd8f5344c581205eed0983009ec15170428a8a')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_g_type_init.patch')
+sha512sums=('d48586239b45f90b93fa67e6aa45b5a9037e769ed27c28eb0e389c2520de5d2d3dc9abb6d36019281dce7cc000cd8f5344c581205eed0983009ec15170428a8a'
+            '9d58a76f7e9896573a39719596dd4d535a2293f970b6ed0bb156406f4abe715dbbade4b9beb7f3e6b7cf85d26a727750e8fc4e2f0b3525f0ac269cc59f8c30bf')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_g_type_init.patch"
 
   # nunit renamed to mono-nunit in /usr/lib/pkgconfig/mono-nunit.pc
   sed -i 's/nunit >= 2\.4\.7/mono-nunit >= 2.4.7/' configure.ac
@@ -28,7 +33,6 @@ build() {
   sed -i 's|assemblydir = $(libdir)/cli/appindicator-sharp-0.1|assemblydir = $(libdir)/appindicator-sharp-0.1|' bindings/mono/Makefile.am
   sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
 
-  # Only the tests (which we don't build) stopped using g_type_init()
   sed -i 's/2\.35\.4/2.34.3/g' configure.ac
 
   gtkdocize
@@ -46,6 +50,14 @@ build() {
   ../configure --prefix=/usr --with-gtk=3 --disable-static PYTHON=python2
   make ${MAKEFLAGS}
   popd
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
+  make check
+
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
+  make check
 }
 
 package_libappindicator() {
