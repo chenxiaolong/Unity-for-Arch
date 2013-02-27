@@ -5,7 +5,7 @@ pkgbase=overlay-scrollbar
 _actual_ver=0.2.16
 _extra_ver=+r359daily13.02.06
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=101
 pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ayatana-scrollbar"
@@ -33,6 +33,14 @@ build() {
   ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --disable-static
   make ${MAKEFLAGS}
   popd
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2/"
+  make check
+
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
+  make check
 }
 
 package_overlay-scrollbar() {
