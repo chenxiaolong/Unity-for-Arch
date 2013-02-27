@@ -11,7 +11,7 @@ url="https://launchpad.net/dbus-test-runner"
 license=('GPL')
 groups=('unity-tests')
 depends=('dbus-glib' 'gvfs' 'xorg-server-xvfb')
-makedepends=('gnome-common')
+makedepends=('gnome-common' 'intltool')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dbus-test-runner_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autotools.patch')
