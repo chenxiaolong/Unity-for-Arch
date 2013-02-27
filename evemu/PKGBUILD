@@ -5,7 +5,7 @@ pkgname=evemu
 _actual_ver=1.0.11
 _extra_ver=daily13.02.20
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Linux Evdev Event Emulation"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/evemu"
@@ -19,9 +19,15 @@ sha512sums=('f9ceb2d69e0459f12055f3937a337a49e999ebfc7ebe673e9326e83a0787e2a2af0
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  export PYTHON=python2
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static
   make -j1
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make check
 }
 
 package() {
