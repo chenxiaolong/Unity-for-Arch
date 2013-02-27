@@ -6,27 +6,31 @@ pkgname=indicator-session
 _actual_ver=12.10.5
 _extra_ver=daily13.01.25
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
 license=('GPL')
 depends=('libindicator3' 'libdbusmenu-gtk3' 'dconf')
 makedepends=('intltool')
+checkdepends=('dbus-test-runner' 'gtest-ubuntu' 'xorg-gtest')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_Link_pthread.patch'
         '0002_There_is_no_help.patch'
         'revert_r382.patch')
 sha512sums=('0c70e5eca2de1c01f1c62aad1eff91ac547834cd0ba09700330db56ac6f6857775ba19c8faa265f7e93252b792675341fc858b8bb523275e8f2ae5b3bd8d470c'
+            'c262ab01ca967e7db09edff6bf6620490dcf6c400888f10d11186f38b64762d67d4fae9ad345744df8e12ad825d1a4ff73825ae783206d52a33a000e9cc3d85c'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
             '0bae670655e2cebd82f702bd7e804828729f0a23eac8212637875ebe19b56151066add500e6580e856f6820dc4304327b609a0b5fe82b7c119769373eaa38018')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  patch -p1 -i "${srcdir}/0001_Link_pthread.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
   patch -p0 -i "${srcdir}/revert_r382.patch"
 
@@ -35,6 +39,12 @@ build() {
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile
   make ${MAKEFLAGS}
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
+
+  env -u LD_PRELOAD make check
 }
 
 package() {
