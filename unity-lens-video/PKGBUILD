@@ -2,26 +2,40 @@
 
 pkgname=unity-lens-video
 _actual_ver=0.3.14
-_extra_ver=daily12.12.05
+_extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=101
 pkgdesc="Unity Video lens"
 arch=('any')
 url="https://launchpad.net/unity-lens-videos"
 license=('GPL')
-depends=('python2' 'zeitgeist')
-makedepends=('python2-distutils-extra')
+depends=('dee' 'json-glib' 'libgee' 'libsoup-gnome' 'libunity' 'libzeitgeist' 'unity-lens-music')
+makedepends=('gnome-common' 'intltool' 'vala')
+checkdepends=('xorg-server-xvfb')
+provides=("unity-scope-video-remote=${pkgver}")
+conflicts=('unity-scope-video-remote')
+replaces=('unity-scope-video-remote')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('9cc27920c12477f31135e586640cca92a713bdee7618d8eab6051dbcacbdf2b3e326fc5b853f63071ff41ba764202bdd503bcb022f38a03f0ed18acd9cffb456')
+sha512sums=('840496b624af3cfe609a5f9184b429da92f3d6443e9f237c456d78a2d0196cb2a507e1c98fd7a1854af142999f131d3300d91e31149cef85418e24a9da613b8a')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  autoreconf -vfi
+  intltoolize -f
+  ./configure --prefix=/usr --enable-headless-tests
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make check
+}
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  python2 setup.py install --root="${pkgdir}/" --optimize=1
-
-  # Python 2 fix
-  sed -i 's|\(#!.*bin.*python$\)|\12|g' "${pkgdir}/usr/lib/unity-lens-video/unity-lens-video"
+  make DESTDIR="${pkgdir}/" install
 }
 
 # vim:set ts=2 sw=2 et:
