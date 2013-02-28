@@ -2,9 +2,8 @@
 #Todo
 # * add workaround for qt-ubuntu
 # * add error detection
-# * add option to start from a certain position
 # * check for root if installing
-while getopts nhbp:i: opt; do
+while getopts nhbp:is: opt; do
 	case $opt in
 		n)
 			NOCONFIRM=true
@@ -16,6 +15,7 @@ while getopts nhbp:i: opt; do
 			echo "-b just builds without installing"
 			echo "-p [package-name] only build specific package"
 			echo "-i [package-name] ignore certain package"
+			echo "-s [package-name] start at package"
 			exit
 			;;
 		b)
@@ -26,6 +26,10 @@ while getopts nhbp:i: opt; do
 			;;
 		i)
 			IGNOREPACKAGE=$OPTARG
+			;;
+		s)
+			NOSTART=true
+			STARTPKG=$OPTARG
 			;;
 	esac
 done
@@ -41,6 +45,15 @@ fi
 
 packages=($(./What_can_I_update\?.py -l | grep -v qt-ubuntu))
 for package in "${packages[@]}"; do
+	if [ "$NOSTART" == "true" ]; then
+		if [ "${package}" != "$STARTPKG" ]; then
+			continue
+		else
+			NOSTART=false
+		fi
+
+	fi
+
 	if [[ "$IGNOREPACKAGE" != "" && "$IGNOREPACKAGE" == "${package}" ]]; then
 		continue
 	fi
