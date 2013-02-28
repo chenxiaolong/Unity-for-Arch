@@ -4,7 +4,7 @@ pkgname=hud
 _actual_ver=13.04.0
 _extra_ver=daily13.02.20
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
@@ -12,7 +12,7 @@ license=('GPL')
 groups=('unity')
 depends=('libbamf3' 'libdbusmenu-gtk3' 'sqlite')
 makedepends=('gnome-doc-utils' 'gtk-doc' 'intltool' 'vala')
-checkdepends=('xorg-server-xvfb' 'libxslt' 'wget')
+checkdepends=('dbus-test-runner' 'xorg-server-xvfb' 'libxslt' 'wget')
 optdepends=('indicator-appmenu: HUD support')
 conflicts=('indicator-appmenu<13')
 install=hud.install
@@ -56,18 +56,6 @@ check() {
   sed -i -e 's|^\(#!.*python$\)|\12|g' \
          -e "s|/usr/share/gtester2xunit/gtester.xsl|$(pwd)/gtester.xsl|g" \
       gtester2xunit
-
-  # dbus-test-runner
-  wget 'https://launchpad.net/dbus-test-runner/12.10/12.10.1/+download/dbus-test-runner-12.10.1.tar.gz'
-  tar zxvf dbus-test-runner-12.10.1.tar.gz
-  pushd dbus-test-runner-12.10.1/
-  export CFLAGS="-Wno-error"
-  ./configure --prefix=$(pwd)/INSTALLED
-  make
-  make install
-  EXTRAPATH+=":$(pwd)/INSTALLED/bin"
-  EXTRALIBS+=":$(pwd)/INSTALLED/lib"
-  popd
 
   # bustle
   case ${CARCH} in
