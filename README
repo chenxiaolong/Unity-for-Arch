@@ -10,7 +10,7 @@ Order to compile/install:
 
 01: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
 02: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
-03: qt-ubuntu                      -> Qt toolkit with Ubuntu patches
+03: qt4-ubuntu                     -> Qt toolkit with Ubuntu patches
 04: libdbusmenu                    -> Library for passing menus over DBus
 05: libindicator                   -> Symbols and functions for indicators
 06: libindicate                    -> Libraries to raise 'flags' on DBus

@@ -18,27 +18,38 @@ if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ] && [
   exit 1
 fi
 
-# AUR fix
-pkgname=qt-ubuntu
-pkgdesc='A cross-platform application and UI framework'
-
-pkgbase=qt-ubuntu
-true && pkgname=('qt-ubuntu' 'qt-private-headers-ubuntu')
+pkgname=qt4-ubuntu
 _ubuntu_rel=0ubuntu1
-_actual_ver=4.8.4
 _extra_ver=+dfsg
-pkgver=${_actual_ver}.dfsg.${_ubuntu_rel}
-pkgrel=100
+pkgver=4.8.4
+pkgrel=100.dfsg.${_ubuntu_rel}
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
-makedepends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient')
+pkgdesc='A cross-platform application and UI framework'
+depends=('libtiff' 'libpng' 'libmng' 'sqlite' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils')
+makedepends=('mesa' 'postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient')
+optdepends=('postgresql-libs: PostgreSQL driver'
+            'libmysqlclient: MySQL driver'
+            'unixodbc: ODBC driver'
+            'libfbclient: Firebird/iBase driver'
+            'libxinerama: Xinerama support'
+            'libxcursor: Xcursor support'
+            'libxfixes: Xfixes support'
+            'icu: Unicode support')
+install=${pkgname}.install
 options=('!libtool')
-_pkgfqn="${pkgbase%-*}-everywhere-opensource-src-${_actual_ver}"
+replaces=('qt<=4.8.4' 'qt-ubuntu<=4.8.4')
+conflicts=('qt' 'qt-ubuntu')
+_pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz"
+        'qtconfig.desktop'
+        'qt4.profile')
 sha512sums=('472972b63b5cad83b4c4656b23e95b6d4923cc31a518138e25d5921982b14abc835883356c2b779a7972cb77cf73fe25b46630be7c6a86a917b364186aa17496'
-            '84954b2dba277772a9801b4a5c8343c9360cafcbfdfe05de549a92da7b8b233fce786588cc0c7f927359f4742fec5a6a7cbaacc3efbc88661e5b1181d30763a9')
+            '84954b2dba277772a9801b4a5c8343c9360cafcbfdfe05de549a92da7b8b233fce786588cc0c7f927359f4742fec5a6a7cbaacc3efbc88661e5b1181d30763a9'
+            '5148a34fb3f990cf72c95c3663bb77edd839ab6dec0a9141d0423afa91ed917d3c1a700113568ae99ba0c58a7b3ba25ddbaaec057e1d2b5ae41c4f9be0eb60da'
+            'e9275b1851cdbf8d7be9827899789670dab7a1ef467e6477805ea44f464cb29feb47daeabe873bd86ddf3130a85280411ba84c17ab44cb2f398f50a4b05a2baf')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
@@ -133,15 +144,17 @@ build() {
     -confirm-license \
     -opensource \
     `# Paths and prefixes` \
-    -datadir /usr/share/qt \
-    -demosdir /usr/share/doc/qt/demos \
-    -docdir /usr/share/doc/qt \
-    -examplesdir /usr/share/doc/qt/examples \
-    -importdir /usr/lib/qt/imports \
-    -plugindir /usr/lib/qt/plugins \
+    -bindir /usr/lib/qt4/bin \
+    -datadir /usr/share/qt4 \
+    -demosdir /usr/share/doc/qt4/demos \
+    -docdir /usr/share/doc/qt4 \
+    -examplesdir /usr/share/doc/qt4/examples \
+    -headerdir /usr/include/qt4 \
+    -importdir /usr/lib/qt4/imports \
+    -plugindir /usr/lib/qt4/plugins \
     -prefix /usr \
     -sysconfdir /etc/xdg \
-    -translationdir /usr/share/qt/translations \
+    -translationdir /usr/share/qt4/translations \
     `# Enable features` \
     -plugin-sql-ibase \
     -plugin-sql-mysql \
@@ -167,91 +180,49 @@ build() {
     -openssl-linked \
     -verbose
 
-  make ${MAKEFLAGS}
+  make
 }
 
-package_qt-ubuntu() {
-  pkgdesc='A cross-platform application and UI framework'
-  depends=('libtiff' 'libpng' 'libmng' 'sqlite3' 'ca-certificates' 'glib2' 'dbus' 'fontconfig' 'libgl' 'libsm' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils')
-  conflicts=('qt')
-  provides=("qt=${_actual_ver}")
-  optdepends=('postgresql-libs: PostgreSQL driver'
-              'libmysqlclient: MySQL driver'
-              'unixodbc: ODBC driver'
-              'libfbclient: Firebird/iBase driver'
-              'libxinerama: Xinerama support'
-              'libxcursor: Xcursor support'
-              'libxfixes: Xfixes support'
-              'icu: Unicode support')
-  install='qt.install'
-
+package() {
   cd "${srcdir}/${_pkgfqn}"
   make INSTALL_ROOT="${pkgdir}" install
 
-  ### Tnstall desktop files and icons ###
-  install -d -m755 "${pkgdir}/usr/share/applications/"
+  # install missing icons and desktop files
+  install -D -m644 src/gui/dialogs/images/qtlogo-64.png \
+    "${pkgdir}/usr/share/icons/hicolor/64x64/apps/qt4logo.png"
+  install -Dm644 "${srcdir}"/qtconfig.desktop \
+    "${pkgdir}/usr/share/applications/qtconfig4.desktop"
 
-  # Qt Designer
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/designer-qt4.desktop" \
-                  > "${pkgdir}/usr/share/applications/designer.desktop"
-  install -p -D -m644 tools/designer/src/designer/images/designer.png \
-                    "${pkgdir}/usr/share/pixmaps/designer.png"
-  # Qt Assistant
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/assistant-qt4.desktop" \
-                  > "${pkgdir}/usr/share/applications/assistant.desktop"
-  install -p -D -m644 tools/assistant/tools/assistant/images/assistant-128.png \
-                    "${pkgdir}/usr/share/pixmaps/assistant.png"
-  # Qt Linguist
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/linguist-qt4.desktop" \
-                  > "${pkgdir}/usr/share/applications/linguist.desktop"
-  install -p -D -m644 tools/linguist/linguist/images/icons/linguist-128-32.png \
-                    "${pkgdir}/usr/share/pixmaps/linguist.png"
-  # Qt Config
-  sed 's/-qt4//g' < "${srcdir}/debian/desktop/qtconfig-qt4.desktop" \
-                  > "${pkgdir}/usr/share/applications/qtconfig.desktop"
-  install -p -D -m644 src/gui/dialogs/images/qtlogo-64.png \
-                    "${pkgdir}/usr/share/pixmaps/qtconfig.png"
+  # install the profile
+  install -D -m755 "${srcdir}"/qt4.profile "${pkgdir}"/etc/profile.d/qt4.sh
 
-  ### Install manpages from Debian ###
-  install -d -m755 "${pkgdir}/usr/share/man/man1/"
-  for i in "${srcdir}"/debian/manpages/*.1; do
-    FILENAME="${i##*/}"
-    FILENAME="${FILENAME/-qt4/}"
-    sed -e 's/-qt4//g' -e 's/-QT4//g' \
-      < "${i}" \
-      > "${pkgdir}/usr/share/man/man1/${FILENAME}"
-  done
+  # Useful symlinks for cmake and configure scripts
+  install -d "${pkgdir}"/usr/bin
+  ln -s /usr/lib/qt4/bin/qmake "${pkgdir}"/usr/bin/qmake4
+  ln -s /usr/lib/qt4/bin/moc "${pkgdir}"/usr/bin/moc-qt4
+  ln -s /usr/lib/qt4/bin/uic "${pkgdir}"/usr/bin/uic-qt4
+  ln -s /usr/lib/qt4/bin/rcc "${pkgdir}"/usr/bin/rcc-qt4
 
-  ### Install license files ###
+  # install license addition
   install -D -m644 LGPL_EXCEPTION.txt \
-    "${pkgdir}/usr/share/licenses/qt/LGPL_EXCEPTION.txt"
+    ${pkgdir}/usr/share/licenses/${pkgname}/LGPL_EXCEPTION.txt
 
-  ### Fix path in pkgconfig files ###
-  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' -exec \
-    perl -pi -e "s, -L${srcdir}/?\S+,,g" {} \;
+  # Fix wrong libs path in pkgconfig files
+  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' \
+    -exec perl -pi -e "s, -L${srcdir}/?\S+,,g" {} \;
 
-  ### Fix path in prl files ###
-  find "${pkgdir}/usr/lib" -type f -name '*.prl' -exec \
-    sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;
-}
+  # Fix wrong bins path in pkgconfig files
+  find "${pkgdir}/usr/lib/pkgconfig" -type f -name '*.pc' \
+    -exec sed -i 's|/usr/bin/|/usr/lib/qt4/bin/|g' {} \;
 
-package_qt-private-headers-ubuntu(){
-  pkgdesc="Qt private headers for development"
-  depends=("qt-ubuntu=${pkgver}")
-  conflicts=('qt-private-headers')
-  provides=("qt-private-headers=${_actual_ver}")
+  # Fix wrong path in prl files
+  find "${pkgdir}/usr/lib" -type f -name '*.prl' \
+    -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;
 
-  install -d -m755 "${pkgdir}"/usr/include/{QtCore,QtDeclarative,QtGui,QtScript}
-  install -d -m755 "${pkgdir}"/usr/src/{corelib,declarative,gui,script}
-    
-  for i in QtCore QtDeclarative QtGui QtScript; do
-    cp -r "${srcdir}/${_pkgfqn}/include/${i}/private/" \
-          "${pkgdir}/usr/include/${i}/"
-  done
-
-  for i in corelib declarative gui script; do
-    cp -r "${srcdir}/${_pkgfqn}/src/${i}" "${pkgdir}/usr/src/"
-  done
+  # Do not install the qttools
+  rm "${pkgdir}"/usr/lib/qt4/bin/{assistant,designer,linguist}
+  rm -r "${pkgdir}"/usr/lib/qt4/plugins/designer
+  rm "${pkgdir}"/usr/share/qt4/translations/{assistant,designer,linguist,qt_help}_*.qm
 }
 
 # vim:set ts=2 sw=2 et:
