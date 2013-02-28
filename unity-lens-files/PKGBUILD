@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=unity-lens-files
-_actual_ver=6.6.0
-_extra_ver=daily13.02.26
-pkgver=${_actual_ver}.${_extra_ver}
+_actual_ver=7.0
+_extra_ver=~daily13.02.28
+pkgver=${_actual_ver}${_extra_ver/\~/.}
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('a041025ed58058ddb75c528b6d4350aae9f6f9adf0ff0dfc47403b88966d211c917cd0336cfba1b600012775989660f123dc273e532fa15b8c34d8b819e5e132')
+sha512sums=('a54ff834d951aee2b5509a53e6dccaff46e707cc519c5232e40c42e721f1ff2ca27fa85024b783b00bc1f06ecad56cc18baaf83bd8b04b6cc0fd5e0d36038498')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
