@@ -32,6 +32,7 @@ show_help() {
   echo "  -c,--config   Use this file instead of build-in-chroot.conf as the config"
   echo "  -k,--keepcopy Keep a copy of the built packages in the directory of the"
   echo "                PKGBUILD file"
+  echo "  -r,--keeproot Do not delete chroot after building"
 }
 
 ARCH_SUPPORTED=('i686' 'x86_64')
@@ -39,8 +40,10 @@ ARCH=""
 PACKAGE_DIR=""
 CHROOT_PACKAGES=('base' 'base-devel' 'sudo' 'curl')
 CONFIG_FILE="$(dirname ${0})/build-in-chroot.conf"
+KEEP_COPY=false
+KEEP_ROOT=false
 
-ARGS=$(getopt -o p:a:c:k -l package:arch:config:keep -n build-in-chroot.sh -- "${@}")
+ARGS=$(getopt -o p:a:c:k -l package:arch:config:keepcopy,keeproot -n build-in-chroot.sh -- "${@}")
 
 if [ ${?} -ne 0 ]; then
   echo "Failed to parse arguments!"
@@ -67,8 +70,12 @@ while true; do
     CONFIG_FILE="${1}"
     shift
     ;;
-  -k|--keep)
+  -k|--keepcopy)
     KEEP_COPY=true
+    shift
+    ;;
+  -r|--keeproot)
+    KEEP_ROOT=true
     shift
     ;;
   --)
@@ -146,7 +153,9 @@ cleanup() {
   done
 
   # Clean up chroot
-  rm -rf ${CHROOT}
+  if [ "x${KEEP_ROOT}" != "xtrue" ]; then
+    rm -rf ${CHROOT}
+  fi
   rm -f ${CHROOT}.lock
   rm -rf ${CACHE_DIR}
   rm -rf ${TEMP_CHROOT}
