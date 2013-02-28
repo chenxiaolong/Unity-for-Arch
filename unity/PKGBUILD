@@ -5,7 +5,7 @@ _UBUNTU=true # Using Ubuntu patches?
 pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
-_extra_ver="daily13.02.26"
+_extra_ver="daily13.02.28"
 pkgrel=100
 
 if [ "${_UBUNTU}" == true ]; then
@@ -36,8 +36,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('8a8d9606b13e64d31f2496e536e19da1fb143ecde6842993845fa27bc05a85dd46d059f583ea4469fa99ec4c6195f1a38ac33119c818036b81e3c2a9e7655d83'
-            '1aa30e96e7cdef9015afd1eaa7803434b654f6d177ed4ac519e43af66937e15bc923d08b267cc1bccb828fa8cd08fc6c4070a3285d7af5f0953f1b4c38ff825b'
+sha512sums=('cebcc2d8f917bb11b6de22ce15c67f7993d5bf958a8f76173e3235cb63478a3d6c4d779a90e2159346b8a8b645203a41a010fe4b9324aad3a7a553bdaa395533'
+            'ef02357e78d941cdf5c255ef66b5d3308fa7a6c983a63d82947f8170ed0a2c09718f229fb4b0596561bcc6a50c3ac4674c31c9ceee9e27fbbb0e257fcd015156'
             'a70f14aa85b37a2a009791a3c0f9971e571c273ab94d7115f3fca449bc4b0e4a102bd9ca21e6dbbda67e3f1f858b0212e59fbb86c67ce35682b42d73a7239191'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
