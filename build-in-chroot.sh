@@ -43,7 +43,7 @@ CONFIG_FILE="$(dirname ${0})/build-in-chroot.conf"
 KEEP_COPY=false
 KEEP_ROOT=false
 
-ARGS=$(getopt -o p:a:c:k -l package:arch:config:keepcopy,keeproot -n build-in-chroot.sh -- "${@}")
+ARGS=$(getopt -o p:a:c:kr -l package:arch:config:keepcopy,keeproot -n build-in-chroot.sh -- "${@}")
 
 if [ ${?} -ne 0 ]; then
   echo "Failed to parse arguments!"
