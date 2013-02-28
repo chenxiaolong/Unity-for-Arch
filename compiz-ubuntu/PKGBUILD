@@ -31,7 +31,7 @@ makedepends=('boost' 'cmake' 'intltool' 'libwnck')
 groups=('unity')
 options=('emptydirs')
 conflicts=('compiz')
-provides=('compiz-core compiz')
+provides=('compiz-core' 'compiz')
 install=compiz-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
