@@ -14,7 +14,7 @@ url="https://launchpad.net/libunity"
 license=('LGPL')
 depends=('libgee' 'dee' 'libdbusmenu' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection')
-checkdepends=('python' 'xorg-server-xvfb' 'xorg-xauth')
+checkdepends=('xorg-server-xvfb' 'xorg-xauth')
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -26,6 +26,8 @@ sha512sums=('22707daadb916a533ec274d6c63ebc72ae1ddf4b5ba95d9948eabf3aadaaab9f644
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
