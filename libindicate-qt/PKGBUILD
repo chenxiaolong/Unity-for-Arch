@@ -5,12 +5,12 @@
 pkgname=libindicate-qt
 _ubuntu_rel=5
 pkgver=0.2.5.91.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="This project provides a set of Qt bindings for libindicate, the indicator system developed by Canonical Desktop Experience team"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate-qt"
 license=('GPL')
-depends=('qt' 'libindicate')
+depends=('qt4' 'libindicate')
 makedepends=('cmake')
 groups=('unity')
 source=("http://launchpad.net/${pkgname}/${pkgname%-*}-0.5/${pkgver%.*}/+download/${pkgname}-${pkgver%.*}.tar.bz2"
