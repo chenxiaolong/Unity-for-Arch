@@ -194,7 +194,7 @@ chmod -R 0755 ${CACHE_DIR}
   # Remove any packages in the local repo from the pacman cache. The chroot
   # should download them into its own cache.
   for i in ${LOCALREPO}/*.pkg.tar.xz; do
-    if [ -f /var/cache/pacman/pkg/$(basename ${i}) ]; then
+    if [ -f "/var/cache/pacman/pkg/$(basename ${i})" ]; then
       rm /var/cache/pacman/pkg/$(basename ${i})
     fi
   done
@@ -310,10 +310,10 @@ done
 # being downloaded
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
-  if [ -f ${LOCALREPO}/${REPO}.db ] || [ ! -z "${OTHERREPOS[@]}" ]; then
+  if [ -f "${LOCALREPO}/${REPO}.db" ] || [ ! -z "${OTHERREPOS[@]}" ]; then
     # Set up /etc/pacman.conf if local repo already exists
     # TODO: Enable signature verification
-    if [ -f ${LOCALREPO}/${REPO}.db ]; then
+    if [ -f "${LOCALREPO}/${REPO}.db" ]; then
       cat >> ${CHROOT}/etc/pacman.conf << EOF
 [${REPO}]
 SigLevel = Never
