@@ -3,7 +3,7 @@
 # * add workaround for qt-ubuntu
 # * add error detection
 # * check for root if installing
-while getopts nhbp:is: opt; do
+while getopts dnhbp:is: opt; do
 	case $opt in
 		n)
 			NOCONFIRM=true
@@ -16,6 +16,7 @@ while getopts nhbp:is: opt; do
 			echo "-p [package-name] only build specific package"
 			echo "-i [package-name] ignore certain package"
 			echo "-s [package-name] start at package"
+			echo "-d only download required sources (do not build or install)"
 			exit
 			;;
 		b)
@@ -31,6 +32,7 @@ while getopts nhbp:is: opt; do
 			NOSTART=true
 			STARTPKG=$OPTARG
 			;;
+		d)	DOWNLOAD=true
 	esac
 done
 
@@ -66,6 +68,9 @@ for package in "${packages[@]}"; do
 		makepkg --nocheck -fsic --noconfirm
 	elif [ "$NOINSTALL" == "true" ]; then
 		makepkg --nocheck -fc
+	elif [ "$DOWNLOAD" == "true" ]; then
+		echo "Downloading ${package}..."
+		makepkg -g &> /dev/null
 	else
 		makepkg --nocheck -fsic
 	fi
