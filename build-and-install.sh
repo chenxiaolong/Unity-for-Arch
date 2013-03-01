@@ -1,6 +1,6 @@
 #!/bin/bash
 #Todo
-# * add workaround for qt-ubuntu
+# * add workaround for qt4-ubuntu
 # * add error detection
 # * check for root if installing
 while getopts nhbp:is: opt; do
@@ -43,7 +43,7 @@ if [ "$NOINSTALL" == true ]; then
 fi
 
 
-packages=($(./What_can_I_update\?.py -l | grep -v qt-ubuntu))
+packages=($(./What_can_I_update\?.py -l | grep -v qt4-ubuntu))
 for package in "${packages[@]}"; do
 	if [ "$NOSTART" == "true" ]; then
 		if [ "${package}" != "$STARTPKG" ]; then
