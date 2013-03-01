@@ -22,7 +22,7 @@ pkgname=qt4-ubuntu
 _ubuntu_rel=0ubuntu1
 _extra_ver=+dfsg
 pkgver=4.8.4
-pkgrel=100.dfsg.${_ubuntu_rel}
+pkgrel=101.dfsg.${_ubuntu_rel}
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
@@ -39,8 +39,9 @@ optdepends=('postgresql-libs: PostgreSQL driver'
             'icu: Unicode support')
 install=${pkgname}.install
 options=('!libtool')
+provides=("qt4=${pkgver}")
 replaces=('qt<=4.8.4' 'qt-ubuntu<=4.8.4')
-conflicts=('qt' 'qt-ubuntu')
+conflicts=('qt4' 'qt' 'qt-ubuntu')
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz"
