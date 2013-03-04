@@ -1,0 +1,114 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+desktop_arch=('i686' 'x86_64')
+# Let me know what ARM architectures are compatible
+mobile_arch=()
+
+pkgname=mir-bzr
+pkgver=461
+_real_ver=0.0.2
+pkgrel=1
+pkgdesc="Ubuntu's new display server"
+arch=(${desktop_arch[@]} ${mobile_arch[@]})
+url="https://launchpad.net/mir"
+# Server is GPL, client is LGPL
+license=('GPL' 'LGPL')
+groups=('unity')
+
+depends=('boost' `# Maybe gcc4.6`)
+# At the moment, Mir does require Mesa's libGL
+depends+=('mesa-libgl' 'mesa')
+
+if grep -q ${CARCH} <<< ${desktop_arch[@]}; then
+  depends+=('libdrm')
+fi
+if grep -q ${CARCH} <<< ${mobile_arch[@]}; then
+  # Currently unpackaged. Presumably, Ubuntu's fork will need to be used
+  depends+=('libhybris')
+fi
+
+makedepends=('bzr' 'cmake' 'doxygen' 'protobuf' 'valgrind')
+#checkdepends=('lcov' 'gcovr' 'vera++')
+
+# Provide Ubuntu's library names
+provides=("libmirprotobuf=${_real_ver}"     # Protocol shared library
+          "libmirserver=${_real_ver}"       # Server shared library
+          "libmirclient=${_real_ver}"       # Client shared library
+          "libmirclient-demos=${_real_ver}" # Example clients
+          "mir=${_real_ver}")               # Stable version of Mir
+conflicts=('libmirprotobuf'
+           'libmirserver'
+           'libmirclient'
+           'libmirclient-demos'
+           'mir')
+
+source=('0001_Use_Default_GCC.patch')
+sha512sums=('21f105508a1297fb328fb63dd2bdb646aabddf2181e35b3147abe2971c64e94d9dd319fa9cf90c58bf7674c4439673737e5bc2693995172cb3ca323aac0f53f8')
+
+_bzrtrunk=lp:mir
+_bzrmod=mir
+
+build() {
+  cd "${srcdir}"
+  msg "Connecting to Bazaar server...."
+
+  if [[ -d "${_bzrmod}" ]]; then
+    cd "${_bzrmod}" && bzr pull "${_bzrtrunk}" -r "${pkgver}"
+    msg "The local files are updated."
+  else
+    bzr branch "${_bzrtrunk}" "${_bzrmod}" -q -r "${pkgver}"
+  fi
+
+  msg "Bazaar checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "${srcdir}/${_bzrmod}-build"
+  cp -r "${srcdir}/${_bzrmod}" "${srcdir}/${_bzrmod}-build"
+  cd "${srcdir}/${_bzrmod}-build"
+
+  patch -p0 -i "${srcdir}/0001_Use_Default_GCC.patch"
+
+  COMMON_PARAMS=('-DCMAKE_C_COMPILER=gcc'
+                 '-DCMAKE_CXX_COMPILER=g++'
+                 '-DCMAKE_INSTALL_PREFIX=/usr'
+                 '-DMIR_DISABLE_EPOLL_REACTOR=YES'
+                 '-DMIR_DISABLE_INPUT=YES')
+  
+  if grep -q ${CARCH} <<< ${mobile_arch[@]}; then
+    cmake . ${COMMON_PARAMS[@]}         \
+            -DBoost_COMPILER=-gcc       \
+            -DMIR_ENABLE_DEATH_TESTS=NO \
+            -DMIR_INPUT_ENABLE_EVEMU=NO \
+            -DMIR_PLATFORM=android
+  fi
+
+  if grep -q ${CARCH} <<< ${desktop_arch[@]}; then
+    cmake . ${COMMON_PARAMS[@]}
+  fi
+
+  make
+}
+
+check() {
+  if grep -q ${CARCH} <<< ${desktop_arch[@]}; then
+    GTEST_OUTPUT=xml:./ ctest -j1
+  fi
+}
+
+package() {
+  cd "${srcdir}/${_bzrmod}-build"
+  make DESTDIR="${pkgdir}/" install
+
+  # Install examples
+  install -dm755 "${pkgdir}"/usr/share/doc/mir/examples/
+  install -m644 examples/demo_client.c               \
+                examples/demo_client_accelerated.cpp \
+                examples/demo_client_unaccelerated.c \
+                examples/README                      \
+                include/mir/draw/graphics.h          \
+                include/mir/draw/mir_image.h         \
+                src/draw/graphics_utils.cpp          \
+                "${pkgdir}"/usr/share/doc/mir/examples/
+}
+
+# vim:set ts=2 sw=2 et:
