@@ -1,0 +1,35 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=libcolumbus
+pkgver=0.4.0
+pkgrel=100
+pkgdesc=""
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libcolumbus"
+license=('LGPL')
+groups=('unity')
+depends=('boost' 'icu' 'python' 'sparsehash')
+makedepends=('cmake')
+source=("https://launchpad.net/libcolumbus/${pkgver%.*}/${pkgver}/+download/libcolumbus_${pkgver}.tar.gz")
+sha512sums=('a5c2538634bef82941a99d863595e76433db08e5b270feaf185cf2c8836813931c1e4ae09cb96ee2637e1ad90d93698c254ff1268ba7a9f19b004824b8ebc56b')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  export COLUMBUS_DATADIR=$(pwd)/../share
+  ctest
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}/" install
+}
+
+# vim:set ts=2 sw=2 et:

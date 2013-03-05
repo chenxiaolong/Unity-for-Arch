@@ -52,13 +52,14 @@ Order to compile/install:
 42: nux                            -> An OpenGL toolkit
 43: unity-asset-pool               -> Design assets for Unity
 44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: unity-lens-applications        -> Unity applications lens
-46: unity-lens-files               -> Unity files lens
-47: unity-lens-music               -> Unity music lens
-48: unity-lens-photos              -> Unity photo lens
-49: unity-lens-video               -> Unity video lens
-50: compiz-ubuntu                  -> Compiz compositing window manager
-51: unity                          -> Desktop shell designed for efficiency
+45: libcolumbus                    -> Small, fast, error tolerant matcher
+46: unity-lens-applications        -> Unity applications lens
+47: unity-lens-files               -> Unity files lens
+48: unity-lens-music               -> Unity music lens
+49: unity-lens-photos              -> Unity photo lens
+50: unity-lens-video               -> Unity video lens
+51: compiz-ubuntu                  -> Compiz compositing window manager
+52: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
