@@ -2,7 +2,7 @@
 
 pkgname=xorg-gtest
 pkgver=0.7.0
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu5
 pkgrel=1.${_ubuntu_rel}
 pkgdesc="X.org Google Test Framework"
 arch=('any')
@@ -14,7 +14,7 @@ makedepends=('doxygen' 'valgrind' 'xorg-server-devel')
 source=("https://launchpad.net/xorg-gtest/trunk/${pkgver}/+download/xorg-gtest-${pkgver}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xorg-gtest_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('8ba9b431f76f59c2e70aee1d84fce00e591c4951603a6b96ed4a75473173c980124fb09d0df4952a57f97406dcfb64e97c12ef23be87780e2543ec8e19063fb6'
-            '9876cbb4d4717f213e01bded7a43e4f69cc8d433429ef5c77bb60e781207f7f0242f3bb9d3a8ee54b7515bb38274941323ca6ad907e8799145e7160060b9b2e2')
+            '3658d7966a2df37924b2c1341e09eb88e17d80d11205e4855b82d03867aff9cfa5fa2ee3f78b62ff53733315ebf7f70603fbe3dd20829f146f8a4f914c4ba0d0')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
