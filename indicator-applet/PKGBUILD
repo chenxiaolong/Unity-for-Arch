@@ -3,7 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=indicator-applet
-pkgver=12.10.1
+_actual_ver=12.10.2
+_extra_ver=daily13.03.01
+pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
@@ -20,18 +22,25 @@ optdepends=('indicator-application: take menus from applications and place them 
             'indicator-sound: a unified sound menu')
 groups=('unity')
 install=${pkgname}.install
-source=("http://launchpad.net/indicator-applet/12.10/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
-sha512sums=('35d479c334579dcf347d9dc494ef550bac097ae77e2642f5aaefb4e1307b26830ac83adabdfa30c1e342e9a07118d1bfd5ad0f9eca0bab0fdacec21dc36e182e')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-applet_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_autoconf.patch')
+sha512sums=('176b7a742656fa0ecbc393a29a30bc53077c48a9dcbc5c2114a8b8efe018de5d9f014c6e39e6cb829540c63fb5bb6d1f52658bbfa9efd08e770a6bfadc6fae14'
+            '231066c0b9fae5b4cf3cc0cf126a67a287855abc16d610d9a8e7d78d7d095e7c37fccfe5768666c581f583a1482b3043997096c3820dc75389e478a033f8826a')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  aclocal --install
+  autoreconf -vfi
+  intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
