@@ -5,7 +5,7 @@
 pkgbase=appmenu-gtk
 pkgname=('appmenu-gtk2' 'appmenu-gtk3')
 _actual_ver=12.10.3
-_extra_ver=daily12.11.28
+_extra_ver=daily13.03.01
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/appmenu-gtk_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('b82b8cdd5edd77210613324aa247b904bdcd50642541451ae71daae1c9d15b8f16be307bc8ccedf97b6bdf1b41cc465f94bba3f02f9be091ac7b2488b93de996'
+sha512sums=('8a8a93986ac6194e512167b5296cf88ed111d09d5a1dc57181224c8f587f52b2a21112a0a64cc945db3b969c6f73af004087a7fc3f42503873a89d0c549dd5cc'
             '82011361d720d8712ba3ece7dd2340694eab226f21263f861d8629ed39c343c873f1fb49f5c9cb302a6a5486fca098f36013b480c19d3bbe8745ccca84baa657')
 
 build() {
