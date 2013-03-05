@@ -4,7 +4,7 @@
 
 pkgname=libunity
 _actual_ver=6.90.2
-_extra_ver=daily13.01.11
+_extra_ver=daily13.03.04
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
 pkgrel=101
@@ -20,8 +20,8 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch')
-sha512sums=('22707daadb916a533ec274d6c63ebc72ae1ddf4b5ba95d9948eabf3aadaaab9f6444824ddcb80b562527b16bd4b9d300ca5da69a1d56fb7a19ca57cb5e1ceaae'
-            'b247ec7c57f16305aee9cc0bb34d69cffd026e795391f91e97d4cfe9d81299e86270e4351c48138a392f7e5d1b15b37b8ede9f6398ae4e3aed4aaaadea679556'
+sha512sums=('59d1eaeaf36bb8c372f7387b48c2fe4681353d090a380ac581e2b78c0c1a6a530e00e42fdad3545116a43433561809fbfcba33bc198f29aaeb17b46d7c17ac11'
+            'ab46650fd8b25069ff963b14194e0ae22866113bd88acc7e433370e4e6025709b2529451a5d1dd394f0a02e4fbcd43d419e0727ac6a4bc77ff12cac901f11522'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 build() {
