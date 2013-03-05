@@ -2,7 +2,7 @@
 
 pkgname=unity-lens-video
 _actual_ver=0.3.14
-_extra_ver=daily13.02.26
+_extra_ver=daily13.03.04
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=101
 pkgdesc="Unity Video lens"
@@ -17,7 +17,7 @@ conflicts=('unity-scope-video-remote')
 replaces=('unity-scope-video-remote')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('840496b624af3cfe609a5f9184b429da92f3d6443e9f237c456d78a2d0196cb2a507e1c98fd7a1854af142999f131d3300d91e31149cef85418e24a9da613b8a')
+sha512sums=('afa125498664a652f88d2ae26cf310c5f81868b78f86c3ac4c6de3426db820a8b238bd7259850451bac69a6b68b39fa27f0ef9fb20ab244435c4367530c2fdd1')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
