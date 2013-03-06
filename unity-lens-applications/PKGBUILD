@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-applications
 _actual_ver=6.10.0
-_extra_ver=daily13.03.04
+_extra_ver=daily13.03.06
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
@@ -17,7 +17,7 @@ groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '10-no-db51.patch')
-sha512sums=('78bbce4c7e14fb0a67a23af049dc154098377f7ca6341ae570e9573e01fc4312c8f4c1b02aec40b8b1b038a32c2631835137b358eb14f4e826b7e5240adce9e7'
+sha512sums=('eee28677b4ba92de8c3b2985643ba4afd33fb096e63207c986e12e2ef5cd584417d3b1fa9580beea202c6dd882336efe32c40de7d78516830fd4b04cfe94d22f'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 build() {
