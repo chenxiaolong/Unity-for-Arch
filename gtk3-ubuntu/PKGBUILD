@@ -5,14 +5,14 @@ pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu6
 _actual_ver=3.6.4
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=arch_gtk3.install
-depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk')
-makedepends=('gobject-introspection')
-provides=("gtk3=${pkgver%.*.*}")
+depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon')
+makedepends=('gobject-introspection' 'mesa')
+provides=("gtk3=${_actual_ver}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
@@ -54,16 +54,26 @@ build() {
     --localstatedir=/var \
     --enable-gtk2-dependency \
     --disable-schemas-compile \
+    --enable-x11-backend \
+    --enable-broadway-backend \
+    --enable-wayland-backend \
     --enable-test-print-backend
 
   #https://bugzilla.gnome.org/show_bug.cgi?id=655517
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
-  make ${MAKEFLAGS}
+
+  make
 }
+
+#check() {
+#  cd "${srcdir}/gtk+-${_actual_ver}"
+#
+#  make check
+#}
 
 package() {
   cd "${srcdir}/gtk+-${_actual_ver}"
-  make mkdir_p="/bin/mkdir -p" DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install
 
   install -Dm644 "${srcdir}/arch_settings.ini" \
     "${pkgdir}/etc/gtk-3.0/settings.ini"
