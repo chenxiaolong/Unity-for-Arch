@@ -5,13 +5,14 @@ pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu6
 _actual_ver=3.6.4
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=102
+pkgrel=103
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=arch_gtk3.install
 depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon')
 makedepends=('gobject-introspection' 'mesa')
+checkdepends=('xorg-server-xvfb')
 provides=("gtk3=${_actual_ver}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
