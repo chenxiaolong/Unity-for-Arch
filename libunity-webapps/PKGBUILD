@@ -1,10 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-_actual_ver=2.4.3
-_extra_ver=daily13.02.12
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+_actual_ver=2.4.4
+_extra_ver=~daily13.03.06
+pkgver=${_actual_ver}${_extra_ver/\~/.}
+pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-webapps"
@@ -16,7 +16,7 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 install=libunity-webapps.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('90bf5ea6726f963cfc034a3a7f9feee4669248126bd65934926cadf54bb11f91a9866d30405026360c0c091596e09f24c146acbe55a3207b1b7c7e10e980412f')
+sha512sums=('850d57779d13aa25f96e5591f7129690332aae1e2759506879f7ee7fa5dc686ec35bf10f6b15bf6d2745d461fdc6dccef3cb0eb45847644aecaa838555354f17')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -25,7 +25,7 @@ build() {
   intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/libunity-webapps --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
