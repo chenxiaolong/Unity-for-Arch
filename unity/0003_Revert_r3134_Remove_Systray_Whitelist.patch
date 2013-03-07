@@ -15,6 +15,8 @@
    <schema path="/com/canonical/unity/devices/" id="com.canonical.Unity.Devices" gettext-domain="unity">
      <key type="as" name="blacklist">
          <default>[]</default>
+
+=== modified file 'panel/PanelTray.cpp'
 --- panel/PanelTray.cpp	2013-02-06 12:32:28 +0000
 +++ panel/PanelTray.cpp	2012-11-06 18:19:09 +0000
 @@ -17,8 +17,6 @@
@@ -117,6 +119,8 @@
  void PanelTray::OnTrayIconRemoved(NaTrayManager* manager, NaTrayChild* removed)
  {
    for (auto child : children_)
+
+=== modified file 'panel/PanelTray.h'
 --- panel/PanelTray.h	2013-02-06 12:32:28 +0000
 +++ panel/PanelTray.h	2012-07-09 08:03:04 +0000
 @@ -46,8 +46,6 @@
@@ -139,6 +143,8 @@
  
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
+
+=== modified file 'tests/CMakeLists.txt'
 --- tests/CMakeLists.txt	2013-02-06 20:30:18 +0000
 +++ tests/CMakeLists.txt	2013-02-06 16:45:06 +0000
 @@ -217,7 +217,6 @@
@@ -146,9 +152,9 @@
                   test_panel_menu_view.cpp
                   test_panel_style.cpp
 -                 test_panel_tray.cpp
-                  test_panel_view.cpp
                   test_places_group.cpp
                   test_previews_application.cpp
+                  test_previews_generic.cpp
 
 === removed file 'tests/test_panel_tray.cpp'
 --- tests/test_panel_tray.cpp	2013-02-06 17:03:37 +0000
