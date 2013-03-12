@@ -5,7 +5,7 @@ desktop_arch=('i686' 'x86_64')
 mobile_arch=()
 
 pkgname=mir-bzr
-pkgver=461
+pkgver=487
 _real_ver=0.0.2
 pkgrel=1
 pkgdesc="Ubuntu's new display server"
@@ -43,7 +43,7 @@ conflicts=('libmirprotobuf'
            'mir')
 
 source=('0001_Use_Default_GCC.patch')
-sha512sums=('21f105508a1297fb328fb63dd2bdb646aabddf2181e35b3147abe2971c64e94d9dd319fa9cf90c58bf7674c4439673737e5bc2693995172cb3ca323aac0f53f8')
+sha512sums=('018c2f7b4a44bdc165740e622e0aff6b1c9b52081440f23f3f58c74a4266130f88c2c651eb9a0f06440e75d92c16ade9183267f64c98d7b54bc0f2d6aebb6755')
 
 _bzrtrunk=lp:mir
 _bzrmod=mir
