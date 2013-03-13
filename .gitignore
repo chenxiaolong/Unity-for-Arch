@@ -17,3 +17,6 @@ mono.snk
 bzr/
 
 build-in-chroot.conf
+
+*.lock
+tmp.*/
