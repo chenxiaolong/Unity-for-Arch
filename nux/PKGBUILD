@@ -4,7 +4,7 @@
 
 pkgname=nux
 _actual_ver=4.0.0
-_extra_ver=daily13.02.26
+_extra_ver=daily13.03.13.1
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
@@ -22,7 +22,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch'
         '01_blacklist_llvmpipe.patch')
-sha512sums=('98548ab3650b95221029e7c16bc8056a9f57369e56f5ede2dc752cd59b8064878441d516f28196d38b5a496421e8e3ca4ea5d8baade85ca95fce8a3cafbf49f9'
+sha512sums=('ff9164b7da19c5811ab69a992d28309f3dc6cfd72b3956346df2fb3aa89444313e779476f4641844fe4c3d16c2fc76489e8049af532f8b5ae2508e3ec8df5105'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
             'a6122d47bef574df7e4f3aa3ddff34ca7a6e291878665f3dfdbb9ea071394180ab31aadcb79efd53ebb1ec2a86a15d53c9394478305c3fd5f10ece049265b374')
 
