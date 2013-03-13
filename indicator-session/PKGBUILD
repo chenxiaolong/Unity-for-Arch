@@ -4,9 +4,9 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=daily13.03.06
+_extra_ver=daily13.03.08
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -21,7 +21,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0002_There_is_no_help.patch'
         'revert_r382.patch')
-sha512sums=('8a2bc476441c9347f5229a7263c44a5449c15e44faa61b2fb8b96b0219c360da1bc7009c97cfe4994003b2da4874b40c45632b8344bda5a693f5f466c20bc663'
+sha512sums=('2c97c158af4e33890db7bba1a2a20702637b6906015e7ede7d5ea7c73226b86856d1fb39298f665c1d04d6d8614e758236633681d665baffff9a44be0a91cddc'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
             '0bae670655e2cebd82f702bd7e804828729f0a23eac8212637875ebe19b56151066add500e6580e856f6820dc4304327b609a0b5fe82b7c119769373eaa38018')
 
@@ -35,7 +35,7 @@ build() {
   intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
