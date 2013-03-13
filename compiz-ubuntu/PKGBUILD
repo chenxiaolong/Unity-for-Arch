@@ -9,10 +9,10 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
-_extra_ver=\~daily13.03.06
+_extra_ver=\~daily13.03.08
 
 # AUR Fix
-pkgver=0.9.9.daily13.03.06
+pkgver=0.9.9.daily13.03.08
 realver=${_actual_ver}${_extra_ver/\~/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -40,8 +40,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('57143a502fd0f40b254fad5d81ccf9ccc31ba3f606672621359a275e22c6d1ecb9bc31befb75f789d5146bee6b4d0b60408f93d7627497aa688f90e3eb1d8112'
-            'd54221a1eee7d5e05181c65886eb2041db9d18b51e9a963e5d6e45d933131324c7a8a36622753bb58a4fa8430ad5c38f9c55ae74ab4861540e964d7a16e3ffcc'
+sha512sums=('a688ca07b77528580fe621e4d3f6778b5c958c95a5bb0051282153672eec12170f06138f2afd9a3c7160f868b35f6c6ffe2a24ede7552d1b710f89e89eaa893a'
+            '21577bb647e29820ddbaba06c240e85804de14f84682d6b7d46a16d5724c6dc05e519237a9e4c9cf8b8b1e44aad930bfd54e616db07db88de126c3c8a5778018'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
@@ -102,7 +102,7 @@ build() {
     -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
     -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
 
-  make ${MAKEFLAGS}
+  make
 }
 
 #check() {
