@@ -95,10 +95,17 @@ get_ppa_version() {
     echo "No PPA was provided"
     exit 1
   fi
-  wget -q -O - \
-    "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
-    sed -n "s/.*>${1}_\(.*\)-\(.*\)\.\(debian\|diff\)\.[a-z\.]\+<.*/\1 \2/p" | \
-    tail -n 1
+  if [ "x${3}" == "xnative" ]; then
+    wget -q -O - \
+      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
+      sed -n "s/.*>${1}_\(.*\)-\(.*\)\.tar\.[a-z\.]\+<.*/\1 \2/p" | \
+      tail -n 1
+  else
+    wget -q -O - \
+      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
+      sed -n "s/.*>${1}_\(.*\)-\(.*\)\.\(debian\|diff\)\.[a-z\.]\+<.*/\1 \2/p" | \
+      tail -n 1
+  fi
 }
 
 get_qt4_version() {
