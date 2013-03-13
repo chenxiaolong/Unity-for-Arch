@@ -3,7 +3,7 @@
 
 pkgname=frame
 _actual_ver=2.5.0
-_extra_ver=daily12.12.13
+_extra_ver=daily13.03.12
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Touch Frame Library"
@@ -15,13 +15,13 @@ makedepends=('asciidoc' 'xorg-server-devel')
 groups=('unity')
 options=('!libtool' '!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('1c390c7ff8a93d6f1c3d31af602337b96d34785c38f9b5354b6649f1cfd764c5823f65645b86b10cbfd6c21f299b6e15726b7b28da3828878d15bc67ed917f95')
+sha512sums=('78c1609182af5bff1cabec4bddb62f77df21d2d25d71cc0b083b23a8b465b78509906c3e86278e07231fa41c5e79c94765b849bfc136b0efd9b08ff8097ef071')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
