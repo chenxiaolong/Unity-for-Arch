@@ -14,41 +14,37 @@ pkgdesc="Mesa with Mir support"
 # Inline comments break the AUR parser... ('ati-dri-mir' ...)
 true && pkgname=('intel-dri-mir' 'nouveau-dri-mir' 'svga-dri-mir' 'mesa-mir' 'mesa-libgl-mir')
 
-pkgver=9.1
+pkgver=9.1.rc2
 _ubuntu_ver=9.1~rc2
-_ubuntu_rel=0ubuntu0+mir1
+_ubuntu_rel=0ubuntu0+mir2-jenkins17
 _base_rel=1
 
 # AUR Workaround
-pkgrel=${_base_rel}.0ubuntu0.mir1
+pkgrel=${_base_rel}.0ubuntu0.mir2
 
-if [ "x${pkgrel}" != "x${_base_rel}.${_ubuntu_rel/+/.}" ]; then
-  echo "PKGBUILD needs to be updated!"
-  exit 1
-fi
-
-makedepends=('python2' 'libxml2' 'libx11' 'glproto' 'libdrm' 'dri2proto' 'libxxf86vm' 'libxdamage' 'libvdpau' 'wayland' 'llvm-amdgpu-snapshot')
+# (... 'llvm-amdgpu-snapshot')
+makedepends=('python2' 'libxml2' 'libx11' 'glproto' 'libdrm' 'dri2proto' 'libxxf86vm' 'libxdamage' 'libvdpau' 'wayland')
 # Requires Mir, of course (specifically, libmirclient)
 makedepends+=('mir-bzr')
 # For filterdiff
 makedepends+=('patchutils')
 
 options=('!libtool')
-source=("ftp://ftp.freedesktop.org/pub/mesa/${pkgver}/MesaLib-${pkgver}.tar.bz2"
-        "https://launchpad.net/~mir-team/+archive/staging/+files/mesa_${_ubuntu_ver}-${_ubuntu_rel}.diff.gz"
+source=(#"ftp://ftp.freedesktop.org/pub/mesa/${pkgver}/MesaLib-${pkgver}.tar.bz2"
+        "https://launchpad.net/~mir-team/+archive/staging/+files/mesa_${_ubuntu_ver}-${_ubuntu_rel}.tar.gz"
         'LICENSE')
-sha512sums=('9475361e3e3ce0e8ad632003b6e41944d3750de3d5a1a774a2e9cb1f04fd0df8f27e6f47e31f08808c3f4506f683cbda53570617f1db1dd0657b07e4bac36a19'
-            'd1dbf751024cf69603582895a36b801a908394fd99c589e33f9023b986d58a3906a03a4147df8c25527386e0aca73655d5ac77c415709b84b5714048c6eacbe2'
+sha512sums=(#'9475361e3e3ce0e8ad632003b6e41944d3750de3d5a1a774a2e9cb1f04fd0df8f27e6f47e31f08808c3f4506f683cbda53570617f1db1dd0657b07e4bac36a19'
+            'ca7f7fcc137e1c5b34147128b12a0f6511c3ee0221f7007bbbe875a5b97ffad62dc526c46de07bd9c277267b9fc40a125ce5968c448e9bd2a97b35a0d43c7a01'
             '25da77914dded10c1f432ebcbf29941124138824ceecaf1367b3deedafaecabc082d463abcfa3d15abff59f177491472b505bcb5ba0c4a51bb6b93b4721a23c2')
 
 build() {
-  cd "${srcdir}/Mesa-${pkgver}"
+  cd "${srcdir}/workspace"
 
   # Apply Ubuntu's patches
   #patch -p1 -i "${srcdir}/mesa_${_ubuntu_ver}-${_ubuntu_rel}.diff"
-  cat "${srcdir}/mesa_${_ubuntu_ver}-${_ubuntu_rel}.diff" | \
-    filterdiff --include="*/debian/*" | \
-    patch -p1
+  #cat "${srcdir}/mesa_${_ubuntu_ver}-${_ubuntu_rel}.diff" | \
+  #  filterdiff --include="*/debian/*" | \
+  #  patch -p1
   for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
