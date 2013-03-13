@@ -5,7 +5,7 @@ desktop_arch=('i686' 'x86_64')
 mobile_arch=()
 
 pkgname=mir-bzr
-pkgver=487
+pkgver=497
 _real_ver=0.0.2
 pkgrel=1
 pkgdesc="Ubuntu's new display server"
@@ -72,7 +72,8 @@ build() {
                  '-DCMAKE_CXX_COMPILER=g++'
                  '-DCMAKE_INSTALL_PREFIX=/usr'
                  '-DMIR_DISABLE_EPOLL_REACTOR=YES'
-                 '-DMIR_DISABLE_INPUT=YES')
+                 '-DMIR_DISABLE_INPUT=YES'
+                 '-DBUILD_DOXYGEN=YES')
   
   if grep -q ${CARCH} <<< ${mobile_arch[@]}; then
     cmake . ${COMMON_PARAMS[@]}         \
@@ -105,9 +106,9 @@ package() {
                 examples/demo_client_accelerated.cpp \
                 examples/demo_client_unaccelerated.c \
                 examples/README                      \
-                include/mir/draw/graphics.h          \
-                include/mir/draw/mir_image.h         \
-                src/draw/graphics_utils.cpp          \
+                include/shared/mir/draw/graphics.h   \
+                include/shared/mir/draw/mir_image.h  \
+                src/shared/draw/graphics_utils.cpp   \
                 "${pkgdir}"/usr/share/doc/mir/examples/
 }
 
