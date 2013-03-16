@@ -6,14 +6,14 @@ pkgname=gnome-control-center-ubuntu
 _ubuntu_rel=0ubuntu15
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
 depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork' 'webkitgtk3')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'gnome-color-manager: for color management tasks')
 provides=("gnome-control-center=${_actual_ver}" 'FEATURE-libgnome-control-center')
@@ -53,7 +53,25 @@ build() {
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    if [ "x${i}" = "xunity_notice_info.patch" ]; then
+      cat "${srcdir}/debian/patches/${i}" | \
+        filterdiff --exclude gnome-control-center-3.6.3/configure.ac | patch -p1
+      # Base 64 because the tabs will screw up bash's parser
+      cat << EOF | base64 -d | patch -p1
+LS0tIGEvY29uZmlndXJlLmFjCisrKyBiL2NvbmZpZ3VyZS5hYwpAQCAtMTM3LDcgKzEzNyw3IEBA
+CiAgICAgICAgICAgICAgICAgICBnZGstcGl4YnVmLTIuMCA+PSAkR0RLUElYQlVGX1JFUVVJUkVE
+X1ZFUlNJT04pCiBQS0dfQ0hFQ0tfTU9EVUxFUyhESVNQTEFZX1BBTkVMLCAkQ09NTU9OX01PRFVM
+RVMgZ25vbWUtZGVza3RvcC0zLjAgPj0gMy4xLjApCiBQS0dfQ0hFQ0tfTU9EVUxFUyhJTkZPX1BB
+TkVMLCAkQ09NTU9OX01PRFVMRVMgbGliZ3RvcC0yLjAKLQkJICBwb2xraXQtZ29iamVjdC0xID49
+ICRQT0xLSVRfUkVRVUlSRURfVkVSU0lPTikKKwkJICBwb2xraXQtZ29iamVjdC0xID49ICRQT0xL
+SVRfUkVRVUlSRURfVkVSU0lPTiB3ZWJraXRndGstMy4wKQogUEtHX0NIRUNLX01PRFVMRVMoS0VZ
+Qk9BUkRfUEFORUwsICRDT01NT05fTU9EVUxFUwogICAgICAgICAgICAgICAgICAgZ25vbWUtZGVz
+a3RvcC0zLjAgPj0gJEdOT01FX0RFU0tUT1BfUkVRVUlSRURfVkVSU0lPTgogICAgICAgICAgICAg
+ICAgICAgeDExKQo=
+EOF
+    else
+      patch -p1 -i "${srcdir}/debian/patches/${i}"
+    fi
   done
 
   autoreconf -vfi
