@@ -6,7 +6,7 @@ pkgname=gnome-control-center-ubuntu
 _ubuntu_rel=0ubuntu15
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=102
+pkgrel=103
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -106,7 +106,7 @@ package() {
     "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
 
   # Legal notice
-  install -m644 debian/searchingthedashlegalnotice.html \
+  install -m644 "${srcdir}/debian/searchingthedashlegalnotice.html" \
     "${pkgdir}/usr/share/gnome-control-center/"
 }
 
