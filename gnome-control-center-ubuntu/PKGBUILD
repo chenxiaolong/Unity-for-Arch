@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ubuntu_rel=0ubuntu13
+_ubuntu_rel=0ubuntu15
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork' 'webkitgtk3')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl')
 optdepends=('mesa-demos: provides glxinfo for graphics information'
             'gnome-color-manager: for color management tasks')
@@ -24,7 +24,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkg
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         'pulse3.0.patch')
 sha512sums=('77cd68349dc7f58714fbd121a34ec73a5c3e67c7a42a08c20a8dfdcfc9cefdec47af0f09130b7e3f0407cb7a786234b2619fdb76462c3bdb2bbc548294bfd444'
-            '895c88677ccc1733dd169f666ff174cd76e52e29e2bdb8f861640f2d59373e2181fa26d016f33c75fa9b6f6b98941e536977f5157286276fdebaab6d5c631738'
+            '3cd2262373c359271a70f14e667b8b2e0c65748361b933b99e6ceece926a39edf90057efbc3a3bc7818f4bc7a64efcef0a421d439b02a2abc56ebfa88e053e6e'
             '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
 
 build() {
@@ -47,7 +47,7 @@ build() {
       # Ubuntu specific
         sed -i '/10_keyboard_layout_on_unity.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/50_ubuntu_systemwide_proxy.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/52_ubuntu_language_list_mods.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/52_region_language.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
@@ -66,12 +66,11 @@ build() {
     --enable-systemd \
     --with-libsocialweb \
     --disable-update-mimedb \
-    --without-cheese \
-    --disable-ibus
+    --without-cheese
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
@@ -87,6 +86,10 @@ package() {
   install -dm755 "${pkgdir}/usr/share/indicators/session/applications/"
   ln -s '/usr/share/applications/gnome-control-center.desktop' \
     "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
+
+  # Legal notice
+  install -m644 debian/searchingthedashlegalnotice.html \
+    "${pkgdir}/usr/share/gnome-control-center/"
 }
 
 # vim:set ts=2 sw=2 et:
