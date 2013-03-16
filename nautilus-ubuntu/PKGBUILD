@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu8
+_ubuntu_rel=0ubuntu9
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -21,7 +21,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            '616d95f17c3d227ab31b074b061b012bb1d727bcf60998b971e0ac6a8f72d97371351791347d9bbb33114c2f017cffae44dd25d8d2b115e85840923babfadf93')
+            'a5a734014307f025418088e175b08c18c14e673bf7dc0c41b4aa56ea455fb62d8eb115646e1229e6bb2ad21bc9f96aff08758d52d550dff821f6af1400d161a4')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -54,7 +54,7 @@ build() {
     --disable-packagekit \
     --disable-schemas-compile
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
