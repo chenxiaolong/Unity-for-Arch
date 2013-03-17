@@ -1,0 +1,33 @@
+=== modified file 'src/session-menu-mgr.c'
+--- src/session-menu-mgr.c	2013-03-06 15:29:26 +0000
++++ src/session-menu-mgr.c	2013-03-16 23:58:11 +0000
+@@ -20,8 +20,10 @@
+ 
+ #include "config.h"
+ 
++#include <errno.h>
+ #include <sys/types.h>
+-#include <pwd.h> /* geteuid(), getpwuid() */
++#include <pwd.h> /* geteuid(), getpwuid(), getpwuid() */
++#include <unistd.h> /* gethostname() */
+ 
+ #include <glib.h>
+ #include <glib/gi18n.h>
+@@ -1288,8 +1290,16 @@
+ static gboolean
+ is_this_live_session (void)
+ {
++  /* Check if the hostname is 'archiso' and if the username is 'arch */
++  char hostname[8];
++  hostname[7] = '\0';
++  int returned = gethostname(hostname, 7);
++  if (returned != 0 && errno != ENAMETOOLONG) {
++    return FALSE;
++  }
+   const struct passwd * const pw = getpwuid (geteuid());
+-  return (pw->pw_uid==999) && !g_strcmp0("ubuntu",pw->pw_name);
++  return (g_strcmp0(hostname, "archiso") == 0) &&
++         (g_strcmp0(pw->pw_name, "arch") == 0);
+ }
+ 
+ static SwitcherMode
