@@ -45,20 +45,19 @@ Order to compile/install:
 35: evemu                          -> Linux Evdev Event Emulation Library
 36: frame                          -> Open Input Framework Frame Library
 37: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
-38: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-39: grail                          -> Gesture recognition and instantiation lib.
-40: geis                           -> Implementation of the GEIS interface
-41: nux                            -> An OpenGL toolkit
-42: unity-asset-pool               -> Design assets for Unity
-43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-44: libcolumbus                    -> Small, fast, error tolerant matcher
-45: unity-lens-applications        -> Unity applications lens
-46: unity-lens-files               -> Unity files lens
-47: unity-lens-music               -> Unity music lens
-48: unity-lens-photos              -> Unity photo lens
-59: unity-lens-video               -> Unity video lens
-60: compiz-ubuntu                  -> Compiz compositing window manager
-61: unity                          -> Desktop shell designed for efficiency
+38: grail                          -> Gesture recognition and instantiation lib.
+39: geis                           -> Implementation of the GEIS interface
+40: nux                            -> An OpenGL toolkit
+41: unity-asset-pool               -> Design assets for Unity
+42: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+43: libcolumbus                    -> Small, fast, error tolerant matcher
+44: unity-lens-applications        -> Unity applications lens
+45: unity-lens-files               -> Unity files lens
+46: unity-lens-music               -> Unity music lens
+47: unity-lens-photos              -> Unity photo lens
+48: unity-lens-video               -> Unity video lens
+49: compiz-ubuntu                  -> Compiz compositing window manager
+50: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
