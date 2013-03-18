@@ -46,20 +46,19 @@ Order to compile/install:
 36: frame                          -> Open Input Framework Frame Library
 37: fixesproto-ubuntu              -> X11 Fixes extension wire protocol
 38: libxfixes-ubuntu               -> X11 misc. 'fixes' extension library
-39: xorg-server-ubuntu             -> Xorg X server
-40: grail                          -> Gesture recognition and instantiation lib.
-41: geis                           -> Implementation of the GEIS interface
-42: nux                            -> An OpenGL toolkit
-43: unity-asset-pool               -> Design assets for Unity
-44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: libcolumbus                    -> Small, fast, error tolerant matcher
-46: unity-lens-applications        -> Unity applications lens
-47: unity-lens-files               -> Unity files lens
-48: unity-lens-music               -> Unity music lens
-49: unity-lens-photos              -> Unity photo lens
-50: unity-lens-video               -> Unity video lens
-51: compiz-ubuntu                  -> Compiz compositing window manager
-52: unity                          -> Desktop shell designed for efficiency
+39: grail                          -> Gesture recognition and instantiation lib.
+40: geis                           -> Implementation of the GEIS interface
+41: nux                            -> An OpenGL toolkit
+42: unity-asset-pool               -> Design assets for Unity
+43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+44: libcolumbus                    -> Small, fast, error tolerant matcher
+45: unity-lens-applications        -> Unity applications lens
+46: unity-lens-files               -> Unity files lens
+47: unity-lens-music               -> Unity music lens
+48: unity-lens-photos              -> Unity photo lens
+59: unity-lens-video               -> Unity video lens
+60: compiz-ubuntu                  -> Compiz compositing window manager
+61: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
