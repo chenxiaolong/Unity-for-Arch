@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libunity-webapps
-_actual_ver=2.4.4
-_extra_ver=~daily13.03.06
+_actual_ver=2.5.0
+_extra_ver=~daily13.03.18
 pkgver=${_actual_ver}${_extra_ver/\~/.}
 pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
@@ -16,7 +16,7 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 install=libunity-webapps.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('850d57779d13aa25f96e5591f7129690332aae1e2759506879f7ee7fa5dc686ec35bf10f6b15bf6d2745d461fdc6dccef3cb0eb45847644aecaa838555354f17')
+sha512sums=('2d0c75339c70d5ce238f65453eec994e25b272688894dfacef7be310b86d4f3ff4a5bc13371a0b2618c81b5e37060b93755ce3ab15ee1766375677d49499ed8d')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
