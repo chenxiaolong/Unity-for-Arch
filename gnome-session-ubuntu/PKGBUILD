@@ -6,7 +6,7 @@ pkgname=gnome-session-ubuntu
 _ubuntu_rel=0ubuntu3
 _actual_ver=3.6.2
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -33,10 +33,10 @@ build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Allow software rendering
-  patch -Np1 -i "${srcdir}/gnome-session-3.3.1-llvmpipe.patch"
+  patch -p1 -i "${srcdir}/gnome-session-3.3.1-llvmpipe.patch"
 
   # Increase timeout, for slow machines
-  patch -Np1 -i "${srcdir}/timeout.patch"
+  patch -p1 -i "${srcdir}/timeout.patch"
 
   # Disable patches
     # gnome-wm uses Debian's alternatives system (Fedora has it too, but other
@@ -60,8 +60,10 @@ build() {
       sed -i 's/gnome-wm/metacity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  CFLAGS="${CFLAGS} -DUPOWER_ENABLE_DEPRECATED"
 
   autoreconf -vfi
 
@@ -71,9 +73,10 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/gnome-session \
     --disable-schemas-compile \
+    --enable-systemd \
     --enable-ipv6 # From debian/rules
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
