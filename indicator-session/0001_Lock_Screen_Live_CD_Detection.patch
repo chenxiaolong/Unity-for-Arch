@@ -7,8 +7,7 @@
  
 +#include <errno.h>
  #include <sys/types.h>
--#include <pwd.h> /* geteuid(), getpwuid() */
-+#include <pwd.h> /* geteuid(), getpwuid(), getpwuid() */
+ #include <pwd.h> /* geteuid(), getpwuid() */
 +#include <unistd.h> /* gethostname() */
  
  #include <glib.h>
