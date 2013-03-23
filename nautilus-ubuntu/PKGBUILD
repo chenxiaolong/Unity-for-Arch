@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu11
+_ubuntu_rel=0ubuntu12
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
@@ -21,7 +21,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            'f9986577f422ef9cc4b3d5968fb899e0c32ef1f46047d7ab17f0453e94f4424d9f902d34e6b8b407e1400f8331f19b26b5c91da8db6d88e3cdc2af99b6f01c64')
+            'ca3e4c48f53296aa6b1c0d54aa574f581629ba2273a341b0aa1f730deb5d4f4d8055b5d37a617f888421107bcb673453a3928231d65804c69cc45c540632d66d')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
