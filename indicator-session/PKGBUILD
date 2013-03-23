@@ -6,7 +6,7 @@ pkgname=indicator-session
 _actual_ver=12.10.5
 _extra_ver=daily13.03.08
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -21,10 +21,12 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Lock_Screen_Live_CD_Detection.patch'
         '0002_There_is_no_help.patch'
+        '0003_Link_Against_pthread.patch'
         'revert_r382.patch')
 sha512sums=('2c97c158af4e33890db7bba1a2a20702637b6906015e7ede7d5ea7c73226b86856d1fb39298f665c1d04d6d8614e758236633681d665baffff9a44be0a91cddc'
             '99e33a2234a2d05e80607608290aa95496f9f74672dddb47fff4abdd8642e5aa456c96d52198c3b4a01bf23dfe0e321d31b05f471bcd554a85db011436f6757b'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
+            '73cd938c4dddca0de9ef09e2a90ff4f5d132b1668f682e1bffa4fe3faafcb8df93de1a88b5bb324a75ac3e3013b0b13934b704b92cef4860de120db84bae8f2e'
             '0bae670655e2cebd82f702bd7e804828729f0a23eac8212637875ebe19b56151066add500e6580e856f6820dc4304327b609a0b5fe82b7c119769373eaa38018')
 
 build() {
@@ -32,6 +34,7 @@ build() {
 
   patch -p0 -i "${srcdir}/0001_Lock_Screen_Live_CD_Detection.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
+  patch -p1 -i "${srcdir}/0003_Link_Against_pthread.patch"
   patch -p0 -i "${srcdir}/revert_r382.patch"
 
   autoreconf -vfi
