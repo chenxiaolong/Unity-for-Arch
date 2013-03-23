@@ -26,37 +26,38 @@ Order to compile/install:
 16: ido                            -> Widgets and objects used for indicators
 17: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 18: gnome-session-ubuntu           -> GNOME Session Manager
-19: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-20: gnome-control-center-unity     -> Change some Unity settings with GCC
-21: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
-22: metacity-ubuntu                -> Window manager for GNOME
-23: indicator-applet               -> GNOME panel indicator applet
-24: indicator-application          -> Takes menus and puts then in the panel
-25: indicator-appmenu              -> An indicator to host the menus from apps
-26: indicator-bluetooth            -> Indicator for bluetooth status
-27: indicator-datetime             -> A very, very simple clock
-28: indicator-power                -> Indicator to show battery information
-29: indicator-printers             -> Indicator showing active print jobs
-30: indicator-session              -> Indicator for session management
-31: indicator-sound                -> Indicator displaying a unified sound menu
-32: hud                            -> Backend for the Unity HUD
-33: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-34: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-35: evemu                          -> Linux Evdev Event Emulation Library
-36: frame                          -> Open Input Framework Frame Library
-37: grail                          -> Gesture recognition and instantiation lib.
-38: geis                           -> Implementation of the GEIS interface
-39: nux                            -> An OpenGL toolkit
-40: unity-asset-pool               -> Design assets for Unity
-41: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-42: libcolumbus                    -> Small, fast, error tolerant matcher
-43: unity-lens-applications        -> Unity applications lens
-44: unity-lens-files               -> Unity files lens
-45: unity-lens-music               -> Unity music lens
-46: unity-lens-photos              -> Unity photo lens
-47: unity-lens-video               -> Unity video lens
-48: compiz-ubuntu                  -> Compiz compositing window manager
-49: unity                          -> Desktop shell designed for efficiency
+19: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
+20: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+21: gnome-control-center-unity     -> Change some Unity settings with GCC
+22: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
+23: metacity-ubuntu                -> Window manager for GNOME
+24: indicator-applet               -> GNOME panel indicator applet
+25: indicator-application          -> Takes menus and puts then in the panel
+26: indicator-appmenu              -> An indicator to host the menus from apps
+27: indicator-bluetooth            -> Indicator for bluetooth status
+28: indicator-datetime             -> A very, very simple clock
+29: indicator-power                -> Indicator to show battery information
+30: indicator-printers             -> Indicator showing active print jobs
+31: indicator-session              -> Indicator for session management
+32: indicator-sound                -> Indicator displaying a unified sound menu
+33: hud                            -> Backend for the Unity HUD
+34: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+35: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+36: evemu                          -> Linux Evdev Event Emulation Library
+37: frame                          -> Open Input Framework Frame Library
+38: grail                          -> Gesture recognition and instantiation lib.
+39: geis                           -> Implementation of the GEIS interface
+40: nux                            -> An OpenGL toolkit
+41: unity-asset-pool               -> Design assets for Unity
+42: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+43: libcolumbus                    -> Small, fast, error tolerant matcher
+44: unity-lens-applications        -> Unity applications lens
+45: unity-lens-files               -> Unity files lens
+46: unity-lens-music               -> Unity music lens
+47: unity-lens-photos              -> Unity photo lens
+48: unity-lens-video               -> Unity video lens
+49: compiz-ubuntu                  -> Compiz compositing window manager
+50: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
