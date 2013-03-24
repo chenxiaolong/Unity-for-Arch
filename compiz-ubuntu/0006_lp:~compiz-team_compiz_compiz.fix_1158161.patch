@@ -1,0 +1,473 @@
+=== modified file 'plugins/decor/src/decor.cpp'
+--- plugins/decor/src/decor.cpp	2013-03-11 06:31:34 +0000
++++ plugins/decor/src/decor.cpp	2013-03-22 15:54:42 +0000
+@@ -42,6 +42,8 @@
+ 
+ COMPIZ_PLUGIN_20090315 (decor, DecorPluginVTable)
+ 
++namespace cwe = compiz::window::extents;
++
+ MatchedDecorClipGroup::MatchedDecorClipGroup (const CompMatch &match) :
+     mMatch (match)
+ {
+@@ -1399,6 +1401,181 @@
+     return *cit;
+ }
+ 
++bool
++DecorWindow::bareDecorationOnly ()
++{
++    bool shadowOnly = true;
++    /* Only want to decorate windows which have a frame or are in the process
++     * of waiting for an animation to be unmapped (in which case we can give
++     * them a new pixmap type frame since we don't actually need an input
++     * window to go along with that
++     *
++     * FIXME: That's not going to play nice with reparented decorations in core
++     * since the window gets reparented right away before plugins are done
++     * with it */
++
++    /* Unconditionally decorate switchers */
++    if (!isSwitcher)
++    {
++        switch (window->type ()) {
++	    case CompWindowTypeDialogMask:
++	    case CompWindowTypeModalDialogMask:
++	    case CompWindowTypeUtilMask:
++	    case CompWindowTypeMenuMask:
++	    case CompWindowTypeNormalMask:
++		if (window->mwmDecor () & (MwmDecorAll | MwmDecorTitle))
++		    shadowOnly = false;
++	    default:
++		break;
++	}
++
++	if (window->overrideRedirect ())
++	    shadowOnly = true;
++
++	if (window->wmType () & (CompWindowTypeDockMask | CompWindowTypeDesktopMask))
++	    shadowOnly = true;
++
++	if (!shadowOnly)
++	{
++	    if (!dScreen->optionGetDecorationMatch ().evaluate (window))
++		shadowOnly = true;
++	}
++
++	/* Never on unmapped windows */
++	if (!window->isViewable ())
++	    shadowOnly = false;
++    }
++    else
++	shadowOnly = false;
++
++    return shadowOnly;
++}
++
++Decoration::Ptr
++DecorWindow::findRealDecoration ()
++{
++    Decoration::Ptr decoration;
++
++    /* Attempt to find a matching decoration */
++    try
++    {
++	decoration = decor.findMatchingDecoration (window, true);
++    }
++    catch (...)
++    {
++	/* Find an appropriate default decoration to use */
++	if (dScreen->dmSupports & WINDOW_DECORATION_TYPE_PIXMAP &&
++	    dScreen->cmActive &&
++	    !(dScreen->dmSupports & WINDOW_DECORATION_TYPE_WINDOW &&
++	    pixmapFailed))
++	{
++	    try
++	    {
++		decoration = dScreen->decor[DECOR_ACTIVE].findMatchingDecoration (window, false);
++	    }
++	    catch (...)
++	    {
++		compLogMessage ("decor", CompLogLevelWarn, "No default decoration found, placement will not be correct");
++		decoration.reset ();
++	    }
++	}
++	else if (dScreen->dmSupports & WINDOW_DECORATION_TYPE_WINDOW)
++	    decoration = dScreen->windowDefault;
++    }
++
++    return decoration;
++}
++
++Decoration::Ptr
++DecorWindow::findBareDecoration ()
++{
++    Decoration::Ptr decoration;
++    /* This window isn't "decorated" but it still gets a shadow as long
++     * as it isn't shaped weirdly, since the shadow is just a quad rect */
++    if (dScreen->optionGetShadowMatch ().evaluate (window))
++    {
++	if (window->region ().numRects () == 1 && !window->alpha () && dScreen->decor[DECOR_BARE].mList.size ())
++	    decoration = dScreen->decor[DECOR_BARE].mList.front ();
++
++	if (decoration)
++	{
++	    if (!checkSize (decoration))
++		decoration.reset ();
++	}
++    }
++
++    return decoration;
++}
++
++void
++DecorWindow::moveDecoratedWindowBy (const CompPoint &movement,
++				    bool            instant)
++{
++    /* Need to actually move the window */
++    if (window->placed () && !window->overrideRedirect () &&
++	(movement.x () || movement.y ()))
++    {
++	XWindowChanges xwc;
++	unsigned int   mask = CWX | CWY;
++
++	memset (&xwc, 0, sizeof (XWindowChanges));
++
++	/* Grab the geometry last sent to server at configureXWindow
++	 * time and not here since serverGeometry may be updated by
++	 * the time that we do call configureXWindow */
++	xwc.x = movement.x ();
++	xwc.y = movement.y ();
++
++	/* Except if it's fullscreen, maximized or such */
++	if (window->state () & CompWindowStateFullscreenMask)
++	    mask &= ~(CWX | CWY);
++
++	if (window->state () & CompWindowStateMaximizedHorzMask)
++	    mask &= ~CWX;
++
++	if (window->state () & CompWindowStateMaximizedVertMask)
++	    mask &= ~CWY;
++
++	if (window->saveMask () & CWX)
++	    window->saveWc ().x += movement.x ();
++
++	if (window->saveMask () & CWY)
++	    window->saveWc ().y += movement.y ();
++
++	if (mask)
++	{
++	    /* instant is only true in the case of
++	     * the destructor calling the update function so since it
++	     * is not safe to put the function in a timer (since
++	     * it will get unref'd on the vtable destruction) we
++	     * need to do it immediately
++	     *
++	     * FIXME: CompTimer should really be PIMPL and allow
++	     * refcounting in case we need to keep it alive
++	     */
++	    if (instant)
++		decorOffsetMove (window, xwc, mask);
++	    else
++		moveUpdate.start (boost::bind (decorOffsetMove, window, xwc, mask), 0);
++	}
++    }
++}
++
++namespace
++{
++bool
++shouldDecorateWindow (CompWindow *w,
++                      bool       shadowOnly,
++                      bool       isSwitcher)
++{
++    const bool visible = (w->frame () ||
++		          w->hasUnmapReference ());
++    const bool realDecoration = visible && !shadowOnly;
++    const bool forceDecoration = isSwitcher;
++
++    return realDecoration || forceDecoration;
++}
++}
+ /*
+  * DecorWindow::update
+  * This is the master function for managing decorations on windows
+@@ -1439,8 +1616,6 @@
+ DecorWindow::update (bool allowDecoration)
+ {
+     Decoration::Ptr  old, decoration;
+-    bool	     decorate = false;
+-    bool	     shadowOnly = true;
+     CompPoint        oldShift, movement;
+ 
+     if (wd)
+@@ -1448,99 +1623,19 @@
+     else
+ 	old.reset ();
+ 
+-    /* Only want to decorate windows which have a frame or are in the process
+-     * of waiting for an animation to be unmapped (in which case we can give
+-     * them a new pixmap type frame since we don't actually need an input
+-     * window to go along with that
+-     *
+-     * FIXME: That's not going to play nice with reparented decorations in core
+-     * since the window gets reparented right away before plugins are done
+-     * with it */
+-
+-    /* Unconditionally decorate switchers */
+-    if (!isSwitcher)
+-    {
+-        switch (window->type ()) {
+-	    case CompWindowTypeDialogMask:
+-	    case CompWindowTypeModalDialogMask:
+-	    case CompWindowTypeUtilMask:
+-	    case CompWindowTypeMenuMask:
+-	    case CompWindowTypeNormalMask:
+-		if (window->mwmDecor () & (MwmDecorAll | MwmDecorTitle))
+-		    shadowOnly = false;
+-	    default:
+-		break;
+-	}
+-
+-	if (window->overrideRedirect ())
+-	    shadowOnly = true;
+-
+-	if (window->wmType () & (CompWindowTypeDockMask | CompWindowTypeDesktopMask))
+-	    shadowOnly = true;
+-
+-	if (!shadowOnly)
+-	{
+-	    if (!dScreen->optionGetDecorationMatch ().evaluate (window))
+-		shadowOnly = true;
+-	}
+-    }
+-    else
+-	shadowOnly = false;
+-
+-    decorate = ((window->frame () ||
+-		 window->hasUnmapReference ()) && !shadowOnly) ||
+-		 isSwitcher;
++    bool shadowOnly = bareDecorationOnly ();
++    bool decorate = shouldDecorateWindow (window, shadowOnly, isSwitcher);
+ 
+     if (decorate || frameExtentsRequested)
+     {
+-        /* Attempt to find a matching decoration */
+-	try
+-	{
+-	    decoration = decor.findMatchingDecoration (window, true);
+-	}
+-	catch (...)
+-	{
+-	    /* Find an appropriate default decoration to use */
+-	    if (dScreen->dmSupports & WINDOW_DECORATION_TYPE_PIXMAP &&
+-	        dScreen->cmActive &&
+-		!(dScreen->dmSupports & WINDOW_DECORATION_TYPE_WINDOW &&
+-		  pixmapFailed))
+-	    {
+-		try
+-		{
+-		    decoration = dScreen->decor[DECOR_ACTIVE].findMatchingDecoration (window, false);
+-		}
+-		catch (...)
+-		{
+-		    compLogMessage ("decor", CompLogLevelWarn, "No default decoration found, placement will not be correct");
+-		    decoration.reset ();
+-		}
+-	    }
+-	    else if (dScreen->dmSupports & WINDOW_DECORATION_TYPE_WINDOW)
+-		decoration = dScreen->windowDefault;
+-	}
+-
++	decoration = findRealDecoration ();
+ 	/* Do not allow windows which are later undecorated
+ 	 * to have a set _NET_FRAME_EXTENTS */
+ 	if (decorate)
+ 	    frameExtentsRequested = false;
+     }
+     else
+-    {
+-	/* This window isn't "decorated" but it still gets a shadow as long
+-	 * as it isn't shaped weirdly, since the shadow is just a quad rect */
+-	if (dScreen->optionGetShadowMatch ().evaluate (window))
+-	{
+-	    if (window->region ().numRects () == 1 && !window->alpha () && dScreen->decor[DECOR_BARE].mList.size ())
+-		decoration = dScreen->decor[DECOR_BARE].mList.front ();
+-
+-	    if (decoration)
+-	    {
+-		if (!checkSize (decoration))
+-		    decoration.reset ();
+-	    }
+-	}
+-    }
++    	decoration = findBareDecoration ();
+ 
+     /* Don't allow the windows to be decorated if
+      * we're tearing down or if a decorator isn't running
+@@ -1555,25 +1650,14 @@
+     if (decoration == old)
+ 	return false;
+ 
+-    /* We need to damage the current output extents
+-     * and recompute the shadow region if a compositor
+-     * is running
+-     */
+-    if (dScreen->cmActive)
+-    {
+-	cWindow->damageOutputExtents ();
+-	updateGroupShadows ();
+-    }
+-
+     /* Determine how much we moved the window for the old
+      * decoration and save that, also destroy the old
+      * WindowDecoration */
+     if (old)
+     {
+-	oldShift = compiz::window::extents::shift (window->border (), window->sizeHints ().win_gravity);
++	oldShift = cwe::shift (window->border (), window->sizeHints ().win_gravity);
+ 
+ 	WindowDecoration::destroy (wd);
+-
+ 	wd = NULL;
+     }
+ 
+@@ -1595,8 +1679,10 @@
+ 	    window->setWindowFrameExtents (&decoration->border,
+ 					   &decoration->input);
+ 
+-	/* We actually need to decorate this window */
+-	if (decorate)
++	/* This window actually needs its decoration contents updated
++	 * as it was actually visible */
++	if (decorate ||
++	    shadowOnly)
+ 	{
+ 	    wd = WindowDecoration::create (decoration);
+ 	    if (!wd)
+@@ -1608,20 +1694,21 @@
+ 		return false;
+ 	    }
+ 
+-	    movement = compiz::window::extents::shift (window->border (), window->sizeHints ().win_gravity);
++	    movement = cwe::shift (window->border (), window->sizeHints ().win_gravity);
+ 	    movement -= oldShift;
+ 
+-	    /* Update the input and output frame */
+-	    updateFrame ();
+ 	    window->updateWindowOutputExtents ();
+ 
+ 	    updateReg = true;
+ 	    updateMatrix = true;
+ 	    mOutputRegion = CompRegion (window->outputRect ());
+-	    updateGroupShadows ();
+ 	    if (dScreen->cmActive)
+ 		cWindow->damageOutputExtents ();
+ 	    updateDecorationScale ();
++
++	    /* Update the input and output frame */
++	    if (decorate)
++		updateFrame ();
+ 	}
+     }
+     else
+@@ -1641,55 +1728,19 @@
+ 	movement -= oldShift;
+     }
+ 
+-    /* Need to actually move the window */
+-    if (window->placed () && !window->overrideRedirect () &&
+-	(movement.x () || movement.y ()))
++    /* We need to damage the current output extents
++     * and recompute the shadow region if a compositor
++     * is running
++     */
++    if (dScreen->cmActive)
+     {
+-	XWindowChanges xwc;
+-	unsigned int   mask = CWX | CWY;
+-
+-	memset (&xwc, 0, sizeof (XWindowChanges));
+-
+-	/* Grab the geometry last sent to server at configureXWindow
+-	 * time and not here since serverGeometry may be updated by
+-	 * the time that we do call configureXWindow */
+-	xwc.x = movement.x ();
+-	xwc.y = movement.y ();
+-
+-	/* Except if it's fullscreen, maximized or such */
+-	if (window->state () & CompWindowStateFullscreenMask)
+-	    mask &= ~(CWX | CWY);
+-
+-	if (window->state () & CompWindowStateMaximizedHorzMask)
+-	    mask &= ~CWX;
+-
+-	if (window->state () & CompWindowStateMaximizedVertMask)
+-	    mask &= ~CWY;
+-
+-	if (window->saveMask () & CWX)
+-	    window->saveWc ().x += movement.x ();
+-
+-	if (window->saveMask () & CWY)
+-	    window->saveWc ().y += movement.y ();
+-
+-	if (mask)
+-	{
+-	    /* allowDecoration is only false in the case of
+-	     * the destructor calling the update function so since it
+-	     * is not safe to put the function in a timer (since
+-	     * it will get unref'd on the vtable destruction) we
+-	     * need to do it immediately
+-	     *
+-	     * FIXME: CompTimer should really be PIMPL and allow
+-	     * refcounting in case we need to keep it alive
+-	     */
+-	    if (!allowDecoration)
+-		decorOffsetMove (window, xwc, mask);
+-	    else
+-		moveUpdate.start (boost::bind (decorOffsetMove, window, xwc, mask), 0);
+-	}
++	cWindow->damageOutputExtents ();
++	updateGroupShadows ();
+     }
+ 
++    moveDecoratedWindowBy (movement,
++			   !allowDecoration);
++
+     return true;
+ }
+ 
+
+=== modified file 'plugins/decor/src/decor.h'
+--- plugins/decor/src/decor.h	2013-02-20 03:07:58 +0000
++++ plugins/decor/src/decor.h	2013-03-22 15:54:42 +0000
+@@ -152,6 +152,13 @@
+ 
+ 	unsigned int              updateState;
+ 	X11DecorPixmapReceiver    mPixmapReceiver;
++
++    private:
++
++	bool            bareDecorationOnly ();
++        Decoration::Ptr findRealDecoration ();
++        Decoration::Ptr findBareDecoration ();
++        void            moveDecoratedWindowBy (const CompPoint &movement);
+ };
+ 
+ class DecorationList :
+@@ -372,6 +379,14 @@
+ 	CompRegion              mInputRegion;
+ 
+ 	X11DecorPixmapRequestor   mRequestor;
++
++    private:
++
++	bool            bareDecorationOnly ();
++	Decoration::Ptr findRealDecoration ();
++	Decoration::Ptr findBareDecoration ();
++	void            moveDecoratedWindowBy (const CompPoint &movement,
++					       bool instant);
+ };
+ 
+ class DecorPluginVTable :
+
