@@ -6,7 +6,7 @@ pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
 _extra_ver="daily13.03.01"
-pkgrel=103
+pkgrel=104
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
@@ -178,14 +178,6 @@ package() {
   # hotkeys.
   install -m644 "${srcdir}/10_unity.gschema.override" \
     "${pkgdir}/usr/share/glib-2.0/schemas/"
-
-  # GNOME screensaver autostart file
-  install -dm755 "${pkgdir}/etc/xdg/autostart/"
-  sed \
-    -e '/AutostartCondition/d' \
-    -e 's/OnlyShowIn=.*/OnlyShowIn=Unity;/g' \
-    < /etc/xdg/autostart/gnome-screensaver.desktop \
-    > "${pkgdir}/etc/xdg/autostart/gnome-screensaver-unity.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
