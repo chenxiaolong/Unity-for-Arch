@@ -6,7 +6,7 @@ pkgname=unity
 pkgver=6.12.0
 _actual_ver="${pkgver}"
 _extra_ver="daily13.03.01"
-pkgrel=102
+pkgrel=103
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
