@@ -82,7 +82,7 @@ Troubleshooting:
 
       https://bugs.launchpad.net/unity-for-arch
 
-* qt-ubuntu does not build.
+* qt4-ubuntu does not build.
 
     Temporary remove the qtwebkit package (ignoring dependencies) by running:
 
