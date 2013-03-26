@@ -9,10 +9,10 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
-_extra_ver=\~daily13.03.20
+_extra_ver=\~daily13.03.25
 
 # AUR Fix
-pkgver=0.9.9.daily13.03.20
+pkgver=0.9.9.daily13.03.25
 realver=${_actual_ver}${_extra_ver/\~/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=101.${_ubuntu_rel}
+pkgrel=1.${_ubuntu_rel}
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -39,16 +39,14 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
-        '0005_Disable_Werror.patch'
-        '0006_lp:~compiz-team_compiz_compiz.fix_1158161.patch')
-sha512sums=('274dfa0a62c3aa30094bf423477502bab4858c580940e6c21975af8d15e26d0085f57b34f361c31a5ef5a233f9c623305377a164b36d43063959eacdf79f2895'
-            '57265da982ab696d21b751fdbff5c684b9e6923c8f1ecb2f5679a006d98a862cf0d8216a736235ce3aa651125728348a5a797c45c9dd4080bce71e11b51f10cc'
+        '0005_Disable_Werror.patch')
+sha512sums=('d32bc931384e9a4367bf34fdf70995026ec03ecc86faf47b10a802743d1035c2151d765674bc91fbef95eb37a8f143286468e21170db1225aeee5bf478d616f7'
+            'e2da409c6974e20bdd280e2835b2fd115949973ecdae6084252d4ba6f478d280b3125659677f902b00446a4fb5e7657f979ae30f18c0bcab449c9bdf8f0b2e25'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
-            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924'
-            '82d076d39bdb77ad0feb0599c0c32ec3b0d25d5e22d26d9b65f87de31eb7929041df71e241bc4a04ae7f40c66b39042dbe2d44821f5cf31771775d7a48d8f5de')
+            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 build() {
   cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
@@ -66,9 +64,6 @@ build() {
 
   # Don't treat warnings as errors
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
-
-  # https://bugs.launchpad.net/ubuntu/+source/compiz/+bug/1158161
-  patch -p0 -i "${srcdir}/0006_lp:~compiz-team_compiz_compiz.fix_1158161.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
