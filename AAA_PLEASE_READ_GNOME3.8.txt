@@ -1,4 +1,4 @@
-1. Add to /etc/pacman.conf above [extra]
+1. Add to /etc/pacman.conf above [core]
 
    [gnome-unstable]
    SigLevel = PackageRequired
