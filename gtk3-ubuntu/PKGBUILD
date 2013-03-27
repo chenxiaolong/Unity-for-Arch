@@ -1,11 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-# Original Maintainer: György Balló <ballogy@freestart.hu>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu6
-_actual_ver=3.6.4
-pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=106
+_ppa_ver=3.7.12
+_ppa_rel=1ubuntu1~build1
+pkgver=3.8.0
+pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -13,30 +12,25 @@ install=arch_gtk3.install
 depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon')
 makedepends=('gobject-introspection' 'mesa')
 checkdepends=('hicolor-icon-theme' 'xorg-server-xvfb')
-provides=("gtk3=${_actual_ver}")
+provides=("gtk3=${pkgver}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${_actual_ver%.*}/gtk+-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
         '0001_Add_broadway_symbols.patch'
-        '0002_Disable_Failing_Tests.patch'
         'arch_settings.ini')
-sha512sums=('1ec4655ce19b84b50a4eb6cf219422dea393add51a05845ce3e797ac56e6b491051597fbe7c9def100ebe9d86e886201af57ff23c48959e21a53473b897fc6f8'
-            'ab940f8c5450ef300b8ccebc7c4fbbad1d854339c359c8c70314909f9b7f6c893ba6e0678be401dcc3abaaa8a1a7327917fdda38e3c54b246f9605f88fc2b425'
+sha512sums=('2b833c73de460779907d911a0a2d1ae46758fcc6861dcb89d6a990bcd66066ab2177bb90f1b0c98ec8f95268f14046ab0ff33143e53fc96f3cfc215853e0413a'
+            '0e8826b34b70a0d67d9c3cfd0731f26d1a76c0e2963baa6c2add34c0bb05a81d1da6e11a47d03d717ebbe4bd81da122c87613462028e6e030aa7368bbf8730cf'
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
-            '40c2ee5f3053073ee3bc443069efab504e72b9c3995570d79c154f2177bac2d1b8ee6bfb9a74a69101fa80e1bac341889fbd556540c464cd360b16c8d77ad09c'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
 build() {
-  cd "${srcdir}/gtk+-${_actual_ver}"
+  cd "${srcdir}/gtk+-${pkgver}"
 
   # Add Broadway sumbols to tests pass
   patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
-
-  # Disable failing tests (probably not updated)
-  patch -p1 -i "${srcdir}/0002_Disable_Failing_Tests.patch"
 
   # Apply Ubuntu Patches
     # Disable patches
@@ -44,14 +38,9 @@ build() {
         sed -i '/061_multiarch_module_fallback.patch/d' "${srcdir}/debian/patches/series"
       # Fedora's tracker is not compiled with FTS
       #  sed -i '/044_tracker_fts.patch/d' debian/patches/series
-      # Ubuntu's defaults
-        sed -i '/022_disable-viqr-im-for-vi-locale.patch/d' "${srcdir}/debian/patches/series"
-      # Not needed
-        sed -i '/071_fix-installation-of-HTML-images.patch/d' "${srcdir}/debian/patches/series"
-      # Drop git patches
-        #sed -i '/git/d' "${srcdir}/debian/patches/series"
-        # Except this one
-          #echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
+      # Already applied in version 3.8.0
+        sed -i '/git_format_security.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/git_gtktextview_segfault.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     msg "Applying ${i} ..."
@@ -81,7 +70,7 @@ build() {
 # Okay, these tests are obviously untested. There's no reason GTK 3 needs to be
 # installed for them to run.
 check() {
-  cd "${srcdir}/gtk+-${_actual_ver}"
+  cd "${srcdir}/gtk+-${pkgver}"
 
   # Do the GTK developers even check that their tests work?
   rm ./tests/css/parser/background-shorthand.css
@@ -97,7 +86,7 @@ check() {
 }
 
 package() {
-  cd "${srcdir}/gtk+-${_actual_ver}"
+  cd "${srcdir}/gtk+-${pkgver}"
   make DESTDIR="${pkgdir}" install
 
   install -Dm644 "${srcdir}/arch_settings.ini" \
