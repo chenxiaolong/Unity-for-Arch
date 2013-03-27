@@ -1,1 +1,9 @@
-1. sudo pacman -Sy gnome-unstable/libsoup
+1. Add to /etc/pacman.conf above [extra]
+
+   [gnome-unstable]
+   SigLevel = PackageRequired
+   Include = /etc/pacman.d/mirrorlist
+
+2. sudo pacman -Sy gnome-unstable/libsoup
+
+3. sudo pacman -Syu
