@@ -3,67 +3,59 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=0ubuntu3
-_actual_ver=3.6.2
-pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
-pkgdesc="The GNOME Session Handler with Ubuntu's patches"
+_ppa_ver=3.7.92
+_ppa_rel=0ubuntu1~raring1
+pkgver=3.8.0
+pkgrel=100
+pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('libsystemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
-makedepends=('gnome-common' 'intltool' 'mesa' 'xtrans')
+depends=('systemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
+makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans' 'patchutils')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
 conflicts=('gnome-session')
 options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-session/gnome-session_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
         '55gnome-session_gnomerc'
-        'gnome-session-3.3.1-llvmpipe.patch'
         'timeout.patch')
-sha512sums=('3ae043a241695e26bbcfe70cb58263e74bfb62c1859d46828118740e3580df516f17c73d5a348d381ead7886333c71eb9bca2bed6e494f234b8d733a9fd37083'
-            '734c5535302798b08aebbf31eadfc87f51d5c9f7769f529cd0007ac78b16348f6efeed4946b98cfbedec8cfa091a9271823b86f3e6a3187d5d4a20df89f6b030'
+sha512sums=('81fa89b8f2d232a31f59250e40a183e5fc1bd29fd56cf14dff0f9ba5cd6e891fcdec99fa616556e43ba79e0d5b0a9f9ef838f9383c7f847bc975a4f5cd9c4be9'
+            '3ceed5ea15852905cf636667ee0315e90c690d7f27cc889036a0572868f0e05c350f409903c1e2a42326fd98d839ff65655182f3443bb4d450aec8f77d2c50cc'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
-            'e70432410514740cc2b6f722fbc28f7b5ea984c3bbfb08c72708b9d66ea2eb038e816152e4c2352d73d0cfbd827097195a058590598a138b5ca225bd421b9e26'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
-
-  # Allow software rendering
-  patch -p1 -i "${srcdir}/gnome-session-3.3.1-llvmpipe.patch"
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Increase timeout, for slow machines
   patch -p1 -i "${srcdir}/timeout.patch"
 
   # Disable patches
+    # We don't have GNOME fallback stuff anymore
+      sed -i '/00_revert_remove_fallback_session.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/02_fallback_desktop.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/03_fallback_desktop_makefile.patch/d' "${srcdir}/debian/patches/series"
+      sed -i '/git_revert_isRunnableHelper.patch/d' "${srcdir}/debian/patches/series"
     # gnome-wm uses Debian's alternatives system (Fedora has it too, but other
     # packages need to use it)
       sed -i '/01_gnome-wm.patch/d' "${srcdir}/debian/patches/series"
-    # systemd should make these patches obsolete
-      sed -i '/12_no_gdm_fallback.patch/d' "${srcdir}/debian/patches/series"
     # We're not Ubuntu, do not hide stuff
       sed -i '/20_hide_nodisplay.patch/d' "${srcdir}/debian/patches/series"
-    # Only Ubuntu uses apport
-      sed -i '/96_no_catch_sigsegv.patch/d' "${srcdir}/debian/patches/series"
     # Fedora does not have sessionmigration
       sed -i '/53_add_sessionmigration.patch/d' "${srcdir}/debian/patches/series"
-    # Part of Fedora's patches
-      sed -i '/97_dont_blacklist_llvmpipe.patch/d' "${srcdir}/debian/patches/series"
-    # ConsoleKit is deprecated
-      sed -i '/04_consolekit_init_upower.patch/d' "${srcdir}/debian/patches/series"
 
   # Fix patches
     # Needed because 01_gnome-wm.patch is disabled
       sed -i 's/gnome-wm/metacity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    msg "Applying patch ${i} ..."
+    cat "${i}" | filterdiff -X gnome-session-3.7.4/data/gnome-fallback'.*' \
+               | patch -p1
   done
-
-  CFLAGS="${CFLAGS} -DUPOWER_ENABLE_DEPRECATED"
 
   autoreconf -vfi
 
@@ -80,18 +72,14 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 
   # Install Ubuntu files
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -dm755 "${pkgdir}/usr/bin/"
-  install -dm755 "${pkgdir}/usr/share/applications/"
-  install -dm755 "${pkgdir}/usr/share/gnome/applications/"
   #install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   # Install my version of the script (more platform-agnostic)
   install -m755 "${srcdir}/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -m755 "${srcdir}/debian/scripts/gnome-session-fallback" "${pkgdir}/usr/bin/"
 
   # symlink session files so that KDM can find them
   install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
