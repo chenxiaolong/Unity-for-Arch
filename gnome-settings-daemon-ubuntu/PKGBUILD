@@ -3,51 +3,40 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu3
-_actual_ver=3.6.4
-pkgver=${_actual_ver}.${_ubuntu_rel}
+_ppa_ver=3.7.91
+_ppa_rel=0ubuntu1~raring1
+pkgver=3.8.0
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'ibus' 'librsvg' 'libappindicator3')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
 groups=('unity')
-provides=("gnome-settings-daemon=${_actual_ver}")
+provides=("gnome-settings-daemon=${pkgver}")
 conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
-        '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
-sha512sums=('f8d263f9a22934e015ff642f9ac93c09764b89151260887242d6b946250d50a2400404f61376a34ec903606bf4061c9733ddb42f0ed92ecc42f873fafb766af7'
-            '0c4f1cdd4df50cdbf9795f10a7bb522224aab32f875f8d3a3a2155b45cb43da0a2dfe682d474226d99d3552982df15d20afbcc63a62a7aa702086b143661b9c2'
-            'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('d79e9f28c04a5d48dcd2687e278f64d71250d8d19962509d2908e0dc40bb68652e385ca48b683440221efc970305745f298185e86d4420cbdbfd26230dd2f793'
+            '162531a7ef7737de3c2aec93d4934a1b286873e2451ea562e81028532ecbcf5abb0742edd8faee397cac196162afea2bfbed798ee5b632e3b7981d4f9b03f008')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
-
-  # logind key handling FS#31801, patch from Fedora
-  patch -Np1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
     # Disable patches
       # Ubuntu specific
-        sed -i '/sync_keyboard_layout_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/61_revert_libgnomekbd_drop/d' "${srcdir}/debian/patches/series"
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
-      # Ubuntu is too lazy to port their patches to the latest IBus release
-        sed -i '/revert_new_ibus_use.patch/d' "${srcdir}/debian/patches/series"
       # systemd should make this obsolete
         sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
-      # Merged upstream. How does Debian/Ubuntu's quilt not error out, I have no
-      # idea. https://launchpadlibrarian.net/124034045/buildlog_ubuntu-raring-amd64.gnome-settings-daemon_3.6.3-0ubuntu2_BUILDING.txt.gz
-        sed -i '/48_register_client_before_idle_callbacks.patch/d' "${srcdir}/debian/patches/series"
-      # Conflicts with Fedora's patches
-        sed -i '/51_lock_screen_on_suspend.patch/d' "${srcdir}/debian/patches/series"
+      # Fails to apply. Disable for now
+        sed -i '/16_use_synchronous_notifications.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    msg "Applying patch ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
@@ -57,7 +46,7 @@ build() {
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --libexecdir=/usr/lib/${pkgname%-*} \
+    --libexecdir=/usr/lib/gnome-settings-daemon \
     --disable-static \
     --enable-systemd \
     --disable-ibus
@@ -65,17 +54,12 @@ build() {
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-
-  # Plugins that aren't installed still have schema references
-  # and cause gsettings errors - remove the references we're not using
-  sed -i '/org\.gnome\.settings-daemon\.plugins\.updates/d' \
-    "$pkgdir/usr/share/glib-2.0/schemas/org.gnome.settings-daemon.plugins.gschema.xml"
 }
 
 # vim:set ts=2 sw=2 et:
