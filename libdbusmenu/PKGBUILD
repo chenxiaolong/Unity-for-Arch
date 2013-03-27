@@ -5,7 +5,7 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=12.10.3daily13.02.01
-pkgrel=101
+pkgrel=102
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -15,17 +15,14 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${pkgver}.orig.tar.gz"
-        '0001_autoconf.patch'
-        'revert_r438.patch')
+        '0001_autoconf.patch')
 sha512sums=('24b08578dd66b84fd0cad4d081bf1883ba9c77e69919d68da4e31ea1ab71166dc1b263081c88d606bc66748c90b5c90b2e0edb678842dd021e95bbad1cd831bb'
-            '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf'
-            '7a009a23bd3be21939336d5cd9281ead892366d3d0436ec8104e86c88be797dd53f4344018f6286626df08bf93853c11cd333bf8736522051851e920068d17f5')
+            '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
-  patch -p0 -i "${srcdir}/revert_r438.patch"
 
   gtkdocize
   autoreconf -vfi
@@ -45,14 +42,14 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static
-  MAKEFLAGS="-j1"
-  make ${MAKEFLAGS}
+  export MAKEFLAGS="-j1"
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
@@ -71,7 +68,7 @@ package_libdbusmenu() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
   make -C tests DESTDIR="${pkgdir}/" install
@@ -85,7 +82,7 @@ package_libdbusmenu-gtk2() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
   make -C docs/libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
@@ -96,7 +93,7 @@ package_libdbusmenu-gtk3(){
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
 
