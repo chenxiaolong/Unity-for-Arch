@@ -7,24 +7,22 @@ _actual_ver=6.90.2
 _extra_ver=daily13.03.06.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
-pkgrel=102
+pkgrel=103
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"
 license=('LGPL')
-depends=('libgee' 'dee' 'libdbusmenu' 'gtk3')
+depends=('libgee1' 'dee' 'libdbusmenu' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection')
 checkdepends=('python2-gobject' 'xorg-server-xvfb' 'xorg-xauth')
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        '0001_autoconf.patch'
-        '0002_gee.patch')
+        '0001_autoconf.patch')
 sha512sums=('2119174ad437d6e123a04925e79e2c1de70569434543dd1d52ddc8ed83e9a7184185df49734f4d3672cfdea3b33b84fbef399fe5ae9bdcabe40974d14d57bdad'
             '7d25d5fa5e769097614b5cb3ce7fe4c74d27845e48ed19bdac11bf374263058ffb7e7686405f4fd60398769302ed7e5dda465b801bcf5fafdccd2924ebef4cb0'
-            '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b'
-            '09284a832dc0f8d015b79a21d8a8a7802727421ae8bbc30a323cb01e9d7dc86996ff21fae68eb6ec80f32907e562587a8cf7f0bb026154edb472beca04125a4c')
+            '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -32,7 +30,6 @@ build() {
   find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
-  patch -p1 -i "${srcdir}/0002_gee.patch"
 
   # Apply Ubuntu patches
   patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"

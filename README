@@ -18,47 +18,48 @@ Order to compile/install:
 08: libappindicator                -> Library to export menu bar to Unity
 09: appmenu-gtk                    -> Application menu module for GTK+
 10: libgee1                        -> GObject collection library
-11: libunity                       -> Library for integrating Unity
-12: libunity-misc                  -> Differently licensed stuff for Unity
-13: indicator-messages             -> Collects messages that need a response
-14: libunity-webapps               -> Library for integrating WebApps into Unity
-15: bamf                           -> Application matching framework
-16: sni-qt                         -> Turns Qt tray icons into appindicators
-17: ido                            -> Widgets and objects used for indicators
-18: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-19: gnome-session-ubuntu           -> GNOME Session Manager
-20: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
-21: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-22: gnome-control-center-unity     -> Change some Unity settings with GCC
-23: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
-24: metacity-ubuntu                -> Window manager for GNOME
-25: indicator-applet               -> GNOME panel indicator applet
-26: indicator-application          -> Takes menus and puts then in the panel
-27: indicator-appmenu              -> An indicator to host the menus from apps
-28: indicator-bluetooth            -> Indicator for bluetooth status
-29: indicator-datetime             -> A very, very simple clock
-30: indicator-power                -> Indicator to show battery information
-31: indicator-printers             -> Indicator showing active print jobs
-32: indicator-session              -> Indicator for session management
-33: indicator-sound                -> Indicator displaying a unified sound menu
-34: hud                            -> Backend for the Unity HUD
-35: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-36: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-37: evemu                          -> Linux Evdev Event Emulation Library
-38: frame                          -> Open Input Framework Frame Library
-39: grail                          -> Gesture recognition and instantiation lib.
-40: geis                           -> Implementation of the GEIS interface
-41: nux                            -> An OpenGL toolkit
-42: unity-asset-pool               -> Design assets for Unity
-43: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-44: libcolumbus                    -> Small, fast, error tolerant matcher
-45: unity-lens-applications        -> Unity applications lens
-46: unity-lens-files               -> Unity files lens
-47: unity-lens-music               -> Unity music lens
-48: unity-lens-photos              -> Unity photo lens
-49: unity-lens-video               -> Unity video lens
-50: compiz-ubuntu                  -> Compiz compositing window manager
-51: unity                          -> Desktop shell designed for efficiency
+11: vala0.18                       -> Compiler for the GObject type system
+12: libunity                       -> Library for integrating Unity
+13: libunity-misc                  -> Differently licensed stuff for Unity
+14: indicator-messages             -> Collects messages that need a response
+15: libunity-webapps               -> Library for integrating WebApps into Unity
+16: bamf                           -> Application matching framework
+17: sni-qt                         -> Turns Qt tray icons into appindicators
+18: ido                            -> Widgets and objects used for indicators
+19: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+20: gnome-session-ubuntu           -> GNOME Session Manager
+21: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
+22: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+23: gnome-control-center-unity     -> Change some Unity settings with GCC
+24: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
+25: metacity-ubuntu                -> Window manager for GNOME
+26: indicator-applet               -> GNOME panel indicator applet
+27: indicator-application          -> Takes menus and puts then in the panel
+28: indicator-appmenu              -> An indicator to host the menus from apps
+29: indicator-bluetooth            -> Indicator for bluetooth status
+30: indicator-datetime             -> A very, very simple clock
+31: indicator-power                -> Indicator to show battery information
+32: indicator-printers             -> Indicator showing active print jobs
+33: indicator-session              -> Indicator for session management
+34: indicator-sound                -> Indicator displaying a unified sound menu
+35: hud                            -> Backend for the Unity HUD
+36: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+37: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+38: evemu                          -> Linux Evdev Event Emulation Library
+39: frame                          -> Open Input Framework Frame Library
+40: grail                          -> Gesture recognition and instantiation lib.
+41: geis                           -> Implementation of the GEIS interface
+42: nux                            -> An OpenGL toolkit
+43: unity-asset-pool               -> Design assets for Unity
+44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+45: libcolumbus                    -> Small, fast, error tolerant matcher
+46: unity-lens-applications        -> Unity applications lens
+47: unity-lens-files               -> Unity files lens
+48: unity-lens-music               -> Unity music lens
+49: unity-lens-photos              -> Unity photo lens
+50: unity-lens-video               -> Unity video lens
+51: compiz-ubuntu                  -> Compiz compositing window manager
+52: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
