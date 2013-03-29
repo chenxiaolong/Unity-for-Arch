@@ -1,0 +1,42 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Contributor: Jaroslav Lichtblau <dragonlord@aur.archlinux.org>
+# Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
+
+pkgname=gsettings-desktop-schemas-ubuntu
+_ppa_ver=3.7.92
+_ppa_rel=0ubuntu1~raring3
+pkgver=3.8.0
+pkgrel=100
+pkgdesc="Shared GSettings schemas for the desktop"
+arch=('any')
+url="http://live.gnome.org/"
+license=('GPL')
+depends=('glib2')
+makedepends=('intltool' 'gobject-introspection')
+provides=("${pkgname%-*}=${pkgver}")
+conflicts=("${pkgname%-*}")
+install=${pkgname%-*}.install
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gsettings-desktop-schemas/gsettings-desktop-schemas_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('a05d2c105418f6bdc84ed11594ba38f9057c8307999122a6adb04b4499e450ae3443c3777d8b2dc58fb08021f5488dd0cf4fdf541e7940808d2212f72cfb510c'
+            'f02a5110b0d964cf51bebb38e4f34d3ec079fa62d3d4932627e0f6b341f1bbb92fd9b012a22a704361ba833b529d66da49b99acdbd6597afae74f9fedcdca928')
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  # Apply Ubuntu's patches
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --disable-schemas-compile
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+}
