@@ -5,7 +5,7 @@
 pkgname=gnome-screensaver-ubuntu
 pkgver=3.6.1
 _ubuntu_rel=0ubuntu3
-pkgrel=3.${_ubuntu_rel}
+pkgrel=4.${_ubuntu_rel}
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=('i686' 'x86_64')
 license=('GPL')
