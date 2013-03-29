@@ -2,29 +2,27 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: thn81 <root@scrat>
 
-pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu12
-_actual_ver=3.6.3
-pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgbase=nautilus-ubuntu
+pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
+_ppa_ver=3.7.92
+_ppa_rel=0ubuntu1~raring1
+pkgver=3.8.0
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libunity' 'gtk3-ubuntu' 'libzeitgeist' 'libnotify')
-makedepends=('intltool' 'gobject-introspection')
-groups=('gnome')
-provides=("nautilus=${_actual_ver}")
-conflicts=('nautilus')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libnotify' 'nautilus-sendto' 'libunity' 'gtk3-ubuntu' 'libzeitgeist')
+makedepends=('intltool' 'gobject-introspection' 'python')
 url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            'ca3e4c48f53296aa6b1c0d54aa574f581629ba2273a341b0aa1f730deb5d4f4d8055b5d37a617f888421107bcb673453a3928231d65804c69cc45c540632d66d')
+source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('a78a815515ddd6ee6f9d59659551741b832a93b11858e35a5849a414967fd9fc471e63e44e1fc8fefff073e68ad0e954584dd11acc8f43bd64b634937db8cc1d'
+            '1e7ce0577ee53e35f845944346b5f4165acb2192e291dfbfe82d92336cf168cd57c4ea2ba658b5fa446653cebb5f6ff867a3e3bf3181f38d2bfd85f99a02111c')
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/nautilus-${pkgver}"
 
   # Apply Ubuntu's patches
 
@@ -52,14 +50,29 @@ build() {
     --disable-nst-extension \
     --disable-update-mimedb \
     --disable-packagekit \
-    --disable-schemas-compile
+    --disable-schemas-compile \
+    --disable-appindicator \
+    --enable-unity
 
   make
 }
 
-package() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
-  make DESTDIR="${pkgdir}" install
+package_nautilus-ubuntu() {
+  depends+=('libnautilus-extension-ubuntu')
+  groups=('gnome')
+  provides=("nautilus=${pkgver}")
+  conflicts=('nautilus')
+
+  cd "${srcdir}/nautilus-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+
+  # Split libnautilus-extension
+  cd ..
+  mkdir -p n-e/usr/{lib,share}
+  mv "${pkgdir}"/usr/include n-e/usr
+  mv "${pkgdir}"/usr/lib/{girepository-1.0,pkgconfig} n-e/usr/lib
+  mv "${pkgdir}"/usr/lib/libnautilus-extension.so* n-e/usr/lib
+  mv "${pkgdir}"/usr/share/{gir-1.0,gtk-doc} n-e/usr/share
 
   # Ubuntu specific stuff
   install -dm755 "${pkgdir}/usr/share/pixmaps/"
@@ -67,6 +80,15 @@ package() {
   install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
   install -m644 "${srcdir}/debian/mount-archive.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
+}
+
+package_libnautilus-extension-ubuntu() {
+  pkgdesc="Library for extending the ${pkgdesc}"
+  depends=('gtk3')
+  provides=("libnautilus-extension=${pkgver}")
+  conflicts=('libnautilus-extension')
+
+  mv n-e/* "${pkgdir}/"
 }
 
 # vim:set ts=2 sw=2 et:
