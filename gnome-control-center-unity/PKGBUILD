@@ -2,7 +2,7 @@
 
 pkgname=gnome-control-center-unity
 pkgver=1.2daily13.02.15
-pkgrel=1
+pkgrel=2
 pkgdesc="A set of settings panels for configuring the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gnome-control-center-unity"
