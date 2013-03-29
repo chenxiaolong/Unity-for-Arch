@@ -6,12 +6,12 @@ pkgname=gnome-settings-daemon-ubuntu
 _ppa_ver=3.7.91
 _ppa_rel=0ubuntu1~raring1
 pkgver=3.8.0
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'ibus' 'librsvg' 'libappindicator3')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'ibus' 'librsvg' 'libappindicator3')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
 groups=('unity')
 provides=("gnome-settings-daemon=${pkgver}")
