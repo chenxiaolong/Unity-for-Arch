@@ -219,6 +219,9 @@ chmod -R 0755 ${CACHE_DIR}
   available="$(pacman -Sl core extra community | cut -d' ' -f2)"
   list=""
   for i in ${depends} ${makedepends} ${checkdepends}; do
+    i=${i%<*}
+    i=${i%>*}
+    i=${i%=*}
     if echo "${available}" | tr ' ' '\n' | grep -q "^${i}$"; then
       list+=" ${i}"
     fi
