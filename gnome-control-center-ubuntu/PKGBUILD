@@ -3,10 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_ver=3.7.91
-_ppa_rel=0ubuntu1~raring3
+_ppa_rel=0ubuntu1~raring1
 pkgver=3.8.0
-pkgrel=100
+pkgrel=100.${_ppa_rel}
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -21,10 +20,10 @@ conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
         'pulse3.0.patch')
 sha512sums=('abffd5b5942c02db8ca3263faab2c4e76865f5d3b4666a6d830c6b62e87e3a922bd7564d7c3bca21e2d8394a4efb505035fe685a189a0837cdbd3a81e9a6c970'
-            '79d14b47145701963ece1f3a6c16f4960ea7b5e907f6273c5c96ecd4326a15b1d0dba893d028e9d6b6ad2fd625d2d7f3a77eb870db073dae3da6fc04ea1b3f97'
+            '953e4efb098d61a52535c3b1952a69151efe73e0c59f8e5ae4469ca0a02e06900a326342dc836ca9a6006da2c39656fd4781171c1788e224e81f31789df1228b'
             '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
 
 build() {
@@ -86,6 +85,10 @@ package() {
   install -dm755 "${pkgdir}/usr/share/indicators/session/applications/"
   ln -s '/usr/share/applications/gnome-control-center.desktop' \
     "${pkgdir}/usr/share/indicators/session/applications/gnome-control-center.desktop"
+
+  # Install legal notice
+  install -m644 "${srcdir}/debian/searchingthedashlegalnotice.html" \
+    "${pkgdir}/usr/share/gnome-control-center/"
 }
 
 # vim:set ts=2 sw=2 et:
