@@ -6,7 +6,7 @@ pkgname=indicator-datetime
 _actual_ver=12.10.3
 _extra_ver=daily13.03.26
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -20,13 +20,11 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
         '0002_Remove_timezone_functionality.patch'
-        '0003_Link_pthread.patch'
-        'revert_r201.patch')
+        '0003_Link_pthread.patch')
 sha512sums=('f9b081fa290d12ef4b78660bebb8c12afd52c3bf6aa2e161a982456e6621cc6eb1eed0e633236342e3b9789f312342804757980e0e3dc96235e803a115db5155'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
             'be0d5ac38d6d7676ae05066a18b6c8a90b7140bac8da0780f7c1420f2a3703c965a98fa941af8ca6811c89ba27b733fa7349f6f85c2bb24d12c2f39c78e49924'
-            '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2'
-            'eb3d061dbaa9451373f25a977eb3280b903fd9b046fa26246a08bae0a214afc2aa54cc474e9c135aa1f5f2488751fdb29e1fa5239c69a48f5b8907a8c7d4826c')
+            '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -46,14 +44,11 @@ build() {
   # Tests need to link against pthread
   patch -p1 -i "${srcdir}/0003_Link_pthread.patch"
 
-  # Don't remove g_type_init() until we have glib 2.36
-  patch -p0 -i "${srcdir}/revert_r201.patch"
-
   autoreconf -vfi
   intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
