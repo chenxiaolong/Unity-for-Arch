@@ -4,9 +4,9 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _ppa_ver=3.7.91
-_ppa_rel=0ubuntu1~raring1
+_ppa_rel=0ubuntu1~raring3
 pkgver=3.8.0
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -21,7 +21,7 @@ install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
 sha512sums=('d79e9f28c04a5d48dcd2687e278f64d71250d8d19962509d2908e0dc40bb68652e385ca48b683440221efc970305745f298185e86d4420cbdbfd26230dd2f793'
-            '162531a7ef7737de3c2aec93d4934a1b286873e2451ea562e81028532ecbcf5abb0742edd8faee397cac196162afea2bfbed798ee5b632e3b7981d4f9b03f008')
+            '2c6b2f76d461b2d4f72f9dc82761199119cc4e2e41ed82dfe8485cedca55e00b1165d4072eaa6ec4b6cea49b9637d85bec842481d5689542bb3be316bea4f77c')
 
 build() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
