@@ -26,8 +26,12 @@ build() {
 
   gtkdocize
   autoreconf -vfi
-
-  ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
+  
+  if ! pacman -Q xorg-server-xvfb &>/dev/null; then
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc
+  else
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
+  fi
   make ${MAKEFLAGS}
 }
 
