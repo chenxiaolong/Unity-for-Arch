@@ -5,7 +5,7 @@
 pkgname=libindicate-qt
 _ubuntu_rel=5
 pkgver=0.2.5.91.${_ubuntu_rel}
-pkgrel=102
+pkgrel=103
 pkgdesc="This project provides a set of Qt bindings for libindicate, the indicator system developed by Canonical Desktop Experience team"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate-qt"
@@ -18,13 +18,17 @@ source=("http://launchpad.net/${pkgname}/${pkgname%-*}-0.5/${pkgver%.*}/+downloa
 sha512sums=('62b6ee0a758729f8007d0dfe6c7b9f55264f0bc110cebc8ef9f782c345fb81e45d9b652de45db06105510a232449b2427fb9a8344f86fb911d3fac1d5c552a23'
             '9e377d06be8b65f54bceb7fb50f83c9aefae1c5f27ca1a695997d6cd4b39ec3a1d1fe0b39322b276e1c0fc2157d5eb9a89fa3d7cc6879fbaa9d027e255c3cdc3')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
   make
