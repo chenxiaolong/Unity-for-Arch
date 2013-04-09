@@ -26,7 +26,7 @@ sha512sums=('7a83555b4b6eb534bbdb77eae85164e182d68f786a72dcdbf41e221a25af0981263
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
             '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
 
-build() {
+prepare() {
   cd "${srcdir}/gtk+-${pkgver}"
 
   patch -p1 -i "${srcdir}/arch_xid-collision-debug.patch"
@@ -52,9 +52,10 @@ build() {
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
 
-  # Cannot find gmodule-2.0
-  #CFLAGS="${CFLAGS} $(pkg-config --cflags --libs gmodule-2.0)"
+build() {
+  cd "${srcdir}/gtk+-${pkgver}"
 
   autoreconf -vfi
 
@@ -68,7 +69,7 @@ build() {
   # https://bugzilla.gnome.org/show_bug.cgi?id=655517
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
