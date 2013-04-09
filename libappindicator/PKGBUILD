@@ -5,7 +5,7 @@
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
 _actual_ver=12.10.1
-_extra_ver=daily13.03.13
+_extra_ver=daily13.04.09
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
@@ -18,10 +18,10 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_g_type_init.patch')
-sha512sums=('cb024da8ab5ee3591c54ea70a19e8911fd27a7965c344a89ece30651abcb9c7f1abc8dab837c20ee0f3adc03c8745ad9fa8b69a13edd1781568bea1c68ade3f6'
+sha512sums=('f47649fb16c01d7329d662fbc30fd6f22bfd1ac32a112bbbee5cb33b7473a2f7994a990e2be4f07ea08d5cad307e197b002769adacdb756f50013d9960fb8aaf'
             '9d58a76f7e9896573a39719596dd4d535a2293f970b6ed0bb156406f4abe715dbbade4b9beb7f3e6b7cf85d26a727750e8fc4e2f0b3525f0ac269cc59f8c30bf')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_g_type_init.patch"
@@ -34,6 +34,12 @@ build() {
   sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
 
   sed -i 's/2\.35\.4/2.34.3/g' configure.ac
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
@@ -41,14 +47,14 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --with-gtk=2 --disable-static PYTHON=python2
-  MAKEFLAGS="-j1"
-  make ${MAKEFLAGS}
+  export MAKEFLAGS="-j1"
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --with-gtk=3 --disable-static PYTHON=python2
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
