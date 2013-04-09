@@ -21,11 +21,15 @@ sha512sums=('24b08578dd66b84fd0cad4d081bf1883ba9c77e69919d68da4e31ea1ab71166dc1b
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf'
             '7a009a23bd3be21939336d5cd9281ead892366d3d0436ec8104e86c88be797dd53f4344018f6286626df08bf93853c11cd333bf8736522051851e920068d17f5')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
   patch -p0 -i "${srcdir}/revert_r438.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   export CFLAGS="${CFLAGS} -Wno-error"
 
