@@ -5,7 +5,7 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=101
+pkgrel=102
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
@@ -23,6 +23,8 @@ build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   # Python 2 fix
   sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
