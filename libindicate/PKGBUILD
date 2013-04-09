@@ -19,10 +19,14 @@ source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${
 sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06'
             '83a860e35dfaf968a602a4240aaecf92a967bcbfe40fbbbae7f29679ffea9b928307c75e7569cecaf9b8e3134af231fc6e1adb32700b7eeba9d2e21c10d7b09d')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   export CFLAGS="${CFLAGS} -Wno-error"
 
