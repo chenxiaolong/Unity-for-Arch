@@ -6,7 +6,7 @@ pkgname=indicator-application
 _actual_ver=12.10.1
 _extra_ver=daily13.01.25
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="A library and indicator to take menus from applications and place them in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-application"
@@ -22,15 +22,21 @@ sha512sums=('bb5328a7e2dde5dea6568963defd977d07a6ebe0d427c91f369034979a88947ebe3
             '7ef9f2eab8dd17d8957b706ba479c38f5f9e74a69e77af7c8e318809c67b4aea214433f0364741fc4fcbfaefd6bbff3e370e24048cd23f2e09ebe6bca32b1511'
             '4b1bea8a0bc56bd1fabe0215dcd1f76aa7fabf094f70ec0bcfaf7decd8c8c9b4e50cd0852ba597cc9946e1e930222fe2d1d86777404a052b8dddf18b51b4cde2')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
   patch -p0 -i "${srcdir}/revert_r239.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
