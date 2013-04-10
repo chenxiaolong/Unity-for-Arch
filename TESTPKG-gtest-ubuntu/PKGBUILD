@@ -3,7 +3,7 @@
 pkgname=gtest-ubuntu
 pkgver=1.6.0
 _ubuntu_rel=1ubuntu6
-pkgrel=1.${_ubuntu_rel}
+pkgrel=2
 pkgdesc="Google's framework for writing C++ tests"
 arch=('any')
 url="http://code.google.com/p/googletest/"
