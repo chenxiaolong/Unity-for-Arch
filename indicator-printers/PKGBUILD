@@ -5,7 +5,7 @@ _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
 _extra_ver=daily13.03.01
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100.${_ubuntu_rel}
+pkgrel=101
 pkgdesc="Indicator showing active print jobs"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-printers"
@@ -19,16 +19,20 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers
 sha512sums=('443686eb599230bd81bae60d4feeeea0dc39526a083bde7f4f4a90f53bcd7ce46d38cd7f1b531397b8f036ce4c13d189105676c4d81d268ed5abb35024a626d1'
             '34d660d3f5dfa19115f77f6a290609c21cb3dd65660528b68a0a4d12df3f36edea83de5692ae3139963743d6e60d72f77cff03c7fc0efa0fe09105520415706a')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Apply Ubuntu's patches
   patch -Np1 -i "${srcdir}/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
