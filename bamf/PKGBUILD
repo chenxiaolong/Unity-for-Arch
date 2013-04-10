@@ -5,9 +5,9 @@
 pkgbase=bamf
 pkgname=('bamfdaemon' 'libbamf3')
 _actual_ver=0.4.0
-_extra_ver=daily13.03.07
+_extra_ver=daily13.04.03
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
@@ -18,8 +18,16 @@ provides=('FEATURE-bamf-webapps')
 groups=('unity')
 options=('!libtool')
 install=${pkgbase}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('72e762f8c2755d2f60f9a46193f8b8be05fff0e1daff5d26fcbd35156b6a36c9cdf319ab690cbb5b92beceb851c3857f31b96db8207f7eac71e8e3fed809af46')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_Disable_Werror.patch')
+sha512sums=('6af815d66b07ee4e15d43b1bcfba2f7ab197c76b3a768a549f9112e9d03d1a3a479ea7ac60f49533b6d209857e9713edbc31bfcb4aac2177be70cde1189fb277'
+            'f1881b97d832d2ac3e4ad00392439023e3c562f2687d62d8dbf2d9f789dd147e1e51c0723899489c3d10c2048bda5f48f2e4f3e91b75d36810be2a74ba636625')
+
+prepare() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_Disable_Werror.patch"
+}
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
@@ -32,7 +40,7 @@ build() {
   else
     ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
   fi
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
