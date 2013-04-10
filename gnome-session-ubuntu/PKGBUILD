@@ -6,7 +6,7 @@ pkgname=gnome-session-ubuntu
 _ubuntu_rel=0ubuntu3
 _actual_ver=3.6.2
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -29,7 +29,7 @@ sha512sums=('3ae043a241695e26bbcfe70cb58263e74bfb62c1859d46828118740e3580df516f1
             'e70432410514740cc2b6f722fbc28f7b5ea984c3bbfb08c72708b9d66ea2eb038e816152e4c2352d73d0cfbd827097195a058590598a138b5ca225bd421b9e26'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Allow software rendering
@@ -62,6 +62,10 @@ build() {
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   CFLAGS="${CFLAGS} -DUPOWER_ENABLE_DEPRECATED"
 
