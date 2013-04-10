@@ -8,7 +8,7 @@
 pkgname=network-manager-applet-ubuntu
 _ubuntu_rel=1ubuntu2
 pkgver=0.9.8.0
-pkgrel=102.${_ubuntu_rel}
+pkgrel=103
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org/projects/NetworkManager/"
@@ -25,13 +25,17 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${p
 sha512sums=('0c2acb8ded7621369e96a9fc748bfbc75af1eb03415c2109e6f577c9c5d8996cc6b9b11d9c2c445ae7b50c2016f5c90f5a649632738eb056bfa99f115a3b1270'
             '2a38e5bf647850171fba8981add744009df3029bccd69a0cd9ff35a1386652bf188ed99eb6fede5f1e4de029995c04c765c50bdfdc5dfc0927f5426e565d9a21')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
