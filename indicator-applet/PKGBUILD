@@ -6,7 +6,7 @@ pkgname=indicator-applet
 _actual_ver=12.10.2
 _extra_ver=daily13.03.01
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-applet"
@@ -27,10 +27,14 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-applet_$
 sha512sums=('176b7a742656fa0ecbc393a29a30bc53077c48a9dcbc5c2114a8b8efe018de5d9f014c6e39e6cb829540c63fb5bb6d1f52658bbfa9efd08e770a6bfadc6fae14'
             '231066c0b9fae5b4cf3cc0cf126a67a287855abc16d610d9a8e7d78d7d095e7c37fccfe5768666c581f583a1482b3043997096c3820dc75389e478a033f8826a')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   aclocal --install
   autoreconf -vfi
