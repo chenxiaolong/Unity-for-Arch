@@ -5,7 +5,7 @@ pkgname=grail
 _actual_ver=3.1.0
 _extra_ver=daily13.02.26
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/grail"
@@ -24,8 +24,8 @@ build() {
 
   # Static library needed for tests
   ./configure --prefix=/usr --with-x11 # --disable-static
-  MAKEFLAGS="-j1"
-  make ${MAKEFLAGS}
+  export MAKEFLAGS="-j1"
+  make
 }
 
 check() {
