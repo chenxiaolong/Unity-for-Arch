@@ -6,7 +6,7 @@ pkgname=unity-lens-music
 _actual_ver=6.8.1
 _extra_ver=daily13.03.04
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Music, in the dash"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-place-music"
@@ -24,7 +24,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
