@@ -3,15 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu_rel=0ubuntu3
 _actual_ver=3.6.4
+_ubuntu_rel=0ubuntu8
 pkgver=${_actual_ver}.${_ubuntu_rel}
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libappindicator3')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'ibus' 'libappindicator3')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
 groups=('unity')
 provides=("gnome-settings-daemon=${_actual_ver}")
@@ -22,10 +22,10 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
         '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
 sha512sums=('f8d263f9a22934e015ff642f9ac93c09764b89151260887242d6b946250d50a2400404f61376a34ec903606bf4061c9733ddb42f0ed92ecc42f873fafb766af7'
-            '0c4f1cdd4df50cdbf9795f10a7bb522224aab32f875f8d3a3a2155b45cb43da0a2dfe682d474226d99d3552982df15d20afbcc63a62a7aa702086b143661b9c2'
+            'db4e9ff1e6257816f28a570c57839b6265f1712caf6193d3b0538f9f1428bef1bf23908686079168f085c94a99b61aa745c360ef41d1b78d8e3526de06242fcf'
             'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # logind key handling FS#31801, patch from Fedora
@@ -39,8 +39,6 @@ build() {
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
       # Ubuntu is too lazy to port their patches to the latest IBus release
         sed -i '/revert_new_ibus_use.patch/d' "${srcdir}/debian/patches/series"
-      # systemd should make this obsolete
-        sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
       # Merged upstream. How does Debian/Ubuntu's quilt not error out, I have no
       # idea. https://launchpadlibrarian.net/124034045/buildlog_ubuntu-raring-amd64.gnome-settings-daemon_3.6.3-0ubuntu2_BUILDING.txt.gz
         sed -i '/48_register_client_before_idle_callbacks.patch/d' "${srcdir}/debian/patches/series"
@@ -50,6 +48,10 @@ build() {
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   autoreconf -vfi
 
@@ -59,13 +61,12 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/${pkgname%-*} \
     --disable-static \
-    --enable-systemd \
-    --disable-ibus
+    --enable-systemd
       
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
