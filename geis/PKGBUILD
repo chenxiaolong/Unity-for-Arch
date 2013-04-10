@@ -2,7 +2,7 @@
 
 pkgname=geis
 _actual_ver=2.2.15
-_extra_ver=daily13.02.14
+_extra_ver=daily13.04.03
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
@@ -13,15 +13,17 @@ depends=('grail' 'xorg-xinput' 'python3' 'dbus-core')
 makedepends=('xorg-server-devel')
 options=('!emptydirs' '!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('e3b4d5f9c6641a2c65d31c0cef022b929af7515c8ab75f388e3294d587144895c436efb496fff668d835b1c00cef36c326edfd7a1ac7768299ac1727819ea5f9')
+sha512sums=('6bf7c1640efe38146f674769eefaac374c70c2da7e161875da9c0cbd60f4ecc0ba811388b4adfc6397e5f3e4f7d94dfd9dc73e105540150e71e1d1ed2a5e876e')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CFLAGS="${CFLAGS} -Wno-error"
+
   autoreconf -vfi
 
   ./configure --prefix=/usr --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
