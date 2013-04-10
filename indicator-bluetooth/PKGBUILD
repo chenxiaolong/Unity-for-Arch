@@ -4,7 +4,7 @@ pkgname=indicator-bluetooth
 _actual_ver=0.0.6
 _extra_ver=daily13.02.19
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-bluetooth"
@@ -24,7 +24,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-bluetooth --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
