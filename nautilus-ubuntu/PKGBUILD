@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu12
+_ubuntu_rel=0ubuntu13
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -21,9 +21,9 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            'ca3e4c48f53296aa6b1c0d54aa574f581629ba2273a341b0aa1f730deb5d4f4d8055b5d37a617f888421107bcb673453a3928231d65804c69cc45c540632d66d')
+            'b8d1dbed32549379bbb3b69e699ebd1e42e010170ed19d47fbe423167d5aec8ffe8d6514184408efd915bec3ddfd9c9219a2bb746a0e9b8bd3a8703e16b609cb')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu's patches
@@ -40,6 +40,10 @@ build() {
 
   # For updating translations in desktop files
   ln -s "${srcdir}/debian" .
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   autoreconf -vfi
 
