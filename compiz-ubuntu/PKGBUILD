@@ -9,10 +9,10 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
-_extra_ver=\~daily13.03.25
+_extra_ver=\~daily13.04.10
 
 # AUR Fix
-pkgver=0.9.9.daily13.03.25
+pkgver=0.9.9.daily13.04.10
 realver=${_actual_ver}${_extra_ver/\~/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=1.${_ubuntu_rel}
+pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -36,20 +36,27 @@ install=compiz-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
+        '0001_GCC_4.8_Fixes.patch'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
-        '0005_Disable_Werror.patch')
-sha512sums=('d32bc931384e9a4367bf34fdf70995026ec03ecc86faf47b10a802743d1035c2151d765674bc91fbef95eb37a8f143286468e21170db1225aeee5bf478d616f7'
-            'e2da409c6974e20bdd280e2835b2fd115949973ecdae6084252d4ba6f478d280b3125659677f902b00446a4fb5e7657f979ae30f18c0bcab449c9bdf8f0b2e25'
+        '0005_Disable_Werror.patch'
+        '0006_Boost_1.53.patch')
+sha512sums=('5f2feb1a43b413b79d4918532522bdda79e9c6b8ae90f53827ebc340bc0019978956043a496ce716eb0d14e26f1d7a11c81bd71ef076480f09e9615f20def847'
+            'dbeffb2d3895d76599a48d77dec042faccc0d590ff02299f627ec69081a8e66c1bb003ed4e22f495544830e5096b30292c79bc7427a17ec33e3d0e4264c45d19'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
+            'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
-            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
+            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924'
+            '19e6abb6de3e8d949cd5384b470e8c624294ecf5bee06c5e54fece9682849c755e90b6d609d4efbea9738525923e5ba7e4e48415ba7eb19578c6bfeeb255d07a')
 
-build() {
+prepare() {
   cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+
+  # Build fixes with GCC 4.8
+  patch -p1 -i "${srcdir}/0001_GCC_4.8_Fixes.patch"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
@@ -65,16 +72,24 @@ build() {
   # Don't treat warnings as errors
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
 
+  # Fix build with Boost 1.53
+  # https://bugs.launchpad.net/compiz/+bug/1131864
+  patch -p0 -i "${srcdir}/0006_Boost_1.53.patch"
+
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat debian/patches/series | grep -v '#'); do
     patch -p1 -i "debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
-  LDFLAGS="$(echo ${LDFLAGS} | sed 's/-B[ ]*symbolic-functions//')"
+  export LDFLAGS="$(echo ${LDFLAGS} | sed 's/-B[ ]*symbolic-functions//')"
 
   # Disable rpath in Python 2 bindings
   export COMPIZ_DISABLE_RPATH=1
