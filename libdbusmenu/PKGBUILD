@@ -5,7 +5,7 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=12.10.3daily13.02.01
-pkgrel=102
+pkgrel=103
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -37,9 +37,6 @@ build() {
   autoreconf -vfi
   intltoolize -f
 
-  # Add '-lgmodule-2.0' to linker command line
-  #CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
-
   # Python2 fix
   sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench
 
@@ -51,14 +48,14 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static
-  MAKEFLAGS="-j1"
-  make ${MAKEFLAGS}
+  export MAKEFLAGS="-j1"
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
@@ -77,7 +74,7 @@ package_libdbusmenu() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
   make -C tests DESTDIR="${pkgdir}/" install
@@ -91,7 +88,7 @@ package_libdbusmenu-gtk2() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
   make -C docs/libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
@@ -102,7 +99,7 @@ package_libdbusmenu-gtk3(){
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
 
