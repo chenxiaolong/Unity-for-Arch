@@ -5,7 +5,7 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=102
+pkgrel=103
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
@@ -46,13 +46,13 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 --disable-static PYTHON=python2
-  make ${MAKEFLAGS}
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
@@ -69,7 +69,7 @@ package_libindicate() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate DESTDIR="${pkgdir}" install
   make -C bindings/mono/indicate DESTDIR="${pkgdir}" install
@@ -83,7 +83,7 @@ package_libindicate-gtk2() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate-gtk DESTDIR="${pkgdir}" install
   make -C bindings/python DESTDIR="${pkgdir}" install
@@ -97,7 +97,7 @@ package_libindicate-gtk3(){
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate-gtk DESTDIR="${pkgdir}" install
 }
