@@ -6,7 +6,7 @@ pkgname=unity-lens-files
 _actual_ver=7.0
 _extra_ver=~daily13.02.28
 pkgver=${_actual_ver}${_extra_ver/\~/.}
-pkgrel=100
+pkgrel=101
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-place-files"
@@ -25,7 +25,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {
