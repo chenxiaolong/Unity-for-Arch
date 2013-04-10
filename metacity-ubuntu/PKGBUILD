@@ -5,7 +5,7 @@
 pkgname=metacity-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=2.34.13.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -22,13 +22,17 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${p
 sha512sums=('4faa2dced43b1e89213a3ba3b672f660016eb0f45ff449168aab8269cd788d9f82a0067018ef90ca0bf4f274e660d09c721f7fb1d0e5808ee21b9f0778fb0769'
             'be03e50199a758cc3f515d91739ea344a18cb180493c36459f28e2c8e1256dcf9d57c61d9746f80f201a5dae640da40947292166e815d6a7c9ff4497bb31b87a')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -Np1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
 
   ./configure \
     --prefix=/usr \
@@ -38,7 +42,7 @@ build() {
     --disable-static \
     --disable-schemas-compile
 
-  make ${MAKEFLAGS}
+  make
 }
 
 package() {
