@@ -2,8 +2,8 @@
 
 pkgname=libcolumbus
 pkgver=0.4.0
-pkgrel=101
-pkgdesc=""
+pkgrel=102
+pkgdesc="A small, fast, error tolerant matcher"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
 license=('LGPL')

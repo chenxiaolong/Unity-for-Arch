@@ -5,7 +5,7 @@
 pkgname=metacity-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=2.34.13.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
