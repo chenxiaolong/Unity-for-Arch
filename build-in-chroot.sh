@@ -240,8 +240,11 @@ chmod -R 0755 ${CACHE_DIR}
 ### Create chroot ##############################################################
 
 # Create base chroot
-setarch ${ARCH} mkarchroot -f -c ${CACHE_DIR} ${CHROOT} \
-                           ${CHROOT_PACKAGES[@]}
+# (There's a very slight chance that removing the chroot may cause issues when
+#  two packages are being built in the same directory. However, my jenkins setup
+#  never does this, so the issue is completely avoided.)
+rmdir ${CHROOT} && setarch ${ARCH} mkarchroot -c ${CACHE_DIR} ${CHROOT} \
+                                                 ${CHROOT_PACKAGES[@]}
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
@@ -329,34 +332,37 @@ EOF
   fi
 
   # Download sources and install build dependencies
+  cat > ${CHROOT}/stage1.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 makepkg --syncdeps --nobuild --nocolor \\
+                         --noconfirm ${PROGRESSBAR}'
+EOF
   setarch ${ARCH} mkarchroot \
-    -r "
-    su - builder -c 'cd /tmp/${PACKAGE} && \
-                     makepkg --syncdeps --nobuild --nocolor --noconfirm \
-                             ${PROGRESSBAR}'
-    " \
+    -r 'sh /stage1.sh' \
     -c ${CACHE_DIR} \
     ${CHROOT}
 ) 123>${LOCALREPO}/repo.lock
 
 # Workaround makepkg bug for SCM packages
+cat > ${CHROOT}/stage2.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 find -maxdepth 1 -type d -empty -name src \
+                      -exec touch {}/stupid-makepkg \\;'
+EOF
 setarch ${ARCH} mkarchroot \
-  -r "
-  su - builder -c 'cd /tmp/${PACKAGE} && \
-                   find -maxdepth 1 -type d -empty -name src \
-                        -exec touch {}/stupid-makepkg \\;'
-  " \
+  -r 'sh /stage2.sh' \
   -c ${CACHE_DIR} \
   ${CHROOT}
 
 # Build package
 # TODO: Enable signing
+cat > ${CHROOT}/stage3.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 makepkg --clean --check --noconfirm --nocolor --noextract \\
+                 ${PROGRESSBAR}'
+EOF
 setarch ${ARCH} mkarchroot \
-  -r "
-  su - builder -c 'cd /tmp/${PACKAGE} && \
-                   makepkg --clean --check --noconfirm --nocolor --noextract \
-                           ${PROGRESSBAR}'
-  " \
+  -r 'sh /stage3.sh' \
   -c ${CACHE_DIR} \
   ${CHROOT}
 
