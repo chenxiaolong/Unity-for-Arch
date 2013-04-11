@@ -35,7 +35,7 @@ prepare() {
       sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   # For updating translations in desktop files
