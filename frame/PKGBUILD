@@ -4,8 +4,8 @@
 pkgname=frame
 _actual_ver=2.5.0
 _extra_ver=daily13.03.12
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgver=${_actual_ver}.${_extra_ver}
+pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/frame"
