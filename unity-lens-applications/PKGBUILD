@@ -24,7 +24,7 @@ prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Remove check for db version 5.1
-  patch -Np1 -i "${srcdir}/10-no-db51.patch"
+  patch -p1 -i "${srcdir}/10-no-db51.patch"
 }
 
 build() {
