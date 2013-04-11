@@ -35,6 +35,7 @@ show_help() {
   echo "  -r,--keeproot Do not delete chroot after building"
 }
 
+MKARCHROOT_SUPPORTED=('77d275572875542cbbc08ad93c7e0319e6c10696262c5dd7f282d968c547dc172ae1cc56349e922f48e5a652408b621b10f2ec4756051dec15a3a294cd0e56d8')
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
@@ -105,6 +106,19 @@ for i in ${ARCH_SUPPORTED[@]}; do
 done
 if [ "x${SUPPORTED}" != "xtrue" ]; then
   echo "Unsupported architecture ${ARCH}!"
+  exit 1
+fi
+
+# Make sure the version of mkarchroot is supported
+SUPPORTED=false
+for i in ${MKARCHROOT_SUPPORTED[@]}; do
+  if echo "${i} /usr/sbin/mkarchroot" | sha512sum -c --status; then
+    SUPPORTED=true
+    break
+  fi
+done
+if [ "x${SUPPORTED}" != "xtrue" ]; then
+  echo "Unsupported version of mkarchroot!"
   exit 1
 fi
 
@@ -239,12 +253,49 @@ chmod -R 0755 ${CACHE_DIR}
 
 ### Create chroot ##############################################################
 
+# Copy and patch mkarchroot to readd the '-f' functionality. This avoids
+# potential issues when building two packages in the same directory. The base64
+# is the encoded form of reverse of the patch for commit:
+#
+#   97a2d2414a7f9d4abce3a40320fe9e0883155884
+#
+# in https://projects.archlinux.org/devtools.git
+mkarchroot_initial() {
+  TEMP_MKARCHROOT=$(mktemp --tmpdir=$(pwd))
+  cat /usr/sbin/mkarchroot > ${TEMP_MKARCHROOT}
+  TEMP_MKARCHROOT=$(basename ${TEMP_MKARCHROOT})
+  (echo -e "--- ${TEMP_MKARCHROOT}.bak\n+++ ${TEMP_MKARCHROOT}" && \
+   base64 -d << EOF
+QEAgLTE0NCw2ICsxNDQsNyBAQAogCiBDSFJPT1RfVkVSU0lPTj0ndjMnCiAKK0ZPUkNFPSduJwog
+UlVOPScnCiBOT0NPUFk9J24nCiAKQEAgLTE1Nyw2ICsxNTgsNyBAQAogCWVjaG8gJyBvcHRpb25z
+OicKIAllY2hvICcgICAgLXIgPGFwcD4gICAgICBSdW4gImFwcCIgd2l0aGluIHRoZSBjb250ZXh0
+IG9mIHRoZSBjaHJvb3QnCiAJZWNobyAnICAgIC11ICAgICAgICAgICAgVXBkYXRlIHRoZSBjaHJv
+b3QgdmlhIHBhY21hbicKKwllY2hvICcgICAgLWYgICAgICAgICAgICBGb3JjZSBvdmVyd3JpdGUg
+b2YgZmlsZXMgaW4gdGhlIHdvcmtpbmctZGlyJwogCWVjaG8gJyAgICAtQyA8ZmlsZT4gICAgIExv
+Y2F0aW9uIG9mIGEgcGFjbWFuIGNvbmZpZyBmaWxlJwogCWVjaG8gJyAgICAtTSA8ZmlsZT4gICAg
+IExvY2F0aW9uIG9mIGEgbWFrZXBrZyBjb25maWcgZmlsZScKIAllY2hvICcgICAgLW4gICAgICAg
+ICAgICBEbyBub3QgY29weSBjb25maWcgZmlsZXMgaW50byB0aGUgY2hyb290JwpAQCAtMTY5LDYg
+KzE3MSw3IEBACiAJY2FzZSAiJHthcmd9IiBpbgogCQlyKSBSVU49IiRPUFRBUkciIDs7CiAJCXUp
+IFJVTj0ncGFjbWFuIC1TeXUgLS1ub2NvbmZpcm0nIDs7CisJCWYpIEZPUkNFPSd5JyA7OwogCQlD
+KSBwYWNfY29uZj0iJE9QVEFSRyIgOzsKIAkJTSkgbWFrZXBrZ19jb25mPSIkT1BUQVJHIiA7Owog
+CQluKSBOT0NPUFk9J3knIDs7CkBAIC0yODEsOCArMjg0LDggQEAKIAkjIH19fQogZWxzZQogCSMg
+e3t7IGJ1aWxkIGNocm9vdAotCWlmIFtbIC1lICR3b3JraW5nX2RpciBdXTsgdGhlbgotCQlkaWUg
+IldvcmtpbmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMiCisJaWYg
+W1sgLWUgJHdvcmtpbmdfZGlyICYmICRGT1JDRSA9ICduJyBdXTsgdGhlbgorCQlkaWUgIldvcmtp
+bmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMgLSB0cnkgdXNpbmcg
+LWYiCiAJZmkKIAogCW1rZGlyIC1wICIke3dvcmtpbmdfZGlyfSIKQEAgLTMwMiw2ICszMDUsOSBA
+QAogCQlwYWNhcmdzKz0oIi0tY29uZmlnPSR7cGFjX2NvbmZ9IikKIAlmaQogCisJaWYgW1sgJEZP
+UkNFID0gJ3knIF1dOyB0aGVuCisJCXBhY2FyZ3MrPSgiLS1mb3JjZSIpCisJZmkKIAlpZiAhIHBh
+Y3N0cmFwIC1HTWNkICIke3dvcmtpbmdfZGlyfSIgIiR7cGFjYXJnc1tAXX0iICIkQCI7IHRoZW4K
+IAkJZGllICdGYWlsZWQgdG8gaW5zdGFsbCBhbGwgcGFja2FnZXMnCiAJZmkK
+EOF
+) | patch -p0
+  cat ${TEMP_MKARCHROOT} | setarch ${ARCH} bash -s -- ${*}
+  rm ${TEMP_MKARCHROOT}
+}
+
 # Create base chroot
-# (There's a very slight chance that removing the chroot may cause issues when
-#  two packages are being built in the same directory. However, my jenkins setup
-#  never does this, so the issue is completely avoided.)
-rmdir ${CHROOT} && setarch ${ARCH} mkarchroot -c ${CACHE_DIR} ${CHROOT} \
-                                                 ${CHROOT_PACKAGES[@]}
+mkarchroot_initial -f -c ${CACHE_DIR} ${CHROOT} ${CHROOT_PACKAGES[@]}
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
