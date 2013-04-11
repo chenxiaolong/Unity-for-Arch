@@ -32,10 +32,10 @@ prepare() {
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
+    patch -p1 -i "debian/patches/${i}"
   done
 }
 
