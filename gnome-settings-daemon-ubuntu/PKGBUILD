@@ -29,7 +29,7 @@ prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # logind key handling FS#31801, patch from Fedora
-  patch -Np1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
+  patch -p1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
 
   # Apply Ubuntu's patches
     # Disable patches
