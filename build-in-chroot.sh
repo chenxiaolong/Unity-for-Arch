@@ -202,7 +202,6 @@ chmod -R 0755 ${CACHE_DIR}
 (
   flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
 
-  # Prevent tons of useless crap from spewing out
   set +x
 
   # Remove any packages in the local repo from the pacman cache. The chroot
@@ -213,17 +212,20 @@ chmod -R 0755 ${CACHE_DIR}
     fi
   done
 
+  set -x
+
   # Create temporary mini-chroot to store database files
   mkdir -p ${TEMP_CHROOT}/var/lib/pacman/
 
-  echo "Downloading base packages for chroot..."
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ \
          ${CHROOT_PACKAGES[@]}
 
-  echo "Downloading dependencies and build dependencies..."
   cat ${PACKAGE_DIR}/PKGBUILD > ${TEMP_PKGBUILD}
   chown nobody:nobody ${TEMP_PKGBUILD}
+
+  set +x
+
   depends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
                                     echo \${depends[@]}")
   makedepends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
@@ -240,13 +242,14 @@ chmod -R 0755 ${CACHE_DIR}
       list+=" ${i}"
     fi
   done
+
+  set -x
+
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ ${list}
 
   # Copy /var/cache/pacman/pkg/ to the chroot-specific cache directory
   cp /var/cache/pacman/pkg/*.pkg.tar.xz ${CACHE_DIR}/
-
-  set -x
 ) 321>$(dirname ${0})/cache.lock
 
 ################################################################################
