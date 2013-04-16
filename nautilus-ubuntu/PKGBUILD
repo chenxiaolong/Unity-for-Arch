@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=nautilus-ubuntu
-_ubuntu_rel=0ubuntu15
+_ubuntu_rel=0ubuntu16
 _actual_ver=3.6.3
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -21,7 +21,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            'eb2abd5d6636dd1cdd99d8f45de675ed4d80ad5577ed3a2ab79bd14ce026e283cbd02db60c3269b7556053b418969dc054662516067300908b6f8a8e17f72604')
+            '67f88dfcca4b217468841bafee7a8d5cae05418256fe13c5d272abea7281621ff05f7c8be9d903d6dec01231a81d07661777c3092a4071d5c04b9e837f6a7f68')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
