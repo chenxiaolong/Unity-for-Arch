@@ -5,9 +5,9 @@
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
 _actual_ver=12.10.1
-_extra_ver=daily13.04.09
+_extra_ver=daily13.04.15
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libappindicator"
@@ -18,7 +18,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_g_type_init.patch')
-sha512sums=('f47649fb16c01d7329d662fbc30fd6f22bfd1ac32a112bbbee5cb33b7473a2f7994a990e2be4f07ea08d5cad307e197b002769adacdb756f50013d9960fb8aaf'
+sha512sums=('ce83e53c51a6edef22b4b7806e3f755a4218f009afcdb76b2cbe6aa580962ce34488c2457a4ff7f816032f7284d59fcfd232a8493960b91ae788b5e16ec4f82e'
             '9d58a76f7e9896573a39719596dd4d535a2293f970b6ed0bb156406f4abe715dbbade4b9beb7f3e6b7cf85d26a727750e8fc4e2f0b3525f0ac269cc59f8c30bf')
 
 prepare() {
