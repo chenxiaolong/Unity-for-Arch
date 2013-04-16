@@ -9,10 +9,10 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
-_extra_ver=\~daily13.04.10
+_extra_ver=\~daily13.04.15
 
 # AUR Fix
-pkgver=0.9.9.daily13.04.10
+pkgver=0.9.9.daily13.04.15
 realver=${_actual_ver}${_extra_ver/\~/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=2
+pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -42,8 +42,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch'
         '0006_Boost_1.53.patch')
-sha512sums=('5f2feb1a43b413b79d4918532522bdda79e9c6b8ae90f53827ebc340bc0019978956043a496ce716eb0d14e26f1d7a11c81bd71ef076480f09e9615f20def847'
-            'dbeffb2d3895d76599a48d77dec042faccc0d590ff02299f627ec69081a8e66c1bb003ed4e22f495544830e5096b30292c79bc7427a17ec33e3d0e4264c45d19'
+sha512sums=('43243cc671d1a8f5e631fab3722db902555649cf6ef64e22334a1d3be189ecff33875d33ad989cdb7f318a03cc9fa333b493040ef1975b4f5d32781ea934f541'
+            'f58962baf111a657dbf5249a5224ef249ad1f0a7b173724ab190d30a4b4e87655b0ec37b756c61c5d4ccd16cdc785f4f11256a8a811979d88afa3c779d59f448'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
