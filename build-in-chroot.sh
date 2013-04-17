@@ -438,6 +438,12 @@ echo "Attempting to acquire lock on local repo..."
   rm -f ${LOCALREPO}/*.db*
   rm -f ${LOCALREPO}/*.files*
   cp ${CHROOT}${RESULT_DIR}/* ${LOCALREPO}/
+  # Old packages must be removed, so that the '*' glob in the repo-add command
+  # below will not use old packages. For example, '*' would match:
+  #   0ubuntu10 0ubuntu11 0ubuntu9
+  # causing repo-add to only add 0ubuntu9 when it should clearly add 0ubuntu11
+  paccache -vvv -k 1 -r -c ${LOCALREPO}/
+
   # TODO: Enable signing
   repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
