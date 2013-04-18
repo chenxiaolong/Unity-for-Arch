@@ -2,10 +2,10 @@
 
 pkgname=unity-lens-video
 _actual_ver=0.3.14
-_extra_ver=daily13.03.04
+_extra_ver=daily13.04.15
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=103
+pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('any')
 url="https://launchpad.net/unity-lens-videos"
@@ -19,7 +19,7 @@ replaces=('unity-scope-video-remote')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-video.tar.gz")
-sha512sums=('afa125498664a652f88d2ae26cf310c5f81868b78f86c3ac4c6de3426db820a8b238bd7259850451bac69a6b68b39fa27f0ef9fb20ab244435c4367530c2fdd1'
+sha512sums=('0a2845af53f86308ffc9b1f3ab92fa1638421e313e750a44015acd87a660ed91fff9f71898c56073f9a70df2f6ff414f0912dc305496511420fbbaafab0fa292'
             'cac380942dd525e405dcac5c348e0aac8c734cb5ee2d2ef034a1a4a0acbeb54dc5598dc40ab7e4b0fcbe28eec322663b15a1df09fc36aec091c1f959ec67b700')
 
 prepare() {
