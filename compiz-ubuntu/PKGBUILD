@@ -9,11 +9,11 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.9
-_extra_ver=\~daily13.04.15
+_extra_ver=\~daily13.04.18.1~13.04
 
 # AUR Fix
-pkgver=0.9.9.daily13.04.15
-realver=${_actual_ver}${_extra_ver/\~/.}
+pkgver=0.9.9.daily13.04.18.1.13.04
+realver=${_actual_ver}${_extra_ver//\~/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
   echo "PKGBUILD needs to be updated!"
@@ -42,8 +42,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch'
         '0006_Boost_1.53.patch')
-sha512sums=('43243cc671d1a8f5e631fab3722db902555649cf6ef64e22334a1d3be189ecff33875d33ad989cdb7f318a03cc9fa333b493040ef1975b4f5d32781ea934f541'
-            'f58962baf111a657dbf5249a5224ef249ad1f0a7b173724ab190d30a4b4e87655b0ec37b756c61c5d4ccd16cdc785f4f11256a8a811979d88afa3c779d59f448'
+sha512sums=('22ec49359a99c942a253e8f4fb3dcfd5340439f61c5f5715e1c9bd9134c217659a8cbb1dc74ad3e37a5a2a9a969b7719f293cc3a6c8cce83fcbb01d1845aed00'
+            'f59883c4aa947b0788ffd1274a854741fa0b5633044b3e1b436d2bba316244f0ecd44df8c431772edb88892634e05ddd12e377e9b3985efae9b93c65eb7c3393'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
