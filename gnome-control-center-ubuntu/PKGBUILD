@@ -5,8 +5,9 @@
 pkgname=gnome-control-center-ubuntu
 _ubuntu_rel=0ubuntu24
 _actual_ver=3.6.3
+_translations=20130418
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -22,9 +23,11 @@ options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
         'pulse3.0.patch')
 sha512sums=('77cd68349dc7f58714fbd121a34ec73a5c3e67c7a42a08c20a8dfdcfc9cefdec47af0f09130b7e3f0407cb7a786234b2619fdb76462c3bdb2bbc548294bfd444'
             '8ec9d02d8a77ab4df85f5a4480542c08fe1abcb271c4ba55abf55ab2b71a0dd5b293ba0f907d655eb00ed58bd15c7aa6cf210a1c42eed55e4d2b06b0e25c0cc9'
+            'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc'
             '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
 
 prepare() {
@@ -71,6 +74,15 @@ EOF
     else
       patch -p1 -i "${srcdir}/debian/patches/${i}"
     fi
+  done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
   done
 }
 
