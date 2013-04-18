@@ -5,8 +5,9 @@
 pkgname=nautilus-ubuntu
 _ubuntu_rel=0ubuntu16
 _actual_ver=3.6.3
+_translations=20130418
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -19,9 +20,11 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz")
 sha512sums=('f90ed3253889764dc3799e53555a9d6e84876b5d5ea020ba34b643df460f703acbba85bba0cf468ea7d614ec954b49304e46a27d46459b4aaa7e53ecd9467895'
-            '67f88dfcca4b217468841bafee7a8d5cae05418256fe13c5d272abea7281621ff05f7c8be9d903d6dec01231a81d07661777c3092a4071d5c04b9e837f6a7f68')
+            '67f88dfcca4b217468841bafee7a8d5cae05418256fe13c5d272abea7281621ff05f7c8be9d903d6dec01231a81d07661777c3092a4071d5c04b9e837f6a7f68'
+            '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
@@ -42,6 +45,15 @@ prepare() {
 
   # For updating translations in desktop files
   ln -s "${srcdir}/debian" .
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
 }
 
 build() {
