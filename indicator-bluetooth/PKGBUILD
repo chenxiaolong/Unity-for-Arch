@@ -3,8 +3,9 @@
 pkgname=indicator-bluetooth
 _actual_ver=0.0.6
 _extra_ver=daily13.02.19
+_translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=102
+pkgrel=103
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-bluetooth"
@@ -16,8 +17,23 @@ makedepends=('gnome-common' 'intltool' 'vala')
 conflicts=('gnome-bluetooth-ubuntu')
 options=('!libtool')
 # Ubuntu finally using xz sources? It's a miracle!
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-bluetooth_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('1f5418104d6f3d74bb2003474347a8dc386abd37d2ae9ee86f7d290d1934eca4dbc5acce5d618f14cf98be6ef7ee67d0952b46af3ba2843ba7b127803cfcb2f0')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-bluetooth_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-bluetooth.tar.gz")
+sha512sums=('1f5418104d6f3d74bb2003474347a8dc386abd37d2ae9ee86f7d290d1934eca4dbc5acce5d618f14cf98be6ef7ee67d0952b46af3ba2843ba7b127803cfcb2f0'
+            '5d279bcb9dbb7bb89a127025418bf3326026379630f0c0bbea9b5fe0cad93731d72f91641ea98c5c1fc71d6355855d083ff195f14d3ad73e5f573780c627bd51')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
