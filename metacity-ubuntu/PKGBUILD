@@ -4,8 +4,9 @@
 
 pkgname=metacity-ubuntu
 _ubuntu_rel=0ubuntu1
+_translations=20130418
 pkgver=2.34.13.${_ubuntu_rel}
-pkgrel=102
+pkgrel=103
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -18,9 +19,11 @@ conflicts=('metacity')
 options=('!libtool' '!emptydirs')
 install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-metacity.tar.gz")
 sha512sums=('4faa2dced43b1e89213a3ba3b672f660016eb0f45ff449168aab8269cd788d9f82a0067018ef90ca0bf4f274e660d09c721f7fb1d0e5808ee21b9f0778fb0769'
-            'be03e50199a758cc3f515d91739ea344a18cb180493c36459f28e2c8e1256dcf9d57c61d9746f80f201a5dae640da40947292166e815d6a7c9ff4497bb31b87a')
+            'be03e50199a758cc3f515d91739ea344a18cb180493c36459f28e2c8e1256dcf9d57c61d9746f80f201a5dae640da40947292166e815d6a7c9ff4497bb31b87a'
+            '4eeebb7579a28cd099f318b51d20b455fbab291ed90ea53df6c1094043a9b3579143cf880d997536395fdf98fd36b3b40858393b8838a15c2bbb3b1b113a1dd2')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver%.*}"
@@ -28,6 +31,15 @@ prepare() {
   # Apply Ubuntu patches
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
   done
 }
 
