@@ -5,8 +5,9 @@
 pkgname=gnome-settings-daemon-ubuntu
 _actual_ver=3.6.4
 _ubuntu_rel=0ubuntu8
+_translations=20130418
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -20,9 +21,11 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
 sha512sums=('f8d263f9a22934e015ff642f9ac93c09764b89151260887242d6b946250d50a2400404f61376a34ec903606bf4061c9733ddb42f0ed92ecc42f873fafb766af7'
             'db4e9ff1e6257816f28a570c57839b6265f1712caf6193d3b0538f9f1428bef1bf23908686079168f085c94a99b61aa745c360ef41d1b78d8e3526de06242fcf'
+            '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
 
 prepare() {
@@ -47,6 +50,15 @@ prepare() {
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
   done
 }
 
