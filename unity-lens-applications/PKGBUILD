@@ -5,8 +5,9 @@
 pkgname=unity-lens-applications
 _actual_ver=6.10.0
 _extra_ver=daily13.04.15
+_translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
@@ -16,8 +17,10 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-applications.tar.gz"
         '10-no-db51.patch')
 sha512sums=('b73eb34bdcae8a72f965c61c7c24aa061b10f1dc6af6a01542eec5e4d034f5b693fc546b799cf843a4cffddc4c626a482d53f78d5e61e567dbb50f2990ce2009'
+            '373cd206980e64d388335a3396091a2997a27d27334352073d6cfb927b4e9f04d33f70420859cd522b562c75377938867500e73c47a75f1c8dce9f86d5a1014d'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
 prepare() {
@@ -25,6 +28,15 @@ prepare() {
 
   # Remove check for db version 5.1
   patch -p1 -i "${srcdir}/10-no-db51.patch"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
 }
 
 build() {
