@@ -5,8 +5,9 @@
 pkgname=gnome-session-ubuntu
 _ubuntu_rel=0ubuntu3
 _actual_ver=3.6.2
+_translations=20130418
 pkgver=${_actual_ver}.${_ubuntu_rel}
-pkgrel=103
+pkgrel=104
 pkgdesc="The GNOME Session Handler with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -20,11 +21,13 @@ install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${_actual_ver%.*}/${pkgname%-*}-${_actual_ver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_actual_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
         '55gnome-session_gnomerc'
         'gnome-session-3.3.1-llvmpipe.patch'
         'timeout.patch')
 sha512sums=('3ae043a241695e26bbcfe70cb58263e74bfb62c1859d46828118740e3580df516f17c73d5a348d381ead7886333c71eb9bca2bed6e494f234b8d733a9fd37083'
             '734c5535302798b08aebbf31eadfc87f51d5c9f7769f529cd0007ac78b16348f6efeed4946b98cfbedec8cfa091a9271823b86f3e6a3187d5d4a20df89f6b030'
+            'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             'e70432410514740cc2b6f722fbc28f7b5ea984c3bbfb08c72708b9d66ea2eb038e816152e4c2352d73d0cfbd827097195a058590598a138b5ca225bd421b9e26'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
@@ -61,6 +64,15 @@ prepare() {
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/gnome-session-3.0-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
   done
 }
 
