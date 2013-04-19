@@ -442,7 +442,7 @@ echo "Attempting to acquire lock on local repo..."
   # below will not use old packages. For example, '*' would match:
   #   0ubuntu10 0ubuntu11 0ubuntu9
   # causing repo-add to only add 0ubuntu9 when it should clearly add 0ubuntu11
-  paccache -vvv -k 1 -r -c ${LOCALREPO}/
+  paccache -vvv -k 1 -r -c ${LOCALREPO}/ || true
 
   # TODO: Enable signing
   repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
