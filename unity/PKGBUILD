@@ -11,7 +11,7 @@ pkgrel=100
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
-  pkgver="${_actual_ver}.${_extra_ver/~/.}"
+  pkgver="${_actual_ver}.${_extra_ver/\~/.}"
 fi
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
