@@ -7,7 +7,7 @@ pkgver=7.0.0
 _actual_ver="${pkgver}"
 _extra_ver="daily13.04.18~13.04"
 _translations=20130418
-pkgrel=100
+pkgrel=101
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
@@ -96,6 +96,9 @@ prepare() {
     mv ${i} po/${FILE}
     echo ${FILE%.*} >> po/LINGUAS
   done
+
+  # Ubuntu Desktop -> Arch Linux Desktop
+  sed -i '/msgid "Ubuntu Desktop"/ {n;s/Ubuntu/Arch Linux/p}' po/*.po
 }
 
 build() {
