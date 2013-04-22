@@ -5,7 +5,7 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=12.10.3daily13.02.01
-pkgrel=102
+pkgrel=104
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -19,17 +19,21 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${pkgv
 sha512sums=('24b08578dd66b84fd0cad4d081bf1883ba9c77e69919d68da4e31ea1ab71166dc1b263081c88d606bc66748c90b5c90b2e0edb678842dd021e95bbad1cd831bb'
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p0 -i "${srcdir}/revert_r438.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
   intltoolize -f
-
-  # Add '-lgmodule-2.0' to linker command line
-  #CFLAGS="${CFLAGS} $(pkg-config --libs gmodule-2.0)"
 
   # Python2 fix
   sed -i "s|^\(#!.*python\)$|\12|" tools/dbusmenu-bench

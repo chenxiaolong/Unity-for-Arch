@@ -4,7 +4,8 @@
 
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
-_extra_ver=daily13.02.20
+_extra_ver=daily13.03.28
+_translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=102
 pkgdesc="An indicator to host the menus from an application"
@@ -22,22 +23,37 @@ conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-appmenu.tar.gz"
         '0001_autoconf.patch')
 sha512sums=('f71e02491c3fc46195cfbfb45431787a1accf2a7ee7ef66f2297ed48f08ee1d74e05b6fcbf00c1abc382dc76d2414fd4d7eacb248f0b6319d63b8651c049dccd'
-            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
+            '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8'
+            '8275d0d27c1f3180a2e5ec936c37570fd8ff98c3e5fdae110a8dc8be78fc6db6c8e5c984aa501b0790407e8e5c42e4afda47d1cb463ed41f41949baec313fa25')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
   intltoolize -f
 
   # Disable -Werror
-  CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make

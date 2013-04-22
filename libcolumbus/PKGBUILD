@@ -1,20 +1,22 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libcolumbus
-pkgver=0.4.0
-pkgrel=101
-pkgdesc=""
+_actual_ver=0.4.0
+_extra_ver=daily13.04.16~13.04
+pkgver=${_actual_ver}.${_extra_ver/\~/.}
+pkgrel=100
+pkgdesc="A small, fast, error tolerant matcher"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
 license=('LGPL')
 groups=('unity')
 depends=('boost' 'icu' 'python' 'sparsehash')
 makedepends=('cmake')
-source=("https://launchpad.net/libcolumbus/${pkgver%.*}/${pkgver}/+download/libcolumbus_${pkgver}.tar.gz")
-sha512sums=('a5c2538634bef82941a99d863595e76433db08e5b270feaf185cf2c8836813931c1e4ae09cb96ee2637e1ad90d93698c254ff1268ba7a9f19b004824b8ebc56b')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('0b241e4739baf5b652e112264df4bd3b013413728d48f9be949457cd4d253b3ae63ea173d94dac165cc08ba3df33604eccaf3385a263d814f2aee35c9e1ce38f')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   mkdir build
   cd build
   cmake .. -DCMAKE_INSTALL_PREFIX=/usr
@@ -22,13 +24,13 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   export COLUMBUS_DATADIR=$(pwd)/../share
   ctest
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 }
 

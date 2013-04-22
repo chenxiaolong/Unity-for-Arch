@@ -2,7 +2,7 @@
 
 pkgname=hud
 _actual_ver=13.04.0
-_extra_ver=daily13.02.20
+_extra_ver=daily13.04.03
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=103
 pkgdesc="Backend for the Unity HUD"
@@ -19,14 +19,19 @@ install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autotools.patch'
         '0003_Include_string.h.patch')
-sha512sums=('2ec16626c29940c2067a90c6efd9775d8258d37f6c9f910f93472bff9f2bf1f765c68c0dc860b35fc4080327d5d900066900b42d109b32470d6bf24567460546'
+sha512sums=('95cb5a85951f0badcd671abd58e768099dbac66735c35015b23f5149c3804eec19db633c3435e10ce927ca6dcad38f884e3cb2214709528277de3712436b3c55'
             '2fb93095182e736fcf1a45b6dbe5707688e7724688969848a9d0fbf24b4b6b761061963ec94b667ae3e23048299af2e09e50691d6dd6e01889d47e7fb4afa375'
             '047124d0a324212d67aa2f33dcd83b9112323e17dc784198ff4d9d10c0fd8613466a78739fa3c78c59e183a6b03db13fadcd01496a1d1b93e48427756cf2c3cd')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   patch -p1 -i "${srcdir}/0001_autotools.patch"
   patch -p1 -i "${srcdir}/0003_Include_string.h.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  export CFLAGS="${CFLAGS} -Wno-error"
   gtkdocize
   autoreconf -vfi
   intltoolize -f

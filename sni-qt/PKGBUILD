@@ -4,7 +4,7 @@
 
 pkgname=sni-qt
 pkgver=0.2.6
-pkgrel=103
+pkgrel=106
 pkgdesc="A Qt plugin which turns all QSystemTrayIcon into StatusNotifierItems (appindicators)"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/sni-qt"
@@ -19,7 +19,7 @@ build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {

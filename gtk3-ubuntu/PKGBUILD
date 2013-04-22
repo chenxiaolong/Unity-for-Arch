@@ -26,8 +26,8 @@ sha512sums=('2b833c73de460779907d911a0a2d1ae46758fcc6861dcb89d6a990bcd66066ab217
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
-build() {
-  cd "${srcdir}/gtk+-${pkgver}"
+prepare() {
+  cd "${srcdir}/gtk+-${_actual_ver}"
 
   # Add Broadway sumbols to tests pass
   patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
@@ -46,6 +46,10 @@ build() {
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/gtk+-${_actual_ver}"
 
   autoreconf -vfi
 

@@ -4,7 +4,8 @@
 
 pkgname=unity-lens-files
 _actual_ver=7.0
-_extra_ver=~daily13.02.28
+_extra_ver=~daily13.04.15
+_translations=20130418
 pkgver=${_actual_ver}${_extra_ver/\~/.}
 pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
@@ -15,8 +16,23 @@ depends=('libzeitgeist' 'libunity' 'libxdg-basedir' 'xdg-user-dirs' 'pyxdg' 'dco
 makedepends=('vala' 'intltool')
 groups=('unity')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('a54ff834d951aee2b5509a53e6dccaff46e707cc519c5232e40c42e721f1ff2ca27fa85024b783b00bc1f06ecad56cc18baaf83bd8b04b6cc0fd5e0d36038498')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-files.tar.gz")
+sha512sums=('4f5faeaf17a77f42239ddba766ff1653a27d42cdf42b3da0f59c25b7cdeb4a9b2e445dc01131cdbd490203b712ad147ca3390af59502f317c429af3af56aa6bd'
+            'b3efd04b48ebbdbc61c50e47ee2cb3bb59627c2878dcd6c710d4461e4780d3f5c7ee8fe7c18f060eee519773c38cc21506f500e4d7b5315e80f7577f8c40a359')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -25,7 +41,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {

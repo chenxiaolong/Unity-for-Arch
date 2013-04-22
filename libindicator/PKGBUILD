@@ -5,7 +5,7 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
-_extra_ver=daily13.02.25
+_extra_ver=daily13.04.10
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=101
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
@@ -17,24 +17,26 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('147ef167aa531f0d2f4fcbc0ea6290042582f8f00432747587a955d252c0c21549f933489493fa8db8847b4ee9681e63203bad06a4a8c9a0493da666fd57a948')
+sha512sums=('29a3a43719768ff604f68be150a826306d7063d09aa871adb8d73ab34a60902d200c4ec019e6f7d99d8653f9ac068fb454b2ba993914145b7d4cf1ea9aa411bc')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=2 --disable-static
-  MAKEFLAGS="-j1"
-  make ${MAKEFLAGS}
+  export MAKEFLAGS="-j1"
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --with-gtk=3 --disable-static
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
@@ -53,7 +55,7 @@ package_libindicator() {
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make DESTDIR="${pkgdir}/" install
 }
 
@@ -64,7 +66,7 @@ package_libindicator3(){
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
   make -C libindicator DESTDIR="${pkgdir}/" install
   make -C tools DESTDIR="${pkgdir}/" install
 

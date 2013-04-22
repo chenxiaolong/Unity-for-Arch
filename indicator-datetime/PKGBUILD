@@ -5,8 +5,9 @@
 pkgname=indicator-datetime
 _actual_ver=12.10.3
 _extra_ver=daily13.03.26
+_translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=104
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -18,15 +19,17 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
         '0002_Remove_timezone_functionality.patch'
         '0003_Link_pthread.patch')
 sha512sums=('f9b081fa290d12ef4b78660bebb8c12afd52c3bf6aa2e161a982456e6621cc6eb1eed0e633236342e3b9789f312342804757980e0e3dc96235e803a115db5155'
+            '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
             '48ba8ccf35395731b78441ced6e84ff3fc9d84c844f47c4b707e561b78fa9b3eb00c90468ba953c91c084127c831006e6e1a91bf1a8d1031384607f6fdf44c28'
             '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Port to systemd's timedated
@@ -43,6 +46,24 @@ build() {
 
   # Tests need to link against pthread
   patch -p1 -i "${srcdir}/0003_Link_pthread.patch"
+
+  # Don't remove g_type_init() until we have glib 2.36
+  patch -p0 -i "${srcdir}/revert_r201.patch"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   intltoolize -f

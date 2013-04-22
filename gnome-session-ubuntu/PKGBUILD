@@ -7,6 +7,7 @@ _ppa_ver=3.7.92
 _ppa_rel=0ubuntu1~raring1
 pkgver=3.8.0
 pkgrel=101
+_translations=20130418
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -20,19 +21,24 @@ install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-session/gnome-session_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
         '55gnome-session_gnomerc'
         '50_ubuntu_sessions.patch'
         '52_xdg_current_desktop.patch'
         'timeout.patch')
 sha512sums=('81fa89b8f2d232a31f59250e40a183e5fc1bd29fd56cf14dff0f9ba5cd6e891fcdec99fa616556e43ba79e0d5b0a9f9ef838f9383c7f847bc975a4f5cd9c4be9'
             '3ceed5ea15852905cf636667ee0315e90c690d7f27cc889036a0572868f0e05c350f409903c1e2a42326fd98d839ff65655182f3443bb4d450aec8f77d2c50cc'
+            'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             'c5289fabe2203d6d9127dfd7f0a6957cd52b23944b22331dec2da543426afe32eee87b34fb05fff48a3474ea003e746d317b4f48294e6000db872f7d2dc2690c'
             'c0e72c98312913ea8998de748b5eed4c553fae97cf4ac1900ed69e1e35676ac91f649a7ccad13cca2737cb4564ad8be25750d17c2ede18481be53037a8ae6e3c'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
 
-build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+prepare() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+
+  # Allow software rendering
+  patch -p1 -i "${srcdir}/gnome-session-3.3.1-llvmpipe.patch"
 
   # Increase timeout, for slow machines
   patch -p1 -i "${srcdir}/timeout.patch"
@@ -65,6 +71,22 @@ build() {
     fi
   done
 
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/gnome-session-3.0-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+
+  CFLAGS="${CFLAGS} -DUPOWER_ENABLE_DEPRECATED"
+
+>>>>>>> master
   autoreconf -vfi
 
   ./configure \

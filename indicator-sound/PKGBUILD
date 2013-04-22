@@ -4,26 +4,41 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=daily13.03.07
+_extra_ver=daily13.04.12
+_translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=101
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
-depends=('libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'ido' 'libnotify' 'libgee' 'dconf')
+depends=('libbamf3' 'libpulse' 'libindicator3' 'libdbusmenu-gtk3' 'ido' 'libnotify' 'libgee' 'dconf')
 makedepends=('intltool' 'vala' 'libgee')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('40ba8d2e60a50a08e65640c0944b82a8c53f5fe73ae9ac825f96ece329c74111551e3eb28e0d004f8b266f84eae35e3ba2858b2d830d45b712d2e3b093ad938d')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz")
+sha512sums=('93b98bf630deba4377701450b603f92e9f54acc8d5c01abe494435660960673c2b00fb61737230e34545016fad265904b56db4199b90178564fa3494dd6d69c2'
+            '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  # Fix build
-  #CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   intltoolize -f
