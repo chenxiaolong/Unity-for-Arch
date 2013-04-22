@@ -21,18 +21,13 @@ options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
-        '0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch')
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz")
 sha512sums=('d79e9f28c04a5d48dcd2687e278f64d71250d8d19962509d2908e0dc40bb68652e385ca48b683440221efc970305745f298185e86d4420cbdbfd26230dd2f793'
             '2c6b2f76d461b2d4f72f9dc82761199119cc4e2e41ed82dfe8485cedca55e00b1165d4072eaa6ec4b6cea49b9637d85bec842481d5689542bb3be316bea4f77c'
-            '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
-						'e56b06ca135af0fe2a7da0f56e41c90eb019ac53e93ec3f2dea17461ba7edb8ec090c2a8ef4a69e79a930969328d9530183a02789e215babff56fae59f99c8c1')
+            '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff')
 
 prepare() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
-
-  # logind key handling FS#31801, patch from Fedora
-  patch -p1 -i ../0001-power-and-media-keys-Use-logind-for-suspending-and-r.patch
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
     # Disable patches
@@ -59,7 +54,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
