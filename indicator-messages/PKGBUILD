@@ -20,7 +20,7 @@ install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-messages.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('60c7905c0ecf7646a6681f2e2a8bf9b50d9e97e516482653eb7e9c013e9d949714845c2f4306dd6fbe2322fec02d4be0b193a05be8c799a6bb15a5420d4c77b3'
+sha512sums=('856491cc7a413f49c9cb6b24c39cf95e3c1abe16c32d6ab845b598248c2136a8fcd48b19a9e3479983574611775a886681b4cb0cd8d06aab5a1c2604a9742baa'
             'c880b0873651a0e995d273fe989afad3435cac75fbdf4b1d26fa3b48c718d06c57d5f196093f5989a9d3c697d5c45b7239d3d464ac071a945a87efed7142af57'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
