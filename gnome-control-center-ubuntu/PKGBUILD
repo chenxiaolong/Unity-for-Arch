@@ -3,9 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring1
-pkgver=3.8.0
-pkgrel=100.${_ppa_rel}
+_ppa_rel=0ubuntu1~raring2
+pkgver=3.8.1
+pkgrel=101
+_translations=20130418
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -21,23 +22,21 @@ options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
-        'pulse3.0.patch')
-sha512sums=('abffd5b5942c02db8ca3263faab2c4e76865f5d3b4666a6d830c6b62e87e3a922bd7564d7c3bca21e2d8394a4efb505035fe685a189a0837cdbd3a81e9a6c970'
-            '953e4efb098d61a52535c3b1952a69151efe73e0c59f8e5ae4469ca0a02e06900a326342dc836ca9a6006da2c39656fd4781171c1788e224e81f31789df1228b'
-            '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz")
+sha512sums=('edbe41bacd82f4b8ba06dcf5c6660fe695239175b062a9590327b7c05506ab25b6671d222f18fa80b012c35a91669ef73a36f559caed36bcac1aa1b7481a759e'
+            '7773818a6959c495a349a80e2dbe3b1d5f94756b637d0fbd7dd423e53af9471679ebe172aa220e9163775c9bc8feb6d4c965a1f57e10ddbe63fbd91e366f5c70'
+            'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
-
   # Apply Arch Linux's patches
   #  patch -p1 -i "${srcdir}/pulse3.0.patch"
+
 
   # Apply Ubuntu's patches
     # Disable patches
       # Ubuntu is too lazy to port their patches to the latest version of IBus
         sed -i '/revert_new_ibus_keyboard_use.patch/d' "${srcdir}/debian/patches/series"
-      # systemd should make this obsolete
-        sed -i '/revert_git_datetime_port.patch/d' "${srcdir}/debian/patches/series"
       # The gnome-settings-daemon-ubuntu patch for this conflicts with Arch
       # Linux's patches
         sed -i '/99_add_lock-on-suspend.patch/d' "${srcdir}/debian/patches/series"
@@ -52,8 +51,41 @@ build() {
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    msg "Applying ${i} ..."
+    if [ "x${i}" = "xunity_notice_info.patch" ]; then
+      cat "${srcdir}/debian/patches/${i}" | \
+        filterdiff --exclude gnome-control-center-3.7.91/configure.ac | patch -p1
+      # Base 64 because the tabs will screw up bash's parser
+      cat << EOF | base64 -d | patch -p0
+LS0tIGNvbmZpZ3VyZS5hYy5vcmlnCTIwMTMtMDQtMjIgMTg6MDQ6MzMuMzg3MjIyMjgwICswMjAw
+CisrKyBjb25maWd1cmUuYWMJMjAxMy0wNC0yMiAxODowNzoxNy40NjM0OTg0NzQgKzAyMDAKQEAg
+LTEzNyw3ICsxMzcsNyBAQAogICAgICAgICAgICAgICAgICAgZ2RrLXBpeGJ1Zi0yLjAgPj0gJEdE
+S1BJWEJVRl9SRVFVSVJFRF9WRVJTSU9OKQogUEtHX0NIRUNLX01PRFVMRVMoRElTUExBWV9QQU5F
+TCwgJENPTU1PTl9NT0RVTEVTIGdub21lLWRlc2t0b3AtMy4wID49IDMuMS4wKQogUEtHX0NIRUNL
+X01PRFVMRVMoSU5GT19QQU5FTCwgJENPTU1PTl9NT0RVTEVTIGxpYmd0b3AtMi4wIGdsCi0JCSAg
+cG9sa2l0LWdvYmplY3QtMSA+PSAkUE9MS0lUX1JFUVVJUkVEX1ZFUlNJT04pCisJCSAgcG9sa2l0
+LWdvYmplY3QtMSA+PSAkUE9MS0lUX1JFUVVJUkVEX1ZFUlNJT04gd2Via2l0Z3RrLTMuMCkKIFBL
+R19DSEVDS19NT0RVTEVTKEtFWUJPQVJEX1BBTkVMLCAkQ09NTU9OX01PRFVMRVMKICAgICAgICAg
+ICAgICAgICAgIGdub21lLWRlc2t0b3AtMy4wID49ICRHTk9NRV9ERVNLVE9QX1JFUVVJUkVEX1ZF
+UlNJT04KICAgICAgICAgICAgICAgICAgIHgxMSkK
+EOF
+    else
+      patch -p1 -i "${srcdir}/debian/patches/${i}"
+    fi
   done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 

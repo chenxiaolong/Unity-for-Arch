@@ -1,0 +1,68 @@
+Partially reverts:
+------------------------------------------------------------
+revno: 382 [merge]
+author: Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>
+committer: Tarmac
+branch nick: trunk.13.04
+timestamp: Tue 2013-01-22 18:52:19 +0000
+message:
+  Misc fixes for build on raring:
+  
+   - Drop deprecated calls to g_type_init().
+   - Update paths to gtest source files due to changes in xorg-gtest.
+  
+  Approved by PS Jenkins bot, Didier Roche.
+------------------------------------------------------------
+=== modified file 'configure.ac'
+--- configure.ac	2013-01-22 14:33:58 +0000
++++ configure.ac	2012-11-30 16:24:17 +0000
+@@ -26,7 +26,7 @@
+ ###########################
+ 
+ GIO_REQUIRED_VERSION=2.33
+-GLIB_REQUIRED_VERSION=2.35.4
++GLIB_REQUIRED_VERSION=2.33
+ GTK_REQUIRED_VERSION=3.0
+ INDICATOR_REQUIRED_VERSION=0.3.19
+ DBUSMENUGTK_REQUIRED_VERSION=0.5.90
+
+=== modified file 'src/session-service.c'
+--- src/session-service.c	2013-01-22 14:33:58 +0000
++++ src/session-service.c	2012-08-31 17:37:39 +0000
+@@ -71,6 +71,8 @@
+ int
+ main (int argc, char ** argv)
+ {
++  g_type_init();
++
+   /* Setting up i18n and gettext.
+      Apparently we need all of these. */
+   setlocale (LC_ALL, "");
+
+#=== modified file 'tests/Makefile.am'
+#--- tests/Makefile.am	2013-01-22 14:53:59 +0000
+#+++ tests/Makefile.am	2013-01-14 19:36:28 +0000
+#@@ -15,8 +15,8 @@
+# 
+# check_LIBRARIES = libgtest.a
+# nodist_libgtest_a_SOURCES = \
+#-  $(GTEST_SOURCE)/gtest-all.cc \
+#-  $(GTEST_SOURCE)/gtest_main.cc
+#+  $(GTEST_SOURCE)/src/gtest-all.cc \
+#+  $(GTEST_SOURCE)/src/gtest_main.cc
+# 
+# AM_CPPFLAGS = $(GTEST_CPPFLAGS) -I${top_srcdir}/src -Wall -Werror
+# AM_CXXFLAGS = $(GTEST_CXXFLAGS)
+
+=== modified file 'tests/test-service.cc'
+--- tests/test-service.cc	2013-01-22 14:33:58 +0000
++++ tests/test-service.cc	2012-11-13 20:08:13 +0000
+@@ -49,6 +49,7 @@
+       static bool first_run = true;
+       if (first_run)
+         {
++          g_type_init();
+           g_setenv ("INDICATOR_SERVICE_SHUTDOWN_TIMEOUT", "1000", TRUE);
+           g_unsetenv ("INDICATOR_ALLOW_NO_WATCHERS");
+           g_unsetenv ("INDICATOR_SERVICE_REPLACE_MODE");
+

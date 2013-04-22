@@ -4,8 +4,9 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.8.1
-_extra_ver=daily13.03.04
-pkgver=${_actual_ver}.${_extra_ver}
+_extra_ver=daily13.04.18~13.04
+_translations=20130418
+pkgver=${_actual_ver}.${_extra_ver/\~/.}
 pkgrel=100
 pkgdesc="Music, in the dash"
 arch=('i686' 'x86_64')
@@ -14,8 +15,23 @@ license=('GPL')
 depends=('libunity' 'gstreamer' 'gst-plugins-base' 'liboauth' 'libsoup' 'tdb')
 makedepends=('vala' 'intltool')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('1753fda06fe76f16a60a0ca3061a3d897bc8912fe3c5ae8cbeb3ae7bcbc56bea8a23f92bb7c8c8724505f9ab5b282975d9a2610584b210f1b5f9891d8cdb3c21')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-music.tar.gz")
+sha512sums=('ba8180375c2635fd0706420e7add8bd4b462bf10c87e20d1cb440642b9dbd0ba019bda0cd07e93c5d666b67df824bd76841b5a1f214449e0019149d9bffdc5de'
+            'e41c9acd6b573fa03e06a447a7692e9b82f76d810d887c9cbcf364912dfe34f41e9741b77c19026357522365361b402958bb86784b40f1b5dd3f061737964ec9')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -24,7 +40,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make ${MAKEFLAGS}
+  make
 }
 
 check() {

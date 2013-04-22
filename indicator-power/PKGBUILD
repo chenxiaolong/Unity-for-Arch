@@ -3,8 +3,9 @@
 pkgname=indicator-power
 _actual_ver=12.10.6
 _extra_ver=daily13.03.07
+_translations=20130419
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=104
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -16,14 +17,33 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Link_pthread.patch')
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-power.tar.gz"
+        '0001_Link_pthread.patch'
+        'revert_r161.patch')
 sha512sums=('838cff1f72b1213404da4fa8ce875b5f8d431ffadbca3222f88b76a0f2d8743a60e218e4017cab43f0bc417fa31909d4817b5854554d6a0cb805fcad64107812'
-            '2dc44f44e9e4a6f97a46823addf708fa9e1cdb05f5a2f385ec8d06d2b952c44162bb071076ff0531fd5045b08578db6d0005201568515cf98876256acc62319b')
+            'd597ec5e3cac6bfb95b96fb73d88b052a2e99bd56b1f259b3b6452da42b40ac3ad14b4fd579e8f940189834ba49b95c9d5acd58dc32edf7a712e496786370671'
+            '2dc44f44e9e4a6f97a46823addf708fa9e1cdb05f5a2f385ec8d06d2b952c44162bb071076ff0531fd5045b08578db6d0005201568515cf98876256acc62319b'
+            '10181e8ef9495cd646e9207cf406398de38942977f2228f16693cc024c94499c35e00028134724e6444075a7bb3b55949710594179cf38fa8c02d1d3c9e0e0e7')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_Link_pthread.patch"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001_Link_pthread.patch"
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   intltoolize -f

@@ -3,7 +3,7 @@
 pkgname=xorg-gtest
 pkgver=0.7.0
 _ubuntu_rel=0ubuntu5
-pkgrel=1.${_ubuntu_rel}
+pkgrel=3
 pkgdesc="X.org Google Test Framework"
 arch=('any')
 url="https://launchpad.net/xorg-gtest"

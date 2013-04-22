@@ -6,6 +6,7 @@ pkgname=gnome-settings-daemon-ubuntu
 _ppa_ver=3.7.91
 _ppa_rel=0ubuntu1~raring3
 pkgver=3.8.0
+_translations=20130418
 pkgrel=102
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -19,11 +20,13 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz")
 sha512sums=('d79e9f28c04a5d48dcd2687e278f64d71250d8d19962509d2908e0dc40bb68652e385ca48b683440221efc970305745f298185e86d4420cbdbfd26230dd2f793'
-            '2c6b2f76d461b2d4f72f9dc82761199119cc4e2e41ed82dfe8485cedca55e00b1165d4072eaa6ec4b6cea49b9637d85bec842481d5689542bb3be316bea4f77c')
+            '2c6b2f76d461b2d4f72f9dc82761199119cc4e2e41ed82dfe8485cedca55e00b1165d4072eaa6ec4b6cea49b9637d85bec842481d5689542bb3be316bea4f77c'
+            '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
@@ -40,6 +43,19 @@ build() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
   autoreconf -vfi
 
   ./configure \
@@ -48,9 +64,8 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/gnome-settings-daemon \
     --disable-static \
-    --enable-systemd \
-    --disable-ibus
-      
+    --enable-systemd
+
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 

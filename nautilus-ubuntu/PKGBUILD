@@ -23,7 +23,6 @@ sha512sums=('a78a815515ddd6ee6f9d59659551741b832a93b11858e35a5849a414967fd9fc471
 
 build() {
   cd "${srcdir}/nautilus-${pkgver}"
-
   # Apply Ubuntu's patches
 
   # Disable patches
@@ -31,13 +30,28 @@ build() {
       sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
     # Don't use launchpad-integration
       sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
+    # Enable after Arch gets GNOME 3.8
+      sed -i '/git_restore_from_missing_directories.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   # For updating translations in desktop files
   ln -s "${srcdir}/debian" .
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   autoreconf -vfi
 

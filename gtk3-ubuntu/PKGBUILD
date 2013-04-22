@@ -1,8 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=gtk3-ubuntu
-_ppa_ver=3.7.12
-_ppa_rel=1ubuntu1~build1
+_ppa_rel=0ubuntu1~build1
 pkgver=3.8.0
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
@@ -18,15 +17,15 @@ options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ppa_rel}.debian.tar.gz"
         '0001_Add_broadway_symbols.patch'
         'arch_settings.ini')
 sha512sums=('2b833c73de460779907d911a0a2d1ae46758fcc6861dcb89d6a990bcd66066ab2177bb90f1b0c98ec8f95268f14046ab0ff33143e53fc96f3cfc215853e0413a'
-            '0e8826b34b70a0d67d9c3cfd0731f26d1a76c0e2963baa6c2add34c0bb05a81d1da6e11a47d03d717ebbe4bd81da122c87613462028e6e030aa7368bbf8730cf'
+            '84b04b2c41a833d67463f23264b020e392fecf10b5f137bb683d64388ac5a1eb73f4bdc7aeddcb5aaca57b594cd69c79cf513a87501de786a89cec4a77ad44e1'
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
-build() {
+prepare() {
   cd "${srcdir}/gtk+-${pkgver}"
 
   # Add Broadway sumbols to tests pass
@@ -46,6 +45,10 @@ build() {
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/gtk+-${pkgver}"
 
   autoreconf -vfi
 
