@@ -4,10 +4,10 @@
 
 pkgname=libunity
 _actual_ver=6.90.2
-_extra_ver=daily13.03.06.1
+_extra_ver=daily13.04.05
 _ubuntu_rel=0ubuntu1
-pkgver=${_actual_ver}${_extra_ver}.${_ubuntu_rel}
-pkgrel=103
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=102
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"
@@ -20,11 +20,11 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch')
-sha512sums=('2119174ad437d6e123a04925e79e2c1de70569434543dd1d52ddc8ed83e9a7184185df49734f4d3672cfdea3b33b84fbef399fe5ae9bdcabe40974d14d57bdad'
-            '7d25d5fa5e769097614b5cb3ce7fe4c74d27845e48ed19bdac11bf374263058ffb7e7686405f4fd60398769302ed7e5dda465b801bcf5fafdccd2924ebef4cb0'
+sha512sums=('b992f534430579938d866347d2e00b88c1e2854eb93d101c871b57d698cc1d428af9510ceee720388a838d86e856fbd87f0f2b9d911331820d90e7dd4b030374'
+            '32143ee07cdcc12e5311de5242decfc041d93c829883dd73f49b2a63b288013591eef934cf14f692f2416e91618602829dbb0594db369e55dbb802e68f84f07d'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
@@ -32,11 +32,15 @@ build() {
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
   # Apply Ubuntu patches
-  patch -Np1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
   for i in $(cat 'debian/patches/series' | grep -v '#'); do
-    patch -Np1 -i "debian/patches/${i}"
+    patch -p1 -i "debian/patches/${i}"
   done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   #export VALAC=valac-0.18
   mkdir bin/
@@ -46,7 +50,6 @@ build() {
   intltoolize -f
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static --enable-headless-tests PYTHON=python2
-  export MAKEFLAGS="-j1"
   make
 }
 

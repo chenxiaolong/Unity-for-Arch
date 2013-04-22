@@ -3,8 +3,9 @@
 pkgname=unity-lens-photos
 _actual_ver=0.9
 _extra_ver=daily12.12.05
+_translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=102
 pkgdesc="Unity lens for browsing photos"
 arch=('any')
 url="https://launchpad.net/unity-lens-photos"
@@ -12,8 +13,23 @@ license=('GPL')
 groups=('unity')
 depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'libaccounts-glib' 'libsignon-glib' 'dee' 'libunity' 'libsoup' 'libsoup-gnome')
 makedepends=('python' 'python-distutils-extra')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('8059827cdb6f7c652478654e734a62de467c7857582fa6373f561a972023b03325f76876baec4073032b2751ab0f61bee1060df4984ce3a50b482ec821ff2cb2')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-photos.tar.gz")
+sha512sums=('8059827cdb6f7c652478654e734a62de467c7857582fa6373f561a972023b03325f76876baec4073032b2751ab0f61bee1060df4984ce3a50b482ec821ff2cb2'
+            '79ea835cd8c5b7c87d7129d51223ee1613589254ccde0be7d81bccd4f5916ba7a22b90fb54c18e766481a49bf6c0cbfe9dca719305627ffbe247aebb9888767f')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"

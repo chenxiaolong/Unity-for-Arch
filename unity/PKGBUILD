@@ -3,15 +3,15 @@
 _UBUNTU=true # Using Ubuntu patches?
 
 pkgname=unity
-pkgver=6.12.0
+pkgver=7.0.0
 _actual_ver="${pkgver}"
-_extra_ver="daily13.03.01"
-pkgrel=104
+_extra_ver="daily13.04.18~13.04"
+_translations=20130418
+pkgrel=102
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
-  pkgver="${_actual_ver}.${_extra_ver}"
-  pkgrel="${pkgrel}.${_ubuntu_rel}"
+  pkgver="${_actual_ver}.${_extra_ver/\~/.}"
 fi
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -28,27 +28,32 @@ conflicts=('unity-core')
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        #"http://unity.xe-xe.org/files/unity-i18n-launchpad-export-20120902.tar.gz" # Snapshot of translations from Launchpad as of 2012-09-02
-        "unity-i18n-launchpad-export-20130120.tar.gz::http://ubuntuone.com/6GxarcWdEEk88kf4m3f7ZZ" # Snapshot of translations from Launchpad as of 2013-01-20
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity.tar.gz"
         '0001_Remove_gtest.patch'
         '0002_ArchLinux_Branding.patch'
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
         '0004_Port_to_XI_1.7.patch'
+        '0005_Disable_Werror.patch'
+        '0006_Include_vector.patch'
+        '0007_Build_Fixes.patch'
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override')
-sha512sums=('952e986d25ad7a61a22f0dcdf719c7e5a40c2c9136b9afaf9328e26c16786aae58c7070431267e3f3f9eb735307911b8063eba90d44ce39f12d0a4320bddba19'
-            'b104056a08ed15feb9a3ba7d312e5fe3b140765ae9454882a492e69db1f6ba4406e6e43911ff2e275c9b82cceb2da7e138f66f2cadd736bc8502fa495ab69cdf'
-            'a70f14aa85b37a2a009791a3c0f9971e571c273ab94d7115f3fca449bc4b0e4a102bd9ca21e6dbbda67e3f1f858b0212e59fbb86c67ce35682b42d73a7239191'
+sha512sums=('bde9e08c6cbdec87bdd0838b4f11ff5e43c92a845c0049e8b931cab459cd9608af6b330603908d3204cf90f707ee36fdf753975cb3190f3399350817537ed73a'
+            '162becc505cb08f52f70401fb1cb85f1a7ddd98abd84ab858ad1fffc6ef8802741f5efca8a27d6344c721c739892e0b343b3f3f88006b798bf7b9c8f15582319'
+            '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
-            'a5e58f44c4a4c20dc577bf79bc949598c0762cc104f71ea1dac13711df1f20e1088aaec179e7e6f36830f704033ec26adc3572c6cf8a862a4a272b24dd4ac01e'
+            '5daceb40c49946750160dd1be0ad92ca3e4761d3edaee07ffe55dadc92c767a034a7838a8065379e3615d2be9ccf5ccea59aa839f93c221726cf5d0629c2eef4'
             'f6745256b356b2d3e089dac388216e6234db40948c039e02b716638862da25470c1e018fde3b27032e598c652c7bd633704620dcf569565766d8771b6676cf58'
+            'd9884bb01a465ca352c6ba91aa878179fce9aba6b770c07848e016a8858830db4e981857d4c25fb15e5287adc5812870ae9844a7e8a48907154fd890365025c3'
+            '13659e2163a20e4d95eff87c4c1d5a762a5a5c21ef802cab7ad537fa4f8e0f79af61950f7dc7ed23c2448baa9cb6d6a35e9d0f35fed532d92e3feaf491bba5c6'
+            'b7d1fa4435616505ce5be4f0d5c3d6902ae35656c3e36e62db68aa9088a78a7f1dbad7c01ff1ad317912e59a31cb28203dcb84b6b9a7935b1ddb58a008489e3b'
             'dc93362a6f1532dc478c45e774d124aa54f18b8a445770d43134d212ac4811514264f16ebc308e2512c01b04dbaf0708e5a29011dd75e7ed9385cfdf869f1b26'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Arch Linux branding: "Ubuntu Desktop" -> "Arch Linux Desktop"
@@ -56,13 +61,21 @@ build() {
   patch -p1 -i "${srcdir}/0002_ArchLinux_Branding.patch"
 
   # Upstream support for the systray whitelist was removed
-  patch -p0 -i "${srcdir}/0003_Revert_r3134_Remove_Systray_Whitelist.patch"
+  patch -p1 -i "${srcdir}/0003_Revert_r3134_Remove_Systray_Whitelist.patch"
 
   # Port to XI 1.7 (thanks to qiuwei for finding this!)
   # Source: https://code.launchpad.net/~brandontschaefer/unity/move-pointer-barrier-to-xi-1.6.99.1
   #patch -p0 -i "${srcdir}/0004_Port_to_XI_1.7.patch"
   cat "${srcdir}/0004_Port_to_XI_1.7.patch" | \
     filterdiff --exclude debian/changelog --exclude debian/control | patch -p0
+
+  # Do not treat warnings as errors
+  patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
+
+  # Include <vector>
+  patch -p1 -i "${srcdir}/0006_Include_vector.patch"
+
+  patch -p1 -i "${srcdir}/0007_Build_Fixes.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
@@ -75,17 +88,25 @@ build() {
     patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
   fi
 
-  # Install translations from Launchpad
-  pushd po
-  rm LINGUAS && touch LINGUAS # Recreate LINGUAS (list of languages) file
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
   for i in "${srcdir}"/po/*.po; do
-    _NEWFILE=${i##*/} # Strip path
-    _NEWFILE=${_NEWFILE#*-} # Strip 'unity-'
-    cp "${i}" "${_NEWFILE}" # Copy new translation
-    echo "${_NEWFILE%.*}" >> LINGUAS # Add translation
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
   done
-  cp "${srcdir}/po/unity.pot" unity.pot
-  popd
+
+  # Ubuntu Desktop -> Arch Linux Desktop
+  sed -i '/msgid "Ubuntu Desktop"/ {n;s/Ubuntu/Arch Linux/}' po/*.po
+  sed -i 's/Ubuntu Desktop/Arch Linux Desktop/g' po/*.po
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  # (From debian/rules) http://ccache.samba.org/manual.html#_precompiled_headers
+  export CCACHE_SLOPPINESS=time_macros
 
   [[ -d build ]] && rm -rvf build/
   mkdir build/ && cd build/

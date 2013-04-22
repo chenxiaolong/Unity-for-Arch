@@ -1,0 +1,11 @@
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -18,7 +18,7 @@
+   $(GTEST_SOURCE)/gtest-all.cc \
+   $(GTEST_SOURCE)/gtest_main.cc
+ 
+-AM_CPPFLAGS = $(GTEST_CPPFLAGS) -I${top_srcdir}/src -Wall -Werror
++AM_CPPFLAGS = $(GTEST_CPPFLAGS) -I${top_srcdir}/src -Wall
+ AM_CXXFLAGS = $(GTEST_CXXFLAGS)
+ 
+ ###

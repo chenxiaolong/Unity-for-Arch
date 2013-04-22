@@ -4,7 +4,8 @@
 
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
-_extra_ver=daily13.02.20
+_extra_ver=daily13.03.28
+_translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=102
 pkgdesc="An indicator to host the menus from an application"
@@ -22,22 +23,40 @@ conflicts=('indicator-appmenu-tools')
 options=('!libtool' '!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-appmenu.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('f71e02491c3fc46195cfbfb45431787a1accf2a7ee7ef66f2297ed48f08ee1d74e05b6fcbf00c1abc382dc76d2414fd4d7eacb248f0b6319d63b8651c049dccd'
+sha512sums=('a8eb9d93c8b7373ebcfdfa37b0588925a83c2a3475a99046bb3a9c365ce50d16acf525d6c02c1430a0320aa3bb5d8d3ff69ece9450ba42d98c7ebba16b3720c1'
+            '68f2bab05620de5bb7879a8a6ecf94636fe3302b8087eac57c8e48e02a904e1f8ee9e109682f365f1990d23e92176f6f139aa6ecdc10fec84f4884758ac37474'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+
+  # GLib 2.35.* is not actually required (due to the splitting away of hud)
+  patch -p1 -i "${srcdir}/0002_False_GLib_Requirement.patch"
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
   intltoolize -f
 
   # Disable -Werror
-  CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make

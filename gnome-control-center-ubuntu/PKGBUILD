@@ -4,6 +4,7 @@
 
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~raring1
+_translations=20130418
 pkgver=3.8.0
 pkgrel=100.${_ppa_rel}
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
@@ -21,12 +22,13 @@ options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
         'pulse3.0.patch')
 sha512sums=('abffd5b5942c02db8ca3263faab2c4e76865f5d3b4666a6d830c6b62e87e3a922bd7564d7c3bca21e2d8394a4efb505035fe685a189a0837cdbd3a81e9a6c970'
             '953e4efb098d61a52535c3b1952a69151efe73e0c59f8e5ae4469ca0a02e06900a326342dc836ca9a6006da2c39656fd4781171c1788e224e81f31789df1228b'
             '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Arch Linux's patches
@@ -36,8 +38,6 @@ build() {
     # Disable patches
       # Ubuntu is too lazy to port their patches to the latest version of IBus
         sed -i '/revert_new_ibus_keyboard_use.patch/d' "${srcdir}/debian/patches/series"
-      # systemd should make this obsolete
-        sed -i '/revert_git_datetime_port.patch/d' "${srcdir}/debian/patches/series"
       # The gnome-settings-daemon-ubuntu patch for this conflicts with Arch
       # Linux's patches
         sed -i '/99_add_lock-on-suspend.patch/d' "${srcdir}/debian/patches/series"
@@ -54,6 +54,19 @@ build() {
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   autoreconf -vfi
 

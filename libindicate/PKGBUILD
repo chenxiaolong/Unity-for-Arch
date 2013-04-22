@@ -5,7 +5,7 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=101
+pkgrel=104
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
@@ -19,10 +19,16 @@ source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${
 sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06'
             '83a860e35dfaf968a602a4240aaecf92a967bcbfe40fbbbae7f29679ffea9b928307c75e7569cecaf9b8e3134af231fc6e1adb32700b7eeba9d2e21c10d7b09d')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   # Python 2 fix
   sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
@@ -40,13 +46,13 @@ build() {
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 --disable-static PYTHON=python2
-  make ${MAKEFLAGS}
+  make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
-  make ${MAKEFLAGS}
+  make
   popd
 }
 
@@ -63,7 +69,7 @@ package_libindicate() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate DESTDIR="${pkgdir}" install
   make -C bindings/mono/indicate DESTDIR="${pkgdir}" install
@@ -77,7 +83,7 @@ package_libindicate-gtk2() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate-gtk DESTDIR="${pkgdir}" install
   make -C bindings/python DESTDIR="${pkgdir}" install
@@ -91,7 +97,7 @@ package_libindicate-gtk3(){
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
-  MAKEFLAGS="-j1"
+  export MAKEFLAGS="-j1"
 
   make -C libindicate-gtk DESTDIR="${pkgdir}" install
 }

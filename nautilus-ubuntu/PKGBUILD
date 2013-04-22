@@ -6,6 +6,7 @@ pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
 _ppa_ver=3.7.92
 _ppa_rel=0ubuntu1~raring1
+_translations=20130418
 pkgver=3.8.0
 pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
@@ -17,12 +18,14 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz")
 sha512sums=('a78a815515ddd6ee6f9d59659551741b832a93b11858e35a5849a414967fd9fc471e63e44e1fc8fefff073e68ad0e954584dd11acc8f43bd64b634937db8cc1d'
-            '1e7ce0577ee53e35f845944346b5f4165acb2192e291dfbfe82d92336cf168cd57c4ea2ba658b5fa446653cebb5f6ff867a3e3bf3181f38d2bfd85f99a02111c')
+            '1e7ce0577ee53e35f845944346b5f4165acb2192e291dfbfe82d92336cf168cd57c4ea2ba658b5fa446653cebb5f6ff867a3e3bf3181f38d2bfd85f99a02111c'
+            '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de')
 
-build() {
-  cd "${srcdir}/nautilus-${pkgver}"
+prepare() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   # Apply Ubuntu's patches
 
@@ -31,13 +34,28 @@ build() {
       sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
     # Don't use launchpad-integration
       sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
+    # Enable after Arch gets GNOME 3.8
+      sed -i '/git_restore_from_missing_directories.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
-    patch -Np1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   # For updating translations in desktop files
   ln -s "${srcdir}/debian" .
+
+  msg "Merging translations from ${_translations}"
+  rm -f po/LINGUAS po/*.pot
+  mv "${srcdir}"/po/*.pot po/
+  for i in "${srcdir}"/po/*.po; do
+    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+    mv ${i} po/${FILE}
+    echo ${FILE%.*} >> po/LINGUAS
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
 
   autoreconf -vfi
 

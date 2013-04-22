@@ -35,6 +35,7 @@ show_help() {
   echo "  -r,--keeproot Do not delete chroot after building"
 }
 
+MKARCHROOT_SUPPORTED=('77d275572875542cbbc08ad93c7e0319e6c10696262c5dd7f282d968c547dc172ae1cc56349e922f48e5a652408b621b10f2ec4756051dec15a3a294cd0e56d8')
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
@@ -105,6 +106,19 @@ for i in ${ARCH_SUPPORTED[@]}; do
 done
 if [ "x${SUPPORTED}" != "xtrue" ]; then
   echo "Unsupported architecture ${ARCH}!"
+  exit 1
+fi
+
+# Make sure the version of mkarchroot is supported
+SUPPORTED=false
+for i in ${MKARCHROOT_SUPPORTED[@]}; do
+  if echo "${i} /usr/sbin/mkarchroot" | sha512sum -c --status; then
+    SUPPORTED=true
+    break
+  fi
+done
+if [ "x${SUPPORTED}" != "xtrue" ]; then
+  echo "Unsupported version of mkarchroot!"
   exit 1
 fi
 
@@ -188,7 +202,6 @@ chmod -R 0755 ${CACHE_DIR}
 (
   flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
 
-  # Prevent tons of useless crap from spewing out
   set +x
 
   # Remove any packages in the local repo from the pacman cache. The chroot
@@ -199,17 +212,20 @@ chmod -R 0755 ${CACHE_DIR}
     fi
   done
 
+  set -x
+
   # Create temporary mini-chroot to store database files
   mkdir -p ${TEMP_CHROOT}/var/lib/pacman/
 
-  echo "Downloading base packages for chroot..."
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ \
          ${CHROOT_PACKAGES[@]}
 
-  echo "Downloading dependencies and build dependencies..."
   cat ${PACKAGE_DIR}/PKGBUILD > ${TEMP_PKGBUILD}
   chown nobody:nobody ${TEMP_PKGBUILD}
+
+  set +x
+
   depends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
                                     echo \${depends[@]}")
   makedepends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
@@ -226,22 +242,64 @@ chmod -R 0755 ${CACHE_DIR}
       list+=" ${i}"
     fi
   done
+
+  set -x
+
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ ${list}
 
   # Copy /var/cache/pacman/pkg/ to the chroot-specific cache directory
-  cp /var/cache/pacman/pkg/*.pkg.tar.xz ${CACHE_DIR}/
-
-  set -x
+  cp /var/cache/pacman/pkg/*-${ARCH}.pkg.tar.xz ${CACHE_DIR}/
+  cp /var/cache/pacman/pkg/*-any.pkg.tar.xz ${CACHE_DIR}/
 ) 321>$(dirname ${0})/cache.lock
 
 ################################################################################
 
 ### Create chroot ##############################################################
 
+# Copy and patch mkarchroot to readd the '-f' functionality. This avoids
+# potential issues when building two packages in the same directory. The base64
+# is the encoded form of reverse of the patch for commit:
+#
+#   97a2d2414a7f9d4abce3a40320fe9e0883155884
+#
+# in https://projects.archlinux.org/devtools.git
+mkarchroot_initial() {
+  TEMP_MKARCHROOT=$(mktemp --tmpdir=$(pwd))
+  cat /usr/sbin/mkarchroot > ${TEMP_MKARCHROOT}
+  TEMP_MKARCHROOT=$(basename ${TEMP_MKARCHROOT})
+  (echo -e "--- ${TEMP_MKARCHROOT}.bak\n+++ ${TEMP_MKARCHROOT}" && \
+   base64 -d << EOF
+QEAgLTE0NCw2ICsxNDQsNyBAQAogCiBDSFJPT1RfVkVSU0lPTj0ndjMnCiAKK0ZPUkNFPSduJwog
+UlVOPScnCiBOT0NPUFk9J24nCiAKQEAgLTE1Nyw2ICsxNTgsNyBAQAogCWVjaG8gJyBvcHRpb25z
+OicKIAllY2hvICcgICAgLXIgPGFwcD4gICAgICBSdW4gImFwcCIgd2l0aGluIHRoZSBjb250ZXh0
+IG9mIHRoZSBjaHJvb3QnCiAJZWNobyAnICAgIC11ICAgICAgICAgICAgVXBkYXRlIHRoZSBjaHJv
+b3QgdmlhIHBhY21hbicKKwllY2hvICcgICAgLWYgICAgICAgICAgICBGb3JjZSBvdmVyd3JpdGUg
+b2YgZmlsZXMgaW4gdGhlIHdvcmtpbmctZGlyJwogCWVjaG8gJyAgICAtQyA8ZmlsZT4gICAgIExv
+Y2F0aW9uIG9mIGEgcGFjbWFuIGNvbmZpZyBmaWxlJwogCWVjaG8gJyAgICAtTSA8ZmlsZT4gICAg
+IExvY2F0aW9uIG9mIGEgbWFrZXBrZyBjb25maWcgZmlsZScKIAllY2hvICcgICAgLW4gICAgICAg
+ICAgICBEbyBub3QgY29weSBjb25maWcgZmlsZXMgaW50byB0aGUgY2hyb290JwpAQCAtMTY5LDYg
+KzE3MSw3IEBACiAJY2FzZSAiJHthcmd9IiBpbgogCQlyKSBSVU49IiRPUFRBUkciIDs7CiAJCXUp
+IFJVTj0ncGFjbWFuIC1TeXUgLS1ub2NvbmZpcm0nIDs7CisJCWYpIEZPUkNFPSd5JyA7OwogCQlD
+KSBwYWNfY29uZj0iJE9QVEFSRyIgOzsKIAkJTSkgbWFrZXBrZ19jb25mPSIkT1BUQVJHIiA7Owog
+CQluKSBOT0NPUFk9J3knIDs7CkBAIC0yODEsOCArMjg0LDggQEAKIAkjIH19fQogZWxzZQogCSMg
+e3t7IGJ1aWxkIGNocm9vdAotCWlmIFtbIC1lICR3b3JraW5nX2RpciBdXTsgdGhlbgotCQlkaWUg
+IldvcmtpbmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMiCisJaWYg
+W1sgLWUgJHdvcmtpbmdfZGlyICYmICRGT1JDRSA9ICduJyBdXTsgdGhlbgorCQlkaWUgIldvcmtp
+bmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMgLSB0cnkgdXNpbmcg
+LWYiCiAJZmkKIAogCW1rZGlyIC1wICIke3dvcmtpbmdfZGlyfSIKQEAgLTMwMiw2ICszMDUsOSBA
+QAogCQlwYWNhcmdzKz0oIi0tY29uZmlnPSR7cGFjX2NvbmZ9IikKIAlmaQogCisJaWYgW1sgJEZP
+UkNFID0gJ3knIF1dOyB0aGVuCisJCXBhY2FyZ3MrPSgiLS1mb3JjZSIpCisJZmkKIAlpZiAhIHBh
+Y3N0cmFwIC1HTWNkICIke3dvcmtpbmdfZGlyfSIgIiR7cGFjYXJnc1tAXX0iICIkQCI7IHRoZW4K
+IAkJZGllICdGYWlsZWQgdG8gaW5zdGFsbCBhbGwgcGFja2FnZXMnCiAJZmkK
+EOF
+) | patch -p0
+  cat ${TEMP_MKARCHROOT} | setarch ${ARCH} bash -s -- ${*}
+  rm ${TEMP_MKARCHROOT}
+}
+
 # Create base chroot
-setarch ${ARCH} mkarchroot -f -c ${CACHE_DIR} ${CHROOT} \
-                           ${CHROOT_PACKAGES[@]}
+mkarchroot_initial -f -c ${CACHE_DIR} ${CHROOT} ${CHROOT_PACKAGES[@]}
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
@@ -329,34 +387,37 @@ EOF
   fi
 
   # Download sources and install build dependencies
+  cat > ${CHROOT}/stage1.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 makepkg --syncdeps --nobuild --nocolor \\
+                         --noconfirm ${PROGRESSBAR}'
+EOF
   setarch ${ARCH} mkarchroot \
-    -r "
-    su - builder -c 'cd /tmp/${PACKAGE} && \
-                     makepkg --syncdeps --nobuild --nocolor --noconfirm \
-                             ${PROGRESSBAR}'
-    " \
+    -r 'sh /stage1.sh' \
     -c ${CACHE_DIR} \
     ${CHROOT}
 ) 123>${LOCALREPO}/repo.lock
 
 # Workaround makepkg bug for SCM packages
+cat > ${CHROOT}/stage2.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 find -maxdepth 1 -type d -empty -name src \
+                      -exec touch {}/stupid-makepkg \\;'
+EOF
 setarch ${ARCH} mkarchroot \
-  -r "
-  su - builder -c 'cd /tmp/${PACKAGE} && \
-                   find -maxdepth 1 -type d -empty -name src \
-                        -exec touch {}/stupid-makepkg \\;'
-  " \
+  -r 'sh /stage2.sh' \
   -c ${CACHE_DIR} \
   ${CHROOT}
 
 # Build package
 # TODO: Enable signing
+cat > ${CHROOT}/stage3.sh << EOF
+su - builder -c 'cd /tmp/${PACKAGE} && \\
+                 makepkg --clean --check --noconfirm --nocolor --noextract \\
+                 ${PROGRESSBAR}'
+EOF
 setarch ${ARCH} mkarchroot \
-  -r "
-  su - builder -c 'cd /tmp/${PACKAGE} && \
-                   makepkg --clean --check --noconfirm --nocolor --noextract \
-                           ${PROGRESSBAR}'
-  " \
+  -r 'sh /stage3.sh' \
   -c ${CACHE_DIR} \
   ${CHROOT}
 
@@ -377,6 +438,12 @@ echo "Attempting to acquire lock on local repo..."
   rm -f ${LOCALREPO}/*.db*
   rm -f ${LOCALREPO}/*.files*
   cp ${CHROOT}${RESULT_DIR}/* ${LOCALREPO}/
+  # Old packages must be removed, so that the '*' glob in the repo-add command
+  # below will not use old packages. For example, '*' would match:
+  #   0ubuntu10 0ubuntu11 0ubuntu9
+  # causing repo-add to only add 0ubuntu9 when it should clearly add 0ubuntu11
+  paccache -vvv -k 1 -r -c ${LOCALREPO}/ || true
+
   # TODO: Enable signing
   repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock

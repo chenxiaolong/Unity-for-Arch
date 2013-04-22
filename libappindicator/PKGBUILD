@@ -5,7 +5,7 @@
 pkgbase=libappindicator
 pkgname=('libappindicator' 'libappindicator3')
 _actual_ver=12.10.1
-_extra_ver=daily13.03.13
+_extra_ver=daily13.04.15
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=101
 pkgdesc="A library to allow applications to export a menu into the Unity Menu bar"
@@ -17,9 +17,9 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('cb024da8ab5ee3591c54ea70a19e8911fd27a7965c344a89ece30651abcb9c7f1abc8dab837c20ee0f3adc03c8745ad9fa8b69a13edd1781568bea1c68ade3f6')
+sha512sums=('ce83e53c51a6edef22b4b7806e3f755a4218f009afcdb76b2cbe6aa580962ce34488c2457a4ff7f816032f7284d59fcfd232a8493960b91ae788b5e16ec4f82e')
 
-build() {
+prepare() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
 
   # nunit renamed to mono-nunit in /usr/lib/pkgconfig/mono-nunit.pc
@@ -30,6 +30,12 @@ build() {
   sed -i 's|assemblies_dir=${libdir}/cli/appindicator-sharp-0.1|assemblies_dir=${libdir}/appindicator-sharp-0.1|' bindings/mono/appindicator-sharp-0.1.pc.in
 
   sed -i 's/2\.35\.4/2.34.3/g' configure.ac
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
