@@ -3,7 +3,7 @@
 # * add workaround for qt4-ubuntu
 # * add error detection
 # * check for root if installing
-while getopts dnhbp:is: opt; do
+while getopts ednhbp:is: opt; do
 	case $opt in
 		n)
 			NOCONFIRM=true
@@ -17,7 +17,12 @@ while getopts dnhbp:is: opt; do
 			echo "-i [package-name] ignore certain package"
 			echo "-s [package-name] start at package"
 			echo "-d only download required sources (do not build or install)"
+			echo "-e stop on error "
 			exit
+			;;
+		e)
+			set -e
+			echo "WARNING: Stopping on errors"
 			;;
 		b)
 			NOINSTALL=true
