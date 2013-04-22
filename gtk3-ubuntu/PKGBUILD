@@ -39,7 +39,7 @@ prepare() {
       # Fedora's tracker is not compiled with FTS
       #  sed -i '/044_tracker_fts.patch/d' debian/patches/series
 
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
