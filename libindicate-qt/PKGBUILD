@@ -5,7 +5,7 @@
 pkgname=libindicate-qt
 _ubuntu_rel=5
 pkgver=0.2.5.91.${_ubuntu_rel}
-pkgrel=104
+pkgrel=105
 pkgdesc="This project provides a set of Qt bindings for libindicate, the indicator system developed by Canonical Desktop Experience team"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate-qt"
@@ -22,7 +22,7 @@ prepare() {
   cd "${srcdir}/${pkgname}-${pkgver%.*}"
 
   # Apply Ubuntu patches
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 }
