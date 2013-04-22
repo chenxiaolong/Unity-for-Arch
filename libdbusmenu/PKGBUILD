@@ -5,7 +5,7 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=12.10.3daily13.02.01
-pkgrel=104
+pkgrel=105
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -27,8 +27,6 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
