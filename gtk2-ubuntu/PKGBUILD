@@ -49,7 +49,7 @@ prepare() {
   # Build fix from György Balló
   patch -p1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
 
-  for i in $(cat "${srcdir}/debian/patches/series" | grep -v '#'); do
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 }
