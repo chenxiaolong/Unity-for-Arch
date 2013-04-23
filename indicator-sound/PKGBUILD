@@ -7,7 +7,7 @@ _actual_ver=12.10.2
 _extra_ver=daily13.04.12
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -37,8 +37,6 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   intltoolize -f
