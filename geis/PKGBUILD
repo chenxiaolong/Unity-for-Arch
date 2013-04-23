@@ -4,7 +4,7 @@ pkgname=geis
 _actual_ver=2.2.15
 _extra_ver=daily13.04.03
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/geis"
@@ -18,7 +18,7 @@ sha512sums=('6bf7c1640efe38146f674769eefaac374c70c2da7e161875da9c0cbd60f4ecc0ba8
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS="${CFLAGS} -Wno-error=format="
 
   autoreconf -vfi
 
