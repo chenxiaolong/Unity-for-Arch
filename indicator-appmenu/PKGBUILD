@@ -7,7 +7,7 @@ _actual_ver=13.01.0
 _extra_ver=daily13.03.28
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=103
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -35,9 +35,6 @@ prepare() {
   # Autoconf fix
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
-  # GLib 2.35.* is not actually required (due to the splitting away of hud)
-  patch -p1 -i "${srcdir}/0002_False_GLib_Requirement.patch"
-
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
   mv "${srcdir}"/po/*.pot po/
@@ -54,9 +51,6 @@ build() {
   gtkdocize
   autoreconf -vfi
   intltoolize -f
-
-  # Disable -Werror
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make
