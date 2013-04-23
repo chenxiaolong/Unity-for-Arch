@@ -7,7 +7,7 @@ pkgver=7.0.0
 _actual_ver="${pkgver}"
 _extra_ver="daily13.04.18~13.04"
 _translations=20130418
-pkgrel=102
+pkgrel=103
 
 if [ "${_UBUNTU}" == true ]; then
   _ubuntu_rel=0ubuntu1
@@ -79,7 +79,7 @@ prepare() {
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
-  for i in $(cat debian/patches/series | grep -v '#'); do
+  for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
 
