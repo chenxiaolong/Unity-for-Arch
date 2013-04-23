@@ -95,7 +95,7 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 
-  rm -v "${pkgdir}/test-service"
+  rm -vf "${pkgdir}/test-service"
 }
 
 # vim:set ts=2 sw=2 et:
