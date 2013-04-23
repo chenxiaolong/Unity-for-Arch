@@ -1,0 +1,29 @@
+--- a/src/applet-device-broadband.c
++++ b/src/applet-device-broadband.c
+@@ -615,10 +615,12 @@
+ 	return MB_TECH_UNKNOWN;
+ }
+ 
+-static GdkPixbuf *
++static void *
+ get_icon (NMDevice *device,
+           NMDeviceState state,
+           NMConnection *connection,
++          GdkPixbuf **out_pixbuf,
++          char **out_indicator_icon,
+           char **tip,
+           NMApplet *applet)
+ {
+@@ -627,9 +629,11 @@
+ 	info = g_object_get_data (G_OBJECT (device), "devinfo");
+ 	g_assert (info);
+ 
+-	return mobile_helper_get_icon (device,
++	       mobile_helper_get_icon (device,
+ 	                               state,
+ 	                               connection,
++	                               out_pixbuf,
++	                               out_indicator_icon,
+ 	                               tip,
+ 	                               applet,
+ 	                               broadband_state_to_mb_state (info),
