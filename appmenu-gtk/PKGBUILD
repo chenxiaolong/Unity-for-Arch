@@ -7,7 +7,7 @@ pkgname=('appmenu-gtk2' 'appmenu-gtk3')
 _actual_ver=12.10.3
 _extra_ver=daily13.04.03
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 arch=('i686' 'x86_64')
 url="https://launchpad.net/appmenu-gtk"
 license=('LGPL')
@@ -15,20 +15,21 @@ makedepends=('gnome-common' 'gtk2-ubuntu' 'gtk3-ubuntu' 'libdbusmenu-gtk2' 'libd
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/appmenu-gtk_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch')
+        '0001_autoconf.patch'
+        '0002_Enable_GTK_Deprecated_Functions.patch')
 sha512sums=('26804c39de196a508df785d9c8ec964f7676cad92ee24da97eb4bebd9709bc2076a7d1255595de50d20e7e1ab47bfad96f78e60d119421bb260ff65dbc46c0a2'
-            '82011361d720d8712ba3ece7dd2340694eab226f21263f861d8629ed39c343c873f1fb49f5c9cb302a6a5486fca098f36013b480c19d3bbe8745ccca84baa657')
+            '82011361d720d8712ba3ece7dd2340694eab226f21263f861d8629ed39c343c873f1fb49f5c9cb302a6a5486fca098f36013b480c19d3bbe8745ccca84baa657'
+            'b5dedccad3a23fb184dd1bdb06e69b626d08dc0b296f7ac6351a3a6542d1d73564327b711c22a9c047ce1ed0f3c375804925aa8397dee53fff88174a50eec968')
 
 prepare() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p1 -i "${srcdir}/0002_Enable_GTK_Deprecated_Functions.patch"
 }
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
 
