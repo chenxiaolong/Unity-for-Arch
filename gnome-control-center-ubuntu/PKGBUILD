@@ -3,55 +3,51 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring1
+_ppa_rel=0ubuntu1~raring2
 _translations=20130418
-pkgver=3.8.0
-pkgrel=100.${_ppa_rel}
+pkgver=3.8.1
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libsocialweb' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'libsystemd' 'archlinux-artwork' 'webkitgtk3' 'ibus' 'system-config-printer' 'colord-gtk')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'ibus' 'system-config-printer')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils')
-optdepends=('mesa-demos: provides glxinfo for graphics information'
-            'gnome-color-manager: for color management tasks')
-provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center')
-conflicts=('gnome-control-center')
+optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
+            'rygel: media sharing'
+            'vino: screen sharing'
+            'openssh: remote login')
+provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center' 'credentials-preferences')
+conflicts=('gnome-control-center' 'credentials-preferences')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
-        'pulse3.0.patch')
-sha512sums=('abffd5b5942c02db8ca3263faab2c4e76865f5d3b4666a6d830c6b62e87e3a922bd7564d7c3bca21e2d8394a4efb505035fe685a189a0837cdbd3a81e9a6c970'
-            '953e4efb098d61a52535c3b1952a69151efe73e0c59f8e5ae4469ca0a02e06900a326342dc836ca9a6006da2c39656fd4781171c1788e224e81f31789df1228b'
-            '5f10412037bf9c81dec9e14259fee50955c355183c72623b399b92766e57c5411198db2b0fe5e007a6ca167da33f3fd72a73281f72b41e524eb65909f5231192')
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz")
+sha512sums=('edbe41bacd82f4b8ba06dcf5c6660fe695239175b062a9590327b7c05506ab25b6671d222f18fa80b012c35a91669ef73a36f559caed36bcac1aa1b7481a759e'
+            '7773818a6959c495a349a80e2dbe3b1d5f94756b637d0fbd7dd423e53af9471679ebe172aa220e9163775c9bc8feb6d4c965a1f57e10ddbe63fbd91e366f5c70'
+            'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
-
-  # Apply Arch Linux's patches
-  #  patch -p1 -i "${srcdir}/pulse3.0.patch"
 
   # Apply Ubuntu's patches
     # Disable patches
       # Ubuntu is too lazy to port their patches to the latest version of IBus
         sed -i '/revert_new_ibus_keyboard_use.patch/d' "${srcdir}/debian/patches/series"
-      # The gnome-settings-daemon-ubuntu patch for this conflicts with Arch
-      # Linux's patches
-        sed -i '/99_add_lock-on-suspend.patch/d' "${srcdir}/debian/patches/series"
       # Arch Linux uses PackageKit
         sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
       # Ubuntu specific
         sed -i '/10_keyboard_layout_on_unity.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/50_ubuntu_systemwide_proxy.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/52_region_language.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/92_ubuntu_system_proxy.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
@@ -66,7 +62,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${_actual_ver}"
+  cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
@@ -75,10 +71,7 @@ build() {
     --sysconfdir=/etc \
     --localstatedir=/var \
     --disable-static \
-    --enable-systemd \
-    --with-libsocialweb \
-    --disable-update-mimedb \
-    --without-cheese
+    --enable-systemd
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
