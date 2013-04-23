@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -79,7 +79,7 @@ prepare() {
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
-  for i in $(cat debian/patches/series | grep -v '#'); do
+  for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
 }
