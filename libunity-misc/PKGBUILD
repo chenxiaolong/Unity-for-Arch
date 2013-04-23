@@ -6,7 +6,7 @@ pkgname=libunity-misc
 _actual_ver=4.0.5
 _extra_ver=daily13.02.26
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=103
+pkgrel=104
 pkgdesc="Misc. differently licensed stuff for Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-misc"
@@ -28,8 +28,6 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
