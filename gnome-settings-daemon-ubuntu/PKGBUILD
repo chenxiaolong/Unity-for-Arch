@@ -7,7 +7,7 @@ _ppa_ver=3.7.91
 _ppa_rel=0ubuntu1~raring3
 _translations=20130418
 pkgver=3.8.1
-pkgrel=103
+pkgrel=104
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -75,6 +75,11 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+
+  desktop-file-install \
+    --dir "${pkgdir}/etc/xdg/autostart/" \
+    --add-only-show-in=Unity \
+    "${pkgdir}/etc/xdg/autostart/gnome-settings-daemon.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
