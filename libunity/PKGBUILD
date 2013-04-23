@@ -7,12 +7,12 @@ _actual_ver=6.90.2
 _extra_ver=daily13.04.05
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=103
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"
 license=('LGPL')
-depends=('libgee1' 'dee' 'libdbusmenu' 'gtk3')
+depends=('libgee06' 'dee' 'libdbusmenu' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection' 'vala0.18')
 checkdepends=('python2-gobject' 'xorg-server-xvfb' 'xorg-xauth')
 groups=('unity')
@@ -34,7 +34,8 @@ prepare() {
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
-  for i in $(cat 'debian/patches/series' | grep -v '#'); do
+  for i in $(grep -v '#' 'debian/patches/series'); do
+    msg "Applying ${i} ..."
     patch -p1 -i "debian/patches/${i}"
   done
 }
@@ -50,6 +51,7 @@ build() {
   intltoolize -f
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static --enable-headless-tests PYTHON=python2
+  export MAKEFLAGS="-j1"
   make
 }
 
