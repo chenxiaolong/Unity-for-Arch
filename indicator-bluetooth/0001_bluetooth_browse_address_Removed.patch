@@ -1,0 +1,45 @@
+--- a/src/gnome-bluetooth-1.0.vapi
++++ b/src/gnome-bluetooth-1.0.vapi
+@@ -55,9 +55,6 @@
+ }
+ 
+ [CCode (cheader_filename = "bluetooth-utils.h")]
+-public void browse_address (GLib.Object? object, string address, uint timestamp, GLib.AsyncReadyCallback? callback);
+-
+-[CCode (cheader_filename = "bluetooth-utils.h")]
+ public void send_to_address (string address, string alias);
+ 
+ [CCode (cheader_filename = "bluetooth-killswitch.h", cprefix = "BLUETOOTH_KILLSWITCH_STATE_")]
+--- a/src/indicator-bluetooth-service.vala
++++ b/src/indicator-bluetooth-service.vala
+@@ -295,15 +295,12 @@
+         }
+ 
+         var can_send = false;
+-        var can_browse = false;
+         if (uuids != null)
+         {
+             for (var i = 0; uuids[i] != null; i++)
+             {
+                 if (uuids[i] == "OBEXObjectPush")
+                     can_send = true;
+-                if (uuids[i] == "OBEXFileTransfer")
+-                    can_browse = true;
+             }
+         }
+ 
+@@ -315,14 +312,6 @@
+             child_append (send_item);
+         }
+ 
+-        if (can_browse)
+-        {
+-            var browse_item = new Dbusmenu.Menuitem ();
+-            browse_item.property_set (Dbusmenu.MENUITEM_PROP_LABEL, _("Browse files…"));
+-            browse_item.item_activated.connect (() => { GnomeBluetooth.browse_address (null, address, Gdk.CURRENT_TIME, null); });
+-            child_append (browse_item);
+-        }
+-
+         switch (type)
+         {
+         case GnomeBluetooth.Type.KEYBOARD:
