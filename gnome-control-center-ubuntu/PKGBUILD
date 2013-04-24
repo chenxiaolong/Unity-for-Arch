@@ -6,7 +6,7 @@ pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~raring2
 _translations=20130418
 pkgver=3.8.1
-pkgrel=101
+pkgrel=102
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -18,8 +18,8 @@ optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
             'vino: screen sharing'
             'openssh: remote login')
-provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center' 'credentials-preferences')
-conflicts=('gnome-control-center' 'credentials-preferences')
+provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center')
+conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
