@@ -3,16 +3,16 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring2
+_ppa_rel=0ubuntu1+logind~raring1
 _translations=20130418
 pkgver=3.8.1
-pkgrel=102
+pkgrel=103
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'ibus' 'system-config-printer' 'credentials-preferences')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer' 'credentials-preferences')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils' 'vala')
 optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
@@ -26,7 +26,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz")
 sha512sums=('edbe41bacd82f4b8ba06dcf5c6660fe695239175b062a9590327b7c05506ab25b6671d222f18fa80b012c35a91669ef73a36f559caed36bcac1aa1b7481a759e'
-            '7773818a6959c495a349a80e2dbe3b1d5f94756b637d0fbd7dd423e53af9471679ebe172aa220e9163775c9bc8feb6d4c965a1f57e10ddbe63fbd91e366f5c70'
+            'b92f7039ae75f2f41231fbbf5025f103ed469002a37374383fc5c3676a92184a2f3cbda360cf21712a5d1ef8a13877eeaf67718bbb36937d04a0b1821b893774'
             'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc')
 
 prepare() {
