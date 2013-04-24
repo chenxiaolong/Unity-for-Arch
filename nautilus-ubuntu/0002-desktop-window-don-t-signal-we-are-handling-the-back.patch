@@ -1,0 +1,73 @@
+From 9f99ba3506d5cf1584d9afa952e11aed17deac2f Mon Sep 17 00:00:00 2001
+From: Cosimo Cecchi <cosimoc@gnome.org>
+Date: Tue, 19 Feb 2013 11:26:15 -0500
+Subject: [PATCH 2/5] desktop-window: don't signal we are handling the
+ background
+
+g-s-d won't listen to this root window property anymore, and we're not
+actually rendering any background now. Don't set it.
+---
+ src/nautilus-desktop-window.c | 29 -----------------------------
+ 1 file changed, 29 deletions(-)
+
+diff --git a/src/nautilus-desktop-window.c b/src/nautilus-desktop-window.c
+index b39b16e..d99e9fb 100644
+--- a/src/nautilus-desktop-window.c
++++ b/src/nautilus-desktop-window.c
+@@ -176,17 +176,10 @@ unrealize (GtkWidget *widget)
+ {
+ 	NautilusDesktopWindow *window;
+ 	NautilusDesktopWindowDetails *details;
+-	GdkWindow *root_window;
+ 
+ 	window = NAUTILUS_DESKTOP_WINDOW (widget);
+ 	details = window->details;
+ 
+-	root_window = gdk_screen_get_root_window (
+-				gtk_window_get_screen (GTK_WINDOW (window)));
+-
+-	gdk_property_delete (root_window,
+-			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
+-
+ 	if (details->size_changed_id != 0) {
+ 		g_signal_handler_disconnect (gtk_window_get_screen (GTK_WINDOW (window)),
+ 					     details->size_changed_id);
+@@ -210,26 +203,6 @@ set_wmspec_desktop_hint (GdkWindow *window)
+ }
+ 
+ static void
+-set_desktop_window_id (NautilusDesktopWindow *window,
+-		       GdkWindow             *gdkwindow)
+-{
+-	/* Tuck the desktop windows xid in the root to indicate we own the desktop.
+-	 */
+-	Window window_xid;
+-	GdkWindow *root_window;
+-
+-	root_window = gdk_screen_get_root_window (
+-				gtk_window_get_screen (GTK_WINDOW (window)));
+-
+-	window_xid = GDK_WINDOW_XID (gdkwindow);
+-
+-	gdk_property_change (root_window,
+-			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
+-			     gdk_x11_xatom_to_atom (XA_WINDOW), 32,
+-			     GDK_PROP_MODE_REPLACE, (guchar *) &window_xid, 1);
+-}
+-
+-static void
+ realize (GtkWidget *widget)
+ {
+ 	NautilusDesktopWindow *window;
+@@ -254,8 +227,6 @@ realize (GtkWidget *widget)
+ 	/* This is the new way to set up the desktop window */
+ 	set_wmspec_desktop_hint (gtk_widget_get_window (widget));
+ 
+-	set_desktop_window_id (window, gtk_widget_get_window (widget));
+-
+ 	details->size_changed_id =
+ 		g_signal_connect (gtk_window_get_screen (GTK_WINDOW (window)), "size-changed",
+ 				  G_CALLBACK (nautilus_desktop_window_screen_size_changed), window);
+-- 
+1.8.1.2
+
