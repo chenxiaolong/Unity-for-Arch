@@ -7,12 +7,12 @@ _ppa_ver=3.7.91
 _ppa_rel=0ubuntu1+logind~raring5
 _translations=20130418
 pkgver=3.8.1
-pkgrel=105
+pkgrel=106
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'librsvg' 'libappindicator3')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'librsvg' 'libappindicator3')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl' 'desktop-file-utils')
 groups=('unity')
 provides=("gnome-settings-daemon=${pkgver}")
