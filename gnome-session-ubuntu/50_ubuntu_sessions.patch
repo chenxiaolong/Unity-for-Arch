@@ -45,4 +45,4 @@
 @@ -0,0 +1,3 @@
 +[GNOME Session]
 +_Name=Ubuntu
-+RequiredComponents=gnome-settings-daemon;compiz;
++RequiredComponents=gnome-settings-daemon;gnome-fallback-background-helper;gnome-fallback-media-keys-helper;gnome-fallback-mount-helper;compiz;
