@@ -6,12 +6,12 @@ pkgname=nux
 _actual_ver=4.0.1
 _extra_ver=daily13.04.17~13.04
 pkgver=${_actual_ver}.${_extra_ver/\~/.}
-pkgrel=102
+pkgrel=103
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
 license=('LGPL')
-depends=('gdk-pixbuf2' 'glew' 'pango' 'mesa' 'libsigc++' 'libxcomposite' 'libxdamage' 'libxxf86vm' 'geis')
+depends=('gdk-pixbuf2' 'glew' 'pango' 'mesa' 'libsigc++' 'libxcomposite' 'libxdamage' 'libxxf86vm' 'geis' 'ibus')
 makedepends=('boost' 'glproto' 'dri2proto' 'doxygen' 'graphviz')
 checkdepends=('gmock-ubuntu')
 
