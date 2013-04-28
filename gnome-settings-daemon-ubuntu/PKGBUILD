@@ -3,11 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_ver=3.7.91
-_ppa_rel=0ubuntu1+logind~raring5
+_ppa_rel=0ubuntu1~raring2
 _translations=20130418
 pkgver=3.8.1
-pkgrel=106
+pkgrel=107
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -20,10 +19,10 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz")
 sha512sums=('8e7886438cf770f6b2861c6d3fcbe6a8524c4d2ed1cb0e55b6c0c58651106f82fa8e3d1c40118e43e1a6fb817f29b4c4a7fe9373a9b7a1b2c04a66ed87758ef2'
-            '6e5c63480a99d781d9bfd6efdbdfa02d868296f7dcd9c47e06799530858c6a220ca6c2e8795c0b3231789b2066ff0d730da356098c75b66cde6cc76d142d4241'
+            '854cdf4e02b2575453dad6dd65cd7804e478d0c5b8bc9bd8b6fcbc4ea3b28f0a83acf36084d6f08704c618c8cdd4c504fbfdcc5a58a1319fa1fa2894e40e9624'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff')
 
 prepare() {
@@ -35,8 +34,6 @@ prepare() {
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
       # systemd should make this obsolete
         sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
-      # Fails to apply. Disable for now
-        sed -i '/16_use_synchronous_notifications.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch ${i} ..."
@@ -75,11 +72,6 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-
-  desktop-file-install \
-    --dir "${pkgdir}/etc/xdg/autostart/" \
-    --add-only-show-in=Unity \
-    "${pkgdir}/etc/xdg/autostart/gnome-settings-daemon.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
