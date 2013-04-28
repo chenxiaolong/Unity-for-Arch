@@ -8,9 +8,9 @@
 --- a/data/ubuntu.session.desktop.in.in
 +++ b/data/ubuntu.session.desktop.in.in
 @@ -1,3 +1,4 @@
+ [GNOME Session] 
  _Name=Ubuntu
  RequiredComponents=gnome-settings-daemon;compiz;
- RequiredComponents=gnome-settings-daemon;gnome-fallback-background-helper;gnome-fallback-media-keys-helper;gnome-fallback-mount-helper;compiz;
 +DesktopName=Unity
 --- a/gnome-session/gsm-session-fill.c
 +++ b/gnome-session/gsm-session-fill.c
