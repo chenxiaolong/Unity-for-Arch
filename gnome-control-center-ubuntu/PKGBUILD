@@ -6,14 +6,14 @@ pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1+logind~raring2
 _translations=20130418
 pkgver=3.8.1
-pkgrel=105
+pkgrel=106
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
 depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer' 'credentials-preferences')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils' 'vala')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils' 'vala' 'desktop-file-utils')
 optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
             'vino: screen sharing'
@@ -101,6 +101,12 @@ package() {
   # Install legal notice
   install -m644 "${srcdir}/debian/searchingthedashlegalnotice.html" \
     "${pkgdir}/usr/share/gnome-control-center/"
+
+  # Make the Region panel show up in Unity
+  desktop-file-install \
+    --dir "${pkgdir}/usr/share/applications/" \
+    --add-only-show-in=Unity \
+    "${pkgdir}/usr/share/applications/gnome-region-panel.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
