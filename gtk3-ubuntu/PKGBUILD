@@ -1,10 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=gtk3-ubuntu
-_ppa_ver=3.8.0
-_ppa_rel=0ubuntu1~build1
+_ppa_rel=0ubuntu1~raring1
 pkgver=3.8.1
-pkgrel=100
+pkgrel=101
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -18,11 +17,11 @@ options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ppa_rel}.debian.tar.gz"
         '0001_Add_broadway_symbols.patch'
         'arch_settings.ini')
 sha512sums=('384c629f652452113d627967eca926ab66ee22ed6ed1b7d0d3f74bc8d8940cf82f0a91209d0d4fd28acf732404d2312d38992fbc47763e3baf453d9e9692ff08'
-            '84b04b2c41a833d67463f23264b020e392fecf10b5f137bb683d64388ac5a1eb73f4bdc7aeddcb5aaca57b594cd69c79cf513a87501de786a89cec4a77ad44e1'
+            '8bfdcbebdae0e92230e1b14081328fcbb4182a942719e1cc061ac4bfa0db416d5c0726f414d3b83de1234e3498bf0aa200217b7e7ed20e28dfa2e2c7c1f59f6c'
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
