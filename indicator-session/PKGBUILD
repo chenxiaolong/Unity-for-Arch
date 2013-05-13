@@ -7,7 +7,7 @@ _actual_ver=12.10.5
 _extra_ver=daily13.03.08
 _translations=20130419
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=110
+pkgrel=111
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -96,6 +96,11 @@ package() {
   make DESTDIR="${pkgdir}/" install
 
   rm -vf "${pkgdir}/test-service"
+
+  # Avoid conflict during installation from LiveCD, where the /var/run/ symlink
+  # in the target filesystem may not exist yet. Also, /run/ is a tmpfs in Arch,
+  # so there's no point in installing anything there.
+  rm -rv "${pkgdir}/var/run/"
 }
 
 # vim:set ts=2 sw=2 et:
