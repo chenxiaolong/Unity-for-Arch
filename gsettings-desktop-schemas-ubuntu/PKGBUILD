@@ -5,7 +5,8 @@
 
 pkgname=gsettings-desktop-schemas-ubuntu
 _ppa_rel=0ubuntu1~raring1
-pkgver=3.8.0
+_ppa_ver=3.8.0
+pkgver=3.8.2
 pkgrel=100
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
@@ -17,8 +18,8 @@ provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
 install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gsettings-desktop-schemas/gsettings-desktop-schemas_${pkgver}-${_ppa_rel}.debian.tar.gz")
-sha512sums=('a05d2c105418f6bdc84ed11594ba38f9057c8307999122a6adb04b4499e450ae3443c3777d8b2dc58fb08021f5488dd0cf4fdf541e7940808d2212f72cfb510c'
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gsettings-desktop-schemas/gsettings-desktop-schemas_${_ppa_ver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('a5ee37f5e0c6c80fee50b9ac79f417f61a88c05e996493a081ad1c5c3ef8ccd2f71be93c93ecf01aa0a3de612245ea2fe58de5281ba1417b1d83ba098568232c'
             '2dee1ed0addbe1beb5e87f2713005433eaefa7f7819bbb7bd3327997c0bd6c179f7d9b4373d732c7c311e736d5b0fcf63eefe5411c46ce638a807e70ca31a4d3')
 
 prepare() {
