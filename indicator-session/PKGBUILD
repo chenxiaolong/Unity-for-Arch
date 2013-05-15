@@ -4,10 +4,10 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=daily13.03.08
+_extra_ver=daily13.05.06.1
 _translations=20130419
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=111
+pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -16,20 +16,16 @@ depends=('libindicator3' 'libdbusmenu-gtk3' 'dconf')
 makedepends=('intltool')
 checkdepends=('dbus-test-runner' 'gtest-ubuntu' 'xorg-gtest' 'xorg-util-macros')
 optdepends=('lightdm: support for lightdm')
-provides=("consolekit=0.4.5")
-conflicts=('consolekit')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "http://www.freedesktop.org/software/ConsoleKit/dist/ConsoleKit-0.4.5.tar.bz2"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"
         '0001_Lock_Screen_Live_CD_Detection.patch'
         '0002_There_is_no_help.patch'
         '0003_Link_Against_pthread.patch'
         '0004_Lock_Screen_Guest_Session_Detection.patch')
-sha512sums=('2c97c158af4e33890db7bba1a2a20702637b6906015e7ede7d5ea7c73226b86856d1fb39298f665c1d04d6d8614e758236633681d665baffff9a44be0a91cddc'
-            '9f969aeb2199810f73cdf111c7af38231d09b1c04d71209b2fa9c3ab7d39e3ca018b6aa0088abf1fafbf19550d2f844eeee8b3e298970959af1c88a7b366be80'
+sha512sums=('302d11ab9f8e8ea010810fc3f9b36e6a6ad96d0d8b1d1a59d7f4347be8b9e3637e5ae04b0a79870dccb5212fbfede38e13d770d60a8f8552385ad3f8e205b402'
             'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
             'f0e000995339e8a722f3a863fea61032ca9ac262c1760c1b647f76f9eae3dc081ae8025607936d094fc6a58738f6bcaaa4bc9ee55ed9439f0eb213507d729e5d'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
@@ -55,18 +51,6 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/ConsoleKit-0.4.5/"
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/ConsoleKit \
-    --with-systemdsystemunitdir=/usr/lib/systemd/system \
-    --enable-pam-module \
-    --with-pam-module-dir=/usr/lib/security
-
-  make
-
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
@@ -77,30 +61,17 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/ConsoleKit-0.4.5/"
-
-  make check
-
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
 
   env -u LD_PRELOAD make check
 }
 
 package() {
-  cd "${srcdir}/ConsoleKit-0.4.5/"
-
-  make DESTDIR="${pkgdir}/" install
-
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 
   rm -vf "${pkgdir}/test-service"
-
-  # Avoid conflict during installation from LiveCD, where the /var/run/ symlink
-  # in the target filesystem may not exist yet. Also, /run/ is a tmpfs in Arch,
-  # so there's no point in installing anything there.
-  rm -rv "${pkgdir}/var/run/"
 }
 
 # vim:set ts=2 sw=2 et:
