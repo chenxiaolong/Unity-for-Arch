@@ -6,8 +6,8 @@ pkgname=gnome-session-ubuntu
 _ppa_ver=3.8.0
 _ppa_rel=0ubuntu1~raring1
 _translations=20130418
-pkgver=3.8.1
-pkgrel=103
+pkgver=3.8.2.1
+pkgrel=100
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -19,14 +19,14 @@ conflicts=('gnome-session')
 options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver:0:3}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-session/gnome-session_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
         '55gnome-session_gnomerc'
         '50_ubuntu_sessions.patch'
         '52_xdg_current_desktop.patch'
         'timeout.patch')
-sha512sums=('95a218c63bd6c9d0d04fc094923a245485361d995dc5753c4e8573c269c85ad3d91de42e67eb469f33ca6df1ae6636de42b109696967e4640ffe89f11f8d9d81'
+sha512sums=('9d580432faf256e53da30c8fff3d3b1e16cb18869cd2d70542f56bf6fbf41893abd24003413c2a9364eaaa1c9760874683bf7255607918a79a05ab61e292caca'
             'd37055538bacff741865a47916b551cffed6f28293cd01de6c3a75660382ba1d33c049c10f7a5a51fcfc861bf910f535ef0e96dd1e80211c8b76dc196bc46f3d'
             'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
