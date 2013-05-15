@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~raring2
+_ppa_rel=0ubuntu1~raring1
 _translations=20130418
-pkgver=3.8.1
-pkgrel=107
+pkgver=3.8.2
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -21,8 +21,8 @@ install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz")
-sha512sums=('8e7886438cf770f6b2861c6d3fcbe6a8524c4d2ed1cb0e55b6c0c58651106f82fa8e3d1c40118e43e1a6fb817f29b4c4a7fe9373a9b7a1b2c04a66ed87758ef2'
-            '854cdf4e02b2575453dad6dd65cd7804e478d0c5b8bc9bd8b6fcbc4ea3b28f0a83acf36084d6f08704c618c8cdd4c504fbfdcc5a58a1319fa1fa2894e40e9624'
+sha512sums=('8e7c5b1ca70203bfb0ccf121b099dda7922cf0bfa0a0dc82ac44f035da420f0cbf692ea66f07744cd67c4cc13e4cb1d96e085e10432f38ca522baf379820818e'
+            'ad7fcd1d0ee3fedf2349a58d4ea9e67822dab84829f500fffbc2af1ea61e0003d300dc357398590f2b90e561ec21123abf03fd043e3a8c270c5318245989ac97'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff')
 
 prepare() {
