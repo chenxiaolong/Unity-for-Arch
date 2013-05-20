@@ -4,7 +4,7 @@
 
 pkgname=indicator-messages
 _actual_ver=12.10.6
-_extra_ver=daily13.05.02
+_extra_ver=daily13.05.15
 _translations=20130419
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
@@ -20,7 +20,7 @@ install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-messages.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('7ae149390a389b584c61a8b3b08ef7519bb42851593cf7dfc486599647ef2845bcbaccd1f2ef7424fdb2129c30c15ef5481a519b457e50313134a636aa4c8318'
+sha512sums=('9b8f747e51eda3f8fbb79a3de0d34245ac4651f7f8d1670145f9b80a77eea4e38b0dd482db1bcd269eb1b917bbd308c17b7c77c285442dc819748d60602e52e6'
             'c880b0873651a0e995d273fe989afad3435cac75fbdf4b1d26fa3b48c718d06c57d5f196093f5989a9d3c697d5c45b7239d3d464ac071a945a87efed7142af57'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
