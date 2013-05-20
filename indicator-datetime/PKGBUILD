@@ -2,6 +2,8 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+[ -z "${NO_GCC_UBUNTU}" ] && NO_GCC_UBUNTU=false
+
 pkgname=indicator-datetime
 _actual_ver=12.10.3
 _extra_ver=daily13.05.06.1
@@ -12,7 +14,12 @@ pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
-depends=('libindicator3' 'libdbusmenu-gtk3' 'ido' 'evolution-data-server' 'gnome-control-center' 'libtimezonemap')
+depends=('libindicator3' 'libdbusmenu-gtk3' 'ido' 'evolution-data-server' 'libtimezonemap' 'geoclue')
+if [ "x${NO_GCC_UBUNTU}" = "xfalse" ]; then
+  depends+=('gnome-control-center-ubuntu')
+else
+  depends+=('gnome-control-center')
+fi
 makedepends=('intltool')
 checkdepends=('gtest-ubuntu' 'xorg-gtest' 'xorg-util-macros')
 groups=('unity')
@@ -55,6 +62,10 @@ prepare() {
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  if [ "x${NO_GCC_UBUNTU}" = "xtrue" ]; then
+    msg "NOT building GNOME Control Center panel"
+  fi
+
   autoreconf -vfi
   intltoolize -f
 
@@ -73,8 +84,10 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 
+  if [ "x${NO_GCC_UBUNTU}" = "xfalse" ]; then
   mv "${pkgdir}/usr/share/applications/indicator-datetime-preferences.desktop" \
      "${pkgdir}/usr/share/applications/gnome-indicator-datetime-panel.desktop"
+  fi
 }
 
 # vim:set ts=2 sw=2 et:
