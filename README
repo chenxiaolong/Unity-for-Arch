@@ -33,33 +33,34 @@ Order to compile/install:
 23: gnome-control-center-unity     -> Change some Unity settings with GCC
 24: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
 25: metacity-ubuntu                -> Window manager for GNOME
-26: indicator-applet               -> GNOME panel indicator applet
-27: indicator-application          -> Takes menus and puts then in the panel
-28: indicator-appmenu              -> An indicator to host the menus from apps
-29: indicator-bluetooth            -> Indicator for bluetooth status
-30: indicator-datetime             -> A very, very simple clock
-31: indicator-power                -> Indicator to show battery information
-32: indicator-printers             -> Indicator showing active print jobs
-33: indicator-session              -> Indicator for session management
-34: indicator-sound                -> Indicator displaying a unified sound menu
-35: hud                            -> Backend for the Unity HUD
-36: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-37: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-38: evemu                          -> Linux Evdev Event Emulation Library
-39: frame                          -> Open Input Framework Frame Library
-40: grail                          -> Gesture recognition and instantiation lib.
-41: geis                           -> Implementation of the GEIS interface
-42: nux                            -> An OpenGL toolkit
-43: unity-asset-pool               -> Design assets for Unity
-44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: libcolumbus                    -> Small, fast, error tolerant matcher
-46: unity-lens-applications        -> Unity applications lens
-47: unity-lens-files               -> Unity files lens
-48: unity-lens-music               -> Unity music lens
-49: unity-lens-photos              -> Unity photo lens
-50: unity-lens-video               -> Unity video lens
-51: compiz-ubuntu                  -> Compiz compositing window manager
-52: unity                          -> Desktop shell designed for efficiency
+26: libtimezonemap                 -> GTK+3 timezone map widget
+27: indicator-applet               -> GNOME panel indicator applet
+28: indicator-application          -> Takes menus and puts then in the panel
+29: indicator-appmenu              -> An indicator to host the menus from apps
+30: indicator-bluetooth            -> Indicator for bluetooth status
+31: indicator-datetime             -> A very, very simple clock
+32: indicator-power                -> Indicator to show battery information
+33: indicator-printers             -> Indicator showing active print jobs
+34: indicator-session              -> Indicator for session management
+35: indicator-sound                -> Indicator displaying a unified sound menu
+36: hud                            -> Backend for the Unity HUD
+37: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+38: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+39: evemu                          -> Linux Evdev Event Emulation Library
+40: frame                          -> Open Input Framework Frame Library
+41: grail                          -> Gesture recognition and instantiation lib.
+42: geis                           -> Implementation of the GEIS interface
+43: nux                            -> An OpenGL toolkit
+44: unity-asset-pool               -> Design assets for Unity
+45: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+46: libcolumbus                    -> Small, fast, error tolerant matcher
+47: unity-lens-applications        -> Unity applications lens
+48: unity-lens-files               -> Unity files lens
+49: unity-lens-music               -> Unity music lens
+50: unity-lens-photos              -> Unity photo lens
+51: unity-lens-video               -> Unity video lens
+52: compiz-ubuntu                  -> Compiz compositing window manager
+53: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
