@@ -9,7 +9,7 @@ _actual_ver=12.10.3
 _extra_ver=daily13.05.06.1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -70,7 +70,7 @@ build() {
   intltoolize -f
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
-  make
+  make -j1
 }
 
 check() {
