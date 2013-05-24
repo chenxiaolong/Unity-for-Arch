@@ -154,6 +154,7 @@ source "${CONFIG_FILE}"
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
   CHROOT_PACKAGES+=('ccache')
   CCACHE_DIR=${CCACHE_DIR/@ARCH@/${ARCH}}
+  mkdir -p "${CCACHE_DIR}"
 fi
 
 LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
