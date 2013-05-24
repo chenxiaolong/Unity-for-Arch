@@ -12,7 +12,7 @@
 # OTHERREPOS=('Unity-for-Arch::file:///path/to/repo/@ARCH@'
 #             'My-Favorite-Repo::http://www.something.org/pub/@ARCH@')
 # USE_CCACHE="true"
-# CCACHE_DIR="/path/to/ccache/cache/"
+# CCACHE_DIR="/path/to/ccache/cache/@ARCH@" # The @ARCH@ is required
 
 ################################################################################
 
@@ -153,6 +153,7 @@ source "${CONFIG_FILE}"
 
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
   CHROOT_PACKAGES+=('ccache')
+  CCACHE_DIR=${CCACHE_DIR/@ARCH@/${ARCH}}
 fi
 
 LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
@@ -171,6 +172,10 @@ cleanup() {
       umount ${CHROOT}${LOCATION}/ || true &>/dev/null
     fi
   done
+
+  if [ "x${USE_CCACHE}" = "xtrue" ]; then
+    umount ${CHROOT}${CCACHE_DIR}/ || true &>/dev/null
+  fi
 
   # Clean up chroot
   if [ "x${KEEP_ROOT}" != "xtrue" ]; then
@@ -379,6 +384,10 @@ for i in ${OTHERREPOS[@]}; do
     mount --bind ${LOCATION}/ ${CHROOT}${LOCATION}/
   fi
 done
+
+if [ "x${USE_CCACHE}" = "xtrue" ]; then
+  mount --bind ${CCACHE_DIR}/ ${CHROOT}${CCACHE_DIR}/
+fi
 
 # Must lock the local repo or (local repo) packages may be deleted as they are
 # being downloaded
