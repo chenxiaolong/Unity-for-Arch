@@ -11,6 +11,8 @@
 # LOCALREPO="/path/to/${REPO}/@ARCH@" # The @ARCH@ is required
 # OTHERREPOS=('Unity-for-Arch::file:///path/to/repo/@ARCH@'
 #             'My-Favorite-Repo::http://www.something.org/pub/@ARCH@')
+# USE_CCACHE="true"
+# CCACHE_DIR="/path/to/ccache/cache/"
 
 ################################################################################
 
@@ -148,6 +150,10 @@ else
 fi
 
 source "${CONFIG_FILE}"
+
+if [ "x${USE_CCACHE}" = "xtrue" ]; then
+  CHROOT_PACKAGES+=('ccache')
+fi
 
 LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
 
@@ -309,6 +315,13 @@ PACKAGER="${PACKAGER}"
 GPGKEY="${GPGKEY}"
 MAKEFLAGS="${MAKEFLAGS}"
 EOF
+
+if [ "x${USE_CCACHE}" = "xtrue" ]; then
+  cat >> ${CHROOT}/etc/makepkg.conf << EOF
+CCACHE_DIR="${CCACHE_DIR}"
+EOF
+  sed -i '/^\s*BUILDENV/ s/!ccache/ccache/g' ${CHROOT}/etc/makepkg.conf
+fi
 
 for i in ${OTHERREPOS[@]}; do
   i=${i/@ARCH@/${ARCH}}
