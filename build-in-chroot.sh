@@ -371,7 +371,7 @@ done
 # being downloaded
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
-  if [ -f "${LOCALREPO}/${REPO}.db" ] || [ ! -z "${OTHERREPOS[@]}" ]; then
+  if [ -f "${LOCALREPO}/${REPO}.db" ] || [[ ! -z "${OTHERREPOS[@]}" ]]; then
     # Set up /etc/pacman.conf if local repo already exists
     # TODO: Enable signature verification
     if [ -f "${LOCALREPO}/${REPO}.db" ]; then
