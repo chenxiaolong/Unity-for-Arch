@@ -13,6 +13,8 @@
 #             'My-Favorite-Repo::http://www.something.org/pub/@ARCH@')
 # USE_CCACHE="true"
 # CCACHE_DIR="/path/to/ccache/cache/@ARCH@" # The @ARCH@ is required
+# # Note that this script will change the ownership of ${CCACHE_DIR} to
+# # 10000:10000 with permissions 0755.
 
 ################################################################################
 
@@ -149,12 +151,14 @@ else
   PROGRESSBAR="--noprogressbar"
 fi
 
+CCACHE_DIR=""
 source "${CONFIG_FILE}"
 
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
   CHROOT_PACKAGES+=('ccache')
   CCACHE_DIR=${CCACHE_DIR/@ARCH@/${ARCH}}
   mkdir -p "${CCACHE_DIR}"
+  chown -R 10000:10000 "${CCACHE_DIR}"
 fi
 
 LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
@@ -323,9 +327,6 @@ MAKEFLAGS="${MAKEFLAGS}"
 EOF
 
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
-  cat >> ${CHROOT}/etc/makepkg.conf << EOF
-CCACHE_DIR="${CCACHE_DIR}"
-EOF
   sed -i '/^\s*BUILDENV/ s/!ccache/ccache/g' ${CHROOT}/etc/makepkg.conf
 fi
 
@@ -360,7 +361,7 @@ for i in ${extrafiles}; do
 done
 
 # Create new user
-mkarchroot -r "useradd --create-home --shell /bin/bash --user-group builder" \
+mkarchroot -r "useradd --create-home --shell /bin/bash --user-group builder -u 10000" \
            -c ${CACHE_DIR} ${CHROOT}
 
 # Fix permissions
@@ -388,6 +389,7 @@ done
 
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
   mkdir -p ${CHROOT}${CCACHE_DIR}/
+  chown -R 10000:10000 ${CHROOT}${CCACHE_DIR}/
   mount --bind ${CCACHE_DIR}/ ${CHROOT}${CCACHE_DIR}/
 fi
 
@@ -412,7 +414,7 @@ EOF
 
   # Download sources and install build dependencies
   cat > ${CHROOT}/stage1.sh << EOF
-su - builder -c 'cd /tmp/${PACKAGE} && \\
+su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --syncdeps --nobuild --nocolor \\
                          --noconfirm ${PROGRESSBAR}'
 EOF
@@ -436,7 +438,7 @@ setarch ${ARCH} mkarchroot \
 # Build package
 # TODO: Enable signing
 cat > ${CHROOT}/stage3.sh << EOF
-su - builder -c 'cd /tmp/${PACKAGE} && \\
+su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --clean --check --noconfirm --nocolor --noextract \\
                  ${PROGRESSBAR}'
 EOF
