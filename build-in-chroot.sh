@@ -168,7 +168,7 @@ set -ex
 cleanup() {
   umount ${CHROOT}${LOCALREPO}/ || true &>/dev/null
 
-  for i in ${OTHERREPOS[@]}; do
+  for i in ${OTHERREPOS[@]} ${OTHERREPOS_PRE[@]}; do
     LOCATION=${i#*::}
     TYPE=${LOCATION%://*}
     LOCATION=${LOCATION#*://}
@@ -339,6 +339,15 @@ Server = ${i#*::}
 EOF
 done
 
+for i in ${OTHERREPOS_PRE[@]}; do
+  i=${i/@ARCH@/${ARCH}}
+  sed -i "/^\[core\]/ i\\
+[${i%::*}] \\
+SigLevel = Never \\
+Server = ${i#*::} \\
+" ${CHROOT}/etc/pacman.conf
+done
+
 # Copy packaging
 mkdir ${CHROOT}/tmp/${PACKAGE}/
 cp -v "${PACKAGE_DIR}/PKGBUILD" ${CHROOT}/tmp/${PACKAGE}/
@@ -376,7 +385,7 @@ echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
 # Make sure local repo exists
 mkdir -p ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
 mount --bind ${LOCALREPO}/ ${CHROOT}${LOCALREPO}/
-for i in ${OTHERREPOS[@]}; do
+for i in ${OTHERREPOS[@]} ${OTHERREPOS_PRE[@]}; do
   LOCATION=${i#*::}
   TYPE=${LOCATION%://*}
   LOCATION=${LOCATION#*://}
@@ -397,7 +406,8 @@ fi
 # being downloaded
 (
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
-  if [ -f "${LOCALREPO}/${REPO}.db" ] || [[ ! -z "${OTHERREPOS[@]}" ]]; then
+  if [ -f "${LOCALREPO}/${REPO}.db" ] || [[ ! -z "${OTHERREPOS[@]}" ]] \
+                                      || [[ ! -z "${OTHERREPOS_PRE[@]}" ]]; then
     # Set up /etc/pacman.conf if local repo already exists
     # TODO: Enable signature verification
     if [ -f "${LOCALREPO}/${REPO}.db" ]; then
