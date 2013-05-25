@@ -387,6 +387,7 @@ for i in ${OTHERREPOS[@]}; do
 done
 
 if [ "x${USE_CCACHE}" = "xtrue" ]; then
+  mkdir -p ${CHROOT}${CCACHE_DIR}/
   mount --bind ${CCACHE_DIR}/ ${CHROOT}${CCACHE_DIR}/
 fi
 
