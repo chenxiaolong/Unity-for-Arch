@@ -6,18 +6,19 @@ pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~raring1
 _translations=20130418
 pkgver=3.8.2
-pkgrel=100
+pkgrel=101
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer' 'credentials-preferences')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils' 'vala' 'desktop-file-utils')
 optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
             'vino: screen sharing'
-            'openssh: remote login')
+            'openssh: remote login'
+            'credentials-preferences-ubuntu: Ubuntu Online Accounts')
 provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center')
 conflicts=('gnome-control-center')
 options=('!libtool' '!emptydirs')
