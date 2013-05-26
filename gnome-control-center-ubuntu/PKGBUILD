@@ -76,6 +76,7 @@ build() {
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
+    --libexecdir=/usr/lib/$pkgname \
     --disable-static \
     --enable-systemd
 

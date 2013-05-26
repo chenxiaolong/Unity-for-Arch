@@ -49,6 +49,8 @@ package() {
   cp -a src/           "${pkgdir}/usr/src/gtest/"
   cp -a CMakeLists.txt "${pkgdir}/usr/src/gtest/"
   cp -a cmake/         "${pkgdir}/usr/src/gtest/"
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:

@@ -79,7 +79,7 @@ package_libdbusmenu() {
 
 package_libdbusmenu-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2-ubuntu' "libdbusmenu=${pkgver}")
+  depends=("libdbusmenu=${pkgver}")
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 

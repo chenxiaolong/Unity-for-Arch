@@ -11,8 +11,7 @@ pkgdesc="Design assets for Unity"
 arch=('any')
 url="https://launchpad.net/unity-asset-pool"
 license=('GPL')
-depends=('gnome-icon-theme')
-makedepends=('icon-naming-utils')
+makedepends=('icon-naming-utils' 'python')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-asset-pool_${_actual_ver}${_extra_ver}.orig.tar.gz"
         'archlinux-icon-tango-22.png'
