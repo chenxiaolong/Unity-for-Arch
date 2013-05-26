@@ -10,8 +10,8 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
 license=('LGPL')
 groups=('unity')
-depends=('boost' 'icu' 'python' 'sparsehash')
-makedepends=('cmake')
+depends=('icu')
+makedepends=('boost' 'cmake' 'sparsehash')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('0b241e4739baf5b652e112264df4bd3b013413728d48f9be949457cd4d253b3ae63ea173d94dac165cc08ba3df33604eccaf3385a263d814f2aee35c9e1ce38f')
 

@@ -30,7 +30,7 @@ build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
-  ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} --disable-static
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make
 }
 
