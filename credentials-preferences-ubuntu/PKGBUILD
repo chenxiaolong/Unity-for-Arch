@@ -4,14 +4,14 @@
 pkgname=credentials-preferences-ubuntu
 _translations=20130420
 pkgver=0.1.5
-pkgrel=3
+pkgrel=4
 pkgdesc="Control panel for configuring online account credentials and settings"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gnome-control-center-signon"
 license=('GPL' 'LGPL')
 provides=('credentials-preferences')
 conflicts=('credentials-preferences')
-depends=('libaccounts-glib' 'libsignon-glib' 'gtk3')
+depends=('libaccounts-glib' 'libsignon-glib' 'gtk3' 'gnome-control-center-ubuntu')
 makedepends=('gobject-introspection' 'vala' 'intltool' 'itstool')
 options=('!libtool')
 install=${pkgname}.install
