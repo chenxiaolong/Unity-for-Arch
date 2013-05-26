@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=3
+pkgrel=4
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
