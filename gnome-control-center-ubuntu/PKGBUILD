@@ -6,7 +6,7 @@ pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~raring1
 _translations=20130418
 pkgver=3.8.2
-pkgrel=101
+pkgrel=102
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -54,18 +54,20 @@ prepare() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
+  ### Translations are currently incomplete ###
+
   # The title changed from "System Settings" to "Settings" in GNOME 3.8. We'll
   # revert it since it breaks all of Ubuntu's translations
-  patch -p1 -i "${srcdir}/0001_Rename_back_to_System_Settings.patch"
+#  patch -p1 -i "${srcdir}/0001_Rename_back_to_System_Settings.patch"
 
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
+#  msg "Merging translations from ${_translations}"
+#  rm -f po/LINGUAS po/*.pot
+#  mv "${srcdir}"/po/*.pot po/
+#  for i in "${srcdir}"/po/*.po; do
+#    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
+#    mv ${i} po/${FILE}
+#    echo ${FILE%.*} >> po/LINGUAS
+#  done
 }
 
 build() {
