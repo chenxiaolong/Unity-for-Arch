@@ -7,12 +7,12 @@ pkgname=gsettings-desktop-schemas-ubuntu
 _ppa_rel=0ubuntu1~raring1
 _ppa_ver=3.8.0
 pkgver=3.8.2
-pkgrel=100
+pkgrel=101
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"
 license=('GPL')
-depends=('dconf' 'glib2')
+depends=('glib2')
 makedepends=('intltool' 'gobject-introspection')
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
