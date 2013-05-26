@@ -9,7 +9,7 @@ pkgdesc="Compiler for the GObject type system"
 arch=('i686' 'x86_64')
 url="http://live.gnome.org/Vala"
 license=('LGPL')
-depends=('glib2')
+depends=('bash' 'glib2')
 makedepends=('gobject-introspection' 'libxslt')
 checkdepends=('libx11')
 conflicts=("vala<=${pkgver}")

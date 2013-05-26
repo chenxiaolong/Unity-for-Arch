@@ -29,7 +29,7 @@ build() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  ./configure --prefix=/usr --enable-external-gtest
+  ./configure --enable-static=no --prefix=/usr --enable-external-gtest
   make
 }
 
@@ -56,6 +56,8 @@ package() {
   rm -v "${pkgdir}/usr/share/aclocal/gtest.m4"
 
   for i in "${pkgdir}"/usr/bin/*.py; do mv ${i} ${i%.py}; done
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:

@@ -12,7 +12,7 @@ url="https://launchpad.net/ayatana-scrollbar"
 license=('LGPL')
 groups=('unity')
 makedepends=('gtk2-ubuntu' 'gtk3-ubuntu')
-options=('!libtool')
+options=('!libtool' '!emptydirs')
 extrafiles=('overlay-scrollbar.install')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('cde01f038b29b464aef9543cf8891275832ed82c0b5ca27c22228d35f4d68089e97e148c46ba3a1bbf341dc370566f4201e3c5dee3bdf9cc074a287230773fdd')
@@ -44,9 +44,6 @@ check() {
 }
 
 package_overlay-scrollbar() {
-  # Override AUR version
-  pkgver=100
-
   pkgdesc="Scrollbar overlayed widget"
   depends=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
   install=overlay-scrollbar.install

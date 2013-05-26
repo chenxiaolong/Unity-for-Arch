@@ -23,7 +23,7 @@ build() {
   patch -p1 -i "${srcdir}/0001_autotools.patch"
   export CFLAGS="${CFLAGS} -Wno-error"
   autoreconf -vfi
-  ./configure --prefix=/usr
+  ./configure --enable-static=no --libexecdir=/usr/lib --prefix=/usr
   make
 }
 

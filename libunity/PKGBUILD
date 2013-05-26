@@ -15,6 +15,7 @@ license=('LGPL')
 depends=('libgee06' 'dee' 'libdbusmenu' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection' 'vala0.18')
 checkdepends=('python2-gobject' 'xorg-server-xvfb' 'xorg-xauth')
+install=$pkgname.install
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"

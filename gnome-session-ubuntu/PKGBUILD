@@ -11,7 +11,7 @@ pkgrel=100
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('systemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'polkit-gnome' 'upower')
+depends=('systemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower')
 makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans' 'patchutils')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
@@ -108,7 +108,6 @@ package() {
   # symlink session files so that KDM can find them
   install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
   ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
-  ln -s /usr/share/xsessions/ubuntu-2d.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
 }
 
 # vim:set ts=2 sw=2 et:

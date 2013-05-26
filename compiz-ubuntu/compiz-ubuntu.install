@@ -33,6 +33,7 @@ SCHEMAS=(compiz-addhelper.schemas compiz-animation.schemas
 
 post_install() {
   glib-compile-schemas usr/share/glib-2.0/schemas/
+  gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor
 }
 
 pre_remove() {
@@ -42,6 +43,7 @@ pre_remove() {
       gconf-schemas --unregister compiz-kde.schemas
     fi
   fi
+  gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor
 }
 
 pre_upgrade() {
