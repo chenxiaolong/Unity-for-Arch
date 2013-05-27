@@ -6,7 +6,7 @@ pkgname=bamf
 _actual_ver=0.4.0
 _extra_ver=daily13.05.02
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
@@ -14,7 +14,7 @@ license=('GPL')
 depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
 checkdepends=('xorg-server-xvfb')
-provides=('FEATURE-bamf-webapps' 'libbamf3' 'bamfdaemon')
+provides=('FEATURE-bamf-webapps' "libbamf3=${pkgname}" "bamfdaemon=${pkgname}")
 replaces=('libbamf3' 'bamfdaemon')
 groups=('unity')
 options=('!libtool')
@@ -37,15 +37,15 @@ build() {
   autoreconf -vfi
   
   if ! pacman -Q xorg-server-xvfb &>/dev/null; then
-    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-g
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc
   else
-    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-g
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
   fi
   make
 }
 
 check() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make check
 }
