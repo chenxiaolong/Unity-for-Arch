@@ -2,8 +2,7 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-pkgbase=bamf
-pkgname=('bamfdaemon' 'libbamf3')
+pkgname=bamf
 _actual_ver=0.4.0
 _extra_ver=daily13.05.02
 pkgver=${_actual_ver}${_extra_ver}
@@ -12,33 +11,35 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-makedepends=('dbus-glib' 'gnome-common' 'gobject-introspection' 'gtk-doc' 'libgtop' 'libunity-webapps' 'libwnck3' 'vala')
+depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3')
+makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
 checkdepends=('xorg-server-xvfb')
-provides=('FEATURE-bamf-webapps')
+provides=('FEATURE-bamf-webapps' 'libbamf3' 'bamfdaemon')
+replaces=('libbamf3' 'bamfdaemon')
 groups=('unity')
 options=('!libtool')
-install=${pkgbase}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
+install=${pkgname}.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Disable_Werror.patch')
 sha512sums=('a68d0ee5f2d26f022d6de6573a2c0c6f8428407a6074a07aeb966db3f24099c9b2d5eb2d114cdb75206b2c0766c6ba842a3d983f95214b1a93670894ae41caab'
             'f1881b97d832d2ac3e4ad00392439023e3c562f2687d62d8dbf2d9f789dd147e1e51c0723899489c3d10c2048bda5f48f2e4f3e91b75d36810be2a74ba636625')
 
 prepare() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_Disable_Werror.patch"
 }
 
 build() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
   
   if ! pacman -Q xorg-server-xvfb &>/dev/null; then
-    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-g
   else
-    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-g
   fi
   make
 }
@@ -49,30 +50,9 @@ check() {
   make check
 }
 
-package_bamfdaemon() {
-  pkgdesc="Window matching library daemon"
-  depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3')
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
-
-  install -dm755 "${pkgdir}/usr/lib/${pkgbase}/"
-  install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
-  install -m755 'src/bamfdaemon' "${pkgdir}/usr/lib/${pkgbase}/"
-  install -m644 'data/org.ayatana.bamf.service' "${pkgdir}/usr/share/dbus-1/services/"
-}
-
-package_libbamf3() {
-  pkgdesc="Window matching library for GTK 3"
-  depends=('bamfdaemon')
-  provides=("bamf=${pkgver}")
-  conflicts=('bamf')
-
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
-
-  # Remove bamfdaemon from this package
-  rm -rv "${pkgdir}/usr/lib/${pkgbase}/"
-  rm -rv "${pkgdir}/usr/share/dbus-1/"
 }
 
-# vim:set ts=2 sw=2 et:
