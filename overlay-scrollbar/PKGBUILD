@@ -4,10 +4,13 @@ pkgname=('overlay-scrollbar' 'liboverlay-scrollbar' 'liboverlay-scrollbar3')
 pkgbase=overlay-scrollbar
 _actual_ver=0.2.16
 _extra_ver=+r359daily13.02.06
-pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=105
-# Override AUR version
-epoch=1
+# Use 1_${pkgver} instead of an epoch because dropbox is stupid:
+#   http://www.dropbox.com/.../a-1:1.0-1.pkg.tar.xz is downloaded as:
+#                              a-1%3A1.0-1.pkg.tar.xz with curl, but downloading
+#   http://www.dropbox.com/.../a-1%3A1.0-1.pkg.tar.xz results in 404.
+# What kind of people do they hire to run their webservers?
+pkgver=1_${_actual_ver}${_extra_ver/+/.}
+pkgrel=100
 pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ayatana-scrollbar"
