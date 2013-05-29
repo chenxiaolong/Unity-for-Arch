@@ -6,7 +6,7 @@
    </schema>
 +  <schema path="/com/canonical/unity/panel/" id="com.canonical.Unity.Panel" gettext-domain="unity">
 +    <key type="as" name="systray-whitelist">
-+      <default>[ 'JavaEmbeddedFrame', 'Wine', 'Update-notifier' ]</default>
++      <default>[ 'JavaEmbeddedFrame', 'Wine', 'Update-notifier', 'ibus-ui-gtk' ]</default>
 +      <summary>List of client names, resource classes or wm classes to allow in the Panel's systray implementation.</summary>
 +      <description>"" (empty) will not allow any tray icons, "all" will allow all tray icons, otherwise there will be an attempt to match each icon to a value here.</description>
 +    </key>
