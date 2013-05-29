@@ -480,6 +480,13 @@ echo "Attempting to acquire lock on local repo..."
   # causing repo-add to only add 0ubuntu9 when it should clearly add 0ubuntu11
   paccache -vvv -k 1 -r -c ${LOCALREPO}/ || true
 
+  # Avoid the epoch colon in the filename
+  for i in *.pkg.tar.xz; do
+    if [ "x${i}" != "x${i/:/_}" ]; then
+      mv ${i} ${i/:/_}
+    fi
+  done
+
   # TODO: Enable signing
   repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
