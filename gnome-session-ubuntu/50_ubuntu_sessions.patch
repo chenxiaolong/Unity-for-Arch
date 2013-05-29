@@ -34,7 +34,7 @@
 +++ b/data/ubuntu.desktop.in
 @@ -0,0 +1,7 @@
 +[Desktop Entry]
-+_Name=Ubuntu
++_Name=Unity
 +_Comment=This session logs you into Ubuntu
 +Exec=gnome-session --session=ubuntu
 +TryExec=unity
@@ -44,5 +44,5 @@
 +++ b/data/ubuntu.session.desktop.in.in
 @@ -0,0 +1,3 @@
 +[GNOME Session]
-+_Name=Ubuntu
++_Name=Unity
 +RequiredComponents=gnome-settings-daemon;compiz;
