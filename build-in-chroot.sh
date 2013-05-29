@@ -481,7 +481,7 @@ echo "Attempting to acquire lock on local repo..."
   paccache -vvv -k 1 -r -c ${LOCALREPO}/ || true
 
   # Avoid the epoch colon in the filename
-  for i in *.pkg.tar.xz; do
+  for i in ${LOCALREPO}/*.pkg.tar.xz; do
     if [ "x${i}" != "x${i/:/_}" ]; then
       mv ${i} ${i/:/_}
     fi
