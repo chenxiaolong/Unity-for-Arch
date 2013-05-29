@@ -2,8 +2,8 @@
 
 pkgname=gnome-control-center-unity
 _translations=20130418
-pkgver=1.2daily13.04.09
-pkgrel=5
+pkgver=1.3daily13.05.20ubuntu.unity.next
+pkgrel=1
 pkgdesc="A set of settings panels for configuring the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gnome-control-center-unity"
@@ -15,7 +15,7 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-control-center-unity_${pkgver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center-unity.tar.gz")
-sha512sums=('239f63da8dccabaa83642767adf9592dae60875ba64d96d6e2172c81fa19ec7442d49bd3859b071397450183c25e1d17eff90b1cf0e85ce0dd1ea5d3bbb0aa4b'
+sha512sums=('e93358f8d7a6356bdecef930fa70f51c4a90bdc159c8779196198bbf82f84deb5790d7d33e08fa3e061de384d20b51312d992b9678f6c0be8780808c587e3b9a'
             'e9dd7b099df99c55938cf882639e8cfc03101e97761f3209db7ad5b218f5f6345cd49e5679fe7033264f1676dea03a093351ecf14b5ea8d172390a08bfa7759d')
 
 prepare() {
