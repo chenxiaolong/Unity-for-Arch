@@ -11,8 +11,10 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-webapps"
 license=('LGPL')
 groups=('unity')
-depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbusmenu' 'libnotify' 'libsoup' 'libunity' 'libwnck3' 'packagekit' 'polkit' 'sqlite' 'telepathy-glib')
+depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbusmenu' 'libnotify' 'libsoup' 'libunity' 'libwnck3' 'packagekit' 'polkit' 'sqlite')
 makedepends=('gobject-introspection' 'gtk-doc' 'intltool')
+# configure.ac probably needs to be updated
+makedepends+=('telepathy-glib' 'libdbusmenu-gtk3')
 checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 install=libunity-webapps.install
