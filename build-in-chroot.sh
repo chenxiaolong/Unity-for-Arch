@@ -264,9 +264,15 @@ chmod -R 0755 ${CACHE_DIR}
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ ${list}
 
-  # Copy /var/cache/pacman/pkg/ to the chroot-specific cache directory
-  cp /var/cache/pacman/pkg/*-${ARCH}.pkg.tar.xz ${CACHE_DIR}/
-  cp /var/cache/pacman/pkg/*-any.pkg.tar.xz ${CACHE_DIR}/
+  # Copy or hard link cached packages to the chroot-specific cache directory
+  if [ "x$(stat -c '%d' /var/cache/pacman/pkg/)" = \
+       "x$(stat -c '%d' ${CACHE_DIR})" ]; then
+    ln /var/cache/pacman/pkg/*-${ARCH}.pkg.tar.xz ${CACHE_DIR}/
+    ln /var/cache/pacman/pkg/*-any.pkg.tar.xz ${CACHE_DIR}/
+  else
+    cp /var/cache/pacman/pkg/*-${ARCH}.pkg.tar.xz ${CACHE_DIR}/
+    cp /var/cache/pacman/pkg/*-any.pkg.tar.xz ${CACHE_DIR}/
+  fi
 ) 321>$(dirname ${0})/cache.lock
 
 ################################################################################
