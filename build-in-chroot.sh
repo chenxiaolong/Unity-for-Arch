@@ -39,7 +39,7 @@ show_help() {
   echo "  -r,--keeproot Do not delete chroot after building"
 }
 
-MKARCHROOT_SUPPORTED=('77d275572875542cbbc08ad93c7e0319e6c10696262c5dd7f282d968c547dc172ae1cc56349e922f48e5a652408b621b10f2ec4756051dec15a3a294cd0e56d8')
+MKARCHROOT_SUPPORTED=('e3c943d3fe1c196e2380ac0e98449877b447c8848cf049f9c9752a6e0a1e379f98b112efc66633b73c5dd8bffb11d958929befb7f2694ead1677b0301e69cb06')
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
@@ -116,7 +116,7 @@ fi
 # Make sure the version of mkarchroot is supported
 SUPPORTED=false
 for i in ${MKARCHROOT_SUPPORTED[@]}; do
-  if echo "${i} /usr/sbin/mkarchroot" | sha512sum -c --status; then
+  if echo "${i} /usr/bin/mkarchroot" | sha512sum -c --status; then
     SUPPORTED=true
     break
   fi
@@ -273,49 +273,34 @@ chmod -R 0755 ${CACHE_DIR}
 
 ### Create chroot ##############################################################
 
-# Copy and patch mkarchroot to readd the '-f' functionality. This avoids
-# potential issues when building two packages in the same directory. The base64
-# is the encoded form of reverse of the patch for commit:
-#
-#   97a2d2414a7f9d4abce3a40320fe9e0883155884
-#
-# in https://projects.archlinux.org/devtools.git
+# Patch mkarchroot to allow the creation of a chroot into an existing directory.
+# This avoids potential issues when building two packages in the same directory.
 mkarchroot_initial() {
   TEMP_MKARCHROOT=$(mktemp --tmpdir=$(pwd))
-  cat /usr/sbin/mkarchroot > ${TEMP_MKARCHROOT}
+  cat /usr/bin/mkarchroot > ${TEMP_MKARCHROOT}
   TEMP_MKARCHROOT=$(basename ${TEMP_MKARCHROOT})
   (echo -e "--- ${TEMP_MKARCHROOT}.bak\n+++ ${TEMP_MKARCHROOT}" && \
    base64 -d << EOF
-QEAgLTE0NCw2ICsxNDQsNyBAQAogCiBDSFJPT1RfVkVSU0lPTj0ndjMnCiAKK0ZPUkNFPSduJwog
-UlVOPScnCiBOT0NPUFk9J24nCiAKQEAgLTE1Nyw2ICsxNTgsNyBAQAogCWVjaG8gJyBvcHRpb25z
-OicKIAllY2hvICcgICAgLXIgPGFwcD4gICAgICBSdW4gImFwcCIgd2l0aGluIHRoZSBjb250ZXh0
-IG9mIHRoZSBjaHJvb3QnCiAJZWNobyAnICAgIC11ICAgICAgICAgICAgVXBkYXRlIHRoZSBjaHJv
-b3QgdmlhIHBhY21hbicKKwllY2hvICcgICAgLWYgICAgICAgICAgICBGb3JjZSBvdmVyd3JpdGUg
-b2YgZmlsZXMgaW4gdGhlIHdvcmtpbmctZGlyJwogCWVjaG8gJyAgICAtQyA8ZmlsZT4gICAgIExv
-Y2F0aW9uIG9mIGEgcGFjbWFuIGNvbmZpZyBmaWxlJwogCWVjaG8gJyAgICAtTSA8ZmlsZT4gICAg
-IExvY2F0aW9uIG9mIGEgbWFrZXBrZyBjb25maWcgZmlsZScKIAllY2hvICcgICAgLW4gICAgICAg
-ICAgICBEbyBub3QgY29weSBjb25maWcgZmlsZXMgaW50byB0aGUgY2hyb290JwpAQCAtMTY5LDYg
-KzE3MSw3IEBACiAJY2FzZSAiJHthcmd9IiBpbgogCQlyKSBSVU49IiRPUFRBUkciIDs7CiAJCXUp
-IFJVTj0ncGFjbWFuIC1TeXUgLS1ub2NvbmZpcm0nIDs7CisJCWYpIEZPUkNFPSd5JyA7OwogCQlD
-KSBwYWNfY29uZj0iJE9QVEFSRyIgOzsKIAkJTSkgbWFrZXBrZ19jb25mPSIkT1BUQVJHIiA7Owog
-CQluKSBOT0NPUFk9J3knIDs7CkBAIC0yODEsOCArMjg0LDggQEAKIAkjIH19fQogZWxzZQogCSMg
-e3t7IGJ1aWxkIGNocm9vdAotCWlmIFtbIC1lICR3b3JraW5nX2RpciBdXTsgdGhlbgotCQlkaWUg
-IldvcmtpbmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMiCisJaWYg
-W1sgLWUgJHdvcmtpbmdfZGlyICYmICRGT1JDRSA9ICduJyBdXTsgdGhlbgorCQlkaWUgIldvcmtp
-bmcgZGlyZWN0b3J5ICcke3dvcmtpbmdfZGlyfScgYWxyZWFkeSBleGlzdHMgLSB0cnkgdXNpbmcg
-LWYiCiAJZmkKIAogCW1rZGlyIC1wICIke3dvcmtpbmdfZGlyfSIKQEAgLTMwMiw2ICszMDUsOSBA
-QAogCQlwYWNhcmdzKz0oIi0tY29uZmlnPSR7cGFjX2NvbmZ9IikKIAlmaQogCisJaWYgW1sgJEZP
-UkNFID0gJ3knIF1dOyB0aGVuCisJCXBhY2FyZ3MrPSgiLS1mb3JjZSIpCisJZmkKIAlpZiAhIHBh
-Y3N0cmFwIC1HTWNkICIke3dvcmtpbmdfZGlyfSIgIiR7cGFjYXJnc1tAXX0iICIkQCI7IHRoZW4K
-IAkJZGllICdGYWlsZWQgdG8gaW5zdGFsbCBhbGwgcGFja2FnZXMnCiAJZmkK
+QEAgLTUxLDggKzUxLDYgQEAgZmkKIAogdW1hc2sgMDAyMgogCi1bWyAtZSAkd29ya2luZ19kaXIg
+XV0gJiYgZGllICJXb3JraW5nIGRpcmVjdG9yeSAnJHdvcmtpbmdfZGlyJyBhbHJlYWR5IGV4aXN0
+cyIKLQogbWtkaXIgLXAgIiR3b3JraW5nX2RpciIKIAogbG9jayA5ICIke3dvcmtpbmdfZGlyfS5s
+b2NrIiAiTG9ja2luZyBjaHJvb3QiCkBAIC02Niw3ICs2NCw3IEBAIGlmIFtbICQoc3RhdCAtZiAt
+YyAlVCAiJHdvcmtpbmdfZGlyIikgPT0gYnRyZnMgXV07IHRoZW4KIGZpCiAKIHBhY3N0cmFwIC1H
+TWNkICR7cGFjX2NvbmY6Ky1DICIkcGFjX2NvbmYifSAiJHdvcmtpbmdfZGlyIiBcCi0gICIke2Nh
+Y2hlX2RpcnNbQF0vIy8tLWNhY2hlZGlyPX0iICIkQCIgfHwgZGllICdGYWlsZWQgdG8gaW5zdGFs
+bCBhbGwgcGFja2FnZXMnCisgICIke2NhY2hlX2RpcnNbQF0vIy8tLWNhY2hlZGlyPX0iIC0tZm9y
+Y2UgIiRAIiB8fCBkaWUgJ0ZhaWxlZCB0byBpbnN0YWxsIGFsbCBwYWNrYWdlcycKIAogcHJpbnRm
+ICclcy5VVEYtOCBVVEYtOFxuJyBlbl9VUyBkZV9ERSA+ICIkd29ya2luZ19kaXIvZXRjL2xvY2Fs
+ZS5nZW4iCiBlY2hvICdMQU5HPUMnID4gIiR3b3JraW5nX2Rpci9ldGMvbG9jYWxlLmNvbmYiCg==
 EOF
 ) | patch -p0
   cat ${TEMP_MKARCHROOT} | setarch ${ARCH} bash -s -- ${*}
   rm ${TEMP_MKARCHROOT}
+  rm -f ${TEMP_MKARCHROOT}.{orig,rej}
 }
 
 # Create base chroot
-mkarchroot_initial -f -c ${CACHE_DIR} ${CHROOT} ${CHROOT_PACKAGES[@]}
+mkarchroot_initial -c ${CACHE_DIR} ${CHROOT} ${CHROOT_PACKAGES[@]}
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
@@ -370,13 +355,13 @@ for i in ${extrafiles}; do
 done
 
 # Create new user
-mkarchroot -r "useradd --create-home --shell /bin/bash --user-group builder -u 10000" \
-           -c ${CACHE_DIR} ${CHROOT}
+arch-nspawn ${CHROOT} \
+            useradd --create-home --shell /bin/bash --user-group builder \
+                    -u 10000
 
 # Fix permissions
 mkdir ${CHROOT}${RESULT_DIR}/
-mkarchroot -r "chown -R builder:builder ${RESULT_DIR} /tmp/${PACKAGE}/" \
-           -c ${CACHE_DIR} ${CHROOT}
+arch-nspawn ${CHROOT} chown -R builder:builder ${RESULT_DIR} /tmp/${PACKAGE}/
 
 # Make sure the builder user can run "pacman" to install the build dependencies
 echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
@@ -418,8 +403,7 @@ Server = file://$(readlink -f ${LOCALREPO})
 EOF
     fi
 
-    setarch ${ARCH} mkarchroot -r "pacman -Sy ${PROGRESSBAR}" \
-                               -c ${CACHE_DIR} ${CHROOT}
+    arch-nspawn -c ${CACHE_DIR} ${CHROOT} pacman -Sy ${PROGRESSBAR}
   fi
 
   # Download sources and install build dependencies
@@ -428,10 +412,7 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --syncdeps --nobuild --nocolor \\
                          --noconfirm ${PROGRESSBAR}'
 EOF
-  setarch ${ARCH} mkarchroot \
-    -r 'sh /stage1.sh' \
-    -c ${CACHE_DIR} \
-    ${CHROOT}
+  arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage1.sh
 ) 123>${LOCALREPO}/repo.lock
 
 # Workaround makepkg bug for SCM packages
@@ -440,10 +421,7 @@ su - builder -c 'cd /tmp/${PACKAGE} && \\
                  find -maxdepth 1 -type d -empty -name src \
                       -exec touch {}/stupid-makepkg \\;'
 EOF
-setarch ${ARCH} mkarchroot \
-  -r 'sh /stage2.sh' \
-  -c ${CACHE_DIR} \
-  ${CHROOT}
+arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage2.sh
 
 # Build package
 # TODO: Enable signing
@@ -452,10 +430,7 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --clean --check --noconfirm --nocolor --noextract \\
                  ${PROGRESSBAR}'
 EOF
-setarch ${ARCH} mkarchroot \
-  -r 'sh /stage3.sh' \
-  -c ${CACHE_DIR} \
-  ${CHROOT}
+arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage3.sh
 
 ################################################################################
 
