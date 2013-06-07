@@ -1,14 +1,14 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -175,7 +175,7 @@
+@@ -193,7 +193,7 @@
      SET (BOOT_LOGGER_FLAG "-DENABLE_LOGGER")
  endif (BOOT_LOGGER)
  
 -SET (MAINTAINER_CXXFLAGS "-Werror -Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds")
 +SET (MAINTAINER_CXXFLAGS "-Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds")
- option (DISABLE_MAINTAINER_CXXFLAGS "Disable maintainer CXXFlags" OFF)
- if (DISABLE_MAINTAINER_CXXFLAGS)
-   SET (MAINTAINER_CXXFLAGS "")
+ 
+ option (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS "Disable errors when local typedefs are unused" ON)
+ if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
 @@ -33,7 +33,7 @@
