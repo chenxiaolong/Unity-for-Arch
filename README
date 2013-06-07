@@ -63,7 +63,8 @@ Order to compile/install:
 53: unity-lens-photos              -> Unity photo lens
 54: unity-lens-video               -> Unity video lens
 55: compiz-ubuntu                  -> Compiz compositing window manager
-56: unity                          -> Desktop shell designed for efficiency
+56: xpathselect                    -> Select tree objects using XPath queries
+57: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 

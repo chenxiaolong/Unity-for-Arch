@@ -1,0 +1,33 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=xpathselect
+_actual_ver=1.3
+_extra_ver=daily13.06.05.1
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=1
+pkgdesc="Select objects in an object tree using XPath queries"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/xpathselect"
+license=('GPL')
+groups=('unity')
+makedepends=('boost-libs' 'cmake')
+checkdepends=('gtest')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/xpathselect_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('1b1dadd12cc68dd37110ca4a3e659306dced792329a475e65fe5b730ee15cf912bddd733cd0bb3b6c2d3cd8dc8fd81089a6bebaadd6254e1cc34468db14f9906')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  mkdir build && cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  ctest
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
