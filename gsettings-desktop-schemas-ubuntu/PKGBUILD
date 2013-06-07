@@ -7,7 +7,7 @@ pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_rel=1ubuntu1
 _ubuntu_ver=3.8.0
 pkgver=3.8.2
-pkgrel=102
+pkgrel=103
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"
@@ -26,6 +26,10 @@ prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
+
+  # Disable patches
+    sed -i '/01_no_metacity_theme.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
