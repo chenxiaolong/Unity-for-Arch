@@ -1,0 +1,38 @@
+--- a/python/hufftest2.py
++++ b/python/hufftest2.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ 
+ import sphinxbase
+ import sys
+--- a/python/Makefile.am
++++ b/python/Makefile.am
+@@ -8,7 +8,7 @@
+ 
+ if BUILD_PYTHON
+ # Setuptools isn't really compatible with distutils, unfortunately
+-SETUPTOOLS_CRAP = `python -c 'import setuptools' 2>/dev/null \
++SETUPTOOLS_CRAP = `python2 -c 'import setuptools' 2>/dev/null \
+ 	&& echo --single-version-externally-managed --record filelist.txt`
+ 
+ all-local: pymod-build-stamp
+--- a/python/Makefile.in
++++ b/python/Makefile.in
+@@ -215,7 +215,7 @@
+ pkginclude_HEADERS = sphinxbase.pxd
+ 
+ # Setuptools isn't really compatible with distutils, unfortunately
+-@BUILD_PYTHON_TRUE@SETUPTOOLS_CRAP = `python -c 'import setuptools' 2>/dev/null \
++@BUILD_PYTHON_TRUE@SETUPTOOLS_CRAP = `python2 -c 'import setuptools' 2>/dev/null \
+ @BUILD_PYTHON_TRUE@	&& echo --single-version-externally-managed --record filelist.txt`
+ 
+ all: all-am
+--- a/python/sb_test.py
++++ b/python/sb_test.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ 
+ import sphinxbase
+ import sys
