@@ -4,10 +4,10 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=daily13.05.02
+_extra_ver=daily13.06.07
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -19,7 +19,7 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz")
-sha512sums=('97567d9b178ddcc5195f05864939f7d98b80fbf6928df5992b99e5c3da1c2942a804d7900bb8d64f6054d7f8db42d5e270eeff4dd8ece2778740037dfd96c181'
+sha512sums=('02700eb03035cff5c24b7f3c3d6079822f112a247fc68d938d9fa5bdcea4661734da7ed7b62155ea3651826a5f239a3df521483bb5fe1638c32de1b631254857'
             '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0')
 
 prepare() {
