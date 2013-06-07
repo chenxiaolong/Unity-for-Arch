@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring1
+_ppa_rel=0ubuntu1~raring6
 _translations=20130418
 pkgver=3.8.2
-pkgrel=102
+pkgrel=103
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -28,7 +28,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
         '0001_Rename_back_to_System_Settings.patch')
 sha512sums=('3d3199969205c62a8e6039053675965a7d2b7069cd0ddb26b5568e652227084801c024c2d9c4da80e3f733419ff5159e3e360495355be13d3348755a50deedca'
-            '7df89a9064641c7653bf49d1bbc242f30eef417eeaa5f19cf0502ddfc892c9557d2699edcd0dac16602ff3a462ed46d73a99520ca185d4b9e01a926268c53f09'
+            '4a1451572010da3e40cacda0948314913c2230b9e179d7595486b0a42db522601a40ae6f1b83976104522d800fa6081f694575aa75671e0c3b1c8e248b35ead9'
             'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc'
             '6a3e327f7a396e500ab5fda610fea2b1495b134033f57363701c4b9d7da37f1a044f632fd78c49a1dc8e7cd9f16b688c2f8726bed76f86a5d76564915a40d898')
 
@@ -48,6 +48,9 @@ prepare() {
         sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/92_ubuntu_system_proxy.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/revert_git_info_packagekit_api.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/ubuntu_region_packagekit.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/ubuntu_region_install_dialog.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
