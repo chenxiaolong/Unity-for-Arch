@@ -2,10 +2,10 @@
 
 pkgname=indicator-bluetooth
 _actual_ver=0.0.6
-_extra_ver=daily13.02.19
+_extra_ver=daily13.06.07
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=104
+pkgrel=105
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-bluetooth"
@@ -20,7 +20,7 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-bluetooth_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-bluetooth.tar.gz"
         '0001_bluetooth_browse_address_Removed.patch')
-sha512sums=('1f5418104d6f3d74bb2003474347a8dc386abd37d2ae9ee86f7d290d1934eca4dbc5acce5d618f14cf98be6ef7ee67d0952b46af3ba2843ba7b127803cfcb2f0'
+sha512sums=('953c65d052c4e1e8e33b24e681849abdbc029830c618a529edb51799710cbe73a8b50015d364499f9839061da6d70b6c101fc4bc4c9cc29aaed8488272ff90cd'
             '5d279bcb9dbb7bb89a127025418bf3326026379630f0c0bbea9b5fe0cad93731d72f91641ea98c5c1fc71d6355855d083ff195f14d3ad73e5f573780c627bd51'
             'c44735821c4468dcf249fae44d8fed936c2f60cb9f6545b12b476509750a95941d7697e5c288d0d06d92fcb84fb5031a3455cf910a263b725b15fddf416d1f58')
 
