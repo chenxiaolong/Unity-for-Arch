@@ -44,24 +44,25 @@ Order to compile/install:
 34: indicator-session              -> Indicator for session management
 35: indicator-sound                -> Indicator displaying a unified sound menu
 36: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
-37: hud                            -> Backend for the Unity HUD
-38: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-39: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-40: evemu                          -> Linux Evdev Event Emulation Library
-41: frame                          -> Open Input Framework Frame Library
-42: grail                          -> Gesture recognition and instantiation lib.
-43: geis                           -> Implementation of the GEIS interface
-44: nux                            -> An OpenGL toolkit
-45: unity-asset-pool               -> Design assets for Unity
-46: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-47: libcolumbus                    -> Small, fast, error tolerant matcher
-48: unity-lens-applications        -> Unity applications lens
-49: unity-lens-files               -> Unity files lens
-50: unity-lens-music               -> Unity music lens
-51: unity-lens-photos              -> Unity photo lens
-52: unity-lens-video               -> Unity video lens
-53: compiz-ubuntu                  -> Compiz compositing window manager
-54: unity                          -> Desktop shell designed for efficiency
+37: pocketsphinx                   -> Lightweight speech recognition system
+38: hud                            -> Backend for the Unity HUD
+39: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+40: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+41: evemu                          -> Linux Evdev Event Emulation Library
+42: frame                          -> Open Input Framework Frame Library
+43: grail                          -> Gesture recognition and instantiation lib.
+44: geis                           -> Implementation of the GEIS interface
+45: nux                            -> An OpenGL toolkit
+46: unity-asset-pool               -> Design assets for Unity
+47: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+48: libcolumbus                    -> Small, fast, error tolerant matcher
+49: unity-lens-applications        -> Unity applications lens
+50: unity-lens-files               -> Unity files lens
+51: unity-lens-music               -> Unity music lens
+52: unity-lens-photos              -> Unity photo lens
+53: unity-lens-video               -> Unity video lens
+54: compiz-ubuntu                  -> Compiz compositing window manager
+55: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 

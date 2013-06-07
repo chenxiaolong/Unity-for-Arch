@@ -1,0 +1,38 @@
+--- a/python/Makefile.am
++++ b/python/Makefile.am
+@@ -13,7 +13,7 @@
+ 
+ if BUILD_PYTHON
+ # Setuptools isn't really compatible with distutils, unfortunately
+-SETUPTOOLS_CRAP = `python -c 'import setuptools' 2>/dev/null \
++SETUPTOOLS_CRAP = `python2 -c 'import setuptools' 2>/dev/null \
+ 	&& echo --single-version-externally-managed --record filelist.txt`
+ 
+ all-local: pymod-build-stamp
+--- a/python/Makefile.in
++++ b/python/Makefile.in
+@@ -217,7 +217,7 @@
+ noinst_HEADERS = bogus_pygobject.h
+ 
+ # Setuptools isn't really compatible with distutils, unfortunately
+-@BUILD_PYTHON_TRUE@SETUPTOOLS_CRAP = `python -c 'import setuptools' 2>/dev/null \
++@BUILD_PYTHON_TRUE@SETUPTOOLS_CRAP = `python2 -c 'import setuptools' 2>/dev/null \
+ @BUILD_PYTHON_TRUE@	&& echo --single-version-externally-managed --record filelist.txt`
+ 
+ all: all-am
+--- a/python/ps_test_lm.py
++++ b/python/ps_test_lm.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ # -*- py-indent-offset: 2; indent-tabs-mode: nil; coding: utf-8 -*-
+ 
+ import sys
+--- a/python/ps_test_seg.py
++++ b/python/ps_test_seg.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ # -*- py-indent-offset: 2; indent-tabs-mode: nil; coding: utf-8 -*-
+ 
+ 

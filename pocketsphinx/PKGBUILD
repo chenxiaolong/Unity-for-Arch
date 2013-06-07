@@ -1,0 +1,40 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=pocketsphinx
+pkgver=0.8
+pkgrel=100
+pkgdesc="Lightweight speech recognition system"
+arch=('i686' 'x86_64')
+url="http://cmusphinx.sourceforge.net/"
+license=('custom')
+groups=('unity')
+depends=('alsa-lib' 'gstreamer0.10-base' 'sphinxbase' 'python2')
+options=('!libtool')
+source=("http://downloads.sourceforge.net/project/cmusphinx/pocketsphinx/${pkgver}/pocketsphinx-${pkgver}.tar.gz"
+        '0001_Python_2.patch')
+sha512sums=('b53ab8883ddbc2c66c6a6af1bac318f3cdfd5a495cb636f33eb649d42f28780b36c43dfd9a61f213d6a1b83f0fba6b114d44b38d9fa091acf62a8e529118e583'
+            '26c80fb65b79773d843a9edbe2ce85eeb4491b92e3749e4c28c3cec63f42a79c3b3163b665cea095f4ab7dc8cc413e2486ec4c76106224ef8f2787898b9603b2')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  patch -p1 -i "${srcdir}/0001_Python_2.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --with-python=python2
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname}/"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+}
