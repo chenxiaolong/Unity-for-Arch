@@ -1,10 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libcolumbus
-_actual_ver=0.4.0
-_extra_ver=daily13.04.16~13.04
-pkgver=${_actual_ver}.${_extra_ver/\~/.}
-pkgrel=102
+_actual_ver=0.5.0
+_extra_ver=daily13.06.06
+pkgver=${_actual_ver}.${_extra_ver}
+pkgrel=100
 pkgdesc="A small, fast, error tolerant matcher"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
@@ -13,13 +13,13 @@ groups=('unity')
 depends=('icu')
 makedepends=('boost' 'cmake' 'sparsehash')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('0b241e4739baf5b652e112264df4bd3b013413728d48f9be949457cd4d253b3ae63ea173d94dac165cc08ba3df33604eccaf3385a263d814f2aee35c9e1ce38f')
+sha512sums=('04d187d9afceed60b27837e23c746f29d3aa8a442c3fa32d4216263b438f3cf42af9a1c0f6ce42025110239e6f050bcd7b504fdf99a96ee6f76b80cbf336e997')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=''
   make
 }
 
