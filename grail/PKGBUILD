@@ -3,9 +3,9 @@
 
 pkgname=grail
 _actual_ver=3.1.0
-_extra_ver=daily13.02.26
+_extra_ver=daily13.06.05
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=105
+pkgrel=100
 pkgdesc="Gesture Recognition And Instantiation Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/grail"
@@ -15,7 +15,7 @@ makedepends=('inputproto')
 checkdepends=('xorg-gtest')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('72572dc7b75957127ddadc8ee1e0509098a3ea11a2e20349d2b77f97cdea920dc34f86261d501fd5c6efcc64c20bf5e6ecc57c41ad76c5c79934f372060aede6')
+sha512sums=('ad29b099f164d37a126c7fa910f888ec60fe065695208f1cb355afb32b8c6e353d9f4737a406c470b644439837fd8c579b0593b50f9a59464c659d44ed13d878')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
