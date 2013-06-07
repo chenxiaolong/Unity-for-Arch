@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-lens-video
-_actual_ver=0.3.14
-_extra_ver=daily13.04.15
+_actual_ver=0.3.15
+_extra_ver=daily13.06.05
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-videos"
@@ -19,7 +19,7 @@ replaces=('unity-scope-video-remote')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-video.tar.gz")
-sha512sums=('0a2845af53f86308ffc9b1f3ab92fa1638421e313e750a44015acd87a660ed91fff9f71898c56073f9a70df2f6ff414f0912dc305496511420fbbaafab0fa292'
+sha512sums=('5ead116b7499b436b6bd300b910826685c8583695a4a934ec0108dbb4fc95ad2dc492333c84ded81557f19e6f6cf736a10259c88b2abfdaf3da1463b45478112'
             'cac380942dd525e405dcac5c348e0aac8c734cb5ee2d2ef034a1a4a0acbeb54dc5598dc40ab7e4b0fcbe28eec322663b15a1df09fc36aec091c1f959ec67b700')
 
 prepare() {
