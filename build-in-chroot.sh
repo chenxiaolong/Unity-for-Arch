@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: Must update host cache before downloading!!!
-
 # Please add the following to build-in-chroot.conf:
 # 
 # PACKAGER="Your Name <your@email>"
@@ -39,7 +37,6 @@ show_help() {
   echo "  -r,--keeproot Do not delete chroot after building"
 }
 
-MKARCHROOT_SUPPORTED=('e3c943d3fe1c196e2380ac0e98449877b447c8848cf049f9c9752a6e0a1e379f98b112efc66633b73c5dd8bffb11d958929befb7f2694ead1677b0301e69cb06')
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
 PACKAGE_DIR=""
@@ -110,19 +107,6 @@ for i in ${ARCH_SUPPORTED[@]}; do
 done
 if [ "x${SUPPORTED}" != "xtrue" ]; then
   echo "Unsupported architecture ${ARCH}!"
-  exit 1
-fi
-
-# Make sure the version of mkarchroot is supported
-SUPPORTED=false
-for i in ${MKARCHROOT_SUPPORTED[@]}; do
-  if echo "${i} /usr/bin/mkarchroot" | sha512sum -c --status; then
-    SUPPORTED=true
-    break
-  fi
-done
-if [ "x${SUPPORTED}" != "xtrue" ]; then
-  echo "Unsupported version of mkarchroot!"
   exit 1
 fi
 
@@ -279,34 +263,29 @@ chmod -R 0755 ${CACHE_DIR}
 
 ### Create chroot ##############################################################
 
-# Patch mkarchroot to allow the creation of a chroot into an existing directory.
-# This avoids potential issues when building two packages in the same directory.
-mkarchroot_initial() {
-  TEMP_MKARCHROOT=$(mktemp --tmpdir=$(pwd))
-  cat /usr/bin/mkarchroot > ${TEMP_MKARCHROOT}
-  TEMP_MKARCHROOT=$(basename ${TEMP_MKARCHROOT})
-  (echo -e "--- ${TEMP_MKARCHROOT}.bak\n+++ ${TEMP_MKARCHROOT}" && \
-   base64 -d << EOF
-QEAgLTUxLDggKzUxLDYgQEAgZmkKIAogdW1hc2sgMDAyMgogCi1bWyAtZSAkd29ya2luZ19kaXIg
-XV0gJiYgZGllICJXb3JraW5nIGRpcmVjdG9yeSAnJHdvcmtpbmdfZGlyJyBhbHJlYWR5IGV4aXN0
-cyIKLQogbWtkaXIgLXAgIiR3b3JraW5nX2RpciIKIAogbG9jayA5ICIke3dvcmtpbmdfZGlyfS5s
-b2NrIiAiTG9ja2luZyBjaHJvb3QiCkBAIC02Niw3ICs2NCw3IEBAIGlmIFtbICQoc3RhdCAtZiAt
-YyAlVCAiJHdvcmtpbmdfZGlyIikgPT0gYnRyZnMgXV07IHRoZW4KIGZpCiAKIHBhY3N0cmFwIC1H
-TWNkICR7cGFjX2NvbmY6Ky1DICIkcGFjX2NvbmYifSAiJHdvcmtpbmdfZGlyIiBcCi0gICIke2Nh
-Y2hlX2RpcnNbQF0vIy8tLWNhY2hlZGlyPX0iICIkQCIgfHwgZGllICdGYWlsZWQgdG8gaW5zdGFs
-bCBhbGwgcGFja2FnZXMnCisgICIke2NhY2hlX2RpcnNbQF0vIy8tLWNhY2hlZGlyPX0iIC0tZm9y
-Y2UgIiRAIiB8fCBkaWUgJ0ZhaWxlZCB0byBpbnN0YWxsIGFsbCBwYWNrYWdlcycKIAogcHJpbnRm
-ICclcy5VVEYtOCBVVEYtOFxuJyBlbl9VUyBkZV9ERSA+ICIkd29ya2luZ19kaXIvZXRjL2xvY2Fs
-ZS5nZW4iCiBlY2hvICdMQU5HPUMnID4gIiR3b3JraW5nX2Rpci9ldGMvbG9jYWxlLmNvbmYiCg==
-EOF
-) | patch -p0
-  cat ${TEMP_MKARCHROOT} | setarch ${ARCH} bash -s -- ${*}
-  rm ${TEMP_MKARCHROOT}
-  rm -f ${TEMP_MKARCHROOT}.{orig,rej}
-}
-
 # Create base chroot
-mkarchroot_initial -c ${CACHE_DIR} ${CHROOT} ${CHROOT_PACKAGES[@]}
+setarch ${ARCH} pacstrap -GMcd ${CHROOT} --cachedir=${CACHE_DIR} \
+                         ${CHROOT_PACKAGES[@]}
+
+# Set up systemd-nspawn arguments
+NSPAWN_ARGS=("--directory=${CHROOT}")
+
+# Cache directory
+NSPAWN_ARGS+=("--bind=${CACHE_DIR}")
+sed -i -r "s|^#?\\s*CacheDir.+|CacheDir = ${CACHE_DIR}|g" \
+  ${CHROOT}/etc/pacman.conf
+
+# Copy pacman keyring
+cp -a /etc/pacman.d/gnupg/ ${CHROOT}/etc/pacman.d/
+
+# Copy mirrorlist
+cp /etc/pacman.d/mirrorlist ${CHROOT}/etc/pacman.d/
+
+# Set up locale
+sed -i '1i en_US.UTF-8 UTF-8' ${CHROOT}/etc/locale.gen
+echo 'LANG=C' > ${CHROOT}/etc/locale.gen
+setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                locale-gen
 
 # Set up /etc/makepkg.conf
 cat >> ${CHROOT}/etc/makepkg.conf << EOF
@@ -361,13 +340,14 @@ for i in ${extrafiles}; do
 done
 
 # Create new user
-arch-nspawn ${CHROOT} \
-            useradd --create-home --shell /bin/bash --user-group builder \
-                    -u 10000
+setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                useradd --create-home --shell /bin/bash --user-group builder \
+                        -u 10000
 
 # Fix permissions
 mkdir ${CHROOT}${RESULT_DIR}/
-arch-nspawn ${CHROOT} chown -R builder:builder ${RESULT_DIR} /tmp/${PACKAGE}/
+setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                chown -R builder:builder ${RESULT_DIR} /tmp/${PACKAGE}/
 
 # Make sure the builder user can run "pacman" to install the build dependencies
 echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
@@ -409,7 +389,8 @@ Server = file://$(readlink -f ${LOCALREPO})
 EOF
     fi
 
-    arch-nspawn -c ${CACHE_DIR} ${CHROOT} pacman -Sy ${PROGRESSBAR}
+    setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                    pacman -Sy ${PROGRESSBAR}
   fi
 
   # Download sources and install build dependencies
@@ -418,7 +399,8 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --syncdeps --nobuild --nocolor \\
                          --noconfirm ${PROGRESSBAR}'
 EOF
-  arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage1.sh
+  setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                  sh /stage1.sh
 ) 123>${LOCALREPO}/repo.lock
 
 # Workaround makepkg bug for SCM packages
@@ -427,7 +409,8 @@ su - builder -c 'cd /tmp/${PACKAGE} && \\
                  find -maxdepth 1 -type d -empty -name src \
                       -exec touch {}/stupid-makepkg \\;'
 EOF
-arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage2.sh
+setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                sh /stage2.sh
 
 # Build package
 # TODO: Enable signing
@@ -436,7 +419,8 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --clean --check --noconfirm --nocolor --noextract \\
                  ${PROGRESSBAR}'
 EOF
-arch-nspawn -c ${CACHE_DIR} ${CHROOT} sh /stage3.sh
+setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+                sh /stage3.sh
 
 ################################################################################
 
