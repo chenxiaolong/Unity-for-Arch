@@ -3,9 +3,9 @@
 
 pkgname=frame
 _actual_ver=2.5.0
-_extra_ver=daily13.03.12
+_extra_ver=daily13.06.05
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="Touch Frame Library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/frame"
@@ -15,7 +15,7 @@ makedepends=('asciidoc' 'xorg-server-devel')
 groups=('unity')
 options=('!libtool' '!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('78c1609182af5bff1cabec4bddb62f77df21d2d25d71cc0b083b23a8b465b78509906c3e86278e07231fa41c5e79c94765b849bfc136b0efd9b08ff8097ef071')
+sha512sums=('c8b2a1df86c9ccc6bd17c97a04d94827994fc15737ab933081d73636909148c5f8f1f47a6d4fe3f99ae048261246bb16b2ecdb2e079090e5e68fc90ab1eec98c')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
