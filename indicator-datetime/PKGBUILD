@@ -6,10 +6,10 @@
 
 pkgname=indicator-datetime
 _actual_ver=12.10.3
-_extra_ver=daily13.05.06.1
+_extra_ver=daily13.06.07
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -28,13 +28,11 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
-        '0003_Link_pthread.patch'
-        '0005_Remove_libedataserverui-3.0.patch')
-sha512sums=('0bde13820897fe7e8f5649c40a2118885b4d075c6e0ae1a952c317068fadf887c8bae05f8a91c9dd6699e169dc408ed99a3573a05f0841a3e4269ed12c7bf95e'
+        '0003_Link_pthread.patch')
+sha512sums=('dcbf7f90a4050abc2ffe9828d3024b0e4fd82c5ccfed8783b27c064bfc1adc01072b1ed9b80e3f98573e4e9b68fe703f1573f414042f6d13a775445a53dfb17c'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
-            '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2'
-            'b9f74583a4dfe123753ab95fcd6db4a8167ad8bf72e79fcbe5546f03089d7f6bf94e5a29ea1f8be71cb5b0de9635189afd13b989580c9f3dadc258ef55b73d00')
+            '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -44,10 +42,6 @@ prepare() {
 
   # Tests need to link against pthread
   patch -p1 -i "${srcdir}/0003_Link_pthread.patch"
-
-  # configure.ac is looking for the unneeded and deprecated libedataserverui-3.0
-  # pkgconfig file
-  patch -p1 -i "${srcdir}/0005_Remove_libedataserverui-3.0.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
@@ -83,11 +77,6 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
-
-  if [ "x${NO_GCC_UBUNTU}" = "xfalse" ]; then
-  mv "${pkgdir}/usr/share/applications/indicator-datetime-preferences.desktop" \
-     "${pkgdir}/usr/share/applications/gnome-indicator-datetime-panel.desktop"
-  fi
 }
 
 # vim:set ts=2 sw=2 et:
