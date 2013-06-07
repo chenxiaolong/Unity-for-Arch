@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=metacity-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _translations=20130418
 pkgver=2.34.13.${_ubuntu_rel}
-pkgrel=104
+pkgrel=105
 pkgdesc="A window manager for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-metacity.tar.gz")
 sha512sums=('4faa2dced43b1e89213a3ba3b672f660016eb0f45ff449168aab8269cd788d9f82a0067018ef90ca0bf4f274e660d09c721f7fb1d0e5808ee21b9f0778fb0769'
-            'be03e50199a758cc3f515d91739ea344a18cb180493c36459f28e2c8e1256dcf9d57c61d9746f80f201a5dae640da40947292166e815d6a7c9ff4497bb31b87a'
+            'ff4d43dcc9d9a6fa1fff638babfa4bbd21aedbf273e0c1e22f9c053f9d842cbb7772511481d95995853c18c939c7a4ea37adb8297c357a596e7ca22dc8be2cc0'
             '4eeebb7579a28cd099f318b51d20b455fbab291ed90ea53df6c1094043a9b3579143cf880d997536395fdf98fd36b3b40858393b8838a15c2bbb3b1b113a1dd2')
 
 prepare() {
