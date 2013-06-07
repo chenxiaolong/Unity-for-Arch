@@ -1,0 +1,60 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=sphinxbase
+pkgver=0.8
+_ubuntu_rel=0ubuntu7
+pkgrel=100
+pkgdesc="Shared components for Sphinx speech recognition"
+arch=('i686' 'x86_64')
+url="http://cmusphinx.sourceforge.net/"
+license=('custom')
+groups=('unity')
+depends=('alsa-lib' 'lapack' 'libpulse' 'python2')
+options=('!libtool')
+source=("http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-${pkgver}.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/sphinxbase_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001_Python_2.patch')
+sha512sums=('fdb13c07e591e868c395d5f8209ec389fb9d5a93d99104a00cb82382e84d320091ae7e74d53225706331d4959ab5e248fa622582a148bfdb6ab5c38470d1963c'
+            'f5d894ee9655b4039edec040106aea486294b7481d49518a44319aebc9fd453750d9569b63d077a914201eb79b45c302e93ba581ff5029a10cd37e4cfd813368'
+            'dd02a0857a9cbfc98a70e7990685a9a9548fda9eb52b785ecddffae99cb99115f65f1cdc69bcffff6be1c8da0c5130ed6e0e342945ab4ac08c3290cab07fa959')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  patch -p1 -i "${srcdir}/0001_Python_2.patch"
+
+  # Apply Ubuntu's patches
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  PYTHON=python2 ./configure --prefix=/usr --with-python=python2
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/share/man/man1/"
+  install -m644 "${srcdir}/debian/sphinx_fe.1" \
+                "${srcdir}/debian/sphinx_pitch.1" \
+                "${srcdir}/debian/sphinx_cepview.1" \
+                "${srcdir}/debian/sphinx_jsgf2fsg.1" \
+                "${srcdir}/debian/sphinx_lm_eval.1" \
+                doc/sphinx_lm_sort.1 \
+                doc/sphinx_cont_adseg.1 \
+                doc/sphinx_cont_fileseg.1 \
+                "${pkgdir}/usr/share/man/man1/"
+
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname}/"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+}
