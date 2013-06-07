@@ -1,10 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=geis
-_actual_ver=2.2.15
-_extra_ver=daily13.04.03
+_actual_ver=2.2.16
+_extra_ver=daily13.06.05
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/geis"
@@ -13,7 +13,7 @@ depends=('grail' 'xorg-xinput' 'python3' 'dbus-core')
 makedepends=('xorg-server-devel')
 options=('!emptydirs' '!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('6bf7c1640efe38146f674769eefaac374c70c2da7e161875da9c0cbd60f4ecc0ba811388b4adfc6397e5f3e4f7d94dfd9dc73e105540150e71e1d1ed2a5e876e')
+sha512sums=('7bafeedb042ea6f40bf3d132f8cba3e120defea3011a486718535bac16380199180c65903bafca59243950a268a68eb82417a9c4ad82ee1b8e06a283171426f3')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
