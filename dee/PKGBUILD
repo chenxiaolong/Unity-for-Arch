@@ -32,7 +32,7 @@ build() {
 
 check() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build-python3"
-  make check
+  make -k check
 }
 
 package() {
