@@ -182,7 +182,7 @@ package() {
 
   # Arch Linux logo
   install -m644 "${srcdir}/launcher_bfb.png" \
-    "${pkgdir}/usr/share/unity/6/launcher_bfb.png"
+    "${pkgdir}/usr/share/unity/icons/launcher_bfb.png"
 
   # Check for missing GSettings schemas
   pushd "${pkgdir}/usr/share/glib-2.0/schemas/"
