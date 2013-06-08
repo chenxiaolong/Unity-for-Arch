@@ -10,8 +10,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/xpathselect"
 license=('GPL')
 groups=('unity')
-makedepends=('boost' 'cmake')
-checkdepends=('gtest-ubuntu')
+makedepends=('boost' 'cmake' 'gtest-ubuntu')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/xpathselect_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('1b1dadd12cc68dd37110ca4a3e659306dced792329a475e65fe5b730ee15cf912bddd733cd0bb3b6c2d3cd8dc8fd81089a6bebaadd6254e1cc34468db14f9906')
 
