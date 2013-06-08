@@ -39,7 +39,7 @@ build() {
     -DENABLE_SCALABILITY_TESTS=${TESTS} \
     -DFULL_WARNINGS=ON
 
-  make
+  make -j1
 }
 
 check() {
