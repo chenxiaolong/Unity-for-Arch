@@ -1,6 +1,6 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-pkgname=dee
+pkgname=dee-ubuntu
 _actual_ver=1.2.5
 _extra_ver=ubuntu1daily13.06.06.2
 pkgver=${_actual_ver}${_extra_ver}
@@ -13,11 +13,13 @@ groups=('unity')
 depends=('dbus-glib' 'glib2' 'icu' 'python' 'python-gobject' 'python2' 'python2-gobject')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
 checkdepends=('dbus-test-runner')
+provides=("dee=${pkgver}")
+conflicts=('dee')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('5a02ac4f07c560d34685f5e9343d40e19b7e640a21dfdf0d39a75b21d9435f79e675d960a0a383f8100c365000ec2a405e18aca2ef3da86737f28c106b5a6239')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
 
@@ -31,12 +33,12 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build-python3"
+  cd "${srcdir}/dee-${_actual_ver}${_extra_ver}/build-python3"
   make check || true
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
 
   cd build-python3/
   make DESTDIR="${pkgdir}/" install

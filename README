@@ -18,7 +18,7 @@ Order to compile/install:
 08: libappindicator                -> Library to export menu bar to Unity
 09: appmenu-gtk                    -> Application menu module for GTK+
 10: vala0.18                       -> Compiler for the GObject type system
-11: dee                            -> Model to synchronize instances over DBus
+11: dee-ubuntu                     -> Model to synchronize instances over DBus
 12: libunity                       -> Library for integrating Unity
 13: libunity-misc                  -> Differently licensed stuff for Unity
 14: indicator-messages             -> Collects messages that need a response
