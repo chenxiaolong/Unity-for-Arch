@@ -4,7 +4,7 @@ pkgname=hud
 _actual_ver=13.10.1
 _extra_ver=daily13.06.05.1
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
@@ -23,15 +23,20 @@ sha512sums=('111251dd0b1f6f02f9a53c5dc0696e3d1358ae361e1bdb766ac5871b29958d45eb2
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  TESTS=ON
+  if [ ! -x /usr/bin/dbus-test-runner ]; then
+    TESTS=OFF
+  fi
+
   mkdir build && cd build
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
     -DENABLE_DOCUMENTATION=ON \
-    -DENABLE_TESTS=ON \
-    -DENABLE_VOICE_TESTS=ON `# Off on Ubuntu` \
-    -DENABLE_SCALABILITY_TESTS=ON \
+    -DENABLE_TESTS=${TESTS} \
+    -DENABLE_VOICE_TESTS=${TESTS} `# Off on Ubuntu` \
+    -DENABLE_SCALABILITY_TESTS=${TESTS} \
     -DFULL_WARNINGS=ON
 
   make
