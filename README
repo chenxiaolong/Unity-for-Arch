@@ -16,7 +16,7 @@ Order to compile/install:
 06: libindicate                    -> Libraries to raise 'flags' on DBus
 07: libindicate-qt                 -> Qt bindings for libindicate
 08: libappindicator                -> Library to export menu bar to Unity
-09: appmenu-gtk                    -> Application menu module for GTK+
+09: unity-gtk-module               -> Application menu module for GTK+
 10: vala0.18                       -> Compiler for the GObject type system
 11: dee-ubuntu                     -> Model to synchronize instances over DBus
 12: libunity                       -> Library for integrating Unity

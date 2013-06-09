@@ -1,0 +1,69 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-gtk-module
+_actual_ver=0.0.0
+_extra_ver=daily13.06.07
+pkgver=${_actual_ver}${_extra_ver}
+pkgrel=1
+pkgdesc="Unity GTK+ Module"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-gtk-module"
+license=('GPL')
+groups=('unity')
+depends=('libx11' 'gtk2-ubuntu' 'gtk3-ubuntu')
+makedepends=('gtk-doc')
+provides=('appmenu-gtk2' 'appmenu-gtk3')
+replaces=('appmenu-gtk2' 'appmenu-gtk3')
+conflicts=('appmenu-gtk2' 'appmenu-gtk3')
+options=('!libtool')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('1d772a4aa7cbf2e206bfdc4e478ca99b07c0f0cd7e9969b8ba6845ec2b63cd7d064367a822c975f187fa5c12b7a367ee320e5adfe549e40c01f1ec20d579790b')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  autoreconf -vfi
+
+  [ -d build-gtk2 ] || mkdir build-gtk2
+  pushd build-gtk2
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=2 --enable-gtk-doc \
+               --disable-static
+  make
+  popd
+
+  [ -d build-gtk3 ] || mkdir build-gtk3
+  pushd build-gtk3
+  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --enable-gtk-doc \
+               --disable-static
+  make
+  popd
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  pushd build-gtk2
+  make check
+  popd
+
+  pushd build-gtk3
+  make check
+  popd
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  pushd build-gtk2
+  make DESTDIR="${pkgdir}/" install
+  popd
+
+  pushd build-gtk3
+  make DESTDIR="${pkgdir}/" install
+  popd
+
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -m755  "${pkgdir}/etc/X11/Xsession.d/80unity-gtk-module" \
+                 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  rm -rvf "${pkgdir}/etc/X11/Xsession.d/"
+}
