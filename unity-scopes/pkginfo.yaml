@@ -1,0 +1,199 @@
+---
+depends:	[ dee, glib2, libunity, python, python-gobject ]
+license:	[ GPLv3, custom ]
+license_dir:	/usr/share/licenses/unity-scopes/
+# Actually, architecturally independent, but my build server can't handle
+# split packages with varying architectures
+arch:		[ i686, x86_64 ]
+description:	$fullname Scope for Unity
+groups:		[ unity ]
+directory:	unity-scope-$name-$version
+sources:	[ "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-$name_$version.orig.tar.gz",
+                  "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-$name_$version-$release.diff.gz" ]
+
+packages:
+# Special scope
+- name:		home
+  version:	6.8.0daily13.06.05
+  release:	0ubuntu1
+  fullname:	Home
+  url:		https://launchpad.net/unity-scope-home
+  depends:	[ lsb-release ]
+  step-build:	[ "autoreconf -vfi", "intltoolize -f",
+                  "./configure --prefix=/usr
+                               --libexecdir=/usr/lib/unity-scope-home", "make" ]
+  step-check:	[ "make check || :" ]
+  step-package:	[ "make DESTDIR=\"${pkgdir}\" install" ]
+
+- name:		audacious
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Audacious
+  url:		https://launchpad.net/unity-scope-audacious
+  depends:	[ python-dbus ]
+
+- name:		calculator
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Calculator
+  url:		https://launchpad.net/unity-scope-calculator
+  depends:	[ gnome-calculator ]
+
+- name:		chromiumbookmarks
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Chromium Bookmarks
+  url:		https://launchpad.net/unity-scope-chromiumbookmarks
+
+- name:		clementine
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Clementine
+  url:		https://launchpad.net/unity-scope-clementine
+  depends:	[ python-dbus ]
+
+- name:		colourlovers
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	COLOURlovers
+  url:		https://launchpad.net/unity-scope-colourlovers
+
+- name:		devhelp
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	devhelp
+  url:		https://launchpad.net/unity-scope-devhelp
+  depends:	[ python-lxml ]
+
+- name:		deviantart
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	deviantART
+  url:		https://launchpad.net/unity-scope-deviantart
+  depends:	[ python-feedparser ]
+
+- name:		firefoxbookmarks
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Firefox Bookmarks
+  url:		https://launchpad.net/unity-scope-firefoxbookmarks
+
+- name:		gallica
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	gallica
+  url:		https://launchpad.net/unity-scope-gallica
+  depends:	[ python-lxml ]
+
+- name:		gdrive
+  version:	0.9daily13.06.05
+  release:	0ubuntu1
+  fullname: 	Google Drive
+  url:		https://launchpad.net/unity-scope-gdrive
+  depends:	[ account-plugins, libgdata, libaccounts-glib, libsignon-glib ]
+  icons:	true
+
+- name:		github
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	GitHub
+  url:		https://launchpad.net/unity-scope-github
+
+- name:		gmusicbrowser
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	gmusicbrowser
+  url:		https://launchpad.net/unity-scope-gmusicbrowser
+  depends:	[ python-dbus ]
+
+- name:		googlenews
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Google News
+  url:		https://launchpad.net/unity-scope-googlenews
+  depends:	[ python-feedparser ]
+
+- name:		gourmet
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Gourmet Recipe Manager
+  url:		https://launchpad.net/unity-scope-gourmet
+
+- name:		guayadeque
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Guayadeque
+  url:		https://launchpad.net/unity-scope-guayadeque
+  depends:	[ python-dbus ]
+
+- name:		manpages
+  version:	3.0daily13.06.05
+  release:	0ubuntu1
+  fullname:	Manual pages
+  url:		https://launchpad.net/unity-scope-manpages
+  depends:	[ gtk3, man-db ]
+
+- name:		musique
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Musique
+  url:		https://launchpad.net/unity-scope-musique
+  depends:	[ python-dbus ]
+
+- name:		openclipart
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	OpenClipArt
+  url:		https://launchpad.net/unity-scope-openclipart
+  depends:	[ python-feedparser ]
+
+- name:		openweathermap
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Openweathermap
+  url:		https://launchpad.net/unity-scope-openweathermap
+
+- name:		soundcloud
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	SoundCloud
+  url:		https://launchpad.net/unity-scope-soundcloud
+
+- name:		texdoc
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Texdoc
+  url:		https://launchpad.net/unity-scope-texdoc
+
+# checkdepends: python3-dbusmock
+- name:		tomboy
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Tomboy
+  url:		https://launchpad.net/unity-scope-tomboy
+
+- name:		virtualbox
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	VirtualBox
+  url:		https://launchpad.net/unity-scope-virtualbox
+
+# python-feedparser is a build dependency?
+- name:		yahoostock
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Yahoo! Finance
+  url:		https://launchpad.net/unity-scope-yahoostock
+  depends:	[ python-feedparser ]
+
+- name:		yelp
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Help
+  url:		https://launchpad.net/unity-scope-yelp
+
+- name:		zotero
+  version:	0.1daily13.06.05
+  release:	0ubuntu1
+  fullname:	Zotero
+  url:		https://launchpad.net/unity-scope-zotero
