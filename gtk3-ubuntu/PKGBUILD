@@ -3,7 +3,7 @@
 pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu3
 pkgver=3.8.2
-pkgrel=101
+pkgrel=102
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
