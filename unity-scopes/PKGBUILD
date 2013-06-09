@@ -27,6 +27,8 @@ extrafiles=('icon_cache.install')
 source=('pkginfo.yaml'
         'genpkgbuild.py')
 
+# Do not break when sourcing the PKGBUILD file
+[ -z "${startdir}" ] && startdir="$(dirname "${BASH_SOURCE[0]}")"
 eval "$(python3 "${startdir}/genpkgbuild.py")"
 
 prepare_unity-scopes() { true; }
