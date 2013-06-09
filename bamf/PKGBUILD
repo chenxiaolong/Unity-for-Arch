@@ -4,9 +4,9 @@
 
 pkgname=bamf
 _actual_ver=0.4.0
-_extra_ver=daily13.05.02
+_extra_ver=daily13.06.07
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
@@ -21,7 +21,7 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Disable_Werror.patch')
-sha512sums=('a68d0ee5f2d26f022d6de6573a2c0c6f8428407a6074a07aeb966db3f24099c9b2d5eb2d114cdb75206b2c0766c6ba842a3d983f95214b1a93670894ae41caab'
+sha512sums=('ca113bcaa873bcc51582549725618e84c5bbb4fc2f812a3d81549d41b0e8cf4b8ccf5cbe4ba781516b0592e0b8f0214da5246f41758f2683ec3a84aaf4a2cd5e'
             'f1881b97d832d2ac3e4ad00392439023e3c562f2687d62d8dbf2d9f789dd147e1e51c0723899489c3d10c2048bda5f48f2e4f3e91b75d36810be2a74ba636625')
 
 prepare() {
@@ -55,4 +55,3 @@ package() {
 
   make DESTDIR="${pkgdir}/" install
 }
-
