@@ -14,12 +14,12 @@ url="file:///usr/share/unity/client-scopes.json"
 license=('GPL')
 groups=('unity')
 
-makedepends=('python-distutils-extra' 'python-yaml')
+makedepends=('python-distutils-extra' 'python-yaml' 'python')
 checkdepends=('python-nose')
 # unity-scope-texdoc
 makedepends+=('texlive-bin')
 # unity-scope-home
-makedepends+=('gnome-common' 'intltool' 'json-glib' 'libgee06' 'libsoup' 'vala')
+makedepends+=('dee' 'gnome-common' 'intltool' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'vala')
 # some more stuff
 makedepends+=('python-dbus')
 
