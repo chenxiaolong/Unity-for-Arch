@@ -4,9 +4,9 @@
 
 pkgname=libunity-misc
 _actual_ver=4.0.5
-_extra_ver=daily13.02.26
+_extra_ver=daily13.06.05
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=104
+pkgrel=100
 pkgdesc="Misc. differently licensed stuff for Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-misc"
@@ -17,7 +17,7 @@ groups=('unity')
 options=(!libtool)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autotools.patch')
-sha512sums=('37d3a65c5f91e06cc3a601ee223c86a3aa631d48ca2d6f32816bedff48ad4a3714cb008f836a5fe27c8eab7407cfe1acf4c151139c1e429fd93413388c55daa2'
+sha512sums=('b49308d2fc379b9990175fc7de4e49438cc483568f4693acced93dd2d344d0aaa1aecc5dca3e158b542d5a994f20454621b8fbdfa018ba76d35d805a11df7c6e'
             'f1f7059f9eb90836383a3742cb4ff701cf1187209a6e7afc23b5efe9a70f20084d4a4d8d499469de79ed0679ead1d9ff45c7b5fc8207a3ba30e624eeadd3be86')
 
 prepare() {
