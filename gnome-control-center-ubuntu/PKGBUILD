@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring6
+_ppa_rel=0ubuntu1~raring1
 _translations=20130418
-pkgver=3.8.2
-pkgrel=103
+pkgver=3.8.3
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -27,8 +27,8 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
         '0001_Rename_back_to_System_Settings.patch')
-sha512sums=('3d3199969205c62a8e6039053675965a7d2b7069cd0ddb26b5568e652227084801c024c2d9c4da80e3f733419ff5159e3e360495355be13d3348755a50deedca'
-            '4a1451572010da3e40cacda0948314913c2230b9e179d7595486b0a42db522601a40ae6f1b83976104522d800fa6081f694575aa75671e0c3b1c8e248b35ead9'
+sha512sums=('5b4738535e759607b305f6b962917155f949f64c2f18c80cf6cf13b4a18275dba703afca48f5abba46c326fe32248520080f1b838c958bc0a0df011fe07a379f'
+            '5cfb2058e8cc8cdc424b82ad5a7e1812ac5dd03794fc10b1e9cddbf657dc11844f64390484f2ac85e0dae29440ca42e27aef5d0cd5e81cb1664c7382cb250e08'
             'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc'
             '6a3e327f7a396e500ab5fda610fea2b1495b134033f57363701c4b9d7da37f1a044f632fd78c49a1dc8e7cd9f16b688c2f8726bed76f86a5d76564915a40d898')
 
