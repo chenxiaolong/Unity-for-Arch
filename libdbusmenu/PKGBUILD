@@ -4,8 +4,8 @@
 
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
-pkgver=12.10.3daily13.05.15
-pkgrel=101
+pkgver=12.10.3daily13.06.07
+pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -16,7 +16,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${pkgver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('165827aea530f4a50ce6e918f5e41e072d7d4b456d4e8f69e12e25206ec51da862cb844d95599f0c2581ddb5032657dc6aed51de71463f8da402a6bc3ba0666f'
+sha512sums=('60bb4d9741776d0721fa8f6fea0480d7c592fd2c1694fd177e51d1ec9b6d13f664981fb21d5a2678ac12c89b7bc5acebbc247866cbdeb35ba6f66de2c8fdf796'
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 prepare() {
