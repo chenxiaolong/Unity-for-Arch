@@ -87,6 +87,11 @@ while true; do
   esac
 done
 
+if [ ! -x /usr/bin/pacstrap ]; then
+  echo "arch-install-scripts is not installed!"
+  exit 1
+fi
+
 if [ -z "${PACKAGE_DIR}" ]; then
   echo "No package was provided!"
   show_help
