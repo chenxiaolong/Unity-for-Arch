@@ -6,7 +6,7 @@ pkgname=gnome-settings-daemon-ubuntu
 _ppa_rel=0ubuntu1~raring2
 _translations=20130418
 pkgver=3.8.3
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -78,6 +78,9 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+
+  # Part of gnome-settings-daemon-compat
+  rm "${pkgdir}/usr/lib/gnome-settings-daemon/gnome-fallback-mount-helper"
 }
 
 # vim:set ts=2 sw=2 et:
