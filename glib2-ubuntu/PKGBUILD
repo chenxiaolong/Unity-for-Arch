@@ -4,7 +4,7 @@
 pkgname=glib2-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=2.37.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Common C routines used by GTK+ and other libs"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -40,7 +40,7 @@ build() {
 
   autoreconf -vfi
 
-  PYTHON=python2 ./configure \
+  PYTHON=/usr/bin/python2 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib \
     --sysconfdir=/etc \
