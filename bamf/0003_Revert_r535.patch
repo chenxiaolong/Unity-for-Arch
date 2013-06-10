@@ -1,0 +1,950 @@
+Need to revert since glib 2.36 does not have G_KEY_FILE_DESKTOP_KEY_FULLNAME
+
+=== modified file 'Makefile.am'
+--- Makefile.am	2013-05-24 19:13:31 +0000
++++ Makefile.am	2013-05-02 18:08:21 +0000
+@@ -5,7 +5,8 @@
+ SUBDIRS = \
+   lib/libbamf \
+   src \
+-  tests \
++  tests/bamfdaemon \
++  tests/libbamf \
+   data \
+   doc
+ 
+
+=== modified file 'Makefile.am.coverage'
+--- Makefile.am.coverage	2013-05-31 16:43:26 +0000
++++ Makefile.am.coverage	2012-12-13 21:54:59 +0000
+@@ -7,6 +7,8 @@
+ 
+ clean-local: clean-gcno clean-coverage-html clean-coverage-gcovr
+ 
++if HAVE_GCOV
++
+ clean-gcno:
+ 	@echo Removing old coverage instrumentation
+ 	-find -name '*.gcno' -print | xargs -r rm
+@@ -14,8 +16,7 @@
+ clean-gcda:
+ 	@echo Removing old coverage results
+ 	-find -name '*.gcda' -print | xargs -r rm
+-
+-if HAVE_GCOV
++  
+ coverage-html:
+ 	-$(MAKE) $(AM_MAKEFLAGS) -k check
+ 	$(MAKE) $(AM_MAKEFLAGS) generate-coverage-html
+@@ -34,18 +35,14 @@
+ coverage-gcovr:
+ 	-$(MAKE) $(AM_MAKEFLAGS) -k check
+ 	$(MAKE) $(AM_MAKEFLAGS) generate-coverage-gcovr
+-
+-coverage-xml: coverage-gcovr
+-
++	
+ generate-coverage-gcovr:
+ 	@echo Generating coverage GCOVR report
+-	$(GCOVR) --xml -r $(top_builddir) -e "tests.*" -o $(top_builddir)/coverage.xml
++	$(GCOVR) --xml -r $(top_builddir) -o $(top_builddir)/coverage.xml
++	
++clean-coverage-gcovr: clean-gcda
++	-rm -rf $(top_builddir)/coverage.xml
+ 
+ endif # HAVE_GCOVR
+ 
+ endif # HAVE_GCOV
+-
+-clean-coverage-gcovr: clean-gcda
+-	-rm -f $(top_builddir)/coverage.xml
+-
+-clean-coverage-xml: clean-coverage-gcovr
+
+=== modified file 'configure.ac'
+--- configure.ac	2013-05-24 19:13:31 +0000
++++ configure.ac	2013-05-02 18:08:21 +0000
+@@ -168,7 +168,6 @@
+ lib/libbamf/Makefile
+ lib/libbamf/libbamf3.pc
+ src/Makefile
+-tests/Makefile
+ tests/bamfdaemon/Makefile
+ tests/libbamf/Makefile
+ data/Makefile
+
+#=== modified file 'debian/control'
+#--- debian/control	2013-05-31 16:45:50 +0000
+#+++ debian/control	2013-04-17 01:39:33 +0000
+#@@ -16,7 +16,6 @@
+#                libunity-webapps-dev (>= 2.3.3),
+#                libwnck-3-dev (>= 3.4.5),
+#                libgirepository1.0-dev,
+#-               python-libxslt1,
+#                valac,
+#                xvfb,
+# Standards-Version: 3.9.3
+
+=== modified file 'lib/libbamf/bamf-application.c'
+--- lib/libbamf/bamf-application.c	2013-05-24 18:58:18 +0000
++++ lib/libbamf/bamf-application.c	2012-12-06 16:03:14 +0000
+@@ -511,13 +511,7 @@
+       g_list_free (priv->cached_xids);
+       priv->cached_xids = NULL;
+     }
+-
+-  if (priv->cached_mimes)
+-    {
+-      g_strfreev (priv->cached_mimes);
+-      priv->cached_mimes = NULL;
+-    }
+-
++  
+   bamf_application_unset_proxy (self);
+ 
+   if (G_OBJECT_CLASS (bamf_application_parent_class)->dispose)
+@@ -600,88 +594,59 @@
+ }
+ 
+ static void
+-bamf_application_set_sticky (BamfView *view, gboolean sticky)
+-{
+-  BamfApplication *self = BAMF_APPLICATION (view);
+-
+-  if (sticky)
+-    {
+-      bamf_application_get_desktop_file (self);
+-      bamf_application_get_application_type (self);
+-
+-      /* When setting the application sticky, we need to cache the relevant values */
+-      if (!self->priv->cached_mimes)
+-        {
+-          gchar **tmp_mimes = bamf_application_get_supported_mime_types (self);
+-          g_strfreev (tmp_mimes);
+-        }
+-
+-      gchar *tmp;
+-      tmp = bamf_view_get_icon (view);
+-      g_free (tmp);
+-
+-      tmp = bamf_view_get_name (view);
+-      g_free (tmp);
+-    }
+-}
+-
+-static void
+-bamf_application_load_data_from_file (BamfApplication *self, GKeyFile * keyfile)
++bamf_application_load_data_from_file (BamfApplication *self)
+ {
+   GDesktopAppInfo *desktop_info;
+   GIcon *gicon;
+-  char *fullname;
+   char *name;
+   char *icon;
++  GKeyFile * keyfile;
++  GError *error;
+ 
+-  g_return_if_fail (keyfile);
++  keyfile = g_key_file_new();
++  if (!g_key_file_load_from_file(keyfile, self->priv->desktop_file, G_KEY_FILE_NONE, NULL)) {
++      g_key_file_free(keyfile);
++    return;
++  }
+ 
+   desktop_info = g_desktop_app_info_new_from_keyfile (keyfile);
+-  g_return_if_fail (G_IS_DESKTOP_APP_INFO (desktop_info));
++
++  if (!desktop_info)
++    return;
+ 
+   name = g_strdup (g_app_info_get_name (G_APP_INFO (desktop_info)));
+ 
+-  /* Grab the better name if its available */
+-  fullname = g_key_file_get_locale_string (keyfile, G_KEY_FILE_DESKTOP_GROUP,
+-                                           G_KEY_FILE_DESKTOP_KEY_FULLNAME, NULL, NULL);
+-
+-  if (fullname && fullname[0] == '\0')
+-    {
+-      g_free (fullname);
+-      fullname = NULL;
+-    }
+-
+-  if (fullname)
+-    {
+-      g_free (name);
+-      name = fullname;
+-    }
++  if (g_key_file_has_key(keyfile, G_KEY_FILE_DESKTOP_GROUP, "X-GNOME-FullName", NULL))
++                {
++                  /* Grab the better name if its available */
++                  gchar *fullname = NULL;
++                  error = NULL;
++                  fullname = g_key_file_get_locale_string (keyfile, G_KEY_FILE_DESKTOP_GROUP, "X-GNOME-FullName", NULL, &error);
++                  if (error != NULL)
++                    {
++                      g_error_free (error);
++                      if (fullname)
++                        g_free (fullname);
++                    }
++                  else
++                    {
++                      g_free (name);
++                      name = fullname;
++                    }
++                }
+ 
+   _bamf_view_set_name (BAMF_VIEW (self), name);
+ 
+   gicon = g_app_info_get_icon (G_APP_INFO (desktop_info));
+-  icon = gicon ? g_icon_to_string (gicon) : NULL;
++  icon = g_icon_to_string (gicon);
+ 
+   if (!icon)
+     icon = g_strdup ("application-default-icon");
+ 
+   _bamf_view_set_icon (BAMF_VIEW (self), icon);
+-
+-  self->priv->cached_mimes = g_key_file_get_string_list (keyfile, G_KEY_FILE_DESKTOP_GROUP,
+-                                                         G_KEY_FILE_DESKTOP_KEY_MIME_TYPE, NULL, NULL);
+-
+-  if (g_strcmp0 (g_app_info_get_executable (G_APP_INFO (desktop_info)), "unity-webapps-runner") == 0)
+-    {
+-      self->priv->application_type = g_strdup ("webapp");
+-    }
+-  else
+-    {
+-      self->priv->application_type = g_strdup ("system");
+-    }
+-
+   g_free (icon);
++  g_key_file_free (keyfile);
+   g_free (name);
+-  g_key_file_free (keyfile);
+   g_object_unref (desktop_info);
+ }
+ 
+@@ -693,7 +658,6 @@
+ 
+   obj_class->dispose     = bamf_application_dispose;
+   view_class->set_path   = bamf_application_set_path;
+-  view_class->set_sticky = bamf_application_set_sticky;
+   view_class->click_behavior = bamf_application_get_click_suggestion;
+ 
+   g_type_class_add_private (obj_class, sizeof (BamfApplicationPrivate));
+@@ -754,35 +718,29 @@
+ {
+   BamfApplication *self;
+   GKeyFile        *desktop_keyfile;
++  GKeyFileFlags    flags;
+   gchar           *type;
+   gboolean         supported = FALSE;
+ 
+-  g_return_val_if_fail (favorite_path, NULL);
+-
+   // check that we support this kind of desktop file
+   desktop_keyfile = g_key_file_new ();
+-
+-  if (g_key_file_load_from_file (desktop_keyfile, favorite_path, G_KEY_FILE_NONE, NULL))
++  flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
++  if (g_key_file_load_from_file (desktop_keyfile, favorite_path, flags, NULL))
+     {
+-      type = g_key_file_get_string (desktop_keyfile, G_KEY_FILE_DESKTOP_GROUP,
+-                                    G_KEY_FILE_DESKTOP_KEY_TYPE, NULL);
+-
+-      if (g_strcmp0 (type, G_KEY_FILE_DESKTOP_TYPE_APPLICATION) == 0)
++      type = g_key_file_get_string (desktop_keyfile, "Desktop Entry", "Type", NULL);
++      if (g_strcmp0 (type, "Application") == 0)
+         supported = TRUE;
+ 
++      g_key_file_free (desktop_keyfile);
+       g_free (type);
+     }
+-
+   if (!supported)
+-    {
+-      g_key_file_free (desktop_keyfile);
+-      return NULL;
+-    }
++    return NULL;
+ 
+   self = g_object_new (BAMF_TYPE_APPLICATION, NULL);
+ 
+   self->priv->desktop_file = g_strdup (favorite_path);
+-  bamf_application_load_data_from_file (self, desktop_keyfile);
++  bamf_application_load_data_from_file (self);
+ 
+   return self;
+ }
+
+=== modified file 'lib/libbamf/bamf-view.c'
+--- lib/libbamf/bamf-view.c	2013-05-24 18:57:24 +0000
++++ lib/libbamf/bamf-view.c	2012-12-18 01:53:22 +0000
+@@ -377,23 +377,20 @@
+   return view->priv->sticky;
+ }
+ 
+-void
++void 
+ bamf_view_set_sticky (BamfView *view, gboolean value)
+ {
+   g_return_if_fail (BAMF_IS_VIEW (view));
+-
++  
+   if (value == view->priv->sticky)
+     return;
+ 
+   view->priv->sticky = value;
+-
++  
+   if (value)
+     g_object_ref_sink (view);
+   else
+     g_object_unref (view);
+-
+-  if (BAMF_VIEW_GET_CLASS (view)->set_sticky)
+-    return BAMF_VIEW_GET_CLASS (view)->set_sticky (view, value);
+ }
+ 
+ /**
+
+=== modified file 'lib/libbamf/bamf-view.h'
+--- lib/libbamf/bamf-view.h	2013-05-24 19:13:31 +0000
++++ lib/libbamf/bamf-view.h	2012-10-08 13:12:08 +0000
+@@ -83,7 +83,6 @@
+   gchar            * (*get_icon)            (BamfView *view);
+   const gchar      * (*view_type)           (BamfView *view);
+   void               (*set_path)            (BamfView *view, const gchar *path);
+-  void               (*set_sticky)          (BamfView *view, gboolean value);
+   BamfClickBehavior  (*click_behavior)      (BamfView *view);
+   
+   
+
+=== modified file 'src/Makefile.am'
+--- src/Makefile.am	2013-05-25 18:36:19 +0000
++++ src/Makefile.am	2012-12-18 01:53:22 +0000
+@@ -25,6 +25,7 @@
+ 		org.ayatana.bamf.xml \
+ 		org.ayatana.bamf.view.xml \
+ 		org.ayatana.bamf.browser.xml \
++		com.canonical.StatusNotifierApprover.xml \
+ 		$(NULL)
+ 
+ bamfdaemon_built_sources = \
+
+=== modified file 'src/bamf-application.c'
+--- src/bamf-application.c	2013-05-24 17:00:19 +0000
++++ src/bamf-application.c	2013-02-05 03:17:56 +0000
+@@ -100,25 +100,24 @@
+ static gchar **
+ bamf_application_default_get_supported_mime_types (BamfApplication *application)
+ {
+-  const char *desktop_file;
+-  char** mimes;
+-
+-  desktop_file = bamf_application_get_desktop_file (application);
++  const char *desktop_file = bamf_application_get_desktop_file (application);
+ 
+   if (!desktop_file)
+     return NULL;
+ 
+   GKeyFile* key_file = g_key_file_new ();
+-
+-  if (!g_key_file_load_from_file (key_file, desktop_file, (GKeyFileFlags) 0, NULL))
++  GError *error = NULL;
++
++  g_key_file_load_from_file (key_file, desktop_file, (GKeyFileFlags) 0, &error);
++
++  if (error)
+     {
+       g_key_file_free (key_file);
++      g_error_free (error);
+       return NULL;
+     }
+ 
+-  mimes = g_key_file_get_string_list (key_file, G_KEY_FILE_DESKTOP_GROUP,
+-                                      G_KEY_FILE_DESKTOP_KEY_MIME_TYPE, NULL, NULL);
+-
++  char** mimes = g_key_file_get_string_list (key_file, "Desktop Entry", "MimeType", NULL, NULL);
+   g_signal_emit (application, application_signals[SUPPORTED_MIMES_CHANGED], 0, mimes);
+ 
+   g_key_file_free (key_file);
+
+=== removed file 'tests/Makefile.am'
+--- tests/Makefile.am	2013-05-31 16:45:50 +0000
++++ tests/Makefile.am	1970-01-01 00:00:00 +0000
+@@ -1,10 +0,0 @@
+-SUBDIRS = \
+-	bamfdaemon \
+-	libbamf \
+-	$(NULL)
+-
+-EXTRA_DIST = \
+-	data \
+-	run-xvfb.sh \
+-	gtester2xunit.py \
+-	$(NULL)
+
+=== modified file 'tests/Makefile.am.gtests'
+--- tests/Makefile.am.gtests	2013-05-31 16:45:50 +0000
++++ tests/Makefile.am.gtests	2013-01-08 23:14:23 +0000
+@@ -3,11 +3,9 @@
+ #
+ # Author: Marco Trevisan <marco@ubuntu.com>
+ 
+-GTESTER2XUNIT_RUN = $(abs_top_srcdir)/tests/gtester2xunit.py
+-
+ # Run tests as part of make check
+-
+ if ENABLE_HEADLESS_TESTS
++check-local: test-headless
+ 
+ XVFB_RUN = $(abs_top_srcdir)/tests/run-xvfb.sh
+ LOG_PATH = headless-logs
+@@ -23,21 +21,17 @@
+ 	\
+ 	$(DBUS_LAUNCH) > $(LOG_PATH)/sessionbus.sh; \
+ 	source $(LOG_PATH)/sessionbus.sh; \
++	sleep 3; \
+ 	\
+-	make $(AM_MAKEFLAGS) -k test
+-
+-check-local: test-headless
+-
+-else # END HEADLESS TESTS
+-
++	make test;
++# END HEADLESS TESTS
++else
+ check-local: test
+-
+ endif
+ 
+ 
+ test:
+-	@gtester -k --verbose -o=$(TEST_BINARY)-results.xml ./$(TEST_BINARY); \
+-	$(GTESTER2XUNIT_RUN) $(TEST_BINARY)-results.xml
++	@gtester -k --verbose -o=$(TEST_BINARY)-results.xml ./$(TEST_BINARY)
+ 
+ .PHONY: check-report full-report
+ check-report: $(TEST_BINARY)
+@@ -54,4 +48,4 @@
+ 	      > $(TEST_BINARY)-results.html )
+ 
+ clean-generic:
+-	rm -f $(TEST_BINARY)-results*.xml $(TEST_BINARY)-results.html
++	rm -f $(TEST_BINARY)-results.xml $(TEST_BINARY)-results.html
+
+=== modified file 'tests/bamfdaemon/Makefile.am'
+--- tests/bamfdaemon/Makefile.am	2013-05-31 00:43:24 +0000
++++ tests/bamfdaemon/Makefile.am	2012-12-18 01:53:22 +0000
+@@ -78,7 +78,6 @@
+   -I$(top_builddir)/src \
+   -DWNCK_I_KNOW_THIS_IS_UNSTABLE \
+   -DTESTDIR=\""$(abs_top_srcdir)/tests"\" \
+-  $(COVERAGE_CFLAGS) \
+   $(GCC_FLAGS) \
+   $(GTK_CFLAGS) \
+   $(GLIB_CFLAGS) \
+@@ -97,10 +96,10 @@
+ 
+ test_bamf_LDFLAGS = \
+ 		-Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions \
+-		$(COVERAGE_LDFLAGS)
+ 		$(NULL)
+ 
+ EXTRA_DIST = \
++		data \
+ 		$(bamf_test_webapps_sources) \
+ 		$(NULL)
+ 
+
+=== renamed directory 'tests/data' => 'tests/bamfdaemon/data'
+=== modified file 'tests/bamfdaemon/test-application.c'
+--- tests/bamfdaemon/test-application.c	2013-05-30 22:01:43 +0000
++++ tests/bamfdaemon/test-application.c	2013-02-05 03:20:57 +0000
+@@ -78,11 +78,13 @@
+   g_assert (BAMF_IS_APPLICATION (application));
+ 
+   g_object_unref (application);
++  g_assert (!BAMF_IS_APPLICATION (application));
+ 
+   application = bamf_application_new_from_desktop_file (DESKTOP_FILE);
+   g_assert (BAMF_IS_APPLICATION (application));
+ 
+   g_object_unref (application);
++  g_assert (!BAMF_IS_APPLICATION (application));
+ }
+ 
+ static void
+@@ -109,7 +111,7 @@
+ test_desktop_no_icon (void)
+ {
+   BamfApplication    *application;
+-  const char no_icon_desktop[] = TESTDIR"/data/no-icon.desktop";
++  const char no_icon_desktop[] = TESTDIR"/bamfdaemon/data/no-icon.desktop";
+ 
+   application = bamf_application_new_from_desktop_file (no_icon_desktop);
+   g_assert (g_strcmp0 (bamf_application_get_desktop_file (application), no_icon_desktop) == 0);
+@@ -122,7 +124,7 @@
+ test_get_mime_types (void)
+ {
+   BamfApplication *application;
+-  const char* mime_types_desktop = TESTDIR"/data/mime-types.desktop";
++  const char* mime_types_desktop = TESTDIR"/bamfdaemon/data/mime-types.desktop";
+ 
+   application = bamf_application_new_from_desktop_file (mime_types_desktop);
+   g_assert_cmpstr (bamf_application_get_desktop_file (application), ==, mime_types_desktop);
+@@ -137,7 +139,6 @@
+   g_assert_cmpstr (mimes[4], ==, "text/css");
+   g_assert_cmpstr (mimes[5], ==, "text/x-diff");
+   g_assert_cmpstr (mimes[6], ==, "application/xml");
+-  g_assert_cmpstr (mimes[7], ==, NULL);
+ 
+   g_strfreev (mimes);
+   g_object_unref (application);
+@@ -147,7 +148,7 @@
+ test_get_mime_types_none (void)
+ {
+   BamfApplication *application;
+-  const char* mime_types_desktop = TESTDIR"/data/test-bamf-app.desktop";
++  const char* mime_types_desktop = TESTDIR"/bamfdaemon/data/test-bamf-app.desktop";
+ 
+   application = bamf_application_new_from_desktop_file (mime_types_desktop);
+   g_assert_cmpstr (bamf_application_get_desktop_file (application), ==, mime_types_desktop);
+
+=== modified file 'tests/bamfdaemon/test-bamf.c'
+--- tests/bamfdaemon/test-bamf.c	2013-05-24 17:11:00 +0000
++++ tests/bamfdaemon/test-bamf.c	2013-03-28 21:51:16 +0000
+@@ -44,7 +44,7 @@
+   test_window_create_suite ();
+   test_application_create_suite (connection);
+ 
+-  g_setenv ("PATH", TESTDIR"/data/bin", TRUE);
++  g_setenv("PATH", TESTDIR"/bamfdaemon/data/bin", TRUE);
+   result = g_test_run ();
+ 
+   g_main_loop_quit (loop);
+
+=== modified file 'tests/bamfdaemon/test-matcher.c'
+--- tests/bamfdaemon/test-matcher.c	2013-05-24 17:11:00 +0000
++++ tests/bamfdaemon/test-matcher.c	2013-04-17 01:32:20 +0000
+@@ -45,7 +45,7 @@
+ static GDBusConnection *gdbus_connection = NULL;
+ 
+ #define DOMAIN "/Matcher"
+-#define DATA_DIR TESTDIR "/data"
++#define DATA_DIR TESTDIR "/bamfdaemon/data"
+ #define TEST_BAMF_APP_DESKTOP DATA_DIR "/test-bamf-app.desktop"
+ 
+ void
+
+=== modified file 'tests/bamfdaemon/test-view.c'
+--- tests/bamfdaemon/test-view.c	2013-05-30 22:01:43 +0000
++++ tests/bamfdaemon/test-view.c	2013-02-05 03:20:57 +0000
+@@ -73,6 +73,7 @@
+   g_assert (BAMF_IS_VIEW (view));
+ 
+   g_object_unref (G_OBJECT (view));
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static void
+@@ -89,6 +90,7 @@
+   g_assert (g_strcmp0 (bamf_view_get_name (view), "SomeName") == 0);
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static void
+@@ -106,6 +108,7 @@
+   g_assert (!bamf_view_is_active (view));
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static void
+@@ -123,6 +126,7 @@
+   g_assert (!bamf_view_is_running (view));
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static void
+@@ -139,6 +143,7 @@
+   g_assert (g_strcmp0 (path, bamf_view_get_path (view)) == 0);
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static void
+@@ -330,6 +335,7 @@
+   g_assert (!active_event_result);
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ guint active_event_calls;
+@@ -407,6 +413,7 @@
+   g_assert (!running_event_result);
+ 
+   g_object_unref (view);
++  g_assert (!BAMF_IS_VIEW (view));
+ }
+ 
+ static gboolean child_added_event_fired;
+
+=== modified file 'tests/bamfdaemon/test-window.c'
+--- tests/bamfdaemon/test-window.c	2013-05-30 22:01:43 +0000
++++ tests/bamfdaemon/test-window.c	2013-02-05 03:20:57 +0000
+@@ -67,6 +67,7 @@
+   
+   g_object_unref (window);
+   
++  g_assert (!BAMF_IS_WINDOW (window));
+   
+   g_object_unref (test);
+ }
+@@ -342,4 +343,4 @@
+   
+   g_object_unref (window);
+   g_object_unref (test);
+-}
++}
+\ No newline at end of file
+
+=== removed file 'tests/data/bin/mime-test-text-editor'
+--- tests/data/bin/mime-test-text-editor	2013-05-24 17:59:23 +0000
++++ tests/data/bin/mime-test-text-editor	1970-01-01 00:00:00 +0000
+@@ -1,3 +0,0 @@
+-#!/bin/sh
+-
+-echo "Just a fake program"
+
+=== removed file 'tests/data/bin/unity-webapps-runner'
+--- tests/data/bin/unity-webapps-runner	2013-05-24 17:59:23 +0000
++++ tests/data/bin/unity-webapps-runner	1970-01-01 00:00:00 +0000
+@@ -1,3 +0,0 @@
+-#!/bin/sh
+-
+-echo "Just a fake program"
+
+=== removed file 'tests/data/full-name.desktop'
+--- tests/data/full-name.desktop	2013-05-24 17:59:23 +0000
++++ tests/data/full-name.desktop	1970-01-01 00:00:00 +0000
+@@ -1,7 +0,0 @@
+-[Desktop Entry]
+-Type=Application
+-Name=FullName
+-X-GNOME-FullName=Full Application Name
+-Exec=gedit
+-Terminal=false
+-Icon=full-name-icon
+\ No newline at end of file
+
+=== removed file 'tests/data/invalid-type.desktop'
+--- tests/data/invalid-type.desktop	2013-05-24 17:59:23 +0000
++++ tests/data/invalid-type.desktop	1970-01-01 00:00:00 +0000
+@@ -1,5 +0,0 @@
+-[Desktop Entry]
+-Name=Invalid Type
+-Exec=gedit
+-Terminal=false
+-Type=FooType
+
+=== removed file 'tests/data/ubuntu-web-app.desktop'
+--- tests/data/ubuntu-web-app.desktop	2013-05-24 17:59:23 +0000
++++ tests/data/ubuntu-web-app.desktop	1970-01-01 00:00:00 +0000
+@@ -1,5 +0,0 @@
+-[Desktop Entry]
+-Name=Ubuntu
+-Type=Application
+-Icon=ubuntu-icon
+-Exec=unity-webapps-runner -n 'AbCdEfGh=' -d 'ubuntu.com' %u
+
+=== removed file 'tests/gtester2xunit.py'
+--- tests/gtester2xunit.py	2013-05-31 16:45:50 +0000
++++ tests/gtester2xunit.py	1970-01-01 00:00:00 +0000
+@@ -1,56 +0,0 @@
+-#! /usr/bin/python
+-from argparse import ArgumentParser
+-import libxslt
+-import libxml2
+-import sys
+-import os
+-
+-XSL_TRANSFORM='/usr/share/gtester2xunit/gtester.xsl'
+-#XSL_TRANSFORM='./gtester.xsl'
+-
+-
+-def transform_file(input_filename, output_filename, xsl_file):
+-    gtester = libxml2.parseFile(xsl_file)
+-    style = libxslt.parseStylesheetDoc(gtester)
+-    doc = libxml2.parseFile(input_filename)
+-    result = style.applyStylesheet(doc, None)
+-    result.saveFormatFile(filename=output_filename, format=True)
+-
+-
+-def get_output_filename(input_filename):
+-    filename, extension = os.path.splitext(input_filename)
+-    return '{filename}-xunit{extension}'.format(filename=filename,
+-                                                 extension=extension)
+-
+-def main():
+-    parser = ArgumentParser(
+-            description="Simple utility that converts xml output of " +
+-                        "gtester to xunit output for jenkins")
+-    parser.add_argument('-o', '--output', 
+-            help="Write output to specified file instead of default")
+-    parser.add_argument('-x', '--xsl', 
+-            help="xsl file that should be used for the transformation")
+-    parser.add_argument('-i', '--in-place', 
+-            help="Write the ouput to the original file (i.e. replace " +
+-            "the original xml)",
+-            action='store_true',
+-            default=False)
+-    parser.add_argument('files', metavar='FILE', type=str, nargs='+',
+-            help="file(s) to transform to xunit format")
+-    args = vars(parser.parse_args())
+-    for input_filename in args['files']:
+-        if not args['output']:
+-            if args['in_place']:
+-                output_filename = input_filename
+-            else:
+-                output_filename = get_output_filename(input_filename)
+-        else:
+-            output_filename = args['output']
+-        if not args['xsl']:
+-            xsl = XSL_TRANSFORM
+-        else:
+-            xsl = args['xsl']
+-        transform_file(input_filename, output_filename, xsl)
+-    
+-sys.exit(main())
+-# vim: set syntex=python:
+
+=== modified file 'tests/libbamf/Makefile.am'
+--- tests/libbamf/Makefile.am	2013-05-31 00:43:24 +0000
++++ tests/libbamf/Makefile.am	2012-12-19 19:43:11 +0000
+@@ -3,26 +3,22 @@
+ 
+ test_libbamf_SOURCES = \
+   test-libbamf.c \
+-  test-application.c \
+   test-matcher.c
+ 
+ test_libbamf_CPPFLAGS = \
+   -I$(top_srcdir) \
+   -I$(top_srcdir)/lib \
++  -I$(top_srcdir)/src \
+   -I$(top_srcdir)/lib/libbamf \
+   -I$(top_builddir)/lib/libbamf \
+-  -DTESTDIR=\""$(abs_top_srcdir)/tests"\" \
+-  $(COVERAGE_CFLAGS) \
++  -DTESTDIR=\""$(abs_top_srcdir)/tests/libbamf"\" \
+   $(GCC_FLAGS) \
+   $(DBUS_CFLAGS) \
+-  $(GTK_CFLAGS) \
+   $(GLIB_CFLAGS)
+ 
+ test_libbamf_LDADD = \
+   $(top_builddir)/lib/libbamf/libbamf$(LIBBAMF_VER).la \
+-  $(COVERAGE_LDFLAGS) \
+   $(GLIB_LIBS) \
+-  $(GTK_LIBS) \
+   $(DBUS_LIBS)
+ 
+ TEST_BINARY = test-libbamf
+
+=== removed file 'tests/libbamf/test-application.c'
+--- tests/libbamf/test-application.c	2013-05-30 22:04:13 +0000
++++ tests/libbamf/test-application.c	1970-01-01 00:00:00 +0000
+@@ -1,149 +0,0 @@
+-/*
+- * Copyright (C) 2013 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Marco Trevisan (Treviño) <marco.trevisan@canonical.com>
+- *
+- */
+-
+-#include <stdlib.h>
+-#include <glib.h>
+-#include <glib-object.h>
+-#include "bamf-application.h"
+-
+-#define DATA_DIR TESTDIR "/data"
+-
+-BamfApplication * bamf_application_new_favorite (const char *favorite_path);
+-
+-static void
+-test_allocation (void)
+-{
+-  BamfApplication *application;
+-
+-  /* Check it allocates */
+-  application = g_object_new (BAMF_TYPE_APPLICATION, NULL);
+-  g_assert (BAMF_IS_APPLICATION (application));
+-
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_invalid_desktop (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (DATA_DIR"/invalid-type.desktop");
+-  g_assert (!BAMF_IS_APPLICATION (application));
+-
+-  application = bamf_application_new_favorite (DATA_DIR"/not-existing-file.desktop");
+-  g_assert (!BAMF_IS_APPLICATION (application));
+-}
+-
+-static void
+-test_favorite_valid_desktop_file_system (void)
+-{
+-  BamfApplication *application;
+-  const gchar *desktop_file = DATA_DIR"/gnome-control-center.desktop";
+-  application = bamf_application_new_favorite (desktop_file);
+-
+-  g_assert_cmpstr (bamf_application_get_desktop_file (application), ==, desktop_file);
+-  g_assert_cmpstr (bamf_view_get_name (BAMF_VIEW (application)), ==, "System Settings");
+-  g_assert_cmpstr (bamf_view_get_icon (BAMF_VIEW (application)), ==, "preferences-system");
+-  g_assert_cmpstr (bamf_application_get_application_type (application), ==, "system");
+-
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_full_name (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (DATA_DIR"/full-name.desktop");
+-  g_assert_cmpstr (bamf_view_get_name (BAMF_VIEW (application)), ==, "Full Application Name");
+-
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_no_icon (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (DATA_DIR"/no-icon.desktop");
+-  g_assert_cmpstr (bamf_view_get_icon (BAMF_VIEW (application)), ==, "application-default-icon");
+-
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_valid_desktop_file_webapp (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (DATA_DIR"/ubuntu-web-app.desktop");
+-  g_assert_cmpstr (bamf_application_get_application_type (application), ==, "webapp");
+-
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_mime_type_filled (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (TESTDIR"/data/mime-types.desktop");
+-
+-  gchar** mimes = bamf_application_get_supported_mime_types (application);
+-
+-  g_assert_cmpuint (g_strv_length (mimes), ==, 7);
+-  g_assert_cmpstr (mimes[0], ==, "text/plain");
+-  g_assert_cmpstr (mimes[1], ==, "text/x-chdr");
+-  g_assert_cmpstr (mimes[2], ==, "text/x-csrc");
+-  g_assert_cmpstr (mimes[3], ==, "text/html");
+-  g_assert_cmpstr (mimes[4], ==, "text/css");
+-  g_assert_cmpstr (mimes[5], ==, "text/x-diff");
+-  g_assert_cmpstr (mimes[6], ==, "application/xml");
+-  g_assert_cmpstr (mimes[7], ==, NULL);
+-
+-  g_strfreev (mimes);
+-  g_object_unref (application);
+-}
+-
+-static void
+-test_favorite_mime_type_empty (void)
+-{
+-  BamfApplication *application;
+-
+-  application = bamf_application_new_favorite (TESTDIR"/data/test-bamf-app.desktop");
+-  gchar** mimes = bamf_application_get_supported_mime_types (application);
+-  g_assert (!mimes);
+-
+-  g_object_unref (application);
+-}
+-
+-void
+-test_application_create_suite (void)
+-{
+-#define DOMAIN "/Application"
+-
+-  g_test_add_func (DOMAIN"/Allocation", test_allocation);
+-  g_test_add_func (DOMAIN"/Favorite/DesktopFile/Invalid", test_favorite_invalid_desktop);
+-  g_test_add_func (DOMAIN"/Favorite/DesktopFile/Valid/System", test_favorite_valid_desktop_file_system);
+-  g_test_add_func (DOMAIN"/Favorite/FullName", test_favorite_full_name);
+-  g_test_add_func (DOMAIN"/Favorite/NoIcon", test_favorite_no_icon);
+-  g_test_add_func (DOMAIN"/Favorite/MimeType/Filled", test_favorite_mime_type_filled);
+-  g_test_add_func (DOMAIN"/Favorite/MimeType/Empty", test_favorite_mime_type_empty);
+-  g_test_add_func (DOMAIN"/Favorite/DesktopFile/Valid/WebApp", test_favorite_valid_desktop_file_webapp);
+-}
+
+=== modified file 'tests/libbamf/test-libbamf.c'
+--- tests/libbamf/test-libbamf.c	2013-05-30 22:45:50 +0000
++++ tests/libbamf/test-libbamf.c	2012-12-19 19:43:11 +0000
+@@ -18,14 +18,12 @@
+ #include <stdio.h>
+ #include <glib.h>
+ 
+-#include <gtk/gtk.h>
+ #include <dbus/dbus-glib.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
+ 
+ void test_matcher_create_suite (void);
+-void test_application_create_suite (void);
+ 
+ gint
+ main (gint argc, gchar *argv[])
+@@ -33,14 +31,11 @@
+ #if !GLIB_CHECK_VERSION(2, 35, 0)
+   g_type_init ();
+ #endif
+-  gtk_init (&argc, &argv);
+   g_test_init (&argc, &argv, NULL);
+ 
+   dbus_g_thread_init ();
+ 
+   test_matcher_create_suite ();
+-  test_application_create_suite ();
+ 
+-  g_setenv ("PATH", TESTDIR"/data/bin", TRUE);
+   return g_test_run ();
+ }
+
