@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -79,7 +79,7 @@
+ AC_CHECK_FUNCS([memset munmap strcasecmp strdup])
+ AC_CHECK_LIBM
+ 
+-GIO_REQUIRED_VERSION=2.37.0
++GIO_REQUIRED_VERSION=2.36.0
+ GTK_REQUIRED_VERSION=3.8.2
+ 
+ PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= $GTK_REQUIRED_VERSION
