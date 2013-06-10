@@ -55,15 +55,15 @@ check() {
   #make check || :
 }
 
-package_glib2() {
+package() {
   cd "${srcdir}/glib-${pkgver}"
   make completiondir=/usr/share/bash-completion/completions/ \
-       DESTDIR="$pkgdir" install
+       DESTDIR="${pkgdir}" install
 
   for i in "${pkgdir}/usr/share/bash-completion/completions/"*; do
     chmod -x "${i}"
   done
 
   # Our gdb does not ship the required python modules, so remove it
-  rm -rf "$pkgdir/usr/share/gdb/"
+  rm -rf "${pkgdir}/usr/share/gdb/"
 }
