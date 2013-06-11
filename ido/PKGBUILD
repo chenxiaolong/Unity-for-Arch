@@ -6,28 +6,20 @@ pkgname=ido
 _actual_ver=13.10.0
 _extra_ver=daily13.06.07
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"
 license=('LGPL')
-depends=('gtk3-ubuntu')
+depends=('gtk3-ubuntu' 'glib2-ubuntu')
 makedepends=('gobject-introspection' 'gtk-doc' 'vala' 'xorg-util-macros')
 #checkdepends=('gtest' 'xorg-gtest' 'evemu')
 groups=('unity')
 options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_GLib_2.36.patch')
-sha512sums=('65a28c1f2f2db37be171c656b45140ba050935a43565abbb98aa8148c255a1fd8e8b0c9190fd315b83ec82edc83a8ef647373745e4814015d98f7369d18bbc24'
-            '3d53ebb9b7fc7f6cfca7e2a8a0ae9c857a50730a77e1defbc830ec65286eaa32a01109be856718c9b57f000fb01ef64a99cead78bea77cf17cf4b8ce239bb076')
-
-prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  patch -p1 -i "${srcdir}/0001_GLib_2.36.patch"
-}
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('65a28c1f2f2db37be171c656b45140ba050935a43565abbb98aa8148c255a1fd8e8b0c9190fd315b83ec82edc83a8ef647373745e4814015d98f7369d18bbc24')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"

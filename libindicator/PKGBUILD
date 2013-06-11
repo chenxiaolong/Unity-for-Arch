@@ -7,28 +7,17 @@ pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
 _extra_ver=daily13.06.07
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
 license=('GPL')
-makedepends=('gtk2-ubuntu' 'gtk3-ubuntu')
+makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'glib2-ubuntu')
 checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Revert_r490.patch'
-        '0002_Revert_r489.patch')
-sha512sums=('4db6de4d135b8631a00b115b9a5568dcc382b2214ad590180a8dea14630b3ebaf89f01ebadebfbe8183a5f9069e23317ac61470dde60411ce0707dbe7bfc8dda'
-            '2684c430b72948bf00cc37b00329d41521afa1037ed87d08972843ab21fff2b59b7e1dde10a3c8f1f03ea9891681b2ee1273c1ca9f329dc7e984627b14a058be'
-            '988366faad27e055bc582caa12a65eb90dac6cab6d8020abcca76a072cde543e96ef8afdbf478be8308a14e9dddc65e808b81d6cb2c4de67ef2aaac6456bdf28')
-
-prepare() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
-
-  patch -p0 -i "${srcdir}/0001_Revert_r490.patch"
-  patch -p0 -i "${srcdir}/0002_Revert_r489.patch"
-}
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('4db6de4d135b8631a00b115b9a5568dcc382b2214ad590180a8dea14630b3ebaf89f01ebadebfbe8183a5f9069e23317ac61470dde60411ce0707dbe7bfc8dda')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
@@ -62,7 +51,7 @@ check() {
 
 package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2-ubuntu')
+  depends=('gtk2-ubuntu' 'glib2-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 
@@ -72,7 +61,7 @@ package_libindicator() {
 
 package_libindicator3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=('gtk3-ubuntu')
+  depends=('gtk3-ubuntu' 'glib2-ubuntu')
   options=(${options[@]} '!emptydirs')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
