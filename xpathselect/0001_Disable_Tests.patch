@@ -1,0 +1,9 @@
+diff -Nru a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2013-06-05 05:01:30.000000000 -0400
++++ b/CMakeLists.txt	2013-06-10 21:23:35.540206898 -0400
+@@ -19,5 +19,4 @@
+ INCLUDE(FindPkgConfig)
+ 
+ add_subdirectory(lib)
+-add_subdirectory(test)
+ 
