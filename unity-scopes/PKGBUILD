@@ -1,71 +1,738 @@
-# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-
-# When updating, check if any packages are missing when compared to
-# /usr/share/unity/client-scopes.json
-
+### THIS PKGBUILD IS AUTOMATICALLY GENERATED. DO NOT EDIT!
+### EDIT pkginfo.yaml AND RUN genpkgbuild.py TO REGENERATE.
 pkgname=('unity-scopes')
 pkgbase=unity-scopes
 pkgver=1.0
 pkgrel=1
-pkgdesc="Metapackage for all the Unity Smart Scopes"
 arch=('i686' 'x86_64')
-url="file:///usr/share/unity/client-scopes.json"
-# Packaging is under the GPLv3+ license
-license=('GPL')
-groups=('unity')
-
-makedepends=('python-distutils-extra' 'python-yaml' 'python')
+makedepends=('python-distutils-extra' 'python-dbus' 'texlive-bin' 'dee' 'gnome-common' 'intltool' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'vala')
 checkdepends=('python-nose')
-# unity-scope-texdoc
-makedepends+=('texlive-bin')
-# unity-scope-home
-makedepends+=('dee' 'gnome-common' 'intltool' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'vala')
-# some more stuff
-makedepends+=('python-dbus')
-
 extrafiles=('icon_cache.install')
-source=('pkginfo.yaml'
-        'genpkgbuild.py')
-
-# Do not break when sourcing the PKGBUILD file
-[ -z "${startdir}" ] && startdir="$(dirname "${BASH_SOURCE[0]}")"
-eval "$(python3 "${startdir}/genpkgbuild.py")"
+source=('pkginfo.yaml' 'genpkgbuild.py')
+pkgname+=('unity-scope-home')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_6.8.0daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_6.8.0daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-home() {
+  cd "${srcdir}/unity-scope-home-6.8.0daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-home_6.8.0daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-home() {
+  cd "${srcdir}/unity-scope-home-6.8.0daily13.06.05"
+autoreconf -vfi
+intltoolize -f
+./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
+make
+}
+check_unity-scope-home() {
+  cd "${srcdir}/unity-scope-home-6.8.0daily13.06.05"
+make check || :
+}
+package_unity-scope-home() {
+  pkgver=6.8.0daily13.06.05.0ubuntu1
+  pkgdesc='Home Scope for Unity'
+  url='https://launchpad.net/unity-scope-home'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'lsb-release')
+  cd "${srcdir}/unity-scope-home-6.8.0daily13.06.05"
+make DESTDIR="${pkgdir}" install
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//home"
+}
+pkgname+=('unity-scope-audacious')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-audacious_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-audacious_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-audacious() {
+  cd "${srcdir}/unity-scope-audacious-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-audacious_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-audacious() {
+  cd "${srcdir}/unity-scope-audacious-0.1daily13.06.05"
+}
+check_unity-scope-audacious() {
+  cd "${srcdir}/unity-scope-audacious-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-audacious() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Audacious Scope for Unity'
+  url='https://launchpad.net/unity-scope-audacious'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-dbus')
+  cd "${srcdir}/unity-scope-audacious-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//audacious"
+}
+pkgname+=('unity-scope-calculator')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-calculator_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-calculator_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-calculator() {
+  cd "${srcdir}/unity-scope-calculator-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-calculator_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-calculator() {
+  cd "${srcdir}/unity-scope-calculator-0.1daily13.06.05"
+}
+check_unity-scope-calculator() {
+  cd "${srcdir}/unity-scope-calculator-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-calculator() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Calculator Scope for Unity'
+  url='https://launchpad.net/unity-scope-calculator'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'gnome-calculator')
+  cd "${srcdir}/unity-scope-calculator-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//calculator"
+}
+pkgname+=('unity-scope-chromiumbookmarks')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-chromiumbookmarks_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-chromiumbookmarks_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-chromiumbookmarks() {
+  cd "${srcdir}/unity-scope-chromiumbookmarks-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-chromiumbookmarks_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-chromiumbookmarks() {
+  cd "${srcdir}/unity-scope-chromiumbookmarks-0.1daily13.06.05"
+}
+check_unity-scope-chromiumbookmarks() {
+  cd "${srcdir}/unity-scope-chromiumbookmarks-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-chromiumbookmarks() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Chromium Bookmarks Scope for Unity'
+  url='https://launchpad.net/unity-scope-chromiumbookmarks'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-chromiumbookmarks-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//chromiumbookmarks"
+}
+pkgname+=('unity-scope-clementine')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-clementine_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-clementine_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-clementine() {
+  cd "${srcdir}/unity-scope-clementine-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-clementine_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-clementine() {
+  cd "${srcdir}/unity-scope-clementine-0.1daily13.06.05"
+}
+check_unity-scope-clementine() {
+  cd "${srcdir}/unity-scope-clementine-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-clementine() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Clementine Scope for Unity'
+  url='https://launchpad.net/unity-scope-clementine'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-dbus')
+  cd "${srcdir}/unity-scope-clementine-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//clementine"
+}
+pkgname+=('unity-scope-colourlovers')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-colourlovers_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-colourlovers_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-colourlovers() {
+  cd "${srcdir}/unity-scope-colourlovers-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-colourlovers_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-colourlovers() {
+  cd "${srcdir}/unity-scope-colourlovers-0.1daily13.06.05"
+}
+check_unity-scope-colourlovers() {
+  cd "${srcdir}/unity-scope-colourlovers-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-colourlovers() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='COLOURlovers Scope for Unity'
+  url='https://launchpad.net/unity-scope-colourlovers'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-colourlovers-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//colourlovers"
+}
+pkgname+=('unity-scope-devhelp')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-devhelp_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-devhelp_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-devhelp() {
+  cd "${srcdir}/unity-scope-devhelp-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-devhelp_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-devhelp() {
+  cd "${srcdir}/unity-scope-devhelp-0.1daily13.06.05"
+}
+check_unity-scope-devhelp() {
+  cd "${srcdir}/unity-scope-devhelp-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-devhelp() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='devhelp Scope for Unity'
+  url='https://launchpad.net/unity-scope-devhelp'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-lxml')
+  cd "${srcdir}/unity-scope-devhelp-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//devhelp"
+}
+pkgname+=('unity-scope-deviantart')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-deviantart_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-deviantart_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-deviantart() {
+  cd "${srcdir}/unity-scope-deviantart-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-deviantart_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-deviantart() {
+  cd "${srcdir}/unity-scope-deviantart-0.1daily13.06.05"
+}
+check_unity-scope-deviantart() {
+  cd "${srcdir}/unity-scope-deviantart-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-deviantart() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='deviantART Scope for Unity'
+  url='https://launchpad.net/unity-scope-deviantart'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-feedparser')
+  cd "${srcdir}/unity-scope-deviantart-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//deviantart"
+}
+pkgname+=('unity-scope-firefoxbookmarks')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-firefoxbookmarks_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-firefoxbookmarks_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-firefoxbookmarks() {
+  cd "${srcdir}/unity-scope-firefoxbookmarks-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-firefoxbookmarks_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-firefoxbookmarks() {
+  cd "${srcdir}/unity-scope-firefoxbookmarks-0.1daily13.06.05"
+}
+check_unity-scope-firefoxbookmarks() {
+  cd "${srcdir}/unity-scope-firefoxbookmarks-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-firefoxbookmarks() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Firefox Bookmarks Scope for Unity'
+  url='https://launchpad.net/unity-scope-firefoxbookmarks'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-firefoxbookmarks-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//firefoxbookmarks"
+}
+pkgname+=('unity-scope-gallica')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gallica_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gallica_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-gallica() {
+  cd "${srcdir}/unity-scope-gallica-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-gallica_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-gallica() {
+  cd "${srcdir}/unity-scope-gallica-0.1daily13.06.05"
+}
+check_unity-scope-gallica() {
+  cd "${srcdir}/unity-scope-gallica-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-gallica() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='gallica Scope for Unity'
+  url='https://launchpad.net/unity-scope-gallica'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-lxml')
+  cd "${srcdir}/unity-scope-gallica-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//gallica"
+}
+pkgname+=('unity-scope-gdrive')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gdrive_0.9daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gdrive_0.9daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-gdrive() {
+  cd "${srcdir}/unity-scope-gdrive-0.9daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-gdrive_0.9daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-gdrive() {
+  cd "${srcdir}/unity-scope-gdrive-0.9daily13.06.05"
+}
+check_unity-scope-gdrive() {
+  cd "${srcdir}/unity-scope-gdrive-0.9daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-gdrive() {
+  pkgver=0.9daily13.06.05.0ubuntu1
+  pkgdesc='Google Drive Scope for Unity'
+  url='https://launchpad.net/unity-scope-gdrive'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'account-plugins' 'libgdata' 'libaccounts-glib' 'libsignon-glib')
+  install=icon_cache.install
+  cd "${srcdir}/unity-scope-gdrive-0.9daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//gdrive"
+}
+pkgname+=('unity-scope-github')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-github_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-github_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-github() {
+  cd "${srcdir}/unity-scope-github-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-github_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-github() {
+  cd "${srcdir}/unity-scope-github-0.1daily13.06.05"
+}
+check_unity-scope-github() {
+  cd "${srcdir}/unity-scope-github-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-github() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='GitHub Scope for Unity'
+  url='https://launchpad.net/unity-scope-github'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-github-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//github"
+}
+pkgname+=('unity-scope-gmusicbrowser')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gmusicbrowser_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gmusicbrowser_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-gmusicbrowser() {
+  cd "${srcdir}/unity-scope-gmusicbrowser-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-gmusicbrowser_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-gmusicbrowser() {
+  cd "${srcdir}/unity-scope-gmusicbrowser-0.1daily13.06.05"
+}
+check_unity-scope-gmusicbrowser() {
+  cd "${srcdir}/unity-scope-gmusicbrowser-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-gmusicbrowser() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='gmusicbrowser Scope for Unity'
+  url='https://launchpad.net/unity-scope-gmusicbrowser'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-dbus')
+  cd "${srcdir}/unity-scope-gmusicbrowser-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//gmusicbrowser"
+}
+pkgname+=('unity-scope-googlenews')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-googlenews_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-googlenews_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-googlenews() {
+  cd "${srcdir}/unity-scope-googlenews-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-googlenews_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-googlenews() {
+  cd "${srcdir}/unity-scope-googlenews-0.1daily13.06.05"
+}
+check_unity-scope-googlenews() {
+  cd "${srcdir}/unity-scope-googlenews-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-googlenews() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Google News Scope for Unity'
+  url='https://launchpad.net/unity-scope-googlenews'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-feedparser')
+  cd "${srcdir}/unity-scope-googlenews-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//googlenews"
+}
+pkgname+=('unity-scope-gourmet')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gourmet_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-gourmet_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-gourmet() {
+  cd "${srcdir}/unity-scope-gourmet-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-gourmet_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-gourmet() {
+  cd "${srcdir}/unity-scope-gourmet-0.1daily13.06.05"
+}
+check_unity-scope-gourmet() {
+  cd "${srcdir}/unity-scope-gourmet-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-gourmet() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Gourmet Recipe Manager Scope for Unity'
+  url='https://launchpad.net/unity-scope-gourmet'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-gourmet-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//gourmet"
+}
+pkgname+=('unity-scope-guayadeque')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-guayadeque_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-guayadeque_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-guayadeque() {
+  cd "${srcdir}/unity-scope-guayadeque-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-guayadeque_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-guayadeque() {
+  cd "${srcdir}/unity-scope-guayadeque-0.1daily13.06.05"
+}
+check_unity-scope-guayadeque() {
+  cd "${srcdir}/unity-scope-guayadeque-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-guayadeque() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Guayadeque Scope for Unity'
+  url='https://launchpad.net/unity-scope-guayadeque'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-dbus')
+  cd "${srcdir}/unity-scope-guayadeque-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//guayadeque"
+}
+pkgname+=('unity-scope-manpages')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-manpages_3.0daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-manpages_3.0daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-manpages() {
+  cd "${srcdir}/unity-scope-manpages-3.0daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-manpages_3.0daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-manpages() {
+  cd "${srcdir}/unity-scope-manpages-3.0daily13.06.05"
+}
+check_unity-scope-manpages() {
+  cd "${srcdir}/unity-scope-manpages-3.0daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-manpages() {
+  pkgver=3.0daily13.06.05.0ubuntu1
+  pkgdesc='Manual pages Scope for Unity'
+  url='https://launchpad.net/unity-scope-manpages'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'gtk3' 'man-db')
+  cd "${srcdir}/unity-scope-manpages-3.0daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//manpages"
+}
+pkgname+=('unity-scope-musique')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-musique_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-musique_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-musique() {
+  cd "${srcdir}/unity-scope-musique-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-musique_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-musique() {
+  cd "${srcdir}/unity-scope-musique-0.1daily13.06.05"
+}
+check_unity-scope-musique() {
+  cd "${srcdir}/unity-scope-musique-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-musique() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Musique Scope for Unity'
+  url='https://launchpad.net/unity-scope-musique'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-dbus')
+  cd "${srcdir}/unity-scope-musique-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//musique"
+}
+pkgname+=('unity-scope-openclipart')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-openclipart_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-openclipart_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-openclipart() {
+  cd "${srcdir}/unity-scope-openclipart-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-openclipart_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-openclipart() {
+  cd "${srcdir}/unity-scope-openclipart-0.1daily13.06.05"
+}
+check_unity-scope-openclipart() {
+  cd "${srcdir}/unity-scope-openclipart-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-openclipart() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='OpenClipArt Scope for Unity'
+  url='https://launchpad.net/unity-scope-openclipart'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-feedparser')
+  cd "${srcdir}/unity-scope-openclipart-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//openclipart"
+}
+pkgname+=('unity-scope-openweathermap')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-openweathermap_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-openweathermap_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-openweathermap() {
+  cd "${srcdir}/unity-scope-openweathermap-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-openweathermap_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-openweathermap() {
+  cd "${srcdir}/unity-scope-openweathermap-0.1daily13.06.05"
+}
+check_unity-scope-openweathermap() {
+  cd "${srcdir}/unity-scope-openweathermap-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-openweathermap() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Openweathermap Scope for Unity'
+  url='https://launchpad.net/unity-scope-openweathermap'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-openweathermap-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//openweathermap"
+}
+pkgname+=('unity-scope-soundcloud')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-soundcloud_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-soundcloud_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-soundcloud() {
+  cd "${srcdir}/unity-scope-soundcloud-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-soundcloud_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-soundcloud() {
+  cd "${srcdir}/unity-scope-soundcloud-0.1daily13.06.05"
+}
+check_unity-scope-soundcloud() {
+  cd "${srcdir}/unity-scope-soundcloud-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-soundcloud() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='SoundCloud Scope for Unity'
+  url='https://launchpad.net/unity-scope-soundcloud'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-soundcloud-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//soundcloud"
+}
+pkgname+=('unity-scope-texdoc')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-texdoc_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-texdoc_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-texdoc() {
+  cd "${srcdir}/unity-scope-texdoc-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-texdoc_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-texdoc() {
+  cd "${srcdir}/unity-scope-texdoc-0.1daily13.06.05"
+}
+check_unity-scope-texdoc() {
+  cd "${srcdir}/unity-scope-texdoc-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-texdoc() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Texdoc Scope for Unity'
+  url='https://launchpad.net/unity-scope-texdoc'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-texdoc-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//texdoc"
+}
+pkgname+=('unity-scope-tomboy')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-tomboy_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-tomboy_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-tomboy() {
+  cd "${srcdir}/unity-scope-tomboy-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-tomboy_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-tomboy() {
+  cd "${srcdir}/unity-scope-tomboy-0.1daily13.06.05"
+}
+check_unity-scope-tomboy() {
+  cd "${srcdir}/unity-scope-tomboy-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-tomboy() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Tomboy Scope for Unity'
+  url='https://launchpad.net/unity-scope-tomboy'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-tomboy-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//tomboy"
+}
+pkgname+=('unity-scope-virtualbox')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-virtualbox_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-virtualbox_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-virtualbox() {
+  cd "${srcdir}/unity-scope-virtualbox-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-virtualbox_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-virtualbox() {
+  cd "${srcdir}/unity-scope-virtualbox-0.1daily13.06.05"
+}
+check_unity-scope-virtualbox() {
+  cd "${srcdir}/unity-scope-virtualbox-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-virtualbox() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='VirtualBox Scope for Unity'
+  url='https://launchpad.net/unity-scope-virtualbox'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-virtualbox-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//virtualbox"
+}
+pkgname+=('unity-scope-yahoostock')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-yahoostock_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-yahoostock_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-yahoostock() {
+  cd "${srcdir}/unity-scope-yahoostock-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-yahoostock_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-yahoostock() {
+  cd "${srcdir}/unity-scope-yahoostock-0.1daily13.06.05"
+}
+check_unity-scope-yahoostock() {
+  cd "${srcdir}/unity-scope-yahoostock-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-yahoostock() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Yahoo! Finance Scope for Unity'
+  url='https://launchpad.net/unity-scope-yahoostock'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'python-feedparser')
+  cd "${srcdir}/unity-scope-yahoostock-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//yahoostock"
+}
+pkgname+=('unity-scope-yelp')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-yelp_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-yelp_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-yelp() {
+  cd "${srcdir}/unity-scope-yelp-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-yelp_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-yelp() {
+  cd "${srcdir}/unity-scope-yelp-0.1daily13.06.05"
+}
+check_unity-scope-yelp() {
+  cd "${srcdir}/unity-scope-yelp-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-yelp() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Help Scope for Unity'
+  url='https://launchpad.net/unity-scope-yelp'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-yelp-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//yelp"
+}
+pkgname+=('unity-scope-zotero')
+source+=('https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-zotero_0.1daily13.06.05.orig.tar.gz' 'https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-zotero_0.1daily13.06.05-0ubuntu1.diff.gz')
+prepare_unity-scope-zotero() {
+  cd "${srcdir}/unity-scope-zotero-0.1daily13.06.05"
+  patch -p1 -i "${srcdir}"/unity-scope-zotero_0.1daily13.06.05-0ubuntu1.diff
+}
+build_unity-scope-zotero() {
+  cd "${srcdir}/unity-scope-zotero-0.1daily13.06.05"
+}
+check_unity-scope-zotero() {
+  cd "${srcdir}/unity-scope-zotero-0.1daily13.06.05"
+  if grep -q python3-nose debian/control; then nosetests3 || :; fi
+}
+package_unity-scope-zotero() {
+  pkgver=0.1daily13.06.05.0ubuntu1
+  pkgdesc='Zotero Scope for Unity'
+  url='https://launchpad.net/unity-scope-zotero'
+  arch=('i686' 'x86_64')
+  license=('GPLv3' 'custom')
+  groups=('unity')
+  depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+  cd "${srcdir}/unity-scope-zotero-0.1daily13.06.05"
+  python setup.py install --root="${pkgdir}" --optimize=1
+  install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+  install -m644 debian/copyright "${pkgdir}/usr/share/licenses/unity-scopes//zotero"
+}
 
 prepare_unity-scopes() { true; }
 build_unity-scopes() { true; }
 check_unity-scopes() { true; }
 package_unity-scopes() {
   depends=()
-  for i in ${pkgname[@]}; do
+  for i  in ${pkgname[@]}; do
     if [ "x${i}" != "xunity-scopes" ]; then
       depends+=(${i})
     fi
   done
 }
-
-prepare() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    prepare_${i}
-  done
-}
-
-build() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    build_${i}
-  done
-}
-
-check() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    check_${i}
-  done
-}
-
-sha512sums=('3fcb8307b7195688ec71da3547af54a5af106d7438333a376b09956c378c93f1d6a14bd168cedb8ed31e623aa9707317eae83c65a4c6d4b3f17775c6e2bc8e32'
-            '062cfed2e41616a4cbf66be443868a745fc1ba26de276623a7430877afe4ed3e3585e8a1f6b8a456d41072ca2036eb152dbb5375da71eb40d4f48cc028db7d63'
+prepare() { for i in ${pkgname[@]}; do prepare_${i}; done }
+build() { for i in ${pkgname[@]}; do build_${i}; done }
+check() { for i in ${pkgname[@]}; do check_${i}; done }
+sha512sums=('3dae29f4e0f33ef2c401ba22019dfc99c874519d199cb4421113af75265fa33ba7be5c2e18573adfb6698379cbec35cfceb18e657eba0379de4e57db46c619c3'
+            '7ffa9fdcc419eac01840fc10099dc9e0bdb822bc803a0a9242c7b9d5e8bbdeee227ae0b9fb2919afc4c38fca4bc599f83b9b976cb4f1292d800dd7fa5810a32e'
             '9e940a1f534172ea7fb9bbac4b97958d8d0cf655834f650011c67f04bab699e76b2ab4e7fb9aca29fb8074d0aeba162555908dc3562fb539af0475508c2b3c00'
             '56ed74e0cbec97b9620c791ff4497143e6907a172ce31cbff1b6844fa5b2b199303708105836abcef5e103068350a2481d8b1bf6dd35d2111ffb340c494494a7'
             'bce5e6a122f819987a1d0a1ba0f0121385ee6af1eb5c52cb0fea0ac53fc938b80a787dd7d2aca9c164464bf7787caad4af82b6c27d0ac6ca4d938b6b96262ec3'

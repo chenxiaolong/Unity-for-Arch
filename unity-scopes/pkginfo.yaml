@@ -1,5 +1,20 @@
 ---
+name:		[ unity-scopes ]
+base:		unity-scopes
+version:	1.0
+release:	1
 depends:	[ dee, glib2, libunity, python, python-gobject ]
+build-depends:	[ python-distutils-extra, python-dbus,
+                  # unity-scope-texdoc
+                  texlive-bin,
+                  # unity-scope-home
+                  dee, gnome-common, intltool, json-glib, libgee06, libsoup,
+                  libunity, vala ]
+check-depends:	[ python-nose ]
+extrafiles:	[ icon_cache.install ]
+sources:	[ pkginfo.yaml, genpkgbuild.py ]
+
+# Subpackage info
 license:	[ GPLv3, custom ]
 license_dir:	/usr/share/licenses/unity-scopes/
 # Actually, architecturally independent, but my build server can't handle
@@ -8,7 +23,7 @@ arch:		[ i686, x86_64 ]
 description:	$fullname Scope for Unity
 groups:		[ unity ]
 directory:	unity-scope-$name-$version
-sources:	[ "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-$name_$version.orig.tar.gz",
+gen-sources:	[ "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-$name_$version.orig.tar.gz",
                   "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-$name_$version-$release.diff.gz" ]
 
 packages:

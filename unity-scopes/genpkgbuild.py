@@ -2,9 +2,11 @@
 
 import yaml
 import sys
+import os
 
 stream = open("./pkginfo.yaml", 'r')
 data = yaml.load(stream, yaml.CLoader)
+generated = ""
 
 if len(sys.argv) > 2 and sys.argv[1] == "--get":
   if sys.argv[2] not in data:
@@ -27,77 +29,127 @@ def replace_vars(string, info):
 def quote_list(var):
   return ' '.join("\'%s\'" % i for i in var)
 
+# Add to PKGBUILD
+def atop(string):
+  global generated
+  generated += string + '\n'
+
 for i in data['packages']:
   # Add to packages
-  print("pkgname+=(\'unity-scope-%s\')"    % i['name'])
+  atop("pkgname+=(\'unity-scope-%s\')"    % i['name'])
 
   # Add sources
-  print("source+=(%s)"                     % \
-        replace_vars(quote_list(data['sources']), i))
+  atop("source+=(%s)"                     % \
+        replace_vars(quote_list(data['gen-sources']), i))
 
   # Prepare function header
-  print("prepare_unity-scope-%s() {"       % i['name'])
+  atop("prepare_unity-scope-%s() {"       % i['name'])
 
-  print("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
-  print("  patch -p1 -i \"${srcdir}\"/unity-scope-%s_%s-%s.diff" % \
+  atop("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
+  atop("  patch -p1 -i \"${srcdir}\"/unity-scope-%s_%s-%s.diff" % \
         (i['name'], i['version'], i['release']))
   if 'step-prepare' in i:
     for j in i['step-prepare']:
-      print(j)
+      atop(j)
 
-  print("}")
+  atop("}")
 
   # Build function header
-  print("build_unity-scope-%s() {"         % i['name'])
-  print("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
+  atop("build_unity-scope-%s() {"         % i['name'])
+  atop("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
   if 'step-build' in i:
     for j in i['step-build']:
-      print(j)
-  print("}")
+      atop(j)
+  atop("}")
 
   # Check function header
-  print("check_unity-scope-%s() {"         % i['name'])
+  atop("check_unity-scope-%s() {"         % i['name'])
 
-  print("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
+  atop("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
   if 'step-check' in i:
     for j in i['step-check']:
-      print(j)
+      atop(j)
   else:
-    print("  if grep -q python3-nose debian/control; then nosetests3 || :; fi")
+    atop("  if grep -q python3-nose debian/control; then nosetests3 || :; fi")
 
-  print("}")
+  atop("}")
 
   # Package function header
-  print("package_unity-scope-%s() {"       % i['name'])
+  atop("package_unity-scope-%s() {"       % i['name'])
 
   # Metadata
-  print("  pkgver=%s.%s"                   % (i['version'], i['release']))
-  print("  pkgdesc=\'%s Scope for Unity\'" % i['fullname'])
-  print("  url=\'%s\'"                     % i['url'])
-  print("  arch=(%s)"                      % quote_list(data['arch']))
-  print("  license=(%s)"                   % quote_list(data['license']))
-  print("  groups=(%s)"                    % quote_list(data['groups']))
+  atop("  pkgver=%s.%s"                   % (i['version'], i['release']))
+  atop("  pkgdesc=\'%s Scope for Unity\'" % i['fullname'])
+  atop("  url=\'%s\'"                     % i['url'])
+  atop("  arch=(%s)"                      % quote_list(data['arch']))
+  atop("  license=(%s)"                   % quote_list(data['license']))
+  atop("  groups=(%s)"                    % quote_list(data['groups']))
   if 'depends' in i:
-    print("  depends=(%s)"                 % \
+    atop("  depends=(%s)"                 % \
           quote_list(data['depends'] + i['depends']))
   else:
-    print("  depends=(%s)"                 % quote_list(data['depends']))
+    atop("  depends=(%s)"                 % quote_list(data['depends']))
   if 'icons' in i and i['icons'] == True:
-    print("  install=icon_cache.install")
+    atop("  install=icon_cache.install")
 
   # Packaging
-  print("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
+  atop("  cd \"${srcdir}/%s\""            % replace_vars(data['directory'], i))
   if 'step-package' in i:
     for j in i['step-package']:
-      print(j)
+      atop(j)
   else:
-    print("  python setup.py install --root=\"${pkgdir}\" --optimize=1")
+    atop("  python setup.py install --root=\"${pkgdir}\" --optimize=1")
 
   # License
-  print("  install -dm755 \"${pkgdir}%s\"" % data['license_dir'])
-  print("  install -m644 debian/copyright \"${pkgdir}%s/%s\"" % \
+  atop("  install -dm755 \"${pkgdir}%s\"" % data['license_dir'])
+  atop("  install -m644 debian/copyright \"${pkgdir}%s/%s\"" % \
         (data['license_dir'], i['name']))
 
-  print("}")
+  atop("}")
+
+# Write PKGBUILD
+fd = open('PKGBUILD', 'w')
+
+fd.write("### THIS PKGBUILD IS AUTOMATICALLY GENERATED. DO NOT EDIT!\n")
+fd.write("### EDIT pkginfo.yaml AND RUN genpkgbuild.py TO REGENERATE.\n")
+fd.write("pkgname=(%s)\n"                  % quote_list(data['name']))
+fd.write("pkgbase=%s\n"                    % data['base'])
+if 'epoch' in data:
+  fd.write("epoch=%s\n"                    % data['epoch'])
+fd.write("pkgver=%s\n"                     % data['version'])
+fd.write("pkgrel=%s\n"                     % data['release'])
+fd.write("arch=(%s)\n"                     % quote_list(data['arch']))
+if 'build-depends' in data:
+  fd.write("makedepends=(%s)\n"            % quote_list(data['build-depends']))
+if 'check-depends' in data:
+  fd.write("checkdepends=(%s)\n"           % quote_list(data['check-depends']))
+if 'extrafiles' in data:
+  fd.write("extrafiles=(%s)\n"             % quote_list(data['extrafiles']))
+if 'sources' in data:
+  fd.write("source=(%s)\n"                 % quote_list(data['sources']))
+else:
+  fd.write("source=()\n")
+fd.write(generated)
+fd.write("""
+prepare_unity-scopes() { true; }
+build_unity-scopes() { true; }
+check_unity-scopes() { true; }
+package_unity-scopes() {
+  depends=()
+  for i  in ${pkgname[@]}; do
+    if [ "x${i}" != "xunity-scopes" ]; then
+      depends+=(${i})
+    fi
+  done
+}
+""")
+
+fd.write("prepare() { for i in ${pkgname[@]}; do prepare_${i}; done }\n")
+fd.write("build() { for i in ${pkgname[@]}; do build_${i}; done }\n")
+fd.write("check() { for i in ${pkgname[@]}; do check_${i}; done }\n")
+
+fd.close()
+
+os.system("makepkg -g >> PKGBUILD")
 
 stream.close()
