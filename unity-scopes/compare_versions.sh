@@ -24,7 +24,7 @@ for i in ${PACKAGES[@]}; do
   PKGBUILD_VER=$(python3 <<EOF
 import yaml
 import sys
-fd = open('pkginfo.yaml', 'r')
+fd = open('$(dirname ${0})/pkginfo.yaml', 'r')
 data = yaml.load(fd, yaml.CLoader)
 for i in data['packages']:
   if "${i}" == i['name']:
