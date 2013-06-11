@@ -1,0 +1,38 @@
+--- a/tools/hudkeywords/bin/hudkeywords
++++ b/tools/hudkeywords/bin/hudkeywords
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ 
+ # Copyright (C) 2005-2012 Canonical Ltd
+ #
+@@ -20,4 +20,4 @@
+ from hudkeywords import cli
+ 
+ if __name__ == '__main__':
+-    sys.exit(cli.main())
+\ No newline at end of file
++    sys.exit(cli.main())
+--- a/tools/hudkeywords/CMakeLists.txt
++++ b/tools/hudkeywords/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-find_program(PYTHON "python")
++find_program(PYTHON "python2")
+ 
+ if (PYTHON)
+   set(PYTHON_ROOT ${CMAKE_INSTALL_PREFIX})
+@@ -48,4 +48,4 @@
+   
+   add_test(hudkeywords-check ${PYTHON} ${SETUP_PY} test)
+   set_tests_properties(hudkeywords-check PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+-endif()
+\ No newline at end of file
++endif()
+--- a/tools/hudkeywords/setup.py
++++ b/tools/hudkeywords/setup.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ 
+ # Copyright (C) 2005-2012 Canonical Ltd
+ #
