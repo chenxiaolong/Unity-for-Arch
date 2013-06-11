@@ -387,15 +387,21 @@ fi
     # Set up /etc/pacman.conf if local repo already exists
     # TODO: Enable signature verification
     if [ -f "${LOCALREPO}/${REPO}.db" ]; then
-      cat >> ${CHROOT}/etc/pacman.conf << EOF
-[${REPO}]
-SigLevel = Never
-Server = file://$(readlink -f ${LOCALREPO})
-EOF
+#      cat >> ${CHROOT}/etc/pacman.conf << EOF
+#[${REPO}]
+#SigLevel = Never
+#Server = file://$(readlink -f ${LOCALREPO})
+#EOF
+
+      sed -i "/^\[core\]/ i\\
+[${REPO}] \\
+SigLevel = Never \\
+Server = file://$(readlink -f ${LOCALREPO}) \\
+" ${CHROOT}/etc/pacman.conf
     fi
 
     setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
-                    pacman -Sy ${PROGRESSBAR}
+                    pacman -Syu --noconfirm ${PROGRESSBAR}
   fi
 
   # Download sources and install build dependencies
