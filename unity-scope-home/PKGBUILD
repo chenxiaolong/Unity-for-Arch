@@ -1,0 +1,32 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-scope-home
+pkgver=6.8.0daily13.06.10
+pkgrel=2
+pkgdesc="Home scope that aggregates results from multiple scopes"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-scope-home"
+license=('GPL')
+groups=('unity')
+depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
+makedepends=('gnome-common' 'intltool' 'vala')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${pkgver}.orig.tar.gz")
+sha512sums=('64d4bcb8ac2e1e504b37896e26117467abe3bc09da5db01eaaec101a0a2a2c191c2634d2dd1f2eee8eb3ee7ceffc32f486f2a654079339908f8d227fc8946771')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  autoreconf -vfi
+  intltoolize -f
+  ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make check || :
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+}
