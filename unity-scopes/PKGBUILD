@@ -36,14 +36,14 @@ setver zotero			0.1daily13.06.05	0ubuntu1
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Online scopes for the Unity Dash"
 arch=('any')
 url="https://launchpad.net/unity-scope-NAME"
 license=('GPL' 'custom')
 groups=('unity')
 
-depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject')
+depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'unity-scope-home')
 # audacious, clementine, gmusicbrowser, guayadeque, musique
 depends+=('python-dbus')
 # calculator
