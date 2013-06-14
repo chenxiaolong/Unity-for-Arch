@@ -3,72 +3,124 @@
 # When updating, check if any packages are missing when compared to
 # /usr/share/unity/client-scopes.json
 
-pkgname=('unity-scopes')
-pkgbase=unity-scopes
+packages=()
+setver() { eval "_ver_${1}=${2}"; eval "_rel_${1}=${3}"; packages+=(${1}); }
+
+setver audacious		0.1daily13.06.05	0ubuntu1
+setver calculator		0.1daily13.06.05	0ubuntu1
+setver chromiumbookmarks	0.1daily13.06.05	0ubuntu1
+setver clementine		0.1daily13.06.05	0ubuntu1
+setver colourlovers		0.1daily13.06.05	0ubuntu1
+setver devhelp			0.1daily13.06.05	0ubuntu1
+setver deviantart		0.1daily13.06.05	0ubuntu1
+setver firefoxbookmarks		0.1daily13.06.05	0ubuntu1
+setver gallica			0.1daily13.06.05	0ubuntu1
+setver gdrive			0.9daily13.06.05	0ubuntu1
+setver github			0.1daily13.06.05	0ubuntu1
+setver gmusicbrowser		0.1daily13.06.05	0ubuntu1
+setver googlenews		0.1daily13.06.05	0ubuntu1
+setver gourmet			0.1daily13.06.05	0ubuntu1
+setver guayadeque		0.1daily13.06.05	0ubuntu1
+setver manpages			3.0daily13.06.05	0ubuntu1
+setver musique			0.1daily13.06.05	0ubuntu1
+setver openclipart		0.1daily13.06.05	0ubuntu1
+setver openweathermap		0.1daily13.06.05	0ubuntu1
+setver soundcloud		0.1daily13.06.05	0ubuntu1
+setver texdoc			0.1daily13.06.05	0ubuntu1
+setver tomboy			0.1daily13.06.05	0ubuntu1
+setver virtualbox		0.1daily13.06.05	0ubuntu1
+setver yahoostock		0.1daily13.06.05	0ubuntu1
+setver yelp			0.1daily13.06.05	0ubuntu1
+setver zotero			0.1daily13.06.05	0ubuntu1
+
+pkgname=unity-scopes
+epoch=1
 pkgver=1.0
-pkgrel=1
-pkgdesc="Metapackage for all the Unity Smart Scopes"
-arch=('i686' 'x86_64')
-url="file:///usr/share/unity/client-scopes.json"
-# Packaging is under the GPLv3+ license
-license=('GPL')
+pkgrel=2
+pkgdesc="Online scopes for the Unity Dash"
+arch=('any')
+url="https://launchpad.net/unity-scope-NAME"
+license=('GPL' 'custom')
 groups=('unity')
 
-makedepends=('python-distutils-extra' 'python-yaml' 'python')
-checkdepends=('python-nose')
-# unity-scope-texdoc
+depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'unity-scope-home')
+# audacious, clementine, gmusicbrowser, guayadeque, musique
+depends+=('python-dbus')
+# calculator
+depends+=('gnome-calculator')
+# devhelp, gallica
+depends+=('python-lxml')
+# deviantart, googlenews, openclipart, yahoostock
+depends+=('python-feedparser')
+# manpages
+depends+=('gtk3' 'man-db')
+
+makedepends=('python-distutils-extra')
+# texdoc
 makedepends+=('texlive-bin')
-# unity-scope-home
-makedepends+=('dee' 'gnome-common' 'intltool' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'vala')
-# some more stuff
-makedepends+=('python-dbus')
 
-extrafiles=('icon_cache.install')
-source=('pkginfo.yaml'
-        'genpkgbuild.py')
+checkdepends=('python-nose')
+# tomboy
+#checkdepends+=('python3-dbusmock')
 
-# Do not break when sourcing the PKGBUILD file
-[ -z "${startdir}" ] && startdir="$(dirname "${BASH_SOURCE[0]}")"
-eval "$(python3 "${startdir}/genpkgbuild.py")"
+install=icon_cache.install
 
-prepare_unity-scopes() { true; }
-build_unity-scopes() { true; }
-check_unity-scopes() { true; }
-package_unity-scopes() {
-  depends=()
-  for i in ${pkgname[@]}; do
-    if [ "x${i}" != "xunity-scopes" ]; then
-      depends+=(${i})
-    fi
-  done
-}
+provides=()
+conflicts=()
+replaces=()
+source=()
+for i in ${packages[@]}; do
+  eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+
+  # Smooth upgrade from old packages
+  provides+=("unity-scope-${_name}=${_ver}")
+  replaces+=("unity-scope-${_name}")
+  conflicts+=("unity-scope-${_name}")
+
+  source+=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${_ver}.orig.tar.gz"
+           "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${_ver}-${_rel}.diff.gz")
+done
 
 prepare() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    prepare_${i}
-  done
-}
+  for i in ${packages[@]}; do
+    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
 
-build() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    build_${i}
+    cd "${srcdir}/unity-scope-${_name}-${_ver}"
+    patch -p1 -i "${srcdir}/unity-scope-${_name}_${_ver}-${_rel}.diff"
   done
 }
 
 check() {
-  cd "${srcdir}"
-  for i in ${pkgname[@]}; do
-    check_${i}
+  for i in ${packages[@]}; do
+    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+
+    cd "${srcdir}/unity-scope-${_name}-${_ver}"
+    if grep -q python3-nose debian/control; then
+      nosetests3 || :
+    fi
   done
 }
 
-sha512sums=('3fcb8307b7195688ec71da3547af54a5af106d7438333a376b09956c378c93f1d6a14bd168cedb8ed31e623aa9707317eae83c65a4c6d4b3f17775c6e2bc8e32'
-            '062cfed2e41616a4cbf66be443868a745fc1ba26de276623a7430877afe4ed3e3585e8a1f6b8a456d41072ca2036eb152dbb5375da71eb40d4f48cc028db7d63'
-            '9e940a1f534172ea7fb9bbac4b97958d8d0cf655834f650011c67f04bab699e76b2ab4e7fb9aca29fb8074d0aeba162555908dc3562fb539af0475508c2b3c00'
-            '56ed74e0cbec97b9620c791ff4497143e6907a172ce31cbff1b6844fa5b2b199303708105836abcef5e103068350a2481d8b1bf6dd35d2111ffb340c494494a7'
-            'bce5e6a122f819987a1d0a1ba0f0121385ee6af1eb5c52cb0fea0ac53fc938b80a787dd7d2aca9c164464bf7787caad4af82b6c27d0ac6ca4d938b6b96262ec3'
+package() {
+  install -dm755 "${pkgdir}/usr/share/doc/unity-scopes/"
+
+  for i in ${packages[@]}; do
+    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+
+    cd "${srcdir}/unity-scope-${_name}-${_ver}"
+    python setup.py install --root="${pkgdir}" --optimize=1
+
+    # License
+    install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+    install -m644 debian/copyright \
+                  "${pkgdir}/usr/share/licenses/unity-scopes/${_name}"
+
+    echo "${_name} ${_ver} ${_rel}" >> \
+      "${pkgdir}/usr/share/doc/unity-scopes/VERSIONS"
+  done
+}
+
+sha512sums=('bce5e6a122f819987a1d0a1ba0f0121385ee6af1eb5c52cb0fea0ac53fc938b80a787dd7d2aca9c164464bf7787caad4af82b6c27d0ac6ca4d938b6b96262ec3'
             '33d8e73b0a27953fa1329f37f2050fe74156d165141139c49d07a92c97174d503ce5478f44a56eb9deca32156660abf7eb113c3c30e8da85931428f9b2eed1de'
             '8fee9318f70b6ea0de0ca747f97e63734cbc1e9e5a3a35c0ad0bba71d94383f2c8642f913a1b093e46a5140f3b42514e2cbedcff440eff8e2b8241b4c0636774'
             '7062e25cda04fe93222cd297db8d36bba1c9394948f43374a9538c89345a63f6bf53607a76b3500ec65a2c54442d559414ff8a68f2b57901960a8a5d50bdf7c3'

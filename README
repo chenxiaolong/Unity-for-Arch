@@ -64,10 +64,11 @@ Order to compile/install:
 54: unity-lens-music               -> Unity music lens
 55: unity-lens-photos              -> Unity photo lens
 56: unity-lens-video               -> Unity video lens
-57: unity-scopes                   -> Unity Smart Scopes
-58: compiz-ubuntu                  -> Compiz compositing window manager
-59: xpathselect                    -> Select tree objects using XPath queries
-60: unity                          -> Desktop shell designed for efficiency
+57: unity-scope-home               -> Unity Home Scope
+58: unity-scopes                   -> Unity Smart Scopes
+59: compiz-ubuntu                  -> Compiz compositing window manager
+60: xpathselect                    -> Select tree objects using XPath queries
+61: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
