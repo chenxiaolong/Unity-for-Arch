@@ -2,9 +2,8 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=glib2-ubuntu
-_ubuntu_rel=0ubuntu1
 pkgver=2.37.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Common C routines used by GTK+ and other libs"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -18,22 +17,14 @@ replaces=('glib2')
 conflicts=('glib2')
 options=('!docs' '!libtool' '!emptydirs')
 source=("http://ftp.gnome.org/pub/GNOME/sources/glib/${pkgver%.*}/glib-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/glib2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
+        'revert-warn-glib-compile-schemas.patch')
 sha512sums=('785eee16ffa22f2d0059feb6f9cbba61a6d98915a0605c7f588aa0e875d22765cc0849883d645c12cf8a1bba0cbabe8311b2b7f1d77335555505d7b2eb16c807'
-            '21a15b82c8f3142b75ac47b20a8077a8f54d10e5126435741a6741ec6dfad0ac36adacf7d7b3d5c3b3c230efff102224e095b1a04260203e3d308273d5a872f2')
+            '8d5da70a3ef39771e8dc61e050b7425922012f2d4094bff64bc3efdef12974bd4fea853c52f099b47b6464bc65daf8de5796a2d93ffe2c1100e75d72ce5c9053')
 
 prepare() {
   cd "${srcdir}/glib-${pkgver}"
 
-  # Apply Ubuntu's patches
-
-  # Disable patches
-    sed -i '/61_glib-compile-binaries-path.patch/d' "${srcdir}/debian/patches/series"
-    sed -i '/90_gio-modules-multiarch-compat.patch/d' "${srcdir}/debian/patches/series"
-
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
-  done
+  patch -p1 -R -i "${srcdir}/revert-warn-glib-compile-schemas.patch"
 }
 
 build() {
