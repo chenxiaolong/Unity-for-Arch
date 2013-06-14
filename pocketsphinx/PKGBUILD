@@ -8,7 +8,7 @@ arch=('i686' 'x86_64')
 url="http://cmusphinx.sourceforge.net/"
 license=('custom')
 groups=('unity')
-depends=('alsa-lib' 'gstreamer0.10-base' 'sphinxbase' 'python2')
+depends=('alsa-lib' 'gstreamer0.10-base' 'sphinxbase' 'python2' 'libsamplerate')
 options=('!libtool')
 source=("http://downloads.sourceforge.net/project/cmusphinx/pocketsphinx/${pkgver}/pocketsphinx-${pkgver}.tar.gz"
         '0001_Python_2.patch')

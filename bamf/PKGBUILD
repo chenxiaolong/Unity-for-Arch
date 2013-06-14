@@ -15,7 +15,7 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3' 'glib2-ubuntu')
+depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3' 'glib2-ubuntu' 'gtk3')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
 checkdepends=('xorg-server-xvfb')
 provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")

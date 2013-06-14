@@ -12,7 +12,7 @@ pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"
 license=('GPL')
-depends=('glib2')
+depends=('glib2' 'dconf')
 makedepends=('intltool' 'gobject-introspection')
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
