@@ -10,7 +10,7 @@ pkgdesc="A small library for applications to raise 'flags' on DBus for other com
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
 license=('LGPL')
-makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
+makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
 checkdepends=('dbus-test-runner')
 groups=('unity')
 options=(!libtool)
@@ -90,7 +90,7 @@ package_libindicate-gtk2() {
 
 package_libindicate-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=("libindicate=${pkgver}" 'gtk3-ubuntu')
+  depends=("libindicate=${pkgver}" 'gtk3')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 

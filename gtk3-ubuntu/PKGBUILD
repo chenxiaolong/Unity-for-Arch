@@ -32,11 +32,12 @@ prepare() {
   patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
 
   # Apply Ubuntu Patches
-    # Disable patches
-      # Debian/Ubuntu's multiarch
-        sed -i '/061_multiarch_module_fallback.patch/d' "${srcdir}/debian/patches/series"
-      # Fedora's tracker is not compiled with FTS
-      #  sed -i '/044_tracker_fts.patch/d' debian/patches/series
+    # Enable patches
+      # https://bugs.launchpad.net/indicator-messages/+bug/1088162
+        echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
+      # gnome-control-center-ubuntu: 54_enable_alt_tap_in_shortcut.patch
+      # Maybe better remove this from gnome-control-center
+        echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
