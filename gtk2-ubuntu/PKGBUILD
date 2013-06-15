@@ -5,7 +5,7 @@
 pkgname='gtk2-ubuntu'
 _ubuntu_rel=0ubuntu2
 pkgver=2.24.18
-pkgrel=101
+pkgrel=102
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage'
@@ -56,6 +56,8 @@ package() {
     install=gtk2.install
     depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
     backup=(etc/gtk-2.0/gtkrc)
+    provides=("gtk2=${pkgver}")
+    conflicts=('gtk2')
     replaces=('gtk2-docs')
 
     cd gtk+-$pkgver

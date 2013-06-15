@@ -3,6 +3,7 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
+_ubuntu_rel=0ubuntu4
 pkgver=3.8.2
 pkgrel=104
 pkgdesc="GObject-based multi-platform GUI toolkit (v3)"
@@ -12,11 +13,15 @@ install=gtk3.install
 depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama libxrandr libxi libxcomposite libxdamage pango shared-mime-info colord at-spi2-atk wayland libxkbcommon)
 makedepends=(gobject-introspection)
 options=('!libtool')
+provides=("gtk3=${pkgver}")
+conflicts=('gtk3')
 backup=(etc/gtk-3.0/settings.ini)
 license=(LGPL)
 source=(http://ftp.gnome.org/pub/gnome/sources/gtk+/${pkgver%.*}/gtk+-$pkgver.tar.xz
+        https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz
         settings.ini)
 sha256sums=('1ca80c9c15a1df95d74cefb8c2afe4682ba272a4b489106f04877be2a7aff297'
+            '61c21298597aa6429f29bb6309e4da4522a28425b2957d2e34b4d1dc22ff4b6d'
             'c214d3dcdcadda3d642112287524ab3e526ad592b70895c9f3e3733c23701621')
 
 prepare() {
@@ -39,6 +44,8 @@ prepare() {
 }
 build() {
     cd "gtk+-$pkgver"
+
+    autoreconf -vfi
 
     CXX=/bin/false ./configure --prefix=/usr \
         --sysconfdir=/etc \
