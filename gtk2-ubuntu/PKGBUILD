@@ -31,23 +31,14 @@ prepare() {
 
   patch -p1 -i "${srcdir}/arch_xid-collision-debug.patch"
 
-  # Apply Ubuntu patches
-
-  # Certain patches should not be used
-    # Multiarch
-      sed -i '/041_ia32-libs.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/098_multiarch_module_path.patch/d' "${srcdir}/debian/patches/series"
-    # Static linking stuff for udebs
-      sed -i '/001_static-linking-dont-query-immodules.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
-    # Breaks pkgconfig
-      sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
-    # gtk.immodules is in /etc/gtk-2.0/ in Arch Linux, not
-    # /usr/lib/gtk-2.0/2.10.0/
-      sed -i '/011_immodule-cache-dir.patch/d' "${srcdir}/debian/patches/series"
-
-  # Build fix from György Balló
-  patch -p1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
+  # Apply Ubuntu Patches
+    # Enable patches
+      # Implement gtk-shell-shows-menubar from gtk3
+      # Dependency check: grep -R gtk-shell-shows-menubar * | cut -d/ -f1
+        echo 'gtk-shell-shows-menubar.patch' > "${srcdir}/debian/patches/series"
+      # liboverlay-scrollbar.so: undefined symbol: ubuntu_gtk_set_use_overlay_scrollbar
+      # Dependency check: grep -R ubuntu_gtk_get_use_overlay_scrollbar * | cut -d/ -f1
+        echo '100_overlay_scrollbar_loading.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
