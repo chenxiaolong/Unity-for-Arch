@@ -1,41 +1,34 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu4
 pkgver=3.8.2
-pkgrel=103
-pkgdesc="GObject-based multi-platform toolkit (v3)"
-arch=('i686' 'x86_64')
+pkgrel=104
+pkgdesc="GObject-based multi-platform GUI toolkit (v3)"
+arch=(i686 x86_64)
 url="http://www.gtk.org/"
-install=arch_gtk3.install
-depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon' 'glib2-ubuntu')
-makedepends=('gobject-introspection' 'mesa')
-checkdepends=('hicolor-icon-theme' 'xorg-server-xvfb')
-provides=("gtk3=${pkgver}")
-conflicts=('gtk3')
-options=('!libtool' '!docs')
-backup=('etc/gtk-3.0/settings.ini')
-license=('LGPL')
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        '0001_Add_broadway_symbols.patch'
-        'arch_settings.ini')
-sha512sums=('20958c192fe881281f6885e2d7cecc4e2700fc01ef8006304f1fb8befe8f6628cbdb06c0d801f109e5805d58f327ca9a07d5e2c7f938116c99db8080d0c2f83e'
-            'b1e7a7d1dfbbed1d509c09ef290b4ce893f8c4134b5d53764955933a926c0b3c0de239d371ceb39faf91c4a8a5f23f399c821a6ad4d1109e98c5e4fc0046ca58'
-            'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
-            '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
+install=gtk3.install
+depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama libxrandr libxi libxcomposite libxdamage pango shared-mime-info colord at-spi2-atk wayland libxkbcommon)
+makedepends=(gobject-introspection)
+options=('!libtool')
+backup=(etc/gtk-3.0/settings.ini)
+license=(LGPL)
+source=(http://ftp.gnome.org/pub/gnome/sources/gtk+/${pkgver%.*}/gtk+-$pkgver.tar.xz
+        settings.ini)
+sha256sums=('1ca80c9c15a1df95d74cefb8c2afe4682ba272a4b489106f04877be2a7aff297'
+            'c214d3dcdcadda3d642112287524ab3e526ad592b70895c9f3e3733c23701621')
 
 prepare() {
-  cd "${srcdir}/gtk+-${pkgver}"
-
-  # Add Broadway sumbols to tests pass
-  patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
+  cd "gtk+-$pkgver"
 
   # Apply Ubuntu Patches
     # Enable patches
       # https://bugs.launchpad.net/indicator-messages/+bug/1088162
+      # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
         echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
       # gnome-control-center-ubuntu: 54_enable_alt_tap_in_shortcut.patch
+      # Dependency check: grep -R GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP * | cut -d/ -f1
       # Maybe better remove this from gnome-control-center
         echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
 
@@ -44,54 +37,27 @@ prepare() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 }
-
 build() {
-  cd "${srcdir}/gtk+-${pkgver}"
+    cd "gtk+-$pkgver"
 
-  autoreconf -vfi
+    CXX=/bin/false ./configure --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --enable-gtk2-dependency \
+        --disable-schemas-compile \
+        --enable-x11-backend \
+        --enable-broadway-backend \
+        --enable-wayland-backend
 
-  #CXX=/bin/false ./configure \
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --enable-gtk2-dependency \
-    --disable-schemas-compile \
-    --enable-x11-backend \
-    --enable-broadway-backend \
-    --enable-wayland-backend \
-    --enable-test-print-backend
+    #https://bugzilla.gnome.org/show_bug.cgi?id=655517
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  #https://bugzilla.gnome.org/show_bug.cgi?id=655517
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
-
-  make
-}
-
-# Okay, these tests are obviously untested. There's no reason GTK 3 needs to be
-# installed for them to run.
-check() {
-  cd "${srcdir}/gtk+-${pkgver}"
-
-  # Do the GTK developers even check that their tests work?
-  rm ./tests/css/parser/background-shorthand.css
-  rm ./tests/css/parser/background-shorthand-single.css
-  rm ./tests/css/parser/declarations-valid-22.css
-  rm ./tests/css/parser/declarations-valid-23.css
-  rm ./tests/a11y/about.ui
-  rm ./tests/a11y/combos.ui
-  rm ./tests/a11y/menu.ui
-  rm ./tests/a11y/notebook.ui
-  rm ./tests/a11y/pickers.ui
-  #make -j1 check
+    make
 }
 
 package() {
-  cd "${srcdir}/gtk+-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "gtk+-$pkgver"
+    make DESTDIR="$pkgdir" install
 
-  install -Dm644 "${srcdir}/arch_settings.ini" \
-    "${pkgdir}/etc/gtk-3.0/settings.ini"
+    install -Dm644 "$srcdir/settings.ini" "$pkgdir/etc/gtk-3.0/settings.ini"
 }
-
-# vim:set ts=2 sw=2 et:
