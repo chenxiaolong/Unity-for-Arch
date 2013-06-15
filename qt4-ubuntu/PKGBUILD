@@ -28,7 +28,7 @@ url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libtiff' 'libpng' 'libmng' 'sqlite' 'ca-certificates' 'dbus' 'fontconfig' 'libgl' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils')
-makedepends=('postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient' 'mesa-libgl')
+makedepends=('postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient')
 optdepends=('postgresql-libs: PostgreSQL driver'
             'libmysqlclient: MySQL driver'
             'unixodbc: ODBC driver'
@@ -64,64 +64,7 @@ build() {
       #  == Ubuntu: QTBUG-25324_assistant_segfault_on_start_with_gcc_4.7.patch
 
   # Apply Ubuntu patches
-    # Disable patches (longest command you've ever seen? :D) (can't use
-    # punctuation for comments or editors will completely screw up the
-    # syntax highlighting)
-      sed -i \
-      `# Patch for adding '-qt4' to the end of the filenames of binaries` \
-        -e '/01_debian_append_qt4_suffix.diff/d'                          \
-      `# Multiarch patch for Debian/Ubuntu`                               \
-        -e '/qt-multiarch-plugin-path-compat.diff/d'                      \
-      `# Debian architecture detection {fails with:`                      \
-      `# "Qt has not been ported to this architecture"}`                  \
-        -e '/07_trust_dpkg-arch_over_uname-m.diff/d'                      \
-      `# ARM v6 entry for previous patch`                                 \
-        -e '/94_armv6_uname_entry.diff/d'                                 \
-      `# Disable Qt webkit {exists in separate package}`                  \
-        -e '/16_hide_std_symbols_on_qtwebkit.diff/d'                      \
-        -e '/18_enable_qt3support_qtwebkit_debug_info.diff/d'             \
-        -e '/30_webkit_unaligned_access.diff/d'                           \
-        -e '/96_webkit_no_gc_sections.diff/d'                             \
-        -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
-        -e '/kubuntu_34_no_gold_check.diff/d'                             \
-      `# Fix FTBFS in buildd`                                             \
-        -e '/11_build_translations.diff/d'                                \
-      `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
-      `# the built-in Qt webkit`                                          \
-        -e '/20_install_qvfb.diff/d'                                      \
-      `# Debug packages arent used in Arch Linux - remove patch to`       \
-      `# default to keeping debug symbols`                                \
-        -e '/12_add_nostrip_for_debug_packages.diff/d'                    \
-      `# Unsupported CPU architectures`                                   \
-        -e '/add_missing_method_for_QBasicAtomicPointer_on_s390.patch/d'  \
-        -e '/powerpc_designer_gstabs.diff/d'                              \
-        -e '/kfreebsd_monotonic_clock.diff/d'                             \
-        -e '/sh.diff/d'                                                   \
-        -e '/powerpcspe.diff/d'                                           \
-        -e '/99_hppa_bug561203_decrease_failure_rate.diff/d'              \
-        -e '/92_armel_gcc43_valist_compat.diff/d'                         \
-        -e '/80_hurd_max_path.diff/d'                                     \
-        -e '/71_hppa_unaligned_access_fix_458133.diff/d'                  \
-        -e '/70_hppa_ldcw_fix.diff/d'                                     \
-        -e '/51_kfreebsd_strnstr_build_fix.diff/d'                        \
-        -e '/50_kfreebsd_Q_OS.diff/d'                                     \
-        -e '/41_disable_opengl_visibility.diff/d'                         \
-        -e '/40_alpha_ice.diff/d'                                         \
-        -e '/s390x_jscore.diff/d'                                         \
-      `# Demos arent built on Arch Linux`                                 \
-        -e '/buildable_appchooser_states_demos.patch/d'                   \
-      `# This is not Debian or Ubuntu`                                    \
-        -e '/08_configure_quilt_compat.diff/d'                            \
-      `# Do not default to ibus`                                          \
-        -e '/kubuntu_10_ibus_input_method.diff/d'                         \
-      `# Tests arent built`                                               \
-        -e '/10_config_tests_fixes.diff/d'                                \
-      `# Not needed for rolling release distros`                          \
-        -e '/23_permit_plugins_built_with_future_qt.diff/d'               \
-      `# Do not hide stuff from the user`                                 \
-        -e '/no_libicu_message.diff/d'                                    \
-      \
-      "${srcdir}/debian/patches/series"
+    echo 'kubuntu_14_systemtrayicon.diff' > "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch: ${i}"
