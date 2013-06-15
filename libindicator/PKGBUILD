@@ -12,7 +12,7 @@ pkgdesc="A set of symbols and convience functions that all indicators would like
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
 license=('GPL')
-makedepends=('gtk2-ubuntu' 'gtk3-ubuntu' 'glib2-ubuntu')
+makedepends=('gtk2' 'gtk3' 'glib2-ubuntu')
 checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 groups=('unity')
@@ -51,7 +51,7 @@ check() {
 
 package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2-ubuntu' 'glib2-ubuntu')
+  depends=('gtk2' 'glib2-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 
@@ -61,7 +61,7 @@ package_libindicator() {
 
 package_libindicator3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=('gtk3-ubuntu' 'glib2-ubuntu')
+  depends=('gtk3' 'glib2-ubuntu')
   options=(${options[@]} '!emptydirs')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"

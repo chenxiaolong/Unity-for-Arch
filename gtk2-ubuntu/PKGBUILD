@@ -1,53 +1,35 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Christopher Reimer <github@creimer.net>
 
-pkgname=gtk2-ubuntu
+pkgname='gtk2-ubuntu'
 _ubuntu_rel=0ubuntu2
 pkgver=2.24.18
-pkgrel=101
-pkgdesc="GTK+ is a multi-platform toolkit (v2)"
+pkgrel=102
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
-license=('LGPL')
-depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'libcups' 'gtk-update-icon-cache' 'python2')
-makedepends=('pkg-config' 'gobject-introspection' 'gtk-doc')
-provides=("gtk2=${pkgver}")
-conflicts=('gtk2')
-replaces=('gtk2-docs')
-backup=('etc/gtk-2.0/gtkrc')
+makedepends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage'
+             'shared-mime-info' 'cairo' 'libcups' 'gdk-pixbuf2' 'gobject-introspection')
 options=('!libtool')
-install=arch_gtk2.install
-source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        'arch_xid-collision-debug.patch'
-        'fix-ubuntumenuproxy-build.patch')
-sha512sums=('5250ae00c8d5fcefded54c8476e45f6bcc69d1207457ed53a23cacf3986cbbbcd115c2b5b823c1f90f1e21de4eafb40c7081a7175943ce2adda593bf2759d0da'
-            '087355220c241f3a7edcab84191da19690f48df836a63d62cb6cc2c42228d591072c41075dc2d51469c2012d18abc90f25352e7c77de09eefb465c88b21e5db5'
-            '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159'
-            '4b27afecb82e3517c2584665f8d2a2911193254a00b82ff8064caf4016ab029c76e99af502bb9271a66209594b50b2729797defcc9512d341aa61aff4f64ec24')
+license=('LGPL')
+source=(http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-$pkgver.tar.xz
+        https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz
+        xid-collision-debug.patch)
+sha256sums=('6c963101272ff53bb5b01d21bfb86cebba5f0a68f31c5e10523c63f07e762385'
+            'e2e5b9eeeb015bb533376ee4ae5f829b9df20f93707bece6b4cb00db4fa920c2'
+            'd758bb93e59df15a4ea7732cf984d1c3c19dff67c94b957575efea132b8fe558')
 
 prepare() {
-  cd "${srcdir}/gtk+-${pkgver}"
+  cd gtk+-$pkgver
 
-  patch -p1 -i "${srcdir}/arch_xid-collision-debug.patch"
-
-  # Apply Ubuntu patches
-
-  # Certain patches should not be used
-    # Multiarch
-      sed -i '/041_ia32-libs.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/098_multiarch_module_path.patch/d' "${srcdir}/debian/patches/series"
-    # Static linking stuff for udebs
-      sed -i '/001_static-linking-dont-query-immodules.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/002_static-linking-dont-build-perf.patch/d' "${srcdir}/debian/patches/series"
-    # Breaks pkgconfig
-      sed -i '/003_gdk.pc_privates.patch/d' "${srcdir}/debian/patches/series"
-    # gtk.immodules is in /etc/gtk-2.0/ in Arch Linux, not
-    # /usr/lib/gtk-2.0/2.10.0/
-      sed -i '/011_immodule-cache-dir.patch/d' "${srcdir}/debian/patches/series"
-
-  # Build fix from György Balló
-  patch -p1 -i "${srcdir}/fix-ubuntumenuproxy-build.patch"
+  # Apply Ubuntu Patches
+    # Enable patches
+      # Implement gtk-shell-shows-menubar from gtk3
+      # Dependency check: grep -R gtk-shell-shows-menubar * | cut -d/ -f1
+        echo 'gtk-shell-shows-menubar.patch' > "${srcdir}/debian/patches/series"
+      # liboverlay-scrollbar.so: undefined symbol: ubuntu_gtk_set_use_overlay_scrollbar
+      # Dependency check: grep -R ubuntu_gtk_get_use_overlay_scrollbar * | cut -d/ -f1
+        echo '100_overlay_scrollbar_loading.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
@@ -55,31 +37,34 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/gtk+-${pkgver}"
+    cd gtk+-$pkgver
+    patch -Np1 -i ../xid-collision-debug.patch
 
-  autoreconf -vfi
+    CXX=/bin/false ./configure --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --with-xinput=yes
 
-  CXX=/bin/false ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --with-xinput=yes \
-    --enable-test-print-backend
+    # https://bugzilla.gnome.org/show_bug.cgi?id=655517
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  # https://bugzilla.gnome.org/show_bug.cgi?id=655517
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
-
-  make
+    make
 }
 
 package() {
-  cd "${srcdir}/gtk+-${pkgver}"
+    pkgdesc="GTK+ is a multi-platform toolkit (v2)"
+    install=gtk2.install
+    depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+    backup=(etc/gtk-2.0/gtkrc)
+    provides=("gtk2=${pkgver}")
+    conflicts=('gtk2')
+    replaces=('gtk2-docs')
 
-  make DESTDIR="${pkgdir}" install
-  sed -i "s#env python#env python2#" "${pkgdir}/usr/bin/gtk-builder-convert"
-  echo 'gtk-fallback-icon-theme = "gnome"' > "${pkgdir}/etc/gtk-2.0/gtkrc"
-  # Use the official gtk-update-icon-cache package
-  rm -v "${pkgdir}/usr/bin/gtk-update-icon-cache"
+    cd gtk+-$pkgver
+
+    make DESTDIR="$pkgdir" install
+    sed -i "s#env python#env python2#" $pkgdir/usr/bin/gtk-builder-convert
+    echo 'gtk-fallback-icon-theme = "gnome"' > "$pkgdir/etc/gtk-2.0/gtkrc"
+    #split this out to use with gtk3 too
+    rm $pkgdir/usr/bin/gtk-update-icon-cache
 }
-
-# vim:set ts=2 sw=2 et:
