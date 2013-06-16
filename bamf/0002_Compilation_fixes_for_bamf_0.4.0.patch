@@ -1,0 +1,59 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -153,7 +153,7 @@
+ AM_PATH_GTK_3_0
+ 
+ dnl CFLAGS
+-CFLAGS="$CFLAGS -Wall -lm"
++CFLAGS="$CFLAGS -Wall -Wempty-body -Wformat-security -Winit-self -Warray-bounds -Wimplicit-function-declaration -lm"
+ 
+ AC_SUBST(BAMFDAEMON_CFLAGS)
+ AC_SUBST(BAMFDAEMON_LIBS)
+
+--- a/lib/libbamf/bamf-application.c
++++ b/lib/libbamf/bamf-application.c
+@@ -291,7 +291,7 @@
+     {
+       view = l->data;
+ 
+-      if (BAMF_IS_WINDOW (view));
++      if (BAMF_IS_WINDOW (view))
+         {
+           windows = g_list_prepend (windows, view);
+         }
+@@ -641,6 +641,11 @@
+ 
+   name = g_strdup (g_app_info_get_name (G_APP_INFO (desktop_info)));
+ 
++/* GLib doesn't provide this by default */
++#ifndef G_KEY_FILE_DESKTOP_KEY_FULLNAME
++#define G_KEY_FILE_DESKTOP_KEY_FULLNAME "X-GNOME-FullName"
++#endif
++
+   /* Grab the better name if its available */
+   fullname = g_key_file_get_locale_string (keyfile, G_KEY_FILE_DESKTOP_GROUP,
+                                            G_KEY_FILE_DESKTOP_KEY_FULLNAME, NULL, NULL);
+
+--- a/src/bamf-matcher.c
++++ b/src/bamf-matcher.c
+@@ -23,6 +23,7 @@
+ #include "bamf-matcher.h"
+ #include "bamf-matcher-private.h"
+ #include "bamf-application.h"
++#include "bamf-tab.h"
+ #include "bamf-window.h"
+ #include "bamf-legacy-screen.h"
+ 
+
+--- a/src/bamf-tab.h
++++ b/src/bamf-tab.h
+@@ -40,7 +40,7 @@
+ struct _BamfTabClass
+ {
+   BamfViewClass parent;
+-  
++
+   void (*raise) (BamfTab *self);
+   void (*close) (BamfTab *self);
+   void (*request_preview) (BamfTab *self, BamfTabPreviewReadyCallback callback, gpointer user_data);
+
