@@ -1,6 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
+# Contributor: Christopher Reimer <github@creimer.net>
 
 # Cannot build if qt-ubuntu is installed
 if $(pacman -Q qtwebkit &>/dev/null) && [ "x${IGNORE_NO_QTWEBKIT}" == 'x' ] && [ "x${UPDATE_SCRIPT}" == 'x' ]; then
@@ -22,15 +23,16 @@ pkgname=qt4-ubuntu
 _ubuntu_rel=0ubuntu1
 _extra_ver=+dfsg
 pkgver=4.8.4
-pkgrel=104
+pkgrel=105
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libtiff' 'libpng' 'libmng' 'sqlite' 'ca-certificates' 'dbus' 'fontconfig' 'libgl' 'libxrandr' 'libxv' 'libxi' 'alsa-lib' 'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils')
-makedepends=('postgresql-libs' 'mysql' 'unixodbc' 'cups' 'gtk2' 'libfbclient' 'mesa-libgl')
-optdepends=('postgresql-libs: PostgreSQL driver'
-            'libmysqlclient: MySQL driver'
+makedepends=('postgresql-libs' 'mariadb' 'unixodbc' 'cups' 'gtk2' 'libfbclient' 'mesa-libgl')
+optdepends=('qtchooser: set the default Qt toolkit'
+            'postgresql-libs: PostgreSQL driver'
+            'libmariadbclient: MariaDB driver'
             'unixodbc: ODBC driver'
             'libfbclient: Firebird/iBase driver'
             'libxinerama: Xinerama support'
@@ -45,83 +47,30 @@ conflicts=('qt4' 'qt' 'qt-ubuntu')
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz"
-        'qtconfig.desktop'
-        'qt4.profile')
+        'qtconfig-qt4.desktop'
+        'assistant-qt4.desktop'
+        'designer-qt4.desktop'
+        'linguist-qt4.desktop'
+        'qdbusviewer-qt4.desktop'
+        'improve-cups-support.patch')
 sha512sums=('472972b63b5cad83b4c4656b23e95b6d4923cc31a518138e25d5921982b14abc835883356c2b779a7972cb77cf73fe25b46630be7c6a86a917b364186aa17496'
             '84954b2dba277772a9801b4a5c8343c9360cafcbfdfe05de549a92da7b8b233fce786588cc0c7f927359f4742fec5a6a7cbaacc3efbc88661e5b1181d30763a9'
-            '5148a34fb3f990cf72c95c3663bb77edd839ab6dec0a9141d0423afa91ed917d3c1a700113568ae99ba0c58a7b3ba25ddbaaec057e1d2b5ae41c4f9be0eb60da'
-            'e9275b1851cdbf8d7be9827899789670dab7a1ef467e6477805ea44f464cb29feb47daeabe873bd86ddf3130a85280411ba84c17ab44cb2f398f50a4b05a2baf')
+            'fbcc1ec9ca04b93941c37d02326f33f3a84cb7630ca83f234845eebdb1875676aa8b27553981d8d42b2d5fcf227c7423228f704efc74a5df25a9ae05c5385fda'
+            'c08b74d70e557d968672ad3251c70e23d0447f30f5d62bc63f6165cbb8c372e63b96b1e61e8888e48bc4f589705c95951f9e05723cf998963ddb7585b0f2e246'
+            '29b3f2b05e27b2c8db3967bb426dfd2ee96e0715e284fc524d58c33fff55756bbb327ba166af943ce5e3fe825b2a3fc44f85c96d5117d25036b3606d7a49047d'
+            'fbe3e343678b6cf7f94c97d5fb151028afdfa2fd27a19cbd583da999782f5a71c61a9282fb6284271290b3f5370e6b214b2edd1c05ee1e09d6345389b98be961'
+            '5700f5f2187b8c2fee11798463a2dd1f88fb1f90ab02a787fb7cb869f073f69c8380126013094864eae203fc246397a1bb7e354715f5873bd170166afdf33c27'
+            '4a8f828c79bde81ab1e39c9eaba4ef553582d85b62d6d182dda02820c4c8e046de6a25cc77d228955ed37fbc5b55f697a0a464af0bb3e171849851639e9ef4ee')
 
 build() {
   cd "${srcdir}/${_pkgfqn}"
 
   # Apply Arch Linux patches
     # (FS#28381) (KDEBUG#180051)
-      # Arch Linux: improve-cups-support.patch
-      #  == Ubuntu: kubuntu_37_cups_settings.diff
-    # (FS#29469)
-      # Arch Linux: fix-crash-in-assistant.patch
-      #  == Ubuntu: QTBUG-25324_assistant_segfault_on_start_with_gcc_4.7.patch
+      patch -p1 -i "${srcdir}/improve-cups-support.patch"
 
   # Apply Ubuntu patches
-    # Disable patches (longest command you've ever seen? :D) (can't use
-    # punctuation for comments or editors will completely screw up the
-    # syntax highlighting)
-      sed -i \
-      `# Patch for adding '-qt4' to the end of the filenames of binaries` \
-        -e '/01_debian_append_qt4_suffix.diff/d'                          \
-      `# Multiarch patch for Debian/Ubuntu`                               \
-        -e '/qt-multiarch-plugin-path-compat.diff/d'                      \
-      `# Debian architecture detection {fails with:`                      \
-      `# "Qt has not been ported to this architecture"}`                  \
-        -e '/07_trust_dpkg-arch_over_uname-m.diff/d'                      \
-      `# ARM v6 entry for previous patch`                                 \
-        -e '/94_armv6_uname_entry.diff/d'                                 \
-      `# Disable Qt webkit {exists in separate package}`                  \
-        -e '/16_hide_std_symbols_on_qtwebkit.diff/d'                      \
-        -e '/18_enable_qt3support_qtwebkit_debug_info.diff/d'             \
-        -e '/30_webkit_unaligned_access.diff/d'                           \
-        -e '/96_webkit_no_gc_sections.diff/d'                             \
-        -e '/kubuntu_17_enable_qtwebkit_for_qtassistant.diff/d'           \
-        -e '/kubuntu_34_no_gold_check.diff/d'                             \
-      `# Fix FTBFS in buildd`                                             \
-        -e '/11_build_translations.diff/d'                                \
-      `# Disable enabling qvfb {does that make sense? :D} - it requires`  \
-      `# the built-in Qt webkit`                                          \
-        -e '/20_install_qvfb.diff/d'                                      \
-      `# Debug packages arent used in Arch Linux - remove patch to`       \
-      `# default to keeping debug symbols`                                \
-        -e '/12_add_nostrip_for_debug_packages.diff/d'                    \
-      `# Unsupported CPU architectures`                                   \
-        -e '/add_missing_method_for_QBasicAtomicPointer_on_s390.patch/d'  \
-        -e '/powerpc_designer_gstabs.diff/d'                              \
-        -e '/kfreebsd_monotonic_clock.diff/d'                             \
-        -e '/sh.diff/d'                                                   \
-        -e '/powerpcspe.diff/d'                                           \
-        -e '/99_hppa_bug561203_decrease_failure_rate.diff/d'              \
-        -e '/92_armel_gcc43_valist_compat.diff/d'                         \
-        -e '/80_hurd_max_path.diff/d'                                     \
-        -e '/71_hppa_unaligned_access_fix_458133.diff/d'                  \
-        -e '/70_hppa_ldcw_fix.diff/d'                                     \
-        -e '/51_kfreebsd_strnstr_build_fix.diff/d'                        \
-        -e '/50_kfreebsd_Q_OS.diff/d'                                     \
-        -e '/41_disable_opengl_visibility.diff/d'                         \
-        -e '/40_alpha_ice.diff/d'                                         \
-        -e '/s390x_jscore.diff/d'                                         \
-      `# Demos arent built on Arch Linux`                                 \
-        -e '/buildable_appchooser_states_demos.patch/d'                   \
-      `# This is not Debian or Ubuntu`                                    \
-        -e '/08_configure_quilt_compat.diff/d'                            \
-      `# Do not default to ibus`                                          \
-        -e '/kubuntu_10_ibus_input_method.diff/d'                         \
-      `# Tests arent built`                                               \
-        -e '/10_config_tests_fixes.diff/d'                                \
-      `# Not needed for rolling release distros`                          \
-        -e '/23_permit_plugins_built_with_future_qt.diff/d'               \
-      `# Do not hide stuff from the user`                                 \
-        -e '/no_libicu_message.diff/d'                                    \
-      \
-      "${srcdir}/debian/patches/series"
+  echo 'kubuntu_14_systemtrayicon.diff' > "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch: ${i}"
@@ -189,13 +138,28 @@ package() {
   make INSTALL_ROOT="${pkgdir}" install
 
   # install missing icons and desktop files
-  install -D -m644 src/gui/dialogs/images/qtlogo-64.png \
+  install -Dm644 src/gui/dialogs/images/qtlogo-64.png \
     "${pkgdir}/usr/share/icons/hicolor/64x64/apps/qt4logo.png"
-  install -Dm644 "${srcdir}"/qtconfig.desktop \
-    "${pkgdir}/usr/share/applications/qtconfig4.desktop"
+  install -Dm644 tools/assistant/tools/assistant/images/assistant.png \
+    "${pkgdir}/usr/share/icons/hicolor/32x32/apps/assistant-qt4.png"
+  install -Dm644 tools/assistant/tools/assistant/images/assistant-128.png \
+    "${pkgdir}/usr/share/icons/hicolor/128x128/apps/assistant-qt4.png"
+  install -Dm644 tools/designer/src/designer/images/designer.png \
+    "${pkgdir}/usr/share/icons/hicolor/128x128/apps/designer-qt4.png"
+  for icon in tools/linguist/linguist/images/icons/linguist-*-32.png; do
+    size=$(echo $(basename ${icon}) | cut -d- -f2)
+    install -Dm644 ${icon} \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/linguist-qt4.png"
+  done
+  install -Dm644 tools/qdbus/qdbusviewer/images/qdbusviewer.png \
+    "${pkgdir}/usr/share/icons/hicolor/32x32/apps/qdbusviewer-qt4.png"
+  install -Dm644 tools/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+    "${pkgdir}/usr/share/icons/hicolor/128x128/apps/qdbusviewer-qt4.png"
 
-  # install the profile
-  install -D -m755 "${srcdir}"/qt4.profile "${pkgdir}"/etc/profile.d/qt4.sh
+  install -dm755 "${pkgdir}/usr/share/applications/"
+  install -m644 \
+    "${srcdir}"/{assistant,designer,linguist,qtconfig,qdbusviewer}-qt4.desktop \
+    "${pkgdir}/usr/share/applications/"
 
   # Useful symlinks for cmake and configure scripts
   install -d "${pkgdir}"/usr/bin
