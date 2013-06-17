@@ -54,6 +54,8 @@ depends+=('python-lxml')
 depends+=('python-feedparser')
 # manpages
 depends+=('gtk3' 'man-db')
+# gdrive
+depends+=('hicolor-icon-theme')
 
 makedepends=('python-distutils-extra')
 # texdoc

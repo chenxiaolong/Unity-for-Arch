@@ -9,7 +9,7 @@ arch=('i686' 'x86_64')
 url="http://cmusphinx.sourceforge.net/"
 license=('custom')
 groups=('unity')
-depends=('alsa-lib' 'lapack' 'libpulse' 'python2')
+depends=('alsa-lib' 'lapack' 'libpulse' 'python2' 'libsamplerate')
 options=('!libtool')
 source=("http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphinxbase-${pkgver}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/sphinxbase_${pkgver}-${_ubuntu_rel}.debian.tar.gz"

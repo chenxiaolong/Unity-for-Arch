@@ -42,14 +42,14 @@ build() {
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static --disable-dumper
   export MAKEFLAGS="-j1"
   make
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static
+  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static --disable-dumper
   make
   popd
 }
@@ -65,7 +65,7 @@ check() {
 #   packages that depend on libdbusmenu.
 
 package_libdbusmenu() {
-  depends=('json-glib')
+  depends=('json-glib' 'python2')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
