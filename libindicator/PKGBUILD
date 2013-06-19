@@ -7,7 +7,7 @@ pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
 _extra_ver=daily13.06.19.1
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=100
+pkgrel=101
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
@@ -51,7 +51,7 @@ check() {
 
 package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2' 'glib2-ubuntu' 'ido')
+  depends=('gtk2' 'glib2-ubuntu')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 
