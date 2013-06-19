@@ -1,9 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu4
 pkgver=3.8.2
-pkgrel=103
+pkgrel=104
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -32,11 +33,22 @@ prepare() {
   patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
 
   # Apply Ubuntu Patches
-    # Disable patches
-      # Debian/Ubuntu's multiarch
-        sed -i '/061_multiarch_module_fallback.patch/d' "${srcdir}/debian/patches/series"
-      # Fedora's tracker is not compiled with FTS
-      #  sed -i '/044_tracker_fts.patch/d' debian/patches/series
+    # Enable patches
+      # https://bugs.launchpad.net/indicator-messages/+bug/1088162
+      # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
+        echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
+      # gnome-control-center-ubuntu: 54_enable_alt_tap_in_shortcut.patch
+      # Dependency check: grep -R GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP * | cut -d/ -f1
+        echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
+      # Do not allow offscreen widgets to grab the cursor
+        echo '016_no_offscreen_widgets_grabbing.patch' >> "${srcdir}/debian/patches/series"
+        echo '017_no_offscreen_device_grabbing.patch' >> "${srcdir}/debian/patches/series"
+      # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
+        echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> "${srcdir}/debian/patches/series"
+      # We build with Wayland support
+        echo '102_add_wayland_symbols.patch' >> "${srcdir}/debian/patches/series"
+      # Probably needed
+        echo 'git-gtkmodelmenuitem-icon-support.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
