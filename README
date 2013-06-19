@@ -13,20 +13,20 @@ Order to compile/install:
 03: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
 04: qt4-ubuntu                     -> Qt toolkit with Ubuntu patches
 05: libdbusmenu                    -> Library for passing menus over DBus
-06: libindicator                   -> Symbols and functions for indicators
-07: libindicate                    -> Libraries to raise 'flags' on DBus
-08: libindicate-qt                 -> Qt bindings for libindicate
-09: libappindicator                -> Library to export menu bar to Unity
-10: unity-gtk-module               -> Application menu module for GTK+
-11: vala0.18                       -> Compiler for the GObject type system
-12: dee-ubuntu                     -> Model to synchronize instances over DBus
-13: libunity                       -> Library for integrating Unity
-14: libunity-misc                  -> Differently licensed stuff for Unity
-15: indicator-messages             -> Collects messages that need a response
-16: libunity-webapps               -> Library for integrating WebApps into Unity
-17: bamf                           -> Application matching framework
-18: sni-qt                         -> Turns Qt tray icons into appindicators
-19: ido                            -> Widgets and objects used for indicators
+06: ido                            -> Widgets and objects used for indicators
+07: libindicator                   -> Symbols and functions for indicators
+08: libindicate                    -> Libraries to raise 'flags' on DBus
+09: libindicate-qt                 -> Qt bindings for libindicate
+10: libappindicator                -> Library to export menu bar to Unity
+11: unity-gtk-module               -> Application menu module for GTK+
+12: vala0.18                       -> Compiler for the GObject type system
+13: dee-ubuntu                     -> Model to synchronize instances over DBus
+14: libunity                       -> Library for integrating Unity
+15: libunity-misc                  -> Differently licensed stuff for Unity
+16: indicator-messages             -> Collects messages that need a response
+17: libunity-webapps               -> Library for integrating WebApps into Unity
+18: bamf                           -> Application matching framework
+19: sni-qt                         -> Turns Qt tray icons into appindicators
 20: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
 21: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 22: gnome-session-ubuntu           -> GNOME Session Manager
