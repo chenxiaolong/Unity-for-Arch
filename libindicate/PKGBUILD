@@ -5,12 +5,12 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=106
+pkgrel=107
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
 license=('LGPL')
-makedepends=('libdbusmenu' 'dbus-glib' 'gtk2-ubuntu' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
+makedepends=('libdbusmenu' 'dbus-glib' 'gtk2' 'gtk3-ubuntu' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
 checkdepends=('dbus-test-runner')
 groups=('unity')
 options=(!libtool)
@@ -76,7 +76,7 @@ package_libindicate() {
 
 package_libindicate-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=("libindicate=${pkgver}" 'gtk2-ubuntu' 'python2-gobject2')
+  depends=("libindicate=${pkgver}" 'gtk2' 'python2-gobject2')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
