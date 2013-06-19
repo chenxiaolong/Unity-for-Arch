@@ -7,7 +7,7 @@ pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
 _ppa_rel=0ubuntu1~raring1
 _translations=20130418
 pkgver=3.8.1
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -63,14 +63,14 @@ prepare() {
   # For updating translations in desktop files
   ln -s "${srcdir}/debian" .
 
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
+  #msg "Merging translations from ${_translations}"
+  #rm -f po/LINGUAS po/*.pot
+  #mv "${srcdir}"/po/*.pot po/
+  #for i in "${srcdir}"/po/*.po; do
+  #  FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
+  #  mv ${i} po/${FILE}
+  #  echo ${FILE%.*} >> po/LINGUAS
+  #done
 }
 
 build() {
