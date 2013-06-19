@@ -5,12 +5,12 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 pkgver=12.10.3daily13.06.07
-pkgrel=102
+pkgrel=103
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
 license=('LGPL')
-makedepends=('json-glib' 'gtk2' 'gtk3-ubuntu' 'intltool' 'gnome-doc-utils' 'gtk-doc' 'gobject-introspection' 'vala' 'python2' 'valgrind')
+makedepends=('json-glib' 'gtk2' 'gtk3' 'intltool' 'gnome-doc-utils' 'gtk-doc' 'gobject-introspection' 'vala' 'python2' 'valgrind')
 checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
@@ -90,7 +90,7 @@ package_libdbusmenu-gtk2() {
 
 package_libdbusmenu-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=('gtk3-ubuntu' "libdbusmenu=${pkgver}")
+  depends=('gtk3' "libdbusmenu=${pkgver}")
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 
