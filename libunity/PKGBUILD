@@ -3,11 +3,11 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_actual_ver=7.0.2
-_extra_ver=daily13.06.06.1
+_actual_ver=7.0.4
+_extra_ver=daily13.06.19
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=103
+pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"
@@ -21,8 +21,8 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch')
-sha512sums=('d618c8f0a24adee008042359793e2c107397b819f784e58625027d504536e90c9b66bf9aaa54a1c8a6fb0d26b8a350aa0864b09fb47078ec82663b9e9b817c3c'
-            '749c41f824edc7b73bf0c844eb4472425f442140623e60887f46068f54ac5619951e89dfe29dcf3e72f5aa1fe825b579561900611badc3fe98a4ec545b060652'
+sha512sums=('07de869ba175789836ea1ce05a5589cef3db40352e4b729d8d0a0d2ad1f6d83df26c7000378cce8d9deb216e9f428d509d2c655ce6e4780b6811dcfaa4794537'
+            '688e9730d8104ab48bea05a130924762f8cd8b790e7bea0b830c6f58fc88d8f38745d5ff4057252c619a7df0024ab13cf1d42596010f83648bd16163a59b9858'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 prepare() {
