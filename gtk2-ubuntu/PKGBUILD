@@ -3,9 +3,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=2.24.18
-pkgrel=102
+_ubuntu_rel=0ubuntu1
+pkgver=2.24.19
+pkgrel=100
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -21,8 +21,8 @@ install=arch_gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch')
-sha512sums=('5250ae00c8d5fcefded54c8476e45f6bcc69d1207457ed53a23cacf3986cbbbcd115c2b5b823c1f90f1e21de4eafb40c7081a7175943ce2adda593bf2759d0da'
-            '087355220c241f3a7edcab84191da19690f48df836a63d62cb6cc2c42228d591072c41075dc2d51469c2012d18abc90f25352e7c77de09eefb465c88b21e5db5'
+sha512sums=('89df9bbaf971beeb3390c433a80a8c64ebc1722ba83bb1bc3aefe4013d354c5f40bda43cb7c9b0a42a904fd8de02e12e12b964334bd43c6a4748756c56b0f950'
+            '72c5e1f991b45c70dcd87bd7cca63d63ad404d7b24b9b48dc63479aa83a1186eb9a93651d1b71f4db8f2a9a8bfdc10329d27e36a354c2b972425348b29472d85'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
 prepare() {
