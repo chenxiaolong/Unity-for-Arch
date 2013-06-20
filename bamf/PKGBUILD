@@ -2,46 +2,33 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
-# NOTE: These two bugs will remain unfixed until glib 2.38 is released:
-#       https://bugs.launchpad.net/unity/+bug/1183871
-#       https://bugs.launchpad.net/bamf/+bug/1183978
-
 pkgname=bamf
-_actual_ver=0.4.0
-_extra_ver=daily13.06.07
+_actual_ver=0.5.0
+_extra_ver=daily13.06.19
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=102
+pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-depends=('dbus-glib' 'libgtop' 'libunity-webapps' 'libwnck3' 'glib2-ubuntu')
-makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
+depends=('libgtop' 'libunity-webapps' 'libwnck3' 'glib2-ubuntu')
+makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'libxml2' 'libxslt' 'vala')
 checkdepends=('xorg-server-xvfb')
 provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")
 replaces=('libbamf3' 'bamfdaemon')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Disable_Werror.patch'
-        '0002_Compilation_fixes_for_bamf_0.4.0.patch')
-sha512sums=('ca113bcaa873bcc51582549725618e84c5bbb4fc2f812a3d81549d41b0e8cf4b8ccf5cbe4ba781516b0592e0b8f0214da5246f41758f2683ec3a84aaf4a2cd5e'
-            'f1881b97d832d2ac3e4ad00392439023e3c562f2687d62d8dbf2d9f789dd147e1e51c0723899489c3d10c2048bda5f48f2e4f3e91b75d36810be2a74ba636625'
-            '107646dee3291aa8d981b4eae5360f80fb3e9196ad669effb99cecd6be784ffab7729609e0b8661f0bc9a030c7adbcc9d3e0178b76eca105b5ff75530def1e85')
-
-prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  patch -p1 -i "${srcdir}/0001_Disable_Werror.patch"
-  patch -p1 -i "${srcdir}/0002_Compilation_fixes_for_bamf_0.4.0.patch"
-}
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('a54a43805d57de26f1a1a9f18c6457efc4907808cd73351d412c906b4d9463d4803b4693775048f03751b69672476d0b284e5c7c557cf8d174265ddbb9c82a7f')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
+
+  export PYTHON=/usr/bin/python2
   
   if ! pacman -Q xorg-server-xvfb &>/dev/null; then
     ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc
