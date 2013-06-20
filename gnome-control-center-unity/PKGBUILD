@@ -2,7 +2,7 @@
 
 pkgname=gnome-control-center-unity
 _translations=20130418
-pkgver=1.3daily13.05.30
+pkgver=1.3daily13.06.14.1
 pkgrel=1
 pkgdesc="A set of settings panels for configuring the Unity desktop"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-control-center-unity_${pkgver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center-unity.tar.gz")
-sha512sums=('7a93dfe555c736eb4deb546e0cedd6e79bb5ff7211d67726d4ecd152cc9254c2b54a4c20a00effbee68c481efb7a8e51737b905a198807088d45d9873f3a0507'
+sha512sums=('8083baa1d974f2cd93f3e8f17a474b7c4b6f0265de6e1c707ac495de4e077525c52d73158b15577f4b52d4e44f85871bbf25ec4eeb205a12a304fe70cefd8ad6'
             'e9dd7b099df99c55938cf882639e8cfc03101e97761f3209db7ad5b218f5f6345cd49e5679fe7033264f1676dea03a093351ecf14b5ea8d172390a08bfa7759d')
 
 prepare() {
@@ -49,11 +49,6 @@ check() {
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
-
-  # GNOME breaking stuff for no reason once again
-  cd "${pkgdir}/usr/share/applications/"
-  mv gnome-control-center-unity-appearance.desktop \
-     gnome-unity-appearance-panel.desktop
 }
 
 # vim:set ts=2 sw=2 et:
