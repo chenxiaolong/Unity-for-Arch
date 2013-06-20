@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-scope-home
-pkgver=6.8.0daily13.06.10
-pkgrel=2
+pkgver=6.8.0daily13.06.19
+pkgrel=1
 pkgdesc="Home scope that aggregates results from multiple scopes"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-scope-home"
@@ -11,7 +11,7 @@ groups=('unity')
 depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
 makedepends=('gnome-common' 'intltool' 'vala')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${pkgver}.orig.tar.gz")
-sha512sums=('64d4bcb8ac2e1e504b37896e26117467abe3bc09da5db01eaaec101a0a2a2c191c2634d2dd1f2eee8eb3ee7ceffc32f486f2a654079339908f8d227fc8946771')
+sha512sums=('865965518c22754c5aae5593814a8efb18b27a70892ebab2a30335e87bb636ca45d4acfa879dc8fdb2cc2d9f2dd36d6667ca602bd34f3b225e0336685beb3b9b')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
