@@ -4,7 +4,7 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=daily13.05.06.1
+_extra_ver=daily13.06.19
 _translations=20130419
 pkgver=${_actual_ver}${_extra_ver}
 pkgrel=100
@@ -25,7 +25,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_
         '0002_There_is_no_help.patch'
         '0003_Link_Against_pthread.patch'
         '0004_Lock_Screen_Guest_Session_Detection.patch')
-sha512sums=('302d11ab9f8e8ea010810fc3f9b36e6a6ad96d0d8b1d1a59d7f4347be8b9e3637e5ae04b0a79870dccb5212fbfede38e13d770d60a8f8552385ad3f8e205b402'
+sha512sums=('64c7e024f6bf1bdb71928c133a383d66ff310751435b2dcfc86070df466361a49fcee08dc5ae64487fc48be9d91e018023f6ed1a7221a31394b1f580a87c88bd'
             'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
             'f0e000995339e8a722f3a863fea61032ca9ac262c1760c1b647f76f9eae3dc081ae8025607936d094fc6a58738f6bcaaa4bc9ee55ed9439f0eb213507d729e5d'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
