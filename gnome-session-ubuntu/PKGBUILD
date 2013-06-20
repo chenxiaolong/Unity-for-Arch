@@ -3,11 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ppa_ver=3.8.0
-_ppa_rel=0ubuntu1~raring1
+_ubuntu_rel=1ubuntu1
 _translations=20130418
 pkgver=3.8.2.1
-pkgrel=102
+pkgrel=103
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -20,19 +19,16 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver:0:3}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-session/gnome-session_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
         '55gnome-session_gnomerc'
-        '50_ubuntu_sessions.patch'
-        '52_xdg_current_desktop.patch'
         'timeout.patch')
 sha512sums=('9d580432faf256e53da30c8fff3d3b1e16cb18869cd2d70542f56bf6fbf41893abd24003413c2a9364eaaa1c9760874683bf7255607918a79a05ab61e292caca'
-            'd37055538bacff741865a47916b551cffed6f28293cd01de6c3a75660382ba1d33c049c10f7a5a51fcfc861bf910f535ef0e96dd1e80211c8b76dc196bc46f3d'
+            'ce08beabfa560388e21c741d29fe2282c7c8eef658118c51499ec49bb740ca008ffa3da00aeb653753f00b43beec67e13e0599232b9aa24edd216f0305bc0594'
             'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
-            '075852f1321dd43352311b85fd214969aaf7442a77eb5d666a0ba1f6059041cc34431427dc7cbe0a0632a65cb375dfa8b3fb5592f747bb3162ad10f023ab701c'
-            '240b3f6983f60c4dedf30d325055700fcb0e024eea9cb15d8daa9bdfb10f01a6d49eb68ee8c78ee0754f90c56357e93bc8f19e9b3d9684f574871b6d552db9e2'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
+
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
@@ -40,31 +36,18 @@ prepare() {
   patch -p1 -i "${srcdir}/timeout.patch"
 
   # Disable patches
-    # We don't have GNOME fallback stuff anymore
-      sed -i '/00_revert_remove_fallback_session.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/02_fallback_desktop.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/03_fallback_desktop_makefile.patch/d' "${srcdir}/debian/patches/series"
-      sed -i '/git_revert_isRunnableHelper.patch/d' "${srcdir}/debian/patches/series"
-    # gnome-wm uses Debian's alternatives system (Fedora has it too, but other
-    # packages need to use it)
-      sed -i '/01_gnome-wm.patch/d' "${srcdir}/debian/patches/series"
     # We're not Ubuntu, do not hide stuff
       sed -i '/20_hide_nodisplay.patch/d' "${srcdir}/debian/patches/series"
-    # Fedora does not have sessionmigration
+    # Arch Linux does not have sessionmigration
       sed -i '/53_add_sessionmigration.patch/d' "${srcdir}/debian/patches/series"
 
   # Fix patches
-    # Needed because 01_gnome-wm.patch is disabled
-      sed -i 's/gnome-wm/metacity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
+    # Change session name to 'Unity'
+      sed -i 's/+_Name=Ubuntu/+_Name=Unity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch ${i} ..."
-    if [ "x${i}" = "x50_ubuntu_sessions.patch" ] || \
-       [ "x${i}" = "x52_xdg_current_desktop.patch" ]; then
-      patch -p1 -i "${srcdir}/${i}"
-    else
-      patch -p1 -i "${srcdir}/debian/patches/${i}"
-    fi
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   msg "Merging translations from ${_translations}"
