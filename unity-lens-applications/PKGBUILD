@@ -4,10 +4,10 @@
 
 pkgname=unity-lens-applications
 _actual_ver=7.0.0
-_extra_ver=daily13.06.05
+_extra_ver=daily13.06.19
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="A daemon that exposes you applications with their usage statistics and status to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-applications"
@@ -19,7 +19,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-applications.tar.gz"
         '10-no-db51.patch')
-sha512sums=('1671fe15234d819192b58cb94531ab329dd4c2af7e1f373271ec6c99c58b669d6dcd46270f32202c40f43fc0bc7068145148c7c578187f1fc7643fb2718e1393'
+sha512sums=('706e16dfd2fc5ac04fcee4f051ba8601873806b27bf7dd59851c454d8acd2baec5634db7d9cd15b4677ef2c1b25351a35cdcdb9583841cc141cc3aedd78f9302'
             '373cd206980e64d388335a3396091a2997a27d27334352073d6cfb927b4e9f04d33f70420859cd522b562c75377938867500e73c47a75f1c8dce9f86d5a1014d'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
