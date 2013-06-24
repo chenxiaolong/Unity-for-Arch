@@ -37,7 +37,9 @@ prepare() {
 
   patch -p0 -i "${srcdir}/0001_Lock_Screen_Live_CD_Detection.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
-  patch -p1 -i "${srcdir}/0003_Link_Against_pthread.patch"
+  if pacman -Q gtest-ubuntu &>/dev/null; then
+    patch -p1 -i "${srcdir}/0003_Link_Against_pthread.patch"
+  fi
   patch -p0 -i "${srcdir}/0004_Lock_Screen_Guest_Session_Detection.patch"
 
   msg "Merging translations from ${_translations}"
