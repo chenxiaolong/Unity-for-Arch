@@ -1,7 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity-scope-home
-pkgver=6.8.0daily13.06.19
+_actual_ver=6.8.1
+_extra_ver=+13.10.20130702
+pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="Home scope that aggregates results from multiple scopes"
 arch=('i686' 'x86_64')
@@ -10,11 +12,11 @@ license=('GPL')
 groups=('unity')
 depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
 makedepends=('gnome-common' 'intltool' 'vala')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${pkgver}.orig.tar.gz")
-sha512sums=('865965518c22754c5aae5593814a8efb18b27a70892ebab2a30335e87bb636ca45d4acfa879dc8fdb2cc2d9f2dd36d6667ca602bd34f3b225e0336685beb3b9b')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('85bd66f4a9f4cab3939b840fd3cd47ac74c2cc18e0ef74e2cdfbe386224ceccd4480617aac44e274e3c96b5a1177d4c07710b6e134948a534b760e1001556097')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
@@ -22,11 +24,11 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make check || :
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
