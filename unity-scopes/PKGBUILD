@@ -13,7 +13,7 @@ setver clementine		0.1daily13.06.05	0ubuntu1
 setver colourlovers		0.1daily13.06.05	0ubuntu1
 setver devhelp			0.1daily13.06.05	0ubuntu1
 setver deviantart		0.1daily13.06.05	0ubuntu1
-setver firefoxbookmarks		0.1daily13.06.05	0ubuntu1
+setver firefoxbookmarks		0.1+13.10.20130702	0ubuntu1
 setver gallica			0.1daily13.06.05	0ubuntu1
 setver gdrive			0.9daily13.06.05	0ubuntu1
 setver github			0.1daily13.06.05	0ubuntu1
@@ -36,7 +36,7 @@ setver zotero			0.1daily13.06.05	0ubuntu1
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Online scopes for the Unity Dash"
 arch=('any')
 url="https://launchpad.net/unity-scope-NAME"
@@ -134,8 +134,8 @@ sha512sums=('bce5e6a122f819987a1d0a1ba0f0121385ee6af1eb5c52cb0fea0ac53fc938b80a7
             '5e82c2f4dd189cf62bd4704ffc0118e1d44350eb2f55f7022298c87118e6325514a15f9ef2c739cdeddfbeb9bcb3270a5a7eaf529ce1f690ce77c9e79fb68f73'
             'c42e6eddfe3c7fb9bf03cce6d52a084600a25f5f62cadd5d125fcc17807a2aae22fa29e9141ece2343d55f567a468cf20083b3e5c8fe08ce35f57616397f1616'
             '2c8019e04d94a6a9c0deccd0bd2450801c93469bbcf7f0df39ab0f2c7141886e9156f67816239ba08a6e75127adeb09227c996ffd7292a2a97295cfdfe7b785b'
-            '85e92896ad59a6eb14712488d58edf99640aabaf84b76c08413dd221e2847c421ca1cec469c4b5e12df349e01f1fb719f7b758f097879e22493d6e276e9ab3ca'
-            '2473576f791be5c540bfdc83cf92e632e2001cb9d3a24301a7776d786ce2fba5ac00ffb3989d774685311af45b48e4b264e8b2f62a8ffaaa71489ac5f9e793ff'
+            '1701978a858282fd9723e1a0344e361027f11ecde822d5e1d92f094c670fb30f44eb58632de9c9ce96e78f4a0d9b1984f3e2708c2233fa7bed1b635d75951569'
+            '2f3b632ace4ed61d537d1c33336516487cbcc7714e9edf3b1783846896f1d202f3d7b5fa0e4d5ef822bfb754e51b98d9efd088cee762a48c5dfeeb824028e462'
             'c26633f85dd8b21fb9e1ac6cd0caf09668bf3612552c13173db6b72a7d8d896fb5e0b9ede8b8e4c4ae16e723cfa147c8b194f1af1915298444881b3ccbd21727'
             'b765cdc66425961f27d34263fc1c90d18b4982d5f7c0805b1565f8b72af52a3b0ea3d49909ac8c7767c7629d20c02eee5c55d2e5e8cf664c8d64f44b41817586'
             'bd06bf4f14f698eeb7ae1d92854395ecdcc2d416d4e8f6574906c80ec1a320bb24cbdec3ad46f34c93c6b2b84e7b047ac0ff3bcb24ceb64e5d635c7852fa57be'
