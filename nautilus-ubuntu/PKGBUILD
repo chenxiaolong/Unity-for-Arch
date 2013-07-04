@@ -4,10 +4,10 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ppa_rel=0ubuntu1~raring1
+_ubuntu_rel=0ubuntu1
 _translations=20130418
-pkgver=3.8.1
-pkgrel=103
+pkgver=3.8.2
+pkgrel=100
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -17,21 +17,19 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz"
         '0001-Use-an-RGBA-window-for-the-desktop.patch'
         '0002-desktop-window-don-t-signal-we-are-handling-the-back.patch'
         '0003-canvas-dnd-don-t-use-NautilusDesktopBackground.patch'
-        '0004-desktop-canvas-don-t-use-NautilusDesktopBacgrkound.patch'
-        '0005-Remove-NautilusDesktopBackground.patch')
-sha512sums=('95041119ccc322b5ebdc994729f8721dd86356a22cbb5163a46656a027209cd4e585bc1972b038340248a745cddc7107438d9f1eb85889e06e19e0a1cdf3ae9d'
-            'd2c5c63b8c973903a2319cecf3be3ebd37b5407b42e29720237d916b3f3c0658677bde90b782a6f53d0eaf7136e8993f8069b7c2c157d03fbc3fbf1a3a3f23b4'
+        '0004-desktop-canvas-don-t-use-NautilusDesktopBacgrkound.patch')
+sha512sums=('bca8d37e43863c2eca79f060eb380f4c81f480811348e3c0c2f641c99162cc9043599b14ab405713b9f2063214727918f8818a7ea97d4a327bbb245825a56cc2'
+            '47d27c3ed9290a3b94884e20b8c55e63ffd95bb4b8495c0846c7ca1240c95434e2bbcf31e21467669d391944784eecab987578a31005dbbbaa16b32acb231f5b'
             '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de'
             'fe554c2864138b959bbb7ce292b4de1d68bafc9dceb352d950ebedb62012aa84e2c64724bb75f5f80a0a1670e9fdcde9f129312854d321a29eb6cd53ce0cf9e4'
             'af2224ea23efb4fb25d3850feb66394dff1fa763a559f634a3aa75756fe515891bed85378d89ec1818c2566fd1b1e170c536050e0d2167b1e5a2dba188a8940b'
             '42e81088fdaa5f3677e720046d6a7031e0bcdb6225fbaa8e04d0f94f2ec9dfdc28362ce71e42e65dc7a0721aef6fddda0b9c2ab795ed45cc510bb2258c88cd69'
-            'ab4e036cd36ce157c1679c1c69eb1f2fa3e98fd28787f5f548e48b6c731d6d20ea5be2d803d782d3493436563ab886e7655633aba85a1f33d2ff46091eca8899'
-            'f9ddddfce28fc8da7468ef435abb59cce57983b42706ce46268e810ad9b1968b8cb39d0d0d8a07682a364ae3ff319bca504c2c95ebe1bb6e0be2d11e355c0f3a')
+            'ab4e036cd36ce157c1679c1c69eb1f2fa3e98fd28787f5f548e48b6c731d6d20ea5be2d803d782d3493436563ab886e7655633aba85a1f33d2ff46091eca8899')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
@@ -41,11 +39,10 @@ prepare() {
   #   git format-patch b4c2aa5b547c41101280b1d9daac68cf26dbf13c..372c60d3f8590280df23f457a67652adec369697
   # - gnome_bg_set_draw_background() calls removed
   #   - unneeded, unused, and unsupported
-  patch -p1 -R -i "${srcdir}/0005-Remove-NautilusDesktopBackground.patch"
-  patch -p1 -R -i "${srcdir}/0004-desktop-canvas-don-t-use-NautilusDesktopBacgrkound.patch"
-  patch -p1 -R -i "${srcdir}/0003-canvas-dnd-don-t-use-NautilusDesktopBackground.patch"
-  patch -p1 -R -i "${srcdir}/0002-desktop-window-don-t-signal-we-are-handling-the-back.patch"
-  patch -p1 -R -i "${srcdir}/0001-Use-an-RGBA-window-for-the-desktop.patch"
+#  patch -p1 -R -i "${srcdir}/0004-desktop-canvas-don-t-use-NautilusDesktopBacgrkound.patch"
+#  patch -p1 -R -i "${srcdir}/0003-canvas-dnd-don-t-use-NautilusDesktopBackground.patch"
+#  patch -p1 -R -i "${srcdir}/0002-desktop-window-don-t-signal-we-are-handling-the-back.patch"
+#  patch -p1 -R -i "${srcdir}/0001-Use-an-RGBA-window-for-the-desktop.patch"
 
   # Apply Ubuntu's patches
 
@@ -71,6 +68,8 @@ prepare() {
   #  mv ${i} po/${FILE}
   #  echo ${FILE%.*} >> po/LINGUAS
   #done
+
+  sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
 }
 
 build() {
