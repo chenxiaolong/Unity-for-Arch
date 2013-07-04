@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu7
 pkgver=3.8.2
-pkgrel=104
+pkgrel=105
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         '0001_Add_broadway_symbols.patch'
         'arch_settings.ini')
 sha512sums=('20958c192fe881281f6885e2d7cecc4e2700fc01ef8006304f1fb8befe8f6628cbdb06c0d801f109e5805d58f327ca9a07d5e2c7f938116c99db8080d0c2f83e'
-            'b1e7a7d1dfbbed1d509c09ef290b4ce893f8c4134b5d53764955933a926c0b3c0de239d371ceb39faf91c4a8a5f23f399c821a6ad4d1109e98c5e4fc0046ca58'
+            'cc2c46a023cf6ade3937552a39bf118b46a514adf4dbb40105509bf116a0449604ee8e69ec6c65bfa0138795b80cabff4164684dd222352bbec7c805d15552df'
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
@@ -49,6 +49,7 @@ prepare() {
         echo '102_add_wayland_symbols.patch' >> "${srcdir}/debian/patches/series"
       # Probably needed
         echo 'git-gtkmodelmenuitem-icon-support.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_no_segfault_on_icon_theme_update.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
