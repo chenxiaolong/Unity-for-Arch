@@ -5,9 +5,9 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
-_extra_ver=daily13.06.19.1
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+_extra_ver=+13.10.20130702
+pkgver=${_actual_ver}daily13.07.02
+pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
@@ -17,7 +17,7 @@ checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('461cd96f7e909266d42892fa66c8f3daf67854aaf00d90eea8436e67b412e9f0f125c6018032d8915261d5949d905ea3aba9749bfa4b6503fc4fd88c5712cd91')
+sha512sums=('c6e552e23a55aa228ff81bcafc31c452676a00279a46be1f699a18c4f116827e61d6752b8197cef9591626618b51fc97c74ccf3e0b60e67fd4d1acc349680b5d')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
