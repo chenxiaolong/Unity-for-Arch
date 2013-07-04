@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_actual_ver=7.0.4
-_extra_ver=daily13.06.19
+_actual_ver=7.0.7
+_extra_ver=+13.10.20130703.2
 _ubuntu_rel=0ubuntu1
-pkgver=${_actual_ver}${_extra_ver}
+pkgver=${_actual_ver}daily13.07.03.2
 pkgrel=100
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=('i686' 'x86_64')
@@ -15,14 +15,14 @@ license=('LGPL')
 depends=('libgee06' 'dee-ubuntu' 'libdbusmenu' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection' 'vala0.18')
 checkdepends=('python2-gobject' 'xorg-server-xvfb' 'xorg-xauth')
-install=$pkgname.install
+install=${pkgname}.install
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch')
-sha512sums=('07de869ba175789836ea1ce05a5589cef3db40352e4b729d8d0a0d2ad1f6d83df26c7000378cce8d9deb216e9f428d509d2c655ce6e4780b6811dcfaa4794537'
-            '688e9730d8104ab48bea05a130924762f8cd8b790e7bea0b830c6f58fc88d8f38745d5ff4057252c619a7df0024ab13cf1d42596010f83648bd16163a59b9858'
+sha512sums=('8a9422e0102c4ff67b23d25cf81003b8ac7b465999e5641bdede80d279a7ce8259f4f951591e21e863a1f1cd25a154d0393b922fa4aa831b9956979d8185a003'
+            '6fc0bdc55a875c041641250e73a1b15ccd7dc9861d2e4bf39f5cc24cac5a829e0c4a0d4933321422c0d2875981f5d7e04623e3a6f061038c53f380fd13c3b0b1'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 prepare() {
