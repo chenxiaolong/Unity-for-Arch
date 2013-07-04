@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.9.0
-_extra_ver=daily13.06.19
+_extra_ver=daily13.06.21
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
 pkgrel=100
@@ -17,7 +17,7 @@ makedepends=('vala' 'intltool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-music.tar.gz")
-sha512sums=('74b4736e1a26eafaf015af4e402837787923db119069dc0ef804c63e6800aa0a51e0f99ff436279c906a50aa3c8cce3d5ee61b6f8005a5a7c75d6adf68942946'
+sha512sums=('c8e071854e780f79fab7aa00ad625650ffac1bd67d9da551bc95eebacf6d634b88e10efaed01944d628f7248b095285a97cee033d73276d9e50eef5cfe5555fc'
             'e41c9acd6b573fa03e06a447a7692e9b82f76d810d887c9cbcf364912dfe34f41e9741b77c19026357522365361b402958bb86784b40f1b5dd3f061737964ec9')
 
 prepare() {
