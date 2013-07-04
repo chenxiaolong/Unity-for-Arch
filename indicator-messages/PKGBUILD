@@ -4,9 +4,9 @@
 
 pkgname=indicator-messages
 _actual_ver=12.10.6
-_extra_ver=daily13.06.19
+_extra_ver=+13.10.20130702
 _translations=20130419
-pkgver=${_actual_ver}${_extra_ver}
+pkgver=${_actual_ver}daily13.07.02
 pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
@@ -20,12 +20,12 @@ install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-messages.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('186a7684e7bf6598102a5b86efd138e03b5fb9c8c0c945884f4bc9fda21bd44f661635b88a5fef290e6e2c2ae932b7e420cbc7f80ff13a92d823cbd0349b28fd'
+sha512sums=('be18a0d948cd29d852332b9a1a6b16edda198bc64e85a129dae061fd81eba0765e738e48d38385d5c17fbd94b9415128b846f1526bfdad384f139c275b24afda'
             'c880b0873651a0e995d273fe989afad3435cac75fbdf4b1d26fa3b48c718d06c57d5f196093f5989a9d3c697d5c45b7239d3d464ac071a945a87efed7142af57'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 
@@ -40,7 +40,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   export CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
 
@@ -52,13 +52,13 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make check
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
