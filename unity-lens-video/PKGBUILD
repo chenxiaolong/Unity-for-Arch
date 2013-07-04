@@ -2,15 +2,15 @@
 
 pkgname=unity-lens-video
 _actual_ver=0.3.15
-_extra_ver=daily13.06.05
+_extra_ver=daily13.06.21
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="Unity Video lens"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-lens-videos"
 license=('GPL')
-depends=('dee' 'json-glib' 'libgee' 'libsoup-gnome' 'libunity' 'libzeitgeist' 'unity-lens-music')
+depends=('dee' 'json-glib' 'libgee06' 'libsoup-gnome' 'libunity' 'libzeitgeist' 'unity-lens-music')
 makedepends=('gnome-common' 'intltool' 'vala')
 checkdepends=('xorg-server-xvfb')
 provides=("unity-scope-video-remote=${pkgver}")
@@ -19,7 +19,7 @@ replaces=('unity-scope-video-remote')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-video.tar.gz")
-sha512sums=('5ead116b7499b436b6bd300b910826685c8583695a4a934ec0108dbb4fc95ad2dc492333c84ded81557f19e6f6cf736a10259c88b2abfdaf3da1463b45478112'
+sha512sums=('3c7c00aa75c9965323c9def3df56673f5968f3c3d059e6b3e13c97e313fb54025bedf8bb689a1f054164495d36ef7172db8f432231c9cdc372a02b5c7493f99c'
             'cac380942dd525e405dcac5c348e0aac8c734cb5ee2d2ef034a1a4a0acbeb54dc5598dc40ab7e4b0fcbe28eec322663b15a1df09fc36aec091c1f959ec67b700')
 
 prepare() {
