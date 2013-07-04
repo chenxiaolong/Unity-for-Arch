@@ -4,8 +4,10 @@
 
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
-pkgver=12.10.3daily13.06.19
-pkgrel=101
+# Ubuntu: please stop changing your versioning scheme
+_realver=12.10.3+13.10.20130628
+pkgver=12.10.3daily13.06.28
+pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -14,19 +16,19 @@ makedepends=('json-glib' 'gtk2' 'gtk3' 'intltool' 'gnome-doc-utils' 'gtk-doc' 'g
 checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${pkgver}.orig.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${_realver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('cea16e3e6a587f39ab4a5a6d72e19e8bab53516c167cef65d0c9f56eb91b8a0b0c1a2d5cfe6317c32e872d4a4bcaa022cd00661ffce04e8b09002580fc67866b'
+sha512sums=('2157e2bb7df160ee74ec721fe94af62076f319abbf4e5a2b144323483f8a7895b033d781c571e6aa88c66a3f2e41d6d13e9e77e7945a55e171bdfc8f2282bb0b'
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 prepare() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${_realver}"
 
   patch -p1 -i "${srcdir}/0001_autoconf.patch"
 }
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${_realver}"
 
   gtkdocize
   autoreconf -vfi
@@ -55,7 +57,7 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${_realver}/build-gtk3"
 
   make check || :
 }
@@ -67,7 +69,7 @@ check() {
 package_libdbusmenu() {
   depends=('json-glib')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${_realver}/build-gtk3"
 
   export MAKEFLAGS="-j1"
   make -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
@@ -81,7 +83,7 @@ package_libdbusmenu-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
   depends=('gtk2' "libdbusmenu=${pkgver}")
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${srcdir}/${pkgbase}-${_realver}/build-gtk2"
 
   export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
@@ -92,7 +94,7 @@ package_libdbusmenu-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
   depends=('gtk3' "libdbusmenu=${pkgver}")
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${srcdir}/${pkgbase}-${_realver}/build-gtk3"
 
   export MAKEFLAGS="-j1"
   make -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
