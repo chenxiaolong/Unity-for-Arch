@@ -7,7 +7,7 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _actual_ver=0.9.9
 _extra_ver=\~daily13.04.18.1~13.04
 
@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=4
+pkgrel=5
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -40,17 +40,15 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
-        '0005_Disable_Werror.patch'
-        '0006_Boost_1.53.patch')
+        '0005_Disable_Werror.patch')
 sha512sums=('22ec49359a99c942a253e8f4fb3dcfd5340439f61c5f5715e1c9bd9134c217659a8cbb1dc74ad3e37a5a2a9a969b7719f293cc3a6c8cce83fcbb01d1845aed00'
-            'f59883c4aa947b0788ffd1274a854741fa0b5633044b3e1b436d2bba316244f0ecd44df8c431772edb88892634e05ddd12e377e9b3985efae9b93c65eb7c3393'
+            '186e52be6106f4e582fef36aa2a2db479962704763f0fd63a716ba7a5669b177fbb9299c90aacd6837c9eb0333ac3afb3b2e8df74b748f3a8e93d130bead3107'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
-            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924'
-            '19e6abb6de3e8d949cd5384b470e8c624294ecf5bee06c5e54fece9682849c755e90b6d609d4efbea9738525923e5ba7e4e48415ba7eb19578c6bfeeb255d07a')
+            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 prepare() {
   cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
@@ -71,10 +69,6 @@ prepare() {
 
   # Don't treat warnings as errors
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
-
-  # Fix build with Boost 1.53
-  # https://bugs.launchpad.net/compiz/+bug/1131864
-  patch -p0 -i "${srcdir}/0006_Boost_1.53.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
