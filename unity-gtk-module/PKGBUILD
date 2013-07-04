@@ -2,8 +2,8 @@
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=daily13.06.19
-pkgver=${_actual_ver}${_extra_ver}
+_extra_ver=+13.10.20130702
+pkgver=${_actual_ver}daily13.07.02
 pkgrel=1
 pkgdesc="Unity GTK+ Module"
 arch=('i686' 'x86_64')
@@ -16,8 +16,16 @@ provides=('appmenu-gtk2' 'appmenu-gtk3')
 replaces=('appmenu-gtk2' 'appmenu-gtk3')
 conflicts=('appmenu-gtk2' 'appmenu-gtk3')
 options=('!libtool')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('4daecc6534ce8a4d0c8979425fe491fec1a99ab20d26fcdff3155e12abb39840874e808ba8bd5af69c5a359af3f4989fb92045300459742fa26e12ec8e716d30')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_Do_not_check_existance_of_module.patch')
+sha512sums=('1c5cc21e6a5bc78eb7b51962aea9b474d8e4cee470e9a864da6599d5869d668983bb9dff647aa7a5d0d7087e8f38c753f79a138a5ea269e93d32c4a659d58c36'
+            '9ae85dd59bb99fd836cb6acc1a91d5db2eaaccd096a44a93356b5f028ea9f3bed35d270e8ab46e68a26932d105a68c776c7c99a814ed93856b9d43a0cc354ec0')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -R -i "${srcdir}/0001_Do_not_check_existance_of_module.patch"
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
