@@ -1,10 +1,12 @@
 --- a/tests/Makefile.am
 +++ b/tests/Makefile.am
-@@ -40,6 +40,7 @@
+@@ -40,7 +40,8 @@
  test_service_LDADD = \
  	$(TEST_SERVICE_LIBS) \
- 	$(XORG_GTEST_LDFLAGS) \
-+	-lpthread \
- 	libgtest.a
+ 	libgtest.a \
+-	$(XORG_GTEST_LDFLAGS)
++	$(XORG_GTEST_LDFLAGS) \
++	-lpthread
  test_service_CPPFLAGS = \
  	-DSCHEMA_DIR="\"$(top_builddir)/tests/\"" \
+ 	-DINDICATOR_SERVICE_DIR="\"$(abs_builddir)\"" \
