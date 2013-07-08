@@ -4,10 +4,10 @@
 
 pkgname=unity-lens-files
 _actual_ver=7.1.0
-_extra_ver=daily13.06.05
+_extra_ver=daily13.06.24
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+pkgrel=100
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-place-files"
@@ -18,7 +18,7 @@ groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-files.tar.gz")
-sha512sums=('c53c2d89c22f895e99c5ad4d188b064caa372dafd3393b120060387f743fa2d12f7bb7585283300fb286873b5d8308f9e4264c89b94c7f7660a01dc9f6f62a6f'
+sha512sums=('75dfdf13d24831c834d33e03eff881d9e506a46da6b7651c657ba6aad9c374af1a30c6d224726e442322eabb271761e1fd55a5cd747e98c8a7ecd7f83e929cbb'
             'b3efd04b48ebbdbc61c50e47ee2cb3bb59627c2878dcd6c710d4461e4780d3f5c7ee8fe7c18f060eee519773c38cc21506f500e4d7b5315e80f7577f8c40a359')
 
 prepare() {

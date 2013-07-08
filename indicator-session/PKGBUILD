@@ -23,11 +23,13 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"
         '0001_Lock_Screen_Live_CD_Detection.patch'
         '0002_There_is_no_help.patch'
+        '0003_Link_Against_pthread.patch'
         '0004_Lock_Screen_Guest_Session_Detection.patch')
 sha512sums=('96248d1ead9ea7e092c4b5ac217417b40ded4c7be68cdb4dec4379e33d5c9165c4bc39cc5c5c9db3b46e422b9c6f66a0a1e7b2e528eacc94e125fc507fb803e7'
             'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
             'f0e000995339e8a722f3a863fea61032ca9ac262c1760c1b647f76f9eae3dc081ae8025607936d094fc6a58738f6bcaaa4bc9ee55ed9439f0eb213507d729e5d'
             'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
+            '8a99d760533f8b742cd9619df9807701dda1e57458ca737d273a9ecb812c09e8e327ac59267abcb82f409bde9fafdda59904e53befc940724eb818c002356e2a'
             '3b4a496f67d0020816184b816becdf8ca837aec35d1cd2dd4a2a4f11b4824f7d5aaca9fbeca87f2e00e66133376bfc9af6ba7a3334bcdaaed216ad7b5a03abf8')
 
 prepare() {
@@ -35,6 +37,7 @@ prepare() {
 
   patch -p0 -i "${srcdir}/0001_Lock_Screen_Live_CD_Detection.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
+  patch -p1 -i "${srcdir}/0003_Link_Against_pthread.patch"
   patch -p0 -i "${srcdir}/0004_Lock_Screen_Guest_Session_Detection.patch"
 
   msg "Merging translations from ${_translations}"

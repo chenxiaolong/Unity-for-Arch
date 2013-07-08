@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=1ubuntu1
+_ubuntu_rel=1ubuntu4
 _translations=20130418
 pkgver=3.8.2.1
-pkgrel=103
+pkgrel=104
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -24,7 +24,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver:0:3}/${pk
         '55gnome-session_gnomerc'
         'timeout.patch')
 sha512sums=('9d580432faf256e53da30c8fff3d3b1e16cb18869cd2d70542f56bf6fbf41893abd24003413c2a9364eaaa1c9760874683bf7255607918a79a05ab61e292caca'
-            'ce08beabfa560388e21c741d29fe2282c7c8eef658118c51499ec49bb740ca008ffa3da00aeb653753f00b43beec67e13e0599232b9aa24edd216f0305bc0594'
+            '1c103dd272ffcc921aebcea4615386945a7d96bcc76031ae6569ce0811f233d03b1ac1c07ef3e27748573bebdbf92755dd47dcd97cebf42c214c3e3ea1de0ae8'
             'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70')
