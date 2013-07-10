@@ -2,8 +2,8 @@
 
 pkgname=hud
 _actual_ver=13.10.1
-_extra_ver=+13.10.20130703
-pkgver=${_actual_ver}daily13.07.03
+_extra_ver=+13.10.20130710
+pkgver=${_actual_ver}daily13.07.10
 pkgrel=100
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
@@ -19,7 +19,7 @@ optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Python_2.patch')
-sha512sums=('012cf4be2891da1dc2ebc212fb6ed48b5bae3d93c3b4603f878cee8621236dba9d6559f7f62b287502c53f1217050abb4879f2ea1d4be2cc3436c5b1ebfd7337'
+sha512sums=('5ed4b396a57a1e1b605da4f0f7a3d6bb5eda2dd385212eacdd1b3ad37c42ad86814cda11fa1c251ca77493f9cdfd4a328a1959498866ece77fdf61f91e2e9053'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90')
 
 prepare() {
