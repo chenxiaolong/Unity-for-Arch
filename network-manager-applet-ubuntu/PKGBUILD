@@ -6,10 +6,10 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=1ubuntu2
+_debian_rel=1
 _translations=20130418
-pkgver=0.9.8.0
-pkgrel=106
+pkgver=0.9.8.2
+pkgrel=100
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org/projects/NetworkManager/"
@@ -22,13 +22,11 @@ conflicts=('network-manager-applet')
 options=('!libtool' '!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-network-manager-applet.tar.gz"
-        '0001_Build_Fix.patch')
-sha512sums=('0c2acb8ded7621369e96a9fc748bfbc75af1eb03415c2109e6f577c9c5d8996cc6b9b11d9c2c445ae7b50c2016f5c90f5a649632738eb056bfa99f115a3b1270'
-            '2a38e5bf647850171fba8981add744009df3029bccd69a0cd9ff35a1386652bf188ed99eb6fede5f1e4de029995c04c765c50bdfdc5dfc0927f5426e565d9a21'
-            '3c9a0c6b751ad3d9c5b83ceb3d76eda24f687dbedbbbc24b02c1ce57ba84cebc821e9dddc46b18a5c521d54160855c2ad8b5b8c5e1bc2679d08085ffb0ab48a3'
-            '6a3c14fad6ad9fa710954502d1b3bf79eee7139aac9e1c1afa7b2ef80a3e3bd2d6021726d953cf0b4d5d3de5c7c8bd655412f7c78ba6d6d82e10a629bb5e5769')
+        "http://ftp.de.debian.org/debian/pool/main/n/network-manager-applet/network-manager-applet_${pkgver}-${_debian_rel}.debian.tar.gz"
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-network-manager-applet.tar.gz")
+sha512sums=('c2c8e264bdafc367ffd31f1c6ad3278cb2cdb042a532c260982803109601906e61be6b2ea9298e19b06646acf995a36875d18f9c3c2a0edfac61929a77f885c5'
+            'b364cea4913e351720c879f3117c9cd97d123b2d6ecf021ed2d3391f0bc7ef6990b830c8dca25885ce39944e6ea51a1bc41ab2fc4995b78efd96d39f6fba2559'
+            '3c9a0c6b751ad3d9c5b83ceb3d76eda24f687dbedbbbc24b02c1ce57ba84cebc821e9dddc46b18a5c521d54160855c2ad8b5b8c5e1bc2679d08085ffb0ab48a3')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
@@ -38,9 +36,6 @@ prepare() {
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  # Build fix: code should match headers...duh...
-  patch -p1 -i "${srcdir}/0001_Build_Fix.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
@@ -74,41 +69,6 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
-
-  # Install Ubuntu stuff
-  install -dm755 "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  install -m644 "${srcdir}"/debian/icons/22/nm-device-wired-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  install -m644 "${srcdir}"/debian/icons/22/nm-signal-00-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  ln -snf       nm-signal-00.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-none.png
-  ln -snf       nm-signal-00-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-none-secure.png
-  install -m644 "${srcdir}"/debian/icons/22/nm-signal-25-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  ln -snf       nm-signal-25.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-low.png
-  ln -snf       nm-signal-25-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-low-secure.png
-  install -m644 "${srcdir}"/debian/icons/22/nm-signal-50-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  ln -snf       nm-signal-50.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-medium.png
-  ln -snf       nm-signal-50-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-medium-secure.png
-  install -m644 "${srcdir}"/debian/icons/22/nm-signal-75-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  ln -snf       nm-signal-75.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-high.png
-  ln -snf       nm-signal-75-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-high-secure.png
-  install -m644 "${srcdir}"/debian/icons/22/nm-signal-100-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/
-  ln -snf       nm-signal-100.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-full.png
-  ln -snf       nm-signal-100-secure.png \
-                "${pkgdir}"/usr/share/icons/hicolor/22x22/apps/gsm-3g-full-secure.png
 }
 
 # vim:set ts=2 sw=2 et:
