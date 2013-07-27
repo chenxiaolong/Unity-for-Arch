@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~raring2
+_ppa_rel=0ubuntu1~saucy2
 _translations=20130418
 pkgver=3.8.3
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -19,11 +19,11 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001_Do_not_hide_IBus_icon.patch')
 sha512sums=('e8b02a820f3785dc42b5f82b94804bf7ec761c2d2c797d7eba0f590ed1b8107094d5cb395cdd00c1a7ef7e294cdfb7d54b1e9c14e9584b5bcc03bb8cd61b3515'
-            '5fc7dfc3daa33016c48e2e164a203be133289511d8b00b5137c26078a9934743e04314045e04f085c5bfda1550d078ffb98df284f46d0ab1f560ff7651ca37a6'
+            'ec4380bd355e8021b089fa43f9e2b0e6d349df53d29cae3149cf98033467ae115796bcc1ae4d7822b70cd8bd9f3a689d838c87387a9237fe3f2272f1707d08d6'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             '2a5a4fdc030ad7499c4551ba33480a7c4b609f018c9bebcb21f49deecf54a73faf1f6078b93895fdefb5738ee8a4aad9fe4ae7e95243242d6d82ecbeb5b9754f')
 
@@ -38,8 +38,6 @@ prepare() {
     # Disable patches
       # Ubuntu specific
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
-      # systemd should make this obsolete
-        sed -i '/revert_git_datetime_dropping.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch ${i} ..."
