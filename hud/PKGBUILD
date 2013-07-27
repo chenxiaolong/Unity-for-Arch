@@ -2,15 +2,15 @@
 
 pkgname=hud
 _actual_ver=13.10.1
-_extra_ver=+13.10.20130710
-pkgver=${_actual_ver}daily13.07.10
+_extra_ver=+13.10.20130719
+pkgver=${_actual_ver}daily13.07.19
 pkgrel=100
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
 license=('GPL')
 groups=('unity')
-depends=('bamf' 'dee' 'libdbusmenu-gtk3' 'sqlite')
+depends=('bamf' 'libdbusmenu-gtk3' 'sqlite')
 # Speech recognition
 depends+=('pocketsphinx' 'sphinx-voxforge-en' 'sphinxbase' 'pulseaudio')
 makedepends=('cmake' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gtk-doc' 'intltool' 'python2-distribute' 'vala')
@@ -19,7 +19,7 @@ optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Python_2.patch')
-sha512sums=('5ed4b396a57a1e1b605da4f0f7a3d6bb5eda2dd385212eacdd1b3ad37c42ad86814cda11fa1c251ca77493f9cdfd4a328a1959498866ece77fdf61f91e2e9053'
+sha512sums=('50356e27aef67ddcd1e3aae2e1c54accd055589ad4c7a1c925432b9da5b67b3f1cd96792d8ca5a3a2c9aadca63f2bdaabd086eb82afe82e640783b5a007aa6e0'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90')
 
 prepare() {
