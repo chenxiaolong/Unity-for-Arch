@@ -4,15 +4,15 @@
 
 pkgname=indicator-applet
 _actual_ver=12.10.2
-_extra_ver=daily13.03.01
+_extra_ver=+13.10.20130719
 _translations=20130418
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=104
+pkgver=${_actual_ver}daily13.07.19
+pkgrel=100
 pkgdesc="A small applet to display information from various applications consistently in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-applet"
 license=('GPL')
-depends=('libindicator3' 'xdg-utils' 'gnome-panel')
+depends=('ido' 'libindicator3' 'xdg-utils' 'gnome-panel')
 makedepends=('intltool')
 optdepends=('indicator-application: take menus from applications and place them in the panel'
             'indicator-appmenu: host the menus from an application'
@@ -26,7 +26,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-applet_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-applet.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('176b7a742656fa0ecbc393a29a30bc53077c48a9dcbc5c2114a8b8efe018de5d9f014c6e39e6cb829540c63fb5bb6d1f52658bbfa9efd08e770a6bfadc6fae14'
+sha512sums=('6c65f5eae95d829046ab5bf1c9478d990c2232254505fe0383e48b5a0dc1e1c4c6b07d47ebbf19a1b5424fe1164e7c12b139101345892ff9e3da1d7199cc08b5'
             '18a72bf4843e79b8a23e21e485a1bac4d3a417b53ee1da4188472b2d17a22697c5bf99477905a3f08958476a2438781497e49d0e70fe2482f818e5d64eb878d4'
             '231066c0b9fae5b4cf3cc0cf126a67a287855abc16d610d9a8e7d78d7d095e7c37fccfe5768666c581f583a1482b3043997096c3820dc75389e478a033f8826a')
 
