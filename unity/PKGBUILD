@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity
-_actual_ver=7.0.1
-_extra_ver=+13.10.20130703
+_actual_ver=7.0.2
+_extra_ver=+13.10.20130723.1
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
@@ -26,20 +26,18 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '0001_Remove_gtest.patch'
         '0002_ArchLinux_Branding.patch'
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
-        '0004_Port_to_XI_1.7.patch'
         '0005_Disable_Werror.patch'
         '0008_Remove_Launchers.patch'
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('d447e45dd40fcb5830f73de4cef6ffc8aa30f469134be3d1a8ae3198d46eda9ec15b6f5ebd2dec65c2db6f1d15558d28063fdfdbebdc77f365867e8e78be16e3'
-            '519be46ffd6d9f96859151c5d4d6f4cbc089df61d2460c4c4a6eb0603243bca6e6b11c84db6c25df52f43d49c66422b3b63077ae90f628c92ee62b526c624e36'
+sha512sums=('30d36d1bae7c266eafb2f4faa159ee938b0285bd3a3ba7dde67ecf724c6714eb80814763e47e7dfcfd9690c62408f6f95d0cd70d7a6d6813ce5de9d4de372541'
+            'c9f2bc4adbaad47b594cabdf5c5811c76e6600dc9dad582a01ea39ba13e066105f0fd6a94c6569ba4e7484430245bc8c4ad6144b12bb62f64c827f27b635ec4a'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             'd4f9bc2078df390003b8749955ff22be4538e79cb57efac8a29b98ee1567eb7787e61c1f577884e7ae801b7eeb3207370a1cec1fdce86cb217da50f981374fad'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
             '22f6e6821fa1fc245c9e32ed04588a9a79f627d76687a2454f9b08274dbccbb096033c137ceceaebe737a83496d6376a12cb210db51916cdb101cda6988a92d8'
-            'f6745256b356b2d3e089dac388216e6234db40948c039e02b716638862da25470c1e018fde3b27032e598c652c7bd633704620dcf569565766d8771b6676cf58'
             'c8dd88dacf16226e9b60141bf448af7b5234b04811b4d5aaee2d6d48eb008442ced3e3f7a12b4cb709af5c471ddca320d1b7612fa724704ae330179f15104dd3'
             'f1f45708fb976f50fc707228fcfcadf6fbb8255b81d20b747c6427a905a524204768b0a51043ecfb795ebcc206c1e8b1947e4ef0236bae01fd89ba6ecdc4a242'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
@@ -56,12 +54,6 @@ prepare() {
 
   # Upstream support for the systray whitelist was removed
   patch -p1 -i "${srcdir}/0003_Revert_r3134_Remove_Systray_Whitelist.patch"
-
-  # Port to XI 1.7 (thanks to qiuwei for finding this!)
-  # Source: https://code.launchpad.net/~brandontschaefer/unity/move-pointer-barrier-to-xi-1.6.99.1
-  #patch -p0 -i "${srcdir}/0004_Port_to_XI_1.7.patch"
-  cat "${srcdir}/0004_Port_to_XI_1.7.patch" | \
-    filterdiff --exclude debian/changelog --exclude debian/control | patch -p0
 
   # Do not treat warnings as errors
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
@@ -115,7 +107,6 @@ build() {
     -Duse_pch=OFF \
     ..
 
-  #export MAKEFLAGS="-j1"
   make
 
   # Make sure that the GSettings schema files were created
@@ -137,7 +128,7 @@ build() {
 
 check() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
-  make check-headless
+  #make check-headless
 }
 
 package() {
