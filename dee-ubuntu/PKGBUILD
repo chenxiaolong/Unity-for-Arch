@@ -1,9 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=dee-ubuntu
-_actual_ver=1.2.5ubuntu1
-_extra_ver=+13.10.20130630
-pkgver=${_actual_ver}daily13.06.30
+_actual_ver=1.2.6
+_extra_ver=+13.10.20130722
+pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="Model to synchronize multiple instances over DBus"
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ checkdepends=('dbus-test-runner')
 provides=("dee=${pkgver}")
 conflicts=('dee')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('b7b4a604e08fcecc6d8e170405938947e5088777da4bb7f7fd31f7af9d1c11f84a654fb73ad8b3218582e848dd623a85a4a58935f9630a0e1f4ea0111382ab95')
+sha512sums=('5186b8893dca98c53e5e73178302b42449b3ea02d6927f89b0d934a22eba89ee6cd263792fb10fb406183fcd8e40fe21dad465fd45aeaf78f36e7be549ef406f')
 
 build() {
   cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
