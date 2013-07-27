@@ -1,25 +1,28 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=gmock-ubuntu
-pkgver=1.6.0
-_ubuntu_rel=0ubuntu3
-pkgrel=4
+_actual_ver=1.6.0
+_extra_ver=+svn437
+_ubuntu_rel=0ubuntu1
+pkgver=${_actual_ver}${_extra_ver/+/.}
+pkgrel=1
 pkgdesc="Google's framework for writing and using C++ mock classes"
 arch=('i686' 'x86_64')
 url="http://code.google.com/p/googlemock/"
 license=('BSD')
 groups=('unity-tests')
 depends=('gtest-ubuntu' 'python2')
+makedepends=('cmake')
 provides=("gmock=${pkgver}")
 conflicts=('gmock')
 options=('!libtool' '!emptydirs')
-source=("https://googlemock.googlecode.com/files/gmock-${pkgver}.zip"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/google-mock_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('7adff00bb6ff81a6ffb704be71d0747636d69e24b4a8b709e1fb8c177a9a47f6dea8d14fde73034ebfb1529c291c7212a944ad92a34f88abdfe23c2d0b11b6f7'
-            'c6f0aecf4b0e18bfca06736c50b11dedc09942ed452edb052220d776f55ae2443d8b93c4e0ae1dbacd1ed3e0f73663f4d280918e74b6b46ae422bee2a003f096')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/google-mock_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/google-mock_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('82f15d07e2068b3c50ae581f36bb5c43cb94cd415240352ec4710c92488eec9e55d730e130e7f850fad5f44419239dc3f26bb48771dae7976389233af69f5755'
+            '4f973b0ab7457af654a735ecac8da179f7b32beda7703819f090c3d6ab657568be05199fc52a24b700b7195550fdb153053990f6b5ac6eae0cf0731f3e949729')
 
 build() {
-  cd "${srcdir}/gmock-${pkgver}"
+  cd "${srcdir}/google-mock"
 
   find -type f -exec chmod u+w {} \+
   find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
@@ -29,18 +32,18 @@ build() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  ./configure --enable-static=no --prefix=/usr --enable-external-gtest
-  make
+  autoreconf -vfi
+  ./configure --enable-static=no --prefix=/usr
+  #make
 }
 
 check() {
-  cd "${srcdir}/gmock-${pkgver}"
-  make check
+  cd "${srcdir}/google-mock"
+  #make check
 }
 
 package() {
-  cd "${srcdir}/gmock-${pkgver}"
-  make DESTDIR="${pkgdir}/" install
+  cd "${srcdir}/google-mock"
 
   install -dm755 "${pkgdir}/usr/bin/"
   install -m755 scripts/generator/gmock_gen.py "${pkgdir}/usr/bin/"
@@ -48,16 +51,20 @@ package() {
   install -dm755 "${pkgdir}/usr/share/gmock/cpp/"
   install -m644 scripts/generator/cpp/* "${pkgdir}/usr/share/gmock/cpp/"
 
+  install -dm755 "${pkgdir}/usr/include/"
+  cp -a include/gmock/ "${pkgdir}/usr/include/"
+
+  install -dm755 "${pkgdir}/usr/src/gmock/src/"
+  install -m644 src/*.cc "${pkgdir}/usr/src/gmock/src/"
+
+  install -m644 CMakeLists.txt "${pkgdir}/usr/src/gmock/"
+
+  cp -a gtest/ "${pkgdir}/usr/src/gmock/"
+
   install -dm755 "${pkgdir}/usr/share/man/man1/"
   install -m644 "${srcdir}/debian/gmock_gen.1" "${pkgdir}/usr/share/man/man1/"
 
-  rm -rv "${pkgdir}/usr/include/gtest/"
-  rm -v "${pkgdir}"/usr/lib/libgtest*
-  rm -v "${pkgdir}/usr/share/aclocal/gtest.m4"
-
   for i in "${pkgdir}"/usr/bin/*.py; do mv ${i} ${i%.py}; done
-
-  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:
