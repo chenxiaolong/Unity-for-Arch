@@ -2,8 +2,8 @@
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=+13.10.20130710
-pkgver=${_actual_ver}daily13.07.10
+_extra_ver=+13.10.20130716.1
+pkgver=${_actual_ver}daily13.07.16.1
 pkgrel=1
 pkgdesc="Unity GTK+ Module"
 arch=('i686' 'x86_64')
@@ -17,15 +17,9 @@ replaces=('appmenu-gtk2' 'appmenu-gtk3')
 conflicts=('appmenu-gtk2' 'appmenu-gtk3')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Do_not_check_existance_of_module.patch')
-sha512sums=('86fee18aa21134d87d30e1bead353e85c324d7d239cffa1cd33a6fca0c1c0ede81f936e13082cbe572b583104ff6ecd23d944605b53433e9fe86b21a00e68406'
-            '9ae85dd59bb99fd836cb6acc1a91d5db2eaaccd096a44a93356b5f028ea9f3bed35d270e8ab46e68a26932d105a68c776c7c99a814ed93856b9d43a0cc354ec0')
-
-prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  patch -p1 -R -i "${srcdir}/0001_Do_not_check_existance_of_module.patch"
-}
+        '80unity-gtk-module')
+sha512sums=('220701431c12a5c45a65af153d5eaf424ee8bbf905743fe8bd61c6c5817383de000076667b9fd0b03b9564ab8da8a06977945d92726f7596e5b971f91b8c8de8'
+            'e852cbb1a10a3b761e062e5b486b6075bcad85b9b1cf55651d6a788dd4a0ceb088065232b5a780bec47b4cbec6162f2d15c2d68566af7278123f49fced3b96ff')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -71,7 +65,7 @@ package() {
   popd
 
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -m755  "${pkgdir}/etc/X11/Xsession.d/80unity-gtk-module" \
+  install -m755  "${srcdir}/80unity-gtk-module" \
                  "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  rm -rvf "${pkgdir}/etc/X11/Xsession.d/"
+  rm -rvf "${pkgdir}/usr/share/upstart/"
 }
