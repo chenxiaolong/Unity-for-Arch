@@ -3,8 +3,10 @@
 
 pkgname=credentials-preferences-ubuntu
 _translations=20130420
-pkgver=0.1.5
-pkgrel=4
+_actual_ver=0.1.7
+_extra_ver=~+13.10.20130724.1
+pkgver=${_actual_ver}${_extra_ver/\~+/.}
+pkgrel=1
 pkgdesc="Control panel for configuring online account credentials and settings"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/gnome-control-center-signon"
@@ -12,16 +14,16 @@ license=('GPL' 'LGPL')
 provides=('credentials-preferences')
 conflicts=('credentials-preferences')
 depends=('libaccounts-glib' 'libsignon-glib' 'gtk3' 'gnome-control-center-ubuntu')
-makedepends=('gobject-introspection' 'vala' 'intltool' 'itstool')
+makedepends=('gobject-introspection' 'vala' 'intltool' 'itstool' 'gtk-doc' 'yelp-tools')
 options=('!libtool')
 install=${pkgname}.install
-source=("https://launchpad.net/gnome-control-center-signon/13.04/${pkgver}/+download/credentials-control-center-${pkgver}.tar.xz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-control-center-signon_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-credentials-preferences.tar.gz")
-sha512sums=('b85e3ceb07f6e7736665e1d0ac52b0e205f3e059b4457460f1fe5fb684e50e0d1b8d3f2461aec5feae30fd34ae7aafa42b4552be44fd615d9dece490926b73bb'
+sha512sums=('92e81852f11b24909863ce9202ebf4516f11d59e4629090fbd3c1908d8a5a2a1fb4c635f7dfc41ce4b6505d6c086b1b9c8441ef90b7f266f19d2ecaa8b2d2b52'
             '6684ab6452f793f474b8b1641182ba6254119cb82306cb4a7c296c6e080b4f451c0362fa0c90599c74ded5246e0f649fd3cc8839b976102a8ceba4fe08e657bf')
 
 prepare() {
-  cd "${srcdir}/credentials-control-center-${pkgver}"
+  cd "${srcdir}/gnome-control-center-signon-${_actual_ver}${_extra_ver}"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
@@ -34,9 +36,9 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/credentials-control-center-${pkgver}"
+  cd "${srcdir}/gnome-control-center-signon-${_actual_ver}${_extra_ver}"
 
-  ./configure \
+  ./autogen.sh \
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
@@ -47,7 +49,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/credentials-control-center-${pkgver}"
+  cd "${srcdir}/gnome-control-center-signon-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}" install
 }
