@@ -6,9 +6,9 @@
 
 pkgname=indicator-datetime
 _actual_ver=12.10.3
-_extra_ver=+13.10.20130725
+_extra_ver=+13.10.20130731
 _translations=20130418
-pkgver=${_actual_ver}daily13.07.25
+pkgver=${_actual_ver}daily13.07.31
 pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
@@ -29,7 +29,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
         '0003_Link_pthread.patch')
-sha512sums=('ad2f9181f067d02218f1a67953b32b4dc83518c78df8084f53034f6c288eb56665335401d1cf98491b3a291acec32922f4c2fac938600aa4dcb2a64ece5aac4a'
+sha512sums=('0e9c0f3f7ebafcdf8c6c6f7193b581a7e31f7f1658985450d41a247970d0ee1c0ec8f33aea0dac00bafb96935904591c775ee88b9d3606966a8e98f7a0e3b056'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
             '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
