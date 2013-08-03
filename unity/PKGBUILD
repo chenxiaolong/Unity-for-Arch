@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity
-_actual_ver=7.0.2
-_extra_ver=+13.10.20130723.1
+_actual_ver=7.1.0
+_extra_ver=+13.10.20130802
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=102
+pkgrel=100
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -32,8 +32,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('30d36d1bae7c266eafb2f4faa159ee938b0285bd3a3ba7dde67ecf724c6714eb80814763e47e7dfcfd9690c62408f6f95d0cd70d7a6d6813ce5de9d4de372541'
-            'c9f2bc4adbaad47b594cabdf5c5811c76e6600dc9dad582a01ea39ba13e066105f0fd6a94c6569ba4e7484430245bc8c4ad6144b12bb62f64c827f27b635ec4a'
+sha512sums=('8c64049a2d2d6e00e5b81fe592303672ac10b5133a6571211df50ec7f5e3ab967f4bba6328da1a5bd7f81f9520d890c0a75c6053ca8c58201225d6485094389f'
+            'af00db0fbac0575c1b886de9331a812f21732e80786bb288c2431939b752d39e94b24611b16811e0193a8de1a1f9b62b980296b4cbabfe03a568e651a3634114'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             '56cf552168a57a585a178f11685ee3f9e20f9aca9efb80d9232d5081afce85e9c25c3aff6c640b69be56bbba4681afe6fa38cdcb038ac834a220946eac73a5fa'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
