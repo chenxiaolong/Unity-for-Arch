@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=3ubuntu2
+_ubuntu_rel=3ubuntu5
 pkgver=3.8.2
-pkgrel=106
+pkgrel=107
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         '0001_Add_broadway_symbols.patch'
         'arch_settings.ini')
 sha512sums=('20958c192fe881281f6885e2d7cecc4e2700fc01ef8006304f1fb8befe8f6628cbdb06c0d801f109e5805d58f327ca9a07d5e2c7f938116c99db8080d0c2f83e'
-            '7a434f5ebc8d2c1b642cbc093057f98f3d0c1eda8b04582fbde9c93154028cbb6cf186024fdfff72a96b8fa5b40eb8ed682c66d1155509333fe45cc0aad68e6a'
+            'aa83752aef6fcb631526597cdce29bc3438df6362b21b823fc2657d5bb13c36ecdde7c831965d1f61e5bffda22596e8f1a0e5f51dbfbf6c592c8eb8d5e5e8b80'
             'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
             '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
 
@@ -53,6 +53,10 @@ prepare() {
       # Useful (from upstream git)
         echo 'git_filechooser_signal.patch' >> "${srcdir}/debian/patches/series"
         echo 'git_fileselect_subdir.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_disable_frame_sync_gtkplug.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_iconcache_ref_GtkIconData.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_icontheme_move_changed_emission.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_check_for_gdkpixbuf_first.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
