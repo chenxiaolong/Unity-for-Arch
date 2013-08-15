@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_actual_ver=7.0.9
-_extra_ver=+13.10.20130729
+_actual_ver=7.0.10
+_extra_ver=+13.10.20130809.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
@@ -22,8 +22,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch'
         '0002_privacy_by_default.patch')
-sha512sums=('6129b032963c2b51dd2e30775eb99005ca65304d0018a8ae25f0ddd33746b26c402bfedd119f725d9af78d8a41de38155b0f53cc47e492e81702707b44016c9e'
-            'a0ed870eda484642c18fd5c56d5caadcb86b0b7aed831e1493c938c652149ba87beac837092f25e5390d1dc2167de2d2f24b0fee0bfb31664762bccfd3701126'
+sha512sums=('789bd5364529fab89d366ae3a96b34e7f5a141f1e750466f1359b8558be6f09cdedbecde67fc8971c8e2cc277aad30f46f7f6cf0cfa7eabc164c7922ab835000'
+            'fde3c53153e9a7d7380e38a49c34c26616e3d5dd5acd79a727d6a89935ad537794b95b0a29966598fd286297b8a8b073c6b0c4967366428efbf2283414bd80c5'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b'
             '83769f9f54abb8090d5307affba8f974a23ee11dac74d9c3da389b48c9bd80fac241731017c9dcb05af14d4c644228d67af558e97972fceb144a8fc0deed30f7')
 
