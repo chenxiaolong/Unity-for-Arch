@@ -7,7 +7,7 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu4
 _actual_ver=0.9.9
 _extra_ver=\~daily13.04.18.1~13.04
 
@@ -20,7 +20,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=5
+pkgrel=6
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -42,7 +42,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
 sha512sums=('22ec49359a99c942a253e8f4fb3dcfd5340439f61c5f5715e1c9bd9134c217659a8cbb1dc74ad3e37a5a2a9a969b7719f293cc3a6c8cce83fcbb01d1845aed00'
-            '186e52be6106f4e582fef36aa2a2db479962704763f0fd63a716ba7a5669b177fbb9299c90aacd6837c9eb0333ac3afb3b2e8df74b748f3a8e93d130bead3107'
+            '379985cc57942bf91e92e4f9d4e3fe2f0ecb7338366180d686c3d69afc68beeb0a01d0798d2bcfd411b4642031a0af2797d79fad3b92ecc1f444f796119f35a3'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
