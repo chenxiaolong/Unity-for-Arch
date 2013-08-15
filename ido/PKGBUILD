@@ -4,8 +4,8 @@
 
 pkgname=ido
 _actual_ver=13.10.0
-_extra_ver=+13.10.20130731
-pkgver=${_actual_ver}daily13.07.31
+_extra_ver=+13.10.20130814
+pkgver=${_actual_ver}daily13.08.14
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
@@ -19,11 +19,12 @@ options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('eaa70262e3ebce93a61215de3a49873e591d2d0e0e048467f75186569c8d2b2678ff0292ec2d165dcbdf650a219b5295c5a5c1fa54ad49ced5e5c20dc0684422')
+sha512sums=('097e364ab03d4b3c06a04fbf520d8f9b464d379b1871e3dd538485d678607b97e2f772c8cdd454167fe0827a13cef8cada4edcfe508760df64edf56962bfb168')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CFLAGS="${CFLAGS} -Wno-error"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static
   make
