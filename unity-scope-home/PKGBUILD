@@ -2,7 +2,7 @@
 
 pkgname=unity-scope-home
 _actual_ver=6.8.1
-_extra_ver=+13.10.20130730
+_extra_ver=+13.10.20130809.1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="Home scope that aggregates results from multiple scopes"
@@ -13,7 +13,7 @@ groups=('unity')
 depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
 makedepends=('gnome-common' 'intltool' 'vala')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('0cc1d7815fdb0ea47b20d4c82d896a73cc8e7cc14d5b03ecc57bd72301e7353d1e63ca3931d4c48a9d9202468c4bedc591b02a4f9dce02259d36c19df536c489')
+sha512sums=('b1e4cf9fcd82a6823ad4e197640bdb70dace2b90c7e3faf754ac18ddf6279743f4094187713e04302dd0fd30ba71fbb115046b33f91999d5fc812ff5da4204f2')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
