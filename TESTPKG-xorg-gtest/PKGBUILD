@@ -1,9 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xorg-gtest
-pkgver=0.7.0
-_ubuntu_rel=0ubuntu5
-pkgrel=3
+pkgver=0.7.1
+_ubuntu_rel=0ubuntu1
+pkgrel=1
 pkgdesc="X.org Google Test Framework"
 arch=('any')
 url="https://launchpad.net/xorg-gtest"
@@ -11,10 +11,10 @@ license=('GPL')
 groups=('unity-tests')
 depends=('gtest-ubuntu' 'libx11' 'libxi' 'xf86-video-dummy')
 makedepends=('doxygen' 'valgrind' 'xorg-server-devel')
-source=("https://launchpad.net/xorg-gtest/trunk/${pkgver}/+download/xorg-gtest-${pkgver}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/xorg-gtest_${pkgver}.orig.tar.bz2"
         "https://launchpad.net/ubuntu/+archive/primary/+files/xorg-gtest_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('8ba9b431f76f59c2e70aee1d84fce00e591c4951603a6b96ed4a75473173c980124fb09d0df4952a57f97406dcfb64e97c12ef23be87780e2543ec8e19063fb6'
-            '3658d7966a2df37924b2c1341e09eb88e17d80d11205e4855b82d03867aff9cfa5fa2ee3f78b62ff53733315ebf7f70603fbe3dd20829f146f8a4f914c4ba0d0')
+sha512sums=('2bd900b86337e904e074ea0b68b96d72529a85a2c88ade1a20a7b7baeaa26e8813e2bc8b45ef016dfe132487b10091c67ec786b160b711a37b92d219f71a85d1'
+            '415ef1791976d5fdac89645e407526797e60f00519be8403e7df95cef1db58958e19d7f3b138a4e17fe30512f20d5b7d2108ee9becf503ae49b0db610a7d2639')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
