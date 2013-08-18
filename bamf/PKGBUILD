@@ -4,8 +4,8 @@
 
 pkgname=bamf
 _actual_ver=0.5.0
-_extra_ver=+13.10.20130809
-pkgver=${_actual_ver}daily13.08.09
+_extra_ver=+13.10.20130812.1
+pkgver=${_actual_ver}daily13.08.12.1
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('104b4c889533f5828aa29f9a664763d09793bb03b5e1e770f8ece95f6273f087339333c8a502c83afb76e9491b544b1f375986471e0608ca8078e333e03f408c')
+sha512sums=('cefff0ad69b7f1af00a72530780cd617b01cfb649ab2479a9ac0782fcefe90da59e6ffa638949f754955306a8bdd76a0796b0eb08f5bffb5c2828407f8ac4fb3')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
