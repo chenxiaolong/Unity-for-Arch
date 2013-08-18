@@ -2,7 +2,7 @@
 
 pkgname=unity
 _actual_ver=7.1.0
-_extra_ver=+13.10.20130813.1
+_extra_ver=+13.10.20130816.3
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
@@ -32,8 +32,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('afc4f60f4c8fdf19b2936a874fbb2521532c7735c2be38a0a14c279ecd39ef4290ea02574706fdbcfdcee4f30e7c8032ed91597180131a9ff85b8f01b1ba0555'
-            '480200f61f27b567fcc6af6b328e1576a951f40a38a0d6dee398107fad85100bed910c2c90a5f6d7b83f94b5b3acdc0a22d4316b58f7b8317e4a5cdff27390ee'
+sha512sums=('c85c6a4a19dc686ec71f4fd41c7dfa648e42cf2bbef5d4a627a6ed7e33bf9c8acb9bc5158668c77f2e3d1c27423f3ece85c1980b91080201cad5d7f8ea055edf'
+            '64d445a48bc5f2b749d67fe446433c158007feba4e498dcb0a27143a436117de19936a8775e5fe73a4fd8bcaf67584683840c42d2506a9c3892578d96b45be3f'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             '56cf552168a57a585a178f11685ee3f9e20f9aca9efb80d9232d5081afce85e9c25c3aff6c640b69be56bbba4681afe6fa38cdcb038ac834a220946eac73a5fa'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
