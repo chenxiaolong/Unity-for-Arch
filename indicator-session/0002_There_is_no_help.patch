@@ -1,16 +1,32 @@
-diff -Nru indicator-session-12.10.0.orig/src/session-menu-mgr.c indicator-session-12.10.0/src/session-menu-mgr.c
---- indicator-session-12.10.0.orig/src/session-menu-mgr.c	2012-08-14 01:43:57.250018022 -0400
-+++ indicator-session-12.10.0/src/session-menu-mgr.c	2012-08-14 01:48:59.151213002 -0400
-@@ -380,10 +380,10 @@
-     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                               G_CALLBACK(action_func_spawn_async), CMD_INFO);
+--- a/src/service.c
++++ b/src/service.c
+@@ -286,7 +286,6 @@
  
--    mi = mi_new (_("Ubuntu Help"));
-+    /*mi = mi_new (_("Ubuntu Help"));
-     dbusmenu_menuitem_child_append (mgr->top_mi, mi);
-     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
--                              G_CALLBACK(action_func_spawn_async), CMD_HELP);
-+                              G_CALLBACK(action_func_spawn_async), CMD_HELP);*/
+   menu = g_menu_new ();
+   g_menu_append (menu, _("About This Computer"), "indicator.about");
+-  g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
+   return G_MENU_MODEL (menu);
+ }
  
-     mi = mi_new_separator ();
-     mi_set_visible (mi, show_settings);
+--- a/tests/test-service.cc
++++ b/tests/test-service.cc
+@@ -367,11 +367,6 @@
+   test_simple_action ("about");
+ }
+ 
+-TEST_F (ServiceTest, Help)
+-{
+-  test_simple_action ("help");
+-}
+-
+ TEST_F (ServiceTest, Hibernate)
+ {
+   test_simple_action ("hibernate");
+@@ -552,7 +547,6 @@
+ TEST_F (ServiceTest, DefaultMenuItems)
+ {
+   ASSERT_TRUE (find_menu_item_for_action ("indicator.about", NULL, NULL));
+-  ASSERT_TRUE (find_menu_item_for_action ("indicator.help", NULL, NULL));
+   ASSERT_TRUE (find_menu_item_for_action ("indicator.settings", NULL, NULL));
+   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", NULL, NULL));
+   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-guest", NULL, NULL));

@@ -1,32 +1,69 @@
-=== modified file 'src/session-menu-mgr.c'
---- src/session-menu-mgr.c	2013-03-06 15:29:26 +0000
-+++ src/session-menu-mgr.c	2013-03-16 23:58:11 +0000
-@@ -20,8 +20,10 @@
+--- a/src/backend-dbus/users.c
++++ b/src/backend-dbus/users.c
+@@ -21,6 +21,9 @@
  
- #include "config.h"
+ #include "users.h"
  
 +#include <errno.h>
- #include <sys/types.h>
- #include <pwd.h> /* geteuid(), getpwuid() */
-+#include <unistd.h> /* gethostname() */
- 
- #include <glib.h>
- #include <glib/gi18n.h>
-@@ -1288,8 +1290,16 @@
- static gboolean
- is_this_live_session (void)
++#include <unistd.h>
++
+ struct _IndicatorSessionUsersDbusPriv
  {
-+  /* Check if the hostname is 'archiso' and if the username is 'arch */
-+  char hostname[8];
-+  hostname[7] = '\0';
-+  int returned = gethostname(hostname, 7);
-+  if (returned != 0 && errno != ENAMETOOLONG) {
-+    return FALSE;
-+  }
-   const struct passwd * const pw = getpwuid (geteuid());
--  return (pw->pw_uid==999) && !g_strcmp0("ubuntu",pw->pw_name);
-+  return (g_strcmp0(hostname, "archiso") == 0) &&
-+         (g_strcmp0(pw->pw_name, "arch") == 0);
- }
+   Login1Manager * login1_manager;
+@@ -397,10 +400,21 @@
  
- static SwitcherMode
+           if (!g_strcmp0 (session_id, current_session_id))
+             {
++              char hostname[8];
++              int returned;
++
+               set_active_uid (self, uid);
+ 
+-              if ((uid==999) && !g_strcmp0 (user_name, "ubuntu"))
++              /* Check if the hostname is 'archiso' and if the username is 'arch */
++              hostname[7] = '\0';
++              returned = gethostname(hostname, 7);
++              if (returned != 0 && errno != ENAMETOOLONG) {
++                is_live_session = FALSE;
++              }
++              else if ((g_strcmp0(hostname, "archiso") == 0) &&
++                       (g_strcmp0(user_name, "arch") == 0)) {
+                 is_live_session = TRUE;
++              }
+             }
+ 
+           g_hash_table_add (logins, GINT_TO_POINTER(uid));
+--- a/tests/backend-dbus/test-users.cc
++++ b/tests/backend-dbus/test-users.cc
+@@ -351,31 +351,3 @@
+   ASSERT_EQ (n, g_list_length (uids));
+   g_list_free (uids);
+ }
+-
+-
+-/**
+- * Confirm that we can detect live sessions
+- */
+-TEST_F (Users, LiveSession)
+-{
+-  gboolean b;
+-
+-  // not initially a live session
+-  ASSERT_FALSE (indicator_session_users_is_live_session (users));
+-  g_object_get (users, INDICATOR_SESSION_USERS_PROP_IS_LIVE_SESSION, &b, NULL);
+-  ASSERT_FALSE (b);
+-
+-  // now add the criteria for a live session
+-  MockUser * live_user = new MockUser (loop, conn, "ubuntu", "Ubuntu", 1, 999);
+-  live_user->set_system_account (true);
+-  accounts->add_user (live_user);
+-  const int session_tag = login1_manager->add_session (login1_seat, live_user);
+-  wait_msec (100);
+-  login1_seat->activate_session (session_tag);
+-  wait_for_signal (users, "notify::" INDICATOR_SESSION_USERS_PROP_IS_LIVE_SESSION);
+-
+-  // confirm the backend thinks it's a live session
+-  ASSERT_TRUE (indicator_session_users_is_live_session (users));
+-  g_object_get (users, INDICATOR_SESSION_USERS_PROP_IS_LIVE_SESSION, &b, NULL);
+-  ASSERT_TRUE (b);
+-}

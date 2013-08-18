@@ -4,17 +4,17 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+13.10.20130703.1
+_extra_ver=+13.10.20130812
 _translations=20130419
-pkgver=${_actual_ver}daily13.07.03.1
-pkgrel=101
+pkgver=${_actual_ver}daily13.08.12
+pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
 license=('GPL')
-depends=('libindicator3' 'libdbusmenu-gtk3' 'dconf')
-makedepends=('intltool' 'python2')
-checkdepends=('dbus-test-runner' 'gtest-ubuntu' 'xorg-gtest' 'xorg-util-macros')
+depends=('dconf')
+makedepends=('cmake' 'intltool' 'python2')
+checkdepends=('gtest-ubuntu')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
@@ -22,56 +22,61 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"
         '0001_Lock_Screen_Live_CD_Detection.patch'
-        '0002_There_is_no_help.patch'
-        '0003_Link_Against_pthread.patch'
-        '0004_Lock_Screen_Guest_Session_Detection.patch')
-sha512sums=('96248d1ead9ea7e092c4b5ac217417b40ded4c7be68cdb4dec4379e33d5c9165c4bc39cc5c5c9db3b46e422b9c6f66a0a1e7b2e528eacc94e125fc507fb803e7'
+        '0002_There_is_no_help.patch')
+sha512sums=('7ef1f6e64c1c4268e0e0a23125922686ef77b959f7094b1b9ab5f0f57a02089c823e757e69d943c502aabaa0bbcd4e851d3f04ce24383def368c66cc6a07beb1'
             'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
-            'f0e000995339e8a722f3a863fea61032ca9ac262c1760c1b647f76f9eae3dc081ae8025607936d094fc6a58738f6bcaaa4bc9ee55ed9439f0eb213507d729e5d'
-            'f00ea3d3c00da05211e869fbde613807671e2faf712f832aa47100486b5991ed00e0d301f0e05c56090f37fd556663de87f912b7af5e762f7925d21d2719f99d'
-            '8a99d760533f8b742cd9619df9807701dda1e57458ca737d273a9ecb812c09e8e327ac59267abcb82f409bde9fafdda59904e53befc940724eb818c002356e2a'
-            '3b4a496f67d0020816184b816becdf8ca837aec35d1cd2dd4a2a4f11b4824f7d5aaca9fbeca87f2e00e66133376bfc9af6ba7a3334bcdaaed216ad7b5a03abf8')
+            '5528add26d0d81dade7d9ae2868b43b09425201bb98de8e0dddec7ac84dc5ac93ad777e89b092e9c8f7363f4c87144abd340f6a74cb00e3f6d44fbd1ea522a12'
+            '5326ff4022fe86fa3162d1f46341f2f352d4859bd5024da81d5640465cd3b242abedf820c2589c1da05e2eec3fc2e7535a2e4f2f8489333cb001e279094a4a15')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p0 -i "${srcdir}/0001_Lock_Screen_Live_CD_Detection.patch"
+  patch -p1 -i "${srcdir}/0001_Lock_Screen_Live_CD_Detection.patch"
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
-  patch -p1 -i "${srcdir}/0003_Link_Against_pthread.patch"
-  patch -p0 -i "${srcdir}/0004_Lock_Screen_Guest_Session_Detection.patch"
 
   msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
   for i in "${srcdir}"/po/*.po; do
     FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
     mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
   done
 }
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  intltoolize -f
+  mkdir build && cd build
+  cmake .. \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBEXECDIR=lib \
+    -Denable_tests=ON \
+    -Denable_lcov=OFF
 
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-static --disable-schemas-compile
   make
 }
 
 check() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build"
 
-  env -u LD_PRELOAD make check
+  env -u LD_PRELOAD ctest
 }
 
 package() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/"
+  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build"
 
   make DESTDIR="${pkgdir}/" install
 
   rm -vf "${pkgdir}/test-service"
+
+  # Please fix CMake scripts, Ubuntu...
+  rm -rv "${pkgdir}/usr/share/locale/LC_MESSAGES/"
+
+  for i in ../po/*.po; do
+    FILELANG=$(basename ${i})
+    FILELANG=${FILELANG%.po}
+    install -dm755 "${pkgdir}/usr/share/locale/${FILELANG}/LC_MESSAGES/"
+    msgfmt -v ${i} -o \
+      "${pkgdir}/usr/share/locale/${FILELANG}/LC_MESSAGES/indicator-session.mo"
+  done
 }
 
 # vim:set ts=2 sw=2 et:
