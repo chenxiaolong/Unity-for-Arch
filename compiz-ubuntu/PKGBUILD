@@ -7,20 +7,20 @@
 # makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu4
-_actual_ver=0.9.9
-_extra_ver=\~daily13.04.18.1~13.04
+_ubuntu_rel=0ubuntu1
+_actual_ver=0.9.10
+_extra_ver=+13.10.20130822
 
 # AUR Fix
-pkgver=0.9.9.daily13.04.18.1.13.04
-realver=${_actual_ver}${_extra_ver//\~/.}
+pkgver=0.9.10.13.10.20130822
+realver=${_actual_ver}${_extra_ver/+/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
   echo "PKGBUILD needs to be updated!"
   exit 1
 fi
 
-pkgrel=6
+pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -36,15 +36,13 @@ install=compiz-ubuntu.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
-        '0001_GCC_4.8_Fixes.patch'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('22ec49359a99c942a253e8f4fb3dcfd5340439f61c5f5715e1c9bd9134c217659a8cbb1dc74ad3e37a5a2a9a969b7719f293cc3a6c8cce83fcbb01d1845aed00'
-            '379985cc57942bf91e92e4f9d4e3fe2f0ecb7338366180d686c3d69afc68beeb0a01d0798d2bcfd411b4642031a0af2797d79fad3b92ecc1f444f796119f35a3'
+sha512sums=('d7730ff883d56f529c506faccf994233d8d5e50d89cbb0541a923490d6af21bce2845007210822fca968b2d2061cfcef4d7007a4c3e3b265499a602284cad946'
+            '085300fd42781dcaf668727f7939eee5f40a4099989aa53ca48fe1ef48e8ccdeeeffa13f15c0195e159b107971afc8cfced53208246a05fef20f08d62fbdb427'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
-            'fb6f083638319cf0d7f598f27c13449fd247ddae71caa9fc6f819bb1bc9ae61f1d558662146faa8266afcfc0db28bb5e6bb581f2917f826b91597f1d21f24d36'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
@@ -52,9 +50,6 @@ sha512sums=('22ec49359a99c942a253e8f4fb3dcfd5340439f61c5f5715e1c9bd9134c217659a8
 
 prepare() {
   cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
-
-  # Build fixes with GCC 4.8
-  patch -p1 -i "${srcdir}/0001_GCC_4.8_Fixes.patch"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
