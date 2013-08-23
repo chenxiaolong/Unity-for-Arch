@@ -37,6 +37,8 @@ prepare() {
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CFLAGS="${CFLAGS} -Wno-error"
+
   autoreconf -vfi
   intltoolize -f
   # Static libraries are needed for the tests
