@@ -6,7 +6,7 @@ _extra_ver=+13.10.20130816.3
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=101
+pkgrel=102
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
