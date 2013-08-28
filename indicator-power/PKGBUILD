@@ -2,9 +2,9 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+13.10.20130821
+_extra_ver=+13.10.20130823
 _translations=20130419
-pkgver=${_actual_ver}daily13.08.21
+pkgver=${_actual_ver}daily13.08.23
 pkgrel=100
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
@@ -18,7 +18,7 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-power.tar.gz")
-sha512sums=('c5ff46ab36a0f6006214a281fd69c4ebfa5cb0b560ada820f24af3c7df09029efdb1328cbf2fd732adf04740ad95a4c416303d59cc7529d0b548e1bd01724075'
+sha512sums=('e181545d41d4378a54a641863a59d4db5ee0112a27c4103834aafcfffe09032ce952276ad6e3efe446a1997920f686f51981e979aa1ea2e7ac8afbeed1e68ae1'
             'd597ec5e3cac6bfb95b96fb73d88b052a2e99bd56b1f259b3b6452da42b40ac3ad14b4fd579e8f940189834ba49b95c9d5acd58dc32edf7a712e496786370671')
 
 prepare() {
