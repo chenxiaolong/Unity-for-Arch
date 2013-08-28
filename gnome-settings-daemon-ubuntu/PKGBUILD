@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~saucy2
+_ppa_rel=0ubuntu1~saucy1
 _translations=20130418
-pkgver=3.8.3
-pkgrel=102
+pkgver=3.8.4
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -22,8 +22,8 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001_Do_not_hide_IBus_icon.patch')
-sha512sums=('e8b02a820f3785dc42b5f82b94804bf7ec761c2d2c797d7eba0f590ed1b8107094d5cb395cdd00c1a7ef7e294cdfb7d54b1e9c14e9584b5bcc03bb8cd61b3515'
-            'ec4380bd355e8021b089fa43f9e2b0e6d349df53d29cae3149cf98033467ae115796bcc1ae4d7822b70cd8bd9f3a689d838c87387a9237fe3f2272f1707d08d6'
+sha512sums=('cf6905afb275f9eea10e2c5729316572b7ad665fb4c78edf53b54335a113413b725a20c07fba2505d2279110460ea6632d3a2bec68e7b5af37f44597a5e80860'
+            '80d51f95ac0f8e1a7d92a43e45c6a76b9713d05b9fda17efe34960f9b5262b116424a232a62810a231774c6e0aae79e5676912daca5383ef3520cb2743f6f997'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             '2a5a4fdc030ad7499c4551ba33480a7c4b609f018c9bebcb21f49deecf54a73faf1f6078b93895fdefb5738ee8a4aad9fe4ae7e95243242d6d82ecbeb5b9754f')
 
@@ -79,6 +79,10 @@ package() {
 
   # Part of gnome-settings-daemon-compat
   rm "${pkgdir}/usr/lib/gnome-settings-daemon/gnome-fallback-mount-helper"
+
+  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -m644 "${srcdir}/debian/gnome-settings-daemon.gsettings-override" \
+    "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname}.gschema.override"
 }
 
 # vim:set ts=2 sw=2 et:
