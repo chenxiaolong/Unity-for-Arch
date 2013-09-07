@@ -2,7 +2,7 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=glib2-ubuntu
-pkgver=2.37.6
+pkgver=2.37.7
 pkgrel=1
 pkgdesc="Common C routines used by GTK+ and other libs"
 arch=('i686' 'x86_64')
@@ -18,7 +18,7 @@ conflicts=('glib2')
 options=('!docs' '!libtool' '!emptydirs')
 source=("http://ftp.gnome.org/pub/GNOME/sources/glib/${pkgver%.*}/glib-${pkgver}.tar.xz"
         'revert-warn-glib-compile-schemas.patch')
-sha512sums=('2bf547a325d91f585a965da7fc0f39b1afc5526c3964ba378439cece1fffabed37d195377d37d2b8011f54f061702497eb394d8e4e798e2c494041ea7075f3ce'
+sha512sums=('526762edfb12867c6833fdc58ac8b607018100e5daa3c95e94308ea2848325c6cbfe63db280f0032553e6dcbc3afcdb7a5a42d12247c0484751f64e2b5513096'
             '8d5da70a3ef39771e8dc61e050b7425922012f2d4094bff64bc3efdef12974bd4fea853c52f099b47b6464bc65daf8de5796a2d93ffe2c1100e75d72ce5c9053')
 
 prepare() {
