@@ -1,0 +1,51 @@
+# Maintainer: Rafael Reggiani Manzo <rr.manzo@gmail.com>
+
+_pkgname_prefix=accountsservice
+_pkgname_sufix=ubuntu
+pkgname=$_pkgname_prefix-$_pkgname_sufix
+_ubuntu_rel=0ubuntu5
+pkgver=0.6.34
+pkgrel=100
+pkgdesc="D-Bus interface for user account query and manipulation"
+arch=(i686 x86_64)
+url="http://www.freedesktop.org/software/accountsservice/"
+license=('GPL3')
+depends=('glib2' 'polkit' 'systemd')
+makedepends=('intltool' 'gobject-introspection' 'vala')
+provides=("accountsservice=${pkgver}")
+replaces=('accountsservice')
+conflicts=('accountsservice')
+options=('!libtool')
+source=("$url/$_pkgname_prefix-$pkgver.tar.xz"
+        "https://launchpad.net/ubuntu/saucy/+source/accountsservice/$pkgver-$_ubuntu_rel/+files/${_pkgname_prefix}_$pkgver-$_ubuntu_rel.debian.tar.gz")
+
+sha512sums=('bbc62a97ed658e9bc2fb7c18c20db4ecad811a75cd2cc1916302326cbabdd2214260be974e764f684f6fecdf0833e93397f5c8fe09feba23dc669e6b22e15d2b'
+            '2d203cb4e63dc3dc74022fdd3670373460904c0607c8cbf58fa620a0319a5d6bc7ea66c4230fc1c34d8b5efe93d7c9d07dff32880ca872a7f0f453749fcd4615')
+
+prepare() {
+  cd $_pkgname_prefix-$pkgver
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    msg "Applying patch ${i} ..."
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
+}
+
+build() {
+  cd $_pkgname_prefix-$pkgver
+  aclocal
+
+  automake --add-missing
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+    --libexecdir=/usr/lib/accountsservice \
+    --with-systemdsystemunitdir=/usr/lib/systemd/system \
+    --localstatedir=/var --disable-static --enable-systemd
+
+  make
+}
+
+package() {
+  cd $_pkgname_prefix-$pkgver
+  make DESTDIR="$pkgdir" install
+}

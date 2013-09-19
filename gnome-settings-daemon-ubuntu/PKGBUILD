@@ -3,10 +3,10 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~saucy4
+_ppa_rel=0ubuntu3
 _translations=20130418
-pkgver=3.8.4
-pkgrel=101
+pkgver=3.8.5
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -19,11 +19,11 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001_Do_not_hide_IBus_icon.patch')
-sha512sums=('cf6905afb275f9eea10e2c5729316572b7ad665fb4c78edf53b54335a113413b725a20c07fba2505d2279110460ea6632d3a2bec68e7b5af37f44597a5e80860'
-            '00a1d1582ae03bf49979f29e823aec2281bd5d931474933177c3d14d9c5b18c0afedc4e797f1c2e8a1a089769306776c1d1eed6004f5deb3f8234993b5ac3542'
+sha512sums=('3692097ae6666804ce10ef2839b204e6cd5f4e2ef646e058fe8af50c30cc89731f206b86fd6a0ba51e697b6a090e019d0265bb01516087e9e773f2b79f4300f5'
+            'bb560af960d08d5d5e96127cec2c2d0d0c83b01e68362e3e50fde110ad6909e27b2c501ad3e80e23603a7d03edb19f9edd345725db5dd1c9b5f630f08c120dcf'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             '2a5a4fdc030ad7499c4551ba33480a7c4b609f018c9bebcb21f49deecf54a73faf1f6078b93895fdefb5738ee8a4aad9fe4ae7e95243242d6d82ecbeb5b9754f')
 
