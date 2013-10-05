@@ -2,10 +2,10 @@
 
 pkgname=libunity-webapps
 _actual_ver=2.5.0
-# ~+ ?? WTF
-_extra_ver=~+13.10.20130828
+# ~+ ??
+_extra_ver=~+13.10.20130926.1
 _translations=20130418
-pkgver=${_actual_ver}.daily13.08.28
+pkgver=${_actual_ver}.daily13.09.26.1
 pkgrel=100
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
@@ -16,12 +16,11 @@ depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbu
 makedepends=('gobject-introspection' 'gtk-doc' 'intltool')
 # configure.ac probably needs to be updated
 makedepends+=('telepathy-glib' 'libdbusmenu-gtk3')
-checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 options=('!libtool')
 install=libunity-webapps.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-libunity-webapps.tar.gz")
-sha512sums=('e4364ee55c047df6be2e9cf36924b1018a166dbcbe52b1e8a0f17ee10e599c99d76b580de5a705f0ec71086becc26dae82f1505e8f0051c60169510e1e24606f'
+sha512sums=('41e2fa35d59e1adaedd07fb121f6121d82d3fd4835791bc71e34490b1f9fb0f09cf4d96f21ed15862dde9395c65f473722c8ae5590543878ec8f31ce47e1c106'
             '9cac4fc4333dd55ad0cad6a89686e4c240abbd9b41806583272826bfcaec53f4f51faf741c8bb532cf3decc850f38e56f4241e4349d662b1f7bfe9c937869285')
 
 prepare() {
@@ -45,12 +44,6 @@ build() {
 
   ./configure --prefix=/usr --libexecdir=/usr/lib/libunity-webapps --disable-static
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  make check
 }
 
 package() {
