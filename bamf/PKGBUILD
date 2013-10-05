@@ -3,24 +3,23 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=bamf
-_actual_ver=0.5.0
-_extra_ver=+13.10.20130822.5
-pkgver=${_actual_ver}daily13.08.22.5
+_actual_ver=0.5.1
+_extra_ver=+13.10.20130830
+pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-depends=('libgtop' 'libunity-webapps' 'libwnck3' 'glib2-ubuntu')
+depends=('libgtop' 'libunity-webapps' 'libwnck3' 'glib2')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'libxml2' 'libxslt' 'vala')
-checkdepends=('xorg-server-xvfb')
 provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")
 replaces=('libbamf3' 'bamfdaemon')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('4532279c128ad3617fad4c90596de730c7c7dd72eac1fb0ffcefd223fb8bc49c4325a7631a06cf3360f0ebbe611a14072061b9ced16f9d74d8c2fce8f7f5254d')
+sha512sums=('7ebe2d64b93e9a4eeff7638c56b469d25aa3819b4ce641e17310561989bc5829c3cc9613c288fd9b186257e0214f92ab75e849ffbb4691d1fcf958d07331a0ef')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -42,12 +41,6 @@ build() {
     ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --enable-gtk-doc --enable-headless-tests
   fi
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  make check || :
 }
 
 package() {
