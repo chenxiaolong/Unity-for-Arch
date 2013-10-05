@@ -8,67 +8,66 @@ Note: Some packages include tests that require packages from the "TESTS" directo
 
 Order to compile/install:
 
-01: glib2-ubuntu                   -> Library of common C routines
-02: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
-03: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
-04: qt4-ubuntu                     -> Qt toolkit with Ubuntu patches
-05: libdbusmenu                    -> Library for passing menus over DBus
-06: ido                            -> Widgets and objects used for indicators
-07: libindicator                   -> Symbols and functions for indicators
-08: libindicate                    -> Libraries to raise 'flags' on DBus
-09: libindicate-qt                 -> Qt bindings for libindicate
-10: libappindicator                -> Library to export menu bar to Unity
-11: unity-gtk-module               -> Application menu module for GTK+
-12: vala0.18                       -> Compiler for the GObject type system
-13: dee-ubuntu                     -> Model to synchronize instances over DBus
-14: libunity                       -> Library for integrating Unity
-15: libunity-misc                  -> Differently licensed stuff for Unity
-16: indicator-messages             -> Collects messages that need a response
-17: libunity-webapps               -> Library for integrating WebApps into Unity
-18: bamf                           -> Application matching framework
-19: sni-qt                         -> Turns Qt tray icons into appindicators
-20: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-21: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-22: gnome-session-ubuntu           -> GNOME Session Manager
-23: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
-24: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-25: gnome-control-center-unity     -> Change some Unity settings with GCC
-26: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
-27: metacity-ubuntu                -> Window manager for GNOME
-28: libtimezonemap                 -> GTK+3 timezone map widget
-29: indicator-applet               -> GNOME panel indicator applet
-30: indicator-application          -> Takes menus and puts then in the panel
-31: indicator-appmenu              -> An indicator to host the menus from apps
-32: indicator-bluetooth            -> Indicator for bluetooth status
-33: indicator-datetime             -> A very, very simple clock
-34: indicator-power                -> Indicator to show battery information
-35: indicator-printers             -> Indicator showing active print jobs
-36: indicator-session              -> Indicator for session management
-37: indicator-sound                -> Indicator displaying a unified sound menu
-38: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
-39: pocketsphinx                   -> Lightweight speech recognition system
-40: sphinx-voxforge-en             -> English Sphinx models built from Voxforge
-41: hud                            -> Backend for the Unity HUD
-42: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-43: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-44: evemu                          -> Linux Evdev Event Emulation Library
-45: frame                          -> Open Input Framework Frame Library
-46: grail                          -> Gesture recognition and instantiation lib.
-47: geis                           -> Implementation of the GEIS interface
-48: nux                            -> An OpenGL toolkit
-49: unity-asset-pool               -> Design assets for Unity
-50: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-51: libcolumbus                    -> Small, fast, error tolerant matcher
-52: unity-lens-applications        -> Unity applications lens
-53: unity-lens-files               -> Unity files lens
-54: unity-lens-music               -> Unity music lens
-55: unity-lens-photos              -> Unity photo lens
-56: unity-lens-video               -> Unity video lens
-57: unity-scope-home               -> Unity Home Scope
-58: unity-scopes                   -> Unity Smart Scopes
-59: compiz-ubuntu                  -> Compiz compositing window manager
-60: xpathselect                    -> Select tree objects using XPath queries
-61: unity                          -> Desktop shell designed for efficiency
+01: gtk2-ubuntu                    -> GTK toolkit 2.0 with Ubuntu patches
+02: gtk3-ubuntu                    -> GTK toolkit 3.0 with Ubuntu patches
+03: qt4-ubuntu                     -> Qt toolkit with Ubuntu patches
+04: libdbusmenu                    -> Library for passing menus over DBus
+05: ido                            -> Widgets and objects used for indicators
+06: libindicator                   -> Symbols and functions for indicators
+07: libindicate                    -> Libraries to raise 'flags' on DBus
+08: libindicate-qt                 -> Qt bindings for libindicate
+09: libappindicator                -> Library to export menu bar to Unity
+10: unity-gtk-module               -> Application menu module for GTK+
+11: vala0.18                       -> Compiler for the GObject type system
+12: dee-ubuntu                     -> Model to synchronize instances over DBus
+13: libunity                       -> Library for integrating Unity
+14: libunity-misc                  -> Differently licensed stuff for Unity
+15: indicator-messages             -> Collects messages that need a response
+16: libunity-webapps               -> Library for integrating WebApps into Unity
+17: bamf                           -> Application matching framework
+18: sni-qt                         -> Turns Qt tray icons into appindicators
+19: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+20: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+21: gnome-session-ubuntu           -> GNOME Session Manager
+22: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
+23: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+24: gnome-control-center-unity     -> Change some Unity settings with GCC
+25: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
+26: metacity-ubuntu                -> Window manager for GNOME
+27: libtimezonemap                 -> GTK+3 timezone map widget
+28: indicator-applet               -> GNOME panel indicator applet
+29: indicator-application          -> Takes menus and puts then in the panel
+30: indicator-appmenu              -> An indicator to host the menus from apps
+31: indicator-bluetooth            -> Indicator for bluetooth status
+32: indicator-datetime             -> A very, very simple clock
+33: indicator-power                -> Indicator to show battery information
+34: indicator-printers             -> Indicator showing active print jobs
+35: indicator-session              -> Indicator for session management
+36: indicator-sound                -> Indicator displaying a unified sound menu
+37: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
+38: pocketsphinx                   -> Lightweight speech recognition system
+39: sphinx-voxforge-en             -> English Sphinx models built from Voxforge
+40: hud                            -> Backend for the Unity HUD
+41: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+42: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+43: evemu                          -> Linux Evdev Event Emulation Library
+44: frame                          -> Open Input Framework Frame Library
+45: grail                          -> Gesture recognition and instantiation lib.
+46: geis                           -> Implementation of the GEIS interface
+47: nux                            -> An OpenGL toolkit
+48: unity-asset-pool               -> Design assets for Unity
+49: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+50: libcolumbus                    -> Small, fast, error tolerant matcher
+51: unity-lens-applications        -> Unity applications lens
+52: unity-lens-files               -> Unity files lens
+53: unity-lens-music               -> Unity music lens
+54: unity-lens-photos              -> Unity photo lens
+55: unity-lens-video               -> Unity video lens
+56: unity-scope-home               -> Unity Home Scope
+57: unity-scopes                   -> Unity Smart Scopes
+58: compiz-ubuntu                  -> Compiz compositing window manager
+59: xpathselect                    -> Select tree objects using XPath queries
+60: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
