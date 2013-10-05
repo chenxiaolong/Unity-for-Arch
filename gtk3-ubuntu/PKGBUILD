@@ -2,41 +2,38 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=3ubuntu7
-pkgver=3.8.2
-pkgrel=108
+_ppa_rel=0ubuntu1~saucy1
+pkgver=3.10.0
+pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 install=arch_gtk3.install
-depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon' 'glib2-ubuntu')
-makedepends=('gobject-introspection' 'mesa')
-checkdepends=('hicolor-icon-theme' 'xorg-server-xvfb')
+depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon')
+makedepends=('gobject-introspection')
+optdepends=('gnome-themes-standard: Default widget theme'
+            'gnome-icon-theme: Default icon theme')
 provides=("gtk3=${pkgver}")
 conflicts=('gtk3')
 options=('!libtool' '!docs')
 backup=('etc/gtk-3.0/settings.ini')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        '0001_Add_broadway_symbols.patch'
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ppa_rel}.debian.tar.gz"
         'arch_settings.ini')
-sha512sums=('20958c192fe881281f6885e2d7cecc4e2700fc01ef8006304f1fb8befe8f6628cbdb06c0d801f109e5805d58f327ca9a07d5e2c7f938116c99db8080d0c2f83e'
-            '0c8f61a05650fd5d8bf443d9404550cd98756b218f710564df282a416f479d35a2b585e0bf9cd52fbb6b4b1182e7f5776c24ffea47e38da1a48f0372beec1dc1'
-            'ee8a6b7b5f016dae5a588834842b584c1fbd955065469550ab33571d2302ca0ba3796265b4293e1f38a28fa00e1c1596cf438501ab782d3fd6412cac23025a00'
-            '087bf853cb9f6ee8269c60041555ee1546a2d10fbdbe820710c77a74bb9c34735abe8b061e2a0322246932d7a72b21953682fcdca79b09fd555307abb1d88699')
+sha512sums=('5451b10e2d3acba8693383f630eea88790860691d9021d65f12b4fffd13b392a175f9c2dc9c6e76d3869f618125375069ffbf73bf92f7059f08fb46744038fdb'
+            '410a9f5a8b40062b6cb6cb63f20444e38e82a8114a6d7eb2dbd547ddd37f3a1b702f2345c06afff75f2b52c7f10fcac848b50f080daec87265850c472eece304'
+            '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
   cd "${srcdir}/gtk+-${pkgver}"
 
-  # Add Broadway sumbols to tests pass
-  patch -p1 -i "${srcdir}/0001_Add_broadway_symbols.patch"
-
   # Apply Ubuntu Patches
+    echo > "${srcdir}/debian/patches/series"
     # Enable patches
       # https://bugs.launchpad.net/indicator-messages/+bug/1088162
       # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
-        echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
+        #echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
       # gnome-control-center-ubuntu: 54_enable_alt_tap_in_shortcut.patch
       # Dependency check: grep -R GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP * | cut -d/ -f1
         echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
@@ -45,18 +42,6 @@ prepare() {
         echo '017_no_offscreen_device_grabbing.patch' >> "${srcdir}/debian/patches/series"
       # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
         echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> "${srcdir}/debian/patches/series"
-      # We build with Wayland support
-        echo '102_add_wayland_symbols.patch' >> "${srcdir}/debian/patches/series"
-      # Probably needed
-        echo 'git-gtkmodelmenuitem-icon-support.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_no_segfault_on_icon_theme_update.patch' >> "${srcdir}/debian/patches/series"
-      # Useful (from upstream git)
-        echo 'git_filechooser_signal.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_fileselect_subdir.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_disable_frame_sync_gtkplug.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_iconcache_ref_GtkIconData.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_icontheme_move_changed_emission.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_check_for_gdkpixbuf_first.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
@@ -85,24 +70,6 @@ build() {
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
   make
-}
-
-# Okay, these tests are obviously untested. There's no reason GTK 3 needs to be
-# installed for them to run.
-check() {
-  cd "${srcdir}/gtk+-${pkgver}"
-
-  # Do the GTK developers even check that their tests work?
-  rm ./tests/css/parser/background-shorthand.css
-  rm ./tests/css/parser/background-shorthand-single.css
-  rm ./tests/css/parser/declarations-valid-22.css
-  rm ./tests/css/parser/declarations-valid-23.css
-  rm ./tests/a11y/about.ui
-  rm ./tests/a11y/combos.ui
-  rm ./tests/a11y/menu.ui
-  rm ./tests/a11y/notebook.ui
-  rm ./tests/a11y/pickers.ui
-  #make -j1 check
 }
 
 package() {
