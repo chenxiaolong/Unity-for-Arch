@@ -35,39 +35,38 @@ Order to compile/install:
 25: credentials-preferences-ubuntu -> Ubuntu Online Accounts Settings Panel
 26: metacity-ubuntu                -> Window manager for GNOME
 27: libtimezonemap                 -> GTK+3 timezone map widget
-28: indicator-applet               -> GNOME panel indicator applet
-29: indicator-application          -> Takes menus and puts then in the panel
-30: indicator-appmenu              -> An indicator to host the menus from apps
-31: indicator-bluetooth            -> Indicator for bluetooth status
-32: indicator-datetime             -> A very, very simple clock
-33: indicator-power                -> Indicator to show battery information
-34: indicator-printers             -> Indicator showing active print jobs
-35: indicator-session              -> Indicator for session management
-36: indicator-sound                -> Indicator displaying a unified sound menu
-37: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
-38: pocketsphinx                   -> Lightweight speech recognition system
-39: sphinx-voxforge-en             -> English Sphinx models built from Voxforge
-40: hud                            -> Backend for the Unity HUD
-41: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-42: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-43: evemu                          -> Linux Evdev Event Emulation Library
-44: frame                          -> Open Input Framework Frame Library
-45: grail                          -> Gesture recognition and instantiation lib.
-46: geis                           -> Implementation of the GEIS interface
-47: nux                            -> An OpenGL toolkit
-48: unity-asset-pool               -> Design assets for Unity
-49: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-50: libcolumbus                    -> Small, fast, error tolerant matcher
-51: unity-lens-applications        -> Unity applications lens
-52: unity-lens-files               -> Unity files lens
-53: unity-lens-music               -> Unity music lens
-54: unity-lens-photos              -> Unity photo lens
-55: unity-lens-video               -> Unity video lens
-56: unity-scope-home               -> Unity Home Scope
-57: unity-scopes                   -> Unity Smart Scopes
-58: compiz-ubuntu                  -> Compiz compositing window manager
-59: xpathselect                    -> Select tree objects using XPath queries
-60: unity                          -> Desktop shell designed for efficiency
+28: indicator-application          -> Takes menus and puts then in the panel
+29: indicator-appmenu              -> An indicator to host the menus from apps
+30: indicator-bluetooth            -> Indicator for bluetooth status
+31: indicator-datetime             -> A very, very simple clock
+32: indicator-power                -> Indicator to show battery information
+33: indicator-printers             -> Indicator showing active print jobs
+34: indicator-session              -> Indicator for session management
+35: indicator-sound                -> Indicator displaying a unified sound menu
+36: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
+37: pocketsphinx                   -> Lightweight speech recognition system
+38: sphinx-voxforge-en             -> English Sphinx models built from Voxforge
+39: hud                            -> Backend for the Unity HUD
+40: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+41: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+42: evemu                          -> Linux Evdev Event Emulation Library
+43: frame                          -> Open Input Framework Frame Library
+44: grail                          -> Gesture recognition and instantiation lib.
+45: geis                           -> Implementation of the GEIS interface
+46: nux                            -> An OpenGL toolkit
+47: unity-asset-pool               -> Design assets for Unity
+48: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+49: libcolumbus                    -> Small, fast, error tolerant matcher
+50: unity-lens-applications        -> Unity applications lens
+51: unity-lens-files               -> Unity files lens
+52: unity-lens-music               -> Unity music lens
+53: unity-lens-photos              -> Unity photo lens
+54: unity-lens-video               -> Unity video lens
+55: unity-scope-home               -> Unity Home Scope
+56: unity-scopes                   -> Unity Smart Scopes
+57: compiz-ubuntu                  -> Compiz compositing window manager
+58: xpathselect                    -> Select tree objects using XPath queries
+59: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
