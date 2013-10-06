@@ -1,0 +1,43 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,7 +31,6 @@
+   PULSEAUDIO REQUIRED
+   libpulse-mainloop-glib>=${PULSE_AUDIO_REQUIRED_VERSION}
+   gio-unix-2.0>=${GIO_2_0_REQUIRED_VERSION}
+-  url-dispatcher-1>=${URL_DISPATCHER_1_REQUIRED_VERSION}
+ )
+ include_directories(${PULSEAUDIO_INCLUDE_DIRS})
+ 
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -21,7 +21,6 @@
+     --vapidir=${CMAKE_SOURCE_DIR}/vapi/
+     --vapidir=.
+     --target-glib=2.36
+-    --pkg=url-dispatcher
+     --pkg=bus-watcher
+ )
+ 
+--- a/src/service.vala
++++ b/src/service.vala
+@@ -134,7 +134,7 @@
+ 	}
+ 
+ 	void activate_phone_settings (SimpleAction action, Variant? param) {
+-		UrlDispatch.send ("settings:///system/sound");
++		//UrlDispatch.send ("settings:///system/sound");
+ 	}
+ 
+ 	/* Returns a serialized version of @icon_name suited for the panel */
+--- a/vapi/url-dispatcher.vapi
++++ b/vapi/url-dispatcher.vapi
+@@ -1,9 +0,0 @@
+-[CCode (cprefix="", lower_case_cprefix="", cheader_filename="liburl-dispatcher-1/url-dispatcher.h")]
+-
+-namespace UrlDispatch
+-{
+-  public delegate void DispatchCallback ();
+-
+-  [CCode (cname = "url_dispatch_send")]
+-  public static void send (string url, DispatchCallback? func = null);
+-}
