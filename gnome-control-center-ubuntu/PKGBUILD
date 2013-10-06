@@ -3,17 +3,17 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~raring2
+_ppa_rel=0ubuntu1~saucy2
 _translations=20130418
-pkgver=3.8.3
-pkgrel=101
+pkgver=3.10.0
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'patchutils' 'vala' 'desktop-file-utils')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'vala' 'desktop-file-utils')
 optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
             'vino: screen sharing'
@@ -27,8 +27,8 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz"
         '0001_Rename_back_to_System_Settings.patch')
-sha512sums=('5b4738535e759607b305f6b962917155f949f64c2f18c80cf6cf13b4a18275dba703afca48f5abba46c326fe32248520080f1b838c958bc0a0df011fe07a379f'
-            '3a1fd55e04030a29469d0566dcf283ca466260fbe4722f45133e4410597ebd848d906136507472e64d82cee98fcd3dec26e0e3c31cce6c676529e39fb983ff09'
+sha512sums=('b74fd36df1064eae61883491213890fc830741a65144043e55465ec0d73e6e76156c75be5458e81c5099639710ee10e3950a78535debec917cfcc666c88eee5d'
+            '9291e2109061761548d61f8db4aa4133a5953acbd481363d44cfe0cf593a2fccd7d7381d9ad41c928a33ab7e192cb5a0075dc1bb7a9575e445bb6e04435b4cef'
             'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc'
             '6a3e327f7a396e500ab5fda610fea2b1495b134033f57363701c4b9d7da37f1a044f632fd78c49a1dc8e7cd9f16b688c2f8726bed76f86a5d76564915a40d898')
 
@@ -37,20 +37,15 @@ prepare() {
 
   # Apply Ubuntu's patches
     # Disable patches
-      # Ubuntu is too lazy to port their patches to the latest version of IBus
-        sed -i '/revert_new_ibus_keyboard_use.patch/d' "${srcdir}/debian/patches/series"
       # Arch Linux uses PackageKit
         sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
       # Ubuntu specific
-        sed -i '/10_keyboard_layout_on_unity.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/52_region_language.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/92_ubuntu_system_proxy.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/revert_git_info_packagekit_api.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/ubuntu_region_packagekit.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/ubuntu_region_install_dialog.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
@@ -58,10 +53,6 @@ prepare() {
   done
 
   ### Translations are currently incomplete ###
-
-  # The title changed from "System Settings" to "Settings" in GNOME 3.8. We'll
-  # revert it since it breaks all of Ubuntu's translations
-#  patch -p1 -i "${srcdir}/0001_Rename_back_to_System_Settings.patch"
 
 #  msg "Merging translations from ${_translations}"
 #  rm -f po/LINGUAS po/*.pot
