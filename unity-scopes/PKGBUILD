@@ -6,7 +6,7 @@
 packages=()
 setver() { eval "_ver_${1}=${2}"; eval "_rel_${1}=${3}"; packages+=(${1}); }
 
-setver audacious		0.1+13.10.20130723	0ubuntu1
+setver audacious		0.1+13.10.20130927.1	0ubuntu1
 setver calculator		0.1+13.10.20130723	0ubuntu1
 setver chromiumbookmarks	0.1+13.10.20130723	0ubuntu1
 setver clementine		0.1+13.10.20130723	0ubuntu1
@@ -20,7 +20,7 @@ setver github			0.1+13.10.20130723	0ubuntu1
 setver gmusicbrowser		0.1+13.10.20130723	0ubuntu1
 setver googlenews		0.1+13.10.20130723	0ubuntu1
 setver gourmet			0.1+13.10.20130723	0ubuntu1
-setver guayadeque		0.1+13.10.20130723	0ubuntu1
+setver guayadeque		0.1+13.10.20130927.1	0ubuntu1
 setver manpages			3.0+13.10.20130723	0ubuntu1
 setver musique			0.1+13.10.20130723	0ubuntu1
 setver openclipart		0.1+13.10.20130723	0ubuntu1
@@ -36,7 +36,7 @@ setver zotero			0.1+13.10.20130723	0ubuntu1
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="Online scopes for the Unity Dash"
 arch=('any')
 url="https://launchpad.net/unity-scope-NAME"
@@ -58,10 +58,6 @@ depends+=('gtk3' 'man-db')
 makedepends=('python-distutils-extra')
 # texdoc
 makedepends+=('texlive-bin')
-
-checkdepends=('python-nose')
-# tomboy
-#checkdepends+=('python3-dbusmock')
 
 install=icon_cache.install
 
@@ -90,17 +86,6 @@ prepare() {
   done
 }
 
-check() {
-  for i in ${packages[@]}; do
-    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
-
-    cd "${srcdir}/unity-scope-${_name}-${_ver}"
-    if grep -q python3-nose debian/control; then
-      nosetests3 || :
-    fi
-  done
-}
-
 package() {
   install -dm755 "${pkgdir}/usr/share/doc/unity-scopes/"
 
@@ -120,8 +105,8 @@ package() {
   done
 }
 
-sha512sums=('3238b8b282728a2d0d5ecd2b49ae11ce27751402dd59c31861b6219280aa3f989ac19e0352162bea866dfaef9bf32553d46c719cac6e90dfd4e7e20dea67ee20'
-            '86f5e3cf41841f52c3c7c50d971d149c053cdaa55bf60ab2f2b7fc09d297ea1bf0984121f1f68592d4ed6d5370069b71c97fe24e8d37a74477228dafaf26013f'
+sha512sums=('3c19ded6c9a5c63b996a4da37afc93200d6e72906062ce94558fdf3c7aba74975c56fee800d727e4a881e829083f90f29cc6676b16c1207df5365589860133af'
+            '3075d7bc393a6be3394d74713ce5cebf29ba2ae642554069b18d09c702fc9deb0db304e98ef1a3e94af53cf500d4a3c24c8e6248594d3d26df840bd51b63e772'
             'b1b06dc303d1304ca705025396668d93fcb2d423f05d30aae91e76a62bb3e9a586b7b7279242d293748b79ec66792f694ccdb12163e26ba5e1f1a1b48c0fff54'
             '1e102a8aa4f542ac707ca6a717f1e9c8d391365a4ef1634aa32aa95b6cb700ee0181a3ed1a3e522cee90687a95760a754d8ea93671635d21aae6d8f67c63c8c6'
             'ca0a52ab74a9a5c5b877ad873f1541e1f0b4efea34bad8ce898855044773762876a73f516e9773b8e4b98d318ed1b336c4adbf9968463fdf91e423f087ea34c4'
@@ -148,8 +133,8 @@ sha512sums=('3238b8b282728a2d0d5ecd2b49ae11ce27751402dd59c31861b6219280aa3f989ac
             'dafc1c91aeb938039301ffe6ab1f6d03fcde5d83aae26e6f4e276a299177468af1388844fad1e34b5b9860595a3c2c242a5df3e3b3cb8f59bea044fba69965fa'
             '876f3fbe29990aec29990d6de4e35685eb5e0178e0d5c87dc8d090e84085fc52285534755d57ca3b357f45051ed761873386073fcd54c5a0f47492d2ceb77a10'
             '59dad9a5e76284badc1fd08458793d0fb2dc5f63abcad9410e5a71c4f25d1754cf5eb411ed270d32bf87f60f2f06ada098172dc069742a5a3ce76c255321e2ba'
-            '4890f1c729dfd4b59de99776a0256e9b4513df6cbd70cbfbad1f5ee10cb36beb715b64c67f91c6976ee6ef99d3e8590a1a9cdd3f799a0462ba07ebce99d6f4b4'
-            'a29da5e3dc7b78a3ea0f4ec34b83fe0e32d6ff8e3de76b86e3d0b48fee03b729445c1e5adf5265ea38eeeadd812aa9be2856b2c1bc7cbf10de5eda81f1c30dcd'
+            '8d20ead737d0aa2d74e7dfa0e500f9d6cbf8963bcd70ced1c232edb0d21ce35742347f2a66a0d9293a0973dc22d57d4edb17bd0dc6245175897033d4906f4277'
+            '54862c1035fc811b8b96fe8cdd1699177734177cbe2268dfa4897e9bb92797969da3aa5c5f7ab3cc64e0d156163c20dfd4aaeca6901b436844b8b6a431c22902'
             'ea13f0c7070ee3354e2b8bff8abd989777b77f67fdfac2ac40b57cbc841734d67481ccd50f3c3d1ee38e766beffc0c90c160c7d735f9620ff1d59e6399295317'
             'c8d555ee5b46dae52d89bcbff91b3175b0360d3c95e4b9bbd15223030c8602c5b17b472d91373cb1de7f84ddb8b91509a5a472ebed6c6854cbde907633361999'
             '8b18e41449ba3e04a704be23cf4e06dd67d5c4d741a7e66169da6978b8e3fcaf4a44c3c11d9a442a7803397e6abd8323046fe03447ac664fc05b51819585e6e1'
