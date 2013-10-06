@@ -4,7 +4,7 @@
 
 pkgname=unity-lens-applications
 _actual_ver=7.1.0
-_extra_ver=+13.10.20130828.1
+_extra_ver=+13.10.20131003
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
@@ -19,7 +19,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-applications.tar.gz"
         '10-no-db51.patch')
-sha512sums=('41425505bee70bac957a9388b7c3e98afd1c71abc790e662328cda87a0a91644b45b4a187ae0f2bb2ec40d247101885c6c59d56d8e6c531790fbf9a0a015cddb'
+sha512sums=('908430d2df09260a3cb9a93fa41b2ac7cafba0258b3ff3780ba3a7a3fcc8c1a0c585468bfb310c8189daeb0ba4f718219ea7e67d4e75b3cd08fc29bce46d3e1d'
             '373cd206980e64d388335a3396091a2997a27d27334352073d6cfb927b4e9f04d33f70420859cd522b562c75377938867500e73c47a75f1c8dce9f86d5a1014d'
             '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
 
