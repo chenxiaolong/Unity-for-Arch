@@ -2,8 +2,8 @@
 
 pkgname=geis
 _actual_ver=2.2.16
-_extra_ver=daily13.06.05
-pkgver=${_actual_ver}.${_extra_ver}
+_extra_ver=+13.10.20130919.4
+pkgver=${_actual_ver}.daily13.09.19.4
 pkgrel=100
 pkgdesc="Implementation of the GEIS (Gesture Engine Interface and Support) interface."
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ depends=('grail' 'xorg-xinput' 'python3' 'dbus-core')
 makedepends=('xorg-server-devel')
 options=('!emptydirs' '!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('7bafeedb042ea6f40bf3d132f8cba3e120defea3011a486718535bac16380199180c65903bafca59243950a268a68eb82417a9c4ad82ee1b8e06a283171426f3')
+sha512sums=('8ff6ee0de27b1a4b88ffb14706c4617739bcffc15029ba8f3c0a6d1b0006c3f709b14f7447755c352e5a9ac246ff0157a397da58257903c6d0f8a7e8488aa95c')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
