@@ -2,7 +2,7 @@
 
 pkgname=unity-scope-home
 _actual_ver=6.8.2
-_extra_ver=+13.10.20130828.1
+_extra_ver=+13.10.20131003
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="Home scope that aggregates results from multiple scopes"
@@ -13,7 +13,7 @@ groups=('unity')
 depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
 makedepends=('gnome-common' 'intltool' 'vala')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('5920d3ca7bb869295a1201aa3d783c2624c7610fd6d8321a604ceeaafb2d892b7c6ccb6bf432338d5ab05a1e2eed84b3701ee80028e4106f4e7f480c31897349')
+sha512sums=('9ec83a939c1109a5e65536e335288c0f39f4232c0795e4ab2ab63dcb23579e66299cc822a45f0b15059a901b0b26836f6fafc7225a89c7911440f49099b59f97')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -21,11 +21,6 @@ build() {
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-  make check || :
 }
 
 package() {
