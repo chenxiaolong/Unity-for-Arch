@@ -3,29 +3,29 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ubuntu_rel=1ubuntu5
+_ppa_rel=0ubuntu1~saucy1
 _translations=20130418
-pkgver=3.8.2.1
-pkgrel=106
+pkgver=3.10.0
+pkgrel=100
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('systemd' 'dconf' 'gconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower')
-makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans' 'patchutils')
+depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower')
+makedepends=('gtk-doc' 'intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
 conflicts=('gnome-session')
 options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver:0:3}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-session/gnome-session_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
         '55gnome-session_gnomerc'
         'timeout.patch'
         'polkit-gnome-authentication-agent-1-unity.desktop')
-sha512sums=('9d580432faf256e53da30c8fff3d3b1e16cb18869cd2d70542f56bf6fbf41893abd24003413c2a9364eaaa1c9760874683bf7255607918a79a05ab61e292caca'
-            '511866082ba9ae182ee798091ef33f05ec3632e704f82d5d7c42898e6306312ce79f626149244e7190fedfd5e530493a5f4701ca38bab51d3491cbc68b128aee'
+sha512sums=('036adc7ecff7f5aa1319bfac636b6b77925c689cb92880224cf665456dca5a55299025971a2bcdb841e27334ddc0cd6125241b39e48a30c3cc0b02c22612f5c9'
+            'ab4311c3d0ee2d5a281fcfcd805f96cde1ce7f21bc08ff553fadae7dade6f044dedf356ce6f52f6bdc819e53a54d08111383f7075a7341c5bed6caaaa3343907'
             'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
