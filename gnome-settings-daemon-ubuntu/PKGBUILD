@@ -3,15 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~saucy4
+_ppa_rel=0ubuntu1~saucy0
 _translations=20130418
-pkgver=3.8.4
-pkgrel=101
+pkgver=3.10.0
+pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'nss' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'librsvg' 'libappindicator3' 'packagekit')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'librsvg' 'libgweather' 'geocode-glib' 'geoclue2' 'libappindicator3' 'packagekit')
 makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl' 'desktop-file-utils')
 groups=('unity')
 provides=("gnome-settings-daemon=${pkgver}")
@@ -19,11 +19,11 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs' '!libtool')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001_Do_not_hide_IBus_icon.patch')
-sha512sums=('cf6905afb275f9eea10e2c5729316572b7ad665fb4c78edf53b54335a113413b725a20c07fba2505d2279110460ea6632d3a2bec68e7b5af37f44597a5e80860'
-            '00a1d1582ae03bf49979f29e823aec2281bd5d931474933177c3d14d9c5b18c0afedc4e797f1c2e8a1a089769306776c1d1eed6004f5deb3f8234993b5ac3542'
+sha512sums=('b5ed0651ca1aaf5009ecac570ec818cfd99b0dc9ddc319eb3ede93e53c53f81830f85f39af89e28ce6bccb3e6afa35b5fd1f64cefc8cd183e6fbd8a370f1ba8f'
+            'd3681ae7f7d2aa46912f04a164c888be63854fcaf41598553c44e84df1b03fbce34e5e3cb2eaf9f29d3fcafeb25c185cfed36ebf544c5ba4fd7397a1bbe1c6ed'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             '2a5a4fdc030ad7499c4551ba33480a7c4b609f018c9bebcb21f49deecf54a73faf1f6078b93895fdefb5738ee8a4aad9fe4ae7e95243242d6d82ecbeb5b9754f')
 
@@ -38,6 +38,7 @@ prepare() {
     # Disable patches
       # Ubuntu specific
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/53_sync_input_sources_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch ${i} ..."
@@ -79,10 +80,6 @@ package() {
 
   # Part of gnome-settings-daemon-compat
   rm "${pkgdir}/usr/lib/gnome-settings-daemon/gnome-fallback-mount-helper"
-
-  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
-  install -m644 "${srcdir}/debian/gnome-settings-daemon.gsettings-override" \
-    "${pkgdir}/usr/share/glib-2.0/schemas/10_${pkgname}.gschema.override"
 }
 
 # vim:set ts=2 sw=2 et:
