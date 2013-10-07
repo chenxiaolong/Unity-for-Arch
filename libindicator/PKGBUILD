@@ -5,19 +5,18 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
-_extra_ver=+13.10.20130823
-pkgver=${_actual_ver}daily13.08.23
+_extra_ver=+13.10.20130913
+pkgver=${_actual_ver}daily13.09.13
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicator"
 license=('GPL')
-makedepends=('gtk2' 'gtk3' 'glib2-ubuntu' 'ido')
-checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
+makedepends=('gtk2' 'gtk3' 'glib2' 'ido')
 options=('!libtool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('7a74e025cd5c69f1cf3a42f615a4282d8edbb5bb04498f9490d8093a58252917b0a3482957a60026f80336b82ecbc84e94a364850b86fc2f3fa3a5ab4881e814')
+sha512sums=('fcc63fb28fbb2af4c9fe0e4de13987cbc6d78357f8f310227596b01c27c9d2f726a0c11b3b2d5c6f9d27f0bee9c2e1f8e23333d0f0411d04038bda791706200b')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
@@ -40,18 +39,9 @@ build() {
   popd
 }
 
-# Ubuntu/Debian's dh_auto_test is not being run for this package (probably a
-# packaging mistake)
-check() {
-  # test-indicator-ng fails under GTK 3
-  #cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
-  make check || :
-}
-
 package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2' 'glib2-ubuntu')
+  depends=('gtk2' 'glib2')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 
@@ -61,7 +51,7 @@ package_libindicator() {
 
 package_libindicator3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=('gtk3' 'glib2-ubuntu' 'ido')
+  depends=('gtk3' 'glib2' 'ido')
   options=(${options[@]} '!emptydirs')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
