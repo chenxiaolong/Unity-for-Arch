@@ -1,0 +1,19 @@
+--- a/example/simple-client-vala.vala
++++ b/example/simple-client-vala.vala
+@@ -20,6 +20,7 @@
+ with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
++using GLib;
+ using Gtk;
+ using AppIndicator;
+ 
+@@ -104,7 +105,7 @@
+ 			print(@"Got scroll event! delta: $delta, direction: $direction\n");
+ 		});
+ 
+-		Timeout.add_seconds(1, () => {
++		GLib.Timeout.add_seconds(1, () => {
+ 			percentage = (percentage + 1) % 100;
+ 			if (can_haz_label) {
+ 				ci.set_label(@"$(percentage+1)%", "");
