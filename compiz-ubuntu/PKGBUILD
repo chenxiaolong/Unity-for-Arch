@@ -27,7 +27,6 @@ arch=('i686' 'x86_64')
 license=('GPL')
 depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
-#checkdepends=('xorg-gtest')
 groups=('unity')
 options=('emptydirs')
 conflicts=('compiz')
@@ -108,12 +107,6 @@ build() {
 
   make
 }
-
-#check() {
-#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
-#
-#  make test
-#}
 
 package() {
   cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
