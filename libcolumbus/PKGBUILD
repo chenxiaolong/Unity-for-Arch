@@ -23,12 +23,6 @@ build() {
   make
 }
 
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
-  export COLUMBUS_DATADIR=$(pwd)/../share
-  ctest
-}
-
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
