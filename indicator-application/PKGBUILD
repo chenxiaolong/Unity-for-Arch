@@ -12,7 +12,6 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-application"
 license=('GPL')
 depends=('dbus-glib' 'libappindicator3' 'libdbusmenu-gtk3' 'libindicator3')
-checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -32,12 +31,6 @@ build() {
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  make check
 }
 
 package() {
