@@ -36,14 +36,6 @@ build() {
   popd
 }
 
-check() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2/"
-  make check
-
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
-  make check
-}
-
 package_overlay-scrollbar() {
   pkgdesc="Scrollbar overlayed widget"
   depends=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
