@@ -41,18 +41,6 @@ build() {
   popd
 }
 
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  pushd build-gtk2
-  make check
-  popd
-
-  pushd build-gtk3
-  make check
-  popd
-}
-
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
