@@ -22,13 +22,6 @@ build() {
   make
 }
 
-check() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
-
-  # Only one test doesn't require X
-  ./tests/auto/fsutilstest
-}
-
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
