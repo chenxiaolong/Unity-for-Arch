@@ -11,7 +11,6 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
 license=('LGPL')
 makedepends=('libdbusmenu' 'dbus-glib' 'gtk2' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
-checkdepends=('dbus-test-runner')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
@@ -51,14 +50,6 @@ build() {
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
   make
   popd
-}
-
-check() {
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
-  make check
-
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
-  make check
 }
 
 package_libindicate() {
