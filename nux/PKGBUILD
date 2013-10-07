@@ -13,7 +13,6 @@ url="https://launchpad.net/nux"
 license=('LGPL')
 depends=('gdk-pixbuf2' 'glew' 'pango' 'mesa' 'libsigc++' 'libxcomposite' 'libxdamage' 'libxxf86vm' 'geis' 'ibus')
 makedepends=('boost' 'glproto' 'dri2proto' 'doxygen' 'graphviz')
-checkdepends=('gmock-ubuntu')
 
 groups=('unity')
 options=('!libtool' '!emptydirs')
@@ -43,11 +42,6 @@ build() {
   ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
 
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-  make check-headless || :
 }
 
 package() {
