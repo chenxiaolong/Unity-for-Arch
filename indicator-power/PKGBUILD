@@ -12,7 +12,6 @@ url="https://launchpad.net/indicator-power"
 license=('GPL')
 depends=('dconf')
 makedepends=('intltool' 'python2')
-checkdepends=('gtest-ubuntu')
 groups=('unity')
 options=('!libtool')
 install=${pkgname}.install
@@ -48,12 +47,6 @@ build() {
   # Static libraries are needed for the tests
   ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} #--disable-static
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  make check
 }
 
 package() {
