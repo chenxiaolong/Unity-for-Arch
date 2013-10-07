@@ -14,7 +14,6 @@ url="https://launchpad.net/indicator-session"
 license=('GPL')
 depends=('dconf')
 makedepends=('cmake' 'intltool' 'python2')
-checkdepends=('gtest-ubuntu')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
 options=('!libtool')
@@ -52,12 +51,6 @@ build() {
     -Denable_lcov=OFF
 
   make
-}
-
-check() {
-  cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build"
-
-  env -u LD_PRELOAD ctest
 }
 
 package() {
