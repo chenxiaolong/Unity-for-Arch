@@ -44,12 +44,6 @@ build() {
   make
 }
 
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  make check
-}
-
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
