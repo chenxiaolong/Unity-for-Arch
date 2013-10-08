@@ -44,28 +44,27 @@ Order to compile/install:
 36: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
 37: pocketsphinx                   -> Lightweight speech recognition system
 38: sphinx-voxforge-en             -> English Sphinx models built from Voxforge
-39: libnih                         -> Canonical's not-in-house library
-40: hud                            -> Backend for the Unity HUD
-41: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-42: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-43: evemu                          -> Linux Evdev Event Emulation Library
-44: frame                          -> Open Input Framework Frame Library
-45: grail                          -> Gesture recognition and instantiation lib.
-46: geis                           -> Implementation of the GEIS interface
-47: nux                            -> An OpenGL toolkit
-48: unity-asset-pool               -> Design assets for Unity
-49: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-50: libcolumbus                    -> Small, fast, error tolerant matcher
-51: unity-lens-applications        -> Unity applications lens
-52: unity-lens-files               -> Unity files lens
-53: unity-lens-music               -> Unity music lens
-54: unity-lens-photos              -> Unity photo lens
-55: unity-lens-video               -> Unity video lens
-56: unity-scope-home               -> Unity Home Scope
-57: unity-scopes                   -> Unity Smart Scopes
-58: compiz-ubuntu                  -> Compiz compositing window manager
-59: xpathselect                    -> Select tree objects using XPath queries
-60: unity                          -> Desktop shell designed for efficiency
+39: hud                            -> Backend for the Unity HUD
+40: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+41: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+42: evemu                          -> Linux Evdev Event Emulation Library
+43: frame                          -> Open Input Framework Frame Library
+44: grail                          -> Gesture recognition and instantiation lib.
+45: geis                           -> Implementation of the GEIS interface
+46: nux                            -> An OpenGL toolkit
+47: unity-asset-pool               -> Design assets for Unity
+48: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+49: libcolumbus                    -> Small, fast, error tolerant matcher
+50: unity-lens-applications        -> Unity applications lens
+51: unity-lens-files               -> Unity files lens
+52: unity-lens-music               -> Unity music lens
+53: unity-lens-photos              -> Unity photo lens
+54: unity-lens-video               -> Unity video lens
+55: unity-scope-home               -> Unity Home Scope
+56: unity-scopes                   -> Unity Smart Scopes
+57: compiz-ubuntu                  -> Compiz compositing window manager
+58: xpathselect                    -> Select tree objects using XPath queries
+59: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
