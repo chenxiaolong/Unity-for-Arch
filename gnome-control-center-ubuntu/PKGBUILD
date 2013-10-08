@@ -20,7 +20,7 @@ optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'openssh: remote login'
             'credentials-preferences-ubuntu: Ubuntu Online Accounts')
 provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center')
-conflicts=('gnome-control-center')
+conflicts=('gnome-control-center' 'gnome-control-center-unity' 'credentials-preferences' 'credentials-preferences-ubuntu')
 options=('!libtool' '!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
