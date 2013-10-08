@@ -2,24 +2,23 @@
 
 pkgname=hud
 _actual_ver=13.10.1
-_extra_ver=+13.10.20130822.4
-pkgver=${_actual_ver}daily13.08.22.4
+_extra_ver=+13.10.20131002.1
+pkgver=${_actual_ver}daily13.10.02.1
 pkgrel=100
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
 license=('GPL')
 groups=('unity')
-depends=('bamf' 'libdbusmenu-gtk3' 'sqlite')
+depends=('bamf' 'libdbusmenu-gtk3' 'libnih' 'sqlite')
 # Speech recognition
 depends+=('pocketsphinx' 'sphinx-voxforge-en' 'sphinxbase' 'pulseaudio')
 makedepends=('cmake' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gtk-doc' 'intltool' 'python2-distribute' 'vala')
-checkdepends=('dbus-test-runner' 'xorg-server-xvfb')
 optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Python_2.patch')
-sha512sums=('150c8dff1290ec47534b912be5cfe9989c340e0eff44c09792b8a32e1421b14706a896fba93dfbb7db5beca449e760db3d167535ca7012a755eddf9d860d3650'
+sha512sums=('4fa46611d7b9250977e2494e8fe53b98798fd2e576f2c6cfc28e2d78eb2219bda47fba35a0628542fbf0ff2250eeccf0adec01fa5bc08124934f513f60643667'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90')
 
 prepare() {
@@ -31,64 +30,18 @@ prepare() {
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  TESTS=ON
-  if [ ! -x /usr/bin/dbus-test-runner ]; then
-    TESTS=OFF
-  fi
-
-  mkdir build && cd build
+  rm -rf build && mkdir build && cd build
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
     -DENABLE_DOCUMENTATION=ON \
-    -DENABLE_TESTS=${TESTS} \
-    -DENABLE_VOICE_TESTS=${TESTS} `# Off on Ubuntu` \
-    -DENABLE_SCALABILITY_TESTS=${TESTS} \
+    -DENABLE_TESTS=OFF \
+    -DENABLE_VOICE_TESTS=OFF \
+    -DENABLE_SCALABILITY_TESTS=OFF \
     -DFULL_WARNINGS=ON
 
   make -j1
-}
-
-check() {
-  # Will fix tests later
-  return 0
-
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
-
-  # Tests require gtester2xunit, dbus-test-runner, and bustle
-
-  local EXTRAPATH="${srcdir}/bin"
-  local EXTRALIBS=""
-
-  rm -rf "${srcdir}/bin/"
-  mkdir "${srcdir}/bin/"
-  pushd "${srcdir}/bin/"
-
-  # gtester2xunit
-  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester2xunit-20121028102712-vb10md6zm7ydek6w-2/gtester2xunit'
-  wget 'https://bazaar.launchpad.net/~autopilot/gtester2xunit/trunk/download/head:/gtester.xsl-20121028102712-vb10md6zm7ydek6w-3/gtester.xsl'
-  chmod +x gtester2xunit
-  sed -i -e 's|^\(#!.*python$\)|\12|g' \
-         -e "s|/usr/share/gtester2xunit/gtester.xsl|$(pwd)/gtester.xsl|g" \
-      gtester2xunit
-
-  # bustle
-  case ${CARCH} in
-  i*86) BUSTLE_ARCH=i486     ;;
-  *)    BUSTLE_ARCH=${CARCH} ;;
-  esac
-
-  wget "http://willthompson.co.uk/bustle/releases/0.4.1/bustle-0.4.1-${BUSTLE_ARCH}.tar.bz2"
-  tar jxvf bustle-0.4.1-${BUSTLE_ARCH}.tar.bz2
-  EXTRAPATH+=":$(pwd)/bustle-0.4.1-${BUSTLE_ARCH}/bin"
-  EXTRALIBS+=":$(pwd)/bustle-0.4.1-${BUSTLE_ARCH}/lib"
-
-  popd
-
-  LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${EXTRALIBS}" \
-    PATH="${PATH}:${EXTRAPATH}" \
-    ctest
 }
 
 package() {
