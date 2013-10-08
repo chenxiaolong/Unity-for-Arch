@@ -6,7 +6,7 @@ pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~saucy2
 _translations=20130418
 pkgver=3.10.0
-pkgrel=101
+pkgrel=102
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -116,6 +116,12 @@ package() {
     --dir "${pkgdir}/usr/share/applications/" \
     --add-only-show-in=Unity \
     "${pkgdir}/usr/share/applications/gnome-online-accounts-panel.desktop"
+
+  # Make the Date & Time panel show up in Unity
+  desktop-file-install \
+    --dir "${pkgdir}/usr/share/applications/" \
+    --add-only-show-in=Unity \
+    "${pkgdir}/usr/share/applications/gnome-datetime-panel.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
