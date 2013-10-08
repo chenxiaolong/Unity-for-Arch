@@ -10,21 +10,24 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
 license=('GPL')
 groups=('unity')
-depends=('bamf' 'libdbusmenu-gtk3' 'libnih' 'sqlite')
+depends=('bamf' 'libdbusmenu-gtk3' 'sqlite')
 # Speech recognition
 depends+=('pocketsphinx' 'sphinx-voxforge-en' 'sphinxbase' 'pulseaudio')
 makedepends=('cmake' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gtk-doc' 'intltool' 'python2-distribute' 'vala')
 optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Python_2.patch')
+        '0001_Python_2.patch'
+        '0002_Not_In_House.patch')
 sha512sums=('4fa46611d7b9250977e2494e8fe53b98798fd2e576f2c6cfc28e2d78eb2219bda47fba35a0628542fbf0ff2250eeccf0adec01fa5bc08124934f513f60643667'
-            '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90')
+            '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90'
+            'ba6ac5e6cde8f61f5e8d831af8574ab6797ad706db4c21421fd530ea60839183d414d4f69aeac81256694c478fdf6c0657fcba33c21d80cd788f6831bac08335')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_Python_2.patch"
+  patch -p1 -i "${srcdir}/0002_Not_In_House.patch"
 }
 
 build() {

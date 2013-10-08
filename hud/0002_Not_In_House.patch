@@ -1,0 +1,79 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -85,15 +85,6 @@
+ pkg_search_module(GTK3 REQUIRED gtk+-3.0)
+ include_directories(${GTK3_INCLUDE_DIRS})
+ 
+-pkg_check_modules(NIH REQUIRED libnih)
+-include_directories(${NIH_INCLUDE_DIRS})
+-
+-pkg_check_modules(NIH_DBUS REQUIRED libnih-dbus)
+-include_directories(${NIH_DBUS_INCLUDE_DIRS})
+-
+-pkg_check_modules(DBUS REQUIRED dbus-1)
+-include_directories(${DBUS_INCLUDE_DIRS})
+-
+ find_package(Vala 0.12)
+ 
+ find_package(GObjectIntrospection 0.9.12)
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -156,8 +156,6 @@
+ ${SQLITE3_LIBRARIES}
+ ${POCKETSPHINX_LIBRARIES}
+ ${PHABLET_LIBRARIES}
+-${NIH_LIBRARIES}
+-${NIH_DBUS_LIBRARIES}
+ )
+ 
+ ###########################
+--- a/src/application-source.c
++++ b/src/application-source.c
+@@ -30,9 +30,6 @@
+ #include "dbusmenu-collector.h"
+ #include "source-list.h"
+ 
+-#include <nih/alloc.h>
+-#include <libnih-dbus.h>
+-
+ struct _HudApplicationSourcePrivate {
+ 	GDBusConnection * session;
+ 
+@@ -438,11 +435,14 @@
+ 
+ 	source->priv->skel = app_iface_com_canonical_hud_application_skeleton_new();
+ 
+-	char * app_id_path;
+-	app_id_path = nih_dbus_path(NULL, "/com/canonical/hud/applications", id, NULL);
+-	if (app_id_path == NULL) /* emulate glib memory handling and terminate */
+-		g_error("Unable to allocate memory for nih_dbus_path()");
+-	source->priv->path = g_strdup(app_id_path);
++	gchar * app_id_clean = g_strdup(id);
++	gchar * app_id_cleanp;
++	for (app_id_cleanp = app_id_clean; app_id_cleanp[0] != '\0'; app_id_cleanp++) {
++		if (!g_ascii_isalnum(app_id_cleanp[0])) {
++			app_id_cleanp[0] = '_';
++		}
++	}
++	source->priv->path = g_strdup_printf("/com/canonical/hud/applications/%s", app_id_clean);
+ 
+ 	int i = 0;
+ 	GError * error = NULL;
+@@ -465,7 +465,7 @@
+ 		g_free(source->priv->path);
+ 		g_clear_object(&source->priv->skel);
+ 
+-		source->priv->path = g_strdup_printf("%s_%d", app_id_path, ++i);
++		source->priv->path = g_strdup_printf("/com/canonical/hud/applications/%s_%d", app_id_clean, ++i);
+ 		source->priv->skel = app_iface_com_canonical_hud_application_skeleton_new();
+ 	}
+ 
+@@ -473,7 +473,7 @@
+ 	g_signal_connect(G_OBJECT(source->priv->skel), "handle-set-window-context", G_CALLBACK(dbus_set_context), source);
+ 
+ 	g_debug("Application ('%s') path: %s", id, source->priv->path);
+-	nih_free(app_id_path);
++	g_free(app_id_clean);
+ 
+ 	return source;
+ }
