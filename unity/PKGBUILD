@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity
-_actual_ver=7.1.0
-_extra_ver=+13.10.20130828.1
+_actual_ver=7.1.1
+_extra_ver=+13.10.20131004
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
@@ -14,7 +14,6 @@ url="https://launchpad.net/unity"
 license=('GPL')
 depends=('bamf' 'boost' 'compiz-ubuntu' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud>=13.10.1daily13.06.05.1' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity>=7.0.2daily13.06.06.1' 'libunity-misc' 'libxfixes' 'libzeitgeist' 'nux>=4.0.2' 'unity-asset-pool' 'libxi>=1.7' 'xpathselect')
 makedepends=('cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
-checkdepends=('gtest-ubuntu' 'gmock-ubuntu')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
@@ -28,18 +27,20 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
         '0005_Disable_Werror.patch'
         '0008_Remove_Launchers.patch'
+        '0010_The_future_is_systemd.patch'
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('ea51a4f046140e9eca47f1a38f938d2ba98b1e0d8be5d2557e3fe11afda5d573a65d08f1dabf9d99d11defa8a65875924dfc8af21331496ba7a28f6068b4a499'
-            '9c76bbd005afca5b165d272ddd1c8792575ff3258aa2048e95caab1470eb9d75892e037270b2fcb25c5588cce2e4aaec62749658c900e954fdd859e134e21554'
+sha512sums=('5f1e6b96b60b411899b2ed767f8c656addf0461ef4edb817a61988cd8c35294cf4e8d612b2c088e3e30f3a49195da45e57ad997baf6ce162f2b21d369ffb3e11'
+            'a063af9aa0167bbf16d06f597da00722401e28fc7e40bed335d3ed844c2c11a77339d5bdbad4b498a8c0370bc612ea9f5faf29f5a9af0ad9bc33621fceb0f7ad'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             '56cf552168a57a585a178f11685ee3f9e20f9aca9efb80d9232d5081afce85e9c25c3aff6c640b69be56bbba4681afe6fa38cdcb038ac834a220946eac73a5fa'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
             '22f6e6821fa1fc245c9e32ed04588a9a79f627d76687a2454f9b08274dbccbb096033c137ceceaebe737a83496d6376a12cb210db51916cdb101cda6988a92d8'
             'c8dd88dacf16226e9b60141bf448af7b5234b04811b4d5aaee2d6d48eb008442ced3e3f7a12b4cb709af5c471ddca320d1b7612fa724704ae330179f15104dd3'
             'fbfec0551ba0c569303dbbcdebb657a349802a000ca72343aa379614f610f6859985e0abd6b5dd89719d49c275542858966d3ae2b72379fbacbe8ef905e0e3ae'
+            '2925f46de232540d6d5506a68d8d29a11a4e1d6052f18573e83e9d8ec025a30cd7fd870cf4e7eb49ed882e782e1d62f5a5b167171bafd260480cf481df4aecba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
@@ -62,6 +63,8 @@ prepare() {
   # manually re-added), Ubuntu's Software Center (not packaged in Arch Linux),
   # and Ubuntu's Ubiquity LiveCD installer
   patch -p1 -i "${srcdir}/0008_Remove_Launchers.patch"
+
+  patch -p1 -i "${srcdir}/0010_The_future_is_systemd.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
@@ -124,11 +127,6 @@ build() {
   pushd ../tests/autopilot/
   python2 setup.py build
   popd
-}
-
-check() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
-  #make check-headless
 }
 
 package() {

@@ -1,0 +1,144 @@
+--- a/services/CMakeLists.txt
++++ b/services/CMakeLists.txt
+@@ -12,9 +12,6 @@
+     indicator3-0.4>=12.10.2
+     x11
+     libido3-0.1>=13.0.0
+-    libupstart
+-    libnih
+-    libnih-dbus
+     dbus-1
+ )
+ 
+@@ -55,6 +52,3 @@
+ add_executable(unity-panel-service ${PANEL_SOURCES})
+ target_link_libraries(unity-panel-service ${LIBS})
+ install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/unity/)
+-
+-configure_file(unity-panel-service.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+--- a/services/panel-service.c
++++ b/services/panel-service.c
+@@ -33,9 +33,6 @@
+ #include <X11/XKBlib.h>
+ #include <X11/extensions/XInput2.h>
+ 
+-#include <upstart.h>
+-#include <nih/alloc.h>
+-
+ G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
+ 
+ #define GET_PRIVATE(o) \
+@@ -80,8 +77,6 @@
+ 
+   IndicatorObjectEntry *pressed_entry;
+   gboolean use_event;
+-
+-  NihDBusProxy * upstart;
+ };
+ 
+ /* Globals */
+@@ -148,18 +143,6 @@
+   g_idle_remove_by_data (self);
+   gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
+ 
+-  if (priv->upstart != NULL)
+-    {
+-      int event_sent = 0;
+-      event_sent = upstart_emit_event_sync (NULL, priv->upstart,
+-                                            "indicator-services-end", NULL, 0);
+-      if (event_sent != 0)
+-         g_warning("Unable to signal for indicator services to start");
+-
+-      nih_unref (priv->upstart, NULL);
+-      priv->upstart = NULL;
+-    }
+-
+   if (GTK_IS_WIDGET (priv->menubar) &&
+       gtk_widget_get_realized (GTK_WIDGET (priv->menubar)))
+     {
+@@ -541,20 +524,6 @@
+   return FALSE;
+ }
+ 
+-static gboolean
+-ready_signal (PanelService *self)
+-{
+-  if (PANEL_IS_SERVICE (self) && self->priv->upstart != NULL)
+-    {
+-      int event_sent = 0;
+-      event_sent = upstart_emit_event_sync (NULL, self->priv->upstart, "indicator-services-start", NULL, 0);
+-      if (event_sent != 0)
+-         g_warning ("Unable to signal for indicator services to start");
+-    }
+-
+-  return FALSE;
+-}
+-
+ static void
+ update_keybinding (GSettings *settings, const gchar *key, gpointer data)
+ {
+@@ -670,23 +639,6 @@
+   update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
+   update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
+   update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
+-
+-  const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
+-  if (upstartsession != NULL)
+-    {
+-      DBusConnection *conn = dbus_connection_open (upstartsession, NULL);
+-      if (conn != NULL)
+-        {
+-          priv->upstart = nih_dbus_proxy_new (NULL, conn,
+-                                              NULL,
+-                                              DBUS_PATH_UPSTART,
+-                                              NULL, NULL);
+-          dbus_connection_unref (conn);
+-        }
+-    }
+-
+-  if (priv->upstart != NULL)
+-    priv->upstart->auto_start = FALSE;
+ }
+ 
+ static gboolean
+@@ -829,7 +781,6 @@
+   suppress_signals = FALSE;
+ 
+   g_idle_add ((GSourceFunc)initial_resync, self);
+-  g_idle_add ((GSourceFunc)ready_signal, self);
+ }
+ 
+ PanelService *
+--- a/services/unity-panel-service.conf.in
++++ b/services/unity-panel-service.conf.in
+@@ -1,18 +0,0 @@
+-description "Backing Service for the Unity Panel"
+-author "Ted Gould <ted@ubuntu.com>"
+-
+-# These should be used when we have Unity full under upstart, but while
+-# we have the pre-start work around for gnome-session starting it we're
+-# going to comment them out.
+-#
+-# start on started unity7
+-# stop on stopped unity7
+-
+-start on desktop-start DESKTOP_SESSION=ubuntu
+-stop on desktop-end
+-
+-emits indicator-services-start
+-emits indicator-services-end
+-
+-respawn
+-exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -36,7 +36,7 @@
+ #
+ # Unit tests
+ #
+-set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;libupstart;libnih;libnih-dbus;dbus-1")
++set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;dbus-1")
+ pkg_check_modules (TEST_UNIT_DEPS REQUIRED ${TEST_DEPS})
+ 
+ string (REPLACE ";" " " TEST_UNIT_DEPS_CFLAGS_OTHER "${TEST_UNIT_CFLAGS_OTHER}")
