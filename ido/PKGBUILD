@@ -4,37 +4,38 @@
 
 pkgname=ido
 _actual_ver=13.10.0
-_extra_ver=+13.10.20130814
-pkgver=${_actual_ver}daily13.08.14
+_extra_ver=+13.10.20130930
+pkgver=${_actual_ver}daily13.09.30
 pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"
 license=('LGPL')
-depends=('gtk3-ubuntu' 'glib2-ubuntu')
+depends=('gtk3-ubuntu' 'glib2')
 makedepends=('gobject-introspection' 'gtk-doc' 'vala' 'xorg-util-macros')
-#checkdepends=('gtest' 'xorg-gtest' 'evemu')
 groups=('unity')
 options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('097e364ab03d4b3c06a04fbf520d8f9b464d379b1871e3dd538485d678607b97e2f772c8cdd454167fe0827a13cef8cada4edcfe508760df64edf56962bfb168')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001_Break_indicators_for_now.patch')
+sha512sums=('aafb656bcbd592801bef4232c17f3aa849d2c5c0586363b4177645ce5ca14ab1c72f60f811f883f1d817f8475bd768435555846c866f9f5b3dd03cb04fa43a7d'
+            'a4de8a4fa91715fb148bd469cb6c0334952242973ddbe80f7cad4037b3d61c25ea7775474790965df4e72f72a415f7522efd1ebab6e8a69345403f99d5c8cd29')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001_Break_indicators_for_now.patch"
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   export CFLAGS="${CFLAGS} -Wno-error"
   autoreconf -vfi
-  ./configure --prefix=/usr --disable-static
+  ./configure --prefix=/usr --disable-static --disable-introspection
   make
 }
-
-#check() {
-#  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-#
-#  make check || :
-#}
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
