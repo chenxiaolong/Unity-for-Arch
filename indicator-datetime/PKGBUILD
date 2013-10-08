@@ -4,12 +4,15 @@
 
 [ -z "${NO_GCC_UBUNTU}" ] && NO_GCC_UBUNTU=false
 
+# Settings panel not compatible with GNOME 3.10
+NO_GCC_UBUNTU=true
+
 pkgname=indicator-datetime
 _actual_ver=13.10.0
 _extra_ver=+13.10.20131004
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=101
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -59,8 +62,10 @@ prepare() {
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  GCCFLAG="--with-ccpanel=true"
   if [ "x${NO_GCC_UBUNTU}" = "xtrue" ]; then
     msg "NOT building GNOME Control Center panel"
+    GCCFLAG="--with-ccpanel=false"
   fi
 
   export CFLAGS="${CFLAGS} -Wno-error"
@@ -68,7 +73,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
 
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile
+  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static --disable-schemas-compile ${GCCFLAG}
   make -j1
 }
 
