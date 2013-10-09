@@ -6,7 +6,7 @@
 pkgname=gsettings-desktop-schemas-ubuntu
 _ppa_rel=0ubuntu1~saucy2
 pkgver=3.10.0
-pkgrel=100
+pkgrel=101
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
 url="http://live.gnome.org/"

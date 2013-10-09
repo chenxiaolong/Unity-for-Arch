@@ -4,7 +4,7 @@
 pkgname=gtk3-ubuntu
 _ppa_rel=0ubuntu1~saucy1
 pkgver=3.10.0
-pkgrel=100
+pkgrel=101
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"

@@ -36,7 +36,7 @@ setver zotero			0.1+13.10.20130723	0ubuntu1
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=8
+pkgrel=9
 pkgdesc="Online scopes for the Unity Dash"
 arch=('any')
 url="https://launchpad.net/unity-scope-NAME"
