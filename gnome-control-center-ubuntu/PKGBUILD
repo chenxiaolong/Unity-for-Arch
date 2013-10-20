@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 groups=('gnome')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'archlinux-artwork' 'webkitgtk3' 'system-config-printer')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'webkitgtk3' 'system-config-printer')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'vala' 'desktop-file-utils')
 optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
