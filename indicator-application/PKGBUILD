@@ -28,6 +28,8 @@ prepare() {
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CFLAGS="${CFLAGS} -Wno-error"
+
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
   make
