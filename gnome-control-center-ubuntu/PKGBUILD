@@ -5,8 +5,8 @@
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~saucy2
 _translations=20130418
-pkgver=3.10.0
-pkgrel=103
+pkgver=3.10.1
+pkgrel=100
 pkgdesc="The Control Center for GNOME with Ubuntu's patches"
 arch=('i686' 'x86_64')
 groups=('gnome')
@@ -25,8 +25,8 @@ install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz")
-sha512sums=('b74fd36df1064eae61883491213890fc830741a65144043e55465ec0d73e6e76156c75be5458e81c5099639710ee10e3950a78535debec917cfcc666c88eee5d'
-            '9291e2109061761548d61f8db4aa4133a5953acbd481363d44cfe0cf593a2fccd7d7381d9ad41c928a33ab7e192cb5a0075dc1bb7a9575e445bb6e04435b4cef'
+sha512sums=('4037bfa9d68781c0c6e66e28557f515a83a4f0800fd227db8b00475643f8e0085b1cd4bb2ad8d98afc6e8a574e0f7d5b85c121c1b0b0adb4860542307231e58e'
+            '3e2dbba0862593eb4b6b3d028fc6126873520366cf92ef23734f89b515b6f46788514d8f4ddd5b28af7054becc673f90cba58ce5b0851d84840c23cc361a443b'
             'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc')
 
 prepare() {
