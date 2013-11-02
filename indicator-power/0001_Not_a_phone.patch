@@ -20,12 +20,11 @@
  
  #include "device.h"
  #include "device-provider.h"
-@@ -695,7 +694,7 @@
+@@ -695,7 +694,6 @@
                               GVariant      * param  G_GNUC_UNUSED,
                               gpointer        gself  G_GNUC_UNUSED)
  {
--  url_dispatch_send("settings://system/battery", NULL, NULL);
-+  //url_dispatch_send("settings://system/battery", NULL, NULL);
+-  url_dispatch_send("settings:///system/battery", NULL, NULL);
  }
  
  /***
