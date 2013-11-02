@@ -5,13 +5,13 @@ _actual_ver=1.0
 _extra_ver=daily13.06.05
 _translations=20130418
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=101
+pkgrel=102
 pkgdesc="Unity lens for browsing photos"
 arch=('any')
 url="https://launchpad.net/unity-lens-photos"
 license=('GPL')
 groups=('unity')
-depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'libaccounts-glib' 'libsignon-glib' 'dee' 'libunity' 'libsoup' 'libsoup-gnome')
+depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'dee' 'libunity' 'libsoup' 'libsoup-gnome')
 makedepends=('python' 'python-distutils-extra')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-photos.tar.gz")
