@@ -2,8 +2,8 @@
 
 pkgname=sphinxbase
 pkgver=0.8
-_ubuntu_rel=0ubuntu7
-pkgrel=100
+_ubuntu_rel=0ubuntu9
+pkgrel=101
 pkgdesc="Shared components for Sphinx speech recognition"
 arch=('i686' 'x86_64')
 url="http://cmusphinx.sourceforge.net/"
@@ -15,7 +15,7 @@ source=("http://downloads.sourceforge.net/project/cmusphinx/sphinxbase/0.8/sphin
         "https://launchpad.net/ubuntu/+archive/primary/+files/sphinxbase_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         '0001_Python_2.patch')
 sha512sums=('fdb13c07e591e868c395d5f8209ec389fb9d5a93d99104a00cb82382e84d320091ae7e74d53225706331d4959ab5e248fa622582a148bfdb6ab5c38470d1963c'
-            'f5d894ee9655b4039edec040106aea486294b7481d49518a44319aebc9fd453750d9569b63d077a914201eb79b45c302e93ba581ff5029a10cd37e4cfd813368'
+            'fc4f99e0cfef3a7191f88bb35df3791879626040dd65b0f6181ba3fa0bf670cfe075aff6ed827a4329e28374e04415c9c7588efe4c67f490fb6a3572a2c811bf'
             'dd02a0857a9cbfc98a70e7990685a9a9548fda9eb52b785ecddffae99cb99115f65f1cdc69bcffff6be1c8da0c5130ed6e0e342945ab4ac08c3290cab07fa959')
 
 prepare() {
