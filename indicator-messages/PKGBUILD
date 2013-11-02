@@ -4,10 +4,10 @@
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+13.10.20131004
+_extra_ver=+13.10.20131011
 _translations=20130419
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=101
+pkgrel=100
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -20,7 +20,7 @@ install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-messages.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('fa1a1b52980ed212db77ca163f235faabaa8173b2fa4ed500488817a0a6ead24011d909b48634b6a1429c864cb26cc96e478c6ccdbe8740e18691183c49b9f8f'
+sha512sums=('44e5e2de4a4fa134e7d198686ad8e0e08c15175f8bd699d7d675a5007d1e810c8950ba7e9768ab21e7ac1f42f454c5b66d9a1e391d85f28ed429cb462e338819'
             'c880b0873651a0e995d273fe989afad3435cac75fbdf4b1d26fa3b48c718d06c57d5f196093f5989a9d3c697d5c45b7239d3d464ac071a945a87efed7142af57'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
