@@ -18,8 +18,7 @@ options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('e43e49878c9ac9b71981bda61646858725665ed1b281f4b0a3528ebd9470859f9175d6ae8cc11f8ea756efe30e08f94deff641430b542b06dd91fa1144733d5f'
-            'a4de8a4fa91715fb148bd469cb6c0334952242973ddbe80f7cad4037b3d61c25ea7775474790965df4e72f72a415f7522efd1ebab6e8a69345403f99d5c8cd29')
+sha512sums=('e43e49878c9ac9b71981bda61646858725665ed1b281f4b0a3528ebd9470859f9175d6ae8cc11f8ea756efe30e08f94deff641430b542b06dd91fa1144733d5f')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
