@@ -4,9 +4,9 @@
 
 pkgname=ido
 _actual_ver=13.10.0
-_extra_ver=+13.10.20130930
-pkgver=${_actual_ver}daily13.09.30
-pkgrel=101
+_extra_ver=+13.10.20131011
+pkgver=${_actual_ver}daily13.10.11
+pkgrel=100
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"
@@ -17,16 +17,9 @@ groups=('unity')
 options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Break_indicators_for_now.patch')
-sha512sums=('aafb656bcbd592801bef4232c17f3aa849d2c5c0586363b4177645ce5ca14ab1c72f60f811f883f1d817f8475bd768435555846c866f9f5b3dd03cb04fa43a7d'
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('e43e49878c9ac9b71981bda61646858725665ed1b281f4b0a3528ebd9470859f9175d6ae8cc11f8ea756efe30e08f94deff641430b542b06dd91fa1144733d5f'
             'a4de8a4fa91715fb148bd469cb6c0334952242973ddbe80f7cad4037b3d61c25ea7775474790965df4e72f72a415f7522efd1ebab6e8a69345403f99d5c8cd29')
-
-prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  patch -p1 -i "${srcdir}/0001_Break_indicators_for_now.patch"
-}
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
