@@ -1,31 +1,37 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -60,8 +60,7 @@
-                             geoclue >= $GEOCLUE_REQUIRED_VERSION
+@@ -62,7 +62,6 @@
                              libical >= $ICAL_REQUIRED_VERSION
                              libecal-1.2 >= $ECAL_REQUIRED_VERSION
--                            libedataserver-1.2 >= EDS_REQUIRED_VERSION
--                            url-dispatcher-1 >= URL_DISPATCHER_1_REQUIRED_VERSION])
-+                            libedataserver-1.2 >= EDS_REQUIRED_VERSION])
+                             libedataserver-1.2 >= $EDS_REQUIRED_VERSION
+-                            url-dispatcher-1 >= $URL_DISPATCHER_1_REQUIRED_VERSION
+                             json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION])
  
  ###########################
- # Control Center panel
 --- a/src/service.c
 +++ b/src/service.c
-@@ -24,7 +24,6 @@
- 
+@@ -25,7 +25,6 @@
  #include <glib/gi18n.h>
  #include <gio/gio.h>
+ #include <json-glib/json-glib.h>
 -#include <url-dispatcher.h>
  
  #include "dbus-shared.h"
  #include "planner-eds.h"
-@@ -1283,7 +1282,7 @@
+@@ -1359,7 +1358,6 @@
                               GVariant      * param  G_GNUC_UNUSED,
                               gpointer        gself  G_GNUC_UNUSED)
  {
 -  url_dispatch_send ("settings:///system/time-date", NULL, NULL);
-+  //url_dispatch_send ("settings:///system/time-date", NULL, NULL);
+ }
+ 
+ static void
+@@ -1367,8 +1365,6 @@
+                           GVariant      * param  G_GNUC_UNUSED,
+                           gpointer        gself  G_GNUC_UNUSED)
+ {
+-  const char * url = "appid://com.ubuntu.clock/clock/current-user-version";
+-  url_dispatch_send (url, NULL, NULL);
  }
  
  static void

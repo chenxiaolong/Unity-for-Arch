@@ -9,15 +9,15 @@ NO_GCC_UBUNTU=true
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+13.10.20131004
+_extra_ver=+13.10.20131023.2
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=102
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
-depends=('ido' 'evolution-data-server' 'libtimezonemap' 'geoclue')
+depends=('ido' 'evolution-data-server' 'json-glib' 'libtimezonemap' 'geoclue')
 if [ "x${NO_GCC_UBUNTU}" = "xfalse" ]; then
   depends+=('gnome-control-center-ubuntu')
 else
@@ -32,10 +32,10 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch'
         '0003_Link_pthread.patch')
-sha512sums=('9ac57d52fb2f5178cce3bc377774214ab6d2513637106f2daf297416eb907b5acd1859270bf4a910e2c733879bff73e31d8c24f3f134b3025082f75b604cf3ee'
+sha512sums=('46c7f79015a4d919c2bfd4b7f66e1d971077c311f03cf75a9555885b3d357ba041cee93418713f761ce807224c4032694e7f1656679cfe1b18362cb3f6401d91'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
-            '9a11f2b8da9b428b280e16982ab5770bb02b56f09d0b128aa8ceba83880960b608829280bc04854f07561d8ce47bf762dec2d7a7749981d72fbcad3cef638436'
+            '1178ea99d6d2bf0404c39488ffd0fddf2e08cfcfab97880b35057f1dd7a8d3092b0b0852e1501cbe19982eb21b7fcc00ae53ebc3ec04630a9f69f0500a00e1c6'
             '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
 
 prepare() {
