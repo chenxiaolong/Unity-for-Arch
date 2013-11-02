@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ppa_rel=0ubuntu1~saucy1
-pkgver=3.10.0
-pkgrel=101
+_ppa_rel=0ubuntu1~saucy4
+pkgver=3.10.2
+pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -21,8 +21,8 @@ license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ppa_rel}.debian.tar.gz"
         'arch_settings.ini')
-sha512sums=('5451b10e2d3acba8693383f630eea88790860691d9021d65f12b4fffd13b392a175f9c2dc9c6e76d3869f618125375069ffbf73bf92f7059f08fb46744038fdb'
-            '410a9f5a8b40062b6cb6cb63f20444e38e82a8114a6d7eb2dbd547ddd37f3a1b702f2345c06afff75f2b52c7f10fcac848b50f080daec87265850c472eece304'
+sha512sums=('9f7502b93f8a564b8b66d7ae3d10ed24ccbac71fdb4ced76d79043a915cdc03ac32021efa2212fa3485ecc20624e958026472c9e0486ac7a705063e551eb2922'
+            'ef9dbed2e3ef04b8fea6bf1bcd839c01de36528b80c291ea4d7b9068dae7ae7fb45b1be67b20dc85e05f0fd221a778a3d813d9adb1eb27ef5eccf635a1c6bdcb'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -33,7 +33,8 @@ prepare() {
     # Enable patches
       # https://bugs.launchpad.net/indicator-messages/+bug/1088162
       # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
-        #echo 'ubuntu_gtk_custom_menu_items.patch' > "${srcdir}/debian/patches/series"
+        #echo 'ubuntu_gtk_custom_menu_items.patch' >> "${srcdir}/debian/patches/series"
+        echo 'ubuntu_gtk_custom_menu_items-dummy.patch' >> "${srcdir}/debian/patches/series"
       # gnome-control-center-ubuntu: 54_enable_alt_tap_in_shortcut.patch
       # Dependency check: grep -R GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP * | cut -d/ -f1
         echo 'git_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
