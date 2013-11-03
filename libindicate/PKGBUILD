@@ -5,12 +5,12 @@
 pkgbase=libindicate
 pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
 pkgver=12.10.1
-pkgrel=109
+pkgrel=110
 pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libindicate"
 license=('LGPL')
-makedepends=('libdbusmenu' 'dbus-glib' 'gtk2' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
+makedepends=('libdbusmenu-glib' 'dbus-glib' 'gtk2' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
 groups=('unity')
 options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
