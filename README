@@ -52,16 +52,17 @@ Order to compile/install:
 44: unity-asset-pool               -> Design assets for Unity
 45: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 46: libcolumbus                    -> Small, fast, error tolerant matcher
-47: unity-lens-applications        -> Unity applications lens
-48: unity-lens-files               -> Unity files lens
-49: unity-lens-music               -> Unity music lens
-50: unity-lens-photos              -> Unity photo lens
-51: unity-lens-video               -> Unity video lens
-52: unity-scope-home               -> Unity Home Scope
-53: unity-scopes                   -> Unity Smart Scopes
-54: compiz-ubuntu                  -> Compiz compositing window manager
-55: xpathselect                    -> Select tree objects using XPath queries
-56: unity                          -> Desktop shell designed for efficiency
+47: zeitgeist                      -> Service for logging user activities
+48: unity-lens-applications        -> Unity applications lens
+49: unity-lens-files               -> Unity files lens
+50: unity-lens-music               -> Unity music lens
+51: unity-lens-photos              -> Unity photo lens
+52: unity-lens-video               -> Unity video lens
+53: unity-scope-home               -> Unity Home Scope
+54: unity-scopes                   -> Unity Smart Scopes
+55: compiz-ubuntu                  -> Compiz compositing window manager
+56: xpathselect                    -> Select tree objects using XPath queries
+57: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
