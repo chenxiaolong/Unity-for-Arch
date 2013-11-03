@@ -6,13 +6,13 @@ _actual_ver=2.5.0
 _extra_ver=~+13.10.20130926.1
 _translations=20130418
 pkgver=${_actual_ver}.daily13.09.26.1
-pkgrel=101
+pkgrel=102
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-webapps"
 license=('LGPL')
 groups=('unity')
-depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbusmenu' 'libnotify' 'libsoup' 'libunity' 'libwnck3' 'packagekit' 'polkit' 'sqlite')
+depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbusmenu-glib' 'libnotify' 'libsoup' 'libunity' 'libwnck3' 'packagekit' 'polkit' 'sqlite')
 makedepends=('gobject-introspection' 'gtk-doc' 'intltool')
 # configure.ac probably needs to be updated
 makedepends+=('telepathy-glib' 'libdbusmenu-gtk3')
