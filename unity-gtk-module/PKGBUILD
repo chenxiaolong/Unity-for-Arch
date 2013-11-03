@@ -4,7 +4,7 @@ pkgname=unity-gtk-module
 _actual_ver=0.0.0
 _extra_ver=+13.10.20130716.1
 pkgver=${_actual_ver}daily13.07.16.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Unity GTK+ Module"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-gtk-module"
@@ -19,7 +19,7 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '80unity-gtk-module')
 sha512sums=('220701431c12a5c45a65af153d5eaf424ee8bbf905743fe8bd61c6c5817383de000076667b9fd0b03b9564ab8da8a06977945d92726f7596e5b971f91b8c8de8'
-            'aeaf70d2d50a29345309506623801ba843f90d9dbe11e99479805ce06f4f3b575db7b5581e59a67334f743af695c11f9eeb71d135672e27a45deb9a0d0ca774a')
+            'cbf13533c128c870dc4b9bb3436a95c3a38ec3803cf99f1221416c0d78b971a66b0b279d765aab8a6942148a89638c569031050012bfb5c53bb7d5daae14189c')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
