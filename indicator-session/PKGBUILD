@@ -47,7 +47,7 @@ build() {
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBEXECDIR=lib \
-    -Denable_tests=ON \
+    -Denable_tests=OFF \
     -Denable_lcov=OFF
 
   make
