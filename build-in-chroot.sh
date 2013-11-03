@@ -238,6 +238,11 @@ chmod -R 0755 ${CACHE_DIR}
   checkdepends=$(sudo -u nobody bash -c "source ${TEMP_PKGBUILD} && \
                                          echo \${checkdepends[@]}")
   available="$(pacman -Sl core extra community | cut -d' ' -f2)"
+
+  echo "depends: ${depends[@]}"
+  echo "makedepends: ${makedepends[@]}"
+  echo "checkdepends: ${checkdepends[@]}"
+
   list=""
   for i in ${depends} ${makedepends} ${checkdepends}; do
     i=${i%<*}
