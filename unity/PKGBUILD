@@ -1,18 +1,18 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=unity
-_actual_ver=7.1.1
-_extra_ver=+13.10.20131004
+_actual_ver=7.1.2
+_extra_ver=+13.10.20131014.1
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=101
+pkgrel=100
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'compiz-ubuntu' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud>=13.10.1daily13.06.05.1' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity>=7.0.2daily13.06.06.1' 'libunity-misc' 'libxfixes' 'libzeitgeist' 'nux>=4.0.2' 'unity-asset-pool' 'libxi>=1.7' 'xpathselect')
+depends=('bamf' 'boost' 'compiz-ubuntu' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux' 'unity-asset-pool' 'libxi' 'xpathselect' 'zeitgeist')
 makedepends=('cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
@@ -22,6 +22,7 @@ install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity.tar.gz"
+        "http://www.cmake.org/files/v2.8/cmake-2.8.11.2.tar.Z"
         '0001_Remove_gtest.patch'
         '0002_ArchLinux_Branding.patch'
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
@@ -32,9 +33,10 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('5f1e6b96b60b411899b2ed767f8c656addf0461ef4edb817a61988cd8c35294cf4e8d612b2c088e3e30f3a49195da45e57ad997baf6ce162f2b21d369ffb3e11'
-            'a063af9aa0167bbf16d06f597da00722401e28fc7e40bed335d3ed844c2c11a77339d5bdbad4b498a8c0370bc612ea9f5faf29f5a9af0ad9bc33621fceb0f7ad'
+sha512sums=('03568cd2d7fa677a9419df4041832fc4f4ba7c9fce93d406043577f73860b4218f1267551f14d8ead6456af6acc91b298d80cf2ecc0aa7a79e777a3d525b4988'
+            '3eb1c88b6de8a347ff78b192f9525adf9fe5ea2e7cce8b7b7a82f0e95b65bbb1abf7b878e9a4765e0b4c609e36b445c8150c5ba0663aaabb5e4ce2cca12daa04'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
+            '9635203a44ae42c56168be95b6397668ad6fa4a521623f3a01fd61ae95d9b0be7719d78594ca843e2324393cfa9d48562dbbc3f9e2471a376e477940576c4ba0'
             '56cf552168a57a585a178f11685ee3f9e20f9aca9efb80d9232d5081afce85e9c25c3aff6c640b69be56bbba4681afe6fa38cdcb038ac834a220946eac73a5fa'
             '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
             '22f6e6821fa1fc245c9e32ed04588a9a79f627d76687a2454f9b08274dbccbb096033c137ceceaebe737a83496d6376a12cb210db51916cdb101cda6988a92d8'
@@ -72,10 +74,8 @@ prepare() {
     patch -p1 -i "debian/patches/${i}"
   done
 
-  # Disable gtest if gtest-ubuntu is not installed
-  if ! pacman -Q gtest-ubuntu &>/dev/null; then
-    patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
-  fi
+  # Disable gtest
+  patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
@@ -92,6 +92,13 @@ prepare() {
 }
 
 build() {
+  cd "${srcdir}/cmake-2.8.11.2"
+
+  ./bootstrap --prefix="${srcdir}/cmake"
+  make
+  make install
+  cp {/usr/share,"${srcdir}/cmake/share"}/cmake-2.8/Modules/FindCompiz.cmake
+
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # (From debian/rules) http://ccache.samba.org/manual.html#_precompiled_headers
@@ -100,7 +107,8 @@ build() {
   [[ -d build ]] && rm -rvf build/
   mkdir build/ && cd build/
 
-  cmake \
+  PATH="${srcdir}/cmake/bin:${PATH}" \
+  cmake -Wno-dev \
     -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \
     -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
@@ -108,6 +116,8 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DUSE_GSETTINGS=TRUE \
     -Duse_pch=OFF \
+    `# Use our cmake` \
+    -DCMAKE_MODULE_PATH="${srcdir}/cmake/share/cmake-2.8/Modules:/usr/share/cmake-2.8/Modules" \
     ..
 
   make
@@ -122,21 +132,11 @@ build() {
     make compiz_gsettings_compile_local
   fi
   popd
-
-  # Build autopilot tests
-  pushd ../tests/autopilot/
-  python2 setup.py build
-  popd
 }
 
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
-
-  # Install autopilot and autopilot tests
-  pushd ../tests/autopilot/
-  python2 setup.py install --root "${pkgdir}" --skip-build --optimize=1
-  popd
 
   # Install dconf path migration stuff
   install -dm755 "${pkgdir}/etc/xdg/autostart/"
