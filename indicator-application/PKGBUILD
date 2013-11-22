@@ -4,9 +4,9 @@
 
 pkgname=indicator-application
 _actual_ver=12.10.1
-_extra_ver=daily13.01.25
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=106
+_extra_ver=+13.10.20131107
+pkgver=${_actual_ver}daily13.11.07
+pkgrel=100
 pkgdesc="A library and indicator to take menus from applications and place them in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-application"
@@ -16,7 +16,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('bb5328a7e2dde5dea6568963defd977d07a6ebe0d427c91f369034979a88947ebe3d6f95ca0e9c89bf120179363b73a1becd7e300f47e52077fa6bb27b5ae6fb'
+sha512sums=('dff24210fe2d3c89bb6693c26969098f6f13078a78ea861bec909946c6604e654134e1c976879079a89a60e934918d1a514e18240982261104bd28c58f3a9bcf'
             '7ef9f2eab8dd17d8957b706ba479c38f5f9e74a69e77af7c8e318809c67b4aea214433f0364741fc4fcbfaefd6bbff3e370e24048cd23f2e09ebe6bca32b1511')
 
 prepare() {
