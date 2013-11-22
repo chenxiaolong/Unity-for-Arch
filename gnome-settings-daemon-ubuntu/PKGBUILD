@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~saucy2
+_ppa_rel=0ubuntu1~saucy1
 _translations=20130418
-pkgver=3.10.1
+pkgver=3.10.2
 pkgrel=100
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
@@ -23,8 +23,8 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-settings-daemon.tar.gz"
         '0001_Do_not_hide_IBus_icon.patch'
         '0002_Do_not_hide_cursor.patch')
-sha512sums=('97a62ef4ad22b7211e3dd4b124ec9d2a90dc16199ea32af7e85f0667017400cd5008c5122716557106e3a7d18959a1f7313ef017db7074838e1f5ed840f24303'
-            '5a97a08f28451030a28c7a1ffdd9a0c430b0858c16a98d5d36b15428134c8ec75b45b26954bac407db3a6c8a2d44bcffb9e675794df3d5eb028b604bcbef9ba4'
+sha512sums=('4e937bf178086c3582a7072ce6f2db60b84dac1171ff8344b7b90876b415f0cef0924403308f86cd73f08d6490ae011d533447356c59086e16f41732f1860a87'
+            '72459c13638ec9f712ed03235effe253b9878c7aeaa84676cfb24b94a133551f83da79aefe2b877dddad73ec863890d84199910ed308740aaf50abafe3ea301a'
             '8282c8c9233b3dd2199ae3bcedd910ff68a69896ae295300fb59c3d03119ac5e889a2088c2021c2fc2afd452d167b3ee22c92ad9c6375a1588f1f8dff6b172ff'
             '2a5a4fdc030ad7499c4551ba33480a7c4b609f018c9bebcb21f49deecf54a73faf1f6078b93895fdefb5738ee8a4aad9fe4ae7e95243242d6d82ecbeb5b9754f'
             '20cda1af538d610568c5612c84a46cc26fab33c565910ce15542197c37a6b85c92dcbe3ce7f32c404328d3c6af402e28a9e164d7ddabcdf977a0f0ea3071b918')
