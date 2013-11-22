@@ -5,9 +5,9 @@
 pkgbase=libdbusmenu
 pkgname=('libdbusmenu-glib' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3')
 # Ubuntu: please stop changing your versioning scheme
-_realver=12.10.3+13.10.20130913
-pkgver=12.10.3daily13.09.13
-pkgrel=103
+_realver=12.10.3+13.10.20131104
+pkgver=12.10.3daily13.11.04
+pkgrel=100
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dbusmenu"
@@ -17,7 +17,7 @@ groups=('unity')
 options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${_realver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('16cadf0b229c7ad9f5b2c536a177114b98017f62fe3325066108e3c72660dccd3011314f38a7a1ed0671122e680e2ac8f25f39e459df74a2f2c4b7acbd99568d'
+sha512sums=('057a97f95104c86ad87ca99e391d2bd35b69a96034d4dbcf3fd974dce507498de8ded52f981b490af88866da8a0c1f2fb0fca71684b944eda71956f33a1d8b8d'
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 prepare() {
