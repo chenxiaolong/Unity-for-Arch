@@ -5,7 +5,7 @@
 pkgname=gtk2-ubuntu
 _ubuntu_rel=1ubuntu1
 pkgver=2.24.22
-pkgrel=100
+pkgrel=101
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
