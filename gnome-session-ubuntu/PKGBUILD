@@ -5,8 +5,8 @@
 pkgname=gnome-session-ubuntu
 _ppa_rel=0ubuntu1~saucy1
 _translations=20130418
-pkgver=3.10.0
-pkgrel=101
+pkgver=3.10.1
+pkgrel=100
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -24,8 +24,8 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         '55gnome-session_gnomerc'
         'timeout.patch'
         'polkit-gnome-authentication-agent-1-unity.desktop')
-sha512sums=('036adc7ecff7f5aa1319bfac636b6b77925c689cb92880224cf665456dca5a55299025971a2bcdb841e27334ddc0cd6125241b39e48a30c3cc0b02c22612f5c9'
-            'ab4311c3d0ee2d5a281fcfcd805f96cde1ce7f21bc08ff553fadae7dade6f044dedf356ce6f52f6bdc819e53a54d08111383f7075a7341c5bed6caaaa3343907'
+sha512sums=('a17fdd1943c118f025a740b22de1f5840a2f8a1a9fc7f8a2720deccf69097391c2d05e6115416c40c5530de60326f6bd729444dd7a3b2aeff115fe547ad94d8f'
+            '03eb5e682cb13fbc74d8ef72bb91face48280ef55f4d4f52fdcd1439f8456c38d9e756fac408d62f696a2278abcd63e16b1b7872307178a084cabd5d9b634886'
             'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
             '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
