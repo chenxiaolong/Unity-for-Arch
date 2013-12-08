@@ -2,8 +2,8 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ppa_rel=0ubuntu1~saucy2
-pkgver=3.10.4
+_ppa_rel=0ubuntu1~~saucy1
+pkgver=3.10.6
 pkgrel=100
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
@@ -21,8 +21,8 @@ license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${pkgver}-${_ppa_rel}.debian.tar.gz"
         'arch_settings.ini')
-sha512sums=('e27ea1306b113e8c54197433f0f0cf16bbbfc5e272630fbc2729060c43242275707363f1d0e8b11ebf40b5de3bfcff8b277da096a5e90a7ac11f9df841faf9ff'
-            '55130bd8d711ee8bf8ff8495507708d817256cb79554984d2152ba3050cbbf00fbb24a8961adf0a24d367219ecbb15da0c04b4a2df2256ac045beca7d1496239'
+sha512sums=('2619d2e08dbdde41528ad132f120c91b7536d01a6932a9dc9ac5c5b2ba7e68bcebbd91374189160519da20794957b5dcd05502f92c2acecb01bfc99444f0617b'
+            '01bfb8150ee4b50498bb47beb57fcffe64bc13f504a07b62557e202a1600560fb62e53f76c0db4df81303cf390f5ed3320dee26567776af3b2ea78eb60ce8d99'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
