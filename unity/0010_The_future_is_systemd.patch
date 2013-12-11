@@ -19,17 +19,18 @@
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
-@@ -33,9 +33,6 @@
+@@ -33,10 +33,6 @@
  #include <X11/XKBlib.h>
  #include <X11/extensions/XInput2.h>
  
 -#include <upstart.h>
 -#include <nih/alloc.h>
+-#include <nih/error.h>
 -
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -80,8 +77,6 @@
+@@ -81,8 +77,6 @@
  
    IndicatorObjectEntry *pressed_entry;
    gboolean use_event;
@@ -38,7 +39,7 @@
  };
  
  /* Globals */
-@@ -148,18 +143,6 @@
+@@ -149,22 +143,6 @@
    g_idle_remove_by_data (self);
    gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
  
@@ -48,7 +49,11 @@
 -      event_sent = upstart_emit_event_sync (NULL, priv->upstart,
 -                                            "indicator-services-end", NULL, 0);
 -      if (event_sent != 0)
--         g_warning("Unable to signal for indicator services to start");
+-        {
+-          NihError * err = nih_error_get();
+-          g_warning("Unable to signal for indicator services to stop: %s", err->message);
+-          nih_free(err);
+-        }
 -
 -      nih_unref (priv->upstart, NULL);
 -      priv->upstart = NULL;
@@ -57,7 +62,7 @@
    if (GTK_IS_WIDGET (priv->menubar) &&
        gtk_widget_get_realized (GTK_WIDGET (priv->menubar)))
      {
-@@ -541,20 +524,6 @@
+@@ -546,24 +524,6 @@
    return FALSE;
  }
  
@@ -69,7 +74,11 @@
 -      int event_sent = 0;
 -      event_sent = upstart_emit_event_sync (NULL, self->priv->upstart, "indicator-services-start", NULL, 0);
 -      if (event_sent != 0)
--         g_warning ("Unable to signal for indicator services to start");
+-        {
+-          NihError * err = nih_error_get();
+-          g_warning("Unable to signal for indicator services to start: %s", err->message);
+-          nih_free(err);
+-        }
 -    }
 -
 -  return FALSE;
@@ -78,7 +87,7 @@
  static void
  update_keybinding (GSettings *settings, const gchar *key, gpointer data)
  {
-@@ -670,23 +639,6 @@
+@@ -679,29 +639,6 @@
    update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
    update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
    update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
@@ -93,6 +102,12 @@
 -                                              NULL,
 -                                              DBUS_PATH_UPSTART,
 -                                              NULL, NULL);
+-          if (priv->upstart == NULL)
+-            {
+-              NihError * err = nih_error_get();
+-              g_warning("Unable to get Upstart proxy: %s", err->message);
+-              nih_free(err);
+-            }
 -          dbus_connection_unref (conn);
 -        }
 -    }
@@ -102,7 +117,7 @@
  }
  
  static gboolean
-@@ -829,7 +781,6 @@
+@@ -844,7 +781,6 @@
    suppress_signals = FALSE;
  
    g_idle_add ((GSourceFunc)initial_resync, self);
