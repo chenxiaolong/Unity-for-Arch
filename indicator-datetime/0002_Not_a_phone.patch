@@ -1,24 +1,41 @@
---- a/configure.ac
-+++ b/configure.ac
-@@ -62,7 +62,6 @@
-                             libical >= $ICAL_REQUIRED_VERSION
-                             libecal-1.2 >= $ECAL_REQUIRED_VERSION
-                             libedataserver-1.2 >= $EDS_REQUIRED_VERSION
--                            url-dispatcher-1 >= $URL_DISPATCHER_1_REQUIRED_VERSION
-                             json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION])
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -39,7 +39,6 @@
+                    libecal-1.2>=3.5
+                    libedataserver-1.2>=3.5
+                    libnotify>=0.7.6
+-                   url-dispatcher-1>=1
+                    json-glib-1.0>=0.16.2)
+ include_directories (${SERVICE_INCLUDE_DIRS})
  
- ###########################
 --- a/src/service.c
 +++ b/src/service.c
-@@ -25,7 +25,6 @@
- #include <glib/gi18n.h>
+@@ -24,7 +24,6 @@
  #include <gio/gio.h>
+ #include <libnotify/notify.h>
  #include <json-glib/json-glib.h>
 -#include <url-dispatcher.h>
  
  #include "dbus-shared.h"
- #include "planner-eds.h"
-@@ -1359,7 +1358,6 @@
+ #include "service.h"
+@@ -440,8 +439,6 @@
+   g_debug ("dispatching url \"%s\" for appointment \"%s\", which begins at %s",
+            appt->url, appt->summary, str);
+   g_free (str);
+-
+-  url_dispatch_send (appt->url, NULL, NULL);
+ }
+ 
+ static void
+@@ -455,7 +452,6 @@
+     {
+       const gchar * url = gurl;
+       g_debug ("dispatching url '%s'", url);
+-      url_dispatch_send (url, NULL, NULL);
+     }
+ }
+ 
+@@ -1478,7 +1474,6 @@
                               GVariant      * param  G_GNUC_UNUSED,
                               gpointer        gself  G_GNUC_UNUSED)
  {
@@ -26,11 +43,10 @@
  }
  
  static void
-@@ -1367,8 +1365,6 @@
-                           GVariant      * param  G_GNUC_UNUSED,
+@@ -1515,7 +1510,6 @@
                            gpointer        gself  G_GNUC_UNUSED)
  {
--  const char * url = "appid://com.ubuntu.clock/clock/current-user-version";
+   const char * url = "appid://com.ubuntu.clock/clock/current-user-version";
 -  url_dispatch_send (url, NULL, NULL);
  }
  
