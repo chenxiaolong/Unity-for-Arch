@@ -1,10 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=xpathselect
-_actual_ver=1.3
-_extra_ver=daily13.06.05.1
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=3
+_actual_ver=1.4
+_extra_ver=+14.04.20131106.1
+pkgver=${_actual_ver}daily13.11.06.1
+pkgrel=1
 pkgdesc="Select objects in an object tree using XPath queries"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/xpathselect"
@@ -13,7 +13,7 @@ groups=('unity')
 makedepends=('boost' 'cmake')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/xpathselect_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Disable_Tests.patch')
-sha512sums=('1b1dadd12cc68dd37110ca4a3e659306dced792329a475e65fe5b730ee15cf912bddd733cd0bb3b6c2d3cd8dc8fd81089a6bebaadd6254e1cc34468db14f9906'
+sha512sums=('91f786d5be6da5000b11a272096a03f0b06a89b66995e4ffae818498b605919a09380cf62aab40e47cd6e983ea78fca758c96886ba641444387201f5d2eff0ab'
             '3bdee2bd7f89903ece07bb81848365d5e493895b72a58a874c285b51f795884b6d191bef8d6910479ba39b091bce1828575b8c81f20f113a56c2fc3683c94d15')
 
 prepare() {
