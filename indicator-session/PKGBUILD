@@ -4,9 +4,9 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+13.10.20131023.1
+_extra_ver=+14.04.20131125
 _translations=20130419
-pkgver=${_actual_ver}daily13.10.23.1
+pkgver=${_actual_ver}daily13.11.25
 pkgrel=100
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
@@ -22,7 +22,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"
         '0001_Lock_Screen_Live_CD_Detection.patch'
         '0002_There_is_no_help.patch')
-sha512sums=('65caf9c88b13e967d7abd3c4d408a7c4b0bab2b06ae240a2e35911456fd92a7b51848f5085c7e730309a3ebe7efc420d4c87c6334e5b58d50e94e9d256e8c847'
+sha512sums=('3e70f857487cbd01e3bf2384ad03a4f66fa0a77abf268947af07f05b6592c0dc284f1a2229e2b12b535482d5eb5e4d195d08196263cf23684b5f4eb2e2980569'
             'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
             '5528add26d0d81dade7d9ae2868b43b09425201bb98de8e0dddec7ac84dc5ac93ad777e89b092e9c8f7363f4c87144abd340f6a74cb00e3f6d44fbd1ea522a12'
             '5326ff4022fe86fa3162d1f46341f2f352d4859bd5024da81d5640465cd3b242abedf820c2589c1da05e2eec3fc2e7535a2e4f2f8489333cb001e279094a4a15')
