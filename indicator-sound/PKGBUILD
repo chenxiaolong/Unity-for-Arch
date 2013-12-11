@@ -4,9 +4,9 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+13.10.20131011
+_extra_ver=+14.04.20131125
 _translations=20130418
-pkgver=${_actual_ver}daily13.10.11
+pkgver=${_actual_ver}daily13.11.25
 pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -19,15 +19,21 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz"
-        '0001_Not_a_phone.patch')
-sha512sums=('06505a6861fda590de493ef4d2393db9bc1a9e96a8c365872ac85ef4d3d568ea70246f0f1edf7cb117e7359cef0b081189b43a3265d28d60e9ad80e5d11d2dc0'
+        '0001_Not_a_phone.patch'
+        '0002_Remove_tests.patch'
+        '0003_Build_fix.patch')
+sha512sums=('ba63d49bfc9d76a5e31c79499e5b561cf1c284e28776627ad0543a498318adc0d32dc1b7f201da03c19f0a8945f7eeab45e6d45efe969d6d95befeb29bf95a2d'
             '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0'
-            '3ca63afb388afb5f32a5ad090db3cc50d40a48deb5bdf206cde6c92963481dcc244157560908613255801c2f09058111f66b6774216f5272f197371b64fd2ece')
+            '3ca63afb388afb5f32a5ad090db3cc50d40a48deb5bdf206cde6c92963481dcc244157560908613255801c2f09058111f66b6774216f5272f197371b64fd2ece'
+            '42f59923419ff5e9265f1737db21ff475fa92fcff045bbac646d0b7da799e190c4a91cdff506cb8053d633eec6a86d6a3c5d00e57de0977614e0d643bcbece2c'
+            '31e7dcbc8172665076f88b14126fadccc367a2a525e3303e555bfd7428a62e64b9a9413139aa4faf57c32bfbe1e7dd98ebebf899dc90c9766a3f833f45abeae6')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
+  patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
+  patch -p1 -i "${srcdir}/0003_Build_fix.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot

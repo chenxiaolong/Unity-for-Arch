@@ -1,0 +1,11 @@
+--- a/src/service.vala
++++ b/src/service.vala
+@@ -48,7 +48,7 @@
+ 		});
+ 
+ 		if (settings.get_boolean ("show-notify-osd-on-scroll")) {
+-			unowned List<string> caps = Notify.get_server_caps ();
++			List<string> caps = Notify.get_server_caps ();
+ 			if (caps.find_custom ("x-canonical-private-synchronous", strcmp) != null) {
+ 				this.notification = new Notify.Notification ("indicator-sound", "", "");
+ 				this.notification.set_hint_string ("x-canonical-private-synchronous", "indicator-sound");

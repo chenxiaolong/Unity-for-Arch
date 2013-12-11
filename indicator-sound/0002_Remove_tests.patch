@@ -1,0 +1,15 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -66,12 +66,3 @@
+ 
+ add_subdirectory(data)
+ add_subdirectory(src)
+-
+-enable_testing()
+-
+-set (GTEST_SOURCE_DIR /usr/src/gtest/src)
+-set (GTEST_INCLUDE_DIR ${GTEST_SOURCE_DIR}/..)
+-set (GTEST_LIBS -lpthread)
+-
+-add_subdirectory(tests)
+-
