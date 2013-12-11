@@ -5,7 +5,7 @@ _actual_ver=12.10.6
 _extra_ver=+14.04.20131129
 _translations=20130419
 pkgver=${_actual_ver}daily13.11.29
-pkgrel=100
+pkgrel=101
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -17,9 +17,11 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-power.tar.gz"
+        'indicator-power.service'
         '0001_Not_a_phone.patch')
 sha512sums=('9250424db0c064027badb6d8d1ba9e8ffac19e05dece9587f5fe6d6d14202e1e065a2440aa16f36d9abadc704f26fd0bab40128a9e220dd3049dd872be8a7891'
             'd597ec5e3cac6bfb95b96fb73d88b052a2e99bd56b1f259b3b6452da42b40ac3ad14b4fd579e8f940189834ba49b95c9d5acd58dc32edf7a712e496786370671'
+            'c2b6ef53b53bfa7d8768aaaf4cf931d330e414965a0a42dd191d626cb2ab1a40f1f65af775c8ffcce2c61bb64e8270d3c9c6687c2f2efe8815483bb1cb144d8a'
             'e7ce61788b59995f950b24b75899e517749319a209fd3b857cde26f8610ae0ddbefb82bf32e445b306caa65fac32871c1e7b6fd5c72e6debf88553ca9e12dcfc')
 
 prepare() {
@@ -55,6 +57,10 @@ package() {
   make DESTDIR="${pkgdir}/" install
 
   find "${pkgdir}" -type f -name '*.a' -delete
+
+  install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
+  install -m644 "${srcdir}/indicator-power.service" \
+                "${pkgdir}/usr/share/dbus-1/services/"
 }
 
 # vim:set ts=2 sw=2 et:

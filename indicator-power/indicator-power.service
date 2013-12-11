@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.canonical.indicator.power
+Exec=/usr/share/indicator-power/indicator-power/indicator-power-service
