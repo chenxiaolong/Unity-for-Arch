@@ -7,7 +7,7 @@ _actual_ver=13.10.0
 _extra_ver=+14.04.20131125
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=101
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -19,11 +19,13 @@ options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"
+        'indicator-datetime.service'
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch'
         '0003_Link_pthread.patch')
 sha512sums=('df38eadcfa0a797c9a2eb0716be48490ea480f6154812f0a332f23c46c230d22083ba10b393e4ce96b55a4e644e9dd29cbd5ccaa725b5d5a719d71c462e3411f'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
+            '217b93ef6705e80853d009277df5ec43d0d2fde1cb9945cabd3183e4c3f695b4bc4cfa8168052398ebc0d56fe5e9f8828c2e58accf856e0dee719534fef918bf'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
             'a1969647d6c054c3ac9b3496ef03d208d62efac2e8524136ef7b64534016c1b35e3c086292910ecdf680d8c846eed985c57ae567a80c095602ca160f2da042f0'
             '5c10fda83393b33b45c1fd0701e464ac1e9cc3180c3d1ebb47f5e666e57065b64f34047c913f90db5d047ffef094fe0b4ef625fe04ebeefc74b341a8f6612cf2')
@@ -68,6 +70,10 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build/"
 
   make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
+  install -m644 "${srcdir}/indicator-datetime.service" \
+                "${pkgdir}/usr/share/dbus-1/services/"
 }
 
 # vim:set ts=2 sw=2 et:
