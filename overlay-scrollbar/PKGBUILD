@@ -3,9 +3,9 @@
 pkgname=('overlay-scrollbar' 'liboverlay-scrollbar' 'liboverlay-scrollbar3')
 pkgbase=overlay-scrollbar
 _actual_ver=0.2.16
-_extra_ver=+r359+13.10.20130826
-pkgver=${_actual_ver}.r359daily13.08.26
-pkgrel=2
+_extra_ver=+r359+14.04.20131129
+pkgver=${_actual_ver}.r359daily13.11.29
+pkgrel=1
 epoch=1
 pkgdesc="Ayatana Scrollbars use an overlay to ensure that scrollbars take up no active screen real-estate."
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ makedepends=('gtk2-ubuntu' 'gtk3')
 options=('!libtool' '!emptydirs')
 extrafiles=('overlay-scrollbar.install')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('0247ed15665965f4308b48467856543b23316bbcec3b43cf08353038b640edeb6e338cc2f4456990497bda7e6d1bd10e63e3936447fc7be982d7b9c0e06f12e4')
+sha512sums=('01823c1de14a022d9f16f625d1a942f164e4d40a24a2f21b23d1902da7e41dfe5ac2d368a3b9aace235a4113cbbbfd33f84eafd0b8ee14301243fcff814e16d5')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
