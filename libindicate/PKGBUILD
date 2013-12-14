@@ -53,7 +53,7 @@ build() {
 }
 
 package_libindicate() {
-  depends=('libdbusmenu' 'dbus-glib')
+  depends=('libdbusmenu-glib' 'dbus-glib')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
