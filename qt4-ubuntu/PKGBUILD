@@ -45,7 +45,7 @@ provides=("qt4=${pkgver}")
 replaces=('qt<=4.8.4' 'qt-ubuntu<=4.8.4')
 conflicts=('qt4' 'qt' 'qt-ubuntu')
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
-source=("http://releases.qt-project.org/qt4/source/${_pkgfqn}.tar.gz"
+source=("http://download.qt-project.org/archive/qt/4.8/4.8.4/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${pkgver}${_extra_ver}-${_ubuntu_rel}.debian.tar.gz"
         'qtconfig-qt4.desktop'
         'assistant-qt4.desktop'
