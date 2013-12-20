@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.10.6
-pkgrel=101
+pkgrel=103
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('2619d2e08dbdde41528ad132f120c91b7536d01a6932a9dc9ac5c5b2ba7e68bcebbd91374189160519da20794957b5dcd05502f92c2acecb01bfc99444f0617b'
-            '8667f766fd6451c54040da9db920a04585546b341606911bbe2691c4fe9f430d712d65ef0bc0952b115a4a941731d0c871e16ffc98859dc00aee80d371525aa8'
+            'd24ede665e8cab5d82d652416d86e66ce29e10a5076ef288f6b704df5b06d42cb07f7a77c60d162b6be4b6c48fef7618f106a8b7a4c8a49e448634a9f795ddf2'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -53,6 +53,10 @@ prepare() {
 build() {
   cd "${srcdir}/gtk+-${pkgver}"
 
+  # See commit 8fbda8efcec3b77e1e6bf37e237286b4f6edaaab from git://git.gnome.org/gtk+
+  rm gdk/wayland/gtk-shell-client-protocol.h
+  rm gdk/wayland/gtk-shell-protocol.c
+
   autoreconf -vfi
 
   #CXX=/bin/false ./configure \
@@ -64,7 +68,7 @@ build() {
     --disable-schemas-compile \
     --enable-x11-backend \
     --enable-broadway-backend \
-    `# --enable-wayland-backend -- Fails to build` \
+    --enable-wayland-backend \
     --enable-test-print-backend
 
   #https://bugzilla.gnome.org/show_bug.cgi?id=655517
