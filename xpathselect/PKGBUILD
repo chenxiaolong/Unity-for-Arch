@@ -2,8 +2,8 @@
 
 pkgname=xpathselect
 _actual_ver=1.4
-_extra_ver=+14.04.20131106.1
-pkgver=${_actual_ver}daily13.11.06.1
+_extra_ver=+14.04.20140108
+pkgver=${_actual_ver}daily14.01.08
 pkgrel=1
 pkgdesc="Select objects in an object tree using XPath queries"
 arch=('i686' 'x86_64')
@@ -13,7 +13,7 @@ groups=('unity')
 makedepends=('boost' 'cmake')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/xpathselect_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Disable_Tests.patch')
-sha512sums=('91f786d5be6da5000b11a272096a03f0b06a89b66995e4ffae818498b605919a09380cf62aab40e47cd6e983ea78fca758c96886ba641444387201f5d2eff0ab'
+sha512sums=('abb8d377782c500f1b08a5ca8a88380d2d84a60463fd06b9c900b055dac7955dc28dbd2ec9942ef731b28ecdb417b9bac136d2bf84e04860bb450401f080205b'
             '3bdee2bd7f89903ece07bb81848365d5e493895b72a58a874c285b51f795884b6d191bef8d6910479ba39b091bce1828575b8c81f20f113a56c2fc3683c94d15')
 
 prepare() {
