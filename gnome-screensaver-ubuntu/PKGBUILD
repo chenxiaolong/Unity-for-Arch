@@ -4,9 +4,9 @@
 
 pkgname=gnome-screensaver-ubuntu
 pkgver=3.6.1
-_ubuntu_rel=0ubuntu5
+_ubuntu_rel=0ubuntu9
 _translations=20130418
-pkgrel=10
+pkgrel=11
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -24,7 +24,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gnome-screensaver/${pkgver%.*}/g
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-screensaver.tar.gz"
         'gnome-screensaver.pam')
 sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
-            '71e8d0da372f4fcee59bb023421f3bad2f63bfcb77772765f2ec741b48aa507bc4a82ae4b6fc535999774fbf8b4146edbc28e9a87558645dba91f06990ee9b50'
+            '8b26158cbd27c64f6abe4fd4183dbaa8060e72818e1446b581c0c4722192728e813068778ab8926d06eb5a48ba85dae5c0ed17cc46932ff2ab94338a35188a89'
             'a00f83b89b92feaaaa43a01807419ce8b6da95deb36af402ccf9876b49bf422183c2516a4e9b14d8d5bc0ab24f82693ac462fe23d281d6408541fac49365daa7'
             'aed0933feed70a9b16da80d6e4716641cd45d2fd3fadbace3dfeb02b1a07124ee659f470277f8ce93492c6f7cf3cc9996bc60598724eea1955975604ff8f324d')
 
@@ -32,6 +32,10 @@ prepare() {
   cd "${srcdir}/gnome-screensaver-${pkgver}"
 
   # Apply Ubuntu's patches
+
+  # Disable patches
+  sed -i '/32_input_sources_switcher.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
