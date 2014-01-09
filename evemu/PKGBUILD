@@ -2,10 +2,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=evemu
-_actual_ver=1.0.11
-_extra_ver=daily13.02.20
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=103
+pkgver=1.2.0
+pkgrel=100
 pkgdesc="Linux Evdev Event Emulation"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/evemu"
@@ -13,20 +11,24 @@ license=('GPL')
 depends=('glibc')
 makedepends=('xmlto' 'asciidoc')
 groups=('unity')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/evemu_${_actual_ver}${_extra_ver}.orig.tar.gz")
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/evemu_${pkgver}.orig.tar.xz")
 options=('!libtool')
-sha512sums=('f9ceb2d69e0459f12055f3937a337a49e999ebfc7ebe673e9326e83a0787e2a2af01a6a0118f89eca03788b844a1157d9f50556e09e6c1a804ba58e435b1e082')
+sha512sums=('41bef7b2e0f0769e4affb5633f41e5352224f5acfb5a001a27548f2236a1dc23d444bbfc3e93ea8eb518a7f4e628185eef9ca5ecefa4d87b201224bfeee28044')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  sed -i '1s/python/python2/' src/make-event-names.py
+}
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-  export PYTHON=python2
+  cd "${srcdir}/${pkgname}-${pkgver}"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static
   make -j1
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 }
 
