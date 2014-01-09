@@ -2,9 +2,9 @@
 
 pkgname=libcolumbus
 _actual_ver=1.0.0
-_extra_ver=+13.10.20130814.1
+_extra_ver=+14.04.20140108
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=102
+pkgrel=100
 pkgdesc="A small, fast, error tolerant matcher"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
@@ -13,7 +13,7 @@ groups=('unity')
 depends=('icu')
 makedepends=('boost' 'cmake' 'sparsehash')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('98103c1445e01b883bbb23aea34947348afc0ce5e10ea771eb894f526946dbc54563d289482daf8a0df8439dc17695486f33b18736acfe3d05e90411555eafde')
+sha512sums=('29b9301ac897e712fed8c8b3967e7b0fb1724a6d2bf35ad5c90b9904a22c3118e43d40f5fe8d6fa30d66df76d5488cffd63ac55c66bd17d61259db88368ecdda')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
