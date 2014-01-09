@@ -4,10 +4,10 @@
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+14.04.20131125
+_extra_ver=+14.04.20131217
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=101
+pkgrel=100
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -23,7 +23,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch'
         '0003_Link_pthread.patch')
-sha512sums=('df38eadcfa0a797c9a2eb0716be48490ea480f6154812f0a332f23c46c230d22083ba10b393e4ce96b55a4e644e9dd29cbd5ccaa725b5d5a719d71c462e3411f'
+sha512sums=('c2a5227cb8bce569cc0facc67d59c2fbd5439c7ec77808fad07d007cc4c1ee4fc8a461a6dc136135dc0692aab8090a4665438153527c063c9feb888836e0e11b'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '217b93ef6705e80853d009277df5ec43d0d2fde1cb9945cabd3183e4c3f695b4bc4cfa8168052398ebc0d56fe5e9f8828c2e58accf856e0dee719534fef918bf'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
@@ -61,7 +61,8 @@ build() {
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib
+    -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
+    -Denable_tests=OFF
 
   make -j1
 }
