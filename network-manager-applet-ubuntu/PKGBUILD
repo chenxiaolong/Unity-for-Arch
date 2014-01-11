@@ -14,12 +14,12 @@ pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org/projects/NetworkManager/"
 license=('GPL')
-depends=("networkmanager>=${pkgver%.*}" 'libgnome-keyring' 'polkit-gnome' 'gtk3' 'libnotify' 'gnome-icon-theme' 'mobile-broadband-provider-info' 'iso-codes' 'libappindicator3')
+depends=("networkmanager>=${pkgver%.*}" 'libsecret' 'gtk3' 'libnotify' 'gnome-icon-theme' 'mobile-broadband-provider-info' 'iso-codes' 'libappindicator3')
 makedepends=('intltool' 'gnome-bluetooth' 'gobject-introspection')
 optdepends=('gnome-bluetooth: for PAN/DUN support')
 provides=("network-manager-applet=${pkgver}")
 conflicts=('network-manager-applet')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
@@ -66,7 +66,8 @@ build() {
     --disable-maintainer-mode \
     --disable-migration \
     --enable-indicator \
-    --disable-more-warnings
+    --disable-more-warnings \
+    --with-modem-manager-1
 
   make -j1
 }
