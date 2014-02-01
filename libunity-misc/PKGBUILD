@@ -4,9 +4,9 @@
 
 pkgname=libunity-misc
 _actual_ver=4.0.5
-_extra_ver=daily13.06.05
-pkgver=${_actual_ver}${_extra_ver}
-pkgrel=101
+_extra_ver=+14.04.20140115
+pkgver=${_actual_ver}daily14.01.15
+pkgrel=100
 pkgdesc="Misc. differently licensed stuff for Unity"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-misc"
@@ -14,10 +14,9 @@ license=('LGPL')
 depends=('gtk3')
 makedepends=('gtk-doc')
 groups=('unity')
-options=(!libtool)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autotools.patch')
-sha512sums=('b49308d2fc379b9990175fc7de4e49438cc483568f4693acced93dd2d344d0aaa1aecc5dca3e158b542d5a994f20454621b8fbdfa018ba76d35d805a11df7c6e'
+sha512sums=('2fc65db5320572cb5d5bcc326759a8e395887d3a408bb2b2823045ade8357d798b93162437878b59c69c8a69dc1055ba7f720b23cdeefc994d5335cbb7474006'
             'f1f7059f9eb90836383a3742cb4ff701cf1187209a6e7afc23b5efe9a70f20084d4a4d8d499469de79ed0679ead1d9ff45c7b5fc8207a3ba30e624eeadd3be86')
 
 prepare() {
@@ -28,8 +27,6 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   gtkdocize
   autoreconf -vfi
