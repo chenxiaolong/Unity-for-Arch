@@ -155,6 +155,13 @@ LOCALREPO=${LOCALREPO/@ARCH@/${ARCH}}
 set -ex
 
 cleanup() {
+  umount ${CHROOT}/dev/pts/ || true &>/dev/null
+  umount ${CHROOT}/dev/ || true &>/dev/null
+  umount ${CHROOT}/proc/ || true &>/dev/null
+  umount ${CHROOT}/sys/ || true &>/dev/null
+
+  umount ${CHROOT}${CACHE_DIR}/ || true &>/dev/null
+
   umount ${CHROOT}${LOCALREPO}/ || true &>/dev/null
 
   for i in ${OTHERREPOS[@]} ${OTHERREPOS_PRE[@]}; do
@@ -277,11 +284,17 @@ chmod -R 0755 ${CACHE_DIR}
 setarch ${ARCH} pacstrap -GMcd ${CHROOT} --cachedir=${CACHE_DIR} \
                          ${CHROOT_PACKAGES[@]}
 
-# Set up systemd-nspawn arguments
-NSPAWN_ARGS=("--directory=${CHROOT}")
+cp /etc/resolv.conf ${CHROOT}/etc/resolv.conf
+
+# Bind mounts
+mount --bind /dev/ ${CHROOT}/dev/
+mount --bind /dev/pts/ ${CHROOT}/dev/pts/
+mount --bind /proc/ ${CHROOT}/proc/
+mount --bind /sys/ ${CHROOT}/sys/
 
 # Cache directory
-NSPAWN_ARGS+=("--bind=${CACHE_DIR}")
+mkdir -p ${LOCALREPO}/ ${CHROOT}${CACHE_DIR}/
+mount --bind ${CACHE_DIR}/ ${CHROOT}/${CACHE_DIR}/
 sed -i -r "s|^#?\\s*CacheDir.+|CacheDir = ${CACHE_DIR}|g" \
   ${CHROOT}/etc/pacman.conf
 
@@ -294,7 +307,7 @@ cp /etc/pacman.d/mirrorlist ${CHROOT}/etc/pacman.d/
 # Set up locale
 sed -i '1i en_US.UTF-8 UTF-8' ${CHROOT}/etc/locale.gen
 echo 'LANG=C' > ${CHROOT}/etc/locale.gen
-setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+setarch ${ARCH} chroot ${CHROOT} \
                 locale-gen
 
 # Set up /etc/makepkg.conf
@@ -350,13 +363,13 @@ for i in ${extrafiles}; do
 done
 
 # Create new user
-setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+setarch ${ARCH} chroot ${CHROOT} \
                 useradd --create-home --shell /bin/bash --user-group builder \
                         -u 10000
 
 # Fix permissions
 mkdir ${CHROOT}${RESULT_DIR}/
-setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+setarch ${ARCH} chroot ${CHROOT} \
                 chown -R builder:builder ${RESULT_DIR} /tmp/${PACKAGE}/
 
 # Make sure the builder user can run "pacman" to install the build dependencies
@@ -405,7 +418,7 @@ Server = file://$(readlink -f ${LOCALREPO}) \\
 " ${CHROOT}/etc/pacman.conf
     fi
 
-    setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+    setarch ${ARCH} chroot ${CHROOT} \
                     pacman -Syu --noconfirm ${PROGRESSBAR}
   fi
 
@@ -415,7 +428,7 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --syncdeps --nobuild --noextract --nocolor \\
                          --noconfirm --skipinteg ${PROGRESSBAR}'
 EOF
-  setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+  setarch ${ARCH} chroot ${CHROOT} \
                   sh /stage1.sh
 ) 123>${LOCALREPO}/repo.lock
 
@@ -425,7 +438,7 @@ su - builder -c 'cd /tmp/${PACKAGE} && \\
                  find -maxdepth 1 -type d -empty -name src \
                       -exec touch {}/stupid-makepkg \\;'
 EOF
-setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+setarch ${ARCH} chroot ${CHROOT} \
                 sh /stage2.sh
 
 # Build package
@@ -435,7 +448,7 @@ su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --clean --check --noconfirm --nocolor \\
                  ${PROGRESSBAR}'
 EOF
-setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
+setarch ${ARCH} chroot ${CHROOT} \
                 sh /stage3.sh
 
 ################################################################################
