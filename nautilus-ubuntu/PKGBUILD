@@ -4,10 +4,10 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ppa_rel=0ubuntu1~saucy1
+_ubuntu_rel=0ubuntu3
 _translations=20130418
 pkgver=3.10.1
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -17,10 +17,10 @@ url="http://www.gnome.org"
 options=('!libtool' '!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz")
 sha512sums=('a201d661104025b4b5ef4d0aa8ba7d083bb60e164c948e9932a78967f4046cc6e3afe7dcd5d20cfb99f500c4561555022cce4c39f2acc72370a515141798e90c'
-            'ab33243a9a5e8332e5b48a3eafa7387ef5f30e99fd264c0f107c2a4182831e7b6f0b8521de484a56eb4f1217bb8ce21994cd24c8f787a5246ce1a0b0c47eac21'
+            'e6dbffb5ab5c86ed6313c667231b111c3d101cc68af7a7236b290d8cd63ec22263be89a10c20626122d1f1130703478d29e2b3a4a4b360c04557d91e424f421e'
             '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de')
 
 prepare() {
