@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu3
 pkgver=3.10.7
-pkgrel=100
+pkgrel=101
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('cb138b468b8ea159b2fe7888500f08665cf54a66a042bf507539f4d8791e4dde074a98a87f6c6a36094d3996eb300f4a70b4fc9604709f9af6f7ebfb73efe3b7'
-            '94d64d0b3dc9b4cbf3f4bfa9108429cedf2324ec31242a91af37192afdebc3eab0e72181c41c053ab2f0ade3a9062e1d31e5aabe1a9d39b5198e61ead32fbc2e'
+            '56efa3294677862430b5e8e2d4df012a4f0bb118520431d7f81a868707401ea887f27cc2e5888c00060521a7fe0b2b0a6eafe7a924cfbcd3fea8842c29e87a32'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -37,6 +37,10 @@ prepare() {
         echo '017_no_offscreen_device_grabbing.patch' >> "${srcdir}/debian/patches/series"
       # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
         echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> "${srcdir}/debian/patches/series"
+      # Show "Replace" button when printing to existing file
+        echo 'git_print_replace_button.patch' >> "${srcdir}/debian/patches/series"
+      # Fix visibility of tabs in print dialog
+        echo 'git_print_tab_visiblity.patch' >> "${srcdir}/debian/patches/series"
       # Other
         echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
         echo 'git_menu_separator_style.patch' >> "${srcdir}/debian/patches/series"
