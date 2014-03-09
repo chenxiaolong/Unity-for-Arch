@@ -1,0 +1,8 @@
+<schemalist gettext-domain="gsettings-ubuntu-touch-schemas">
+    <schema id="com.ubuntu.sound" path="/com/ubuntu/sound/">
+    <key name="allow-amplified-volume" type="b">
+      <default>false</default>
+      <summary>Whether the volume slider allows setting the volume above 100%</summary>
+    </key>
+    </schema>
+</schemalist>

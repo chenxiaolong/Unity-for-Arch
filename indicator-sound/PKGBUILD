@@ -4,15 +4,15 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.04.20131125
+_extra_ver=+14.04.20140305
 _translations=20130418
-pkgver=${_actual_ver}daily13.11.25
-pkgrel=101
+pkgver=${_actual_ver}daily14.03.05
+pkgrel=100
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
-depends=('libpulse' 'libgee06' 'libnotify' 'libxml2' 'dconf')
+depends=('dconf' 'libgee06' 'libnotify' 'libpulse' 'libxml2')
 makedepends=('cmake' 'intltool' 'vala')
 groups=('unity')
 options=('!libtool')
@@ -20,22 +20,21 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz"
         'indicator-sound.service'
+        'com.ubuntu.sound.gschema.xml'
         '0001_Not_a_phone.patch'
-        '0002_Remove_tests.patch'
-        '0003_Build_fix.patch')
-sha512sums=('ba63d49bfc9d76a5e31c79499e5b561cf1c284e28776627ad0543a498318adc0d32dc1b7f201da03c19f0a8945f7eeab45e6d45efe969d6d95befeb29bf95a2d'
+        '0002_Remove_tests.patch')
+sha512sums=('60f9232ef6ac117e6d00b3962e1e3f3d3088024b614e065ac165ba56af780f99e71708a7d0cf4d261b2ba3e6a0ab4d9ff5e2a2c05c59efa8f8f58cd54caf3f44'
             '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0'
             '80257e6c0d4187c3b904c1177d2879176b653f6fe35ef9bc35fb48ae5659e0f27b4fea8464145f418ffc25e29144862cc3783c93a5fd907321f8e03772e3ccbd'
+            '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '3ca63afb388afb5f32a5ad090db3cc50d40a48deb5bdf206cde6c92963481dcc244157560908613255801c2f09058111f66b6774216f5272f197371b64fd2ece'
-            '42f59923419ff5e9265f1737db21ff475fa92fcff045bbac646d0b7da799e190c4a91cdff506cb8053d633eec6a86d6a3c5d00e57de0977614e0d643bcbece2c'
-            '31e7dcbc8172665076f88b14126fadccc367a2a525e3303e555bfd7428a62e64b9a9413139aa4faf57c32bfbe1e7dd98ebebf899dc90c9766a3f833f45abeae6')
+            '42f59923419ff5e9265f1737db21ff475fa92fcff045bbac646d0b7da799e190c4a91cdff506cb8053d633eec6a86d6a3c5d00e57de0977614e0d643bcbece2c')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
   patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
-  patch -p1 -i "${srcdir}/0003_Build_fix.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
@@ -77,6 +76,12 @@ package() {
   install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
   install -m644 "${srcdir}/indicator-sound.service" \
                 "${pkgdir}/usr/share/dbus-1/services/"
+
+  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+  install -m644 "${srcdir}/com.ubuntu.sound.gschema.xml" \
+                "${pkgdir}/usr/share/glib-2.0/schemas/"
+
+  rm -r "${pkgdir}/usr/share/upstart/"
 }
 
 # vim:set ts=2 sw=2 et:
