@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=libunity
-_actual_ver=7.1.3
-_extra_ver=+14.04.20131106
+_actual_ver=7.1.4
+_extra_ver=+14.04.20140210
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
@@ -12,7 +12,7 @@ pkgdesc="A library for instrumenting and integrating with all aspects of the Uni
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity"
 license=('LGPL')
-depends=('dee-ubuntu' 'libdbusmenu-glib' 'libgee06' 'gtk3')
+depends=('dee-ubuntu' 'libdbusmenu-glib' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection')
 install=${pkgname}.install
 groups=('unity')
@@ -21,8 +21,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch'
         '0002_privacy_by_default.patch')
-sha512sums=('a37db9519aeba56c5916f24dcd43ca2d454db684408556f2478545fcbd64fbe2c26f4cf12aadc94579468079274574df11e3c0d1e66c8a0b3c01dce6d95be1e9'
-            'e9e0469101697a1b4c2d3f6710662e93415b67a1f4f514a688eacdab3d7a1bef0252fca17b36345305ad6449e47a1883235ea753d88f15b3af3756b0b6fa2711'
+sha512sums=('a588337c6dc96ce8cdadd2cd98fee22eed06b59ff6bb22ee6eefb9ef11900ea06057bdd5ffdd5bf8d59c2db079e10580df777ab5cd7319576ca3b11ecebf8ebe'
+            'e5a4502fa845269581e61ed92a32110517f0c5f4e4c689180c8a8fd803b0699b9c8de8e3c955f4b125bd5ad0d0919e4a11e47e2cac2f2458e61107d57afd3e58'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b'
             '83769f9f54abb8090d5307affba8f974a23ee11dac74d9c3da389b48c9bd80fac241731017c9dcb05af14d4c644228d67af558e97972fceb144a8fc0deed30f7')
 
@@ -49,8 +49,7 @@ build() {
   intltoolize -f
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static --enable-headless-tests PYTHON=python2
-  export MAKEFLAGS="-j1"
-  make
+  make -j1
 }
 
 package() {
