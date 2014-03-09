@@ -6,7 +6,7 @@ pkgname=ido
 _actual_ver=13.10.0
 _extra_ver=+14.04.20140213
 pkgver=${_actual_ver}daily14.02.13
-pkgrel=100
+pkgrel=101
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/ido"
@@ -23,6 +23,7 @@ sha512sums=('60cdf98c0009123df4509a316edafdbb943e6e5f6f1523a9acb6d94a614d0c64f19
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CFLAGS="${CFLAGS} -Wno-error"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static --disable-introspection
   make
