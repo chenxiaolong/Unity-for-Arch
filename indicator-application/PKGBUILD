@@ -4,9 +4,9 @@
 
 pkgname=indicator-application
 _actual_ver=12.10.1
-_extra_ver=+14.04.20131125
-pkgver=${_actual_ver}daily13.11.25
-pkgrel=101
+_extra_ver=+14.04.20140117
+pkgver=${_actual_ver}daily14.01.17
+pkgrel=100
 pkgdesc="A library and indicator to take menus from applications and place them in the panel"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-application"
@@ -17,7 +17,7 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
         'indicator-application.service'
         '0001_autoconf.patch')
-sha512sums=('367b55807210125ec83d548ef30feeb2b191f321e1bec6e0c2956b810e07dc3185f7591204c7af0ef6db05d5eff4b456d74591ae439128ff010ece05ab812c15'
+sha512sums=('de171ee6226d1638bb53e28c9e541d33e5e86228426f74491c8071c8e40a174ccfcb5706dffbf6fa90d498dbae6325f835ecd867383aee492e4b2243a2ea51c9'
             '8431d7c765b6b34addf9d6d3700ce42454b8557454e74af9d7bb9fe2b7e7bf8f98a9e66707c1876c460c1f7e2dc23fe057d6583ac90a6ad917ec8105fd405aca'
             '7ef9f2eab8dd17d8957b706ba479c38f5f9e74a69e77af7c8e318809c67b4aea214433f0364741fc4fcbfaefd6bbff3e370e24048cd23f2e09ebe6bca32b1511')
 
@@ -29,8 +29,6 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  export CFLAGS="${CFLAGS} -Wno-error"
 
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
