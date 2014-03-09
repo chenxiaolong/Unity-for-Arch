@@ -5,8 +5,8 @@
 pkgbase=libindicator
 pkgname=('libindicator' 'libindicator3')
 _actual_ver=12.10.2
-_extra_ver=+14.04.20140218
-pkgver=${_actual_ver}daily14.02.18
+_extra_ver=+14.04.20140304
+pkgver=${_actual_ver}daily14.03.04
 pkgrel=100
 pkgdesc="A set of symbols and convience functions that all indicators would like to use"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ license=('GPL')
 makedepends=('gtk2' 'gtk3' 'glib2' 'ido')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('ffd2efb6a4f2566fc1a83f9acb7aaf35b949625d43c8a7eff8aff4ccc5296eda4011b7e821fe569ac146045cb16e3c6185885352a6a93ad835154c3a1368a614')
+sha512sums=('483c9e065b159a1189b8c633c7cb3be546707e1768cf9fa44e999b8f80ae937ce3089aee35662a0c711cc0ecd3cbf226677882fdae0e22100c72eb849411de08')
 
 build() {
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}"
@@ -48,7 +48,7 @@ package_libindicator() {
   make DESTDIR="${pkgdir}/" install
 }
 
-package_libindicator3(){
+package_libindicator3() {
   pkgdesc+=" (GTK+ 3 library)"
   depends=('gtk3' 'glib2' 'ido')
   options=(${options[@]} '!emptydirs')
