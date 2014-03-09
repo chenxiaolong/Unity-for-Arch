@@ -5,6 +5,10 @@ _actual_ver=0.0.0
 _extra_ver=+14.04.20140213.2
 pkgver=${_actual_ver}daily14.02.13.2
 pkgrel=1
+
+# Override AUR version
+epoch=1
+
 pkgdesc="Unity GTK+ Module"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-gtk-module"
