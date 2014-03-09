@@ -203,7 +203,6 @@ chmod -R 0755 ${CACHE_DIR}
 
 # Everything writing to /var/cache/pacman/pkg/ MUST be done here to avoid
 # threading/parallel execution issues
-# TODO: Use clean pacman configuration file
 (
   flock 321 || (echo "Failed to acquire lock on pacman cache!" && exit 1)
 
@@ -222,8 +221,13 @@ chmod -R 0755 ${CACHE_DIR}
   # Create temporary mini-chroot to store database files
   mkdir -p ${TEMP_CHROOT}/var/lib/pacman/
 
+  # Download pacman.conf
+  mkdir -p ${TEMP_CHROOT}/etc/
+  wget "https://projects.archlinux.org/svntogit/packages.git/plain/trunk/pacman.conf.${ARCH}?h=packages/pacman" -O ${TEMP_CHROOT}/etc/pacman.conf
+
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
          --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ \
+         --config ${TEMP_CHROOT}/etc/pacman.conf \
          ${CHROOT_PACKAGES[@]}
 
   cat ${PACKAGE_DIR}/PKGBUILD > ${TEMP_PKGBUILD}
@@ -256,7 +260,8 @@ chmod -R 0755 ${CACHE_DIR}
   set -x
 
   pacman --arch ${ARCH} --sync --refresh --downloadonly --noconfirm \
-         --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ ${list}
+         --root ${TEMP_CHROOT} --cachedir /var/cache/pacman/pkg/ \
+         --config ${TEMP_CHROOT}/etc/pacman.conf ${list}
 
   # Copy or hard link cached packages to the chroot-specific cache directory
   if [ "x$(stat -c '%d' /var/cache/pacman/pkg/)" = \
@@ -275,10 +280,11 @@ chmod -R 0755 ${CACHE_DIR}
 
 # Create base chroot
 setarch ${ARCH} pacstrap -GMcd ${CHROOT} --cachedir=${CACHE_DIR} \
+                         --config=${TEMP_CHROOT}/etc/pacman.conf \
                          ${CHROOT_PACKAGES[@]}
 
 # Set up systemd-nspawn arguments
-NSPAWN_ARGS=("--directory=${CHROOT}")
+NSPAWN_ARGS=("--register=no" "--directory=${CHROOT}")
 
 # Cache directory
 NSPAWN_ARGS+=("--bind=${CACHE_DIR}")
