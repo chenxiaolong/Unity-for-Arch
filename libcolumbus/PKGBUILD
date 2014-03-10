@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libcolumbus
-_actual_ver=1.0.0
-_extra_ver=+14.04.20140108
+_actual_ver=1.1.0
+_extra_ver=+14.04.20140306
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
 pkgdesc="A small, fast, error tolerant matcher"
@@ -13,7 +13,7 @@ groups=('unity')
 depends=('icu')
 makedepends=('boost' 'cmake' 'sparsehash')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('29b9301ac897e712fed8c8b3967e7b0fb1724a6d2bf35ad5c90b9904a22c3118e43d40f5fe8d6fa30d66df76d5488cffd63ac55c66bd17d61259db88368ecdda')
+sha512sums=('a4aa3c94492f7d9ac0baefbeb3f8b030613a992b272224b3db65bd0b129d08ed23e902e7ef10ed5e213a0a238bf0cb7f93b8c861ac303c3a5a1e8e05e735eac7')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
