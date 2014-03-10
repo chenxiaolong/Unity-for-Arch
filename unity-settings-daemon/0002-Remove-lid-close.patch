@@ -1,0 +1,110 @@
+--- a/plugins/power/gsd-power-manager.c
++++ b/plugins/power/gsd-power-manager.c
+@@ -207,7 +207,6 @@
+         GDBusProxy              *logind_proxy;
+         gint                     inhibit_lid_switch_fd;
+         gboolean                 inhibit_lid_switch_taken;
+-        gboolean                 inhibit_lid_switch_action;
+         gint                     inhibit_suspend_fd;
+         gboolean                 inhibit_suspend_taken;
+         guint                    inhibit_lid_switch_timer_id;
+@@ -241,7 +240,6 @@
+ static gdouble   engine_get_percentage (GsdPowerManager *manager);
+ static void      do_power_action_type (GsdPowerManager *manager, GsdPowerActionType action_type);
+ static void      do_lid_closed_action (GsdPowerManager *manager);
+-static void      inhibit_lid_switch (GsdPowerManager *manager);
+ static void      uninhibit_lid_switch (GsdPowerManager *manager);
+ static void      main_battery_or_ups_low_changed (GsdPowerManager *manager, gboolean is_low);
+ static gboolean  idle_is_session_inhibited (GsdPowerManager *manager, guint mask, gboolean *is_inhibited);
+@@ -2143,9 +2141,6 @@
+ {
+         GsdXrandrBootBehaviour val;
+ 
+-        if (manager->priv->inhibit_lid_switch_action)
+-                return FALSE;
+-
+         if (!external_monitor_is_connected (manager->priv->rr_screen))
+                 return TRUE;
+ 
+@@ -2199,26 +2194,6 @@
+ }
+ 
+ static void
+-setup_lid_closed_action (GsdPowerManager *manager)
+-{
+-        GsdPowerActionType policy;
+-
+-        if (up_client_get_on_battery (manager->priv->up_client)) {
+-            policy = g_settings_get_enum (manager->priv->settings, "lid-close-battery-action");
+-        } else {
+-            policy = g_settings_get_enum (manager->priv->settings, "lid-close-ac-action");
+-        }
+-
+-        if (policy == GSD_POWER_ACTION_NOTHING) {
+-		inhibit_lid_switch (manager);
+-                manager->priv->inhibit_lid_switch_action = TRUE;
+-        } else {
+-                uninhibit_lid_switch (manager);
+-                manager->priv->inhibit_lid_switch_action = FALSE;
+-        }
+-}
+-
+-static void
+ do_lid_open_action (GsdPowerManager *manager)
+ {
+         /* play a sound, using sounds from the naming spec */
+@@ -2284,10 +2259,6 @@
+                         lock_screensaver (manager);
+                 }
+         }
+-        else {
+-                if (manager->priv->inhibit_lid_switch_action)
+-                        lock_screensaver (manager);
+-        }
+ }
+ 
+ static void
+@@ -2302,8 +2273,6 @@
+             main_battery_or_ups_low_changed (manager, FALSE);
+         }
+ 
+-        setup_lid_closed_action (manager);
+-
+         /* same state */
+         tmp = up_client_get_lid_is_closed (manager->priv->up_client);
+         if (manager->priv->lid_is_closed == tmp)
+@@ -3162,10 +3131,6 @@
+                 idle_configure (manager);
+                 return;
+         }
+-        if (g_str_has_prefix (key, "lid-close")) {
+-                setup_lid_closed_action (manager);
+-                return;
+-        }
+ }
+ 
+ static void
+@@ -3575,7 +3540,6 @@
+         /* don't blank inside a VM */
+         manager->priv->is_virtual_machine = gsd_power_is_hardware_a_vm ();
+ 
+-        setup_lid_closed_action (manager);
+         gnome_settings_profile_end (NULL);
+         return TRUE;
+ }
+@@ -3623,7 +3587,6 @@
+                 close (manager->priv->inhibit_lid_switch_fd);
+                 manager->priv->inhibit_lid_switch_fd = -1;
+                 manager->priv->inhibit_lid_switch_taken = FALSE;
+-                manager->priv->inhibit_lid_switch_action = FALSE;
+         }
+         if (manager->priv->inhibit_suspend_fd != -1) {
+                 close (manager->priv->inhibit_suspend_fd);
+@@ -3660,7 +3623,6 @@
+         manager->priv = GSD_POWER_MANAGER_GET_PRIVATE (manager);
+         manager->priv->inhibit_lid_switch_fd = -1;
+         manager->priv->inhibit_suspend_fd = -1;
+-        manager->priv->inhibit_lid_switch_action = FALSE;
+         manager->priv->screensaver_cancellable = g_cancellable_new ();
+         manager->priv->bus_cancellable = g_cancellable_new ();
+ }

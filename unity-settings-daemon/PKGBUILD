@@ -1,0 +1,78 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=unity-settings-daemon
+_actual_ver=14.04.0
+_extra_ver=+14.04.20140228
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="Unity Settings Daemon"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/unity-settings-daemon"
+license=('GPL')
+groups=('unity')
+depends=('gnome-desktop' 'gnome-settings-daemon' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libappindicator3' 'libcanberra-pulse' 'libnotify' 'librsvg' 'libsystemd' 'libwacom' 'packagekit' 'pulseaudio' 'pulseaudio-alsa' 'upower')
+conflicts=('gnome-settings-daemon-ubuntu')
+replaces=('gnome-settings-daemon-ubuntu')
+install=unity-settings-daemon.install
+#options=('!emptydirs')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "http://ftp.gnome.org/pub/GNOME/sources/gnome-desktop/3.8/gnome-desktop-3.8.4.tar.xz"
+        '0001-Remove-accountsservice-deps.patch'
+        '0002-Remove-lid-close.patch')
+sha512sums=('eef06854e9165cb781f8976fb2b9bec41bdf960da788fbbd563bb55b138ff151a725d6f9147c09e7edffe411cf35efc4586e4838aa01472962bf9114446efde5'
+            'e5932bd73f0be85b79dc63af1766633c56044078313ea764a7faabaaabb52af8ffcc59361a0d65509626fa83c6afcc2ac1fb4e64b49ad06d220994dcfc10c31d'
+            '3b1a7a01af22163687f4a9b99ef63783b8412a99141a8d0efd575503c1e7f98fc89e9a4fc5b9480e4f007958e6c518dd94093882d7e4e2feadcf4572243b0d7e'
+            '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
+
+build_gnome_desktop() {
+  cd "${srcdir}/gnome-desktop-3.8.4"
+
+  CFLAGS="-fPIC" \
+  ./configure \
+    --prefix=/usr \
+    --enable-static=yes \
+    --enable-shared=no \
+    --disable-desktop-docs \
+    --enable-gtk-doc=no
+
+  make
+  make install DESTDIR="${srcdir}/gdinst"
+
+  sed -i "s,^prefix=.*$,prefix=${srcdir}/gdinst/usr,g" \
+    "${srcdir}/gdinst/usr/lib/pkgconfig/gnome-desktop-3.0.pc"
+}
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001-Remove-accountsservice-deps.patch"
+  patch -p1 -i "${srcdir}/0002-Remove-lid-close.patch"
+}
+
+build() {
+  build_gnome_desktop
+
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  autoreconf -vfi
+  intltoolize -f
+
+  CFLAGS="-fPIC" PKG_CONFIG_PATH="${srcdir}/gdinst/usr/lib/pkgconfig" \
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/unity-settings-daemon \
+    --disable-static \
+    --enable-systemd
+
+  # https://bugzilla.gnome.org/show_bug.cgi?id=656231
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
