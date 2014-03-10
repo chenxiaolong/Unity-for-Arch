@@ -1,0 +1,29 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=gsettings-qt
+_actual_ver=0.0
+_extra_ver=+13.10.20130902.1
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="Library to access GSettings from Qt"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/gsettings-qt"
+license=('LGPL')
+groups=('unity')
+depends=('qt5-base' 'qt5-declarative')
+makedepends=('qtchooser')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('fde9166358496d25e7ab7f0b77427fd7c40ef3b6e0e335609c8eee5fa4b31cdd561cd5a0e6626ce808dca4cca7556765b18bb54b4c9345eabab48bfb1dc448b5')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  qmake-qt5 gsettings-qt.pro
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make INSTALL_ROOT="${pkgdir}/" install
+
+  rm -r "${pkgdir}/usr/tests/"
+}
