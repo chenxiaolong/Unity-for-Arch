@@ -1,0 +1,82 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+# Based on Arch's gnome-control-center package
+
+pkgname=unity-control-center
+_actual_ver=14.04.3
+_extra_ver=+14.04.20140305.1
+pkgver=${_actual_ver}${_extra_ver/+/.}
+pkgrel=100
+pkgdesc="The Control Center for Unity"
+arch=('i686' 'x86_64')
+groups=('unity')
+url="https://launchpad.net/unity-control-center"
+license=('GPL')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'webkitgtk3' 'system-config-printer' 'unity-settings-daemon')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'vala' 'desktop-file-utils')
+optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
+            'rygel: media sharing'
+            'vino: screen sharing'
+            'openssh: remote login')
+conflicts=('gnome-control-center-unity' 'credentials-preferences' 'credentials-preferences-ubuntu')
+options=('!libtool' '!emptydirs')
+install=unity-control-center.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        '0001-Build-fix.patch'
+        '0002-Remove-terminal-shortcut.patch'
+        '0003-Remove-lid-close.patch'
+        '0004-Remove-Ubuntu-language.patch'
+        '0005-Remove-ubuntu-system-proxy.patch'
+        '0006-Remove-update-manager.patch'
+        '0007-Remove-ubuntu-help.patch')
+sha512sums=('687937269bd1de66fc95db89ba286bb43064121098349aff87ea89ba8c7f6f6dd61bdc2242281bc0b2c3a45f4f07d2afc2bf68dffdfbdccec61f69da2895087e'
+            'd06ac925143f98d1da4505b4140d7011a8167ae1e6f8503145674666ed3b6f6e57fd3d3c900af4577ebff621a528be7a02724810fe165b275a332f09addd7313'
+            'da3d1112ce6781fc345d862a194147952cd1b4f4b35b880250895b5ad00c7c3b7ffcf59984aa14e70e9ef314709602546eae950791b7b71c28849a44773881fe'
+            '8abc8c0e3727a1e57116d943c16918754041007b1be45c8e2a0f4f945c94193008a75f72dcc123d70def6b43e1c347f1b0804d3cad44dc098b1b216cf31fb09d'
+            'a23e0d001e28a2c4659400f901e15d291777f242ebf404e9b4e29a9779a386a606f55428f73780906b5c35f1f204d2b96d279c6917cc63601a7058d7975f3ac8'
+            'de56dc2349bb29940a501534d4861e5a0fed3c7a0a33b8fdb8dca97cb9bec4334133b122bd609eb9ced1325bdfb85a87fb9bad7745f666daa6a607d8fd0f9a0d'
+            'fa0284c2bbe7a5897f0f4dad2adc6acd5a3df7ef6143986af4538fae97e88bd76cea0d701e82a01534a49f3bdddf9dd2c1eb025babba85e07914d7ae5323fe14'
+            '8ac524b6139df243703257ae9411811ea65261b1816e8048bdb1086ddadbb54b67a50f0ec61e7384c5e2e97d2bbdcbc458830ff570f62624647b70b842835692')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001-Build-fix.patch"
+  patch -p1 -i "${srcdir}/0002-Remove-terminal-shortcut.patch"
+  patch -p1 -i "${srcdir}/0003-Remove-lid-close.patch"
+  patch -p1 -i "${srcdir}/0004-Remove-Ubuntu-language.patch"
+  patch -p1 -i "${srcdir}/0005-Remove-ubuntu-system-proxy.patch"
+  patch -p1 -i "${srcdir}/0006-Remove-update-manager.patch"
+  patch -p1 -i "${srcdir}/0007-Remove-ubuntu-help.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  autoreconf -vfi
+  intltoolize -f
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/${pkgname} \
+    --disable-static \
+    --enable-systemd
+
+  # https://bugzilla.gnome.org/show_bug.cgi?id=656229
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  make DESTDIR="${pkgdir}" install
+
+  # Fix a warning
+  chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
+  chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
+}
+
+# vim:set ts=2 sw=2 et:

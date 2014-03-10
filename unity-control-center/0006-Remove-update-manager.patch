@@ -1,0 +1,11 @@
+--- a/panels/info/cc-info-panel.c
++++ b/panels/info/cc-info-panel.c
+@@ -1827,7 +1827,7 @@
+ {
+   GError *error;
+   error = NULL;
+-  g_spawn_command_line_async ("update-manager", &error);
++  g_spawn_command_line_async ("gpk-update-viewer", &error);
+   if (error != NULL)
+     {
+       g_warning ("unable to launch Software Updates: %s", error->message);
