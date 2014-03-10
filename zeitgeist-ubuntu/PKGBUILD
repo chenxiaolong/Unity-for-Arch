@@ -5,8 +5,8 @@
 
 pkgname=zeitgeist-ubuntu
 pkgver=0.9.14
-_ubuntu_rel=0ubuntu3
-pkgrel=1
+_ubuntu_rel=0ubuntu4
+pkgrel=2
 pkgdesc="Service logging user activities and events"
 arch=('i686' 'x86_64')
 url="http://zeitgeist-project.com/"
@@ -19,7 +19,7 @@ replaces=('zeitgeist-datahub')
 source=("https://launchpad.net/zeitgeist/${pkgver%.*}/${pkgver}/+download/zeitgeist-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('9886396ea153fc12de81fdee2acf645b33a2af0c0fa3533c18f6c80c68c506ee9f790f37f99677ce6c3546a0f9ef5e5c251bc9411e0d882df796479edd9e817c'
-            '3dd9c5219c5cdeb6ae98f9df439d52dc3af8befa293798f39a1eaa054367e3eab9a256df5b7f066ff9a081223f4d006cf239ef05a1a72d3448b6292c53f2cdc8')
+            'b0f482f11403f9afdbfbd3419ecb41773167636419883986e8eaa3db6035bcc1cdfb579132c9cad516d956ed3f8110e07523c380274136eccb25ed6a38caee0f')
 
 prepare() {
   cd "${srcdir}/zeitgeist-${pkgver}"

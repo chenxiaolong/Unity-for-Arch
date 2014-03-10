@@ -52,7 +52,7 @@ Order to compile/install:
 44: unity-asset-pool               -> Design assets for Unity
 45: nautilus-ubuntu                -> File manager and graphics shell for GNOME
 46: libcolumbus                    -> Small, fast, error tolerant matcher
-47: zeitgeist                      -> Service for logging user activities
+47: zeitgeist-ubuntu               -> Service for logging user activities
 48: unity-lens-applications        -> Unity applications lens
 49: unity-lens-files               -> Unity files lens
 50: unity-lens-music               -> Unity music lens
