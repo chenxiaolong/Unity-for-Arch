@@ -27,7 +27,7 @@ Order to compile/install:
 19: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 20: gnome-session-ubuntu           -> GNOME Session Manager
 21: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
-22: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+22: unity-control-center           -> Utilities to configure the Unity desktop
 23: metacity-ubuntu                -> Window manager for GNOME
 24: libtimezonemap                 -> GTK+3 timezone map widget
 25: indicator-application          -> Takes menus and puts then in the panel
