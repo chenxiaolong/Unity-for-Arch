@@ -38,30 +38,28 @@ Order to compile/install:
 30: indicator-printers             -> Indicator showing active print jobs
 31: indicator-session              -> Indicator for session management
 32: indicator-sound                -> Indicator displaying a unified sound menu
-33: sphinxbase                     -> Base lib. for the Sphinx speech recog. sw.
-34: pocketsphinx                   -> Lightweight speech recognition system
-35: hud                            -> Backend for the Unity HUD
-36: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-37: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-38: evemu                          -> Linux Evdev Event Emulation Library
-39: frame                          -> Open Input Framework Frame Library
-40: grail                          -> Gesture recognition and instantiation lib.
-41: geis                           -> Implementation of the GEIS interface
-42: nux                            -> An OpenGL toolkit
-43: unity-asset-pool               -> Design assets for Unity
-44: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-45: libcolumbus                    -> Small, fast, error tolerant matcher
-46: zeitgeist-ubuntu               -> Service for logging user activities
-47: unity-lens-applications        -> Unity applications lens
-48: unity-lens-files               -> Unity files lens
-49: unity-lens-music               -> Unity music lens
-50: unity-lens-photos              -> Unity photo lens
-51: unity-lens-video               -> Unity video lens
-52: unity-scope-home               -> Unity Home Scope
-53: unity-scopes                   -> Unity Smart Scopes
-54: compiz-ubuntu                  -> Compiz compositing window manager
-55: xpathselect                    -> Select tree objects using XPath queries
-56: unity                          -> Desktop shell designed for efficiency
+33: hud                            -> Backend for the Unity HUD
+34: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+35: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+36: evemu                          -> Linux Evdev Event Emulation Library
+37: frame                          -> Open Input Framework Frame Library
+38: grail                          -> Gesture recognition and instantiation lib.
+39: geis                           -> Implementation of the GEIS interface
+40: nux                            -> An OpenGL toolkit
+41: unity-asset-pool               -> Design assets for Unity
+42: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+43: libcolumbus                    -> Small, fast, error tolerant matcher
+44: zeitgeist-ubuntu               -> Service for logging user activities
+45: unity-lens-applications        -> Unity applications lens
+46: unity-lens-files               -> Unity files lens
+47: unity-lens-music               -> Unity music lens
+48: unity-lens-photos              -> Unity photo lens
+49: unity-lens-video               -> Unity video lens
+50: unity-scope-home               -> Unity Home Scope
+51: unity-scopes                   -> Unity Smart Scopes
+52: compiz-ubuntu                  -> Compiz compositing window manager
+53: xpathselect                    -> Select tree objects using XPath queries
+54: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
