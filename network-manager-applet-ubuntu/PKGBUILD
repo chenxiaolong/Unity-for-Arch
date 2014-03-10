@@ -6,9 +6,9 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=1ubuntu1
+_ubuntu_rel=0ubuntu1
 _translations=20130418
-pkgver=0.9.8.4
+pkgver=0.9.8.8
 pkgrel=1
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
@@ -23,12 +23,10 @@ options=('!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-network-manager-applet.tar.gz"
-        '0001_Build_Fix.patch')
-sha512sums=('f8dccaef1566db37ab7e89a6a5d3e1b70b6d5bc7cc1506b613814f1a9037cfef1aa8cab1e89dd90ba776586ea020633837e094ff82d131f78b29ad3de1a522db'
-            '68d3a126af07df570b12b565c4193a76c4d01407528ac204ca07d7ff1c1e18d2baf3dbbdd74e6ec6798bc5997f78ab835b8657346b36518476581a29cd3db91e'
-            '3c9a0c6b751ad3d9c5b83ceb3d76eda24f687dbedbbbc24b02c1ce57ba84cebc821e9dddc46b18a5c521d54160855c2ad8b5b8c5e1bc2679d08085ffb0ab48a3'
-            '6a3c14fad6ad9fa710954502d1b3bf79eee7139aac9e1c1afa7b2ef80a3e3bd2d6021726d953cf0b4d5d3de5c7c8bd655412f7c78ba6d6d82e10a629bb5e5769')
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-network-manager-applet.tar.gz")
+sha512sums=('a43cb00ac60b9401a035aac22a3384625624ca7e3b852106c55c1dc79a6a409d68f482615df6420778cafee0eb38e0088768198de78af52358db48ce9b7222f7'
+            'fb7fc8a8265c0ba7ae9853cadabad7ef3f7acbf135209d5b28c7da3a26290b7db55cfc56be68d616d2867c79dc52849d6ea94e602a88ff527d5ff602e5120ee4'
+            '3c9a0c6b751ad3d9c5b83ceb3d76eda24f687dbedbbbc24b02c1ce57ba84cebc821e9dddc46b18a5c521d54160855c2ad8b5b8c5e1bc2679d08085ffb0ab48a3')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
@@ -38,9 +36,6 @@ prepare() {
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  # Build fix: code should match headers...duh...
-  patch -p1 -i "${srcdir}/0001_Build_Fix.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot
