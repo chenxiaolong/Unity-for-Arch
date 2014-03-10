@@ -1,0 +1,30 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=libdbusmenu-qt
+_actual_ver=0.9.2
+_extra_ver=+14.04.20140218.2
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="Qt5 implementation of the DBusMenu protocol"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/libdbusmenu-qt"
+license=('LGPL')
+groups=('unity')
+depends=('qjson' 'qt5-base')
+makedepends=('cmake')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('02cccceb884ea346b7a69afe6664708e4efc2e9b15309c4991ab26451492006dd98b5214c4803ad8f6e8c925594d08ccce6da7aaef62f1412464ec09c99941a4')
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DUSE_QT5=true
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
