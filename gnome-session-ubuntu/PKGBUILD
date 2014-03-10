@@ -6,7 +6,7 @@ pkgname=gnome-session-ubuntu
 _ppa_rel=0ubuntu1~saucy1
 _translations=20130418
 pkgver=3.10.1
-pkgrel=100
+pkgrel=101
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -96,6 +96,9 @@ package() {
   install -dm755 "${pkgdir}/etc/xdg/autostart/"
   install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
     "${pkgdir}/etc/xdg/autostart/"
+
+  sed -i 's/gnome-settings-daemon/unity-settings-daemon/g' \
+    "${pkgdir}/usr/share/gnome-session/sessions/ubuntu.session"
 }
 
 # vim:set ts=2 sw=2 et:
