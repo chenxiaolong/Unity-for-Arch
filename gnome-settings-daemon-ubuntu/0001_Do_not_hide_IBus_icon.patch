@@ -1,7 +1,0 @@
---- a/data/org.freedesktop.IBus.service.in
-+++ b/data/org.freedesktop.IBus.service.in
-@@ -1,3 +1,3 @@
- [D-BUS Service]
- Name=org.freedesktop.IBus
--Exec=@bindir@/ibus-daemon --replace --xim --panel disable
-+Exec=@bindir@/ibus-daemon --replace --xim
