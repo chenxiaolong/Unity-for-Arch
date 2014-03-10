@@ -4,10 +4,10 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu7
 _translations=20130418
 pkgver=3.10.1
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-$
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz")
 sha512sums=('a201d661104025b4b5ef4d0aa8ba7d083bb60e164c948e9932a78967f4046cc6e3afe7dcd5d20cfb99f500c4561555022cce4c39f2acc72370a515141798e90c'
-            'e6dbffb5ab5c86ed6313c667231b111c3d101cc68af7a7236b290d8cd63ec22263be89a10c20626122d1f1130703478d29e2b3a4a4b360c04557d91e424f421e'
+            'adf8b2446b3e11f866bc28ec656ef3c778a8fe372c41f2b401bfc4ec6c66d483d75fdce396c64097988b4972b0e6713619a4027f458142e09e5a4f6eac3c4d19'
             '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de')
 
 prepare() {
@@ -31,8 +31,6 @@ prepare() {
   # Disable patches
     # Don't use Ubuntu help
       sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
-    # Don't use launchpad-integration
-      sed -i '/01_lpi.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
