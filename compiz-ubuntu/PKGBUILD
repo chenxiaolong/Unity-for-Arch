@@ -2,17 +2,14 @@
 
 # Some comments are taken from the Ubuntu packaging files
 
-# Since all parts of Compiz are now released together upstream, I will not split
-# this package anymore. There are far too many packages to split and Arch/pacman
-# makes it extremely hard to do.
 pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
-_actual_ver=0.9.10
-_extra_ver=+13.10.20131011
+_actual_ver=0.9.11
+_extra_ver=+14.04.20140305
 
 # AUR Fix
-pkgver=0.9.10.13.10.20131011
+pkgver=0.9.11.14.04.20140305
 realver=${_actual_ver}${_extra_ver/+/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -20,13 +17,17 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=2
+pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'gnome-control-center' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+# The schemas from gnome-settings-daemon are needed
+depends+=('gnome-settings-daemon')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
+optdepends=('gnome-control-center: GNOME Control Center'
+            'unity-control-center: Unity Control Center')
 groups=('unity')
 options=('emptydirs')
 conflicts=('compiz')
@@ -39,8 +40,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('4d9b4d82c9935680a625a3d32b12ad71311fbee93096eb8b70bea459962f46283cd2e079c569d4146ad6b047f0904819b6ea785a30872cfae3572429adb1a64b'
-            'ee99be3226c4183215e58742dec37892f23c2d85bd9a319189a235b2df9b8f7920084fca1029e92d08c9ca73ab559629ba4ff3986e3fb4edd421362debb3fe88'
+sha512sums=('43e76b385f6bafe091c75d8b7bc40b86f00a611577b5615baf303aea0faaf495876fad633a07b94830117647cbf228b41a2eafe766cfd42d5cfd918a916c0932'
+            '1866c86b5e1ee5e1eee804c0d35c5ffe51613182e43e227481f35699a1623312b7811d951eca366522ac66fa0f5812b08114a5f4bb23191bbecbe7cb5e0d256a'
             '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
@@ -165,8 +166,11 @@ package() {
 
   # Install keybinding files
   install -dm755 "${pkgdir}/usr/share/gnome-control-center/keybindings/"
+  install -dm755 "${pkgdir}/usr/share/unity-control-center/keybindings/"
   find ../*/gtk/gnome/ -name *.xml -exec install {} \
     "${pkgdir}/usr/share/gnome-control-center/keybindings/" \;
+  find ../*/gtk/gnome/ -name *.xml -exec install {} \
+    "${pkgdir}/usr/share/unity-control-center/keybindings/" \;
 
   # Default GSettings settings
   install -m644 ../debian/compiz-gnome.gsettings-override \
