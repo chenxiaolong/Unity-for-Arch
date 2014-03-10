@@ -2,8 +2,8 @@
 
 pkgname=hud
 _actual_ver=13.10.1
-_extra_ver=+14.04.20131205
-pkgver=${_actual_ver}daily13.12.05
+_extra_ver=+14.04.20140218.2
+pkgver=${_actual_ver}daily14.02.18.2
 pkgrel=100
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
@@ -11,23 +11,28 @@ url="https://launchpad.net/hud"
 license=('GPL')
 groups=('unity')
 depends=('bamf' 'libdbusmenu-gtk3' 'sqlite')
-# Speech recognition
-depends+=('pocketsphinx' 'sphinx-voxforge-en' 'sphinxbase' 'pulseaudio')
-makedepends=('cmake' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gtk-doc' 'intltool' 'qt5-base' 'python2-distribute' 'vala')
+makedepends=('cmake' 'dee-qt' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gsettings-qt' 'gtk-doc' 'intltool' 'libcolumbus' 'libdbusmenu-qt5' 'qt5-base' 'python2-distribute' 'vala')
 optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Python_2.patch'
-        '0002_Not_In_House.patch')
-sha512sums=('5addf25f5f6699e4be7490404c5290955232a41248bee01e0b10880191a84185257f903b1db1455693992bf6dfb6969b25c5424f9d376b18660a184454bfe6ec'
+        '0002_Remove_tests.patch'
+        '0003_Remove_voice_recognition.patch')
+sha512sums=('e280be43813332c6d21d656990ac383ea0123505a77d99c61251ddcfa63bd89e933e61a4305b6d20aa90ee1c4f5f51398a983c3b1ce6674d7efae6c43caa59f7'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90'
-            'a616aa39cba8411dc08e2614a470bb3a013abc19bd1e5d7e55308f90a83894ef9e4e31c04669676c93f8b98fba1fe4147e8cc481a3960abf030fafe6b28a9b87')
+            'c9cc41a62ddc8403f42448ae1beaf76fe5149b7356af7f98aa8e248d838bb26e8e7a206ea6fa37ad00fe60b3291da9535311c5f42e35534b5a711b2682942a7f'
+            '599b9c5e1acbb530bc225a8b0f5e68ff4863b57009da35d75bebbf9b40655903405fe00434b375f1d699d52bdeb4c27ef6539f36634e77ce8c72f09ff4a21805')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0001_Python_2.patch"
-  patch -p1 -i "${srcdir}/0002_Not_In_House.patch"
+  patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
+  patch -p1 -i "${srcdir}/0003_Remove_voice_recognition.patch"
+
+  sed -i '/mscgen/d;/UseMscgen/d' docs/CMakeLists.txt
+  rm cmake/UseMscgen.cmake
+  rm cmake/FindGMock.cmake
 }
 
 build() {
@@ -44,7 +49,7 @@ build() {
     -DENABLE_SCALABILITY_TESTS=OFF \
     -DFULL_WARNINGS=ON
 
-  make -j1
+  make
 }
 
 package() {
