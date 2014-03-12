@@ -2,7 +2,7 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=14.04.0
-_extra_ver=+14.04.20140228
+_extra_ver=+14.04.20140310
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -17,7 +17,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-dae
         "http://ftp.gnome.org/pub/GNOME/sources/gnome-desktop/3.8/gnome-desktop-3.8.4.tar.xz"
         '0001-Remove-accountsservice-deps.patch'
         '0002-Remove-lid-close.patch')
-sha512sums=('eef06854e9165cb781f8976fb2b9bec41bdf960da788fbbd563bb55b138ff151a725d6f9147c09e7edffe411cf35efc4586e4838aa01472962bf9114446efde5'
+sha512sums=('be78e5b56b30de1f1f4e993dcf33ea63ce4dfd51a7b3c54e2417a54b2e0d1a6d2f33abbfc6e550c957c5037aeabfc5cb89780a2d367be650efe06c6872fb9491'
             'e5932bd73f0be85b79dc63af1766633c56044078313ea764a7faabaaabb52af8ffcc59361a0d65509626fa83c6afcc2ac1fb4e64b49ad06d220994dcfc10c31d'
             '3b1a7a01af22163687f4a9b99ef63783b8412a99141a8d0efd575503c1e7f98fc89e9a4fc5b9480e4f007958e6c518dd94093882d7e4e2feadcf4572243b0d7e'
             '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
@@ -73,4 +73,8 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/bin/"
+  ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
+    "${pkgdir}/usr/bin/unity-settings-daemon"
 }
