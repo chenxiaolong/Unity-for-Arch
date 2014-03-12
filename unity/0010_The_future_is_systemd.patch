@@ -1,3 +1,66 @@
+--- a/lockscreen/LockScreenController.cpp
++++ b/lockscreen/LockScreenController.cpp
+@@ -41,11 +41,9 @@
+ }
+ 
+ Controller::Controller(session::Manager::Ptr const& session_manager,
+-                       UpstartWrapper::Ptr const& upstart_wrapper,
+                        ShieldFactoryInterface::Ptr const& shield_factory,
+                        bool test_mode)
+   : session_manager_(session_manager)
+-  , upstart_wrapper_(upstart_wrapper)
+   , shield_factory_(shield_factory)
+   , fade_animator_(FADE_DURATION)
+   , test_mode_(test_mode)
+@@ -74,7 +72,6 @@
+ 
+       if (Settings::Instance().lockscreen_type() == Type::UNITY)
+       {
+-        upstart_wrapper_->Emit("desktop-unlock");
+         indicators_.reset();
+       }
+     }
+@@ -189,7 +186,6 @@
+ void Controller::LockScreenUsingUnity()
+ {
+   indicators_ = std::make_shared<indicator::LockScreenDBusIndicators>();
+-  upstart_wrapper_->Emit("desktop-lock");
+ 
+   ShowShields();
+ }
+--- a/lockscreen/LockScreenController.h
++++ b/lockscreen/LockScreenController.h
+@@ -25,7 +25,6 @@
+ 
+ #include "LockScreenShieldFactory.h"
+ #include "unity-shared/BackgroundEffectHelper.h"
+-#include "unity-shared/UpstartWrapper.h"
+ 
+ namespace unity
+ {
+@@ -36,7 +35,6 @@
+ {
+ public:
+   Controller(session::Manager::Ptr const& session_manager,
+-             UpstartWrapper::Ptr const& upstart_wrapper = std::make_shared<UpstartWrapper>(),
+              ShieldFactoryInterface::Ptr const& shield_factory = std::make_shared<ShieldFactory>(),
+              bool test_mode = false);
+ 
+@@ -61,7 +59,6 @@
+   nux::ObjectWeakPtr<AbstractShield> primary_shield_;
+   session::Manager::Ptr session_manager_;
+   indicator::Indicators::Ptr indicators_;
+-  UpstartWrapper::Ptr upstart_wrapper_;
+   ShieldFactoryInterface::Ptr shield_factory_;
+   nux::animation::AnimateValue<double> fade_animator_;
+   connection::Wrapper uscreen_connection_;
+@@ -73,4 +70,4 @@
+ }
+ }
+ 
+-#endif
+\ No newline at end of file
++#endif
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
 @@ -12,9 +12,6 @@
@@ -10,13 +73,16 @@
      dbus-1
  )
  
-@@ -55,6 +52,3 @@
+@@ -55,9 +52,3 @@
  add_executable(unity-panel-service ${PANEL_SOURCES})
  target_link_libraries(unity-panel-service ${LIBS})
  install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/unity/)
 -
 -configure_file(unity-panel-service.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf)
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+-
+-configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
 @@ -33,10 +33,6 @@
@@ -30,7 +96,7 @@
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -82,8 +78,6 @@
+@@ -83,8 +79,6 @@
  
    IndicatorObjectEntry *pressed_entry;
    gboolean use_event;
@@ -39,11 +105,11 @@
  };
  
  /* Globals */
-@@ -150,22 +144,6 @@
+@@ -151,22 +145,6 @@
    g_idle_remove_by_data (self);
    gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
  
--  if (priv->upstart != NULL)
+-  if (priv->upstart != NULL && !lockscreen_mode)
 -    {
 -      int event_sent = 0;
 -      event_sent = upstart_emit_event_sync (NULL, priv->upstart,
@@ -62,14 +128,14 @@
    if (GTK_IS_WIDGET (priv->last_menu) &&
        gtk_widget_get_realized (GTK_WIDGET (priv->last_menu)))
      {
-@@ -583,24 +561,6 @@
+@@ -587,24 +565,6 @@
    return FALSE;
  }
  
 -static gboolean
 -ready_signal (PanelService *self)
 -{
--  if (PANEL_IS_SERVICE (self) && self->priv->upstart != NULL)
+-  if (PANEL_IS_SERVICE (self) && self->priv->upstart != NULL && !lockscreen_mode)
 -    {
 -      int event_sent = 0;
 -      event_sent = upstart_emit_event_sync (NULL, self->priv->upstart, "indicator-services-start", NULL, 0);
@@ -87,13 +153,13 @@
  static void
  update_keybinding (GSettings *settings, const gchar *key, gpointer data)
  {
-@@ -712,29 +672,6 @@
+@@ -716,29 +676,6 @@
    update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
    update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
    update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
 -
 -  const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
--  if (upstartsession != NULL)
+-  if (upstartsession != NULL && !lockscreen_mode)
 -    {
 -      DBusConnection *conn = dbus_connection_open (upstartsession, NULL);
 -      if (conn != NULL)
@@ -117,7 +183,7 @@
  }
  
  static gboolean
-@@ -877,7 +814,6 @@
+@@ -885,7 +822,6 @@
    suppress_signals = FALSE;
  
    g_idle_add ((GSourceFunc)initial_resync, self);
@@ -146,14 +212,158 @@
 -
 -respawn
 -exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
---- a/tests/CMakeLists.txt
-+++ b/tests/CMakeLists.txt
-@@ -8,7 +8,7 @@
- #
- # Unit tests
- #
--set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;libupstart;libnih;libnih-dbus;dbus-1")
-+set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;dbus-1")
- pkg_check_modules (TEST_UNIT_DEPS REQUIRED ${TEST_DEPS})
- 
- string (REPLACE ";" " " TEST_UNIT_DEPS_CFLAGS_OTHER "${TEST_UNIT_CFLAGS_OTHER}")
+--- a/services/unity-panel-service-lockscreen.conf.in
++++ b/services/unity-panel-service-lockscreen.conf.in
+@@ -1,8 +0,0 @@
+-description "Backing Service for the Unity Panel"
+-author "Andrea Azzarone <andrea.azzarone@canonical.com>"
+-
+-start on desktop-lock
+-stop on desktop-unlock
+-
+-respawn
+-exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service --lockscreen-mode
+\ No newline at end of file
+--- a/unity-shared/CMakeLists.txt
++++ b/unity-shared/CMakeLists.txt
+@@ -67,7 +67,6 @@
+      UnitySettings.cpp
+      UnityWindowStyle.cpp
+      UnityWindowView.cpp
+-     UpstartWrapper.cpp
+      UserThumbnailProvider.cpp
+      VScrollBarOverlayWindow.cpp
+      WindowButtons.cpp
+--- a/unity-shared/UpstartWrapper.cpp
++++ b/unity-shared/UpstartWrapper.cpp
+@@ -1,74 +0,0 @@
+-// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
+-/*
+-* Copyright (C) 2014 Canonical Ltd
+-*
+-* This program is free software: you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License version 3 as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-* GNU General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*
+-* Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+-*/
+-
+-#include "UpstartWrapper.h"
+-
+-#include <UnityCore/GLibDBusProxy.h>
+-
+-namespace unity
+-{
+-
+-//
+-// Start private implementation
+-//
+-
+-class UpstartWrapper::Impl
+-{
+-public:
+-  Impl(bool test_mode = false);
+-
+-  void Emit(std::string const& name);
+-
+-private:
+-  glib::DBusProxy::Ptr upstart_proxy_;
+-};
+-
+-UpstartWrapper::Impl::Impl(bool test_mode)
+-{
+-  upstart_proxy_ = std::make_shared<unity::glib::DBusProxy>(test_mode ?  "com.canonical.Unity.Test.Upstart" : "com.ubuntu.Upstart",
+-                                                            "/com/ubuntu/Upstart", 
+-                                                            "com.ubuntu.Upstart0_6");
+-}
+-
+-void UpstartWrapper::Impl::Emit(std::string const& name)
+-{
+-  upstart_proxy_->Call("EmitEvent", g_variant_new("(sasb)", name.c_str(), nullptr, 0));
+-}
+-
+-//
+-// End private implementation
+-//
+-
+-UpstartWrapper::UpstartWrapper()
+-  : pimpl_(new Impl)
+-{}
+-
+-UpstartWrapper::UpstartWrapper(UpstartWrapper::TestMode const& tm)
+-  : pimpl_(new Impl(true))
+-{}
+-
+-UpstartWrapper::~UpstartWrapper()
+-{}
+-
+-void UpstartWrapper::Emit(std::string const& name)
+-{
+-  pimpl_->Emit(name);
+-}
+-
+-}
+--- a/unity-shared/UpstartWrapper.h
++++ b/unity-shared/UpstartWrapper.h
+@@ -1,53 +0,0 @@
+-// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
+-/*
+-* Copyright (C) 2014 Canonical Ltd
+-*
+-* This program is free software: you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License version 3 as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-* GNU General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*
+-* Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+-*/
+-
+-#ifndef UNITY_UPSTART_WRAPPER
+-#define UNITY_UPSTART_WRAPPER
+-
+-#include <memory>
+-
+-namespace unity
+-{
+-
+-class UpstartWrapper
+-{
+-public:
+-  typedef std::shared_ptr<UpstartWrapper> Ptr;
+-
+-  UpstartWrapper();
+-  ~UpstartWrapper();
+-
+-  void Emit(std::string const& name);
+-
+-protected:
+-  struct TestMode {};
+-  UpstartWrapper(TestMode const&);
+-
+-private:
+-  // Noncopyable
+-  UpstartWrapper(UpstartWrapper const&) = delete;
+-  UpstartWrapper& operator=(UpstartWrapper const&) = delete;
+-
+-  class Impl;
+-  std::unique_ptr<Impl> pimpl_;
+-};
+-
+-}
+-
+-#endif

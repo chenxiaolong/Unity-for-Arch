@@ -2,7 +2,7 @@
 
 pkgname=unity
 _actual_ver=7.1.2
-_extra_ver=+14.04.20131106.1
+_extra_ver=+14.04.20140311
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
@@ -12,7 +12,7 @@ pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'compiz-ubuntu' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux' 'unity-asset-pool' 'libxi' 'xpathselect' 'zeitgeist')
+depends=('bamf' 'boost' 'compiz-ubuntu>=0.9.11' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux>=4.0.6' 'unity-asset-pool' 'unity-scope-home' 'libxi' 'xpathselect' 'zeitgeist-ubuntu' 'lightdm-unity-greeter')
 makedepends=('cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
@@ -22,27 +22,31 @@ install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity.tar.gz"
-        "http://www.cmake.org/files/v2.8/cmake-2.8.11.2.tar.Z"
         '0001_Remove_gtest.patch'
         '0002_ArchLinux_Branding.patch'
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
         '0005_Disable_Werror.patch'
         '0008_Remove_Launchers.patch'
         '0010_The_future_is_systemd.patch'
+        '0011_Remove_social_scope.patch'
+        '0021_Revert_3603.patch'
+        'com.ubuntu.user-interface.gschema.xml'
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('7d3372e71e996b8e1d884094c1d36335f3517d60f2128ddfd18344551675e8180180a4c8991380ccac576e32cfba3af588ed577114eed37b59c1b1b9ef13e1df'
-            '64b7b9038275337612794eef767985e2400040f3b7f1b8aa479a22f1221e5db3bde0583bf1a576099392d8345541641b60fdfb850b2a26f1aeade7e448ca17ca'
+sha512sums=('8f9cb45b9a06130b47ffee5f1587de53807f764aad8d45e93ffbd4bca0ad586447c201d19d87090252c676d4debb9694904eab7dcd3b44d07dd89cdae39c3203'
+            '5276fd6b203f49611b31fb65d4dfa50b6e93a19a930de7484e6d5f95eea0870c442b1662af581b84aeb023d544cab47cb5a8494e2d7f81b83caa570195af7c6f'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
-            '9635203a44ae42c56168be95b6397668ad6fa4a521623f3a01fd61ae95d9b0be7719d78594ca843e2324393cfa9d48562dbbc3f9e2471a376e477940576c4ba0'
-            '56cf552168a57a585a178f11685ee3f9e20f9aca9efb80d9232d5081afce85e9c25c3aff6c640b69be56bbba4681afe6fa38cdcb038ac834a220946eac73a5fa'
-            '6fbfa03faadb23d7908bb1b9cc61a3bdfd5ff412b9a1104103aef7d60cd146ccd51b022b5a64bc1ece116d7f754e9d5372cf8fa790fb7f150a87d84b1dc616fb'
-            '22f6e6821fa1fc245c9e32ed04588a9a79f627d76687a2454f9b08274dbccbb096033c137ceceaebe737a83496d6376a12cb210db51916cdb101cda6988a92d8'
-            'c8dd88dacf16226e9b60141bf448af7b5234b04811b4d5aaee2d6d48eb008442ced3e3f7a12b4cb709af5c471ddca320d1b7612fa724704ae330179f15104dd3'
-            'fbfec0551ba0c569303dbbcdebb657a349802a000ca72343aa379614f610f6859985e0abd6b5dd89719d49c275542858966d3ae2b72379fbacbe8ef905e0e3ae'
-            '5e7721bac266e74a1b53cab21a6ff358747d5988dcedadfb49cea92e0f0fc77268d9e8e74e1eb97e3ef5b1087cb1f42a3e9f309807ccec42c23a81454369bc97'
+            '3be3303e6b6f023ca246b23c0293ce3987a070f74bf92d9ab07d2255f2254743078f4111007ef414a37b7368d86e80ae1350f2a956300a6ac5495f41bfd7878e'
+            'c3421eb14e6f6c94e53d5f14341c7f9e6a770a71f02b9dded97fe5d0ded9efa1e7c0fc1df90b0709d1bec5126df8be7469612689344eea616868e6541bec42fb'
+            'ed40106d1056fb341a2f3c309842a34b9544c1ce9b824bd915f7c4ef44355f25366405387c6bcaf07c1dc35668eeae6281a0b9880f8ee7c6aeaac424d9b04a85'
+            'f9bef454bce75006d4d1535647c6d606a1a8df1e59578b6bb248e4d331d97ce67e03f3266f112c1d9877061ebab5065f36e3b0bb5702266931302caa12343398'
+            '39a30336ffa64a2dff69b8e5a90cf86709229f106f4ff1ffa97e102c1a765bc4a03d2b2958a3232e6201edb51e3410276ab000289d307e6458123a37560caaba'
+            'ba36657f714a5fae7fa7e3012438bc951f7812093078245f1e5180daf1618502bbc46a63604032a165ad421c8e450f297155a986c2fe29895b96bdf3cb33114a'
+            'd910b32832602e6f9b6a3f2c2476b96593df0b745077468436a3c995a21c88c684cc9a190d93cee6051a8194dd637f35a387691bdb979a380b431ac6b00c4351'
+            'b5c1684a70285460ec6f658270463b3c0fdcd174233ead44ab158862fd7352696b5fd978b59b062596477d324e504cd341513ef982d90bf8ec75ec5bd4316b41'
+            '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
@@ -68,6 +72,11 @@ prepare() {
 
   patch -p1 -i "${srcdir}/0010_The_future_is_systemd.patch"
 
+  patch -p1 -i "${srcdir}/0011_Remove_social_scope.patch"
+
+  # Our glib isn't new enough
+  patch -p0 -i "${srcdir}/0021_Revert_3603.patch"
+
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
   for i in $(grep -v '#' debian/patches/series); do
@@ -92,13 +101,6 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/cmake-2.8.11.2"
-
-  ./bootstrap --prefix="${srcdir}/cmake"
-  make
-  make install
-  cp {/usr/share,"${srcdir}/cmake/share"}/cmake-2.8/Modules/FindCompiz.cmake
-
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # (From debian/rules) http://ccache.samba.org/manual.html#_precompiled_headers
@@ -116,8 +118,6 @@ build() {
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DUSE_GSETTINGS=TRUE \
     -Duse_pch=OFF \
-    `# Use our cmake` \
-    -DCMAKE_MODULE_PATH="${srcdir}/cmake/share/cmake-2.8/Modules:/usr/share/cmake-2.8/Modules" \
     ..
 
   make
@@ -181,6 +181,9 @@ package() {
   # Change window dragging key back to Alt. Super conflicts with Unity's other
   # hotkeys.
   install -m644 "${srcdir}/10_unity.gschema.override" \
+    "${pkgdir}/usr/share/glib-2.0/schemas/"
+
+  install -m644 "${srcdir}/com.ubuntu.user-interface.gschema.xml" \
     "${pkgdir}/usr/share/glib-2.0/schemas/"
 
   # unity-panel-service is now started by an Upstart user job. I'm not quite

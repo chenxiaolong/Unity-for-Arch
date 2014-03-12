@@ -1,0 +1,19 @@
+<schemalist gettext-domain="gsettings-ubuntu-touch-schemas">
+    <schema id="com.ubuntu.user-interface" path="/com/ubuntu/user-interface/">
+        <key name="scale-factor" type="a{si}">
+        <summary>Per monitor scale factor</summary>
+        <default>{}</default>
+        <description>
+        Per monitor scale factor for all user interface components.
+        The values are stored in a dictionary where the keys are IDs of monitors and the values are the scale factors.
+        The scale factors are not the traditional float scale factors that one might expect. Instead they are integers
+        that need to be divided by 8 before being used as regular scale factors.
+        That limits the number of possible scalings applied to the UI without jeopardizing flexibility (there is still 
+        enough possible scalings for all devices out there). This limiting allows for better testing since there is now
+        only a finite number of possible scalings.
+        The scale factor also maps directly to the grid units used in the Ubuntu UI Toolkit where one grid unit is 
+        exactly equal to 'scale factor' number of pixels.
+        </description>
+        </key>
+    </schema>
+</schemalist>

@@ -1,0 +1,55 @@
+=== modified file 'UnityCore/GnomeSessionManager.cpp'
+--- UnityCore/GnomeSessionManager.cpp	2013-11-29 19:04:38 +0000
++++ UnityCore/GnomeSessionManager.cpp	2013-03-20 15:13:40 +0000
+@@ -137,9 +137,7 @@
+ bool GnomeManager::Impl::InteractiveMode()
+ {
+   bool schema_found = false;
+-  gchar** schemas = nullptr;
+-
+-  g_settings_schema_source_list_schemas(g_settings_schema_source_get_default(), TRUE, &schemas, nullptr);
++  const gchar* const* schemas = g_settings_list_schemas();
+ 
+   for (unsigned i = 0; schemas[i]; ++i)
+   {
+@@ -150,8 +148,6 @@
+     }
+   }
+ 
+-  g_strfreev(schemas);
+-
+   if (!schema_found)
+     return true;
+ 
+
+=== modified file 'tests/test_gnome_session_manager.cpp'
+--- tests/test_gnome_session_manager.cpp	2013-11-29 19:04:38 +0000
++++ tests/test_gnome_session_manager.cpp	2013-07-09 16:44:12 +0000
+@@ -273,23 +273,15 @@
+ 
+   bool SettingsAvailable()
+   {
+-    bool available = false;
+-    gchar** schemas = nullptr;
+-
+-    g_settings_schema_source_list_schemas(g_settings_schema_source_get_default(), TRUE, &schemas, nullptr);
++    const gchar* const* schemas = g_settings_list_schemas();
+ 
+     for (unsigned i = 0; schemas[i]; ++i)
+     {
+       if (g_strcmp0(schemas[i], SESSION_OPTIONS.c_str()) == 0)
+-      {
+-        available = true;
+-        break;
+-      }
++        return true;
+     }
+ 
+-    g_strfreev(schemas);
+-
+-    return available;
++    return false;
+   }
+ 
+   void EnableInteractiveShutdown(bool enable)
+
