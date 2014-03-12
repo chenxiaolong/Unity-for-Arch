@@ -1,0 +1,17 @@
+--- a/debian/guest-account
++++ b/debian/guest-account
+@@ -115,6 +115,14 @@
+       . /etc/guest-session/prefs.sh
+   fi
+ 
++  # Load default dconf settings
++  if [ -d /etc/guest-session/gsettings/ ]; then
++    for i in /etc/guest-session/gsettings/*; do
++      cat "${i}" | sed '/^\[.*\]$/ s/\./\//g' | \
++        su - $USER -c 'dbus-launch dconf load /'
++    done
++  fi
++
+   echo $USER  
+ }
+ 

@@ -1,0 +1,172 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+# This package no longer depends on a specific toolkit. It will build the GTK and
+# Qt libraries and recommend the installation of those respective tookits using
+# optdepends.
+
+pkgname=lightdm-ubuntu
+_ubuntu_rel=0ubuntu1
+pkgver=1.9.5
+pkgrel=2
+pkgdesc="A lightweight display manager"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/lightdm"
+# Libraries are LGPLv3+, everything else is GPLv3+
+license=('GPL3' 'LGPL3')
+groups=('unity-extra')
+# Is dbus-glib still needed or is debian/control out of date?
+depends=('libgcrypt' 'libxcb' 'libxdmcp' 'libxklavier')
+# Useful dependencies, but not required
+#depends=('gnome-themes-standard' 'gnome-backgrounds' 'gnome-icon-theme' 'webkitgtk3')
+makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'gtk3' 'intltool' 'qt4' 'qt5-base' 'yelp-tools')
+optdepends=('accountsservice: DBus interface for querying user information'
+            'gnome-keyring: For pam_gnome_keyring.so in the greeter PAM config'
+            'gtk3: For using the GTK greeter'
+            'lightdm-unity-greeter: Default Ubuntu 13.04 Greeter'
+            'qt4: To use the qt4 version of liblightdm-qt'
+            'qt5-base: To use the qt5 version of liblightdm-qt')
+provides=("lightdm=${pkgver}" "liblightdm-qt4=${pkgver}")
+conflicts=('lightdm' 'liblightdm-qt4')
+options=('!libtool' 'emptydirs')
+backup=('etc/apparmor.d/lightdm-guest-session'
+        'etc/lightdm/keys.conf'
+        'etc/lightdm/lightdm.conf'
+        'etc/lightdm/lightdm-gtk-greeter.conf'
+        'etc/lightdm/lightdm-gtk-greeter-ubuntu.conf'
+        'etc/lightdm/users.conf')
+install=lightdm.install
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"
+        'lightdm.service'
+        'lightdm-gtk-greeter.conf'
+        'lightdm.tmpfiles.d'
+        'lightdm.pam'
+        'lightdm-autologin.pam'
+        'lightdm-greeter.pam'
+        'lightdm.rules'
+        'guest-session-cross-distro.patch'
+        'guest-session-add-default-gsettings-support.patch')
+sha512sums=('2b7a5b2144afba98fee4f24159b66b7372047a5ca753e5113504a03a31f5196ebe7a8c87dbe456c3e706384cd68ba7722be25f588c048e5ea000267b503474f0'
+            '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
+            'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
+            '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
+            '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df'
+            '6f59d97515b37d53fb4f56de0f65994710e02c197c6d4c096aa7cdb9fe518d29223960018ae4ad8003056fed3210f47f3aa459c85b8efca80089f2046196892c'
+            '3b482f7e551df20a5c5d9331a420275d1dad5bb6aad287247baea82dc40dc31dca22db4da180fbb950865e37cf94f1737fa1ee7ec2f5233540f82f2f570a408b'
+            '8d6aa12c4d129c25e56ecf2904db4e294d46631d11bd8bec2f20a76c871ba758094abb24616d3d2038a684fbb736ee61d1f80697d525d62c4dc68113e101194f'
+            '87746c43533aad896d0f96d7a1f66d8398ad97630c0536ce06d5634ef2777244a12c3e36195ea15e4fbfda1edb2cf057e137bf5bd1e7fc2cc4753d78aa8b1bd0'
+            '5cea267ed840de67bee3688a3ed7346052da097ac45f3052a9123848af82885df7acd0f986cab3c979fe3a2af93128fe6d02776535b62ce8583f6f861ec1c988')
+
+prepare() {
+  cd "${srcdir}/lightdm-${pkgver}"
+
+  # Apply Ubuntu patches
+
+  # Disable patches
+    # Do not use Ubuntu's language-tools
+      sed -i '/04_language_handling.patch/d' debian/patches/series
+
+  for i in $(grep -v '#' debian/patches/series); do
+    patch -p1 -i "debian/patches/${i}"
+  done
+
+  # Do not depend on Debian/Ubuntu specific adduser package
+  patch -p1 -i "${srcdir}"/guest-session-cross-distro.patch
+
+  # Add support for settings GSettings/dconf defaults in the guest session. Just
+  # put the files in /etc/guest-session/gsettings/. The file format is the same
+  # as the regular GSettings override files.
+  patch -p1 -i "${srcdir}"/guest-session-add-default-gsettings-support.patch
+}
+
+build() {
+  cd "${srcdir}/lightdm-${pkgver}"
+
+  export MOC4=moc-qt4
+  export MOC5=moc-qt5
+
+  gtkdocize
+  aclocal --install --force
+  autoreconf -vfi
+  intltoolize -f
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --sbindir=/usr/bin \
+    --disable-static \
+    --libexecdir=/usr/lib/lightdm \
+    --localstatedir=/var \
+    --with-user-session=ubuntu \
+    --with-greeter-user=lightdm
+
+  make
+}
+
+check() {
+  # Tests require LightDM to be installed
+  return 0
+}
+
+package() {
+  cd "${srcdir}/lightdm-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+
+  install -dm755 "${pkgdir}/usr/lib/systemd/system/"
+
+  # Additional LightDM configuration files
+  install -dm755 "${pkgdir}"/etc/lightdm/lightdm.conf.d/
+  install -m644 debian/50-{xserver-command,greeter-wrapper,guest-wrapper}.conf \
+                "${pkgdir}"/etc/lightdm/lightdm.conf.d/
+
+  # Install PAM service
+  install -dm755  "${pkgdir}"/etc/pam.d/
+  install -m644 "${srcdir}"/lightdm.pam "${pkgdir}"/etc/pam.d/lightdm
+  install -m644 "${srcdir}"/lightdm-autologin.pam \
+                "${pkgdir}"/etc/pam.d/lightdm-autologin
+  install -m644 "${srcdir}"/lightdm-greeter.pam \
+                "${pkgdir}"/etc/pam.d/lightdm-greeter
+
+  # Install configuration files
+  install -dm755 "${pkgdir}"/usr/share/doc/lightdm/
+  install -m644 "${pkgdir}"/etc/lightdm/lightdm.conf \
+                "${pkgdir}"/usr/share/doc/lightdm/
+  install -m644 "${pkgdir}"/etc/lightdm/keys.conf \
+                "${pkgdir}"/usr/share/doc/lightdm/
+  install -m644 "${srcdir}"/lightdm-gtk-greeter.conf "${pkgdir}"/etc/lightdm/
+
+  # Install binaries and scripts
+  install -dm755 "${pkgdir}"/usr/bin/
+  install -m755 debian/guest-account "${pkgdir}"/usr/bin/
+  install -m755 debian/lightdm-session "${pkgdir}"/usr/bin/
+  install -m755 debian/lightdm-greeter-session "${pkgdir}"/usr/lib/lightdm/
+  chmod +x "${pkgdir}"/usr/lib/lightdm/lightdm-greeter-session
+
+  # Install systemd service
+  install -m644 "${srcdir}"/lightdm.service "${pkgdir}"/usr/lib/systemd/system/
+
+  # Install systemd tmpfiles.d file
+  install -dm755 "${pkgdir}"/usr/lib/tmpfiles.d/
+  install -m644 "${srcdir}"/lightdm.tmpfiles.d \
+                "${pkgdir}"/usr/lib/tmpfiles.d/lightdm.conf
+
+  # Install PolicyKit rules from Fedora which allow the lightdm user to access
+  # the systemd-logind, consolekit, and upower DBus interfaces
+  install -dm700 "${pkgdir}"/usr/share/polkit-1/rules.d/
+  install -m644 "${srcdir}"/lightdm.rules \
+                "${pkgdir}"/usr/share/polkit-1/rules.d/
+
+  # Configuration settings that differ from Ubuntu
+  sed -i \
+    -e 's/^\(minimum-uid=\).*$/\11000/g' \
+    -e 's@/usr\(/sbin/nologin\)$@\1@g' \
+    "${pkgdir}"/etc/lightdm/users.conf
+
+  # Configuration files specific to Ubuntu
+  rm -rvf "${pkgdir}"/etc/init/
+
+  # Create GSettings defaults directory
+  install -dm755 "${pkgdir}"/etc/guest-session/gsettings/
+
+  # Remove apparmor stuff
+  rm -rvf "${pkgdir}"/etc/apparmor.d/
+}
