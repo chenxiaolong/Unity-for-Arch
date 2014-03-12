@@ -24,7 +24,7 @@ Order to compile/install:
 16: bamf                           -> Application matching framework
 17: sni-qt                         -> Turns Qt tray icons into appindicators
 18: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-19: unity-settings-daemon          -> Daemon handling the Unity session settings
+19: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 20: gnome-session-ubuntu           -> GNOME Session Manager
 21: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
 22: unity-control-center           -> Utilities to configure the Unity desktop
