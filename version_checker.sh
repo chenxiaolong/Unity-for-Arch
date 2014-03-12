@@ -31,7 +31,7 @@ get_launchpad_version() {
     TARBALL=${2}
   fi
   wget -q -O - "https://launchpad.net/${PACKAGE}/+download" | \
-    sed -n "s/.*${TARBALL}[-_]\+\(.*\)\.tar.*/\1/p" | head -n 1
+    sed -rn "s/.*${TARBALL}[-_]+(.*)\.tar.*/\1/p" | head -n 1
 }
 
 get_pypi_version() {
@@ -40,7 +40,7 @@ get_pypi_version() {
     exit 1
   fi
   wget -q -O - "http://pypi.python.org/pypi/${1}" | \
-    sed -n "s/.*>${1}-\(.*\)\.\(tar\.\|zip\).*<.*/\1/p" | head -n 1
+    sed -rn "s/.*>${1}-(.*)\.(tar\.|zip).*<.*/\1/p" | head -n 1
 }
 
 get_gnome_version() {
@@ -53,7 +53,7 @@ get_gnome_version() {
     exit 1
   fi
   wget -q -O - "http://ftp.gnome.org/pub/GNOME/sources/${1}/${2}/" | \
-    sed -n 's/.*>LATEST-IS-\(.*\)<.*/\1/p'
+    sed -rn 's/.*>LATEST-IS-(.*)<.*/\1/p'
 }
 
 get_archlinux_version() {
@@ -70,7 +70,7 @@ get_archlinux_version() {
     exit 1
   fi
   wget -q -O - "https://www.archlinux.org/packages/${2}/${3}/${1}/" | \
-    sed -n "/<title>/ s/^.*${1}\ \(.*\)-\(.*\)\ (.*$/\1 \2/p"
+    sed -rn "/<title>/ s/^.*${1}\ (.*)-(.*)\ (.*)$/\1 \2/p"
 }
 
 get_xorg_version() {
@@ -83,7 +83,7 @@ get_xorg_version() {
     exit 1
   fi
   wget -q -O - "http://xorg.freedesktop.org/releases/individual/${2}/" |
-    sed -n "s/.*${1}-\(.*\)\.tar.*/\1/p" | tail -n 1
+    sed -rn "s/.*${1}-(.*)\.tar.*/\1/p" | tail -n 1
 }
 
 get_ppa_version() {
@@ -97,20 +97,25 @@ get_ppa_version() {
   fi
   if [ "x${3}" == "xnative" ]; then
     wget -q -O - \
-      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
-      sed -n "s/.*>${1}_\(.*\)-\(.*\)\.tar\.[a-z\.]\+<.*/\1 \2/p" | \
+      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/?C=M;O=A" | \
+      sed -rn "s/.*>${1}_(.*)-(.*)\.tar\.[a-z\.]+<.*/\1 \2/p" | \
+      tail -n 1
+  elif [ "x${3}" == "xnorel" ]; then
+    wget -q -O - \
+      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/?C=M;O=A" | \
+      sed -rn "s/.*>${1}_(.*)\.(debian|diff)\.[a-z\.]+<.*/\1/p" | \
       tail -n 1
   else
     wget -q -O - \
-      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/" | \
-      sed -n "s/.*>${1}_\(.*\)-\(.*\)\.\(debian\|diff\)\.[a-z\.]\+<.*/\1 \2/p" | \
+      "http://ppa.launchpad.net/${2/#ppa:/}/ubuntu/pool/main/${1:0:1}/${1}/?C=M;O=A" | \
+      sed -rn "s/.*>${1}_(.*)-(.*)\.(debian|diff)\.[a-z\.]+<.*/\1 \2/p" | \
       tail -n 1
   fi
 }
 
 get_qt4_version() {
   wget -q -O - 'http://releases.qt-project.org/qt4/source/' | \
-    sed -n 's/.*>\ qt-everywhere-opensource-src-\(.*\)\.tar\.gz<.*/\1/p' | \
+    sed -rn 's/.*>\ qt-everywhere-opensource-src-(.*)\.tar\.gz<.*/\1/p' | \
     tail -n 1
 }
 
@@ -120,7 +125,7 @@ get_freedesktop_version() {
     exit 1
   fi
   wget -q -O - "http://cgit.freedesktop.org/${1}/" | \
-    sed -n "s/.*>${1}-\(.*\)\.tar\.gz<.*/\1/p" | head -n 1
+    sed -rn "s/.*>${1}-(.*)\.tar\.gz<.*/\1/p" | head -n 1
 }
 
 get_googlecode_version() {
@@ -134,5 +139,5 @@ get_googlecode_version() {
     TARBALL=${2}
   fi
   wget -q -O - "https://code.google.com/p/${PACKAGE}/downloads/list" | \
-    sed -n "s/.*${TARBALL}-\(.*\)\.\(tar\.\|zip\).*/\1/p" | head -n 1
+    sed -rn "s/.*${TARBALL}-(.*)\.(tar\.|zip).*/\1/p" | head -n 1
 }
