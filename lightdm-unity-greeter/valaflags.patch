@@ -1,0 +1,15 @@
+Patch by ecopunk so fix FTBFS on some systems with vala-0.16
+diff -Nru unity-greeter-0.2.7.orig/src/Makefile.am unity-greeter-0.2.7/src/Makefile.am
+--- unity-greeter-0.2.7.orig/src/Makefile.am	2012-04-11 12:44:15.727864342 -0400
++++ unity-greeter-0.2.7/src/Makefile.am	2012-04-11 12:45:17.280646643 -0400
+@@ -34,6 +34,10 @@
+ 	-DINDICATORDIR=\""$(INDICATORDIR)"\"
+ 
+ unity_greeter_VALAFLAGS = \
++	--vapidir . \
++	--pkg config \
++	--pkg fixes \
++	--pkg indicator \
+ 	--pkg posix \
+ 	--pkg gtk+-3.0 \
+ 	--pkg gdk-x11-3.0 \

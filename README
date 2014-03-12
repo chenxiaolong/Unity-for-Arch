@@ -64,7 +64,8 @@ Order to compile/install:
 56: xpathselect                    -> Select tree objects using XPath queries
 57: cairo-ubuntu                   -> Cairo vector graphics library
 58: lightdm-ubuntu                 -> Cross-desktop lightweight display manager
-59: unity                          -> Desktop shell designed for efficiency
+59: lightdm-unity-greeter          -> The LightDM greeter for Unity
+60: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
