@@ -3,10 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-session-ubuntu
-_ppa_rel=0ubuntu1~saucy1
-_translations=20130418
+_ubuntu='3.9.90-0ubuntu11'
 pkgver=3.10.1
-pkgrel=101
+pkgrel=102
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -19,15 +18,19 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-session/gnome-session_${pkgver}-${_ppa_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-session.tar.gz"
-        '55gnome-session_gnomerc'
+        '13_display_session_properties.patch'
+        '50_ubuntu_sessions.patch'
+        '52_xdg_current_desktop.patch'
+        '95_dbus_request_shutdown.patch'
+        '103_kill_the_fail_whale.patch'
         'timeout.patch'
         'polkit-gnome-authentication-agent-1-unity.desktop')
 sha512sums=('a17fdd1943c118f025a740b22de1f5840a2f8a1a9fc7f8a2720deccf69097391c2d05e6115416c40c5530de60326f6bd729444dd7a3b2aeff115fe547ad94d8f'
-            '03eb5e682cb13fbc74d8ef72bb91face48280ef55f4d4f52fdcd1439f8456c38d9e756fac408d62f696a2278abcd63e16b1b7872307178a084cabd5d9b634886'
-            'f65eb708d47ab132068834ff150219702b871f8ebbb5c308e52d6fbc5aa49fbe2e10dbf32e54674ffc2ee853d0248f01118f6692cba47b1d7b787abfbdbda75f'
-            '9246e9bcb25493d169064a11cd0609c565e7173464fb594c8feee281c196127af604a8f2b3b8d07edb82ea35bfd3bc5b586719676ec868ee25c102039cb5415a'
+            '6fb00ce71033d594612e5862b62e0f56017244311113cdab1bf56da96f8749261d247cea76915718d983572a043b2e4d3c06742be39d45039aa404b71207a274'
+            '8d34918523c8ab749d3f13e58783bcede05ad319b3035c9abe7c3e69202cd55d3ca6602e8779ae6ba8b62f88612f4280f52ff17f141ee23e273f8381524ff06f'
+            '538a2cbeb99fa76ce951339216cd37e0294d3f3420f4fdb808c344b16de491a9407e9ea26875e05b56ad6d9eeda598ce0e92d5aa2bf930a48a1e4861f9770f0a'
+            'bc9be93af5e57b6fff7ccfe0f69e9023be335f0d8c5a9dabdfa82201b56fa722cb67d05a3144824f7de6d521fd50d2c99e13a59ac67f8d3bf25496843b0740d5'
+            '47727fa3d2bde5b633c395ca14c93864913ec78c3e83c97c3bdc5880747cfa547004a38f96f3c33dbb29e51aa659382871f034be04065ad216303d9d8574bfeb'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af')
 
@@ -37,29 +40,11 @@ prepare() {
   # Increase timeout, for slow machines
   patch -p1 -i "${srcdir}/timeout.patch"
 
-  # Disable patches
-    # We're not Ubuntu, do not hide stuff
-      sed -i '/20_hide_nodisplay.patch/d' "${srcdir}/debian/patches/series"
-    # Arch Linux does not have sessionmigration
-      sed -i '/53_add_sessionmigration.patch/d' "${srcdir}/debian/patches/series"
-
-  # Fix patches
-    # Change session name to 'Unity'
-      sed -i 's/+_Name=Ubuntu/+_Name=Unity/g' "${srcdir}/debian/patches/50_ubuntu_sessions.patch"
-
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    msg "Applying patch ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
-  done
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/gnome-session-3.0-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
+  patch -p1 -i "${srcdir}/13_display_session_properties.patch"
+  patch -p1 -i "${srcdir}/50_ubuntu_sessions.patch"
+  patch -p1 -i "${srcdir}/52_xdg_current_desktop.patch"
+  #patch -p1 -i "${srcdir}/95_dbus_request_shutdown.patch"
+  patch -p1 -i "${srcdir}/103_kill_the_fail_whale.patch"
 }
 
 build() {
@@ -83,12 +68,6 @@ package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 
-  # Install Ubuntu files
-  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  #install -m755 "${srcdir}/debian/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  # Install my version of the script (more platform-agnostic)
-  install -m755 "${srcdir}/55gnome-session_gnomerc" "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-
   # symlink session files so that KDM can find them
   install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
   ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
@@ -96,9 +75,6 @@ package() {
   install -dm755 "${pkgdir}/etc/xdg/autostart/"
   install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
     "${pkgdir}/etc/xdg/autostart/"
-
-  sed -i 's/gnome-settings-daemon/unity-settings-daemon/g' \
-    "${pkgdir}/usr/share/gnome-session/sessions/ubuntu.session"
 }
 
 # vim:set ts=2 sw=2 et:

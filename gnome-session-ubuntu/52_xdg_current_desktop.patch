@@ -1,0 +1,46 @@
+Index: gnome-session-3.7.4/gnome-session/gsm-session-fill.c
+===================================================================
+--- gnome-session-3.7.4.orig/gnome-session/gsm-session-fill.c	2013-02-07 18:04:28.954708097 -0500
++++ gnome-session-3.7.4/gnome-session/gsm-session-fill.c	2013-02-07 18:04:28.946708097 -0500
+@@ -31,6 +31,7 @@
+ #define GSM_KEYFILE_SESSION_GROUP "GNOME Session"
+ #define GSM_KEYFILE_RUNNABLE_KEY "IsRunnableHelper"
+ #define GSM_KEYFILE_FALLBACK_KEY "FallbackSession"
++#define GSM_KEYFILE_DESKTOP_NAME_KEY "DesktopName"
+ #define GSM_KEYFILE_REQUIRED_COMPONENTS_KEY "RequiredComponents"
+ 
+ /* See https://bugzilla.gnome.org/show_bug.cgi?id=641992 for discussion */
+@@ -315,6 +316,24 @@
+         return keyfile;
+ }
+ 
++static void
++set_xdg_current_desktop (GKeyFile *keyfile)
++{
++        char     *value;
++
++        value = g_key_file_get_string (keyfile,
++                                       GSM_KEYFILE_SESSION_GROUP, GSM_KEYFILE_DESKTOP_NAME_KEY,
++                                       NULL);
++
++        if (!IS_STRING_EMPTY (value)) {
++                gsm_util_setenv ("XDG_CURRENT_DESKTOP", value);
++        }
++        else {
++                gsm_util_setenv ("XDG_CURRENT_DESKTOP", "GNOME");
++        }
++        g_free (value);
++}
++
+ gboolean
+ gsm_session_fill (GsmManager  *manager,
+                   const char  *session)
+@@ -332,6 +351,8 @@
+ 
+         g_free (actual_session);
+ 
++        set_xdg_current_desktop (keyfile);
++
+         load_standard_apps (manager, keyfile);
+ 
+         g_key_file_free (keyfile);
