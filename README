@@ -62,6 +62,7 @@ Order to compile/install:
 54: unity-scopes                   -> Unity Smart Scopes
 55: compiz-ubuntu                  -> Compiz compositing window manager
 56: xpathselect                    -> Select tree objects using XPath queries
+57: cairo-ubuntu                   -> Cairo vector graphics library
 57: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
