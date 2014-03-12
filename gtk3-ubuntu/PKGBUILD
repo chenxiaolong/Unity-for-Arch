@@ -2,9 +2,9 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu3
+_ubuntu_rel=0ubuntu4
 pkgver=3.10.7
-pkgrel=101
+pkgrel=102
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -20,7 +20,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('cb138b468b8ea159b2fe7888500f08665cf54a66a042bf507539f4d8791e4dde074a98a87f6c6a36094d3996eb300f4a70b4fc9604709f9af6f7ebfb73efe3b7'
-            '56efa3294677862430b5e8e2d4df012a4f0bb118520431d7f81a868707401ea887f27cc2e5888c00060521a7fe0b2b0a6eafe7a924cfbcd3fea8842c29e87a32'
+            '9c5ef32ecfae8a2c97d9e7b81ddb140c48c4024aa9c2e52c3073570e570c14bbcd1a22d0d6cad460533b71ca383761b4dcdd5ae54750120b85c470737a1afcec'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -41,6 +41,8 @@ prepare() {
         echo 'git_print_replace_button.patch' >> "${srcdir}/debian/patches/series"
       # Fix visibility of tabs in print dialog
         echo 'git_print_tab_visiblity.patch' >> "${srcdir}/debian/patches/series"
+      # Upstream fixes
+        echo 'git_popup_menu_shift.patch' >> "${srcdir}/debian/patches/series"
       # Other
         echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
         echo 'git_menu_separator_style.patch' >> "${srcdir}/debian/patches/series"
