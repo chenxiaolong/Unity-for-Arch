@@ -1,6 +1,6 @@
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -54,6 +54,13 @@
+@@ -81,6 +81,13 @@
        <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
      </key>
    </schema>
@@ -24,7 +24,7 @@
 -
  #include "PanelTray.h"
  #include "unity-shared/PanelStyle.h"
- 
+ #include "unity-shared/UnitySettings.h"
 @@ -30,7 +28,6 @@
  {
  const std::string SETTINGS_NAME = "com.canonical.Unity.Panel";
@@ -33,15 +33,16 @@
  }
  
  namespace unity
-@@ -38,10 +35,17 @@
+@@ -38,11 +35,18 @@
  
- PanelTray::PanelTray()
+ PanelTray::PanelTray(int monitor)
    : View(NUX_TRACKER_LOCATION)
 +  , settings_(g_settings_new(SETTINGS_NAME.c_str()))
    , window_(gtk_window_new(GTK_WINDOW_TOPLEVEL))
 +  , whitelist_(g_settings_get_strv(settings_, "systray-whitelist"))
+   , monitor_(monitor)
  {
-   int panel_height = panel::Style::Instance().panel_height;
+   int panel_height = panel::Style::Instance().PanelHeight(monitor_);
  
 +  whitelist_changed_.Connect(settings_, "changed::systray-whitelist", [&] (GSettings*, gchar*) {
 +    g_strfreev(whitelist_);
@@ -51,7 +52,7 @@
    auto gtkwindow = glib::object_cast<GtkWindow>(window_);
    gtk_window_set_type_hint(gtkwindow, GDK_WINDOW_TYPE_HINT_DOCK);
    gtk_window_set_has_resize_grip(gtkwindow, FALSE);
-@@ -77,6 +81,8 @@
+@@ -78,6 +82,8 @@
  
  PanelTray::~PanelTray()
  {
@@ -60,7 +61,7 @@
    if (gtk_widget_get_realized(window_))
    {
      // We call Release since we're deleting the window here manually,
-@@ -127,13 +133,38 @@
+@@ -128,13 +134,38 @@
  
  gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTray* self)
  {
@@ -100,7 +101,7 @@
  
    if (accept)
    {
-@@ -152,15 +183,6 @@
+@@ -153,15 +184,6 @@
    return accept ? TRUE : FALSE;
  }
  
@@ -140,14 +141,14 @@
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -258,7 +258,6 @@
-                  test_panel_indicators_view.cpp
+@@ -249,7 +249,6 @@
                   test_panel_menu_view.cpp
+                  test_panel_service.cpp
                   test_panel_style.cpp
 -                 test_panel_tray.cpp
                   test_panel_view.cpp
                   test_places_group.cpp
-                  test_previews_application.cpp
+                  test_preview_player.cpp
 --- a/tests/test_panel_tray.cpp
 +++ b/tests/test_panel_tray.cpp
 @@ -1,65 +0,0 @@

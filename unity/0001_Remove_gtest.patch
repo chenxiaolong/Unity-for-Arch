@@ -1,7 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -270,56 +270,7 @@
- 
+@@ -277,56 +277,7 @@
  # subdirs
  add_subdirectory(doc)
  

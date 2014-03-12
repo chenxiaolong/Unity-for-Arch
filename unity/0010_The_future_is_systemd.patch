@@ -30,7 +30,7 @@
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -81,8 +77,6 @@
+@@ -82,8 +78,6 @@
  
    IndicatorObjectEntry *pressed_entry;
    gboolean use_event;
@@ -39,7 +39,7 @@
  };
  
  /* Globals */
-@@ -149,22 +143,6 @@
+@@ -150,22 +144,6 @@
    g_idle_remove_by_data (self);
    gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
  
@@ -59,10 +59,10 @@
 -      priv->upstart = NULL;
 -    }
 -
-   if (GTK_IS_WIDGET (priv->menubar) &&
-       gtk_widget_get_realized (GTK_WIDGET (priv->menubar)))
+   if (GTK_IS_WIDGET (priv->last_menu) &&
+       gtk_widget_get_realized (GTK_WIDGET (priv->last_menu)))
      {
-@@ -546,24 +524,6 @@
+@@ -583,24 +561,6 @@
    return FALSE;
  }
  
@@ -87,7 +87,7 @@
  static void
  update_keybinding (GSettings *settings, const gchar *key, gpointer data)
  {
-@@ -679,29 +639,6 @@
+@@ -712,29 +672,6 @@
    update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
    update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
    update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
@@ -117,7 +117,7 @@
  }
  
  static gboolean
-@@ -844,7 +781,6 @@
+@@ -877,7 +814,6 @@
    suppress_signals = FALSE;
  
    g_idle_add ((GSourceFunc)initial_resync, self);
@@ -148,7 +148,7 @@
 -exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -36,7 +36,7 @@
+@@ -8,7 +8,7 @@
  #
  # Unit tests
  #

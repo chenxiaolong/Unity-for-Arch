@@ -40,7 +40,7 @@ Order to compile/install:
 32: indicator-sound                -> Indicator displaying a unified sound menu
 33: gsettings-qt                   -> Library to access GSettings from Qt
 34: dee-qt                         -> Qt5 bindings for dee
-35: libdbusmenu-qt                 -> Qt5 implementation of the DBusMenu protocol
+35: libdbusmenu-qt5                -> Qt5 implementation of the DBusMenu protocol
 36: hud                            -> Backend for the Unity HUD
 37: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
 38: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3

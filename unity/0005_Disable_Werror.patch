@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -193,7 +193,7 @@
+@@ -196,7 +196,7 @@
      SET (BOOT_LOGGER_FLAG "-DENABLE_LOGGER")
  endif (BOOT_LOGGER)
  
@@ -11,7 +11,7 @@
  if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
-@@ -33,7 +33,7 @@
+@@ -38,7 +38,7 @@
  set(CFLAGS
      ${SERVICE_DEPS_CFLAGS}
      ${SERVICE_DEPS_CFLAGS_OTHER}

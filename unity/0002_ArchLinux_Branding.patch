@@ -1,17 +1,17 @@
 --- a/panel/PanelMenuView.cpp
 +++ b/panel/PanelMenuView.cpp
-@@ -73,7 +73,7 @@
-   , new_app_menu_shown_(false)
-   , monitor_(0)
+@@ -74,7 +74,7 @@
+   , ignore_menu_visibility_(false)
+   , integrated_menus_(decoration::Style::Get()->integrated_menus())
    , active_xid_(0)
 -  , desktop_name_(_("Ubuntu Desktop"))
 +  , desktop_name_(_("Arch Linux Desktop"))
-   , menus_fadein_(DEFAULT_MENUS_FADEIN)
-   , menus_fadeout_(DEFAULT_MENUS_FADEOUT)
-   , menus_discovery_(DEFAULT_MENUS_DISCOVERY)
+ {
+ 
+   BamfWindow* active_win = bamf_matcher_get_active_window(matcher_);
 --- a/tests/autopilot/unity/tests/launcher/test_keynav.py
 +++ b/tests/autopilot/unity/tests/launcher/test_keynav.py
-@@ -151,7 +151,7 @@
+@@ -152,7 +152,7 @@
          self.launcher_instance.key_nav_activate()
          self.addCleanup(self.keybinding, "expo/cancel")
  
