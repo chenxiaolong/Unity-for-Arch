@@ -39,7 +39,7 @@ Ubuntu specific adduser package.
          umount "$HOME"
          rm -rf "$HOME"
          exit 1
-@@ -107,10 +126,15 @@
+@@ -111,10 +130,15 @@
      echo "Error: invalid user $USER"
      exit 1
    }
@@ -57,12 +57,24 @@ Ubuntu specific adduser package.
      echo "Error: user $USER is not a system user."
      exit 1
    fi
-@@ -130,9 +154,10 @@
+@@ -134,17 +158,18 @@
    rm -rf "$HOME"
  
    # remove leftovers in /tmp
 -  find /tmp -mindepth 1 -maxdepth 1 -uid "$UID" -print0 | xargs -0 rm -rf || true
 +  find /tmp -mindepth 1 -maxdepth 1 -uid "$USERUID" -print0 | xargs -0 rm -rf || true
+ 
+-  # remove possible /media/guest-XXXXXX folder
+-  if [ -d /media/"$USER" ]; then
+-    for dir in $( find /media/"$USER" -mindepth 1 -maxdepth 1 ); do
++  # remove possible /run/media/guest-XXXXXX folder
++  if [ -d /run/media/"$USER" ]; then
++    for dir in $( find /run/media/"$USER" -mindepth 1 -maxdepth 1 ); do
+       umount "$dir" || true
+     done
+-    rmdir /media/"$USER" || true
++    rmdir /run/media/"$USER" || true
+   fi
  
 -  deluser --system "$USER"
 +  #deluser --system "$USER"

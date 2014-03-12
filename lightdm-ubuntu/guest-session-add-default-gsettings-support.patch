@@ -1,6 +1,6 @@
 --- a/debian/guest-account
 +++ b/debian/guest-account
-@@ -115,6 +115,14 @@
+@@ -117,6 +117,14 @@
        . /etc/guest-session/prefs.sh
    fi
  
@@ -12,6 +12,6 @@
 +    done
 +  fi
 +
-   echo $USER  
- }
+   chown -R $USER:$USER "$HOME"
  
+   echo $USER  

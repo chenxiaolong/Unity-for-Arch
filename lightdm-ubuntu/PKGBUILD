@@ -6,8 +6,8 @@
 
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=1.9.5
-pkgrel=2
+pkgver=1.9.9
+pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/lightdm"
@@ -44,8 +44,9 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         'lightdm-greeter.pam'
         'lightdm.rules'
         'guest-session-cross-distro.patch'
-        'guest-session-add-default-gsettings-support.patch')
-sha512sums=('2b7a5b2144afba98fee4f24159b66b7372047a5ca753e5113504a03a31f5196ebe7a8c87dbe456c3e706384cd68ba7722be25f588c048e5ea000267b503474f0'
+        'guest-session-add-default-gsettings-support.patch'
+        'g_hash_table_get_keys_as_array.patch')
+sha512sums=('3a4ddc9028365ee4302ddef867ea2ccd0185c9d399e34ad96e2ca7424f29e348f33045faffec63997bd01891784b8455a0615c9d6b82e766a0cc8dc647cfba34'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -53,8 +54,9 @@ sha512sums=('2b7a5b2144afba98fee4f24159b66b7372047a5ca753e5113504a03a31f5196ebe7
             '6f59d97515b37d53fb4f56de0f65994710e02c197c6d4c096aa7cdb9fe518d29223960018ae4ad8003056fed3210f47f3aa459c85b8efca80089f2046196892c'
             '3b482f7e551df20a5c5d9331a420275d1dad5bb6aad287247baea82dc40dc31dca22db4da180fbb950865e37cf94f1737fa1ee7ec2f5233540f82f2f570a408b'
             '8d6aa12c4d129c25e56ecf2904db4e294d46631d11bd8bec2f20a76c871ba758094abb24616d3d2038a684fbb736ee61d1f80697d525d62c4dc68113e101194f'
-            '87746c43533aad896d0f96d7a1f66d8398ad97630c0536ce06d5634ef2777244a12c3e36195ea15e4fbfda1edb2cf057e137bf5bd1e7fc2cc4753d78aa8b1bd0'
-            '5cea267ed840de67bee3688a3ed7346052da097ac45f3052a9123848af82885df7acd0f986cab3c979fe3a2af93128fe6d02776535b62ce8583f6f861ec1c988')
+            '119904e533bfcbc72a69695907d2c7bef7a68ad24072aa284f414eb2bfa7a6b0b6d4bef7d3aea006bac6f9ce1d11077934126775eacb4448094c7db0e6e18473'
+            'b0e171f38320681618d5607b0d34be7ccb738f113a82a8a6e2fff00f6bdd71c9bb45e5109cf8fb4cbd4ac3af8d72a5f37df7cc9d988c8fd1af1a952c57a801c9'
+            'ad872e6ee52276bc7336ce2ad6b9691565e5867bd167597ebbd5f9f4c7cfd150b989ebf43c5649dd184f3f7e92b62b43cbf440c19faaf117df9fee36ae61fdac')
 
 prepare() {
   cd "${srcdir}/lightdm-${pkgver}"
@@ -76,6 +78,9 @@ prepare() {
   # put the files in /etc/guest-session/gsettings/. The file format is the same
   # as the regular GSettings override files.
   patch -p1 -i "${srcdir}"/guest-session-add-default-gsettings-support.patch
+
+  # Copy g_hash_table_get_keys_as_array() from GLib 2.40
+  patch -p1 -i "${srcdir}"/g_hash_table_get_keys_as_array.patch
 }
 
 build() {
@@ -100,11 +105,6 @@ build() {
     --with-greeter-user=lightdm
 
   make
-}
-
-check() {
-  # Tests require LightDM to be installed
-  return 0
 }
 
 package() {
