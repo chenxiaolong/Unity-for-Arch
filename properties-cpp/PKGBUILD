@@ -1,0 +1,31 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+
+pkgname=properties-cpp
+_actual_ver=0.0.1
+_extra_ver=+14.04.20140220
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="C++11 library providing properties/signals"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/properties-cpp"
+license=('LGPL')
+groups=('unity')
+makedepends=('cmake')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/properties-cpp_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('4e9227615d61922c7d0a9e10106259c0921da312ed951df82908309b594c2a63fa93055a3d34474b980abd289531738a3ca353a83a4827cdb02a967aa0dfae75')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  sed -i '/tests/d' CMakeLists.txt
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  make DESTDIR="${pkgdir}/" install
+}
