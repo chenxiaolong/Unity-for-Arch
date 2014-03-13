@@ -9,7 +9,7 @@ pkgrel=102
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower')
+depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower' 'polkit-gnome')
 makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
