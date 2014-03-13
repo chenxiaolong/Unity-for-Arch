@@ -1,0 +1,33 @@
+Description Change I469e3d39: use a translucent drag pixmap if compositing is active
+ due to be accepted after Qt 5 d'n'd is fixed(!)
+Author: Ignat Semenov
+Forwarded: http://codereview.qt-project.org/#change,16809
+
+---
+ src/gui/kernel/qdnd_x11.cpp |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+Index: qt-everywhere-opensource-src-4.8.4/src/gui/kernel/qdnd_x11.cpp
+===================================================================
+--- qt-everywhere-opensource-src-4.8.4.orig/src/gui/kernel/qdnd_x11.cpp	2013-01-09 12:39:43.617142864 +0000
++++ qt-everywhere-opensource-src-4.8.4/src/gui/kernel/qdnd_x11.cpp	2013-01-09 12:39:43.609142864 +0000
+@@ -290,11 +290,15 @@
+ 
+     void setPixmap(const QPixmap &pm)
+     {
+-        QBitmap mask = pm.mask();
+-        if (!mask.isNull()) {
+-            setMask(mask);
+-        } else {
++        if (QX11Info::isCompositingManagerRunning()) {
++            setAttribute(Qt::WA_TranslucentBackground);
+             clearMask();
++        } else {
++            QBitmap mask = pm.mask();
++            if (!mask.isNull())
++                setMask(mask);
++            else
++                clearMask();
+         }
+         resize(pm.width(),pm.height());
+         pixmap = pm;

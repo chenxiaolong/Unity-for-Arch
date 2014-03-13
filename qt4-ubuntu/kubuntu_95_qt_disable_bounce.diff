@@ -1,0 +1,31 @@
+Description: Manually remove panning gesture subscription from qabstractscrollarea.cpp.
+ Thus all scrolling happens via mouse wheel events synthesised by X.
+Author: Jussi Pakkanen <jussi.pakkanen@canonical.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/805972
+Forwarded: no
+
+=== modified file 'src/gui/widgets/qabstractscrollarea.cpp'
+---
+ src/gui/widgets/qabstractscrollarea.cpp |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/src/gui/widgets/qabstractscrollarea.cpp
++++ b/src/gui/widgets/qabstractscrollarea.cpp
+@@ -296,7 +296,7 @@ void QAbstractScrollAreaPrivate::init()
+     layoutChildren();
+ #ifndef Q_WS_MAC
+ #ifndef QT_NO_GESTURES
+-    viewport->grabGesture(Qt::PanGesture);
++    //viewport->grabGesture(Qt::PanGesture);
+ #endif
+ #endif
+ }
+@@ -549,7 +549,7 @@ void QAbstractScrollArea::setViewport(QW
+         d->viewport->installEventFilter(d->viewportFilter.data());
+ #ifndef Q_WS_MAC
+ #ifndef QT_NO_GESTURES
+-        d->viewport->grabGesture(Qt::PanGesture);
++//        d->viewport->grabGesture(Qt::PanGesture);
+ #endif
+ #endif
+         d->layoutChildren();
