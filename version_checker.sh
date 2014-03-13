@@ -113,12 +113,6 @@ get_ppa_version() {
   fi
 }
 
-get_qt4_version() {
-  wget -q -O - 'http://releases.qt-project.org/qt4/source/' | \
-    sed -rn 's/.*>\ qt-everywhere-opensource-src-(.*)\.tar\.gz<.*/\1/p' | \
-    tail -n 1
-}
-
 get_freedesktop_version() {
   if [ -z "${1}" ]; then
     echo "No package was provided"
