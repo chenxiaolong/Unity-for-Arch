@@ -4,7 +4,7 @@
 
 pkgname=unity-control-center
 _actual_ver=14.04.3
-_extra_ver=+14.04.20140310
+_extra_ver=+14.04.20140313
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=100
 pkgdesc="The Control Center for Unity"
@@ -29,7 +29,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         '0005-Remove-ubuntu-system-proxy.patch'
         '0006-Remove-update-manager.patch'
         '0007-Remove-ubuntu-help.patch')
-sha512sums=('2fdb2c2f432def26426267341d357f88ea77c72b3f492d1bf65b23b947dea37b43ffea193222a8922473d9bb53c46a3f848bc3ffaefe28b88d3855e4baefa477'
+sha512sums=('d994a19ea9396ab3f8ad9ea00a51d50a57cddcd53df78aa4b2365fe282ddd81e239729bacb771083b5250b855d1d9420812db622b093f1d0a01a7dd42cf62063'
             'd06ac925143f98d1da4505b4140d7011a8167ae1e6f8503145674666ed3b6f6e57fd3d3c900af4577ebff621a528be7a02724810fe165b275a332f09addd7313'
             'da3d1112ce6781fc345d862a194147952cd1b4f4b35b880250895b5ad00c7c3b7ffcf59984aa14e70e9ef314709602546eae950791b7b71c28849a44773881fe'
             '8abc8c0e3727a1e57116d943c16918754041007b1be45c8e2a0f4f945c94193008a75f72dcc123d70def6b43e1c347f1b0804d3cad44dc098b1b216cf31fb09d'
