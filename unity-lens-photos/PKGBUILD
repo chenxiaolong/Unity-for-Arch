@@ -2,10 +2,10 @@
 
 pkgname=unity-lens-photos
 _actual_ver=1.0
-_extra_ver=daily13.06.05
+_extra_ver=+14.04.20140318
 _translations=20130418
-pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=103
+pkgver=${_actual_ver}.daily14.03.18
+pkgrel=1
 pkgdesc="Unity lens for browsing photos"
 arch=('any')
 url="https://launchpad.net/unity-lens-photos"
@@ -15,7 +15,7 @@ depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'dee' 'libunity' '
 makedepends=('python' 'python-distutils-extra')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-photos.tar.gz")
-sha512sums=('200b7f14c2c7263cd92c0ff710c5f12e66e69cd715d19556d06c3d5ef9c3a9f9baa9d8ecb575def501a01f2c82fcf3a2ce73814d27814091b4be7a8d4e84e907'
+sha512sums=('8a61f8966dcec0aad69d6134bd67a211a6bc78bc81f997022b2950a556a89b019e9c1d28b5cb1840d85f513d7b8b105f2148903bb03b29647a4302330d4de61d'
             '79ea835cd8c5b7c87d7129d51223ee1613589254ccde0be7d81bccd4f5916ba7a22b90fb54c18e766481a49bf6c0cbfe9dca719305627ffbe247aebb9888767f')
 
 prepare() {
