@@ -4,10 +4,10 @@
 
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
-_extra_ver=+14.04.20131125
+_extra_ver=+14.04.20140320
 _translations=20130418
-pkgver=${_actual_ver}daily13.11.25
-pkgrel=100
+pkgver=${_actual_ver}daily14.03.20
+pkgrel=1
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -24,7 +24,7 @@ install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-appmenu.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('9e1e5e344b259f3dbd3413ccd9bb9593d26aebb0b970ac425ae1b60ef60e83946008132b376de7182596df7c7339c75b7bda2cd5f3e6661a09d06ad5b5fd80fe'
+sha512sums=('372e76e393046d313bc038a08658775d779da3c658692b0159c3bff5dd717660cdb8961fa0331171b11e77ae4fb3060d711acab42bcaca7ec40a717d1992a5db'
             '68f2bab05620de5bb7879a8a6ecf94636fe3302b8087eac57c8e48e02a904e1f8ee9e109682f365f1990d23e92176f6f139aa6ecdc10fec84f4884758ac37474'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
