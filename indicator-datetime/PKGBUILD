@@ -4,10 +4,10 @@
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+14.04.20140311.1
+_extra_ver=+14.04.20140321
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=1
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -22,7 +22,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         'indicator-datetime.service'
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch')
-sha512sums=('0d58da0d6ff8f1ed403f7bc609e393d5a6062e59a10623c2c33d62dcc346667f99541e882fc0858287c2812fe0a6c14ed48ff3f7ff4b20bb73ed0c4544e6d4e4'
+sha512sums=('c61d7b4c4a34deaf92c8a2f8bc5aab966b733918bdb4309d9d77cdc63728edb8b7d274c345f226a63d3594db0d6f14cdbbca1682d29f840d148f0e7e71cf2a2f'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '217b93ef6705e80853d009277df5ec43d0d2fde1cb9945cabd3183e4c3f695b4bc4cfa8168052398ebc0d56fe5e9f8828c2e58accf856e0dee719534fef918bf'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
@@ -59,7 +59,7 @@ build() {
     -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
     -Denable_tests=OFF
 
-  make -j1
+  make
 }
 
 package() {
@@ -70,6 +70,8 @@ package() {
   install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
   install -m644 "${srcdir}/indicator-datetime.service" \
                 "${pkgdir}/usr/share/dbus-1/services/"
+
+  rm -r "${pkgdir}/usr/share/upstart/"
 }
 
 # vim:set ts=2 sw=2 et:
