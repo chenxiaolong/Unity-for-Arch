@@ -2,11 +2,11 @@
 
 pkgname=unity
 _actual_ver=7.1.2
-_extra_ver=+14.04.20140311
+_extra_ver=+14.04.20140320.1
 _ubuntu_rel=0ubuntu1
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -35,8 +35,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
         'com.canonical.Unity.Panel.Service.service')
-sha512sums=('8f9cb45b9a06130b47ffee5f1587de53807f764aad8d45e93ffbd4bca0ad586447c201d19d87090252c676d4debb9694904eab7dcd3b44d07dd89cdae39c3203'
-            '5276fd6b203f49611b31fb65d4dfa50b6e93a19a930de7484e6d5f95eea0870c442b1662af581b84aeb023d544cab47cb5a8494e2d7f81b83caa570195af7c6f'
+sha512sums=('269892e43a32807949ecc47e828cc1a19ff0f9dc993f7d3739d492a9bddb7e5d4d44729d32550b508f34b339a8133902a3d76fcd5fae2f94052e7ffe0ac2c2fc'
+            'efc4ca9e49e9ac08b34ef3b234b108a0f79fd4247364e183b088eb555256f835bd7481187732e361355ec1437f2227ceee9f7b5e92b98b89412098b41c3606d4'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             '3be3303e6b6f023ca246b23c0293ce3987a070f74bf92d9ab07d2255f2254743078f4111007ef414a37b7368d86e80ae1350f2a956300a6ac5495f41bfd7878e'
             'c3421eb14e6f6c94e53d5f14341c7f9e6a770a71f02b9dded97fe5d0ded9efa1e7c0fc1df90b0709d1bec5126df8be7469612689344eea616868e6541bec42fb'
