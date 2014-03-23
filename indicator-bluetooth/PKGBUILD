@@ -5,7 +5,7 @@ _actual_ver=0.0.6
 _extra_ver=+14.04.20140207
 _translations=20130418
 pkgver=${_actual_ver}.daily14.02.07
-pkgrel=100
+pkgrel=101
 pkgdesc="Bluetooth status indicator"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-bluetooth"
@@ -17,6 +17,7 @@ makedepends=('gnome-common' 'intltool' 'vala')
 # We don't want two bluetooth indicators
 conflicts=('gnome-bluetooth-ubuntu')
 options=('!libtool')
+install=indicator-bluetooth.install
 # Ubuntu finally using xz sources? It's a miracle!
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-bluetooth_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-bluetooth.tar.gz"
