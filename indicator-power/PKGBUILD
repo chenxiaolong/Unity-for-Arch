@@ -61,6 +61,8 @@ package() {
   install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
   install -m644 "${srcdir}/indicator-power.service" \
                 "${pkgdir}/usr/share/dbus-1/services/"
+
+  rm -r "${pkgdir}/usr/share/upstart/"
 }
 
 # vim:set ts=2 sw=2 et:
