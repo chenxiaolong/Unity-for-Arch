@@ -6,10 +6,10 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 _translations=20130418
 pkgver=0.9.8.8
-pkgrel=1
+pkgrel=2
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org/projects/NetworkManager/"
@@ -27,7 +27,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${p
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-network-manager-applet.tar.gz")
 sha512sums=('a43cb00ac60b9401a035aac22a3384625624ca7e3b852106c55c1dc79a6a409d68f482615df6420778cafee0eb38e0088768198de78af52358db48ce9b7222f7'
-            '2150574866dc1ec6993605354480bdecdf9b2da5a0b54f4a7563aec8ed9b361f967a2a063f254a3f707ccfb9163d0843b43f29522b55439ae2fdcf2325c33356'
+            '88a1ba6d19c9a9244f859e45d33c83c331d3fafba0a41abb46b34e20cb52a743eee8e7aef1368ccc4688d055f77fdd7237747c4a1c8ceb3321af22f67c25ecb5'
             '3c9a0c6b751ad3d9c5b83ceb3d76eda24f687dbedbbbc24b02c1ce57ba84cebc821e9dddc46b18a5c521d54160855c2ad8b5b8c5e1bc2679d08085ffb0ab48a3')
 
 prepare() {
