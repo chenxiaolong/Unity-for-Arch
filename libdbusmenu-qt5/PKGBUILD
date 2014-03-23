@@ -1,8 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libdbusmenu-qt5
-_actual_ver=0.9.2
-_extra_ver=+14.04.20140218.2
+_actual_ver=0.9.3
+_extra_ver=+14.04.20140314
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -14,7 +14,7 @@ groups=('unity')
 depends=('qjson' 'qt5-base')
 makedepends=('cmake')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('02cccceb884ea346b7a69afe6664708e4efc2e9b15309c4991ab26451492006dd98b5214c4803ad8f6e8c925594d08ccce6da7aaef62f1412464ec09c99941a4')
+sha512sums=('028ef2d7d7845050e4deea10d71a77fd22a21d3504df28fcd29eec193990592d2fbe716d8839d425a567facd0eca6cbad9117542e8ad774f8b541833606aea24')
 
 build() {
   cd "${srcdir}/libdbusmenu-qt-${_actual_ver}${_extra_ver}"
