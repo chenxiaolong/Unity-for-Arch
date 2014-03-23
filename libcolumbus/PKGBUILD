@@ -4,7 +4,7 @@ pkgname=libcolumbus
 _actual_ver=1.1.0
 _extra_ver=+14.04.20140306
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=101
 pkgdesc="A small, fast, error tolerant matcher"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libcolumbus"
@@ -19,7 +19,10 @@ build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=''
+  cmake .. \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DCMAKE_BUILD_TYPE=''
   make
 }
 
