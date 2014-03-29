@@ -2,9 +2,9 @@
 
 pkgname=dee-ubuntu
 _actual_ver=1.2.7
-_extra_ver=+13.10.20130924.1
+_extra_ver=+14.04.20140324
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=1
 pkgdesc="Model to synchronize multiple instances over DBus"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/dee"
@@ -15,7 +15,7 @@ makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
 provides=("dee=${pkgver}")
 conflicts=('dee')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('f59f0db206e4768999ab0977bbc98f60042946ed07380a7c3b4803f5dd90d63904999e6fe1042d642cadc44e0c58299ee4f4135fa02038fe38916a5618ec7e19')
+sha512sums=('ce961e94a0d925dff778a654d694664a440748287b986cafeadc5a370e4bbb1a9dcbed0ca5b9624ddd4f975d92d702f61e0ca086e2718727f68aca8bd7091f0f')
 
 build() {
   cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
