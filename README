@@ -27,46 +27,47 @@ Order to compile/install:
 19: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
 20: gnome-session-ubuntu           -> GNOME Session Manager
 21: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
-22: unity-control-center           -> Utilities to configure the Unity desktop
-23: metacity-ubuntu                -> Window manager for GNOME
-24: libtimezonemap                 -> GTK+3 timezone map widget
-25: properties-cpp                 -> C++11 library providing properties/signals
-26: indicator-application          -> Takes menus and puts then in the panel
-27: indicator-appmenu              -> An indicator to host the menus from apps
-28: indicator-bluetooth            -> Indicator for bluetooth status
-29: indicator-datetime             -> A very, very simple clock
-30: indicator-power                -> Indicator to show battery information
-31: indicator-printers             -> Indicator showing active print jobs
-32: indicator-session              -> Indicator for session management
-33: indicator-sound                -> Indicator displaying a unified sound menu
-34: gsettings-qt                   -> Library to access GSettings from Qt
-35: dee-qt                         -> Qt5 bindings for dee
-36: libdbusmenu-qt5                -> Qt5 implementation of the DBusMenu protocol
-37: hud                            -> Backend for the Unity HUD
-38: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
-39: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
-40: evemu                          -> Linux Evdev Event Emulation Library
-41: frame                          -> Open Input Framework Frame Library
-42: grail                          -> Gesture recognition and instantiation lib.
-43: geis                           -> Implementation of the GEIS interface
-44: nux                            -> An OpenGL toolkit
-45: unity-asset-pool               -> Design assets for Unity
-46: nautilus-ubuntu                -> File manager and graphics shell for GNOME
-47: libcolumbus                    -> Small, fast, error tolerant matcher
-48: zeitgeist-ubuntu               -> Service for logging user activities
-49: unity-lens-applications        -> Unity applications lens
-50: unity-lens-files               -> Unity files lens
-51: unity-lens-music               -> Unity music lens
-52: unity-lens-photos              -> Unity photo lens
-53: unity-lens-video               -> Unity video lens
-54: unity-scope-home               -> Unity Home Scope
-55: unity-scopes                   -> Unity Smart Scopes
-56: compiz-ubuntu                  -> Compiz compositing window manager
-57: xpathselect                    -> Select tree objects using XPath queries
-58: cairo-ubuntu                   -> Cairo vector graphics library
-59: lightdm-ubuntu                 -> Cross-desktop lightweight display manager
-60: lightdm-unity-greeter          -> The LightDM greeter for Unity
-61: unity                          -> Desktop shell designed for efficiency
+22: unity-settings-daemon          -> Daemon handling the Unity session settings
+23: unity-control-center           -> Utilities to configure the Unity desktop
+24: metacity-ubuntu                -> Window manager for GNOME
+25: libtimezonemap                 -> GTK+3 timezone map widget
+26: properties-cpp                 -> C++11 library providing properties/signals
+27: indicator-application          -> Takes menus and puts then in the panel
+28: indicator-appmenu              -> An indicator to host the menus from apps
+29: indicator-bluetooth            -> Indicator for bluetooth status
+30: indicator-datetime             -> A very, very simple clock
+31: indicator-power                -> Indicator to show battery information
+32: indicator-printers             -> Indicator showing active print jobs
+33: indicator-session              -> Indicator for session management
+34: indicator-sound                -> Indicator displaying a unified sound menu
+35: gsettings-qt                   -> Library to access GSettings from Qt
+36: dee-qt                         -> Qt5 bindings for dee
+37: libdbusmenu-qt5                -> Qt5 implementation of the DBusMenu protocol
+38: hud                            -> Backend for the Unity HUD
+39: network-manager-applet-ubuntu  -> NetworkManager applet w/indicator support
+40: overlay-scrollbar *            -> Overlay scrollbars for GTK 2 and GTK 3
+41: evemu                          -> Linux Evdev Event Emulation Library
+42: frame                          -> Open Input Framework Frame Library
+43: grail                          -> Gesture recognition and instantiation lib.
+44: geis                           -> Implementation of the GEIS interface
+45: nux                            -> An OpenGL toolkit
+46: unity-asset-pool               -> Design assets for Unity
+47: nautilus-ubuntu                -> File manager and graphics shell for GNOME
+48: libcolumbus                    -> Small, fast, error tolerant matcher
+49: zeitgeist-ubuntu               -> Service for logging user activities
+50: unity-lens-applications        -> Unity applications lens
+51: unity-lens-files               -> Unity files lens
+52: unity-lens-music               -> Unity music lens
+53: unity-lens-photos              -> Unity photo lens
+54: unity-lens-video               -> Unity video lens
+55: unity-scope-home               -> Unity Home Scope
+56: unity-scopes                   -> Unity Smart Scopes
+57: compiz-ubuntu                  -> Compiz compositing window manager
+58: xpathselect                    -> Select tree objects using XPath queries
+59: cairo-ubuntu                   -> Cairo vector graphics library
+60: lightdm-ubuntu                 -> Cross-desktop lightweight display manager
+61: lightdm-unity-greeter          -> The LightDM greeter for Unity
+62: unity                          -> Desktop shell designed for efficiency
 
 * Optional packages
 
