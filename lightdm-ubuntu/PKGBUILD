@@ -7,7 +7,7 @@
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=1.9.13
-pkgrel=1
+pkgrel=2
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/lightdm"
@@ -44,8 +44,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         'lightdm-greeter.pam'
         'lightdm.rules'
         'guest-session-cross-distro.patch'
-        'guest-session-add-default-gsettings-support.patch'
-        'g_hash_table_get_keys_as_array.patch')
+        'guest-session-add-default-gsettings-support.patch')
 sha512sums=('1d3da951fd56da4433072aadc7e1159e2d9c9b5bf2f93e32b0ae5cc72bd92ac3b757d4049657b54a9e2e5efb5f37e3d69aeb98b389380c472515de5cb449fe83'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
@@ -55,8 +54,7 @@ sha512sums=('1d3da951fd56da4433072aadc7e1159e2d9c9b5bf2f93e32b0ae5cc72bd92ac3b75
             '3b482f7e551df20a5c5d9331a420275d1dad5bb6aad287247baea82dc40dc31dca22db4da180fbb950865e37cf94f1737fa1ee7ec2f5233540f82f2f570a408b'
             '8d6aa12c4d129c25e56ecf2904db4e294d46631d11bd8bec2f20a76c871ba758094abb24616d3d2038a684fbb736ee61d1f80697d525d62c4dc68113e101194f'
             '119904e533bfcbc72a69695907d2c7bef7a68ad24072aa284f414eb2bfa7a6b0b6d4bef7d3aea006bac6f9ce1d11077934126775eacb4448094c7db0e6e18473'
-            'b0e171f38320681618d5607b0d34be7ccb738f113a82a8a6e2fff00f6bdd71c9bb45e5109cf8fb4cbd4ac3af8d72a5f37df7cc9d988c8fd1af1a952c57a801c9'
-            'ad872e6ee52276bc7336ce2ad6b9691565e5867bd167597ebbd5f9f4c7cfd150b989ebf43c5649dd184f3f7e92b62b43cbf440c19faaf117df9fee36ae61fdac')
+            'b0e171f38320681618d5607b0d34be7ccb738f113a82a8a6e2fff00f6bdd71c9bb45e5109cf8fb4cbd4ac3af8d72a5f37df7cc9d988c8fd1af1a952c57a801c9')
 
 prepare() {
   cd "${srcdir}/lightdm-${pkgver}"
@@ -78,9 +76,6 @@ prepare() {
   # put the files in /etc/guest-session/gsettings/. The file format is the same
   # as the regular GSettings override files.
   patch -p1 -i "${srcdir}"/guest-session-add-default-gsettings-support.patch
-
-  # Copy g_hash_table_get_keys_as_array() from GLib 2.40
-  patch -p1 -i "${srcdir}"/g_hash_table_get_keys_as_array.patch
 }
 
 build() {
