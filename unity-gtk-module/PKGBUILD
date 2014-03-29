@@ -2,8 +2,8 @@
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=+14.04.20140319
-pkgver=${_actual_ver}daily14.03.19
+_extra_ver=+14.04.20140328
+pkgver=${_actual_ver}daily14.03.28
 pkgrel=1
 
 # Override AUR version
@@ -23,7 +23,7 @@ options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '80unity-gtk-module'
         'g_ptr_array_insert.patch')
-sha512sums=('85c75bec8dbb815e39e04f5725277fb7b012bdfcb419879d877a34554517b4f0b749b1112e417767aac1f37d88f24c73f4dad8d58c5e5bfb59cd5e15dd7841cd'
+sha512sums=('5d09d23c53649c851928c6d47600623fcac2575013a06801f413e80d1d544b1b348af2b906fee3831ee774dfa63d80c84569d442e08dcb643d458960d9a52c7a'
             'cbf13533c128c870dc4b9bb3436a95c3a38ec3803cf99f1221416c0d78b971a66b0b279d765aab8a6942148a89638c569031050012bfb5c53bb7d5daae14189c'
             '426279a6c5067a78e635fc832c7b0a4ef078a9223101675330aaf3d60a7d754e921eb4e77d7df419ad543e56d5aa4f1a844106b784a96567383281e44b615c86')
 
