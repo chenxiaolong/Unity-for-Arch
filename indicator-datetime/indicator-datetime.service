@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=com.canonical.indicator.datetime
-Exec=/usr/lib/indicator-datetime/indicator-datetime-service
