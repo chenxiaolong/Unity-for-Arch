@@ -47,7 +47,7 @@ build() {
   autoreconf -vfi
   intltoolize -f
   # Static libraries are needed for the tests
-  ./configure --prefix=/usr --libexecdir=/usr/share/${pkgname} #--disable-static
+  ./configure --prefix=/usr --libexecdir=/usr/lib #--disable-static
   make
 }
 
