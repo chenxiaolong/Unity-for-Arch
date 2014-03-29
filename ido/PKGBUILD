@@ -4,8 +4,8 @@
 
 pkgname=ido
 _actual_ver=13.10.0
-_extra_ver=+14.04.20140321
-pkgver=${_actual_ver}daily14.03.21
+_extra_ver=+14.04.20140328
+pkgver=${_actual_ver}daily14.03.28
 pkgrel=1
 pkgdesc="Widgets and other objects used for indicators"
 arch=('i686' 'x86_64')
@@ -18,7 +18,7 @@ options=('!libtool')
 provides=('ido3')
 conflicts=('ido3')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('4d996988e0bce7d2686bb4c115cfe6f1c519bf637dde2fb3232347bbf5e16cccb16a313d255d58f9b206709350a51c962b987e2f58543e6fbed4919613a9bb06')
+sha512sums=('655ed64453137f40fdcc770a9cd6799988240517937eab1bbed9dce899f729e16c9dc7626a6e56d9c3118ce489145e85b8bd82592a8614a1ede2dff3459aeb01')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
