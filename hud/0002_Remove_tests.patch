@@ -13,12 +13,3 @@
  pkg_check_modules(UNITYVOICE REQUIRED libunityvoice-1 REQUIRED)
  include_directories(${UNITYVOICE_INCLUDE_DIRS})
  
-@@ -171,8 +165,6 @@
- 	)
- endif()
- 
--add_subdirectory(tests)
--
- add_subdirectory(tools-vala)
- if(${ENABLE_DOCUMENTATION})
-   add_subdirectory(docs)
