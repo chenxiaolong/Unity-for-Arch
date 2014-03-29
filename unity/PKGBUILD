@@ -29,12 +29,13 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '0008_Remove_Launchers.patch'
         '0010_The_future_is_systemd.patch'
         '0011_Remove_social_scope.patch'
-        '0021_Revert_3603.patch'
         'com.ubuntu.user-interface.gschema.xml'
         'launcher_bfb.png'
         'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
-        'com.canonical.Unity.Panel.Service.service')
+        'com.canonical.Unity.Panel.Service.service'
+        '99unity-panel-service'
+        'unity-debug')
 sha512sums=('269892e43a32807949ecc47e828cc1a19ff0f9dc993f7d3739d492a9bddb7e5d4d44729d32550b508f34b339a8133902a3d76fcd5fae2f94052e7ffe0ac2c2fc'
             'efc4ca9e49e9ac08b34ef3b234b108a0f79fd4247364e183b088eb555256f835bd7481187732e361355ec1437f2227ceee9f7b5e92b98b89412098b41c3606d4'
             '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
@@ -45,12 +46,13 @@ sha512sums=('269892e43a32807949ecc47e828cc1a19ff0f9dc993f7d3739d492a9bddb7e5d4d4
             '39a30336ffa64a2dff69b8e5a90cf86709229f106f4ff1ffa97e102c1a765bc4a03d2b2958a3232e6201edb51e3410276ab000289d307e6458123a37560caaba'
             'ba36657f714a5fae7fa7e3012438bc951f7812093078245f1e5180daf1618502bbc46a63604032a165ad421c8e450f297155a986c2fe29895b96bdf3cb33114a'
             'd910b32832602e6f9b6a3f2c2476b96593df0b745077468436a3c995a21c88c684cc9a190d93cee6051a8194dd637f35a387691bdb979a380b431ac6b00c4351'
-            'b5c1684a70285460ec6f658270463b3c0fdcd174233ead44ab158862fd7352696b5fd978b59b062596477d324e504cd341513ef982d90bf8ec75ec5bd4316b41'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
-            '76931a0d26c6a12e21dd0201f5ed8726ff0222f62cbcf4715d782b5b216d288fd4a7834188053a8df56a4c73af2db0b0b64fc2c0298ac0d383e8e42a0c6b85de')
+            '76931a0d26c6a12e21dd0201f5ed8726ff0222f62cbcf4715d782b5b216d288fd4a7834188053a8df56a4c73af2db0b0b64fc2c0298ac0d383e8e42a0c6b85de'
+            '126bdb4a4515e029acb31c255299caee06b246800f7fc833f0bd80a5d90e95b5a38000620cbba627a607100e6f734c4b1b677c84407c7d87cc8561aef102758e'
+            'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -73,9 +75,6 @@ prepare() {
   patch -p1 -i "${srcdir}/0010_The_future_is_systemd.patch"
 
   patch -p1 -i "${srcdir}/0011_Remove_social_scope.patch"
-
-  # Our glib isn't new enough
-  patch -p0 -i "${srcdir}/0021_Revert_3603.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
@@ -191,6 +190,14 @@ package() {
   install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
   install -m644 "${srcdir}/com.canonical.Unity.Panel.Service.service" \
     "${pkgdir}/usr/share/dbus-1/services/"
+
+  # Fix launching of unity-panel-service (from unity-gentoo project)
+  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+  install -m755 "${srcdir}/99unity-panel-service" \
+                "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+
+  # Install script for running Unity with debug output (from unity-gentoo project)
+  install -m755 "${srcdir}/unity-debug" "${pkgdir}/usr/bin/"
 }
 
 # vim:set ts=2 sw=2 et:
