@@ -4,7 +4,7 @@
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+14.04.20140321
+_extra_ver=+14.04.20140328
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -12,7 +12,7 @@ pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
 license=('GPL')
-depends=('ido' 'evolution-data-server' 'libcanberra' 'libtimezonemap' 'geoclue' 'properties-cpp' 'unity-control-center')
+depends=('evolution-data-server' 'libcanberra' 'libtimezonemap' 'properties-cpp' 'unity-control-center')
 makedepends=('intltool' 'cmake')
 groups=('unity')
 options=('!libtool')
@@ -22,11 +22,11 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         'indicator-datetime.service'
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch')
-sha512sums=('c61d7b4c4a34deaf92c8a2f8bc5aab966b733918bdb4309d9d77cdc63728edb8b7d274c345f226a63d3594db0d6f14cdbbca1682d29f840d148f0e7e71cf2a2f'
+sha512sums=('776b1defb9ea4edc2ea5dc58835b01b5de4b836498ae03d0416cfd7f04ee11a48fa6fa8388a567d26f8b962761c3cf8ced984797c346c4c90bd8d5cf9456db46'
             '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '217b93ef6705e80853d009277df5ec43d0d2fde1cb9945cabd3183e4c3f695b4bc4cfa8168052398ebc0d56fe5e9f8828c2e58accf856e0dee719534fef918bf'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
-            'a200e2ae03a8684db00b1c3b30d122a37dbadab146eac3365b3a6ee25da9aa1ff991fe6561f040d54ee2950c47e6d4176616c5804dc28bd0471c80f75c0d52a6')
+            'b91c27dba2b08b69e597f9165406f68325b5d822e26d7dc5aa271a7f62b77d715cb78dfae93792b345d922ace383f6ed98cb63f096745ef37a3f7df5c4b37298')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
