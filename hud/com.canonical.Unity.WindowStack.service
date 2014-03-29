@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=com.canonical.Unity.WindowStack
-Exec=/usr/lib/hud/window-stack-bridge
