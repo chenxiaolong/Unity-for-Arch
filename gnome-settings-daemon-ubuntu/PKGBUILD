@@ -5,23 +5,23 @@
 pkgname=gnome-settings-daemon-ubuntu
 _ubuntu=3.8.6.1-0ubuntu10
 _translations=20130418
-pkgver=3.10.2
-pkgrel=102
+pkgver=3.12.0.1
+pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'librsvg' 'libgweather' 'geocode-glib' 'geoclue2' 'packagekit')
-makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl' 'desktop-file-utils')
+depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libibus' 'librsvg' 'libgweather' 'geocode-glib' 'geoclue2' 'nss')
+makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
 groups=('gnome' 'unity')
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=('gnome-settings-daemon')
-options=('!emptydirs' '!libtool')
+options=('!emptydirs')
 install=gnome-settings-daemon.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/3.12/${pkgname%-*}-${pkgver}.tar.xz"
         '64_restore_terminal_keyboard_shortcut_schema.patch'
         'ubuntu-lid-close-suspend.patch')
-sha512sums=('4e937bf178086c3582a7072ce6f2db60b84dac1171ff8344b7b90876b415f0cef0924403308f86cd73f08d6490ae011d533447356c59086e16f41732f1860a87'
+sha512sums=('9f2de0a47acd82b24ada4e0eae84f6e326a7237455d1069b8896b6cbccc089abad6b3e9ca93baf3154ab353659219e7a161c92e0f625c031507dbadf7d8a8ff2'
             'd67a7ebdc5f1cb0b91f567231945e451f336ba45c4ce917c16f085f01f8ff5df8ecb7d1513dd66031fe9f5db9ea5af420adaceb74dee74719f5eb10b9a9e7db3'
             'a9b190aae37ce3d8dd262695306bb26a19586acca11ac3de61df44957baa5db4c75e57e99142c84c98edf1522b08335896131f2fbf5f8b05308a99dd7041fd9e')
 
@@ -42,8 +42,7 @@ build() {
     --sysconfdir=/etc \
     --localstatedir=/var \
     --libexecdir=/usr/lib/gnome-settings-daemon \
-    --disable-static \
-    --enable-systemd
+    --disable-static
       
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
