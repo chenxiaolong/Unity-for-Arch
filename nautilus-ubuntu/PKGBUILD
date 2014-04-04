@@ -4,24 +4,21 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ubuntu_rel=0ubuntu8
-_translations=20130418
-pkgver=3.10.1
-pkgrel=103
-pkgdesc="The GNOME shell and file manager with Ubuntu's patches"
+_ppa_rel=0ubuntu1~trusty1
+pkgver=3.12.0
+pkgrel=1
+pkgdesc="GNOME and Unity file manager"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libnotify' 'nautilus-sendto' 'libunity' 'gtk3' 'libzeitgeist')
+depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libnotify' 'nautilus-sendto' 'libunity' 'libzeitgeist')
 makedepends=('intltool' 'gobject-introspection' 'python')
 url="http://www.gnome.org"
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-nautilus.tar.gz")
-sha512sums=('a201d661104025b4b5ef4d0aa8ba7d083bb60e164c948e9932a78967f4046cc6e3afe7dcd5d20cfb99f500c4561555022cce4c39f2acc72370a515141798e90c'
-            'b37f72d11885d34a45059060df1cb71407f72b0eb52a55b10291d84355877688cce0954601a7724f38e49718ca403da6f27ff8c46851b0cc07335ed53ab384ca'
-            '71c5d7992c4a2b52711dfc9afe37c8029800ecc77c2bb2e89286f10c00f50d4531beec87e62302e9799db243fe437fba9d180554d4ab6e8ce4bb48ec5969d3de')
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('e42eef48564c8b1fd0cb1cadee285be0c8b1e0840527498f4e4e2d25719d31d3dc1c780cd09e521f187ed98502e0b223aaac589ca22bdc6a4e3bd4c3495feb7d'
+            '95f31d7f526f83ca53885b3fce1e0960ae9d478511461f9ee115c91031307c65a218ac56c69f90f616a330789d2d64a201bd1c3237fc30ad6947eda064e5f3e1')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
@@ -37,18 +34,6 @@ prepare() {
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
-  # For updating translations in desktop files
-  ln -s "${srcdir}/debian" .
-
-  #msg "Merging translations from ${_translations}"
-  #rm -f po/LINGUAS po/*.pot
-  #mv "${srcdir}"/po/*.pot po/
-  #for i in "${srcdir}"/po/*.po; do
-  #  FILE=$(sed -n "s|.*/${pkgname%-*}-||p" <<< ${i})
-  #  mv ${i} po/${FILE}
-  #  echo ${FILE%.*} >> po/LINGUAS
-  #done
-
   sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
 }
 
@@ -63,7 +48,6 @@ build() {
     --localstatedir=/var \
     --disable-static \
     --libexecdir=/usr/lib/nautilus \
-    --disable-nst-extension \
     --disable-update-mimedb \
     --disable-packagekit \
     --disable-schemas-compile \
