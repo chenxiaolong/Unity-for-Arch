@@ -2,9 +2,9 @@
 
 pkgname=hud
 _actual_ver=13.10.1
-_extra_ver=+14.04.20140326
-pkgver=${_actual_ver}daily14.03.26
-pkgrel=2
+_extra_ver=+14.04.20140402
+pkgver=${_actual_ver}daily14.04.02
+pkgrel=1
 pkgdesc="Backend for the Unity HUD"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/hud"
@@ -18,7 +18,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}
         '0001_Python_2.patch'
         '0002_Remove_tests.patch'
         '0003_Remove_voice_recognition.patch')
-sha512sums=('f78341332b931b18caa7014d30f85b9a25e9375bd1dea3d3f2b7105178acab87d80a6377714e70ff726c618a3d954adda6574697b96b32a4a99a620f0448a524'
+sha512sums=('fb95af60c28bf82f964f64c3e2b56b1a5548e38fa0b6552c7a4f78d907fb671c3a6b883c987af2951ac75dc6071ebbb9bb0c71e91b84c3f5bfc85eea2ec1f9ab'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90'
             '546aa6b2c1a6e9f9de8f6c4a5d53fe48af39e0f0a96a2e2c3923d44187046ee7da89cba6b9e043e2cf14fd1b333db18fc0d91cb7530b7bc2394080d2b690e602'
             '599b9c5e1acbb530bc225a8b0f5e68ff4863b57009da35d75bebbf9b40655903405fe00434b375f1d699d52bdeb4c27ef6539f36634e77ce8c72f09ff4a21805')
