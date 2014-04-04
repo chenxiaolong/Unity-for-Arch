@@ -1,6 +1,27 @@
+From a41fc612e3977c6694bdb3ed6809bd3829d9d043 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 3 Apr 2014 22:50:40 -0400
+Subject: [PATCH] Not a phone
+
+---
+ CMakeLists.txt           | 2 --
+ src/CMakeLists.txt       | 1 -
+ src/service.vala         | 1 -
+ vapi/url-dispatcher.vapi | 9 ---------
+ 4 files changed, 13 deletions(-)
+ delete mode 100644 vapi/url-dispatcher.vapi
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8c8d69c..694463e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -31,7 +31,6 @@
+@@ -25,13 +25,11 @@ set(SOURCE_BINARY_DIR "${CMAKE_BINARY_DIR}/src")
+ 
+ set(PULSE_AUDIO_REQUIRED_VERSION 0.9.19)
+ set(GIO_2_0_REQUIRED_VERSION 2.25.13)
+-set(URL_DISPATCHER_1_REQUIRED_VERSION 1)
+ 
+ pkg_check_modules(
    PULSEAUDIO REQUIRED
    libpulse-mainloop-glib>=${PULSE_AUDIO_REQUIRED_VERSION}
    gio-unix-2.0>=${GIO_2_0_REQUIRED_VERSION}
@@ -8,29 +29,35 @@
  )
  include_directories(${PULSEAUDIO_INCLUDE_DIRS})
  
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 98bc7c4..5db4baf 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -21,7 +21,6 @@
+@@ -33,7 +33,6 @@ vala_init(indicator-sound-service
+     --thread
      --vapidir=${CMAKE_SOURCE_DIR}/vapi/
      --vapidir=.
-     --target-glib=2.36
 -    --pkg=url-dispatcher
      --pkg=bus-watcher
  )
  
+diff --git a/src/service.vala b/src/service.vala
+index 4e02769..3643517 100644
 --- a/src/service.vala
 +++ b/src/service.vala
-@@ -134,7 +134,7 @@
+@@ -224,7 +224,6 @@ public class IndicatorSound.Service: Object {
  	}
  
  	void activate_phone_settings (SimpleAction action, Variant? param) {
 -		UrlDispatch.send ("settings:///system/sound");
-+		//UrlDispatch.send ("settings:///system/sound");
  	}
  
  	/* Returns a serialized version of @icon_name suited for the panel */
+diff --git a/vapi/url-dispatcher.vapi b/vapi/url-dispatcher.vapi
+deleted file mode 100644
+index 88f7740..0000000
 --- a/vapi/url-dispatcher.vapi
-+++ b/vapi/url-dispatcher.vapi
++++ /dev/null
 @@ -1,9 +0,0 @@
 -[CCode (cprefix="", lower_case_cprefix="", cheader_filename="liburl-dispatcher-1/url-dispatcher.h")]
 -
@@ -41,3 +68,6 @@
 -  [CCode (cname = "url_dispatch_send")]
 -  public static void send (string url, DispatchCallback? func = null);
 -}
+-- 
+1.9.1
+

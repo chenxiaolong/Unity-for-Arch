@@ -4,10 +4,10 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.04.20140320
+_extra_ver=+14.04.20140401
 _translations=20130418
-pkgver=${_actual_ver}daily14.03.20
-pkgrel=3
+pkgver=${_actual_ver}daily14.04.01
+pkgrel=1
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -22,11 +22,11 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         'com.ubuntu.sound.gschema.xml'
         '0001_Not_a_phone.patch'
         '0002_Remove_tests.patch')
-sha512sums=('6d8d47ceb066bb9010d79e1ab489f7e4ae5cc777095525fcd1f2a188f399b37f5e448d4a3ba3615528d8a868e90d5dec847f571083aa71703cd805a95f63d8a1'
+sha512sums=('73a3c1f2febf569e77118fd3cf7e2dcf9abef818f1829b4a07a1f843b6b39b41fa41d2d74dc8086c6a712a1fa2684faa57ef7a0aa9a5f9d7b782054cb8202513'
             '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
-            '3ca63afb388afb5f32a5ad090db3cc50d40a48deb5bdf206cde6c92963481dcc244157560908613255801c2f09058111f66b6774216f5272f197371b64fd2ece'
-            '42f59923419ff5e9265f1737db21ff475fa92fcff045bbac646d0b7da799e190c4a91cdff506cb8053d633eec6a86d6a3c5d00e57de0977614e0d643bcbece2c')
+            '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
+            '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"

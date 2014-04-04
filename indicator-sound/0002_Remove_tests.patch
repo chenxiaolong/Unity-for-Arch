@@ -1,6 +1,30 @@
+From 52cc91f1f555224527038b80c1d61e722cd04aa0 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 3 Apr 2014 22:52:57 -0400
+Subject: [PATCH] Remove tests
+
+---
+ CMakeLists.txt | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 694463e..d921b9a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -66,12 +66,3 @@
+@@ -45,12 +45,6 @@ pkg_check_modules(
+ )
+ include_directories(${SOUNDSERVICE_INCLUDE_DIRS})
+ 
+-pkg_check_modules(
+-  TEST REQUIRED
+-  dbustest-1
+-)
+-include_directories(${TEST_INCLUDE_DIRS})
+-
+ find_package(Vala 0.20)
+ 
+ find_package(GObjectIntrospection 0.9.12)
+@@ -72,12 +66,3 @@ configure_file(
  
  add_subdirectory(data)
  add_subdirectory(src)
@@ -13,3 +37,6 @@
 -
 -add_subdirectory(tests)
 -
+-- 
+1.9.1
+
