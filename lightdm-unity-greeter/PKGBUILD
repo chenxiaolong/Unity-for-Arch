@@ -16,7 +16,6 @@ makedepends=('gnome-settings-daemon' 'pkg-config' 'vala' 'imagemagick' 'librsvg'
 optdepends=("ubuntu-themes: Ubuntu's Ambiance and Radiance themes"
             "ubuntu-wallpapers: Ubuntu's default wallpapers"
             "ttf-ubuntu-font-family: Ubuntu's default font")
-options=('!libtool')
 install=unity-greeter.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pkgver}-${_ubuntu_rel}.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-greeter.tar.gz"

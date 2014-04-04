@@ -12,7 +12,6 @@ depends=('glibc')
 makedepends=('xmlto' 'asciidoc')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/evemu_${pkgver}.orig.tar.xz")
-options=('!libtool')
 sha512sums=('41bef7b2e0f0769e4affb5633f41e5352224f5acfb5a001a27548f2236a1dc23d444bbfc3e93ea8eb518a7f4e628185eef9ca5ecefa4d87b201224bfeee28044')
 
 prepare() {

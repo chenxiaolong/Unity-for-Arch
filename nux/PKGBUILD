@@ -15,7 +15,7 @@ depends=('gdk-pixbuf2' 'glew' 'pango' 'mesa' 'libsigc++' 'libxcomposite' 'libxda
 makedepends=('boost' 'glproto' 'dri2proto' 'doxygen' 'graphviz')
 
 groups=('unity')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"

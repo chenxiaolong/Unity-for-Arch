@@ -27,7 +27,7 @@ optdepends=('accountsservice: DBus interface for querying user information'
             'qt5-base: To use the qt5 version of liblightdm-qt')
 provides=("lightdm=${pkgver}" "liblightdm-qt4=${pkgver}")
 conflicts=('lightdm' 'liblightdm-qt4')
-options=('!libtool' 'emptydirs')
+options=('emptydirs')
 backup=('etc/apparmor.d/lightdm-guest-session'
         'etc/lightdm/keys.conf'
         'etc/lightdm/lightdm.conf'

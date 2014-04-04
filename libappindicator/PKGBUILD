@@ -14,7 +14,6 @@ url="https://launchpad.net/libappindicator"
 license=('LGPL')
 makedepends=('dbus-glib' 'libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml' 'gtk-doc')
 groups=('unity')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Timeout.patch')
 sha512sums=('7a93a94dfac6f468e79e0121ca65bdec2fe47e278abf5f097ad856c2ce38314b9d14b7a565bc36ea7fd0c495a95dd754896adeb39c08ff4ebd6006c2c1dbe08d'

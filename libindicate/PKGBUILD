@@ -12,7 +12,6 @@ url="https://launchpad.net/libindicate"
 license=('LGPL')
 makedepends=('libdbusmenu-glib' 'dbus-glib' 'gtk2' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
 groups=('unity')
-options=(!libtool)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
         '0001_autoconf.patch')
 sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06'

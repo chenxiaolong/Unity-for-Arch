@@ -13,7 +13,6 @@ license=('GPL')
 depends=('dconf')
 makedepends=('intltool' 'python2')
 groups=('unity')
-options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-power.tar.gz"

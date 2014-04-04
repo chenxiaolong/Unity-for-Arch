@@ -16,7 +16,6 @@ depends=('dee-ubuntu' 'libdbusmenu-glib' 'gtk3')
 makedepends=('intltool' 'vala' 'python2' 'gobject-introspection')
 install=${pkgname}.install
 groups=('unity')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         '0001_autoconf.patch'

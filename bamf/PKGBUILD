@@ -16,7 +16,6 @@ makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'libxml2' 'libxslt
 provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")
 replaces=('libbamf3' 'bamfdaemon')
 groups=('unity')
-options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('f298bac969f0f1db6097a7dd73b66af18dc38cea5fb4c48830f43461d94b384f2b83097cb9665a68de135635d3375cc5a81a36c4d17b0831183f10bf47c2997f')

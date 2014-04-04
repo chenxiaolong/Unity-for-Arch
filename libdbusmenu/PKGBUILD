@@ -14,7 +14,6 @@ url="https://launchpad.net/dbusmenu"
 license=('LGPL')
 makedepends=('json-glib' 'gtk2' 'gtk3' 'intltool' 'gtk-doc' 'gobject-introspection' 'vala' 'python2' 'valgrind')
 groups=('unity')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu_${_realver}.orig.tar.gz"
         '0001_autoconf.patch')
 sha512sums=('c92b69b8ff991bdd280127e74a952e3c49098341f713bd1424f617a1d8c52f51dd9617364e01072abf62fde767dc7a7910b0713755d0568496b62ec0ad700022'

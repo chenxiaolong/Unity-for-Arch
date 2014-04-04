@@ -16,7 +16,6 @@ depends=('geoclue' 'hicolor-icon-theme' 'indicator-messages' 'json-glib' 'libdbu
 makedepends=('gobject-introspection' 'gtk-doc' 'intltool')
 # configure.ac probably needs to be updated
 makedepends+=('telepathy-glib' 'libdbusmenu-gtk3')
-options=('!libtool')
 install=libunity-webapps.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-libunity-webapps.tar.gz")

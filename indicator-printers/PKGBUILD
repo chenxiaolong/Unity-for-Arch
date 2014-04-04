@@ -14,7 +14,6 @@ license=('GPL')
 groups=('unity')
 depends=('cups' 'libdbusmenu-glib' 'libdbusmenu-gtk3' 'libindicator3')
 makedepends=('intltool' 'python2')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-printers.tar.gz")

@@ -11,7 +11,7 @@ url="https://launchpad.net/geis"
 license=('GPL' 'LGPL')
 depends=('grail' 'xorg-xinput' 'python3' 'dbus-core')
 makedepends=('xorg-server-devel')
-options=('!emptydirs' '!libtool')
+options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('b6fb065b791bf575598160e854bdfb39c6d4c3ef05e629e245d2c4427043d351f7bf67549c3c4d97da57b5beb6dd050ee366011c0672b30e42597f2d73d6f4f4')
 

@@ -15,7 +15,6 @@ license=('GPL')
 depends=('evolution-data-server' 'libcanberra' 'libtimezonemap' 'properties-cpp' 'unity-control-center')
 makedepends=('intltool' 'cmake')
 groups=('unity')
-options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"

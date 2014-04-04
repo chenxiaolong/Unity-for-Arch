@@ -19,7 +19,7 @@ optdepends=('unity-gtk-module: support for GTK+ 2 and GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
 provides=('indicator-appmenu-tools')
 conflicts=('indicator-appmenu-tools')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-appmenu.tar.gz"

@@ -16,7 +16,7 @@ makedepends=('intltool' 'yelp-tools')
 groups=('gnome' 'unity')
 provides=("metacity=${pkgver}")
 conflicts=('metacity')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 install=metacity.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver%.*}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver%.*}-${_ubuntu_rel}.debian.tar.gz"

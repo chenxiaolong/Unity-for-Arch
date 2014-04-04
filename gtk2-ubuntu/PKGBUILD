@@ -16,7 +16,6 @@ provides=("gtk2=${pkgver}")
 conflicts=('gtk2')
 replaces=('gtk2-docs')
 backup=('etc/gtk-2.0/gtkrc')
-options=('!libtool')
 install=arch_gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"

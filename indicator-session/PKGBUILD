@@ -16,7 +16,6 @@ depends=('dconf')
 makedepends=('cmake' 'intltool' 'python2')
 optdepends=('lightdm: support for lightdm')
 groups=('unity')
-options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"

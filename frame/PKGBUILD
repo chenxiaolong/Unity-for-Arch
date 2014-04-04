@@ -13,7 +13,7 @@ license=('LGPL')
 depends=('libxi')
 makedepends=('asciidoc' 'xorg-server-devel')
 groups=('unity')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('c8b2a1df86c9ccc6bd17c97a04d94827994fc15737ab933081d73636909148c5f8f1f47a6d4fe3f99ae048261246bb16b2ecdb2e079090e5e68fc90ab1eec98c')
 

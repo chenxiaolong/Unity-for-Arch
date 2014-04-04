@@ -19,7 +19,7 @@ optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
             'vino: screen sharing'
             'openssh: remote login')
 conflicts=('gnome-control-center-unity' 'credentials-preferences' 'credentials-preferences-ubuntu')
-options=('!libtool' '!emptydirs')
+options=('!emptydirs')
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001-Build-fix.patch'

@@ -15,7 +15,6 @@ license=('GPL')
 depends=('dconf' 'libgee06' 'libnotify' 'libpulse' 'libxml2')
 makedepends=('cmake' 'intltool' 'vala')
 groups=('unity')
-options=('!libtool')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz"

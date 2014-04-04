@@ -12,7 +12,6 @@ url="https://launchpad.net/grail"
 license=('LGPL')
 depends=('frame' 'libxfixes' 'libxi')
 makedepends=('inputproto')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('ad29b099f164d37a126c7fa910f888ec60fe065695208f1cb355afb32b8c6e353d9f4737a406c470b644439837fd8c579b0593b50f9a59464c659d44ed13d878')
 

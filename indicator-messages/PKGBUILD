@@ -15,7 +15,6 @@ license=('GPL')
 depends=('hicolor-icon-theme' 'libindicator3')
 makedepends=('gobject-introspection' 'gtk-doc' 'intltool' 'vala')
 groups=('unity')
-options=('!libtool')
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-messages.tar.gz"

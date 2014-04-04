@@ -19,7 +19,6 @@ makedepends=('gtk-doc')
 provides=('appmenu-gtk2' 'appmenu-gtk3')
 replaces=('appmenu-gtk2' 'appmenu-gtk3')
 conflicts=('appmenu-gtk2' 'appmenu-gtk3')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '80unity-gtk-module')
 sha512sums=('5d09d23c53649c851928c6d47600623fcac2575013a06801f413e80d1d544b1b348af2b906fee3831ee774dfa63d80c84569d442e08dcb643d458960d9a52c7a'

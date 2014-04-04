@@ -13,7 +13,6 @@ url="https://launchpad.net/indicator-application"
 license=('GPL')
 depends=('dbus-glib' 'libappindicator3' 'libdbusmenu-gtk3' 'libindicator3')
 groups=('unity')
-options=('!libtool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
 sha512sums=('9391cec11d05182e39edc65bc8a64c95cfba0cd187e3827bf522a0b20993b60a5c4b74f57137b9cdab6a8771fd88ddf68f311df17cb55fba954ce5ff6021fea8'
