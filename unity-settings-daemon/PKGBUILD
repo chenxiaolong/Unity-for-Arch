@@ -2,7 +2,7 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=14.04.0
-_extra_ver=+14.04.20140310
+_extra_ver=+14.04.20140402
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -16,11 +16,15 @@ install=unity-settings-daemon.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "http://ftp.gnome.org/pub/GNOME/sources/gnome-desktop/3.8/gnome-desktop-3.8.4.tar.xz"
         '0001-Remove-accountsservice-deps.patch'
-        '0002-Remove-lid-close.patch')
-sha512sums=('be78e5b56b30de1f1f4e993dcf33ea63ce4dfd51a7b3c54e2417a54b2e0d1a6d2f33abbfc6e550c957c5037aeabfc5cb89780a2d367be650efe06c6872fb9491'
+        '0002-Remove-lid-close.patch'
+        '0001-power-Use-up_client_get_critical_action.patch'
+        '0002-power-Update-for-libupower-glib-API-changes.patch')
+sha512sums=('97f7c0d9611bd58a7c868cdf6e4c27ec7a9553048e6af7b08555088d7f43fd31d78af3a006d4f9a36cb08e58685cd361fbe5a31e87baccdca6fe0a473ed20e04'
             'e5932bd73f0be85b79dc63af1766633c56044078313ea764a7faabaaabb52af8ffcc59361a0d65509626fa83c6afcc2ac1fb4e64b49ad06d220994dcfc10c31d'
             '3b1a7a01af22163687f4a9b99ef63783b8412a99141a8d0efd575503c1e7f98fc89e9a4fc5b9480e4f007958e6c518dd94093882d7e4e2feadcf4572243b0d7e'
-            '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
+            '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48'
+            '0e547535a824918ae77c7c3fb725ae0b0eab12770bae4cd6d0b8ef7eb97eadace0029d93909bb3bba64a23951f7b44c9dac4d171400da89f4bba7fde6b84a43e'
+            '0481c5606d4253fb07e475d81957d7ec1e74a3d206ba08e412d055e285e0a837b56e4fd63f3f3a899fe97299833f4787800e2ddfd873872f07549a97ad962368')
 
 build_gnome_desktop() {
   cd "${srcdir}/gnome-desktop-3.8.4"
@@ -45,6 +49,8 @@ prepare() {
 
   patch -p1 -i "${srcdir}/0001-Remove-accountsservice-deps.patch"
   patch -p1 -i "${srcdir}/0002-Remove-lid-close.patch"
+  patch -p1 -i "${srcdir}/0001-power-Use-up_client_get_critical_action.patch"
+  patch -p1 -i "${srcdir}/0002-power-Update-for-libupower-glib-API-changes.patch"
 }
 
 build() {
