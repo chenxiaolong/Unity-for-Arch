@@ -4,12 +4,12 @@
 
 pkgname=gnome-session-ubuntu
 _ubuntu='3.9.90-0ubuntu12'
-pkgver=3.10.1
-pkgrel=103
+pkgver=3.12.0
+pkgrel=1
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
-depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'upower' 'polkit-gnome')
+depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'dbus-glib' 'polkit-gnome')
 makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans')
 groups=('gnome')
 provides=("gnome-session=${pkgver}")
@@ -18,15 +18,13 @@ options=('!emptydirs')
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        '13_display_session_properties.patch'
         '50_ubuntu_sessions.patch'
         '52_xdg_current_desktop.patch'
         '95_dbus_request_shutdown.patch'
         '103_kill_the_fail_whale.patch'
         'timeout.patch'
         'polkit-gnome-authentication-agent-1-unity.desktop')
-sha512sums=('a17fdd1943c118f025a740b22de1f5840a2f8a1a9fc7f8a2720deccf69097391c2d05e6115416c40c5530de60326f6bd729444dd7a3b2aeff115fe547ad94d8f'
-            '6fb00ce71033d594612e5862b62e0f56017244311113cdab1bf56da96f8749261d247cea76915718d983572a043b2e4d3c06742be39d45039aa404b71207a274'
+sha512sums=('9e9cc9a83d51a415854ebc118417236259b51cc366eb86e3bedfb6baadd02ba22759024dd0dc785a764ad3dea0be6f028de1642f3e2fe2b5480bdc245f11d9ce'
             '8d34918523c8ab749d3f13e58783bcede05ad319b3035c9abe7c3e69202cd55d3ca6602e8779ae6ba8b62f88612f4280f52ff17f141ee23e273f8381524ff06f'
             '538a2cbeb99fa76ce951339216cd37e0294d3f3420f4fdb808c344b16de491a9407e9ea26875e05b56ad6d9eeda598ce0e92d5aa2bf930a48a1e4861f9770f0a'
             'bc9be93af5e57b6fff7ccfe0f69e9023be335f0d8c5a9dabdfa82201b56fa722cb67d05a3144824f7de6d521fd50d2c99e13a59ac67f8d3bf25496843b0740d5'
@@ -40,7 +38,6 @@ prepare() {
   # Increase timeout, for slow machines
   patch -p1 -i "${srcdir}/timeout.patch"
 
-  patch -p1 -i "${srcdir}/13_display_session_properties.patch"
   patch -p1 -i "${srcdir}/50_ubuntu_sessions.patch"
   patch -p1 -i "${srcdir}/52_xdg_current_desktop.patch"
   #patch -p1 -i "${srcdir}/95_dbus_request_shutdown.patch"
@@ -59,7 +56,7 @@ build() {
     --libexecdir=/usr/lib/gnome-session \
     --disable-schemas-compile \
     --enable-systemd \
-    --enable-ipv6 # From debian/rules
+    --disable-gconf
 
   make
 }
