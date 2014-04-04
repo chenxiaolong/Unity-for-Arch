@@ -6,7 +6,7 @@ pkgname=unity-control-center
 _actual_ver=14.04.3
 _extra_ver=+14.04.20140328
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="The Control Center for Unity"
 arch=('i686' 'x86_64')
 groups=('unity')
@@ -28,7 +28,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         '0004-Remove-Ubuntu-language.patch'
         '0005-Remove-ubuntu-system-proxy.patch'
         '0006-Remove-update-manager.patch'
-        '0007-Remove-ubuntu-help.patch')
+        '0007-Remove-ubuntu-help.patch'
+        '0001-Remove-incompatible-bluetooth-panel.patch')
 sha512sums=('49b10a7a768daac1bea222d286ce9fd530f6718664d2f21edc8dc10009fac35f0dae40c785d9460171bc1e132350ead4279eaef0c2af6a8366e68bd435042ddf'
             'd06ac925143f98d1da4505b4140d7011a8167ae1e6f8503145674666ed3b6f6e57fd3d3c900af4577ebff621a528be7a02724810fe165b275a332f09addd7313'
             'da3d1112ce6781fc345d862a194147952cd1b4f4b35b880250895b5ad00c7c3b7ffcf59984aa14e70e9ef314709602546eae950791b7b71c28849a44773881fe'
@@ -36,7 +37,8 @@ sha512sums=('49b10a7a768daac1bea222d286ce9fd530f6718664d2f21edc8dc10009fac35f0da
             'a23e0d001e28a2c4659400f901e15d291777f242ebf404e9b4e29a9779a386a606f55428f73780906b5c35f1f204d2b96d279c6917cc63601a7058d7975f3ac8'
             'de56dc2349bb29940a501534d4861e5a0fed3c7a0a33b8fdb8dca97cb9bec4334133b122bd609eb9ced1325bdfb85a87fb9bad7745f666daa6a607d8fd0f9a0d'
             'fa0284c2bbe7a5897f0f4dad2adc6acd5a3df7ef6143986af4538fae97e88bd76cea0d701e82a01534a49f3bdddf9dd2c1eb025babba85e07914d7ae5323fe14'
-            '8ac524b6139df243703257ae9411811ea65261b1816e8048bdb1086ddadbb54b67a50f0ec61e7384c5e2e97d2bbdcbc458830ff570f62624647b70b842835692')
+            '778672208f47bd0db457bacfa345d1110a667c2cacc981c4b2a2f559de283295c2781bbb9d1782b86ecb66aea3de594b67f7998b040d9d0d23b3dca104c2c9f7'
+            'a3f914042db1c82e19e4bf8cb2c915b107244e4466f3a1b0f0eb5f15512db43115701842037e81b7daf98a790a45f00110840e4c17ed4350793d877c384d0e5c')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -48,6 +50,7 @@ prepare() {
   patch -p1 -i "${srcdir}/0005-Remove-ubuntu-system-proxy.patch"
   patch -p1 -i "${srcdir}/0006-Remove-update-manager.patch"
   patch -p1 -i "${srcdir}/0007-Remove-ubuntu-help.patch"
+  patch -p1 -i "${srcdir}/0001-Remove-incompatible-bluetooth-panel.patch"
 }
 
 build() {

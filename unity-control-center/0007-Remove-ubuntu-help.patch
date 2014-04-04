@@ -1,17 +1,3 @@
---- a/panels/bluetooth/cc-bluetooth-panel.c
-+++ b/panels/bluetooth/cc-bluetooth-panel.c
-@@ -76,10 +76,7 @@
- static const char *
- cc_bluetooth_panel_get_help_uri (CcPanel *panel)
- {
--  if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
--    return "help:ubuntu-help/bluetooth";
--  else
--    return "help:gnome-help/bluetooth";
-+  return "help:gnome-help/bluetooth";
- }
- 
- static void
 --- a/panels/color/cc-color-panel.c
 +++ b/panels/color/cc-color-panel.c
 @@ -2390,10 +2390,7 @@
