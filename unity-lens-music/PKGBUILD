@@ -7,7 +7,7 @@ _actual_ver=6.9.0
 _extra_ver=+13.10.20131011
 _translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=101
+pkgrel=102
 pkgdesc="Music, in the dash"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-place-music"
@@ -16,12 +16,16 @@ depends=('libunity' 'gstreamer' 'gst-plugins-base' 'libnotify' 'liboauth' 'libso
 makedepends=('vala' 'intltool')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-music.tar.gz")
+        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity-lens-music.tar.gz"
+        '0001-Remove-Ubuntu-One-support-service-is-dead.patch')
 sha512sums=('3f4479c05655220dc952c58c5b9183d83d144c4b9a72f52de43b6a6d02429fb83b42865a3502b133d5b5f65470cc26744a3a27c6d4c7d29c68f0166caefaee4b'
-            'e41c9acd6b573fa03e06a447a7692e9b82f76d810d887c9cbcf364912dfe34f41e9741b77c19026357522365361b402958bb86784b40f1b5dd3f061737964ec9')
+            'e41c9acd6b573fa03e06a447a7692e9b82f76d810d887c9cbcf364912dfe34f41e9741b77c19026357522365361b402958bb86784b40f1b5dd3f061737964ec9'
+            'e50ac27fa317d845d6a9dcf75b022503d666a65e2463e4c535910555875158003db37d25f8ef4399e9657364df4e96398033f3ef75867d41130f691e0d8c6578')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  patch -p1 -i "${srcdir}/0001-Remove-Ubuntu-One-support-service-is-dead.patch"
 
   msg "Merging translations from ${_translations}"
   rm -f po/LINGUAS po/*.pot

@@ -1,0 +1,2569 @@
+From f1ce317fdfc6a433a4288f60cb33ac65c8d7ff35 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 4 Apr 2014 16:03:27 -0400
+Subject: [PATCH] Remove Ubuntu One support: service is dead
+
+---
+ Makefile.am                              |   5 +-
+ configure.ac                             |   1 -
+ data/Makefile.am                         |   2 -
+ data/musicstore-scope.service.in         |   3 -
+ musicstore.scope.in.in                   |  13 -
+ po/POTFILES.in                           |   2 -
+ po/POTFILES.skip                         |   3 -
+ src/Makefile.am                          |  47 --
+ src/musicstore-collection.vala           | 272 ------------
+ src/musicstore-daemon.vala               | 109 -----
+ src/musicstore-filter-parser-decade.vala |  56 ---
+ src/musicstore-filter-parser-genre.vala  |  52 ---
+ src/musicstore-filter-parser.vala        |  28 --
+ src/musicstore-scope.vala                | 421 ------------------
+ src/ubuntuone-constants.vala             |  66 ---
+ src/ubuntuone-webservices.vala           | 340 ---------------
+ tests/manual/activation-remote-scope.txt |  15 -
+ tests/manual/previews-musicstore.txt     | 159 -------
+ tests/unit/Makefile.am                   |  14 +-
+ tests/unit/test-ubuntuone-purchases.vala | 719 -------------------------------
+ 20 files changed, 3 insertions(+), 2324 deletions(-)
+ delete mode 100644 data/musicstore-scope.service.in
+ delete mode 100644 musicstore.scope.in.in
+ delete mode 100644 src/musicstore-collection.vala
+ delete mode 100644 src/musicstore-daemon.vala
+ delete mode 100644 src/musicstore-filter-parser-decade.vala
+ delete mode 100644 src/musicstore-filter-parser-genre.vala
+ delete mode 100644 src/musicstore-filter-parser.vala
+ delete mode 100644 src/musicstore-scope.vala
+ delete mode 100644 src/ubuntuone-constants.vala
+ delete mode 100644 src/ubuntuone-webservices.vala
+ delete mode 100644 tests/manual/activation-remote-scope.txt
+ delete mode 100644 tests/manual/previews-musicstore.txt
+ delete mode 100644 tests/unit/test-ubuntuone-purchases.vala
+
+diff --git a/Makefile.am b/Makefile.am
+index 0aca69a..1c9260e 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,12 +1,11 @@
+ SUBDIRS = src data po tests
+ 
+ #
+-# Install the music.lens and musicstore.scope files
++# Install the music.lens file
+ #
+ scope_in_files = \
+   banshee.scope.in \
+-  rhythmbox.scope.in \
+-  musicstore.scope.in
++  rhythmbox.scope.in
+ scopedir = $(SCOPESDIR)/music
+ scope_DATA = $(scope_in_files:.scope.in=.scope)
+ 
+diff --git a/configure.ac b/configure.ac
+index e96de25..8d4dad7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -146,7 +146,6 @@ AC_CONFIG_FILES([
+   Makefile
+   banshee.scope.in
+   rhythmbox.scope.in
+-  musicstore.scope.in
+   data/Makefile
+   src/Makefile
+   src/config.vala
+diff --git a/data/Makefile.am b/data/Makefile.am
+index 81c40d4..7e7d498 100644
+--- a/data/Makefile.am
++++ b/data/Makefile.am
+@@ -1,7 +1,6 @@
+ dbus_servicesdir = $(DBUSSERVICEDIR)
+ service_in_files =  \
+   unity-scope-music.service.in \
+-  musicstore-scope.service.in \
+   music-preview-player.service.in
+ 
+ dbus_services_DATA = $(service_in_files:.service.in=.service)
+@@ -14,5 +13,4 @@ EXTRA_DIST = \
+ 
+ CLEANFILES = \
+   unity-scope-music.service \
+-  musicstore-scope.service \
+   music-preview-player.service
+diff --git a/data/musicstore-scope.service.in b/data/musicstore-scope.service.in
+deleted file mode 100644
+index 18c3b4e..0000000
+--- a/data/musicstore-scope.service.in
++++ /dev/null
+@@ -1,3 +0,0 @@
+-[D-BUS Service]
+-Name=com.canonical.Unity.Scope.MusicStore
+-Exec=@pkglibexecdir@/unity-musicstore-daemon
+diff --git a/musicstore.scope.in.in b/musicstore.scope.in.in
+deleted file mode 100644
+index 196668c..0000000
+--- a/musicstore.scope.in.in
++++ /dev/null
+@@ -1,13 +0,0 @@
+-[Scope]
+-DBusName=com.canonical.Unity.Scope.MusicStore
+-DBusPath=/com/canonical/unity/scope/musicstore
+-Icon=@prefix@/share/icons/unity-icon-theme/places/svg/service-u1.svg
+-_Name=Music store
+-_Description=This is an Ubuntu search plugin that enables information from Ubuntu One to be searched and displayed in the Dash underneath the Music header. If you do not wish to search this content source, you can disable this search plugin.
+-_SearchHint=Search music store
+-Type=music
+-GlobalSearches=false
+-RemoteContent=true
+-
+-[Desktop Entry]
+-X-Ubuntu-Gettext-Domain=unity-lens-music
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 6a39cf9..8eebfb0 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -4,8 +4,6 @@ src/main.vala
+ src/banshee-scope.vala
+ src/rhythmbox-scope.vala
+ src/simple-scope.vala
+-src/musicstore-scope.vala
+ [type: gettext/ini]banshee.scope.in.in
+ [type: gettext/ini]rhythmbox.scope.in.in
+-[type: gettext/ini]musicstore.scope.in.in
+ 
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+index d7c2320..32e2313 100644
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -4,6 +4,3 @@ src/utils.c
+ src/simple-scope.c
+ src/banshee-scope.c
+ src/rhythmbox-scope.c
+-src/musicstore-scope.c
+-src/ubuntuone-webservices.c
+-tests/unit/ubuntuone-webservices.c
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 595199d..87a54a1 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -13,7 +13,6 @@ AM_LDFLAGS = $(COVERAGE_LDFLAGS)
+ 
+ pkglibexec_PROGRAMS = \
+   unity-music-daemon \
+-  unity-musicstore-daemon \
+   music-preview-player
+ 
+ unity_music_daemon_CPPFLAGS = \
+@@ -70,44 +69,6 @@ unity_music_daemon_SOURCES = \
+   $(unity_music_daemon_VALASOURCES:.vala=.c) \
+   $(NULL)
+ 
+-unity_musicstore_daemon_CPPFLAGS = \
+-  -DLIBEXECDIR=\"$(LIBEXECDIR)\" \
+-  $(unity_music_daemon_CPPFLAGS)
+-
+-unity_musicstore_daemon_VALAFLAGS = \
+-  --pkg json-glib-1.0 \
+-  --pkg libnotify \
+-  --pkg libsoup-2.4 \
+-  --pkg oauth \
+-  $(unity_music_daemon_VALAFLAGS)
+-
+-unity_musicstore_daemon_LDADD = \
+-  $(unity_music_daemon_LDADD)
+-
+-unity_musicstore_daemon_VALASOURCES = \
+-  album.vala \
+-  categories.vala \
+-  config.vala \
+-  filter-parser.vala \
+-  filter-parser-decade.vala \
+-  filter-parser-genre.vala \
+-  genre.vala \
+-  musicstore-collection.vala \
+-  musicstore-daemon.vala \
+-  musicstore-filter-parser.vala \
+-  musicstore-filter-parser-decade.vala \
+-  musicstore-filter-parser-genre.vala \
+-  musicstore-scope.vala \
+-  simple-scope.vala \
+-  track.vala \
+-  ubuntuone-constants.vala \
+-  ubuntuone-webservices.vala \
+-  $(NULL)
+-
+-unity_musicstore_daemon_SOURCES = \
+-  $(unity_musicstore_daemon_VALASOURCES:.vala=.c) \
+-  $(NULL)
+-
+ music_preview_player_CPPFLAGS = \
+   -DDATADIR=\"$(DATADIR)\" \
+   -DPKGDATADIR=\"$(PKGDATADIR)\" \
+@@ -140,15 +101,12 @@ music_preview_player_VALAFLAGS = \
+ 
+ BUILT_SOURCES += \
+   unity_music_daemon.vala.stamp \
+-  unity_musicstore_daemon.vala.stamp \
+   music_preview_player.vala.stamp
+ 
+ EXTRA_DIST += \
+   unity_music_daemon.vala.stamp \
+-  unity_musicstore_daemon.vala.stamp \
+   music_preview_player.vala.stamp \
+   $(unity_music_daemon_VALASOURCES) \
+-  $(unity_musicstore_daemon_VALASOURCES) \
+   $(music_preview_player_VALASOURCES) \
+   tdb.vapi \
+   tdb.deps \
+@@ -158,10 +116,6 @@ unity_music_daemon.vala.stamp: $(unity_music_daemon_VALASOURCES)
+ 	$(AM_V_GEN) $(VALAC) $(unity_music_daemon_VALAFLAGS) $^
+ 	touch unity_music_daemon.vala.stamp
+ 
+-unity_musicstore_daemon.vala.stamp: $(unity_musicstore_daemon_VALASOURCES)
+-	$(AM_V_GEN) $(VALAC) $(unity_musicstore_daemon_VALAFLAGS) $^
+-	touch unity_musicstore_daemon.vala.stamp
+-
+ music_preview_player.vala.stamp: $(music_preview_player_VALASOURCES)
+ 	$(AM_V_GEN) $(VALAC) $(music_preview_player_VALAFLAGS) $^
+ 	touch music_preview_player.vala.stamp
+@@ -169,6 +123,5 @@ music_preview_player.vala.stamp: $(music_preview_player_VALASOURCES)
+ CLEANFILES += \
+   *.stamp \
+   $(unity_music_daemon_VALASOURCES:.vala=.c) \
+-  $(unity_musicstore_daemon_VALASOURCES:.vala=.c) \
+   $(music_preview_player_VALASOURCES:.vala=.c) \
+   $(NULL)
+diff --git a/src/musicstore-collection.vala b/src/musicstore-collection.vala
+deleted file mode 100644
+index 63e817d..0000000
+--- a/src/musicstore-collection.vala
++++ /dev/null
+@@ -1,272 +0,0 @@
+-/*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-
+-namespace Unity.MusicLens {
+-
+-  public class MusicStoreCollection : Object
+-  {
+-
+-    private const string MUSICSTORE_BASE_URI = "http://musicsearch.ubuntu.com/v1/";
+-    private HashTable<string, string> preview_uri_map; //maps u1ms store uri to details uri used by preview request
+-
+-    public MusicStoreCollection ()
+-    {
+-      preview_uri_map = new HashTable<string, string>(str_hash, str_equal);
+-    }
+-
+-    public async void search (DeprecatedScopeSearch search, SearchType search_type,
+-			owned List<FilterParser> filters, int max_results = -1, GLib.Cancellable cancellable) throws IOError
+-    {
+-      string? uri = build_search_uri (search.search_string, filters);
+-
+-      if (uri == null)
+-        return;	  
+-
+-      preview_uri_map.remove_all ();
+-      var results_model = search.results_model;
+-      File file = File.new_for_uri (uri);
+-
+-      yield read_musicstore_search_result_async (file, results_model, cancellable);
+-    }
+-
+-    public void get_album_details (string uri, out Album album, out SList<Track> tracks)
+-    {
+-      album = new Album ();
+-      tracks = new SList<Track> ();
+-      string http_uri = uri.substring (7); // strip off "u1ms://" from the uri
+-      if (preview_uri_map.contains (http_uri))
+-      {
+-        string details_uri = preview_uri_map.get (http_uri);
+-        debug ("details uri: %s", details_uri);
+-
+-        var file = File.new_for_uri (details_uri);
+-        var parser = new Json.Parser ();
+-
+-        try {
+-          if (parser.load_from_stream (file.read (null))) //FIXME: make async
+-          {
+-            var root_obj = parser.get_root ().get_object ();
+-
+-            album.title = root_obj.get_string_member ("title");
+-            album.artwork_path = root_obj.get_string_member ("image");
+-            album.artist = root_obj.get_string_member ("artist");
+-            album.uri = http_uri;
+-
+-            // store the price in the album so that we can get the value easily
+-            if (root_obj.has_member ("price"))
+-            {
+-              album.price = double.parse (root_obj.get_string_member ("price"));
+-            }
+-
+-            // musicsearch should give us formatted_price, but fallback to price + currency
+-            if (root_obj.has_member ("formatted_price"))
+-            {
+-              album.formatted_price = root_obj.get_string_member ("formatted_price");
+-            }
+-            else if (root_obj.has_member ("price") && root_obj.has_member ("currency"))
+-            {
+-              album.formatted_price = root_obj.get_string_member ("price") + " " + root_obj.get_string_member ("currency");
+-            }
+-
+-            if (root_obj.has_member ("tracks"))
+-            {
+-              var tracks_node = root_obj.get_array_member ("tracks");
+-              debug ("Album details: '%s', '%s'", uri, details_uri);
+-              foreach (var track_node in tracks_node.get_elements ())
+-              {
+-                var track_obj = track_node.get_object ();
+-                var track = new Track ();
+-                track.uri = track_obj.get_string_member ("preview");
+-                track.title = track_obj.get_string_member ("title");
+-                track.duration = (int)track_obj.get_member ("duration").get_int ();
+-                tracks.append (track);
+-              }
+-            }
+-            else // details for single track
+-            {
+-              debug ("Single track details: '%s', '%s'", uri, details_uri);
+-              var track = new Track ();
+-              track.uri = root_obj.get_string_member ("preview");
+-              track.title = root_obj.get_string_member ("title");
+-              track.duration = (int)root_obj.get_member ("duration").get_int ();
+-              tracks.append (track);
+-            }
+-
+-            if (root_obj.has_member ("id"))
+-            {
+-                album.purchase_sku = root_obj.get_string_member ("id");
+-            }
+-            else
+-            {
+-                // U1MS does not allow purchases of an album with no purchase_sku
+-                album.purchase_sku = "";
+-                warning ("Json has no purchase_sku in '%s'", details_uri);
+-            }
+-
+-          }
+-          else
+-          {
+-            warning ("Can't parse json data for '%s'", details_uri);
+-          }
+-        }
+-        catch (Error e)
+-        {
+-          warning ("Error fetching details for '%s': %s", details_uri, e.message);
+-        }
+-      }
+-      else
+-      {
+-        warning ("No details uri for '%s'", http_uri);
+-      }
+-    }
+-
+-    private async void read_musicstore_search_result_async (File file, Dee.Model model, GLib.Cancellable cancellable)
+-    {
+-      var timer = new Timer ();
+-      debug ("Searching %s", file.get_uri ());
+-      var empty_asv = new Variant.array (VariantType.VARDICT.element (), {});
+-
+-      try {
+-        var stream = yield file.read_async (Priority.DEFAULT, cancellable);
+-	var dis = new DataInputStream (stream);
+-	var parser = new Json.Parser ();
+-	yield parser.load_from_stream_async (dis, cancellable);
+-	var root_object = parser.get_root ().get_object ();
+-	
+-	Json.Object? results = root_object.get_object_member ("results");
+-	if (results == null) {
+-	  warning ("Invalid response from server. No 'results' member.");
+-	  return;
+-	}
+-	
+-	var albums = results.get_array_member ("album").get_elements ();
+-	var tracks = results.get_array_member ("track").get_elements ();
+-	
+-	debug ("Got %u albums and %u tracks", albums.length (), tracks.length ());
+-	
+-	unowned string? uri, details_uri, artwork_path, mimetype, title, artist, dnd_uri;
+-	
+-	foreach (var album_node in albums) {
+-	  var album_obj = album_node.get_object ();
+-	  
+-	  uri = album_obj.get_string_member ("purchase_url");
+-	  details_uri = album_obj.get_string_member ("details");
+-	  artwork_path = album_obj.get_string_member ("image");
+-
+-      string icon = artwork_path;
+-      if (album_obj.has_member ("formatted_price"))
+-      {
+-        var icon_obj = new AnnotatedIcon (new FileIcon (File.new_for_uri (artwork_path)));
+-        icon_obj.category = CategoryType.MUSIC;
+-        icon_obj.ribbon = album_obj.get_string_member ("formatted_price");
+-        icon = icon_obj.to_string ();
+-      }
+-
+-	  mimetype = "audio-x-generic";
+-	  title = album_obj.get_string_member ("title");
+-	  artist = album_obj.get_string_member ("artist");
+-	  dnd_uri = uri;
+-	  
+-	  model.append (uri, icon, Category.PURCHASE,
+-                        Unity.ResultType.DEFAULT,
+-	                mimetype, title, artist, dnd_uri,
+-                        empty_asv);
+-
+-      preview_uri_map.insert (uri.substring (7), details_uri); // strip off "u1ms://" from the uri
+-    }
+-        
+-	foreach (var track_node in tracks) {
+-	  var track_obj = track_node.get_object ();
+-	  
+-	  uri = track_obj.get_string_member ("purchase_url");
+-	  details_uri = track_obj.get_string_member ("details");
+-	  artwork_path = track_obj.get_string_member ("image");
+-
+-      string icon = artwork_path;
+-      if (track_obj.has_member ("formatted_price"))
+-      {
+-        var icon_obj = new AnnotatedIcon (new FileIcon (File.new_for_uri (artwork_path)));
+-        icon_obj.category = CategoryType.MUSIC;
+-        icon_obj.ribbon = track_obj.get_string_member ("formatted_price");
+-        icon = icon_obj.to_string ();
+-      }
+-
+-	  mimetype = "audio-x-generic";
+-	  title = track_obj.get_string_member ("title");
+-	  artist = track_obj.get_string_member ("artist");
+-	  dnd_uri = uri;
+-          
+-	  // FIXME drag n drop uri needs to be the u1ms:// link
+-	  
+-	  model.append (uri, icon, Category.PURCHASE,
+-                        Unity.ResultType.DEFAULT,
+-	                mimetype, title, artist, dnd_uri,
+-                        empty_asv);
+-      preview_uri_map.insert (uri.substring (7), details_uri); // strip off "u1ms://" from the uri
+-    }
+-
+-	debug ("Retrieved '%s' in %fms", file.get_uri (), timer.elapsed()*1000);
+-	debug ("Model has %u rows after search", model.get_n_rows ());
+-
+-      } catch (Error e) {
+-	warning ("Error reading URL '%s': %s", file.get_uri (), e.message);
+-      }
+-    }
+-
+-    private string? build_search_uri (string query, List<FilterParser> filters)
+-    {
+-      if (query.strip() == "")
+-        return null;
+-    
+-      MusicStoreFilterParser store_parser;
+-      string musicstore_base_uri = MUSICSTORE_BASE_URI;
+-      if (GLib.Environment.get_variable("MUSICSTORE_URI") != null)
+-        musicstore_base_uri = GLib.Environment.get_variable("MUSICSTORE_URI");
+-      debug ("Using base URI of '%s'", musicstore_base_uri);
+-      StringBuilder uri = new StringBuilder (musicstore_base_uri);
+-      uri.append ("search?q=");
+-      uri.append (Uri.escape_string (query, "", false));
+-
+-      foreach (FilterParser parser in filters) {
+-	  if (parser is GenreFilterParser)
+-	    store_parser = new MusicStoreGenreFilterParser (parser as GenreFilterParser);
+-	  else if (parser is DecadeFilterParser)
+-	    store_parser = new MusicStoreDecadeFilterParser (parser as DecadeFilterParser);
+-	  else
+-	    continue;
+-
+-	  uri.append (store_parser.parse ());
+-      }
+-      
+-      uri.append ("&pagesize=10");
+-      uri.append ("&imagesize=100");
+-      
+-      // This makes the service return $pagesize results *per content type*.
+-      // Which we need - as it could otherwise return $pagesize results mixed
+-      // or artist,album, and track. Since we can't display artists, this can
+-      // lead to an empty result set in the dash if there is only artists in
+-      // the response from the webservice
+-      uri.append ("&grouping=1");
+-
+-      return uri.str;
+-    }
+-  }
+-}
+diff --git a/src/musicstore-daemon.vala b/src/musicstore-daemon.vala
+deleted file mode 100644
+index 3266a03..0000000
+--- a/src/musicstore-daemon.vala
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-using Config;
+-
+-namespace Unity.MusicLens {
+-
+-  static Application? app = null;
+-  static MusicStoreScopeProxy? daemon = null;
+-
+-  static const string BUS_NAME = "com.canonical.Unity.Scope.MusicStore";
+-
+-  /* Check if a given well known DBus is owned.
+-   * WARNING: This does sync IO!  */
+-  public static bool dbus_name_has_owner (string name)
+-  {
+-    try {
+-      bool has_owner;
+-      DBusConnection bus = Bus.get_sync (BusType.SESSION);
+-      Variant result = bus.call_sync ("org.freedesktop.DBus",
+-                                      "/org/freedesktop/dbus",
+-                                      "org.freedesktop.DBus",
+-                                      "NameHasOwner",
+-                                      new Variant ("(s)", name),
+-                                      new VariantType ("(b)"),
+-                                      DBusCallFlags.NO_AUTO_START,
+-                                      -1);
+-      result.get ("(b)", out has_owner);
+-      return has_owner;
+-    } catch (Error e) {
+-      warning ("Unable to decide whether '%s' is running: %s", name, e.message);
+-    }
+-    
+-    return false;
+-  }
+-
+-  public static int main (string[] args)
+-  {
+-    GLib.Environment.set_prgname ("unity-musicstore-daemon");
+-
+-    /* Sort up locale to get translations but also sorting and
+-     * punctuation right */
+-    GLib.Intl.textdomain (Config.PACKAGE);
+-    GLib.Intl.bindtextdomain (Config.PACKAGE, Config.LOCALEDIR);
+-    GLib.Intl.bind_textdomain_codeset (Config.PACKAGE, "UTF-8");
+-    GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
+-  
+-    /* Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=640714 
+-     * GApplication.register() call owns our DBus name in a sync manner
+-     * making it race against GDBus' worker thread to export our
+-     * objects on the bus before/after owning our name and receiving
+-     * method calls on our objects (which may not yet be up!)*/
+-    if (dbus_name_has_owner (BUS_NAME))
+-      {
+-        print ("Another instance of the UbuntuOne Music Daemon " +
+-               "already appears to be running.\nBailing out.\n");
+-        return 2;
+-      }
+-    
+-    /* Now register our DBus objects *before* acquiring the name!
+-     * See above for reasons */
+-    daemon = new MusicStoreScopeProxy ();
+-    try {
+-        daemon.scope.export ();
+-    } catch (GLib.IOError e) {
+-        stdout.printf ("error %s\n", e.message);
+-    }
+-  
+-    /* Use GApplication directly for single instance app functionality */
+-    app = new Application (BUS_NAME, ApplicationFlags.IS_SERVICE);
+-    try {
+-      app.register ();
+-    } catch (Error e) {
+-      /* FIXME: We get this error if another daemon is already running,
+-       * but it uses a generic error so we can't detect this reliably... */
+-      print ("Failed to start music daemon: %s\n", e.message);
+-      return 1;
+-    }
+-    
+-    if (app.get_is_remote ())
+-      {
+-        print ("Another instance of the Unity Music Daemon " +
+-               "already appears to be running.\nBailing out.\n");
+-        return 2;
+-      }
+-    
+-    /* Hold()ing the app makes sure the GApplication doesn't exit */    
+-    app.hold();
+-    return app.run ();
+-  }
+-
+-} /* namespace */
+diff --git a/src/musicstore-filter-parser-decade.vala b/src/musicstore-filter-parser-decade.vala
+deleted file mode 100644
+index 95d2ccb..0000000
+--- a/src/musicstore-filter-parser-decade.vala
++++ /dev/null
+@@ -1,56 +0,0 @@
+-/*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-
+-namespace Unity.MusicLens {
+-  
+-  public class MusicStoreDecadeFilterParser : DecadeFilterParser, MusicStoreFilterParser
+-  {
+-
+-    public MusicStoreDecadeFilterParser (DecadeFilterParser parser)
+-    {
+-      base (parser.filter as MultiRangeFilter);
+-    }
+-    
+-    public override string parse ()
+-    {
+-      StringBuilder builder = new StringBuilder ("&decade=");
+-      MultiRangeFilter range_filter = filter as MultiRangeFilter;
+-      string start = range_filter.get_first_active ().id;
+-      string end = range_filter.get_last_active ().id;
+-      
+-      int start_year = int.parse (start);
+-      int end_year = int.parse (end);
+-
+-      start_year = start_year.clamp (1900, 2020);
+-      end_year = end_year.clamp (1900, 2020);
+-      
+-      for (; start_year <= end_year; start_year += 10)
+-      {
+-        builder.append_printf ("%d,", start_year);
+-      }
+-      
+-      // chop off the last ,
+-      builder.truncate (builder.len - 1);
+-
+-      return builder.str;
+-    }
+-  }
+-}
+\ No newline at end of file
+diff --git a/src/musicstore-filter-parser-genre.vala b/src/musicstore-filter-parser-genre.vala
+deleted file mode 100644
+index 703fcc0..0000000
+--- a/src/musicstore-filter-parser-genre.vala
++++ /dev/null
+@@ -1,52 +0,0 @@
+-/*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-
+-namespace Unity.MusicLens {
+-  
+-  public class MusicStoreGenreFilterParser : GenreFilterParser, MusicStoreFilterParser
+-  {
+-
+-    public MusicStoreGenreFilterParser (GenreFilterParser parser)
+-    {
+-      base (parser.filter as CheckOptionFilterCompact);
+-    }
+-    
+-    public override string parse ()
+-    {
+-      StringBuilder builder = new StringBuilder ("&genres=");
+-      
+-      foreach (FilterOption genre in get_all_selected_genres ()) {
+-	string id = genre.id;
+-	if (genre.id == null)
+-	  continue;
+-
+-	foreach (string alt in map.get_genre_synonyms (id))
+-	{
+-	  builder.append_printf ("%s,", alt);
+-	}
+-      }
+-      // cut off hanging ','
+-      builder.truncate (builder.len - 1);
+-
+-      return builder.str;
+-    }
+-  }
+-}
+diff --git a/src/musicstore-filter-parser.vala b/src/musicstore-filter-parser.vala
+deleted file mode 100644
+index 0b15aba..0000000
+--- a/src/musicstore-filter-parser.vala
++++ /dev/null
+@@ -1,28 +0,0 @@
+- /*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-
+-namespace Unity.MusicLens {
+-  
+-  public interface MusicStoreFilterParser : FilterParser
+-  {
+-
+-  }
+-}
+diff --git a/src/musicstore-scope.vala b/src/musicstore-scope.vala
+deleted file mode 100644
+index 1e9df99..0000000
+--- a/src/musicstore-scope.vala
++++ /dev/null
+@@ -1,421 +0,0 @@
+-/*
+- * Copyright (C) 2011 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alex Launi <alex.launi@canonical.com>
+- *
+- */
+-
+-using GLib;
+-using Notify;
+-using Unity;
+-using Gdk;
+-using Ubuntuone.Constants;
+-using Ubuntuone.Webservice;
+-
+-namespace Unity.MusicLens {
+-  private const string ERROR_MESSAGE_NOT_LOGGED_IN = _("It seems you don't have an Ubuntu One account, or you are not logged in. To continue, please login and visit the Ubuntu One online store.");
+-  private const string ERROR_MESSAGE_NO_PAYMENT_METHOD = _("It seems you haven't set yet your preferred Ubuntu One payment method. To add a payment method, please visit the Ubuntu One online store.");
+-  private const string ERROR_MESSAGE_TECHNICAL_PROBLEM = _("Sorry, we have encountered a technical problem. No money has been taken from your account. To try your purchase again, please visit the Ubuntu One online store.");
+-  private const string UBUNTUONE_MUSIC_LOGIN = Config.LIBEXECDIR + "/ubuntuone-credentials/ubuntuone-music-login";
+-
+-  public class MusicStoreScopeProxy : SimpleScope
+-  {
+-    private MusicStoreCollection collection;
+-    private Unity.MusicPreview? music_preview;
+-    private PreferencesManager preferences = PreferencesManager.get_default ();
+-    private HashTable<string, Album> album_map;
+-    private PurchaseService purchase_service;
+-    private Notification notification;
+-
+-    public MusicStoreScopeProxy ()
+-    {
+-      base ();
+-
+-      scope = new Unity.DeprecatedScope ("/com/canonical/unity/scope/musicstore", "musicstore.scope");
+-      scope.search_in_global = false;
+-      scope.search_hint = _("Search music");
+-      scope.visible = true;
+-
+-      scope.activate_uri.connect (activate);
+-      scope.preview_uri.connect (preview);
+-
+-      base.initialize ();
+-
+-      Notify.init ("Music Store Scope");
+-      notification = new Notification("Album name", _("Purchase started"), "");
+-      collection = new MusicStoreCollection ();
+-      album_map = new HashTable<string, Album>(str_hash, str_equal);
+-      purchase_service = new PurchaseService ();
+-
+-      preferences.notify["remote-content-search"].connect((obj, pspec) => { scope.queue_search_changed(SearchType.DEFAULT); });
+-
+-      try {
+-	scope.export ();
+-      } catch (GLib.IOError e) {
+-	stdout.printf (e.message);
+-      }
+-    }
+-
+-    protected override int num_results_without_search { get { return 100; } }
+-    protected override int num_results_global_search { get { return 20; } }
+-    protected override int num_results_lens_search { get { return 50; } }
+-
+-    public Unity.ActivationResponse activate (string uri)
+-    {
+-      var prv = preview (uri);
+-      if (prv != null)
+-      {
+-        return new Unity.ActivationResponse.with_preview (prv);
+-      }
+-      else
+-      {
+-        warning ("Failed to generate preview for %s", uri);
+-        return open_uri (uri);
+-      }
+-    }
+-
+-    public Unity.ActivationResponse open_uri (string uri)
+-    {
+-      /* launch the music store streaming client  or the webstore or whatevz */
+-      try {
+-        AppInfo.launch_default_for_uri (uri, null);
+-      } catch (GLib.Error e) {
+-        warning ("Failed to open uri %s. %s", uri, e.message);
+-      }
+-      return new Unity.ActivationResponse (Unity.HandledType.HIDE_DASH);
+-    }
+-
+-    public Unity.Preview preview (string uri)
+-    {
+-      music_preview = null;
+-      Album album = null;
+-      SList<Track> tracks = null;
+-      collection.get_album_details (uri, out album, out tracks);
+-
+-      if (album != null)
+-      {
+-        album_map.insert (uri, album);
+-        File cover_file = File.new_for_uri (album.artwork_path); //artwork path is a remote uri
+-        var cover = new FileIcon (cover_file);
+-
+-        int i = 1;
+-        music_preview = new Unity.MusicPreview (album.title, album.artist, cover);
+-
+-        if (tracks != null)
+-        {
+-          foreach (Track track in tracks)
+-          {
+-            TrackMetadata tm = new TrackMetadata ();
+-            tm.uri = track.uri;
+-            tm.track_no = i++; //FIXME: u1ms search doesn't provide track numbers *yet*, this will change soon
+-            tm.title = track.title;
+-            tm.length = track.duration;
+-            music_preview.add_track (tm);
+-          }
+-        }
+-
+-        GLib.Icon? icon = new GLib.FileIcon (File.new_for_path (Config.DATADIR + "/icons/unity-icon-theme/places/svg/service-u1.svg"));
+-        var download_action = new Unity.PreviewAction ("show_purchase_preview", _("Download"), icon);
+-        if (album.price > 0 && album.formatted_price != null)
+-            download_action.extra_text = album.formatted_price;
+-        else if (album.price == 0)
+-            download_action.extra_text = _("Free");
+-
+-        download_action.activated.connect (open_uri);
+-
+-        music_preview.add_action (download_action);
+-      }
+-      return music_preview;
+-    }
+-
+-    public override async void perform_search (DeprecatedScopeSearch search,
+-                                               SearchType search_type,
+-                                               owned List<FilterParser> filters,
+-                                               int max_results = -1,
+-                                               GLib.Cancellable? cancellable = null)
+-    {
+-      if (is_search_empty (search))
+-        return;
+-
+-      /**
+-       * only perform the request if the user has not disabled
+-       * online/commercial suggestions. That will hide the category as well.
+-       */
+-      if (preferences.remote_content_search != Unity.PreferencesManager.RemoteContent.ALL)
+-      {
+-        search.results_model.clear ();
+-        return;
+-      }
+-
+-      try {
+-	debug ("model has %u rows before search", search.results_model.get_n_rows ());
+-	yield collection.search (search, search_type, (owned) filters, max_results, cancellable);
+-	debug ("model has %u rows after search", search.results_model.get_n_rows ());
+-      } catch (IOError e) {
+-	warning ("Failed to search for '%s': %s", search.search_string, e.message);
+-      }
+-
+-    }
+-
+-    delegate Unity.ActivationResponse LinkHandler (string uri);
+-
+-    private Unity.ActivationResponse build_error_preview (string uri, string error_header, string album_price, string link_text, LinkHandler link_handler, bool has_cancel=true)
+-    {
+-      Album album = null;
+-      SList<Track> tracks = null;
+-      collection.get_album_details (uri, out album, out tracks);
+-      debug ("album art uri: %s", album.artwork_path);
+-      File cover_file = File.new_for_uri (album.artwork_path); //artwork path is a remote uri
+-      var cover = new FileIcon (cover_file);
+-      var error_preview = new Unity.PaymentPreview.for_error(album.title, album.artist, cover);
+-      error_preview.header = error_header;
+-      error_preview.purchase_prize = album_price;
+-      error_preview.purchase_type = _("Digital CD");
+-      var error_action = new Unity.PreviewAction ("open_u1_link", link_text, null);
+-      error_action.activated.connect (() => link_handler (uri));
+-      error_preview.add_action (error_action);
+-
+-      if (has_cancel)
+-      {
+-        var cancel_action = new Unity.PreviewAction ("cancel", _("Cancel"), null);
+-        cancel_action.activated.connect (cancel_purchase);
+-        error_preview.add_action (cancel_action);
+-      }
+-
+-      return new Unity.ActivationResponse.with_preview (error_preview);
+-    }
+-
+-    public Unity.ActivationResponse open_forgot_password_url (string uri)
+-    {
+-      return open_uri (forgotten_password_url ());
+-    }
+-
+-    public Unity.ActivationResponse change_payment_method (string uri)
+-    {
+-      if (purchase_service.open_url != null)
+-      {
+-        debug ("Open url is %s", purchase_service.open_url);
+-        return open_uri (purchase_service.open_url);
+-      }
+-
+-      return open_uri (change_payment_method_url ());
+-    }
+-
+-    public Unity.ActivationResponse cancel_purchase (string uri)
+-    {
+-      return new Unity.ActivationResponse.with_preview (preview (uri));
+-    }
+-
+-    public Unity.ActivationResponse open_sso_login (string uri)
+-    {
+-      Album album = null;
+-      SList<Track> tracks = null;
+-      collection.get_album_details (uri, out album, out tracks);
+-
+-      debug ("Finding %s", UBUNTUONE_MUSIC_LOGIN);
+-      var ui_path = Environment.find_program_in_path (UBUNTUONE_MUSIC_LOGIN);
+-      string cmd_line = "%s --album=\"%s\" --artist=\"%s\" --price=\"%s\" --picture=\"%s\" --url=\"%s\"".printf(
+-        ui_path, album.title, album.artist, album.formatted_price, album.artwork_path, uri);
+-      if (ui_path != null) {
+-        try {
+-          debug ("Executing '%s'", cmd_line);
+-          bool was_started = Process.spawn_command_line_async (cmd_line);
+-          // hide dash
+-          if (was_started) {
+-              return new Unity.ActivationResponse (Unity.HandledType.HIDE_DASH);
+-          }
+-        } catch (GLib.SpawnError e) {
+-          debug ("Failed to start ubuntuone-music-login for uri %s due to '%s'", uri, e.message);
+-        }
+-      }
+-      return open_uri (uri);
+-    }
+-
+-    bool run_with_timeout (MainLoop ml, uint timeout_ms)
+-    {
+-        bool timeout_reached = false;
+-        var t_id = Timeout.add (timeout_ms, () => {
+-            timeout_reached = true;
+-            debug ("Timeout reached");
+-            ml.quit ();
+-            return false;
+-        });
+-
+-        ml.run ();
+-
+-        if (!timeout_reached) {
+-            Source.remove (t_id);
+-        }
+-
+-        return !timeout_reached;
+-    }
+-
+-    void fetch_account_info_sync () throws PurchaseError
+-    {
+-        PurchaseError failure = null;
+-        MainLoop mainloop = new MainLoop ();
+-        purchase_service.fetch_account_info.begin((obj, res) => {
+-            mainloop.quit ();
+-            try {
+-                purchase_service.fetch_account_info.end (res);
+-            } catch (PurchaseError e) {
+-                failure = e;
+-            }
+-        });
+-        if (!run_with_timeout (mainloop, 10000)) {
+-            throw new PurchaseError.MISSING_CREDENTIALS_ERROR ("Timeout getting credentials.");
+-        }
+-        if (failure != null) {
+-            throw failure;
+-        }
+-    }
+-
+-    public Unity.ActivationResponse show_purchase_preview (string uri)
+-    {
+-
+-      try {
+-        fetch_account_info_sync ();
+-        debug ("retrieved account info: %s %s", purchase_service.nickname, purchase_service.email);
+-      } catch (PurchaseError e) {
+-        debug ("can't get account info: %s", e.message);
+-      }
+-
+-      if (purchase_service.got_credentials () == false)
+-      {
+-        debug ("no credentials available, opening sso login. %s", uri);
+-        return open_sso_login (uri);
+-      }
+-
+-      Album album = null;
+-      SList<Track> tracks = null;
+-      collection.get_album_details (uri, out album, out tracks);
+-
+-      if (album != null)
+-      {
+-        try {
+-          purchase_service.fetch_payment_info (album.purchase_sku);
+-          debug ("retrieved payment method: %s", purchase_service.selected_payment_method);
+-          return new Unity.ActivationResponse.with_preview (purchase_preview (uri, null));
+-        } catch (PurchaseError e) {
+-          debug ("can't get default payment method: %s", e.message);
+-          return build_error_preview (uri, ERROR_MESSAGE_NO_PAYMENT_METHOD, album.formatted_price, _("Go to Ubuntu One"), change_payment_method);
+-        }
+-      }
+-      return open_uri (uri);
+-    }
+-
+-    public Unity.ActivationResponse purchase_album (Unity.PreviewAction action, string uri)
+-    {
+-      var password = action.hints["password"].get_string();
+-
+-      if (password == null) {
+-          var preview = purchase_preview (uri, _("Please enter your password"));
+-          debug ("empty password.");
+-          return new Unity.ActivationResponse.with_preview (preview);
+-      }
+-
+-      var album = album_map.get (uri);
+-
+-      File cover_file = File.new_for_uri (album.artwork_path); //artwork path is a remote uri
+-      try {
+-        var cover_pixbuf = new Pixbuf.from_stream (cover_file.read ());
+-        notification.set_icon_from_pixbuf (cover_pixbuf);
+-      } catch (GLib.Error e) {
+-        debug ("Cannot set notification icon from uri %s", uri);
+-      }
+-
+-      notification.summary = album.title;
+-      notification.body = _("Authorizing purchase");
+-      try {
+-        notification.show ();
+-      } catch (GLib.Error e) {
+-        debug ("Error while showing notification: %s", e.message);
+-      }
+-
+-      try {
+-        purchase_service.purchase (album.purchase_sku, password);
+-        debug ("purchase completed.");
+-        notification.update (album.title, _("Purchase completed"), "");
+-        try {
+-          notification.show ();
+-        } catch (GLib.Error e) {
+-          debug ("Error while showing notification: %s", e.message);
+-        }
+-        return new Unity.ActivationResponse (Unity.HandledType.HIDE_DASH);
+-      } catch (PurchaseError e) {
+-        if (e is PurchaseError.WRONG_PASSWORD_ERROR) {
+-            debug ("wrong password error: %s", e.message);
+-            return new Unity.ActivationResponse.with_preview (purchase_preview (uri, _("Wrong password")));
+-        } else {
+-            debug ("got purchase error: %s", e.message);
+-            return build_error_preview (uri, ERROR_MESSAGE_TECHNICAL_PROBLEM, album.formatted_price, _("Continue"), open_uri);
+-        }
+-      }
+-    }
+-
+-    public Unity.Preview purchase_preview (string uri, string? error_message)
+-    {
+-      Unity.PaymentPreview album_purchase_preview = null;
+-      Album album = null;
+-      SList<Track> tracks = null;
+-      collection.get_album_details (uri, out album, out tracks);
+-
+-      if (album != null)
+-      {
+-        File cover_file = File.new_for_uri (album.artwork_path); //artwork path is a remote uri
+-
+-        var cover = new FileIcon (cover_file);
+-        album_purchase_preview = new Unity.PaymentPreview.for_music(album.title, album.artist, cover);
+-
+-        album_purchase_preview.header = _("Hi %s, you purchased in the past from Ubuntu One,"
+-        + " would you like to use the same payment details? Please review your order.").printf (purchase_service.nickname);
+-        album_purchase_preview.email = purchase_service.email;
+-        album_purchase_preview.payment_method = purchase_service.selected_payment_method;
+-        album_purchase_preview.purchase_prize = album.formatted_price;
+-        album_purchase_preview.purchase_type = _("Digital CD");
+-
+-        // data
+-
+-        var data = new HashTable<string, Variant>(str_hash, str_equal);
+-        if (error_message != null) {
+-            data["error_message"] = error_message;
+-        }
+-
+-        InfoHint info_hint = new InfoHint.with_variant("album_purchase_preview", "", null, data);
+-        album_purchase_preview.add_info(info_hint);
+-
+-        // actions
+-
+-        var purchase_action = new Unity.PreviewAction ("purchase_album", _("Buy Now"), null);
+-        purchase_action.activated.connect (purchase_album);
+-        album_purchase_preview.add_action (purchase_action);
+-
+-        var forgot_password_action = new Unity.PreviewAction ("forgot_password", _("forgotten your Ubuntu One password?"), null);
+-        forgot_password_action.activated.connect (open_forgot_password_url);
+-        album_purchase_preview.add_action (forgot_password_action);
+-
+-        var cancel_action = new Unity.PreviewAction ("cancel_purchase", _("Cancel"), null);
+-        cancel_action.activated.connect (cancel_purchase);
+-        album_purchase_preview.add_action (cancel_action);
+-
+-        var change_payment_method_action = new Unity.PreviewAction ("change_payment_method", _("change payment method"), null);
+-        change_payment_method_action.activated.connect (change_payment_method);
+-        album_purchase_preview.add_action (change_payment_method_action);
+-      }
+-      return album_purchase_preview;
+-    }
+-
+-  }
+-}
+diff --git a/src/ubuntuone-constants.vala b/src/ubuntuone-constants.vala
+deleted file mode 100644
+index fe7961c..0000000
+--- a/src/ubuntuone-constants.vala
++++ /dev/null
+@@ -1,66 +0,0 @@
+-namespace Ubuntuone.Constants {
+-
+-    private const string WEBAPI_SERVER = "https://one.ubuntu.com/";
+-    private const string ACCOUNT_PATH = "api/account";
+-    private const string PAYMENT_METHOD_PATH = "music-store-up/api/1/user/retrieve-payment-method?purchase_sku=%s";
+-    private const string PURCHASE_WITH_DEFAULT_PAYMENT_PATH = "music-store-up/api/1/user/purchase-with-default-payment?purchase_sku=%s&authentication=%s";
+-
+-    private const string LOGIN_SERVER = "https://login.ubuntu.com/";
+-    private const string AUTHENTICATION_PATH = "api/1.1/authentications";
+-    private const string AUTHENTICATE_PARAMS = "ws.op=authenticate&token_name=Purchase_Token";
+-    private const string FORGOTTEN_PASSWORD_PATH = "+forgot_password";
+-
+-    private const string PAY_SERVER = "https://pay.ubuntu.com/";
+-    private const string CHANGE_PAYMENT_METHOD_PATH = "account/";
+-
+-    string from_environ (string env_name, string default_value)
+-    {
+-        string env_value = Environment.get_variable (env_name);
+-        return env_value != null ? env_value : default_value;
+-    }
+-
+-    string webapi_server ()
+-    {
+-        return from_environ ("U1_WEBAPI_SERVER", WEBAPI_SERVER);
+-    }
+-
+-    string login_server ()
+-    {
+-        return from_environ ("U1_LOGIN_SERVER", LOGIN_SERVER);
+-    }
+-
+-    string pay_server ()
+-    {
+-        return from_environ ("U1_PAY_SERVER", PAY_SERVER);
+-    }
+-
+-    string account_uri ()
+-    {
+-        return webapi_server () + ACCOUNT_PATH;
+-    }
+-
+-    string payment_method_uri ()
+-    {
+-        return webapi_server () + PAYMENT_METHOD_PATH;
+-    }
+-
+-    string purchase_with_default_payment_uri ()
+-    {
+-        return webapi_server () + PURCHASE_WITH_DEFAULT_PAYMENT_PATH;
+-    }
+-
+-    string authentication_uri ()
+-    {
+-        return login_server () + AUTHENTICATION_PATH;
+-    }
+-
+-    string forgotten_password_url ()
+-    {
+-        return login_server () + FORGOTTEN_PASSWORD_PATH;
+-    }
+-
+-    string change_payment_method_url ()
+-    {
+-        return pay_server () + CHANGE_PAYMENT_METHOD_PATH;
+-    }
+-}
+diff --git a/src/ubuntuone-webservices.vala b/src/ubuntuone-webservices.vala
+deleted file mode 100644
+index c4e806c..0000000
+--- a/src/ubuntuone-webservices.vala
++++ /dev/null
+@@ -1,340 +0,0 @@
+-/*
+- * Copyright (C) 2012 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alejandro J. Cura <alecu@canonical.com>
+- *
+- */
+-
+-using Soup;
+-using Ubuntuone.Constants;
+-
+-[DBus (name = "com.ubuntuone.CredentialsManagement")]
+-interface CredentialsManagement : GLib.Object {
+-    public signal void credentials_found (HashTable <string, string> info);
+-    public signal void credentials_not_found ();
+-    public signal void credentials_error (HashTable <string, string> error_dict);
+-
+-
+-    [DBus (name = "find_credentials")]
+-    public abstract void find_credentials () throws Error;
+-}
+-
+-namespace Ubuntuone.Webservice
+-{
+-    public errordomain PurchaseError
+-    {
+-        MISSING_CREDENTIALS_ERROR,
+-        PURCHASE_ERROR,
+-        WRONG_PASSWORD_ERROR,
+-        UNSPECIFIED_ERROR
+-    }
+-
+-    public class PurchaseService : GLib.Object
+-    {
+-        internal Soup.SessionAsync http_session;
+-        Soup.SessionAsync http_session_sso;
+-        CredentialsManagement credentials_management;
+-        public string nickname { get; private set; default = null; }
+-        public string email { get; private set; default = null; }
+-        public string selected_payment_method { get; internal set; default = null; }
+-        public string consumer_key { get; private set; default = null; }
+-        public string token { get; private set; default = null; }
+-        public string open_url { get; private set; default = null; }
+-        internal HashTable <string, string> _ubuntuone_credentials = null;
+-
+-        construct {
+-            http_session = build_http_session ();
+-            http_session_sso = build_http_session ();
+-
+-            credentials_management = build_credentials_management ();
+-        }
+-
+-        internal Soup.SessionAsync build_http_session ()
+-        {
+-            var session = new Soup.SessionAsync ();
+-            session.user_agent = "%s/%s (libsoup)".printf("UbuntuOneMusicstoreLens", "1.0");
+-            return session;
+-        }
+-
+-        public bool got_credentials () {
+-            return _ubuntuone_credentials != null;
+-        }
+-
+-        internal virtual CredentialsManagement build_credentials_management ()
+-        {
+-            try {
+-                return Bus.get_proxy_sync (BusType.SESSION, "com.ubuntuone.Credentials",
+-                                           "/credentials", DBusProxyFlags.DO_NOT_AUTO_START);
+-            } catch (IOError e) {
+-                error ("Can't connect to DBus: %s", e.message);
+-            }
+-        }
+-
+-        public bool ready_to_purchase {
+-            get { return selected_payment_method != null; }
+-        }
+-
+-        internal Json.Object parse_json (string json_string) throws GLib.Error
+-        {
+-            var parser = new Json.Parser();
+-            parser.load_from_data(json_string, -1);
+-            return parser.get_root().get_object();
+-        }
+-
+-        internal void parse_account_json (string json_string) throws GLib.Error
+-        {
+-            var root_object = parse_json (json_string);
+-            nickname = root_object.get_string_member("nickname");
+-            email = root_object.get_string_member("email");
+-        }
+-
+-        internal void parse_payment_method_json (string json_string) throws GLib.Error, PurchaseError
+-        {
+-            var root_object = parse_json (json_string);
+-            if (root_object.has_member ("selected_payment_method")) {
+-                selected_payment_method = root_object.get_string_member("selected_payment_method");
+-            } else {
+-                open_url = root_object.get_string_member ("open_url");
+-                var error_message = root_object.get_string_member ("error_message");
+-                throw new PurchaseError.PURCHASE_ERROR (error_message);
+-            }
+-        }
+-
+-        internal void parse_authentication_json (string json_string) throws GLib.Error
+-        {
+-            var root_object = parse_json (json_string);
+-            consumer_key = root_object.get_string_member ("consumer_key");
+-            token = root_object.get_string_member ("token");
+-        }
+-
+-        internal string parse_purchase_json (string json_string) throws GLib.Error
+-        {
+-            var root_object = parse_json (json_string);
+-            if (root_object.has_member ("open_url")) {
+-                return root_object.get_string_member("open_url");
+-            } else {
+-                return "";
+-            }
+-        }
+-
+-        internal virtual async void fetch_credentials () throws PurchaseError
+-        {
+-            PurchaseError error = null;
+-
+-            ulong found_handler = credentials_management.credentials_found.connect ((credentials) => {
+-                _ubuntuone_credentials = credentials;
+-                debug ("got credentials");
+-                fetch_credentials.callback ();
+-            });
+-            ulong not_found_handler = credentials_management.credentials_not_found.connect (() => {
+-                error = new PurchaseError.MISSING_CREDENTIALS_ERROR ("No Ubuntu One tokens.");
+-                debug ("not found handler");
+-                fetch_credentials.callback ();
+-            });
+-            ulong error_handler = credentials_management.credentials_error.connect ((error_dict) => {
+-                error = new PurchaseError.MISSING_CREDENTIALS_ERROR ("Can't get Ubuntu One tokens.");
+-                debug ("error handler");
+-                fetch_credentials.callback ();
+-            });
+-
+-            try {
+-                credentials_management.find_credentials ();
+-                yield;
+-            } catch (Error e) {
+-                error = new PurchaseError.MISSING_CREDENTIALS_ERROR ("Can't get Ubuntu One tokens: %s", e.message);
+-            }
+-
+-            credentials_management.disconnect (found_handler);
+-            credentials_management.disconnect (not_found_handler);
+-            credentials_management.disconnect (error_handler);
+-
+-            if (error != null) {
+-                debug ("Can't get Ubuntu One tokens: %s", error.message);
+-                throw error;
+-            }
+-        }
+-
+-        string oauth_sign (string uri)
+-        {
+-            return OAuth.sign_url2(uri, null,
+-                                   OAuth.Method.PLAINTEXT, "GET",
+-                                   _ubuntuone_credentials["consumer_key"],
+-                                   _ubuntuone_credentials["consumer_secret"],
+-                                   _ubuntuone_credentials["token"],
+-                                   _ubuntuone_credentials["token_secret"]);
+-        }
+-
+-        internal virtual async PurchaseError call_api (string method, string uri, out string response)
+-        {
+-            PurchaseError error = null;
+-            var signed_uri = oauth_sign (uri);
+-            var message = new Soup.Message (method, signed_uri);
+-            http_session.queue_message (message, (session, message) => {
+-                if (message.status_code != Soup.KnownStatusCode.OK) {
+-                    debug ("Web request failed: HTTP %u %s - %s",
+-                           message.status_code, message.reason_phrase, uri);
+-                    error = new PurchaseError.PURCHASE_ERROR (message.reason_phrase);
+-                }
+-                call_api.callback ();
+-            });
+-            yield;
+-            message.response_body.flatten ();
+-            response = (string) message.response_body.data;
+-            return error;
+-        }
+-
+-        internal virtual async void fetch_account () throws PurchaseError
+-        {
+-            string response;
+-            PurchaseError error = yield call_api ("GET", account_uri(), out response);
+-
+-            if (error != null) {
+-                debug ("Error while fetching U1 account: %s.", error.message);
+-                throw error;
+-            }
+-
+-            try {
+-                parse_account_json (response);
+-                debug ("got account");
+-            } catch (GLib.Error e) {
+-                debug ("Error while parsing U1 account: %s.", e.message);
+-                throw new PurchaseError.PURCHASE_ERROR (e.message);
+-            }
+-        }
+-
+-        internal virtual void fetch_payment_method (string purchase_sku) throws PurchaseError
+-        {
+-            var uri = payment_method_uri().printf (purchase_sku);
+-
+-            var message = send_signed_webservice_call ("GET", uri);
+-            if (message.status_code != Soup.KnownStatusCode.OK) {
+-                debug ("Purchase request failed: HTTP %u", message.status_code);
+-                debug ("Reason: %s", message.reason_phrase);
+-                try {
+-                    message.response_body.flatten ();
+-                    debug ("body: ------\n%s\n------\n", (string) message.response_body.data);
+-                } catch (Error e) {
+-                }
+-                throw new PurchaseError.PURCHASE_ERROR ("Retrieve payment method failed: %s".printf (message.reason_phrase));
+-            }
+-            try {
+-                message.response_body.flatten ();
+-                var result = (string) message.response_body.data;
+-                parse_payment_method_json (result);
+-            } catch (GLib.Error e) {
+-                throw new PurchaseError.PURCHASE_ERROR (e.message);
+-            }
+-        }
+-
+-        public virtual async void fetch_account_info () throws PurchaseError
+-        {
+-            yield fetch_credentials ();
+-            yield fetch_account ();
+-        }
+-
+-        public virtual void fetch_payment_info (string purchase_sku) throws PurchaseError
+-        {
+-            fetch_payment_method (purchase_sku);
+-        }
+-
+-        internal virtual void _do_sso_webcall (Soup.Message message, string password)
+-        {
+-            var handler = http_session_sso.authenticate.connect ((session, message, auth, retrying) => {
+-                if (!retrying) {
+-                    auth.authenticate (email, password);
+-                }
+-            });
+-            http_session_sso.send_message (message);
+-            http_session_sso.disconnect (handler);
+-        }
+-
+-        internal virtual string authenticated_sso_webcall (string method, string uri, string operation, string password)
+-            throws PurchaseError
+-        {
+-            var message = new Soup.Message (method, uri);
+-            message.set_request ("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, operation.data);
+-            _do_sso_webcall (message, password);
+-            if (message.status_code != Soup.KnownStatusCode.OK) {
+-                debug ("Authentication request failed: HTTP %u", message.status_code);
+-                debug ("Reason: %s", message.reason_phrase);
+-                if (message.status_code == Soup.KnownStatusCode.UNAUTHORIZED) {
+-                    throw new PurchaseError.WRONG_PASSWORD_ERROR ("Wrong password");
+-                }
+-                try {
+-                    message.response_body.flatten ();
+-                    debug ("body: ------\n%s\n------\n", (string) message.response_body.data);
+-                } catch (Error e) {
+-                }
+-                throw new PurchaseError.PURCHASE_ERROR (message.reason_phrase);
+-            }
+-            message.response_body.flatten ();
+-            return (string) message.response_body.data;
+-        }
+-
+-        internal virtual string get_purchase_token (string password) throws PurchaseError
+-        {
+-            var result = authenticated_sso_webcall ("POST", authentication_uri(), AUTHENTICATE_PARAMS, password);
+-            try {
+-                parse_authentication_json (result);
+-            } catch (GLib.Error e) {
+-                throw new PurchaseError.PURCHASE_ERROR (e.message);
+-            }
+-            return "%s:%s".printf (consumer_key, token);
+-        }
+-
+-        internal virtual Soup.Message send_signed_webservice_call (string method, string uri)
+-        {
+-            var signed_uri = oauth_sign (uri);
+-            var message = new Soup.Message (method, signed_uri);
+-            http_session.send_message (message);
+-            return message;
+-        }
+-
+-        internal virtual void purchase_with_default_payment (string album_id, string purchase_token) throws PurchaseError
+-        {
+-            var uri = purchase_with_default_payment_uri().printf (album_id, purchase_token);
+-            var message = send_signed_webservice_call ("GET", uri);
+-
+-            if (message.status_code != Soup.KnownStatusCode.OK) {
+-                debug ("Purchase request failed: HTTP %u", message.status_code);
+-                debug ("Reason: %s", message.reason_phrase);
+-                try {
+-                    message.response_body.flatten ();
+-                    debug ("body: ------\n%s\n------\n", (string) message.response_body.data);
+-                } catch (Error e) {
+-                }
+-                throw new PurchaseError.PURCHASE_ERROR ("Purchase failed: %s".printf (message.reason_phrase));
+-            }
+-            try {
+-                message.response_body.flatten ();
+-                var result = (string) message.response_body.data;
+-                var open_url = parse_purchase_json (result);
+-                if (open_url != "") {
+-                    throw new PurchaseError.PURCHASE_ERROR (open_url);
+-                }
+-            } catch (GLib.Error e) {
+-                throw new PurchaseError.PURCHASE_ERROR (e.message);
+-            }
+-        }
+-
+-        public void purchase (string album_id, string password) throws PurchaseError
+-        {
+-            var purchase_token = get_purchase_token (password);
+-            debug ("purchasing...");
+-            purchase_with_default_payment (album_id, purchase_token);
+-            debug ("purchase completed.");
+-        }
+-    }
+-}
+diff --git a/tests/manual/activation-remote-scope.txt b/tests/manual/activation-remote-scope.txt
+deleted file mode 100644
+index 89807df..0000000
+--- a/tests/manual/activation-remote-scope.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-'Disable' Music store Search
+-----------------------------------------------------
+-Disabling the music store scope should not show any remote fetched result.
+-
+-Setup:
+-Internet connectivity.
+-
+-Actions:
+-1. Disable the online/commercial search in gnome-control-center or directly in gsettings
+-(com.canonical.Unity.Lenses "remote-content-search" to none)
+-2 Perfom a search in the music lens
+-
+-Expected Results:
+-No "More suggestions" category should appear.
+-
+diff --git a/tests/manual/previews-musicstore.txt b/tests/manual/previews-musicstore.txt
+deleted file mode 100644
+index 27c9e4d..0000000
+--- a/tests/manual/previews-musicstore.txt
++++ /dev/null
+@@ -1,159 +0,0 @@
+-Preview of U1 musicstore album
+-----------------------------------------------------
+-Test that the u1ms album preview is displayed correctly in the Dash.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open the Dash and switch to the music lens.
+-2. Make sure some albums for purchase are displayed.
+-3. Right-click an album.
+-4. Repeat 1-2, but use Left-click in (3).
+-
+-Expected Result:
+-Album preview should be displayed. It should display album cover, album title, album artist and year (as subtitle)
+-a list of tracks and 'Download' button. 'Download' button should display price and currency.
+-
+-
+-Preview of U1ms album - 'Download' action.
+-----------------------------------------------------
+-Test that 'Download' actions brings U1 music store.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click 'Download' button.
+-
+-Expected Result:
+-U1 music store website is opened, with selected album displayed.
+-
+-
+-U1ms album preview - built-in playback
+-----------------------------------------------------
+-Test that built-in playback via music-preview-player supports play/pause and resume for u1ms album tracks.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click small play button next to a track.
+-3. As the track is played, hit pause / play a few times.
+-
+-Expected Result:
+-Selected track is played by music-preview-player. Playback progress is reported in the Dash. Playback is paused/resumed
+-when hitting pause/play button.
+-
+-
+-U1ms album preview - end of playback with built-in playback
+-----------------------------------------------------
+-Test progress and playback state are reported correctly on end-of-playback when built-in playback is used.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click small play button next to a track.
+-3. Wait for the playback to finish.
+-
+-Expected Result:
+-Selected track is played by music-preview-player. Playback progress is reported in the Dash. When playback finishes,
+-the progress is reset.
+-
+-
+-U1ms album preview - song change with built-in playback
+-----------------------------------------------------
+-Test that song can be changed with built-in playback functionality and progress/state are reported accordingly.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click small play button next to a track.
+-3. As the track is played, click small play button for another track.
+-
+-Expected Result:
+-Selected track is played by music-preview-player. When another track is activated for playback then playback progress
+-is updated accrodingly to show play state and progress for only one track.
+-
+-U1ms album preview - closing the preview during playback
+-----------------------------------------------------
+-Test that built-in playback stops when preview is closed.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click small play button next to a track.
+-3. As the track is played, close the preview.
+-
+-Expected Result:
+-Selected track is played by music-preview-player. Playback stops when the preview is closed.
+-Preview player process quits (verify with 'ps uax|grep music-preview-player').
+-
+-
+-U1ms album preview - switching to a different preview during playback
+-----------------------------------------------------
+-Test that built-in playback stops when switching to a different preview.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Click small play button next to a track.
+-3. As the track is played, switch to a different preview by clicking left/right arrows.
+-
+-Expected Result:
+-Selected track is played by music-preview-player. Playback stops when preview of different album is displayed.
+-
+-
+-U1ms single track preview
+-----------------------------------------------------
+-Test that single track preview for u1ms track is displayed correctly in the Dash.
+-
+-Setup:
+-Network connectivity.
+-
+-1. Open the Dash and switch to the music lens.
+-2. Make sure some u1ms songs are displayed.
+-3. Right-click a song.
+-
+-Expected Result:
+-Song preview should be displayed. It should display album cover, song title, album artist and year (as subtitle).
+-Only a single track should be displayed in the player area. 'Download' button should be displayed.
+-
+-
+-U1ms single track preview - 'Download' action
+-----------------------------------------------------
+-Test that 'Download' action for single track preview brings U1 music store.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms song.
+-2. Click 'Download' button.
+-
+-Expected Result:
+-U1 music store website is opened, with selected song displayed.
+-
+-U1ms album preview - playback stops on network error
+-----------------------------------------------------
+-Test playback state is set back to stop when network is not available.
+-
+-Setup:
+-Network connectivity.
+-
+-Actions:
+-1. Open a preview of u1ms album.
+-2. Login via ssh or switch to a VT and block outgoing network traffic, e.g. 
+-   `sudo iptables -A OUTPUT -p tcp --dport 80 -j DROP`.
+-3. Click small play button next to a track.
+-
+-Expected Result:
+-Music doesn't play; the small play button next to a track indicates playing state.
+-After approximately 10 seconds the state is reset back to the default (not playing).
+diff --git a/tests/unit/Makefile.am b/tests/unit/Makefile.am
+index a063321..667c969 100644
+--- a/tests/unit/Makefile.am
++++ b/tests/unit/Makefile.am
+@@ -1,4 +1,4 @@
+-check_PROGRAMS = test-rhythmbox-parser test-ubuntuone-purchases
++check_PROGRAMS = test-rhythmbox-parser
+ 
+ TESTS = $(check_PROGRAMS)
+ 
+@@ -58,18 +58,6 @@ test_rhythmbox_parser_SOURCES = \
+   $(top_srcdir)/src/banshee-filter-parser-genre.vala \
+   $(top_srcdir)/src/banshee-filter-parser.vala \
+   $(top_srcdir)/src/dash-proxy.vala \
+-  $(top_srcdir)/src/musicstore-collection.vala \
+-  $(top_srcdir)/src/musicstore-filter-parser-decade.vala \
+-  $(top_srcdir)/src/musicstore-filter-parser-genre.vala \
+-  $(top_srcdir)/src/musicstore-filter-parser.vala \
+-  $(NULL)
+-
+-test_ubuntuone_purchases_LDADD = $(test_libs)
+-
+-test_ubuntuone_purchases_SOURCES = \
+-  test-ubuntuone-purchases.vala \
+-  $(top_srcdir)/src/ubuntuone-constants.vala \
+-  $(top_srcdir)/src/ubuntuone-webservices.vala \
+   $(NULL)
+ 
+ EXTRA_DIST = assertions.vapi
+diff --git a/tests/unit/test-ubuntuone-purchases.vala b/tests/unit/test-ubuntuone-purchases.vala
+deleted file mode 100644
+index 0e37345..0000000
+--- a/tests/unit/test-ubuntuone-purchases.vala
++++ /dev/null
+@@ -1,719 +0,0 @@
+-/*
+- * Copyright (C) 2012 Canonical Ltd
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 3 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- * Authored by Alejandro J. Cura <alecu@canonical.com>
+- *
+- */
+-
+-using Assertions;
+-using Gee;
+-using GLib;
+-using Ubuntuone.Webservice;
+-
+-
+-const string FAKE_URL = "http://fake/url";
+-const string FAKE_PASSWORD = "PezEspada";
+-const string FAKE_SKU = "7digital:fake_album:id";
+-const string FAKE_TOKEN = "a fake token";
+-
+-const string BROKEN_JSON = """
+-    {
+-        "a": "b",
+-    $!@$# BROKEN!
+-""";
+-
+-const string FAKE_JSON_ACCOUNT = """
+-    {
+-        "username": "mrbean",
+-        "nickname": "Mr. Bean",
+-        "email": "mr@be.an"
+-    }
+-""";
+-
+-
+-const string FAKE_JSON_PAYMENT_METHOD = """
+-    {
+-        "open_url": "",
+-        "user_email": "mr@be.an",
+-        "selected_payment_method": "Visa 1234"
+-    }
+-""";
+-
+-
+-const string FAKE_JSON_PAYMENT_METHOD_ERROR = """
+-    {
+-        "open_url": "http://somewhere/else",
+-        "error_message": "No default payment method selected."
+-    }
+-""";
+-
+-
+-const string FAKE_JSON_AUTHENTICATION = """
+-    {
+-        "consumer_secret": "fake_secret", 
+-        "token": "fake_token", 
+-        "consumer_key": "fake_consumer_key", 
+-        "name": "FAKE_TOKEN_NAME", 
+-        "token_secret": "fake_token_secret"
+-    }
+-""";
+-
+-const string FAKE_JSON_PURCHASE = """
+-    {
+-        "order_id": "1111",
+-        "order_status": "OK"
+-    }
+-""";
+-
+-
+-const string FAKE_JSON_PURCHASE_FAILURE = """
+-    {
+-        "order_id": "1111",
+-        "order_status": "PAYMENT_FAILURE",
+-        "order_detail": "TBD",
+-        "open_url": "http://slashdot.org/"
+-    }
+-""";
+-
+-
+-public class Main
+-{
+-  public static int main (string[] args)
+-  {
+-    int result = run_tests (args);
+-    // irl_test ();
+-    return result;
+-  }
+-
+-  static int run_tests (string[] args)
+-  {
+-    Test.init (ref args);
+-
+-    Test.add_data_func ("/Unit/PurchaseChecker/ParseAccount", test_parse_account);
+-    Test.add_data_func ("/Unit/PurchaseChecker/ParseBrokenAccount", test_parse_broken_account);
+-    Test.add_data_func ("/Unit/PurchaseChecker/ParsePaymentMethod", test_parse_payment_method);
+-    Test.add_data_func ("/Unit/PurchaseChecker/ParsePaymentMethodError", test_parse_payment_method_error);
+-    Test.add_data_func ("/Unit/PurchaseChecker/ParseAuthentication", test_parse_authentication);
+-    Test.add_data_func ("/Unit/PurchaseChecker/ReadyToPurchase", test_ready_to_purchase);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchAccountInfo", test_fetch_account_info);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchPaymentInfo", test_fetch_payment_info);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchCredentials", test_fetch_credentials);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchCredentialsFails", test_fetch_credentials_fails);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchCredentialsFailsExtra", test_fetch_credentials_fails_extra);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchAccount", test_fetch_account);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchAccountFails", test_fetch_account_http_failure);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchAccountBrokenJson", test_fetch_account_wrong_json);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchPayment", test_fetch_payment);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchPaymentFails", test_fetch_payment_http_failure);
+-    Test.add_data_func ("/Unit/PurchaseChecker/FetchPaymentBrokenJson", test_fetch_payment_wrong_json);
+-    Test.add_data_func ("/Unit/PurchaseChecker/Purchase", test_purchase);
+-    Test.add_data_func ("/Unit/PurchaseChecker/GetPurchaseToken", test_get_purchase_token);
+-    Test.add_data_func ("/Unit/PurchaseChecker/GetPurchaseTokenBrokenJson", test_get_purchase_token_broken_json);
+-    Test.add_data_func ("/Unit/PurchaseChecker/SsoWebcall", test_authenticated_sso_webcall);
+-    Test.add_data_func ("/Unit/PurchaseChecker/SsoWebcallFails", test_authenticated_sso_webcall_fails);
+-    Test.add_data_func ("/Unit/PurchaseChecker/SsoWebcallWrongPassword", test_authenticated_sso_webcall_wrong_password);
+-    Test.add_data_func ("/Unit/PurchaseChecker/PurchaseDefaultPayment", test_purchase_with_default_payment);
+-    Test.add_data_func ("/Unit/PurchaseChecker/PurchaseDefaultPaymentBroken", test_purchase_with_default_payment_broken_json);
+-    Test.add_data_func ("/Unit/PurchaseChecker/PurchaseConnectionFails", test_purchase_with_default_payment_connection_fails);
+-    Test.add_data_func ("/Unit/PurchaseChecker/PurchaseDefaultPaymentFails", test_purchase_with_default_payment_fails);
+-
+-    return Test.run ();
+-  }
+-
+-  public static bool run_with_timeout (MainLoop ml, uint timeout_ms)
+-  {
+-    bool timeout_reached = false;
+-    var t_id = Timeout.add (timeout_ms, () => {
+-      timeout_reached = true;
+-      debug ("Timeout reached");
+-      ml.quit ();
+-      return false;
+-    });
+-
+-    ml.run ();
+-
+-    if (!timeout_reached) Source.remove (t_id);
+-
+-    return !timeout_reached;
+-  }
+-
+-
+-  async void irl_test_async ()
+-  {
+-    var purchase_service = new PurchaseService();
+-    var purchase_sku = "7digital:album:1347423:WORLD";
+-    try {
+-      yield purchase_service.fetch_account_info ();
+-      purchase_service.fetch_payment_info (purchase_sku);
+-      debug ("data was available: %s %s %s", purchase_service.nickname, purchase_service.email, purchase_service.selected_payment_method);
+-      var real_user_password = FAKE_PASSWORD;
+-      purchase_service.purchase (purchase_sku, real_user_password);
+-      debug ("purchase completed.");
+-    } catch (PurchaseError e) {
+-      debug ("got purchase error: %s", e.message);
+-    }
+-  }
+-
+-  static void irl_test ()
+-  {
+-    var loop = new GLib.MainLoop ();
+-    var m = new Main();
+-    Idle.add (() => {
+-      m.irl_test_async.begin ((obj, res) => {
+-        m.irl_test_async.end (res);
+-        loop.quit ();
+-      });
+-      return false;
+-    });
+-    assert (run_with_timeout (loop, 60000));
+-  }
+-
+-  class FakeCredentialsManagement : GLib.Object, CredentialsManagement
+-  {
+-    private HashTable <string, string> fake_credentials;
+-
+-    construct
+-    {
+-      fake_credentials = new HashTable <string, string> (str_hash, str_equal);
+-      fake_credentials["token"] = "fake_token";
+-    }
+-
+-    public void find_credentials () throws IOError
+-    {
+-      Idle.add (() => {
+-        credentials_found (fake_credentials);
+-        return false;
+-      });
+-    }
+-  }
+-
+-  class FailingCredentialsManagement : GLib.Object, CredentialsManagement
+-  {
+-    private HashTable <string, string> fake_error_info;
+-
+-    construct
+-    {
+-      fake_error_info = new HashTable <string, string> (str_hash, str_equal);
+-      fake_error_info["error"] = "fake_error";
+-    }
+-
+-    public void find_credentials () throws IOError
+-    {
+-      Idle.add (() => {
+-        credentials_error (fake_error_info);
+-        return false;
+-      });
+-    }
+-  }
+-
+-  class ExtraFailingCredentialsManagement : GLib.Object, CredentialsManagement
+-  {
+-    public void find_credentials () throws IOError
+-    {
+-      throw new IOError.INVALID_DATA ("Miscellanea Errora");
+-    }
+-  }
+-
+-  class BaseTestPurchaseService : PurchaseService
+-  {
+-    internal override CredentialsManagement build_credentials_management ()
+-    {
+-      return new FakeCredentialsManagement ();
+-    }
+-  }
+-
+-  class FailingCredentialsPurchaseService : PurchaseService
+-  {
+-    internal override CredentialsManagement build_credentials_management ()
+-    {
+-      return new FailingCredentialsManagement ();
+-    }
+-  }
+-
+-  class ExtraFailingCredentialsPurchaseService : PurchaseService
+-  {
+-    internal override CredentialsManagement build_credentials_management ()
+-    {
+-      return new ExtraFailingCredentialsManagement ();
+-    }
+-  }
+-
+-  private static void test_parse_account ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-    try {
+-        purchase_service.parse_account_json (FAKE_JSON_ACCOUNT);
+-    } catch (GLib.Error e)
+-    {
+-        assert_not_reached ();
+-    }
+-    assert_cmpstr (purchase_service.nickname, OperatorType.EQUAL, "Mr. Bean");
+-    assert_cmpstr (purchase_service.email, OperatorType.EQUAL, "mr@be.an");
+-  }
+-
+-  private static void test_parse_broken_account ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-    try
+-    {
+-        purchase_service.parse_account_json (BROKEN_JSON);
+-        assert_not_reached ();
+-    } catch (GLib.Error e)
+-    {
+-        // This is *just* the error we are expecting, so do nothing!
+-    }
+-  }
+-
+-  private static void test_parse_payment_method ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-    try
+-    {
+-        purchase_service.parse_payment_method_json (FAKE_JSON_PAYMENT_METHOD);
+-    } catch (GLib.Error e)
+-    {
+-        assert_not_reached ();
+-    }
+-    assert_cmpstr (purchase_service.selected_payment_method, OperatorType.EQUAL, "Visa 1234");
+-  }
+-
+-  private static void test_parse_payment_method_error ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-    try
+-    {
+-        purchase_service.parse_payment_method_json (FAKE_JSON_PAYMENT_METHOD_ERROR);
+-        assert_not_reached ();
+-    } catch (PurchaseError e)
+-    {
+-        assert_cmpstr (purchase_service.open_url, OperatorType.EQUAL, "http://somewhere/else");
+-    }
+-  }
+-
+-  private static void test_parse_authentication ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-
+-    try
+-    {
+-        purchase_service.parse_authentication_json (FAKE_JSON_AUTHENTICATION);
+-    } catch (GLib.Error e)
+-    {
+-        assert_not_reached ();
+-    }
+-    assert_cmpstr (purchase_service.consumer_key, OperatorType.EQUAL, "fake_consumer_key");
+-    assert_cmpstr (purchase_service.token, OperatorType.EQUAL, "fake_token");
+-  }
+-
+-  private static void test_ready_to_purchase ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-    assert (purchase_service.ready_to_purchase == false);
+-    purchase_service.selected_payment_method = "visa 1234";
+-    assert (purchase_service.ready_to_purchase == true);
+-  }
+-
+-  class TestRefetchPurchaseService : BaseTestPurchaseService {
+-    internal bool credentials_fetched = false;
+-    internal bool account_fetched = false;
+-    internal bool payment_method_fetched = false;
+-
+-    internal override async void fetch_credentials ()
+-    {
+-      Idle.add (() => {
+-        credentials_fetched = true;
+-        fetch_credentials.callback ();
+-        return false;
+-      });
+-      yield;
+-    }
+-    internal override async void fetch_account ()
+-    {
+-      Idle.add (() => {
+-        account_fetched = true;
+-        fetch_account.callback ();
+-        return false;
+-      });
+-      yield;
+-    }
+-    internal override void fetch_payment_method (string purchase_sku)
+-    {
+-      payment_method_fetched = true;
+-    }
+-  }
+-
+-  private static void test_fetch_account_info ()
+-  {
+-    var purchase_service = new TestRefetchPurchaseService ();
+-
+-    MainLoop mainloop = new MainLoop ();
+-    purchase_service.fetch_account_info.begin((obj, res) => {
+-        mainloop.quit ();
+-        try {
+-            purchase_service.fetch_account_info.end (res);
+-        } catch (PurchaseError e) {
+-            error ("Can't fetch payment info: %s", e.message);
+-        }
+-    });
+-    assert (run_with_timeout (mainloop, 1000));
+-
+-    assert (purchase_service.credentials_fetched);
+-    assert (purchase_service.account_fetched);
+-  }
+-
+-  private static void test_fetch_payment_info ()
+-  {
+-    var purchase_service = new TestRefetchPurchaseService ();
+-    try {
+-        purchase_service.fetch_payment_info("fake_sku");
+-    } catch (PurchaseError e) {
+-        error ("Can't fetch payment info: %s", e.message);
+-    }
+-    assert (purchase_service.payment_method_fetched);
+-  }
+-
+-  private static void test_fetch_credentials ()
+-  {
+-    var purchase_service = new BaseTestPurchaseService ();
+-
+-    MainLoop mainloop = new MainLoop ();
+-    purchase_service.fetch_credentials.begin((obj, res) => {
+-        mainloop.quit ();
+-        try {
+-            purchase_service.fetch_credentials.end (res);
+-        } catch (PurchaseError e) {
+-            error ("Can't fetch credentials: %s", e.message);
+-        }
+-    });
+-    assert (run_with_timeout (mainloop, 1000));
+-
+-    assert (purchase_service._ubuntuone_credentials != null);
+-  }
+-
+-  private static void test_fetch_credentials_fails ()
+-  {
+-    PurchaseError failure = null;
+-    var purchase_service = new FailingCredentialsPurchaseService ();
+-
+-    MainLoop mainloop = new MainLoop ();
+-    purchase_service.fetch_credentials.begin((obj, res) => {
+-        mainloop.quit ();
+-        try {
+-            purchase_service.fetch_credentials.end (res);
+-        } catch (PurchaseError e) {
+-            failure = e;
+-        }
+-    });
+-    assert (run_with_timeout (mainloop, 1000));
+-    assert (failure is PurchaseError.MISSING_CREDENTIALS_ERROR);
+-  }
+-
+-  private static void test_fetch_credentials_fails_extra ()
+-  {
+-    PurchaseError failure = null;
+-    var purchase_service = new ExtraFailingCredentialsPurchaseService ();
+-
+-    MainLoop mainloop = new MainLoop ();
+-    purchase_service.fetch_credentials.begin((obj, res) => {
+-        mainloop.quit ();
+-        try {
+-            purchase_service.fetch_credentials.end (res);
+-        } catch (PurchaseError e) {
+-            failure = e;
+-        }
+-    });
+-    assert (run_with_timeout (mainloop, 1000));
+-    assert (failure is PurchaseError.MISSING_CREDENTIALS_ERROR);
+-  }
+-
+-  class FakeWebcallPurchaseService : BaseTestPurchaseService
+-  {
+-    internal string used_uri = null;
+-    internal int status_code;
+-    internal string found_json;
+-
+-    internal FakeWebcallPurchaseService (int _status_code, string _found_json) {
+-        status_code = _status_code;
+-        found_json = _found_json;
+-    }
+-
+-    internal override async PurchaseError call_api (string method, string uri, out string response)
+-    {
+-        PurchaseError error = null;
+-        Idle.add (() => {
+-            call_api.callback ();
+-            return false;
+-        });
+-        yield;
+-        response = found_json;
+-        if (status_code != Soup.KnownStatusCode.OK) {
+-            error = new PurchaseError.PURCHASE_ERROR ("fake error");
+-        }
+-        return error;
+-    }
+-
+-    internal override void _do_sso_webcall (Soup.Message message, string password)
+-    {
+-        message.response_body.append (Soup.MemoryUse.STATIC, found_json.data);
+-        message.status_code = status_code;
+-    }
+-
+-    internal override Soup.Message send_signed_webservice_call (string method, string uri)
+-    {
+-        var message = new Soup.Message (method, uri);
+-        message.response_body.append (Soup.MemoryUse.STATIC, found_json.data);
+-        message.status_code = status_code;
+-        return message;
+-    }
+-  }
+-
+-  private static FakeWebcallPurchaseService _test_fetch_account (int _status_code, string _found_json) throws PurchaseError
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (_status_code, _found_json);
+-    purchase_service._ubuntuone_credentials = new HashTable <string, string> (str_hash, str_equal);
+-
+-    PurchaseError error = null;
+-    MainLoop mainloop = new MainLoop ();
+-    purchase_service.fetch_account.begin((obj, res) => {
+-        mainloop.quit ();
+-        try {
+-            purchase_service.fetch_account.end (res);
+-        } catch (PurchaseError e) {
+-            error = e;
+-        }
+-    });
+-    assert (run_with_timeout (mainloop, 1000));
+-    if (error != null) {
+-        throw error;
+-    }
+-    return purchase_service;
+-  }
+-
+-  private static void test_fetch_account ()
+-  {
+-    try {
+-        var purchase_service = _test_fetch_account (Soup.KnownStatusCode.OK, FAKE_JSON_ACCOUNT);
+-        assert_cmpstr (purchase_service.nickname, OperatorType.EQUAL, "Mr. Bean");
+-        assert_cmpstr (purchase_service.email, OperatorType.EQUAL, "mr@be.an");
+-    } catch (PurchaseError e) {
+-        assert_not_reached ();
+-    }
+-  }
+-
+-  private static void test_fetch_account_http_failure ()
+-  {
+-    try {
+-        _test_fetch_account (Soup.KnownStatusCode.INTERNAL_SERVER_ERROR, FAKE_JSON_ACCOUNT);
+-        assert_not_reached ();
+-    } catch (PurchaseError e) {
+-        // Expected error
+-    }
+-  }
+-
+-  private static void test_fetch_account_wrong_json ()
+-  {
+-    try {
+-        _test_fetch_account (Soup.KnownStatusCode.OK, BROKEN_JSON);
+-        assert_not_reached ();
+-    } catch (PurchaseError e) {
+-        // Expected error
+-    }
+-  }
+-
+-  private static FakeWebcallPurchaseService _test_fetch_payment (int _status_code, string _found_json) throws PurchaseError
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (_status_code, _found_json);
+-    purchase_service._ubuntuone_credentials = new HashTable <string, string> (str_hash, str_equal);
+-    purchase_service.fetch_payment_method("fake_sku");
+-    return purchase_service;
+-  }
+-
+-  private static void test_fetch_payment ()
+-  {
+-    try {
+-        var purchase_service = _test_fetch_payment (Soup.KnownStatusCode.OK, FAKE_JSON_PAYMENT_METHOD);
+-        assert_cmpstr (purchase_service.selected_payment_method, OperatorType.EQUAL, "Visa 1234");
+-    } catch (PurchaseError e) {
+-        assert_not_reached ();
+-    }
+-  }
+-
+-  private static void test_fetch_payment_http_failure ()
+-  {
+-    try {
+-        _test_fetch_payment (Soup.KnownStatusCode.INTERNAL_SERVER_ERROR, FAKE_JSON_PAYMENT_METHOD);
+-        assert_not_reached ();
+-    } catch (PurchaseError e) {
+-        // Expected error
+-    }
+-  }
+-
+-  private static void test_fetch_payment_wrong_json ()
+-  {
+-    try {
+-        _test_fetch_payment (Soup.KnownStatusCode.OK, BROKEN_JSON);
+-        assert_not_reached ();
+-    } catch (PurchaseError e) {
+-        // Expected error
+-    }
+-  }
+-
+-  class TestPurchaseService : BaseTestPurchaseService
+-  {
+-    internal string password;
+-    internal string album_id;
+-    internal string purchase_token;
+-
+-    internal override string get_purchase_token (string password)
+-    {
+-        this.password = password;
+-        return FAKE_TOKEN;
+-    }
+-    internal override void purchase_with_default_payment (string album_id, string purchase_token)
+-    {
+-        this.album_id = album_id;
+-        this.purchase_token = purchase_token;
+-    }
+-  }
+-
+-  private static void test_purchase ()
+-  {
+-    try {
+-        var purchase_service = new TestPurchaseService ();
+-        purchase_service.purchase (FAKE_SKU, FAKE_PASSWORD);
+-        assert_cmpstr (purchase_service.password, OperatorType.EQUAL, FAKE_PASSWORD);
+-        assert_cmpstr (purchase_service.album_id, OperatorType.EQUAL, FAKE_SKU);
+-        assert_cmpstr (purchase_service.purchase_token, OperatorType.EQUAL, FAKE_TOKEN);
+-    } catch (Error e) {
+-        assert_not_reached ();
+-    }
+-  }
+-
+-  class FakePurchaseTokenService : BaseTestPurchaseService
+-  {
+-    string found_json;
+-
+-    internal FakePurchaseTokenService (string _found_json)
+-    {
+-        found_json = _found_json;
+-    }
+-
+-    internal override string authenticated_sso_webcall (string method, string uri, string operation, string password)
+-        throws PurchaseError
+-    {
+-      return found_json;
+-    }
+-  }
+-
+-  private static void test_get_purchase_token ()
+-  {
+-    var purchase_service = new FakePurchaseTokenService (FAKE_JSON_AUTHENTICATION);
+-    var expected = "fake_consumer_key:fake_token";
+-    try {
+-      var result = purchase_service.get_purchase_token (FAKE_PASSWORD);
+-      assert_cmpstr (expected, OperatorType.EQUAL, result);
+-    } catch (PurchaseError e) {
+-      assert_not_reached ();
+-    }
+-  }
+-
+-  private static void test_get_purchase_token_broken_json ()
+-  {
+-    var purchase_service = new FakePurchaseTokenService (BROKEN_JSON);
+-    try {
+-      purchase_service.get_purchase_token (FAKE_PASSWORD);
+-      assert_not_reached ();
+-    } catch (PurchaseError e) {
+-      assert (e is PurchaseError.PURCHASE_ERROR);
+-    }
+-  }
+-
+-  private static void test_authenticated_sso_webcall ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.OK, FAKE_JSON_AUTHENTICATION);
+-    try {
+-      var result = purchase_service.authenticated_sso_webcall ("FAKE", "http://some/where", "operation=wolf", FAKE_PASSWORD);
+-      assert_cmpstr (FAKE_JSON_AUTHENTICATION, OperatorType.EQUAL, result);
+-    } catch (PurchaseError e) {
+-      assert_not_reached ();
+-    }
+-  }
+-
+-  private static void test_authenticated_sso_webcall_fails ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.INTERNAL_SERVER_ERROR, FAKE_JSON_AUTHENTICATION);
+-    try {
+-      purchase_service.authenticated_sso_webcall ("FAKE", "http://some/where", "operation=wolf", FAKE_PASSWORD);
+-      assert_not_reached ();
+-    } catch (Error e) {
+-        assert (e is PurchaseError.PURCHASE_ERROR);
+-    }
+-  }
+-
+-  private static void test_authenticated_sso_webcall_wrong_password ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.UNAUTHORIZED, FAKE_JSON_AUTHENTICATION);
+-    try {
+-      purchase_service.authenticated_sso_webcall ("FAKE", "http://some/where", "operation=wolf", FAKE_PASSWORD);
+-      assert_not_reached ();
+-    } catch (Error e) {
+-        assert (e is PurchaseError.WRONG_PASSWORD_ERROR);
+-    }
+-  }
+-
+-  private static void test_purchase_with_default_payment ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.OK, FAKE_JSON_PURCHASE);
+-    try {
+-      purchase_service.purchase_with_default_payment (FAKE_SKU, FAKE_TOKEN);
+-    } catch (PurchaseError e) {
+-      warning (e.message);
+-      assert_not_reached ();
+-    }
+-  }
+-
+-  private static void test_purchase_with_default_payment_broken_json ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.OK, BROKEN_JSON);
+-    try {
+-      purchase_service.purchase_with_default_payment (FAKE_SKU, FAKE_TOKEN);
+-      assert_not_reached ();
+-    } catch (PurchaseError e) {
+-      assert (e is PurchaseError.PURCHASE_ERROR);
+-    }
+-  }
+-
+-  private static void test_purchase_with_default_payment_fails ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.OK, FAKE_JSON_PURCHASE_FAILURE);
+-    try {
+-      purchase_service.purchase_with_default_payment (FAKE_SKU, FAKE_TOKEN);
+-      assert_not_reached ();
+-    } catch (PurchaseError e) {
+-      assert (e is PurchaseError.PURCHASE_ERROR);
+-    }
+-  }
+-
+-  private static void test_purchase_with_default_payment_connection_fails ()
+-  {
+-    var purchase_service = new FakeWebcallPurchaseService (Soup.KnownStatusCode.INTERNAL_SERVER_ERROR, FAKE_JSON_PURCHASE_FAILURE);
+-    try {
+-      purchase_service.purchase_with_default_payment (FAKE_SKU, FAKE_TOKEN);
+-      assert_not_reached ();
+-    } catch (PurchaseError e) {
+-      assert (e is PurchaseError.PURCHASE_ERROR);
+-    }
+-  }
+-}
+-- 
+1.9.1
+
