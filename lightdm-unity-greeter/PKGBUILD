@@ -4,8 +4,8 @@
 pkgname=lightdm-unity-greeter
 _ubuntu_rel=0ubuntu1
 _translations=20130502
-pkgver=14.04.6
-pkgrel=2
+pkgver=14.04.7
+pkgrel=1
 pkgdesc="The greeter (login screen) application for Unity. It is implemented as a LightDM greeter."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-greeter"
@@ -25,7 +25,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pk
         '10-unity.defaults'
         '50-unity-greeter.rules'
         'logo.png')
-sha512sums=('b87339e2baf4e0e6c2c4bfdba6b06bdff8754b6998d5a1fa37229b2f90a7d03137bd4ca089b2e27dc84f2b3a4ca4781b3169cc05a4c46bb01859fcc4dd31f4e1'
+sha512sums=('be22bd75bf8cfc8de669840c8e4011b7d4f634099043e868d503641c1752fe86bc4a585654bb3d1e12cda73145ac0a7af0bb883da3f4636f917b16c9e54cb2eb'
             '58b41942f06f13b90a356d493608df9723be9b8442af9a07a9fd56a3f1db8855d98c11a879887f18abe66de67b0b306f57102b6a6424b694bc90a9bc59640b8d'
             '0fa758888e10bbf54bb1e6a4273dd3efc396ce8338aa1ab2e8f794a81c554b394805cf445c6179998786cd3d40d6eb0025382d1a2f028b5887c5b10957c4f34e'
             'e43c177d0255af961bbf9198868e32a1a762bb70e117f80c3c2ce4b54d23f4955cc1c4c32b68751b021116f8e6d26133b24845c03ae459c2209e8313e28a0bc6'
