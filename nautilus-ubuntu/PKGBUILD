@@ -6,7 +6,7 @@ pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
 _ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0
-pkgrel=1
+pkgrel=2
 pkgdesc="GNOME and Unity file manager"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -80,6 +80,9 @@ package_nautilus-ubuntu() {
   install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
   install -m644 "${srcdir}/debian/mount-archive.desktop" "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 package_libnautilus-extension-ubuntu() {
