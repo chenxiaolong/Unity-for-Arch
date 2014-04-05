@@ -6,7 +6,7 @@ pkgname=unity-control-center
 _actual_ver=14.04.3
 _extra_ver=+14.04.20140328
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="The Control Center for Unity"
 arch=('i686' 'x86_64')
 groups=('unity')
@@ -80,6 +80,9 @@ package() {
   # Fix a warning
   chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
   chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 # vim:set ts=2 sw=2 et:
