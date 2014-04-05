@@ -5,9 +5,8 @@
 pkgname=indicator-datetime
 _actual_ver=13.10.0
 _extra_ver=+14.04.20140328
-_translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -17,11 +16,9 @@ makedepends=('intltool' 'cmake')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-datetime.tar.gz"
         '0001_Port_to_systemd_timedated.patch'
         '0002_Not_a_phone.patch')
 sha512sums=('776b1defb9ea4edc2ea5dc58835b01b5de4b836498ae03d0416cfd7f04ee11a48fa6fa8388a567d26f8b962761c3cf8ced984797c346c4c90bd8d5cf9456db46'
-            '5cb8d7ab7cfb1e57d9b0d3e54e09caa1cbfdf44191f32e19251983e061bf5c27812dbcb743cad17cb4ff13e6f6f22167c6d3bd0f2faa8e5a84a7bf145f90223c'
             '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
             'b91c27dba2b08b69e597f9165406f68325b5d822e26d7dc5aa271a7f62b77d715cb78dfae93792b345d922ace383f6ed98cb63f096745ef37a3f7df5c4b37298')
 
@@ -32,15 +29,6 @@ prepare() {
   #patch -p1 -i "${srcdir}/0001_Port_to_systemd_timedated.patch"
 
   patch -p1 -i "${srcdir}/0002_Not_a_phone.patch"
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
 }
 
 build() {
@@ -65,6 +53,9 @@ package() {
   make DESTDIR="${pkgdir}/" install
 
   rm -r "${pkgdir}/usr/share/upstart/"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 # vim:set ts=2 sw=2 et:
