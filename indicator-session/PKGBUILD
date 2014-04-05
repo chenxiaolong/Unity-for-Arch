@@ -5,9 +5,8 @@
 pkgname=indicator-session
 _actual_ver=12.10.5
 _extra_ver=+14.04.20140324
-_translations=20130419
 pkgver=${_actual_ver}daily14.03.24
-pkgrel=1
+pkgrel=2
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -18,11 +17,9 @@ optdepends=('lightdm: support for lightdm')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-session.tar.gz"
         'indicator-session.service'
         '0002_There_is_no_help.patch')
 sha512sums=('a8efc44dc8baad9450658321a24c0faed8a2b9634ca1dbb82da55856cdc4582efa2ef66100b3d8914c334431c88a84db795b8632971c7a07b29c17b0cb3c545e'
-            'd58470441812a2500bd709877f8b3dcb629e095e8612c413cc34ee8f6101f0c15b25605b1deba3741c8e241711c9bb1bb2169e0acae923f9750afee4717c183f'
             '540c76c0f68b028194bb1000dd61a0c24f2f16427e79d237b94b8c65fe5e3e16eb6ea645f0fd33d734113727e25b6eb7452cb72f72399c9e8d370f74abba7511'
             '5326ff4022fe86fa3162d1f46341f2f352d4859bd5024da81d5640465cd3b242abedf820c2589c1da05e2eec3fc2e7535a2e4f2f8489333cb001e279094a4a15')
 
@@ -30,12 +27,6 @@ prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i "${srcdir}/0002_There_is_no_help.patch"
-
-  msg "Merging translations from ${_translations}"
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-  done
 }
 
 build() {
@@ -74,6 +65,9 @@ package() {
                 "${pkgdir}/usr/share/dbus-1/services/"
 
   rm -r "${pkgdir}/usr/share/upstart/"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 # vim:set ts=2 sw=2 et:
