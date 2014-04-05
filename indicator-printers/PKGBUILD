@@ -4,9 +4,8 @@ pkgname=indicator-printers
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
 _extra_ver=+14.04.20140313
-_translations=20130418
 pkgver=${_actual_ver}daily14.03.13
-pkgrel=100
+pkgrel=101
 pkgdesc="Indicator showing active print jobs"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-printers"
@@ -15,26 +14,15 @@ groups=('unity')
 depends=('cups' 'libdbusmenu-glib' 'libdbusmenu-gtk3' 'libindicator3')
 makedepends=('intltool' 'python2')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-printers.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
 sha512sums=('19e48137ae9cdf47355f2c87e90ce37182687d58b9866a56e2fb9320c8de0afb8ff3a85492536d25810dcd1a7e5a89a84f7285ea642a5d72b7e82d203a2fd786'
-            'fbb8ca2d94272eb04c7853b25b20f36b7fb4682ada8d6a473c8cf860a006e6ef681d64738a100356e8b4d41a7e68daab9d6919216af9aee522d65caae3e15389'
-            'edbf2e0db90b81b805f966ddc3e1d1fab76f50651eb5135f3c559daca30b6134e72b2fbd01ccdd357a3252d096345a42e17c62a986fe3c3477034d1cf7624759')
+            'fbb8ca2d94272eb04c7853b25b20f36b7fb4682ada8d6a473c8cf860a006e6ef681d64738a100356e8b4d41a7e68daab9d6919216af9aee522d65caae3e15389')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Apply Ubuntu's patches
   patch -p1 -i "${srcdir}/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
 }
 
 build() {
