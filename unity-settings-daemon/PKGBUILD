@@ -4,7 +4,7 @@ pkgname=unity-settings-daemon
 _actual_ver=14.04.0
 _extra_ver=+14.04.20140402
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-settings-daemon"
@@ -83,4 +83,7 @@ package() {
   install -dm755 "${pkgdir}/usr/bin/"
   ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
     "${pkgdir}/usr/bin/unity-settings-daemon"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
