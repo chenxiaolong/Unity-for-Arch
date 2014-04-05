@@ -4,9 +4,8 @@ pkgname=libunity-webapps
 _actual_ver=2.5.0
 # ~+ ??
 _extra_ver=~+14.04.20140324
-_translations=20130418
 pkgver=${_actual_ver}.daily14.03.24
-pkgrel=1
+pkgrel=2
 pkgdesc="WebApps: Library for the integration with the Unity desktop"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/libunity-webapps"
@@ -17,23 +16,8 @@ makedepends=('gobject-introspection' 'gtk-doc' 'intltool')
 # configure.ac probably needs to be updated
 makedepends+=('telepathy-glib' 'libdbusmenu-gtk3')
 install=libunity-webapps.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-libunity-webapps.tar.gz")
-sha512sums=('09d0c8685a039ba2851b487527d654cc57a89923dbc27863f45ab16566eabe3611828c94df692354ea5ddbd39c886a3432dcc4b77da7870d4d0e3f12a7198ca2'
-            '9cac4fc4333dd55ad0cad6a89686e4c240abbd9b41806583272826bfcaec53f4f51faf741c8bb532cf3decc850f38e56f4241e4349d662b1f7bfe9c937869285')
-
-prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po "${srcdir}"/unity_webapps/*.po; do
-    FILE=$(sed -n "s|.*/unity_webapps-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
-}
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity-webapps_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('09d0c8685a039ba2851b487527d654cc57a89923dbc27863f45ab16566eabe3611828c94df692354ea5ddbd39c886a3432dcc4b77da7870d4d0e3f12a7198ca2')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -48,6 +32,9 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 # vim:set ts=2 sw=2 et:
