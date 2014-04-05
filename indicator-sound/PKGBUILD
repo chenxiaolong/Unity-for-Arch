@@ -5,9 +5,8 @@
 pkgname=indicator-sound
 _actual_ver=12.10.2
 _extra_ver=+14.04.20140401
-_translations=20130418
 pkgver=${_actual_ver}daily14.04.01
-pkgrel=1
+pkgrel=2
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -17,12 +16,10 @@ makedepends=('cmake' 'intltool' 'vala')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-sound.tar.gz"
         'com.ubuntu.sound.gschema.xml'
         '0001_Not_a_phone.patch'
         '0002_Remove_tests.patch')
 sha512sums=('73a3c1f2febf569e77118fd3cf7e2dcf9abef818f1829b4a07a1f843b6b39b41fa41d2d74dc8086c6a712a1fa2684faa57ef7a0aa9a5f9d7b782054cb8202513'
-            '88578aab046cc6e87e015e414b21cf06ab51d26ee932e4213c4e532fd70f373fb03257c5d7b2bbcddbc852816dd1206b934ff9dc4d65dbac3325b382553230b0'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
             '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b')
@@ -32,14 +29,6 @@ prepare() {
 
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
   patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-  done
 }
 
 build() {
@@ -54,15 +43,6 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build/"
 
   make DESTDIR="${pkgdir}/" install
-
-  # Please fix CMake scripts, Ubuntu...
-  for i in ../po/*.po; do
-    FILELANG=$(basename ${i})
-    FILELANG=${FILELANG%.po}
-    install -dm755 "${pkgdir}/usr/share/locale/${FILELANG}/LC_MESSAGES/"
-    msgfmt -v ${i} -o \
-      "${pkgdir}/usr/share/locale/${FILELANG}/LC_MESSAGES/indicator-sound.mo"
-  done
 
   install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
   install -m644 "${srcdir}/com.ubuntu.sound.gschema.xml" \
