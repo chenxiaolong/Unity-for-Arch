@@ -4,7 +4,6 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _ubuntu=3.8.6.1-0ubuntu10
-_translations=20130418
 pkgver=3.12.0.1
 pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
