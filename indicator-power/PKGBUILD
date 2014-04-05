@@ -3,9 +3,8 @@
 pkgname=indicator-power
 _actual_ver=12.10.6
 _extra_ver=+14.04.20140328
-_translations=20130419
 pkgver=${_actual_ver}daily14.03.28
-pkgrel=2
+pkgrel=3
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -15,10 +14,8 @@ makedepends=('intltool' 'python2')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-indicator-power.tar.gz"
         '0001_Not_a_phone.patch')
 sha512sums=('ef36aa53969861636fe512c6e8d1df0dda19dc4e6c99aada954ef1ecfe2d170bff00eafb52fa1fdd84cf3cd7cfeeb0e5a33fd8b1bfe199b9cde970de00a943a5'
-            'd597ec5e3cac6bfb95b96fb73d88b052a2e99bd56b1f259b3b6452da42b40ac3ad14b4fd579e8f940189834ba49b95c9d5acd58dc32edf7a712e496786370671'
             'e7ce61788b59995f950b24b75899e517749319a209fd3b857cde26f8610ae0ddbefb82bf32e445b306caa65fac32871c1e7b6fd5c72e6debf88553ca9e12dcfc')
 
 prepare() {
@@ -27,15 +24,6 @@ prepare() {
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
 
   sed -ie '/NotShowIn=/d' data/indicator-power.desktop.in
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
 }
 
 build() {
