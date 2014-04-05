@@ -4,9 +4,8 @@ pkgname=unity
 _actual_ver=7.2.0
 _extra_ver=+14.04.20140403
 _ubuntu_rel=0ubuntu1
-_translations=20130418
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -21,7 +20,6 @@ conflicts=('unity-core')
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-unity.tar.gz"
         '0001_Remove_gtest.patch'
         '0002_ArchLinux_Branding.patch'
         '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
@@ -38,7 +36,6 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'unity-debug')
 sha512sums=('b213716e7fcf0fe22bdc4bae402e0ce403612b777f6a0c379ac7c789ab695547818d18f8906dfb61ddb4b62c11909bcc69496d953904cc6f0ff583790a9f6842'
             'be7b0080c55b159f009262c8135aa68a1c6a20fba02eabe70724d6793dd00192561a25c176f3a515d72cf95ed4f3e40118942adce54c0d3059af541a8d2953bb'
-            '323dd3ce133593d35c39400b5aed3eab417e967e4e553b9e466126db72fd0182f5e1bc69b55aeece429a84fbf8d7908bb6dace5ff8351f448f184fe193acaf98'
             '3be3303e6b6f023ca246b23c0293ce3987a070f74bf92d9ab07d2255f2254743078f4111007ef414a37b7368d86e80ae1350f2a956300a6ac5495f41bfd7878e'
             'c3421eb14e6f6c94e53d5f14341c7f9e6a770a71f02b9dded97fe5d0ded9efa1e7c0fc1df90b0709d1bec5126df8be7469612689344eea616868e6541bec42fb'
             'ed40106d1056fb341a2f3c309842a34b9544c1ce9b824bd915f7c4ef44355f25366405387c6bcaf07c1dc35668eeae6281a0b9880f8ee7c6aeaac424d9b04a85'
@@ -84,15 +81,6 @@ prepare() {
 
   # Disable gtest
   patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
-
-  msg "Merging translations from ${_translations}"
-  rm -f po/LINGUAS po/*.pot
-  mv "${srcdir}"/po/*.pot po/
-  for i in "${srcdir}"/po/*.po; do
-    FILE=$(sed -n "s|.*/${pkgname}-||p" <<< ${i})
-    mv ${i} po/${FILE}
-    echo ${FILE%.*} >> po/LINGUAS
-  done
 
   # Ubuntu Desktop -> Arch Linux Desktop
   sed -i '/msgid "Ubuntu Desktop"/ {n;s/Ubuntu/Arch Linux/}' po/*.po
@@ -198,6 +186,9 @@ package() {
 
   # Install script for running Unity with debug output (from unity-gentoo project)
   install -m755 "${srcdir}/unity-debug" "${pkgdir}/usr/bin/"
+
+  # Use language packs
+  rm -r "${pkgdir}/usr/share/locale/"
 }
 
 # vim:set ts=2 sw=2 et:
