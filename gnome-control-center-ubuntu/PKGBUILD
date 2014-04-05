@@ -3,64 +3,65 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-control-center-ubuntu
-_ppa_rel=0ubuntu1~saucy2
-_translations=20130418
-pkgver=3.10.1
-pkgrel=100
-pkgdesc="The Control Center for GNOME with Ubuntu's patches"
+_ppa_rel=0ubuntu1~trusty1
+pkgver=3.12.0
+pkgrel=1
+pkgdesc="The Control Center for GNOME and Unity"
 arch=('i686' 'x86_64')
-groups=('gnome')
+groups=('gnome' 'unity')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'webkitgtk3' 'system-config-printer')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'vala' 'desktop-file-utils')
-optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'libmm-glib' 'libgnomekbd' 'grilo' 'webkitgtk3')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'modemmanager' 'vala' 'desktop-file-utils')
+optdepends=('system-config-printer: Printer settings'
+            'gnome-user-share: Bluetooth and WebDAV file sharing'
             'rygel: media sharing'
             'vino: screen sharing'
-            'openssh: remote login')
-provides=("gnome-control-center=${pkgver}" 'FEATURE-libgnome-control-center')
-conflicts=('gnome-control-center' 'gnome-control-center-unity' 'credentials-preferences' 'credentials-preferences-ubuntu')
-options=('!libtool' '!emptydirs')
+            'openssh: remote login'
+            'ntp: network time sync')
+provides=("gnome-control-center=${pkgver}")
+conflicts=('gnome-control-center')
+options=('!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
-        "https://dl.dropboxusercontent.com/u/486665/Translations/translations-${_translations}-gnome-control-center.tar.gz")
-sha512sums=('4037bfa9d68781c0c6e66e28557f515a83a4f0800fd227db8b00475643f8e0085b1cd4bb2ad8d98afc6e8a574e0f7d5b85c121c1b0b0adb4860542307231e58e'
-            '3e2dbba0862593eb4b6b3d028fc6126873520366cf92ef23734f89b515b6f46788514d8f4ddd5b28af7054becc673f90cba58ce5b0851d84840c23cc361a443b'
-            'f08d00d02170d55b9908ae8aef2a13f9cbd393168bc70b28e31e8f35ab690903992ba380afbf7ef935d13ce81d3c3bec9b9db2711e2bbc7d1a245e700df5bdbc')
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz")
+sha512sums=('d69125f31bb3d5cf51161836617327b221eb5b9992e1f9db84121602723295496091ea5e4c1e7017ecd2f9d943197843c7c195b58738b3527220e38e52525987'
+            '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
     # Disable patches
+      # Why?
+        sed -i '/revert_git_new_bluetooth_panel.patch/d' "${srcdir}/debian/patches/series"
       # Arch Linux uses PackageKit
         sed -i '/05_run_update_manager.patch/d' "${srcdir}/debian/patches/series"
       # Ubuntu specific
         sed -i '/52_region_language.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/52_ubuntu_language_list_mods.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/53_use_ubuntu_help.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/55_user_accounts_hide_controls.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/56_use_ubuntu_info_branding.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/59_install_gcm_components_on_demand.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/61_workaround_online_account.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/62_update_translations_template.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/91_unity_no_printing_panel.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/92_ubuntu_system_proxy.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/revert_git_info_packagekit_api.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/ubuntu_region_packagekit.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/zz_add_fallback_panels_dir.patch/d' "${srcdir}/debian/patches/series"
       # There are currently no packages compatible with this library (assuming it even works)
         sed -i '/revert_git_drop_library.patch/d' "${srcdir}/debian/patches/series"
+      # We have gnome-bluetooth 3.12
+        sed -i '/revert_new_bluetooth.patch/d' "${srcdir}/debian/patches/series"
+      # We also have BlueZ 5
+        sed -i '/revert-bluetooth-BlueZ5-interface.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
-
-  ### Translations are currently incomplete ###
-
-#  msg "Merging translations from ${_translations}"
-#  rm -f po/LINGUAS po/*.pot
-#  mv "${srcdir}"/po/*.pot po/
-#  for i in "${srcdir}"/po/*.po; do
-#    FILE=$(sed -n "s|.*/gnome-control-center-2.0-||p" <<< ${i})
-#    mv ${i} po/${FILE}
-#    echo ${FILE%.*} >> po/LINGUAS
-#  done
 }
 
 build() {
@@ -72,9 +73,9 @@ build() {
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --libexecdir=/usr/lib/$pkgname \
+    --libexecdir=/usr/lib/${pkgname} \
     --disable-static \
-    --enable-systemd
+    --disable-silent-rules
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656229
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
@@ -110,12 +111,6 @@ package() {
     --dir "${pkgdir}/usr/share/applications/" \
     --add-only-show-in=Unity \
     "${pkgdir}/usr/share/applications/gnome-background-panel.desktop"
-
-  # Make the Online Accounts panel show up in Unity
-  desktop-file-install \
-    --dir "${pkgdir}/usr/share/applications/" \
-    --add-only-show-in=Unity \
-    "${pkgdir}/usr/share/applications/gnome-online-accounts-panel.desktop"
 
   # Make the Date & Time panel show up in Unity
   desktop-file-install \
