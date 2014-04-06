@@ -6,7 +6,7 @@
 pkgname=zeitgeist-ubuntu
 pkgver=0.9.14
 _ubuntu_rel=0ubuntu4
-pkgrel=2
+pkgrel=3
 pkgdesc="Service logging user activities and events"
 arch=('i686' 'x86_64')
 url="http://zeitgeist-project.com/"
@@ -24,7 +24,10 @@ sha512sums=('9886396ea153fc12de81fdee2acf645b33a2af0c0fa3533c18f6c80c68c506ee9f7
 prepare() {
   cd "${srcdir}/zeitgeist-${pkgver}"
   sed -i 's/python -/$PYTHON -/' configure configure.ac
-  patch -p1 -i "${srcdir}/debian/patches/pre_populator.patch"
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
 }
 
 build() {
@@ -35,7 +38,10 @@ build() {
     --prefix=/usr \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --libexecdir=/usr/lib/zeitgeist
+    --libexecdir=/usr/lib/zeitgeist \
+    --enable-datahub \
+    --enable-fts \
+    --enable-telepathy
   make
 }
 
