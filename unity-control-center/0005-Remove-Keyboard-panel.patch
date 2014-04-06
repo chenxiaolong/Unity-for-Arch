@@ -1,0 +1,5114 @@
+From 06e3a91e1efb7e2e38bbc776e27aaaac99da087f Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 5 Apr 2014 19:28:13 -0400
+Subject: [PATCH 05/17] Remove Keyboard panel
+
+---
+ configure.ac                                       |    8 -
+ man/unity-control-center.xml                       |   13 -
+ panels/Makefile.am                                 |    1 -
+ panels/keyboard/00-multimedia.xml.in               |   25 -
+ panels/keyboard/01-input-sources.xml.in            |   12 -
+ panels/keyboard/01-launchers.xml.in                |   19 -
+ panels/keyboard/01-screenshot.xml.in               |   23 -
+ panels/keyboard/01-system.xml.in                   |    9 -
+ panels/keyboard/50-accessibility.xml.in            |   20 -
+ panels/keyboard/Makefile.am                        |   63 -
+ panels/keyboard/cc-keyboard-item.c                 |  493 -----
+ panels/keyboard/cc-keyboard-item.h                 |  108 --
+ panels/keyboard/cc-keyboard-option.c               |  449 -----
+ panels/keyboard/cc-keyboard-option.h               |   48 -
+ panels/keyboard/cc-keyboard-panel.c                |  211 ---
+ panels/keyboard/cc-keyboard-panel.h                |   74 -
+ panels/keyboard/gnome-keyboard-panel.h             |    9 -
+ panels/keyboard/gnome-keyboard-panel.ui            |  897 ---------
+ panels/keyboard/keyboard-general.c                 |  128 --
+ panels/keyboard/keyboard-general.h                 |   26 -
+ panels/keyboard/keyboard-module.c                  |   41 -
+ panels/keyboard/keyboard-shortcuts.c               | 1899 --------------------
+ panels/keyboard/keyboard-shortcuts.h               |   27 -
+ panels/keyboard/unity-keybindings.pc.in            |   10 -
+ panels/keyboard/unity-keyboard-panel.desktop.in.in |   13 -
+ panels/keyboard/wm-common.c                        |  184 --
+ panels/keyboard/wm-common.h                        |   17 -
+ po/POTFILES.in                                     |   10 -
+ po/POTFILES.skip                                   |    1 -
+ 29 files changed, 4838 deletions(-)
+ delete mode 100644 panels/keyboard/00-multimedia.xml.in
+ delete mode 100644 panels/keyboard/01-input-sources.xml.in
+ delete mode 100644 panels/keyboard/01-launchers.xml.in
+ delete mode 100644 panels/keyboard/01-screenshot.xml.in
+ delete mode 100644 panels/keyboard/01-system.xml.in
+ delete mode 100644 panels/keyboard/50-accessibility.xml.in
+ delete mode 100644 panels/keyboard/Makefile.am
+ delete mode 100644 panels/keyboard/cc-keyboard-item.c
+ delete mode 100644 panels/keyboard/cc-keyboard-item.h
+ delete mode 100644 panels/keyboard/cc-keyboard-option.c
+ delete mode 100644 panels/keyboard/cc-keyboard-option.h
+ delete mode 100644 panels/keyboard/cc-keyboard-panel.c
+ delete mode 100644 panels/keyboard/cc-keyboard-panel.h
+ delete mode 100644 panels/keyboard/gnome-keyboard-panel.h
+ delete mode 100644 panels/keyboard/gnome-keyboard-panel.ui
+ delete mode 100644 panels/keyboard/keyboard-general.c
+ delete mode 100644 panels/keyboard/keyboard-general.h
+ delete mode 100644 panels/keyboard/keyboard-module.c
+ delete mode 100644 panels/keyboard/keyboard-shortcuts.c
+ delete mode 100644 panels/keyboard/keyboard-shortcuts.h
+ delete mode 100644 panels/keyboard/unity-keybindings.pc.in
+ delete mode 100644 panels/keyboard/unity-keyboard-panel.desktop.in.in
+ delete mode 100644 panels/keyboard/wm-common.c
+ delete mode 100644 panels/keyboard/wm-common.h
+
+diff --git a/configure.ac b/configure.ac
+index 7cb2608..776ad4e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -123,17 +123,12 @@ PKG_CHECK_MODULES(DATETIME_PANEL, $COMMON_MODULES timezonemap
+ PKG_CHECK_MODULES(DISPLAY_PANEL, $COMMON_MODULES gnome-desktop-3.0 >= 3.1.0 x11)
+ PKG_CHECK_MODULES(INFO_PANEL, $COMMON_MODULES libgtop-2.0 gl x11
+ 		  polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION webkitgtk-3.0)
+-PKG_CHECK_MODULES(KEYBOARD_PANEL, $COMMON_MODULES
+-                  gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
+-                  x11)
+ PKG_CHECK_MODULES(MEDIA_PANEL, $COMMON_MODULES)
+ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+                   unity-settings-daemon x11)
+ PKG_CHECK_MODULES(NETWORK_PANEL, $COMMON_MODULES)
+ PKG_CHECK_MODULES(POWER_PANEL, $COMMON_MODULES upower-glib >= 0.9.1
+                   unity-settings-daemon)
+-PKG_CHECK_MODULES(PRINTERS_PANEL, $COMMON_MODULES
+-                  polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
+ PKG_CHECK_MODULES(REGION_PANEL, $COMMON_MODULES
+                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION
+                   gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
+@@ -343,9 +338,6 @@ panels/datetime/Makefile
+ panels/datetime/unity-datetime-panel.desktop.in
+ panels/display/Makefile
+ panels/display/unity-display-panel.desktop.in
+-panels/keyboard/Makefile
+-panels/keyboard/unity-keyboard-panel.desktop.in
+-panels/keyboard/unity-keybindings.pc
+ panels/region/Makefile
+ panels/region/unity-region-panel.desktop.in
+ panels/mouse/Makefile
+diff --git a/man/unity-control-center.xml b/man/unity-control-center.xml
+index 529b442..d2deb35 100644
+--- a/man/unity-control-center.xml
++++ b/man/unity-control-center.xml
+@@ -108,19 +108,6 @@
+                         </varlistentry>
+ 
+                         <varlistentry>
+-                                <term><option>keyboard</option></term>
+-
+-                                <listitem><para>The keyboard panel can
+-                                change how the keyboard reacts to key
+-                                presses and lets you change keyboard
+-                                shortcuts or create custom shortcuts.</para>
+-                                <para>You can open this panel on a
+-                                specific tab by passing <option>typing</option>
+-                                or <option>shortcuts</option> as extra
+-                                argument.</para></listitem>
+-                        </varlistentry>
+-
+-                        <varlistentry>
+                                 <term><option>mouse</option></term>
+ 
+                                 <listitem><para>The mouse panel can change
+diff --git a/panels/Makefile.am b/panels/Makefile.am
+index ae47cad..cfaa485 100644
+--- a/panels/Makefile.am
++++ b/panels/Makefile.am
+@@ -9,7 +9,6 @@ SUBDIRS= \
+ 	region \
+ 	info \
+ 	sound \
+-	keyboard \
+ 	universal-access \
+ 	user-accounts
+ 
+diff --git a/panels/keyboard/00-multimedia.xml.in b/panels/keyboard/00-multimedia.xml.in
+deleted file mode 100644
+index 7ad4488..0000000
+--- a/panels/keyboard/00-multimedia.xml.in
++++ /dev/null
+@@ -1,25 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" ?>
+-<KeyListEntries group="system" schema="org.gnome.settings-daemon.plugins.media-keys" _name="Sound and Media">
+-
+-	<KeyListEntry name="volume-mute" _description="Volume mute"/>
+-
+-	<KeyListEntry name="volume-down" _description="Volume down"/>
+-
+-	<KeyListEntry name="volume-up" _description="Volume up"/>
+-
+-	<KeyListEntry name="media" _description="Launch media player"/>
+-
+-	<KeyListEntry name="play" _description="Play (or play/pause)"/>
+-
+-	<KeyListEntry name="pause" _description="Pause playback"/>
+-
+-	<KeyListEntry name="stop" _description="Stop playback"/>
+-
+-	<KeyListEntry name="previous" _description="Previous track"/>
+-
+-	<KeyListEntry name="next" _description="Next track"/>
+-
+-	<KeyListEntry name="eject" _description="Eject"/>
+-
+-</KeyListEntries>
+-
+diff --git a/panels/keyboard/01-input-sources.xml.in b/panels/keyboard/01-input-sources.xml.in
+deleted file mode 100644
+index 2877c48..0000000
+--- a/panels/keyboard/01-input-sources.xml.in
++++ /dev/null
+@@ -1,12 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" ?>
+-<KeyListEntries group="system"
+-                schema="org.gnome.desktop.wm.keybindings"
+-                _name="Typing">
+-
+-  <KeyListEntry name="switch-input-source"
+-                _description="Switch to next source"/>
+-
+-  <KeyListEntry name="switch-input-source-backward"
+-                _description="Switch to previous source"/>
+-
+-</KeyListEntries>
+diff --git a/panels/keyboard/01-launchers.xml.in b/panels/keyboard/01-launchers.xml.in
+deleted file mode 100644
+index 83ab757..0000000
+--- a/panels/keyboard/01-launchers.xml.in
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" ?>
+-<KeyListEntries group="system" schema="org.gnome.settings-daemon.plugins.media-keys" _name="Launchers">
+-
+-	<KeyListEntry name="help" _description="Launch help browser"/>
+-
+-	<KeyListEntry name="calculator" _description="Launch calculator"/>
+-
+-	<KeyListEntry name="email" _description="Launch email client"/>
+-
+-	<KeyListEntry name="terminal" _description="Launch terminal"/>
+-
+-	<KeyListEntry name="www" _description="Launch web browser"/>
+-
+-	<KeyListEntry name="home" _description="Home folder"/>
+-
+-	<KeyListEntry name="search" _description="Search"/>
+-
+-</KeyListEntries>
+-
+diff --git a/panels/keyboard/01-screenshot.xml.in b/panels/keyboard/01-screenshot.xml.in
+deleted file mode 100644
+index 4c1435c..0000000
+--- a/panels/keyboard/01-screenshot.xml.in
++++ /dev/null
+@@ -1,23 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" ?>
+-<KeyListEntries group="system" schema="org.gnome.settings-daemon.plugins.media-keys" _name="Screenshots">
+-
+-	<KeyListEntry name="screenshot"
+-		_description="Take a screenshot"/>
+-
+-	<KeyListEntry name="window-screenshot"
+-		_description="Take a screenshot of a window"/>
+-
+-	<KeyListEntry name="area-screenshot"
+-                      _description="Take a screenshot of an area"/>
+-
+-	<KeyListEntry name="screenshot-clip"
+-                      _description="Copy a screenshot to clipboard"/>
+-
+-	<KeyListEntry name="window-screenshot-clip"
+-                      _description="Copy a screenshot of a window to clipboard"/>
+-
+-	<KeyListEntry name="area-screenshot-clip"
+-                      _description="Copy a screenshot of an area to clipboard"/>
+-
+-</KeyListEntries>
+-
+diff --git a/panels/keyboard/01-system.xml.in b/panels/keyboard/01-system.xml.in
+deleted file mode 100644
+index 0ce2afe..0000000
+--- a/panels/keyboard/01-system.xml.in
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" ?>
+-<KeyListEntries group="system" schema="org.gnome.settings-daemon.plugins.media-keys" _name="System">
+-
+-	<KeyListEntry name="logout" _description="Log out"/>
+-
+-	<KeyListEntry name="screensaver" _description="Lock screen"/>
+-
+-</KeyListEntries>
+-
+diff --git a/panels/keyboard/50-accessibility.xml.in b/panels/keyboard/50-accessibility.xml.in
+deleted file mode 100644
+index 8ad09f1..0000000
+--- a/panels/keyboard/50-accessibility.xml.in
++++ /dev/null
+@@ -1,20 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<KeyListEntries group="system" _name="Universal Access" schema="org.gnome.settings-daemon.plugins.media-keys">
+-
+-	<KeyListEntry name="magnifier" _description="Turn zoom on or off"/>
+-
+-	<KeyListEntry name="magnifier-zoom-in" _description="Zoom in"/>
+-
+-	<KeyListEntry name="magnifier-zoom-out" _description="Zoom out"/>
+-
+-	<KeyListEntry name="screenreader" _description="Turn screen reader on or off"/>
+-
+-	<KeyListEntry name="on-screen-keyboard" _description="Turn on-screen keyboard on or off"/>
+-
+-	<KeyListEntry name="increase-text-size" _description="Increase text size"/>
+-
+-	<KeyListEntry name="decrease-text-size" _description="Decrease text size"/>
+-
+-	<KeyListEntry name="toggle-contrast" _description="High contrast on or off"/>
+-
+-</KeyListEntries>
+diff --git a/panels/keyboard/Makefile.am b/panels/keyboard/Makefile.am
+deleted file mode 100644
+index d4ae7f9..0000000
+--- a/panels/keyboard/Makefile.am
++++ /dev/null
+@@ -1,63 +0,0 @@
+-# This is used in PANEL_CFLAGS
+-cappletname = keyboard
+-
+-ccpanelsdir = $(PANELS_DIR)
+-ccpanels_LTLIBRARIES = libkeyboard.la
+-
+-libkeyboard_la_SOURCES =   \
+-	keyboard-module.c		\
+-	cc-keyboard-panel.c		\
+-	cc-keyboard-panel.h		\
+-	cc-keyboard-item.c		\
+-	cc-keyboard-item.h		\
+-	cc-keyboard-option.c		\
+-	cc-keyboard-option.h		\
+-	wm-common.c			\
+-	wm-common.h			\
+-	keyboard-general.c		\
+-	keyboard-general.h		\
+-	keyboard-shortcuts.c		\
+-	keyboard-shortcuts.h
+-
+-libkeyboard_la_CFLAGS = $(PANEL_CFLAGS) $(KEYBOARD_PANEL_CFLAGS) -I$(top_srcdir)/panels/common/
+-libkeyboard_la_LIBADD = $(PANEL_LIBS) $(KEYBOARD_PANEL_LIBS)
+-libkeyboard_la_LDFLAGS = $(PANEL_LDFLAGS)
+-
+-@INTLTOOL_DESKTOP_RULE@
+-
+-uidir   = $(pkgdatadir)/ui
+-ui_DATA = gnome-keyboard-panel.ui
+-
+-desktopdir = $(datadir)/applications
+-Desktop_in_files = unity-keyboard-panel.desktop.in
+-desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
+-
+-@INTLTOOL_XML_NOMERGE_RULE@
+-
+-xmldir       = $(pkgdatadir)/keybindings
+-xml_in_files = 			\
+-	00-multimedia.xml.in 	\
+-	01-input-sources.xml.in	\
+-	01-launchers.xml.in 	\
+-	01-screenshot.xml.in 	\
+-	01-system.xml.in 	\
+-	50-accessibility.xml.in
+-xml_DATA     = $(xml_in_files:.xml.in=.xml)
+-
+-pkgconfigdir = $(datadir)/pkgconfig
+-pkgconfig_DATA = unity-keybindings.pc
+-
+-INCLUDES = \
+-	-DGNOMELOCALEDIR="\"$(datadir)/locale\"" \
+-	-DGNOMECC_DATA_DIR="\"$(pkgdatadir)\"" \
+-	-DGNOMECC_UI_DIR="\"$(uidir)\"" \
+-	-DGNOMECC_KEYBINDINGS_DIR="\"$(pkgdatadir)/keybindings\""
+-
+-CLEANFILES = \
+-	$(Desktop_in_files) \
+-	$(desktop_DATA) \
+-	$(xml_DATA)
+-EXTRA_DIST = $(ui_DATA) $(xml_in_files) unity-keybindings.pc.in
+-
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/keyboard/cc-keyboard-item.c b/panels/keyboard/cc-keyboard-item.c
+deleted file mode 100644
+index f767d4e..0000000
+--- a/panels/keyboard/cc-keyboard-item.c
++++ /dev/null
+@@ -1,493 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include "config.h"
+-
+-#include <stdlib.h>
+-#include <stdio.h>
+-
+-#include <gtk/gtk.h>
+-#include <gio/gio.h>
+-#include <glib/gi18n-lib.h>
+-
+-#include "cc-keyboard-item.h"
+-
+-#define CC_KEYBOARD_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CC_TYPE_KEYBOARD_ITEM, CcKeyboardItemPrivate))
+-
+-#define CUSTOM_KEYS_SCHEMA "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
+-
+-struct CcKeyboardItemPrivate
+-{
+-  /* properties */
+-  int foo;
+-
+-  /* internal */
+-};
+-
+-enum {
+-  PROP_0,
+-  PROP_DESCRIPTION,
+-  PROP_BINDING,
+-  PROP_EDITABLE,
+-  PROP_TYPE,
+-  PROP_COMMAND
+-};
+-
+-static void     cc_keyboard_item_class_init     (CcKeyboardItemClass *klass);
+-static void     cc_keyboard_item_init           (CcKeyboardItem      *keyboard_item);
+-static void     cc_keyboard_item_finalize       (GObject               *object);
+-
+-G_DEFINE_TYPE (CcKeyboardItem, cc_keyboard_item, G_TYPE_OBJECT)
+-
+-static gboolean
+-binding_from_string (const char             *str,
+-                     guint                  *accelerator_key,
+-                     guint                  *keycode,
+-                     GdkModifierType        *accelerator_mods)
+-{
+-  g_return_val_if_fail (accelerator_key != NULL, FALSE);
+-  guint *keycodes;
+-
+-  if (str == NULL || strcmp (str, "disabled") == 0)
+-    {
+-      *accelerator_key = 0;
+-      *keycode = 0;
+-      *accelerator_mods = 0;
+-      return TRUE;
+-    }
+-
+-  gtk_accelerator_parse_with_keycode (str, accelerator_key, &keycodes, accelerator_mods);
+-
+-  if (keycode != NULL)
+-    *keycode = (keycodes ? keycodes[0] : 0);
+-  g_free (keycodes);
+-
+-  if (*accelerator_key == 0)
+-    return FALSE;
+-  else
+-    return TRUE;
+-}
+-
+-static void
+-_set_description (CcKeyboardItem *item,
+-                  const char       *value)
+-{
+-  g_free (item->description);
+-  item->description = g_strdup (value);
+-}
+-
+-const char *
+-cc_keyboard_item_get_description (CcKeyboardItem *item)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_ITEM (item), NULL);
+-
+-  return item->description;
+-}
+-
+-/* wrapper around g_settings_set_str[ing|v] */
+-static void
+-settings_set_binding (GSettings  *settings,
+-                      const char *key,
+-		      const char *value)
+-{
+-  GVariant *variant;
+-
+-  variant = g_settings_get_value (settings, key);
+-
+-  if (g_variant_is_of_type (variant, G_VARIANT_TYPE_STRING))
+-    g_settings_set_string (settings, key, value);
+-  else if (g_variant_is_of_type (variant, G_VARIANT_TYPE_STRING_ARRAY))
+-    {
+-      char **str_array;
+-
+-      str_array = g_variant_dup_strv (variant, NULL);
+-
+-      /* create a space for the new binding if empty */
+-      if (*str_array == NULL)
+-        {
+-          g_free (str_array);
+-          str_array = g_new0 (char *, 2);
+-        }
+-
+-      /* replace the first binding */
+-      g_free (*str_array);
+-      *str_array = g_strdup (value);
+-
+-      g_settings_set_strv (settings, key, (const char * const *)str_array);
+-      g_strfreev (str_array);
+-    }
+-
+-  g_variant_unref (variant);
+-}
+-
+-
+-static void
+-_set_binding (CcKeyboardItem *item,
+-              const char     *value,
+-	      gboolean        set_backend)
+-{
+-  /* don't reassign <Alt_L> or <Alt> key in the callback to the binding itself (as it's invalid for the cell renderer) */
+-  if ((g_strcmp0 (value, "<Alt_L>") == 0) || (g_strcmp0 (value, "<Alt>") == 0))
+-    return;
+-
+-  g_free (item->binding);
+-  item->binding = g_strdup (value);
+-  binding_from_string (item->binding, &item->keyval, &item->keycode, &item->mask);
+-
+-  const char *key;
+-  char *cheated_modifier = NULL;
+-  if (g_strcmp0 (item->binding, "Alt_L") == 0)
+-    cheated_modifier = g_strdup_printf ("<%s>", item->binding);
+-
+-  if (set_backend == FALSE)
+-    return;
+-
+-  settings_set_binding (item->settings, item->key, cheated_modifier ? cheated_modifier: item->binding);
+-
+-  g_free (cheated_modifier);
+-}
+-
+-const char *
+-cc_keyboard_item_get_binding (CcKeyboardItem *item)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_ITEM (item), NULL);
+-
+-  return item->binding;
+-}
+-
+-static void
+-_set_type (CcKeyboardItem *item,
+-           gint            value)
+-{
+-  item->type = value;
+-}
+-
+-static void
+-_set_command (CcKeyboardItem *item,
+-              const char       *value)
+-{
+-  g_free (item->command);
+-  item->command = g_strdup (value);
+-}
+-
+-const char *
+-cc_keyboard_item_get_command (CcKeyboardItem *item)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_ITEM (item), NULL);
+-
+-  return item->command;
+-}
+-
+-static void
+-cc_keyboard_item_set_property (GObject      *object,
+-                               guint         prop_id,
+-                               const GValue *value,
+-                               GParamSpec   *pspec)
+-{
+-  CcKeyboardItem *self;
+-
+-  self = CC_KEYBOARD_ITEM (object);
+-
+-  switch (prop_id) {
+-  case PROP_DESCRIPTION:
+-    _set_description (self, g_value_get_string (value));
+-    break;
+-  case PROP_BINDING:
+-    _set_binding (self, g_value_get_string (value), TRUE);
+-    break;
+-  case PROP_COMMAND:
+-    _set_command (self, g_value_get_string (value));
+-    break;
+-  case PROP_TYPE:
+-    _set_type (self, g_value_get_int (value));
+-    break;
+-  default:
+-    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-    break;
+-  }
+-}
+-
+-static void
+-cc_keyboard_item_get_property (GObject    *object,
+-                               guint       prop_id,
+-                               GValue     *value,
+-                               GParamSpec *pspec)
+-{
+-  CcKeyboardItem *self;
+-
+-  self = CC_KEYBOARD_ITEM (object);
+-
+-  switch (prop_id) {
+-  case PROP_DESCRIPTION:
+-    g_value_set_string (value, self->description);
+-    break;
+-  case PROP_BINDING:
+-    g_value_set_string (value, self->binding);
+-    break;
+-  case PROP_EDITABLE:
+-    g_value_set_boolean (value, self->editable);
+-    break;
+-  case PROP_COMMAND:
+-    g_value_set_string (value, self->command);
+-    break;
+-  default:
+-    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-    break;
+-  }
+-}
+-
+-static GObject *
+-cc_keyboard_item_constructor (GType                  type,
+-                              guint                  n_construct_properties,
+-                              GObjectConstructParam *construct_properties)
+-{
+-  CcKeyboardItem      *keyboard_item;
+-
+-  keyboard_item = CC_KEYBOARD_ITEM (G_OBJECT_CLASS (cc_keyboard_item_parent_class)->constructor (type,
+-                                                                                                 n_construct_properties,
+-                                                                                                 construct_properties));
+-
+-  return G_OBJECT (keyboard_item);
+-}
+-
+-static void
+-cc_keyboard_item_class_init (CcKeyboardItemClass *klass)
+-{
+-  GObjectClass  *object_class = G_OBJECT_CLASS (klass);
+-
+-  object_class->get_property = cc_keyboard_item_get_property;
+-  object_class->set_property = cc_keyboard_item_set_property;
+-  object_class->constructor = cc_keyboard_item_constructor;
+-  object_class->finalize = cc_keyboard_item_finalize;
+-
+-  g_object_class_install_property (object_class,
+-                                   PROP_DESCRIPTION,
+-                                   g_param_spec_string ("description",
+-                                                        "description",
+-                                                        "description",
+-                                                        NULL,
+-                                                        G_PARAM_READWRITE));
+-
+-  g_object_class_install_property (object_class,
+-                                   PROP_BINDING,
+-                                   g_param_spec_string ("binding",
+-                                                        "binding",
+-                                                        "binding",
+-                                                        NULL,
+-                                                        G_PARAM_READWRITE));
+-
+-  g_object_class_install_property (object_class,
+-                                   PROP_EDITABLE,
+-                                   g_param_spec_boolean ("editable",
+-                                                         NULL,
+-                                                         NULL,
+-                                                         FALSE,
+-                                                         G_PARAM_READABLE));
+-
+-  g_object_class_install_property (object_class,
+-                                   PROP_TYPE,
+-                                   g_param_spec_int ("type",
+-                                                     NULL,
+-                                                     NULL,
+-                                                     CC_KEYBOARD_ITEM_TYPE_NONE,
+-                                                     CC_KEYBOARD_ITEM_TYPE_GSETTINGS,
+-                                                     CC_KEYBOARD_ITEM_TYPE_NONE,
+-                                                     G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+-
+-  g_object_class_install_property (object_class,
+-                                   PROP_COMMAND,
+-                                   g_param_spec_string ("command",
+-                                                        "command",
+-                                                        "command",
+-                                                        NULL,
+-                                                        G_PARAM_READWRITE));
+-
+-  g_type_class_add_private (klass, sizeof (CcKeyboardItemPrivate));
+-}
+-
+-static void
+-cc_keyboard_item_init (CcKeyboardItem *item)
+-{
+-  item->priv = CC_KEYBOARD_ITEM_GET_PRIVATE (item);
+-}
+-
+-static void
+-cc_keyboard_item_finalize (GObject *object)
+-{
+-  CcKeyboardItem *item;
+-
+-  g_return_if_fail (object != NULL);
+-  g_return_if_fail (CC_IS_KEYBOARD_ITEM (object));
+-
+-  item = CC_KEYBOARD_ITEM (object);
+-
+-  g_return_if_fail (item->priv != NULL);
+-
+-  if (item->settings != NULL)
+-    g_object_unref (item->settings);
+-
+-  /* Free memory */
+-  g_free (item->binding);
+-  g_free (item->gettext_package);
+-  g_free (item->gsettings_path);
+-  g_free (item->description);
+-  g_free (item->command);
+-  g_free (item->schema);
+-  g_free (item->key);
+-
+-  G_OBJECT_CLASS (cc_keyboard_item_parent_class)->finalize (object);
+-}
+-
+-CcKeyboardItem *
+-cc_keyboard_item_new (CcKeyboardItemType type)
+-{
+-  GObject *object;
+-
+-  object = g_object_new (CC_TYPE_KEYBOARD_ITEM,
+-                         "type", type,
+-                         NULL);
+-
+-  return CC_KEYBOARD_ITEM (object);
+-}
+-
+-/* wrapper around g_settings_get_str[ing|v] */
+-static char *
+-settings_get_binding (GSettings  *settings,
+-                      const char *key)
+-{
+-  GVariant *variant;
+-  char *value = NULL;
+-
+-  variant = g_settings_get_value (settings, key);
+-  if (g_variant_is_of_type (variant, G_VARIANT_TYPE_STRING))
+-    value = g_variant_dup_string (variant, NULL);
+-  else if (g_variant_is_of_type (variant, G_VARIANT_TYPE_STRING_ARRAY))
+-    {
+-      const char **str_array;
+-
+-      str_array = g_variant_get_strv (variant, NULL);
+-      value = g_strdup (str_array[0]);
+-    }
+-  g_variant_unref (variant);
+-
+-  return value;
+-}
+-
+-static void
+-binding_changed (GSettings *settings,
+-		 const char *key,
+-		 CcKeyboardItem *item)
+-{
+-  char *value;
+-
+-  value = settings_get_binding (item->settings, item->key);
+-  item->editable = g_settings_is_writable (item->settings, item->key);
+-  _set_binding (item, value, FALSE);
+-  g_free (value);
+-  g_object_notify (G_OBJECT (item), "binding");
+-}
+-
+-gboolean
+-cc_keyboard_item_load_from_gsettings_path (CcKeyboardItem *item,
+-                                           const char     *path,
+-                                           gboolean        reset)
+-{
+-  item->schema = g_strdup (CUSTOM_KEYS_SCHEMA);
+-  item->gsettings_path = g_strdup (path);
+-  item->key = g_strdup ("binding");
+-  item->settings = g_settings_new_with_path (item->schema, path);
+-  item->editable = g_settings_is_writable (item->settings, item->key);
+-  item->desc_editable = g_settings_is_writable (item->settings, "name");
+-  item->cmd_editable = g_settings_is_writable (item->settings, "command");
+-
+-  if (reset)
+-    {
+-      g_settings_reset (item->settings, "name");
+-      g_settings_reset (item->settings, "command");
+-      g_settings_reset (item->settings, "binding");
+-    }
+-
+-  g_settings_bind (item->settings, "name",
+-                   G_OBJECT (item), "description", G_SETTINGS_BIND_DEFAULT);
+-  g_settings_bind (item->settings, "command",
+-                   G_OBJECT (item), "command", G_SETTINGS_BIND_DEFAULT);
+-
+-  item->binding = settings_get_binding (item->settings, item->key);
+-  binding_from_string (item->binding, &item->keyval, &item->keycode, &item->mask);
+-  g_signal_connect (G_OBJECT (item->settings), "changed::binding",
+-		    G_CALLBACK (binding_changed), item);
+-
+-  return TRUE;
+-}
+-
+-gboolean
+-cc_keyboard_item_load_from_gsettings (CcKeyboardItem *item,
+-				      const char *description,
+-				      const char *schema,
+-				      const char *key)
+-{
+-  char *signal_name;
+-
+-  item->schema = g_strdup (schema);
+-  item->key = g_strdup (key);
+-  item->description = g_strdup (description);
+-
+-  item->settings = g_settings_new (item->schema);
+-  item->binding = settings_get_binding (item->settings, item->key);
+-  item->editable = g_settings_is_writable (item->settings, item->key);
+-
+-  if ((g_strcmp0 (item->binding, "<Alt>") == 0) || (g_strcmp0 (item->binding, "<Alt_L>") == 0))
+-    {
+-      g_free (item->binding);
+-      item->binding = g_strdup ("Alt_L");
+-    }
+-
+-  binding_from_string (item->binding, &item->keyval, &item->keycode, &item->mask);
+-
+-  signal_name = g_strdup_printf ("changed::%s", item->key);
+-  g_signal_connect (G_OBJECT (item->settings), signal_name,
+-		    G_CALLBACK (binding_changed), item);
+-  g_free (signal_name);
+-
+-  return TRUE;
+-}
+-
+-gboolean
+-cc_keyboard_item_equal (CcKeyboardItem *a,
+-			CcKeyboardItem *b)
+-{
+-  if (a->type != b->type)
+-    return FALSE;
+-  switch (a->type)
+-    {
+-      case CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH:
+-	return g_str_equal (a->gsettings_path, b->gsettings_path);
+-      case CC_KEYBOARD_ITEM_TYPE_GSETTINGS:
+-	return (g_str_equal (a->schema, b->schema) &&
+-		g_str_equal (a->key, b->key));
+-      default:
+-	g_assert_not_reached ();
+-    }
+-
+-}
+-
+-/*
+- * vim: sw=2 ts=8 cindent noai bs=2
+- */
+diff --git a/panels/keyboard/cc-keyboard-item.h b/panels/keyboard/cc-keyboard-item.h
+deleted file mode 100644
+index 2fca1bb..0000000
+--- a/panels/keyboard/cc-keyboard-item.h
++++ /dev/null
+@@ -1,108 +0,0 @@
+-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+- *
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#ifndef __CC_KEYBOARD_ITEM_H
+-#define __CC_KEYBOARD_ITEM_H
+-
+-#include <glib-object.h>
+-
+-G_BEGIN_DECLS
+-
+-#define CC_TYPE_KEYBOARD_ITEM         (cc_keyboard_item_get_type ())
+-#define CC_KEYBOARD_ITEM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), CC_TYPE_KEYBOARD_ITEM, CcKeyboardItem))
+-#define CC_KEYBOARD_ITEM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), CC_TYPE_KEYBOARD_ITEM, CcKeyboardItemClass))
+-#define CC_IS_KEYBOARD_ITEM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), CC_TYPE_KEYBOARD_ITEM))
+-#define CC_IS_KEYBOARD_ITEM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), CC_TYPE_KEYBOARD_ITEM))
+-#define CC_KEYBOARD_ITEM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), CC_TYPE_KEYBOARD_ITEM, CcKeyboardItemClass))
+-
+-typedef enum
+-{
+-  BINDING_GROUP_SYSTEM,
+-  BINDING_GROUP_APPS,
+-  BINDING_GROUP_SEPARATOR,
+-  BINDING_GROUP_USER,
+-} BindingGroupType;
+-
+-typedef enum {
+-	CC_KEYBOARD_ITEM_TYPE_NONE = 0,
+-	CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH,
+-	CC_KEYBOARD_ITEM_TYPE_GSETTINGS
+-} CcKeyboardItemType;
+-
+-typedef struct CcKeyboardItemPrivate CcKeyboardItemPrivate;
+-
+-typedef struct
+-{
+-  GObject                parent;
+-  CcKeyboardItemPrivate *priv;
+-
+-  /* Move to priv */
+-  CcKeyboardItemType type;
+-
+-  /* common */
+-  /* FIXME move to priv? */
+-  guint keyval;
+-  guint keycode;
+-  GdkModifierType mask;
+-  BindingGroupType group;
+-  GtkTreeModel *model;
+-  char *description;
+-  char *gettext_package;
+-  char *binding;
+-  gboolean editable;
+-
+-  /* GSettings path */
+-  char *gsettings_path;
+-  gboolean desc_editable;
+-  char *command;
+-  gboolean cmd_editable;
+-
+-  /* GSettings */
+-  char *schema;
+-  char *key;
+-  GSettings *settings;
+-} CcKeyboardItem;
+-
+-typedef struct
+-{
+-  GObjectClass   parent_class;
+-} CcKeyboardItemClass;
+-
+-GType              cc_keyboard_item_get_type (void);
+-
+-CcKeyboardItem * cc_keyboard_item_new         (CcKeyboardItemType type);
+-gboolean cc_keyboard_item_load_from_gsettings_path (CcKeyboardItem *item,
+-					            const char     *path,
+-					            gboolean        reset);
+-gboolean cc_keyboard_item_load_from_gsettings (CcKeyboardItem *item,
+-					       const char *description,
+-					       const char *schema,
+-					       const char *key);
+-
+-const char * cc_keyboard_item_get_description (CcKeyboardItem *item);
+-const char * cc_keyboard_item_get_binding     (CcKeyboardItem *item);
+-const char * cc_keyboard_item_get_command     (CcKeyboardItem *item);
+-
+-gboolean     cc_keyboard_item_equal           (CcKeyboardItem *a,
+-					       CcKeyboardItem *b);
+-
+-G_END_DECLS
+-
+-#endif /* __CC_KEYBOARD_ITEM_H */
+diff --git a/panels/keyboard/cc-keyboard-option.c b/panels/keyboard/cc-keyboard-option.c
+deleted file mode 100644
+index 229ceae..0000000
+--- a/panels/keyboard/cc-keyboard-option.c
++++ /dev/null
+@@ -1,449 +0,0 @@
+-/*
+- * Copyright (C) 2012 Red Hat, Inc.
+- *
+- * Written by: Rui Matos <rmatos@redhat.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2, or (at your option)
+- * any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
+- */
+-
+-#include <glib/gi18n.h>
+-
+-#define GNOME_DESKTOP_USE_UNSTABLE_API
+-#include <libgnome-desktop/gnome-xkb-info.h>
+-
+-#include "cc-keyboard-option.h"
+-
+-#define CC_TYPE_KEYBOARD_OPTION            (cc_keyboard_option_get_type ())
+-#define CC_KEYBOARD_OPTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CC_TYPE_KEYBOARD_OPTION, CcKeyboardOption))
+-#define CC_KEYBOARD_OPTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  CC_TYPE_KEYBOARD_OPTION, CcKeyboardOptionClass))
+-#define CC_IS_KEYBOARD_OPTION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CC_TYPE_KEYBOARD_OPTION))
+-#define CC_IS_KEYBOARD_OPTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  CC_TYPE_KEYBOARD_OPTION))
+-#define CC_KEYBOARD_OPTION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  CC_TYPE_KEYBOARD_OPTION, CcKeyboardOptionClass))
+-
+-#define INPUT_SOURCES_SCHEMA "org.gnome.desktop.input-sources"
+-#define XKB_OPTIONS_KEY "xkb-options"
+-
+-#define XKB_OPTION_GROUP_LVL3 "lv3"
+-#define XKB_OPTION_GROUP_COMP "Compose key"
+-
+-enum
+-{
+-  PROP_0,
+-  PROP_GROUP,
+-  PROP_DESCRIPTION
+-};
+-
+-enum
+-{
+-  CHANGED_SIGNAL,
+-  LAST_SIGNAL
+-};
+-
+-struct _CcKeyboardOption
+-{
+-  GObject parent_object;
+-
+-  gchar *group;
+-  gchar *description;
+-  gchar *current_value;
+-  GtkListStore *store;
+-
+-  const gchar * const *whitelist;
+-};
+-
+-typedef struct _CcKeyboardOptionClass CcKeyboardOptionClass;
+-struct _CcKeyboardOptionClass
+-{
+-  GObjectClass parent_class;
+-};
+-
+-static guint keyboard_option_signals[LAST_SIGNAL] = { 0 };
+-
+-static GnomeXkbInfo *xkb_info = NULL;
+-static GSettings *input_sources_settings = NULL;
+-static gchar **current_xkb_options = NULL;
+-
+-static const gchar *xkb_option_lvl3_whitelist[] = {
+-  "lv3:switch",
+-  "lv3:menu_switch",
+-  "lv3:rwin_switch",
+-  "lv3:lalt_switch",
+-  "lv3:ralt_switch",
+-  "lv3:caps_switch",
+-  NULL
+-};
+-
+-static const gchar *xkb_option_comp_whitelist[] = {
+-  "compose:ralt",
+-  "compose:rwin",
+-  "compose:menu",
+-  "compose:lctrl",
+-  "compose:rctrl",
+-  "compose:caps",
+-  NULL
+-};
+-
+-static GList *objects_list = NULL;
+-
+-GType cc_keyboard_option_get_type (void);
+-
+-G_DEFINE_TYPE (CcKeyboardOption, cc_keyboard_option, G_TYPE_OBJECT);
+-
+-static gboolean
+-strv_contains (const gchar * const *strv,
+-               const gchar         *str)
+-{
+-  const gchar * const *p = strv;
+-  for (p = strv; *p; p++)
+-    if (g_strcmp0 (*p, str) == 0)
+-      return TRUE;
+-
+-  return FALSE;
+-}
+-
+-static void
+-reload_setting (CcKeyboardOption *self)
+-{
+-  gchar **iter;
+-
+-  for (iter = current_xkb_options; *iter; ++iter)
+-    if (strv_contains (self->whitelist, *iter))
+-      {
+-        if (g_strcmp0 (self->current_value, *iter) != 0)
+-          {
+-            g_free (self->current_value);
+-            self->current_value = g_strdup (*iter);
+-            g_signal_emit (self, keyboard_option_signals[CHANGED_SIGNAL], 0);
+-          }
+-        break;
+-      }
+-
+-  if (*iter == NULL && self->current_value != NULL)
+-    {
+-      g_clear_pointer (&self->current_value, g_free);
+-      g_signal_emit (self, keyboard_option_signals[CHANGED_SIGNAL], 0);
+-    }
+-}
+-
+-static void
+-xkb_options_changed (GSettings *settings,
+-                     gchar     *key,
+-                     gpointer   data)
+-{
+-  GList *l;
+-
+-  g_strfreev (current_xkb_options);
+-  current_xkb_options = g_settings_get_strv (settings, key);
+-
+-  for (l = objects_list; l; l = l->next)
+-    reload_setting (CC_KEYBOARD_OPTION (l->data));
+-}
+-
+-static void
+-cc_keyboard_option_get_property (GObject    *object,
+-                                 guint       prop_id,
+-                                 GValue     *value,
+-                                 GParamSpec *pspec)
+-{
+-  CcKeyboardOption *self;
+-
+-  self = CC_KEYBOARD_OPTION (object);
+-
+-  switch (prop_id)
+-    {
+-    case PROP_GROUP:
+-      g_value_set_string (value, self->group);
+-      break;
+-    case PROP_DESCRIPTION:
+-      g_value_set_string (value, self->description);
+-      break;
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-      break;
+-    }
+-}
+-
+-static void
+-cc_keyboard_option_set_property (GObject      *object,
+-                                 guint         prop_id,
+-                                 const GValue *value,
+-                                 GParamSpec   *pspec)
+-{
+-  CcKeyboardOption *self;
+-
+-  self = CC_KEYBOARD_OPTION (object);
+-
+-  switch (prop_id)
+-    {
+-    case PROP_GROUP:
+-      self->group = g_value_dup_string (value);
+-      break;
+-    case PROP_DESCRIPTION:
+-      self->description = g_value_dup_string (value);
+-      break;
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+-      break;
+-    }
+-}
+-
+-static void
+-cc_keyboard_option_init (CcKeyboardOption *self)
+-{
+-}
+-
+-static void
+-cc_keyboard_option_finalize (GObject *object)
+-{
+-  CcKeyboardOption *self = CC_KEYBOARD_OPTION (object);
+-
+-  g_clear_pointer (&self->group, g_free);
+-  g_clear_pointer (&self->description, g_free);
+-  g_clear_pointer (&self->current_value, g_free);
+-  g_clear_object (&self->store);
+-
+-  G_OBJECT_CLASS (cc_keyboard_option_parent_class)->finalize (object);
+-}
+-
+-static void
+-cc_keyboard_option_constructed (GObject *object)
+-{
+-  GtkTreeIter iter;
+-  GList *options, *l;
+-  gchar *option_id;
+-  CcKeyboardOption *self = CC_KEYBOARD_OPTION (object);
+-
+-  G_OBJECT_CLASS (cc_keyboard_option_parent_class)->constructed (object);
+-
+-  if (g_str_equal (self->group, XKB_OPTION_GROUP_LVL3))
+-    self->whitelist = xkb_option_lvl3_whitelist;
+-  else if (g_str_equal (self->group, XKB_OPTION_GROUP_COMP))
+-    self->whitelist = xkb_option_comp_whitelist;
+-  else
+-    g_assert_not_reached ();
+-
+-  self->store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
+-  gtk_list_store_append (self->store, &iter);
+-  gtk_list_store_set (self->store, &iter,
+-                      XKB_OPTION_DESCRIPTION_COLUMN, _("Disabled"),
+-                      XKB_OPTION_ID_COLUMN, NULL,
+-                      -1);
+-  options = gnome_xkb_info_get_options_for_group (xkb_info, self->group);
+-  for (l = options; l; l = l->next)
+-    {
+-      option_id = l->data;
+-      if (strv_contains (self->whitelist, option_id))
+-        {
+-          gtk_list_store_append (self->store, &iter);
+-          gtk_list_store_set (self->store, &iter,
+-                              XKB_OPTION_DESCRIPTION_COLUMN,
+-                              gnome_xkb_info_description_for_option (xkb_info, self->group, option_id),
+-                              XKB_OPTION_ID_COLUMN,
+-                              option_id,
+-                              -1);
+-        }
+-    }
+-  g_list_free (options);
+-
+-  reload_setting (self);
+-}
+-
+-static void
+-cc_keyboard_option_class_init (CcKeyboardOptionClass *klass)
+-{
+-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+-
+-  gobject_class->get_property = cc_keyboard_option_get_property;
+-  gobject_class->set_property = cc_keyboard_option_set_property;
+-  gobject_class->finalize = cc_keyboard_option_finalize;
+-  gobject_class->constructed = cc_keyboard_option_constructed;
+-
+-  g_object_class_install_property (gobject_class,
+-                                   PROP_GROUP,
+-                                   g_param_spec_string ("group",
+-                                                        "group",
+-                                                        "xkb option group identifier",
+-                                                        NULL,
+-                                                        G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+-  g_object_class_install_property (gobject_class,
+-                                   PROP_DESCRIPTION,
+-                                   g_param_spec_string ("description",
+-                                                        "description",
+-                                                        "translated option description",
+-                                                        NULL,
+-                                                        G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
+-
+-  keyboard_option_signals[CHANGED_SIGNAL] = g_signal_new ("changed",
+-                                                          CC_TYPE_KEYBOARD_OPTION,
+-                                                          G_SIGNAL_RUN_LAST,
+-                                                          0, NULL, NULL, NULL,
+-                                                          G_TYPE_NONE,
+-                                                          0);
+-}
+-
+-GList *
+-cc_keyboard_option_get_all (void)
+-{
+-  if (objects_list)
+-    return objects_list;
+-
+-  xkb_info = gnome_xkb_info_new ();
+-
+-  input_sources_settings = g_settings_new (INPUT_SOURCES_SCHEMA);
+-
+-  g_signal_connect (input_sources_settings, "changed::" XKB_OPTIONS_KEY,
+-                    G_CALLBACK (xkb_options_changed), NULL);
+-
+-  xkb_options_changed (input_sources_settings, XKB_OPTIONS_KEY, NULL);
+-
+-  objects_list = g_list_prepend (objects_list,
+-                                 g_object_new (CC_TYPE_KEYBOARD_OPTION,
+-                                               "group", XKB_OPTION_GROUP_LVL3,
+-                                               "description", _("Alternative Characters Key"),
+-                                               NULL));
+-  objects_list = g_list_prepend (objects_list,
+-                                 g_object_new (CC_TYPE_KEYBOARD_OPTION,
+-                                               "group", XKB_OPTION_GROUP_COMP,
+-                                               "description", _("Compose Key"),
+-                                               NULL));
+-  return objects_list;
+-}
+-
+-const gchar *
+-cc_keyboard_option_get_description (CcKeyboardOption *self)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_OPTION (self), NULL);
+-
+-  return self->description;
+-}
+-
+-GtkListStore *
+-cc_keyboard_option_get_store (CcKeyboardOption *self)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_OPTION (self), NULL);
+-
+-  return self->store;
+-}
+-
+-const gchar *
+-cc_keyboard_option_get_current_value_description (CcKeyboardOption *self)
+-{
+-  g_return_val_if_fail (CC_IS_KEYBOARD_OPTION (self), NULL);
+-
+-  if (!self->current_value)
+-    return _("Disabled");
+-
+-  return gnome_xkb_info_description_for_option (xkb_info, self->group, self->current_value);
+-}
+-
+-static void
+-remove_value (const gchar *value)
+-{
+-  gchar **p;
+-
+-  for (p = current_xkb_options; *p; ++p)
+-    if (g_str_equal (*p, value))
+-      {
+-        g_free (*p);
+-        break;
+-      }
+-
+-  for (++p; *p; ++p)
+-    *(p - 1) = *p;
+-
+-  *(p - 1) = NULL;
+-}
+-
+-static void
+-add_value (const gchar *value)
+-{
+-  gchar **new_xkb_options;
+-  gchar **a, **b;
+-
+-  new_xkb_options = g_new0 (gchar *, g_strv_length (current_xkb_options) + 2);
+-
+-  a = new_xkb_options;
+-  for (b = current_xkb_options; *b; ++a, ++b)
+-    *a = g_strdup (*b);
+-
+-  *a = g_strdup (value);
+-
+-  g_strfreev (current_xkb_options);
+-  current_xkb_options = new_xkb_options;
+-}
+-
+-static void
+-replace_value (const gchar *old,
+-               const gchar *new)
+-{
+-  gchar **iter;
+-
+-  if (g_str_equal (old, new))
+-    return;
+-
+-  for (iter = current_xkb_options; *iter; ++iter)
+-    if (g_str_equal (*iter, old))
+-      {
+-        g_free (*iter);
+-        *iter = g_strdup (new);
+-        break;
+-      }
+-}
+-
+-void
+-cc_keyboard_option_set_selection (CcKeyboardOption *self,
+-                                  GtkTreeIter      *iter)
+-{
+-  gchar *new_value = NULL;
+-
+-  g_return_if_fail (CC_IS_KEYBOARD_OPTION (self));
+-
+-  gtk_tree_model_get (GTK_TREE_MODEL (self->store), iter,
+-                      XKB_OPTION_ID_COLUMN, &new_value,
+-                      -1);
+-
+-  if (!new_value)
+-    {
+-      if (self->current_value)
+-        remove_value (self->current_value);
+-    }
+-  else
+-    {
+-      if (self->current_value)
+-        replace_value (self->current_value, new_value);
+-      else
+-        add_value (new_value);
+-    }
+-
+-  g_settings_set_strv (input_sources_settings, XKB_OPTIONS_KEY,
+-                       (const gchar * const *) current_xkb_options);
+-
+-  g_free (new_value);
+-}
+-
+-void
+-cc_keyboard_option_clear_all (void)
+-{
+-  GList *l;
+-
+-  for (l = objects_list; l; l = l->next)
+-    g_object_unref (l->data);
+-
+-  g_clear_pointer (&objects_list, g_list_free);
+-  g_clear_pointer (&current_xkb_options, g_strfreev);
+-  g_clear_object (&input_sources_settings);
+-  g_clear_object (&xkb_info);
+-}
+diff --git a/panels/keyboard/cc-keyboard-option.h b/panels/keyboard/cc-keyboard-option.h
+deleted file mode 100644
+index 011481f..0000000
+--- a/panels/keyboard/cc-keyboard-option.h
++++ /dev/null
+@@ -1,48 +0,0 @@
+-/*
+- * Copyright (C) 2012 Red Hat, Inc.
+- *
+- * Written by: Rui Matos <rmatos@redhat.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2, or (at your option)
+- * any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
+- */
+-
+-#ifndef __CC_KEYBOARD_OPTION_H__
+-#define __CC_KEYBOARD_OPTION_H__
+-
+-#include <gtk/gtk.h>
+-
+-G_BEGIN_DECLS
+-
+-enum
+-{
+-  XKB_OPTION_DESCRIPTION_COLUMN,
+-  XKB_OPTION_ID_COLUMN,
+-  XKB_OPTION_N_COLUMNS
+-};
+-
+-typedef struct _CcKeyboardOption CcKeyboardOption;
+-
+-GList *         cc_keyboard_option_get_all              (void);
+-const gchar *   cc_keyboard_option_get_description      (CcKeyboardOption *self);
+-GtkListStore *  cc_keyboard_option_get_store            (CcKeyboardOption *self);
+-const gchar *   cc_keyboard_option_get_current_value_description (CcKeyboardOption *self);
+-void            cc_keyboard_option_set_selection        (CcKeyboardOption *self,
+-                                                         GtkTreeIter      *iter);
+-void            cc_keyboard_option_clear_all            (void);
+-
+-G_END_DECLS
+-
+-#endif  /* __CC_KEYBOARD_OPTION_H__ */
+diff --git a/panels/keyboard/cc-keyboard-panel.c b/panels/keyboard/cc-keyboard-panel.c
+deleted file mode 100644
+index 5db9ee1..0000000
+--- a/panels/keyboard/cc-keyboard-panel.c
++++ /dev/null
+@@ -1,211 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Thomas Wood <thomas.wood@intel.com>
+- *
+- */
+-
+-#include "cc-keyboard-panel.h"
+-#include "keyboard-general.h"
+-#include "keyboard-shortcuts.h"
+-
+-CC_PANEL_REGISTER (CcKeyboardPanel, cc_keyboard_panel)
+-
+-#define KEYBOARD_PANEL_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), CC_TYPE_KEYBOARD_PANEL, CcKeyboardPanelPrivate))
+-
+-struct _CcKeyboardPanelPrivate
+-{
+-  GtkBuilder *builder;
+-};
+-
+-
+-static void
+-cc_keyboard_panel_get_property (GObject    *object,
+-                               guint       property_id,
+-                               GValue     *value,
+-                               GParamSpec *pspec)
+-{
+-  switch (property_id)
+-    {
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-enum {
+-  PROP_0,
+-  PROP_ARGV
+-};
+-
+-enum {
+-  TYPING_PAGE,
+-  SHORTCUTS_PAGE
+-};
+-
+-static void
+-cc_keyboard_panel_set_page (CcKeyboardPanel *panel,
+-                            const gchar     *page,
+-                            const gchar     *section)
+-{
+-  GtkWidget *notebook;
+-  gint page_num;
+-
+-  if (g_strcmp0 (page, "typing") == 0)
+-    page_num = TYPING_PAGE;
+-  else if (g_strcmp0 (page, "shortcuts") == 0)
+-    page_num = SHORTCUTS_PAGE;
+-  else {
+-    g_warning ("Could not switch to non-existent page '%s'", page);
+-    return;
+-  }
+-
+-  notebook = GTK_WIDGET (gtk_builder_get_object (panel->priv->builder, "keyboard_notebook"));
+-  gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), page_num);
+-
+-  if (page_num == SHORTCUTS_PAGE &&
+-      section != NULL) {
+-    keyboard_shortcuts_set_section (CC_PANEL (panel), section);
+-  }
+-}
+-
+-static void
+-cc_keyboard_panel_set_property (GObject      *object,
+-                               guint         property_id,
+-                               const GValue *value,
+-                               GParamSpec   *pspec)
+-{
+-  CcKeyboardPanel *panel = CC_KEYBOARD_PANEL (object);
+-
+-  switch (property_id)
+-    {
+-    case PROP_ARGV: {
+-      gchar **args;
+-
+-      args = g_value_get_boxed (value);
+-
+-      if (args && args[0]) {
+-        cc_keyboard_panel_set_page (panel, args[0], args[1]);
+-      }
+-      break;
+-    }
+-
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-static GObject *
+-cc_keyboard_panel_constructor (GType                  gtype,
+-                               guint                  n_properties,
+-                               GObjectConstructParam *properties)
+-{
+-  GObject *obj;
+-  CcKeyboardPanel *self;
+-  CcKeyboardPanelPrivate *priv;
+-  GtkWidget *widget;
+-
+-  obj = G_OBJECT_CLASS (cc_keyboard_panel_parent_class)->constructor (gtype, n_properties, properties);
+-
+-  self = CC_KEYBOARD_PANEL (obj);
+-  priv = self->priv;
+-
+-  keyboard_general_init (CC_PANEL (self), priv->builder);
+-  keyboard_shortcuts_init (CC_PANEL (self), priv->builder);
+-
+-  widget = (GtkWidget *) gtk_builder_get_object (priv->builder,
+-                                                 "keyboard_notebook");
+-
+-  gtk_widget_reparent (widget, (GtkWidget *) self);
+-
+-  return obj;
+-}
+-
+-static const char *
+-cc_keyboard_panel_get_help_uri (CcPanel *panel)
+-{
+-  return "help:gnome-help/keyboard";
+-}
+-
+-static void
+-cc_keyboard_panel_dispose (GObject *object)
+-{
+-  keyboard_general_dispose (CC_PANEL (object));
+-  keyboard_shortcuts_dispose (CC_PANEL (object));
+-
+-  G_OBJECT_CLASS (cc_keyboard_panel_parent_class)->dispose (object);
+-}
+-
+-static void
+-cc_keyboard_panel_finalize (GObject *object)
+-{
+-  CcKeyboardPanel *panel = CC_KEYBOARD_PANEL (object);
+-
+-  if (panel->priv->builder)
+-    g_object_unref (panel->priv->builder);
+-
+-  G_OBJECT_CLASS (cc_keyboard_panel_parent_class)->finalize (object);
+-}
+-
+-static void
+-cc_keyboard_panel_class_init (CcKeyboardPanelClass *klass)
+-{
+-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+-  CcPanelClass *panel_class = CC_PANEL_CLASS (klass);
+-
+-  g_type_class_add_private (klass, sizeof (CcKeyboardPanelPrivate));
+-
+-  panel_class->get_help_uri = cc_keyboard_panel_get_help_uri;
+-
+-  object_class->constructor = cc_keyboard_panel_constructor;
+-  object_class->get_property = cc_keyboard_panel_get_property;
+-  object_class->set_property = cc_keyboard_panel_set_property;
+-  object_class->dispose = cc_keyboard_panel_dispose;
+-  object_class->finalize = cc_keyboard_panel_finalize;
+-
+-  g_object_class_override_property (object_class, PROP_ARGV, "argv");
+-}
+-
+-static void
+-cc_keyboard_panel_init (CcKeyboardPanel *self)
+-{
+-  const gchar *uifile = GNOMECC_UI_DIR "/gnome-keyboard-panel.ui";
+-  CcKeyboardPanelPrivate *priv;
+-  GError *error = NULL;
+-
+-  priv = self->priv = KEYBOARD_PANEL_PRIVATE (self);
+-
+-  priv->builder = gtk_builder_new ();
+-
+-  if (gtk_builder_add_from_file (priv->builder, uifile, &error) == 0)
+-    {
+-      g_warning ("Could not load UI: %s", error->message);
+-      g_clear_error (&error);
+-      g_object_unref (priv->builder);
+-      priv->builder = NULL;
+-    }
+-}
+-
+-void
+-cc_keyboard_panel_register (GIOModule *module)
+-{
+-  cc_keyboard_panel_register_type (G_TYPE_MODULE (module));
+-  g_io_extension_point_implement (CC_SHELL_PANEL_EXTENSION_POINT,
+-                                  CC_TYPE_KEYBOARD_PANEL,
+-                                  "keyboard", 0);
+-}
+-
+diff --git a/panels/keyboard/cc-keyboard-panel.h b/panels/keyboard/cc-keyboard-panel.h
+deleted file mode 100644
+index d9f7665..0000000
+--- a/panels/keyboard/cc-keyboard-panel.h
++++ /dev/null
+@@ -1,74 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Thomas Wood <thomas.wood@intel.com>
+- *
+- */
+-
+-
+-#ifndef _CC_KEYBOARD_PANEL_H
+-#define _CC_KEYBOARD_PANEL_H
+-
+-#include <shell/cc-panel.h>
+-
+-G_BEGIN_DECLS
+-
+-#define CC_TYPE_KEYBOARD_PANEL cc_keyboard_panel_get_type()
+-
+-#define CC_KEYBOARD_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
+-  CC_TYPE_KEYBOARD_PANEL, CcKeyboardPanel))
+-
+-#define CC_KEYBOARD_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_CAST ((klass), \
+-  CC_TYPE_KEYBOARD_PANEL, CcKeyboardPanelClass))
+-
+-#define CC_IS_KEYBOARD_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), \
+-  CC_TYPE_KEYBOARD_PANEL))
+-
+-#define CC_IS_KEYBOARD_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_TYPE ((klass), \
+-  CC_TYPE_KEYBOARD_PANEL))
+-
+-#define CC_KEYBOARD_PANEL_GET_CLASS(obj) \
+-  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+-  CC_TYPE_KEYBOARD_PANEL, CcKeyboardPanelClass))
+-
+-typedef struct _CcKeyboardPanel CcKeyboardPanel;
+-typedef struct _CcKeyboardPanelClass CcKeyboardPanelClass;
+-typedef struct _CcKeyboardPanelPrivate CcKeyboardPanelPrivate;
+-
+-struct _CcKeyboardPanel
+-{
+-  CcPanel parent;
+-
+-  CcKeyboardPanelPrivate *priv;
+-};
+-
+-struct _CcKeyboardPanelClass
+-{
+-  CcPanelClass parent_class;
+-};
+-
+-GType cc_keyboard_panel_get_type (void) G_GNUC_CONST;
+-
+-void  cc_keyboard_panel_register (GIOModule *module);
+-
+-G_END_DECLS
+-
+-#endif /* _CC_KEYBOARD_PANEL_H */
+diff --git a/panels/keyboard/gnome-keyboard-panel.h b/panels/keyboard/gnome-keyboard-panel.h
+deleted file mode 100644
+index 2aa9494..0000000
+--- a/panels/keyboard/gnome-keyboard-panel.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/* This program was written with lots of love under the GPL by Jonathan
+- * Blandford <jrb@gnome.org>
+- */
+-
+-#include <gtk/gtk.h>
+-#include <shell/cc-panel.h>
+-
+-void gnome_keybinding_properties_init (CcPanel *panel, GtkBuilder *builder);
+-void gnome_keybinding_properties_dispose (CcPanel *panel);
+diff --git a/panels/keyboard/gnome-keyboard-panel.ui b/panels/keyboard/gnome-keyboard-panel.ui
+deleted file mode 100644
+index b45f5e8..0000000
+--- a/panels/keyboard/gnome-keyboard-panel.ui
++++ /dev/null
+@@ -1,897 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<interface>
+-  <requires lib="gtk+" version="2.22"/>
+-  <object class="GtkAdjustment" id="cursor_blink_time_adjustment">
+-    <property name="lower">100</property>
+-    <property name="upper">2500</property>
+-    <property name="value">1000</property>
+-    <property name="step_increment">200</property>
+-    <property name="page_increment">200</property>
+-  </object>
+-  <object class="GtkDialog" id="custom-shortcut-dialog">
+-    <property name="can_focus">False</property>
+-    <property name="title" translatable="yes">Custom Shortcut</property>
+-    <property name="type_hint">dialog</property>
+-    <child internal-child="vbox">
+-      <object class="GtkBox" id="dialog-vbox1">
+-        <property name="visible">True</property>
+-        <property name="can_focus">False</property>
+-        <property name="orientation">vertical</property>
+-        <child internal-child="action_area">
+-          <object class="GtkButtonBox" id="dialog-action_area2">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="layout_style">end</property>
+-            <child>
+-              <object class="GtkButton" id="cancelbutton1">
+-                <property name="label">gtk-cancel</property>
+-                <property name="visible">True</property>
+-                <property name="can_focus">True</property>
+-                <property name="receives_default">False</property>
+-                <property name="use_action_appearance">False</property>
+-                <property name="use_stock">True</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">False</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkButton" id="okbutton1">
+-                <property name="label">gtk-apply</property>
+-                <property name="visible">True</property>
+-                <property name="can_focus">True</property>
+-                <property name="can_default">True</property>
+-                <property name="receives_default">False</property>
+-                <property name="use_action_appearance">False</property>
+-                <property name="use_stock">True</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">False</property>
+-                <property name="position">1</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">True</property>
+-            <property name="pack_type">end</property>
+-            <property name="position">0</property>
+-          </packing>
+-        </child>
+-        <child>
+-          <object class="GtkVBox" id="vbox4">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="border_width">5</property>
+-            <property name="spacing">6</property>
+-            <child>
+-              <object class="GtkTable" id="table1">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="n_rows">2</property>
+-                <property name="n_columns">2</property>
+-                <property name="column_spacing">6</property>
+-                <property name="row_spacing">6</property>
+-                <child>
+-                  <object class="GtkLabel" id="label13">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="xalign">0</property>
+-                    <property name="label" translatable="yes">_Name:</property>
+-                    <property name="use_underline">True</property>
+-                    <property name="mnemonic_widget">custom-shortcut-name-entry</property>
+-                  </object>
+-                  <packing>
+-                    <property name="x_options">GTK_FILL</property>
+-                    <property name="y_options"></property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkLabel" id="label14">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="xalign">0</property>
+-                    <property name="label" translatable="yes">C_ommand:</property>
+-                    <property name="use_underline">True</property>
+-                    <property name="mnemonic_widget">custom-shortcut-command-entry</property>
+-                  </object>
+-                  <packing>
+-                    <property name="top_attach">1</property>
+-                    <property name="bottom_attach">2</property>
+-                    <property name="x_options">GTK_FILL</property>
+-                    <property name="y_options"></property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkEntry" id="custom-shortcut-name-entry">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">True</property>
+-                    <property name="invisible_char">•</property>
+-                    <property name="activates_default">True</property>
+-                  </object>
+-                  <packing>
+-                    <property name="left_attach">1</property>
+-                    <property name="right_attach">2</property>
+-                    <property name="y_options"></property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkEntry" id="custom-shortcut-command-entry">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">True</property>
+-                    <property name="invisible_char">•</property>
+-                    <property name="activates_default">True</property>
+-                  </object>
+-                  <packing>
+-                    <property name="left_attach">1</property>
+-                    <property name="right_attach">2</property>
+-                    <property name="top_attach">1</property>
+-                    <property name="bottom_attach">2</property>
+-                    <property name="y_options"></property>
+-                  </packing>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">True</property>
+-                <property name="fill">True</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">True</property>
+-            <property name="position">1</property>
+-          </packing>
+-        </child>
+-      </object>
+-    </child>
+-    <action-widgets>
+-      <action-widget response="-6">cancelbutton1</action-widget>
+-      <action-widget response="-5">okbutton1</action-widget>
+-    </action-widgets>
+-  </object>
+-  <object class="GtkDialog" id="gnome-keyboard-dialog">
+-    <property name="can_focus">False</property>
+-    <property name="border_width">5</property>
+-    <property name="title" translatable="yes">Keyboard</property>
+-    <property name="type_hint">dialog</property>
+-    <child internal-child="vbox">
+-      <object class="GtkBox" id="keyboard_vbox">
+-        <property name="visible">True</property>
+-        <property name="can_focus">False</property>
+-        <property name="orientation">vertical</property>
+-        <property name="spacing">2</property>
+-        <child internal-child="action_area">
+-          <object class="GtkButtonBox" id="dialog-action_area1">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="layout_style">end</property>
+-            <child>
+-              <object class="GtkButton" id="helpbutton1">
+-                <property name="label">gtk-help</property>
+-                <property name="visible">True</property>
+-                <property name="can_focus">True</property>
+-                <property name="can_default">True</property>
+-                <property name="receives_default">False</property>
+-                <property name="use_action_appearance">False</property>
+-                <property name="use_stock">True</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">False</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <placeholder/>
+-            </child>
+-            <child>
+-              <placeholder/>
+-            </child>
+-            <child>
+-              <object class="GtkButton" id="button1">
+-                <property name="label">gtk-close</property>
+-                <property name="visible">True</property>
+-                <property name="can_focus">True</property>
+-                <property name="can_default">True</property>
+-                <property name="receives_default">False</property>
+-                <property name="use_action_appearance">False</property>
+-                <property name="use_stock">True</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">False</property>
+-                <property name="position">3</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">True</property>
+-            <property name="pack_type">end</property>
+-            <property name="position">0</property>
+-          </packing>
+-        </child>
+-        <child>
+-          <object class="GtkNotebook" id="keyboard_notebook">
+-            <property name="visible">True</property>
+-            <property name="can_focus">True</property>
+-            <property name="border_width">10</property>
+-            <child>
+-              <object class="GtkVBox" id="general_page">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="border_width">12</property>
+-                <property name="spacing">18</property>
+-                <child>
+-                  <object class="GtkVBox" id="vbox22">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="spacing">6</property>
+-                    <child>
+-                      <object class="GtkLabel" id="label300">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="xalign">0</property>
+-                        <property name="label" translatable="yes">Repeat Keys</property>
+-                        <attributes>
+-                          <attribute name="weight" value="bold"/>
+-                        </attributes>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <object class="GtkHBox" id="hbox19">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <child>
+-                          <object class="GtkLabel" id="label43">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="label">    </property>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">False</property>
+-                            <property name="position">0</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkVBox" id="vbox100">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="spacing">6</property>
+-                            <child>
+-                              <object class="GtkCheckButton" id="repeat_toggle">
+-                                <property name="label" translatable="yes">Key presses _repeat when key is held down</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="xalign">0</property>
+-                                <property name="draw_indicator">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkTable" id="repeat_table">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="n_rows">2</property>
+-                                <property name="n_columns">4</property>
+-                                <child>
+-                                  <object class="GtkLabel" id="repeat_delay_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">_Delay:</property>
+-                                    <property name="use_underline">True</property>
+-                                    <property name="justify">center</property>
+-                                    <property name="mnemonic_widget">repeat_delay_scale</property>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="repeat_speed_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">_Speed:</property>
+-                                    <property name="use_underline">True</property>
+-                                    <property name="justify">center</property>
+-                                    <property name="mnemonic_widget">repeat_speed_scale</property>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="delay_short_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">1</property>
+-                                    <property name="xpad">10</property>
+-                                    <property name="label" translatable="yes">Short</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">1</property>
+-                                    <property name="right_attach">2</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="repeat_slow_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">1</property>
+-                                    <property name="xpad">10</property>
+-                                    <property name="label" translatable="yes">Slow</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">1</property>
+-                                    <property name="right_attach">2</property>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkHScale" id="repeat_delay_scale">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">True</property>
+-                                    <property name="adjustment">repeat_delay_adjustment</property>
+-                                    <property name="draw_value">False</property>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">2</property>
+-                                    <property name="right_attach">3</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkHScale" id="repeat_speed_scale">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">True</property>
+-                                    <property name="adjustment">repeat_speed_adjustment</property>
+-                                    <property name="draw_value">False</property>
+-                                    <child internal-child="accessible">
+-                                      <object class="AtkObject" id="repeat_speed_scale-atkobject">
+-                                        <property name="AtkObject::accessible-description" translatable="yes">Repeat keys speed</property>
+-                                      </object>
+-                                    </child>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">2</property>
+-                                    <property name="right_attach">3</property>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="delay_long_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">Long</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">3</property>
+-                                    <property name="right_attach">4</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="repeat_fast_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">Fast</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">3</property>
+-                                    <property name="right_attach">4</property>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">1</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">1</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">1</property>
+-                      </packing>
+-                    </child>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">False</property>
+-                    <property name="position">0</property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkVBox" id="vbox230">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="spacing">6</property>
+-                    <child>
+-                      <object class="GtkLabel" id="label5">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="xalign">0</property>
+-                        <property name="label" translatable="yes">Cursor Blinking</property>
+-                        <attributes>
+-                          <attribute name="weight" value="bold"/>
+-                        </attributes>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <object class="GtkHBox" id="hbox20">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <child>
+-                          <object class="GtkLabel" id="label44">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="label">    </property>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">False</property>
+-                            <property name="position">0</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkVBox" id="cursor_vbox">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="spacing">6</property>
+-                            <child>
+-                              <object class="GtkCheckButton" id="cursor_toggle">
+-                                <property name="label" translatable="yes">Cursor _blinks in text fields</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="xalign">0</property>
+-                                <property name="draw_indicator">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkTable" id="cursor_table">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="n_columns">4</property>
+-                                <child>
+-                                  <object class="GtkLabel" id="cursor_speed_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">S_peed:</property>
+-                                    <property name="use_underline">True</property>
+-                                    <property name="justify">center</property>
+-                                    <property name="mnemonic_widget">cursor_blink_time_scale</property>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkHScale" id="cursor_blink_time_scale">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">True</property>
+-                                    <property name="adjustment">cursor_blink_time_adjustment</property>
+-                                    <property name="draw_value">False</property>
+-                                    <property name="inverted">True</property>
+-                                    <child internal-child="accessible">
+-                                      <object class="AtkObject" id="cursor_blink_time_scale-atkobject">
+-                                        <property name="AtkObject::accessible-description" translatable="yes">Cursor blink speed</property>
+-                                      </object>
+-                                    </child>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">2</property>
+-                                    <property name="right_attach">3</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="blink_fast_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">Fast</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">3</property>
+-                                    <property name="right_attach">4</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <object class="GtkLabel" id="blink_slow_label">
+-                                    <property name="visible">True</property>
+-                                    <property name="can_focus">False</property>
+-                                    <property name="xalign">1</property>
+-                                    <property name="xpad">10</property>
+-                                    <property name="label" translatable="yes">Slow</property>
+-                                    <attributes>
+-                                      <attribute name="scale" value="0.82999999999999996"/>
+-                                    </attributes>
+-                                  </object>
+-                                  <packing>
+-                                    <property name="left_attach">1</property>
+-                                    <property name="right_attach">2</property>
+-                                    <property name="x_options">GTK_SHRINK</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">1</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">1</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">1</property>
+-                      </packing>
+-                    </child>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">False</property>
+-                    <property name="position">1</property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkBox" id="box1">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <child>
+-                      <object class="GtkLinkButton" id="linkbutton">
+-                        <property name="label" translatable="yes">Text Entry</property>
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">True</property>
+-                        <property name="receives_default">True</property>
+-                        <property name="has_tooltip">False</property>
+-                        <property name="use_action_appearance">False</property>
+-                        <property name="relief">none</property>
+-                        <property name="uri">region panel</property>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">True</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <placeholder/>
+-                    </child>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">False</property>
+-                    <property name="pack_type">end</property>
+-                    <property name="position">2</property>
+-                  </packing>
+-                </child>
+-              </object>
+-            </child>
+-            <child type="tab">
+-              <object class="GtkLabel" id="label1">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="label" translatable="yes">Typing</property>
+-              </object>
+-              <packing>
+-                <property name="tab_fill">False</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkVBox" id="shortcuts_page">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="border_width">5</property>
+-                <property name="spacing">12</property>
+-                <child>
+-                  <object class="GtkVBox" id="shortcuts_vbox">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="spacing">6</property>
+-                    <child>
+-                      <object class="GtkTable" id="shortcuts_table">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="n_rows">2</property>
+-                        <property name="n_columns">2</property>
+-                        <property name="column_spacing">5</property>
+-                        <child>
+-                          <object class="GtkScrolledWindow" id="sections_swindow">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">True</property>
+-                            <property name="hscrollbar_policy">never</property>
+-                            <property name="shadow_type">in</property>
+-                            <child>
+-                              <object class="GtkTreeView" id="section_treeview">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="headers_visible">False</property>
+-                                <child internal-child="selection">
+-                                  <object class="GtkTreeSelection" id="treeview-selection1"/>
+-                                </child>
+-                              </object>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="bottom_attach">2</property>
+-                            <property name="x_options">GTK_FILL</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkScrolledWindow" id="actions_swindow">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">True</property>
+-                            <property name="hscrollbar_policy">never</property>
+-                            <property name="shadow_type">in</property>
+-                            <child>
+-                              <object class="GtkTreeView" id="shortcut_treeview">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="headers_visible">False</property>
+-                                <property name="rules_hint">True</property>
+-                                <child internal-child="selection">
+-                                  <object class="GtkTreeSelection" id="treeview-selection2"/>
+-                                </child>
+-                              </object>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="left_attach">1</property>
+-                            <property name="right_attach">2</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkToolbar" id="shortcut-toolbar">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="icon_size">1</property>
+-                            <property name="toolbar-style">icons</property>
+-                            <style>
+-                              <class name="inline-toolbar"/>
+-                            </style>
+-                            <child>
+-                              <object class="GtkToolButton" id="add-toolbutton">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="icon_name">list-add-symbolic</property>
+-                                <property name="label" translatable="yes">Add Shortcut</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="homogeneous">True</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkToolButton" id="remove-toolbutton">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="icon_name">list-remove-symbolic</property>
+-                                <property name="label" translatable="yes">Remove Shortcut</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="homogeneous">True</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="left_attach">1</property>
+-                            <property name="right_attach">2</property>
+-                            <property name="top_attach">1</property>
+-                            <property name="bottom_attach">2</property>
+-                            <property name="y_options">GTK_FILL</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkLabel" id="label3">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="label"> </property>
+-                          </object>
+-                          <packing>
+-                            <property name="top_attach">1</property>
+-                            <property name="bottom_attach">2</property>
+-                            <property name="x_options"></property>
+-                            <property name="y_options">GTK_FILL</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">True</property>
+-                        <property name="fill">True</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <object class="GtkHBox" id="hbox1">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="border_width">5</property>
+-                        <property name="spacing">12</property>
+-                        <child>
+-                          <object class="GtkLabel" id="label12">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="xalign">0</property>
+-                            <property name="max-width-chars">60</property>
+-                            <property name="label" translatable="yes">To edit a shortcut, click the row and hold down the new keys or press Backspace to clear.</property>
+-                            <property name="justify">fill</property>
+-                            <property name="wrap">True</property>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">0</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">True</property>
+-                        <property name="position">1</property>
+-                      </packing>
+-                    </child>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">True</property>
+-                    <property name="fill">True</property>
+-                    <property name="position">0</property>
+-                  </packing>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="position">1</property>
+-              </packing>
+-            </child>
+-            <child type="tab">
+-              <object class="GtkLabel" id="label2">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="label" translatable="yes">Shortcuts</property>
+-              </object>
+-              <packing>
+-                <property name="position">1</property>
+-                <property name="tab_fill">False</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">True</property>
+-            <property name="fill">True</property>
+-            <property name="position">1</property>
+-          </packing>
+-        </child>
+-      </object>
+-    </child>
+-    <action-widgets>
+-      <action-widget response="0">helpbutton1</action-widget>
+-      <action-widget response="0">button1</action-widget>
+-    </action-widgets>
+-  </object>
+-  <object class="GtkSizeGroup" id="lower_sizegroup">
+-    <widgets>
+-      <widget name="delay_short_label"/>
+-      <widget name="repeat_slow_label"/>
+-      <widget name="blink_slow_label"/>
+-    </widgets>
+-  </object>
+-  <object class="GtkAdjustment" id="repeat_delay_adjustment">
+-    <property name="lower">100</property>
+-    <property name="upper">2000</property>
+-    <property name="value">500</property>
+-    <property name="step_increment">10</property>
+-    <property name="page_increment">10</property>
+-  </object>
+-  <object class="GtkAdjustment" id="repeat_speed_adjustment">
+-    <property name="lower">0.5</property>
+-    <property name="upper">50</property>
+-    <property name="value">33.3</property>
+-    <property name="step_increment">1</property>
+-    <property name="page_increment">1</property>
+-  </object>
+-  <object class="GtkSizeGroup" id="sliders_sizegroup">
+-    <widgets>
+-      <widget name="cursor_blink_time_scale"/>
+-      <widget name="repeat_speed_scale"/>
+-      <widget name="repeat_delay_scale"/>
+-    </widgets>
+-  </object>
+-  <object class="GtkSizeGroup" id="upper_sizegroup">
+-    <widgets>
+-      <widget name="delay_long_label"/>
+-      <widget name="repeat_fast_label"/>
+-      <widget name="blink_fast_label"/>
+-    </widgets>
+-  </object>
+-</interface>
+diff --git a/panels/keyboard/keyboard-general.c b/panels/keyboard/keyboard-general.c
+deleted file mode 100644
+index 7b4af75..0000000
+--- a/panels/keyboard/keyboard-general.c
++++ /dev/null
+@@ -1,128 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Authors: Thomas Wood <thomas.wood@intel.com>
+- *          Rodrigo Moya <rodrigo@gnome.org>
+- */
+-
+-#include "keyboard-general.h"
+-
+-#define WID(s) GTK_WIDGET (gtk_builder_get_object (builder, s))
+-
+-static GSettings *keyboard_settings = NULL;
+-static GSettings *interface_settings = NULL;
+-
+-static gboolean
+-get_rate (GValue   *value,
+-          GVariant *variant,
+-          gpointer  user_data)
+-{
+-  int rate;
+-  gdouble fraction;
+-
+-  rate = g_variant_get_uint32 (variant);
+-  fraction = 1.0 / ((gdouble) rate / 1000.0);
+-  g_value_set_double (value, fraction);
+-  g_debug ("Getting fraction %f for msecs %d", fraction, rate);
+-  return TRUE;
+-}
+-
+-static GVariant *
+-set_rate (const GValue       *value,
+-          const GVariantType *expected_type,
+-          gpointer            user_data)
+-{
+-  gdouble rate;
+-  int msecs;
+-
+-  rate = g_value_get_double (value);
+-  msecs = (1 / rate) * 1000;
+-  g_debug ("Setting repeat rate to %d", msecs);
+-  return g_variant_new_uint32 (msecs);
+-}
+-
+-static gboolean
+-layout_link_clicked (GtkLinkButton *button,
+-                     CcPanel       *panel)
+-{
+-  CcShell *shell;
+-  GError *error = NULL;
+-  const char *argv[] = { "layouts", NULL };
+-
+-  shell = cc_panel_get_shell (panel);
+-  if (cc_shell_set_active_panel_from_id (shell, "region", argv, &error) == FALSE)
+-    {
+-      g_warning ("Failed to activate Region panel: %s", error->message);
+-      g_error_free (error);
+-    }
+-  return TRUE;
+-}
+-
+-void
+-keyboard_general_init (CcPanel *panel, GtkBuilder *builder)
+-{
+-  if (keyboard_settings == NULL)
+-    keyboard_settings = g_settings_new ("org.gnome.settings-daemon.peripherals.keyboard");
+-
+-  if (interface_settings == NULL)
+-    interface_settings = g_settings_new ("org.gnome.desktop.interface");
+-
+-  g_settings_bind (keyboard_settings, "repeat",
+-                   WID ("repeat_toggle"), "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-  g_settings_bind (keyboard_settings, "repeat",
+-                   WID ("repeat_table"), "sensitive",
+-                   G_SETTINGS_BIND_GET);
+-  
+-  g_settings_bind (keyboard_settings, "delay",
+-                   gtk_range_get_adjustment (GTK_RANGE (WID ("repeat_delay_scale"))), "value",
+-                   G_SETTINGS_BIND_DEFAULT);
+-  g_settings_bind_with_mapping (keyboard_settings, "repeat-interval",
+-                                gtk_range_get_adjustment (GTK_RANGE (WID ("repeat_speed_scale"))), "value",
+-                                G_SETTINGS_BIND_DEFAULT,
+-                                get_rate, set_rate, NULL, NULL);
+-
+-  g_settings_bind (interface_settings, "cursor-blink",
+-                   WID ("cursor_toggle"), "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-  g_settings_bind (interface_settings, "cursor-blink",
+-                   WID ("cursor_table"), "sensitive",
+-                   G_SETTINGS_BIND_GET);
+-
+-  g_settings_bind (interface_settings, "cursor-blink-time",
+-                   gtk_range_get_adjustment (GTK_RANGE (WID ("cursor_blink_time_scale"))), "value",
+-                   G_SETTINGS_BIND_DEFAULT);
+-
+-  g_signal_connect (WID ("linkbutton"), "activate-link",
+-                    G_CALLBACK (layout_link_clicked), panel);
+-}
+-
+-void
+-keyboard_general_dispose (CcPanel *panel)
+-{
+-  if (keyboard_settings != NULL)
+-    {
+-      g_object_unref (keyboard_settings);
+-      keyboard_settings = NULL;
+-    }
+-
+-  if (interface_settings != NULL)
+-    {
+-      g_object_unref (interface_settings);
+-      interface_settings = NULL;
+-    }
+-}
+diff --git a/panels/keyboard/keyboard-general.h b/panels/keyboard/keyboard-general.h
+deleted file mode 100644
+index f47e576..0000000
+--- a/panels/keyboard/keyboard-general.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Authors: Thomas Wood <thomas.wood@intel.com>
+- *          Rodrigo Moya <rodrigo@gnome.org>
+- */
+-
+-#include <gtk/gtk.h>
+-#include <shell/cc-panel.h>
+-
+-void keyboard_general_init (CcPanel *panel, GtkBuilder *builder);
+-void keyboard_general_dispose (CcPanel *panel);
+diff --git a/panels/keyboard/keyboard-module.c b/panels/keyboard/keyboard-module.c
+deleted file mode 100644
+index 483f51c..0000000
+--- a/panels/keyboard/keyboard-module.c
++++ /dev/null
+@@ -1,41 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Author: Thomas Wood <thomas.wood@intel.com>
+- *
+- */
+-
+-#include <config.h>
+-
+-#include "cc-keyboard-panel.h"
+-
+-#include <glib/gi18n-lib.h>
+-
+-void
+-g_io_module_load (GIOModule *module)
+-{
+-  bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+-
+-  /* register the panel */
+-  cc_keyboard_panel_register (module);
+-}
+-
+-void
+-g_io_module_unload (GIOModule *module)
+-{
+-}
+diff --git a/panels/keyboard/keyboard-shortcuts.c b/panels/keyboard/keyboard-shortcuts.c
+deleted file mode 100644
+index c2dc943..0000000
+--- a/panels/keyboard/keyboard-shortcuts.c
++++ /dev/null
+@@ -1,1899 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Authors: Thomas Wood <thomas.wood@intel.com>
+- *          Rodrigo Moya <rodrigo@gnome.org>
+- */
+-
+-#include <config.h>
+-
+-#include <glib/gi18n.h>
+-
+-#include "keyboard-shortcuts.h"
+-#include "cc-keyboard-item.h"
+-#include "cc-keyboard-option.h"
+-#include "wm-common.h"
+-
+-#define BINDINGS_SCHEMA "org.gnome.settings-daemon.plugins.media-keys"
+-#define CUSTOM_KEYS_BASENAME "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+-#define CUSTOM_SHORTCUTS_ID "custom"
+-#define WID(builder, name) (GTK_WIDGET (gtk_builder_get_object (builder, name)))
+-
+-typedef struct {
+-  /* The untranslated name, combine with ->package to translate */
+-  char *name;
+-  /* The group of keybindings (system or application) */
+-  char *group;
+-  /* The gettext package to use to translate the section title */
+-  char *package;
+-  /* Name of the window manager the keys would apply to */
+-  char *wm_name;
+-  /* The GSettings schema for the whole file, if any */
+-  char *schema;
+-  /* an array of KeyListEntry */
+-  GArray *entries;
+-} KeyList;
+-
+-typedef struct
+-{
+-  CcKeyboardItemType type;
+-  char *schema; /* GSettings schema name, if any */
+-  char *description; /* description for GSettings types */
+-  char *gettext_package;
+-  char *name; /* GSettings schema path, or GSettings key name depending on type */
+-} KeyListEntry;
+-
+-typedef enum
+-{
+-  SHORTCUT_TYPE_KEY_ENTRY,
+-  SHORTCUT_TYPE_XKB_OPTION,
+-} ShortcutType;
+-
+-enum
+-{
+-  DETAIL_DESCRIPTION_COLUMN,
+-  DETAIL_KEYENTRY_COLUMN,
+-  DETAIL_TYPE_COLUMN,
+-  DETAIL_N_COLUMNS
+-};
+-
+-enum
+-{
+-  SECTION_DESCRIPTION_COLUMN,
+-  SECTION_ID_COLUMN,
+-  SECTION_GROUP_COLUMN,
+-  SECTION_N_COLUMNS
+-};
+-
+-static GSettings *binding_settings = NULL;
+-static GtkWidget *custom_shortcut_dialog = NULL;
+-static GtkWidget *custom_shortcut_name_entry = NULL;
+-static GtkWidget *custom_shortcut_command_entry = NULL;
+-static GHashTable *kb_system_sections = NULL;
+-static GHashTable *kb_apps_sections = NULL;
+-static GHashTable *kb_user_sections = NULL;
+-
+-static void
+-free_key_array (GPtrArray *keys)
+-{
+-  if (keys != NULL)
+-    {
+-      gint i;
+-
+-      for (i = 0; i < keys->len; i++)
+-        {
+-          CcKeyboardItem *item;
+-
+-          item = g_ptr_array_index (keys, i);
+-
+-          g_object_unref (item);
+-        }
+-
+-      g_ptr_array_free (keys, TRUE);
+-    }
+-}
+-
+-static GHashTable *
+-get_hash_for_group (BindingGroupType group)
+-{
+-  GHashTable *hash;
+-
+-  switch (group)
+-    {
+-    case BINDING_GROUP_SYSTEM:
+-      hash = kb_system_sections;
+-      break;
+-    case BINDING_GROUP_APPS:
+-      hash = kb_apps_sections;
+-      break;
+-    case BINDING_GROUP_USER:
+-      hash = kb_user_sections;
+-      break;
+-    default:
+-      hash = NULL;
+-    }
+-  return hash;
+-}
+-
+-static gboolean
+-have_key_for_group (int group, const gchar *name)
+-{
+-  GHashTableIter iter;
+-  GPtrArray *keys;
+-  gint i;
+-
+-  g_hash_table_iter_init (&iter, get_hash_for_group (group));
+-  while (g_hash_table_iter_next (&iter, NULL, (gpointer *)&keys))
+-    {
+-      for (i = 0; i < keys->len; i++)
+-        {
+-          CcKeyboardItem *item = g_ptr_array_index (keys, i);
+-
+-	  if (item->type == CC_KEYBOARD_ITEM_TYPE_GSETTINGS &&
+-	      g_strcmp0 (name, item->key) == 0)
+-	    {
+-	          return TRUE;
+-	    }
+-
+-	  return FALSE;
+-        }
+-    }
+-
+-  return FALSE;
+-}
+-
+-static gboolean
+-keybinding_key_changed_foreach (GtkTreeModel   *model,
+-                                GtkTreePath    *path,
+-                                GtkTreeIter    *iter,
+-                                CcKeyboardItem *item)
+-{
+-  CcKeyboardItem *tmp_item;
+-
+-  gtk_tree_model_get (item->model, iter,
+-                      DETAIL_KEYENTRY_COLUMN, &tmp_item,
+-                      -1);
+-
+-  if (item == tmp_item)
+-    {
+-      gtk_tree_model_row_changed (item->model, path, iter);
+-      return TRUE;
+-    }
+-  return FALSE;
+-}
+-
+-static void
+-item_changed (CcKeyboardItem *item,
+-	      GParamSpec     *pspec,
+-	      gpointer        user_data)
+-{
+-  /* update the model */
+-  gtk_tree_model_foreach (item->model, (GtkTreeModelForeachFunc) keybinding_key_changed_foreach, item);
+-}
+-
+-
+-static void
+-append_section (GtkBuilder         *builder,
+-                const gchar        *title,
+-                const gchar        *id,
+-                BindingGroupType    group,
+-                const KeyListEntry *keys_list)
+-{
+-  GPtrArray *keys_array;
+-  GtkTreeModel *sort_model;
+-  GtkTreeModel *model, *shortcut_model;
+-  GtkTreeIter iter;
+-  gint i;
+-  GHashTable *hash;
+-  gboolean is_new;
+-
+-  hash = get_hash_for_group (group);
+-  if (!hash)
+-    return;
+-
+-  sort_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gtk_builder_get_object (builder, "section_treeview")));
+-  model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model));
+-
+-  shortcut_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gtk_builder_get_object (builder, "shortcut_treeview")));
+-
+-  /* Add all CcKeyboardItems for this section */
+-  is_new = FALSE;
+-  keys_array = g_hash_table_lookup (hash, id);
+-  if (keys_array == NULL)
+-    {
+-      keys_array = g_ptr_array_new ();
+-      is_new = TRUE;
+-    }
+-
+-  for (i = 0; keys_list != NULL && keys_list[i].name != NULL; i++)
+-    {
+-      CcKeyboardItem *item;
+-      gboolean ret;
+-
+-      if (have_key_for_group (group, keys_list[i].name))
+-        continue;
+-
+-      item = cc_keyboard_item_new (keys_list[i].type);
+-      switch (keys_list[i].type)
+-        {
+-	case CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH:
+-          ret = cc_keyboard_item_load_from_gsettings_path (item, keys_list[i].name, FALSE);
+-          break;
+-	case CC_KEYBOARD_ITEM_TYPE_GSETTINGS:
+-	  ret = cc_keyboard_item_load_from_gsettings (item,
+-						      keys_list[i].description,
+-						      keys_list[i].schema,
+-						      keys_list[i].name);
+-	  break;
+-	default:
+-	  g_assert_not_reached ();
+-	}
+-
+-      if (ret == FALSE)
+-        {
+-          /* We don't actually want to popup a dialog - just skip this one */
+-          g_object_unref (item);
+-          continue;
+-        }
+-
+-      item->model = shortcut_model;
+-      item->group = group;
+-
+-      g_signal_connect (G_OBJECT (item), "notify",
+-			G_CALLBACK (item_changed), NULL);
+-
+-      g_ptr_array_add (keys_array, item);
+-    }
+-
+-  /* Add the keys to the hash table */
+-  if (is_new)
+-    {
+-      g_hash_table_insert (hash, g_strdup (id), keys_array);
+-
+-      /* Append the section to the left tree view */
+-      gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+-      gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+-                          SECTION_DESCRIPTION_COLUMN, title,
+-                          SECTION_ID_COLUMN, id,
+-                          SECTION_GROUP_COLUMN, group,
+-                          -1);
+-    }
+-}
+-
+-static void
+-parse_start_tag (GMarkupParseContext *ctx,
+-                 const gchar         *element_name,
+-                 const gchar        **attr_names,
+-                 const gchar        **attr_values,
+-                 gpointer             user_data,
+-                 GError             **error)
+-{
+-  KeyList *keylist = (KeyList *) user_data;
+-  KeyListEntry key;
+-  const char *name, *schema, *description, *package;
+-
+-  name = NULL;
+-  schema = NULL;
+-  package = NULL;
+-
+-  /* The top-level element, names the section in the tree */
+-  if (g_str_equal (element_name, "KeyListEntries"))
+-    {
+-      const char *wm_name = NULL;
+-      const char *group = NULL;
+-
+-      while (*attr_names && *attr_values)
+-        {
+-          if (g_str_equal (*attr_names, "name"))
+-            {
+-              if (**attr_values)
+-                name = *attr_values;
+-            } else if (g_str_equal (*attr_names, "group")) {
+-              if (**attr_values)
+-                group = *attr_values;
+-            } else if (g_str_equal (*attr_names, "wm_name")) {
+-              if (**attr_values)
+-                wm_name = *attr_values;
+-	    } else if (g_str_equal (*attr_names, "schema")) {
+-	      if (**attr_values)
+-	        schema = *attr_values;
+-            } else if (g_str_equal (*attr_names, "package")) {
+-              if (**attr_values)
+-                package = *attr_values;
+-            }
+-          ++attr_names;
+-          ++attr_values;
+-        }
+-
+-      if (name)
+-        {
+-          if (keylist->name)
+-            g_warning ("Duplicate section name");
+-          g_free (keylist->name);
+-          keylist->name = g_strdup (name);
+-        }
+-      if (wm_name)
+-        {
+-          if (keylist->wm_name)
+-            g_warning ("Duplicate window manager name");
+-          g_free (keylist->wm_name);
+-          keylist->wm_name = g_strdup (wm_name);
+-        }
+-      if (package)
+-        {
+-          if (keylist->package)
+-            g_warning ("Duplicate gettext package name");
+-          g_free (keylist->package);
+-          keylist->package = g_strdup (package);
+-	  bind_textdomain_codeset (keylist->package, "UTF-8");
+-        }
+-      if (group)
+-        {
+-          if (keylist->group)
+-            g_warning ("Duplicate group");
+-          g_free (keylist->group);
+-          keylist->group = g_strdup (group);
+-        }
+-      if (schema)
+-        {
+-          if (keylist->schema)
+-            g_warning ("Duplicate schema");
+-          g_free (keylist->schema);
+-          keylist->schema = g_strdup (schema);
+-	}
+-      return;
+-    }
+-
+-  if (!g_str_equal (element_name, "KeyListEntry")
+-      || attr_names == NULL
+-      || attr_values == NULL)
+-    return;
+-
+-  schema = NULL;
+-  description = NULL;
+-
+-  while (*attr_names && *attr_values)
+-    {
+-      if (g_str_equal (*attr_names, "name"))
+-        {
+-          /* skip if empty */
+-          if (**attr_values)
+-            name = *attr_values;
+-	} else if (g_str_equal (*attr_names, "schema")) {
+-	  if (**attr_values) {
+-	   schema = *attr_values;
+-	  }
+-	} else if (g_str_equal (*attr_names, "description")) {
+-          if (**attr_values) {
+-            if (keylist->package)
+-	      {
+-	        description = dgettext (keylist->package, *attr_values);
+-	      }
+-	    else
+-	      {
+-	        description = _(*attr_values);
+-	      }
+-	  }
+-        }
+-
+-      ++attr_names;
+-      ++attr_values;
+-    }
+-
+-  if (name == NULL)
+-    return;
+-
+-  if (schema == NULL &&
+-      keylist->schema == NULL) {
+-    g_debug ("Ignored GConf keyboard shortcut '%s'", name);
+-    return;
+-  }
+-
+-  key.name = g_strdup (name);
+-  key.type = CC_KEYBOARD_ITEM_TYPE_GSETTINGS;
+-  key.description = g_strdup (description);
+-  key.gettext_package = g_strdup (keylist->package);
+-  key.schema = schema ? g_strdup (schema) : g_strdup (keylist->schema);
+-  g_array_append_val (keylist->entries, key);
+-}
+-
+-static gboolean
+-strv_contains (char **strv,
+-               char  *str)
+-{
+-  char **p = strv;
+-  for (p = strv; *p; p++)
+-    if (strcmp (*p, str) == 0)
+-      return TRUE;
+-
+-  return FALSE;
+-}
+-
+-static void
+-append_sections_from_file (GtkBuilder *builder, const gchar *path, const char *datadir, gchar **wm_keybindings)
+-{
+-  GError *err = NULL;
+-  char *buf;
+-  gsize buf_len;
+-  KeyList *keylist;
+-  KeyListEntry key, *keys;
+-  const char *title;
+-  int group;
+-  guint i;
+-  GMarkupParseContext *ctx;
+-  GMarkupParser parser = { parse_start_tag, NULL, NULL, NULL, NULL };
+-
+-  /* Parse file */
+-  if (!g_file_get_contents (path, &buf, &buf_len, &err))
+-    return;
+-
+-  keylist = g_new0 (KeyList, 1);
+-  keylist->entries = g_array_new (FALSE, TRUE, sizeof (KeyListEntry));
+-  ctx = g_markup_parse_context_new (&parser, 0, keylist, NULL);
+-
+-  if (!g_markup_parse_context_parse (ctx, buf, buf_len, &err))
+-    {
+-      g_warning ("Failed to parse '%s': '%s'", path, err->message);
+-      g_error_free (err);
+-      g_free (keylist->name);
+-      g_free (keylist->package);
+-      g_free (keylist->wm_name);
+-      for (i = 0; i < keylist->entries->len; i++)
+-        g_free (((KeyListEntry *) &(keylist->entries->data[i]))->name);
+-      g_array_free (keylist->entries, TRUE);
+-      g_free (keylist);
+-      keylist = NULL;
+-    }
+-  g_markup_parse_context_free (ctx);
+-  g_free (buf);
+-
+-  if (keylist == NULL)
+-    return;
+-
+-  /* If there's no keys to add, or the settings apply to a window manager
+-   * that's not the one we're running */
+-  if (keylist->entries->len == 0
+-      || (keylist->wm_name != NULL && !strv_contains (wm_keybindings, keylist->wm_name))
+-      || keylist->name == NULL)
+-    {
+-      g_free (keylist->name);
+-      g_free (keylist->package);
+-      g_free (keylist->wm_name);
+-      g_array_free (keylist->entries, TRUE);
+-      g_free (keylist);
+-      return;
+-    }
+-
+-  /* Empty KeyListEntry to end the array */
+-  key.name = NULL;
+-  g_array_append_val (keylist->entries, key);
+-
+-  keys = (KeyListEntry *) g_array_free (keylist->entries, FALSE);
+-  if (keylist->package)
+-    {
+-      char *localedir;
+-
+-      localedir = g_build_filename (datadir, "locale", NULL);
+-      bindtextdomain (keylist->package, localedir);
+-      g_free (localedir);
+-
+-      title = dgettext (keylist->package, keylist->name);
+-    } else {
+-      title = _(keylist->name);
+-    }
+-  if (keylist->group && strcmp (keylist->group, "system") == 0)
+-    group = BINDING_GROUP_SYSTEM;
+-  else
+-    group = BINDING_GROUP_APPS;
+-
+-  append_section (builder, title, keylist->name, group, keys);
+-
+-  g_free (keylist->name);
+-  g_free (keylist->package);
+-  g_free (keylist->wm_name);
+-  g_free (keylist->schema);
+-  g_free (keylist->group);
+-
+-  for (i = 0; keys[i].name != NULL; i++) {
+-    KeyListEntry *entry = &keys[i];
+-    g_free (entry->schema);
+-    g_free (entry->description);
+-    g_free (entry->gettext_package);
+-    g_free (entry->name);
+-  }
+-
+-  g_free (keylist);
+-}
+-
+-static void
+-append_sections_from_gsettings (GtkBuilder *builder)
+-{
+-  char **custom_paths;
+-  GArray *entries;
+-  KeyListEntry key;
+-  int i;
+-
+-  /* load custom shortcuts from GSettings */
+-  entries = g_array_new (FALSE, TRUE, sizeof (KeyListEntry));
+-
+-  custom_paths = g_settings_get_strv (binding_settings, "custom-keybindings");
+-  for (i = 0; custom_paths[i]; i++)
+-    {
+-      key.name = g_strdup (custom_paths[i]);
+-      if (!have_key_for_group (BINDING_GROUP_USER, key.name))
+-        {
+-          key.type = CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH;
+-          g_array_append_val (entries, key);
+-        }
+-      else
+-        g_free (key.name);
+-    }
+-  g_strfreev (custom_paths);
+-
+-  if (entries->len > 0)
+-    {
+-      KeyListEntry *keys;
+-      int i;
+-
+-      /* Empty KeyListEntry to end the array */
+-      key.name = NULL;
+-      g_array_append_val (entries, key);
+-
+-      keys = (KeyListEntry *) entries->data;
+-      append_section (builder, _("Custom Shortcuts"), CUSTOM_SHORTCUTS_ID, BINDING_GROUP_USER, keys);
+-      for (i = 0; i < entries->len; ++i)
+-        {
+-          g_free (keys[i].name);
+-        }
+-    }
+-  else
+-    {
+-      append_section (builder, _("Custom Shortcuts"), CUSTOM_SHORTCUTS_ID, BINDING_GROUP_USER, NULL);
+-    }
+-
+-  g_array_free (entries, TRUE);
+-}
+-
+-static void
+-reload_sections (CcPanel *panel)
+-{
+-  GtkBuilder *builder;
+-  gchar **wm_keybindings;
+-  GDir *dir;
+-  GtkTreeModel *sort_model;
+-  GtkTreeModel *section_model;
+-  GtkTreeModel *shortcut_model;
+-  const gchar * const * data_dirs;
+-  guint i;
+-  GtkTreeView *section_treeview;
+-  GtkTreeSelection *selection;
+-  GtkTreeIter iter;
+-  GHashTable *loaded_files;
+-  const char *section_to_set;
+-
+-  builder = g_object_get_data (G_OBJECT (panel), "builder");
+-
+-  section_treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder, "section_treeview"));
+-  sort_model = gtk_tree_view_get_model (section_treeview);
+-  section_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model));
+-
+-  shortcut_model = gtk_tree_view_get_model (GTK_TREE_VIEW (gtk_builder_get_object (builder, "shortcut_treeview")));
+-  /* FIXME: get current selection and keep it after refreshing */
+-
+-  /* Clear previous models and hash tables */
+-  gtk_list_store_clear (GTK_LIST_STORE (section_model));
+-  gtk_list_store_clear (GTK_LIST_STORE (shortcut_model));
+-  if (kb_system_sections != NULL)
+-    g_hash_table_destroy (kb_system_sections);
+-  kb_system_sections = g_hash_table_new_full (g_str_hash,
+-                                              g_str_equal,
+-                                              g_free,
+-                                              (GDestroyNotify) free_key_array);
+-
+-  if (kb_apps_sections != NULL)
+-    g_hash_table_destroy (kb_apps_sections);
+-  kb_apps_sections = g_hash_table_new_full (g_str_hash,
+-                                            g_str_equal,
+-                                            g_free,
+-                                            (GDestroyNotify) free_key_array);
+-
+-  if (kb_user_sections != NULL)
+-    g_hash_table_destroy (kb_user_sections);
+-  kb_user_sections = g_hash_table_new_full (g_str_hash,
+-                                            g_str_equal,
+-                                            g_free,
+-                                            (GDestroyNotify) free_key_array);
+-
+-  /* Load WM keybindings */
+-  wm_keybindings = wm_common_get_current_keybindings ();
+-
+-  loaded_files = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+-
+-  data_dirs = g_get_system_data_dirs ();
+-  for (i = 0; data_dirs[i] != NULL; i++)
+-    {
+-      char *dir_path;
+-      const gchar *name;
+-
+-      dir_path = g_build_filename (data_dirs[i], "unity-control-center", "keybindings", NULL);
+-
+-      dir = g_dir_open (dir_path, 0, NULL);
+-      if (!dir)
+-        {
+-          g_free (dir_path);
+-          continue;
+-        }
+-
+-      for (name = g_dir_read_name (dir) ; name ; name = g_dir_read_name (dir))
+-        {
+-          gchar *path;
+-
+-	  if (g_str_has_suffix (name, ".xml") == FALSE)
+-	    continue;
+-
+-          if (g_hash_table_lookup (loaded_files, name) != NULL)
+-	    {
+-	      g_debug ("Not loading %s, it was already loaded from another directory", name);
+-              continue;
+-	    }
+-
+-	  g_hash_table_insert (loaded_files, g_strdup (name), GINT_TO_POINTER (1));
+-	  path = g_build_filename (dir_path, name, NULL);
+-	  append_sections_from_file (builder, path, data_dirs[i], wm_keybindings);
+-	  g_free (path);
+-	}
+-      g_free (dir_path);
+-      g_dir_close (dir);
+-    }
+-
+-  g_hash_table_destroy (loaded_files);
+-  g_strfreev (wm_keybindings);
+-
+-  /* Add a separator */
+-  gtk_list_store_append (GTK_LIST_STORE (section_model), &iter);
+-  gtk_list_store_set (GTK_LIST_STORE (section_model), &iter,
+-                      SECTION_DESCRIPTION_COLUMN, NULL,
+-                      SECTION_GROUP_COLUMN, BINDING_GROUP_SEPARATOR,
+-                      -1);
+-
+-  /* Load custom keybindings */
+-  append_sections_from_gsettings (builder);
+-
+-  /* Select the first item, or the requested section, if any */
+-  section_to_set = g_object_get_data (G_OBJECT (panel), "section-to-set");
+-  if (section_to_set != NULL)
+-    {
+-      if (keyboard_shortcuts_set_section (panel, section_to_set))
+-        {
+-          g_object_set_data (G_OBJECT (panel), "section-to-set", NULL);
+-          return;
+-	}
+-    }
+-  gtk_tree_model_get_iter_first (sort_model, &iter);
+-  selection = gtk_tree_view_get_selection (section_treeview);
+-  gtk_tree_selection_select_iter (selection, &iter);
+-
+-  g_object_set_data (G_OBJECT (panel), "section-to-set", NULL);
+-}
+-
+-static void
+-accel_set_func (GtkTreeViewColumn *tree_column,
+-                GtkCellRenderer   *cell,
+-                GtkTreeModel      *model,
+-                GtkTreeIter       *iter,
+-                gpointer           data)
+-{
+-  gpointer entry;
+-  ShortcutType type;
+-
+-  gtk_tree_model_get (model, iter,
+-                      DETAIL_KEYENTRY_COLUMN, &entry,
+-                      DETAIL_TYPE_COLUMN, &type,
+-                      -1);
+-
+-  gtk_cell_renderer_set_visible (cell, FALSE);
+-
+-  if (type == SHORTCUT_TYPE_XKB_OPTION &&
+-      GTK_IS_CELL_RENDERER_COMBO (cell))
+-    {
+-      CcKeyboardOption *option = entry;
+-
+-      gtk_cell_renderer_set_visible (cell, TRUE);
+-      g_object_set (cell,
+-                    "model", cc_keyboard_option_get_store (option),
+-                    "text", cc_keyboard_option_get_current_value_description (option),
+-                    NULL);
+-    }
+-  else if (type == SHORTCUT_TYPE_KEY_ENTRY &&
+-           GTK_IS_CELL_RENDERER_TEXT (cell) &&
+-           !GTK_IS_CELL_RENDERER_COMBO (cell) &&
+-           entry != NULL)
+-    {
+-      CcKeyboardItem *item = entry;
+-
+-      gtk_cell_renderer_set_visible (cell, TRUE);
+-
+-      if (item->editable)
+-        g_object_set (cell,
+-                      "editable", TRUE,
+-                      "accel-key", item->keyval,
+-                      "accel-mods", item->mask,
+-                      "keycode", item->keycode,
+-                      "style", PANGO_STYLE_NORMAL,
+-                      NULL);
+-      else
+-        g_object_set (cell,
+-                      "editable", FALSE,
+-                      "accel-key", item->keyval,
+-                      "accel-mods", item->mask,
+-                      "keycode", item->keycode,
+-                      "style", PANGO_STYLE_ITALIC,
+-                      NULL);
+-    }
+-}
+-
+-static void
+-description_set_func (GtkTreeViewColumn *tree_column,
+-                      GtkCellRenderer   *cell,
+-                      GtkTreeModel      *model,
+-                      GtkTreeIter       *iter,
+-                      gpointer           data)
+-{
+-  gchar *description;
+-  CcKeyboardItem *item;
+-  ShortcutType type;
+-
+-  gtk_tree_model_get (model, iter,
+-                      DETAIL_DESCRIPTION_COLUMN, &description,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      DETAIL_TYPE_COLUMN, &type,
+-                      -1);
+-
+-  if (type == SHORTCUT_TYPE_XKB_OPTION)
+-    {
+-      g_object_set (cell, "text", description, NULL);
+-    }
+-  else
+-    {
+-      if (item != NULL)
+-        g_object_set (cell,
+-                      "editable", FALSE,
+-                      "text", item->description != NULL ?
+-                      item->description : _("<Unknown Action>"),
+-                      NULL);
+-      else
+-        g_object_set (cell,
+-                      "editable", FALSE, NULL);
+-    }
+-
+-  g_free (description);
+-}
+-
+-static void
+-shortcut_selection_changed (GtkTreeSelection *selection, gpointer data)
+-{
+-  GtkWidget *button = data;
+-  GtkTreeModel *model;
+-  GtkTreeIter iter;
+-  CcKeyboardItem *item;
+-  gboolean can_remove;
+-  ShortcutType type;
+-
+-  can_remove = FALSE;
+-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+-    {
+-      gtk_tree_model_get (model, &iter,
+-                          DETAIL_KEYENTRY_COLUMN, &item,
+-                          DETAIL_TYPE_COLUMN, &type,
+-                          -1);
+-      if (type == SHORTCUT_TYPE_KEY_ENTRY &&
+-          item && item->command != NULL && item->editable)
+-        can_remove = TRUE;
+-    }
+-
+-  gtk_widget_set_sensitive (button, can_remove);
+-}
+-
+-static void
+-fill_xkb_options_shortcuts (GtkTreeModel *model)
+-{
+-  GList *l;
+-  GtkTreeIter iter;
+-
+-  for (l = cc_keyboard_option_get_all (); l; l = l->next)
+-    {
+-      CcKeyboardOption *option = l->data;
+-
+-      gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+-      gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+-                          DETAIL_DESCRIPTION_COLUMN, cc_keyboard_option_get_description (option),
+-                          DETAIL_KEYENTRY_COLUMN, option,
+-                          DETAIL_TYPE_COLUMN, SHORTCUT_TYPE_XKB_OPTION,
+-                          -1);
+-    }
+-}
+-
+-static void
+-section_selection_changed (GtkTreeSelection *selection, gpointer data)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  GtkBuilder *builder = GTK_BUILDER (data);
+-
+-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+-    {
+-      GPtrArray *keys;
+-      GtkWidget *shortcut_treeview;
+-      GtkTreeModel *shortcut_model;
+-      gchar *id;
+-      BindingGroupType group;
+-      gint i;
+-
+-      gtk_tree_model_get (model, &iter,
+-                          SECTION_ID_COLUMN, &id,
+-                          SECTION_GROUP_COLUMN, &group, -1);
+-
+-      keys = g_hash_table_lookup (get_hash_for_group (group), id);
+-      if (keys == NULL)
+-        {
+-          g_warning ("Can't find section %s in sections hash table.", id);
+-          g_free (id);
+-          return;
+-        }
+-
+-      gtk_widget_set_sensitive (WID (builder, "remove-toolbutton"), FALSE);
+-
+-      /* Fill the shortcut treeview with the keys for the selected section */
+-      shortcut_treeview = GTK_WIDGET (gtk_builder_get_object (builder, "shortcut_treeview"));
+-      shortcut_model = gtk_tree_view_get_model (GTK_TREE_VIEW (shortcut_treeview));
+-      gtk_list_store_clear (GTK_LIST_STORE (shortcut_model));
+-
+-      for (i = 0; i < keys->len; i++)
+-        {
+-          GtkTreeIter new_row;
+-          CcKeyboardItem *item = g_ptr_array_index (keys, i);
+-
+-          gtk_list_store_append (GTK_LIST_STORE (shortcut_model), &new_row);
+-          gtk_list_store_set (GTK_LIST_STORE (shortcut_model), &new_row,
+-                              DETAIL_DESCRIPTION_COLUMN, item->description,
+-                              DETAIL_KEYENTRY_COLUMN, item,
+-                              DETAIL_TYPE_COLUMN, SHORTCUT_TYPE_KEY_ENTRY,
+-                              -1);
+-        }
+-
+-      if (g_str_equal (id, "Typing"))
+-        fill_xkb_options_shortcuts (shortcut_model);
+-
+-      g_free (id);
+-    }
+-}
+-
+-static gboolean
+-edit_custom_shortcut (CcKeyboardItem *item)
+-{
+-  gint result;
+-  gboolean ret;
+-  GSettings *settings;
+-
+-  settings = g_settings_new_with_path (item->schema, item->gsettings_path);
+-
+-  g_settings_bind (settings, "name",
+-                   G_OBJECT (custom_shortcut_name_entry), "text",
+-                   G_SETTINGS_BIND_DEFAULT);
+-  gtk_widget_grab_focus (custom_shortcut_name_entry);
+-
+-  g_settings_bind (settings, "command",
+-                   G_OBJECT (custom_shortcut_command_entry), "text",
+-                   G_SETTINGS_BIND_DEFAULT);
+-
+-  g_settings_delay (settings);
+-
+-  gtk_window_present (GTK_WINDOW (custom_shortcut_dialog));
+-  result = gtk_dialog_run (GTK_DIALOG (custom_shortcut_dialog));
+-  switch (result)
+-    {
+-    case GTK_RESPONSE_OK:
+-      g_settings_apply (settings);
+-      ret = TRUE;
+-      break;
+-    default:
+-      g_settings_revert (settings);
+-      ret = FALSE;
+-      break;
+-    }
+-
+-  g_settings_unbind (G_OBJECT (custom_shortcut_name_entry), "text");
+-  g_settings_unbind (G_OBJECT (custom_shortcut_command_entry), "text");
+-
+-  g_object_unref (settings);
+-
+-  gtk_widget_hide (custom_shortcut_dialog);
+-
+-  return ret;
+-}
+-
+-static gboolean
+-remove_custom_shortcut (GtkTreeModel *model, GtkTreeIter *iter)
+-{
+-  CcKeyboardItem *item;
+-  GPtrArray *keys_array;
+-  GVariantBuilder builder;
+-  char **settings_paths;
+-  int i;
+-
+-  gtk_tree_model_get (model, iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      -1);
+-
+-  /* not a custom shortcut */
+-  g_assert (item->type == CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH);
+-
+-  g_settings_delay (item->settings);
+-  g_settings_reset (item->settings, "name");
+-  g_settings_reset (item->settings, "command");
+-  g_settings_reset (item->settings, "binding");
+-  g_settings_apply (item->settings);
+-  g_settings_sync ();
+-
+-  settings_paths = g_settings_get_strv (binding_settings, "custom-keybindings");
+-  g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
+-  for (i = 0; settings_paths[i]; i++)
+-    if (strcmp (settings_paths[i], item->gsettings_path) != 0)
+-      g_variant_builder_add (&builder, "s", settings_paths[i]);
+-  g_settings_set_value (binding_settings,
+-                        "custom-keybindings", g_variant_builder_end (&builder));
+-  g_strfreev (settings_paths);
+-  g_object_unref (item);
+-
+-  keys_array = g_hash_table_lookup (get_hash_for_group (BINDING_GROUP_USER), CUSTOM_SHORTCUTS_ID);
+-  g_ptr_array_remove (keys_array, item);
+-
+-  gtk_list_store_remove (GTK_LIST_STORE (model), iter);
+-
+-  return TRUE;
+-}
+-
+-static void
+-update_custom_shortcut (GtkTreeModel *model, GtkTreeIter *iter)
+-{
+-  CcKeyboardItem *item;
+-
+-  gtk_tree_model_get (model, iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      -1);
+-
+-  g_assert (item->type == CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH);
+-
+-  edit_custom_shortcut (item);
+-  if (item->command == NULL || item->command[0] == '\0')
+-    {
+-      remove_custom_shortcut (model, iter);
+-    }
+-  else
+-    {
+-      gtk_list_store_set (GTK_LIST_STORE (model), iter,
+-                          DETAIL_KEYENTRY_COLUMN, item, -1);
+-    }
+-}
+-
+-static gboolean
+-start_editing_cb (GtkTreeView    *tree_view,
+-                  GdkEventButton *event,
+-                  gpointer        user_data)
+-{
+-  GtkTreePath *path;
+-  GtkTreeViewColumn *column;
+-  GtkCellRenderer *cell = user_data;
+-
+-  if (event->window != gtk_tree_view_get_bin_window (tree_view))
+-    return FALSE;
+-
+-  if (gtk_tree_view_get_path_at_pos (tree_view,
+-                                     (gint) event->x,
+-                                     (gint) event->y,
+-                                     &path, &column,
+-                                     NULL, NULL))
+-    {
+-      GtkTreeModel *model;
+-      GtkTreeIter iter;
+-      CcKeyboardItem *item;
+-      ShortcutType type;
+-
+-      model = gtk_tree_view_get_model (tree_view);
+-      gtk_tree_model_get_iter (model, &iter, path);
+-      gtk_tree_model_get (model, &iter,
+-                          DETAIL_KEYENTRY_COLUMN, &item,
+-                          DETAIL_TYPE_COLUMN, &type,
+-                         -1);
+-
+-      if (type == SHORTCUT_TYPE_XKB_OPTION)
+-        {
+-          gtk_tree_path_free (path);
+-          return FALSE;
+-        }
+-
+-      /* if only the accel can be edited on the selected row
+-       * always select the accel column */
+-      if (item->desc_editable &&
+-          column == gtk_tree_view_get_column (tree_view, 0))
+-        {
+-          gtk_widget_grab_focus (GTK_WIDGET (tree_view));
+-          gtk_tree_view_set_cursor (tree_view,
+-                                    path,
+-                                    column,
+-                                    FALSE);
+-          update_custom_shortcut (model, &iter);
+-        }
+-      else
+-        {
+-          gtk_widget_grab_focus (GTK_WIDGET (tree_view));
+-          gtk_tree_view_set_cursor_on_cell (tree_view,
+-                                            path,
+-                                            gtk_tree_view_get_column (tree_view, 1),
+-                                            cell,
+-                                            TRUE);
+-        }
+-      g_signal_stop_emission_by_name (tree_view, "button_press_event");
+-      gtk_tree_path_free (path);
+-    }
+-  return TRUE;
+-}
+-
+-static void
+-start_editing_kb_cb (GtkTreeView       *treeview,
+-                     GtkTreePath       *path,
+-                     GtkTreeViewColumn *column,
+-                     gpointer           user_data)
+-{
+-  GtkTreeModel *model;
+-  GtkTreeIter iter;
+-  CcKeyboardItem *item;
+-  ShortcutType type;
+-  GtkCellRenderer *cell = user_data;
+-
+-  model = gtk_tree_view_get_model (treeview);
+-  gtk_tree_model_get_iter (model, &iter, path);
+-  gtk_tree_model_get (model, &iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      DETAIL_TYPE_COLUMN, &type,
+-                      -1);
+-
+-  if (type == SHORTCUT_TYPE_XKB_OPTION)
+-    return;
+-
+-  /* if only the accel can be edited on the selected row
+-   * always select the accel column */
+-  if (item->desc_editable &&
+-      column == gtk_tree_view_get_column (treeview, 0))
+-    {
+-      gtk_widget_grab_focus (GTK_WIDGET (treeview));
+-      gtk_tree_view_set_cursor (treeview,
+-                                path,
+-                                column,
+-                                FALSE);
+-      update_custom_shortcut (model, &iter);
+-    }
+-  else
+-    {
+-       gtk_widget_grab_focus (GTK_WIDGET (treeview));
+-       gtk_tree_view_set_cursor_on_cell (treeview,
+-                                         path,
+-                                         gtk_tree_view_get_column (treeview, 1),
+-                                         cell,
+-                                         TRUE);
+-    }
+-}
+-
+-static const guint forbidden_keyvals[] = {
+-  /* Navigation keys */
+-  GDK_KEY_Home,
+-  GDK_KEY_Left,
+-  GDK_KEY_Up,
+-  GDK_KEY_Right,
+-  GDK_KEY_Down,
+-  GDK_KEY_Page_Up,
+-  GDK_KEY_Page_Down,
+-  GDK_KEY_End,
+-  GDK_KEY_Tab,
+-
+-  /* Return */
+-  GDK_KEY_KP_Enter,
+-  GDK_KEY_Return,
+-
+-  GDK_KEY_space,
+-  GDK_KEY_Mode_switch
+-};
+-
+-static char*
+-binding_name (guint                   keyval,
+-              guint                   keycode,
+-              GdkModifierType         mask,
+-              gboolean                translate)
+-{
+-  if (keyval != 0 || keycode != 0)
+-    return translate ?
+-        gtk_accelerator_get_label_with_keycode (NULL, keyval, keycode, mask) :
+-        gtk_accelerator_name_with_keycode (NULL, keyval, keycode, mask);
+-  else
+-    return g_strdup (translate ? _("Disabled") : "");
+-}
+-
+-static gboolean
+-keyval_is_forbidden (guint keyval)
+-{
+-  guint i;
+-
+-  for (i = 0; i < G_N_ELEMENTS(forbidden_keyvals); i++) {
+-    if (keyval == forbidden_keyvals[i])
+-      return TRUE;
+-  }
+-
+-  return FALSE;
+-}
+-
+-typedef struct {
+-  CcKeyboardItem *orig_item;
+-  CcKeyboardItem *conflict_item;
+-  guint new_keyval;
+-  GdkModifierType new_mask;
+-  guint new_keycode;
+-} CcUniquenessData;
+-
+-static gboolean
+-compare_keys_for_uniqueness (CcKeyboardItem   *element,
+-                             CcUniquenessData *data)
+-{
+-  CcKeyboardItem *orig_item;
+-
+-  orig_item = data->orig_item;
+-
+-  /* no conflict for : blanks, different modifiers, or ourselves */
+-  if (element == NULL || data->new_mask != element->mask ||
+-      cc_keyboard_item_equal (orig_item, element))
+-    return FALSE;
+-
+-  if (data->new_keyval != 0) {
+-      if (data->new_keyval != element->keyval)
+-          return FALSE;
+-  } else if (element->keyval != 0 || data->new_keycode != element->keycode)
+-    return FALSE;
+-
+-  data->conflict_item = element;
+-
+-  return TRUE;
+-}
+-
+-static gboolean
+-cb_check_for_uniqueness (gpointer          key,
+-                         GPtrArray        *keys_array,
+-                         CcUniquenessData *data)
+-{
+-  guint i;
+-
+-  for (i = 0; i < keys_array->len; i++)
+-    {
+-      CcKeyboardItem *item;
+-
+-      item = keys_array->pdata[i];
+-      if (compare_keys_for_uniqueness (item, data))
+-        return TRUE;
+-    }
+-  return FALSE;
+-}
+-
+-static void
+-accel_edited_callback (GtkCellRendererText   *cell,
+-                       const char            *path_string,
+-                       guint                  keyval,
+-                       GdkModifierType        mask,
+-                       guint                  keycode,
+-                       GtkTreeView           *view)
+-{
+-  GtkTreeModel *model;
+-  GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
+-  GtkTreeIter iter;
+-  CcUniquenessData data;
+-  CcKeyboardItem *item;
+-  char *str;
+-
+-  model = gtk_tree_view_get_model (view);
+-  gtk_tree_model_get_iter (model, &iter, path);
+-  gtk_tree_path_free (path);
+-  gtk_tree_model_get (model, &iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      -1);
+-
+-  /* sanity check */
+-  if (item == NULL)
+-    return;
+-
+-  /* CapsLock isn't supported as a keybinding modifier, so keep it from confusing us */
+-  mask &= ~GDK_LOCK_MASK;
+-
+-  data.orig_item = item;
+-  data.new_keyval = keyval;
+-  data.new_mask = mask;
+-  data.new_keycode = keycode;
+-  data.conflict_item = NULL;
+-
+-  if (keyval != 0 || keycode != 0) /* any number of shortcuts can be disabled */
+-    {
+-      BindingGroupType i;
+-
+-      for (i = BINDING_GROUP_SYSTEM; i <= BINDING_GROUP_USER && data.conflict_item == NULL; i++)
+-        {
+-          GHashTable *table;
+-
+-          table = get_hash_for_group (i);
+-          if (!table)
+-            continue;
+-          g_hash_table_find (table, (GHRFunc) cb_check_for_uniqueness, &data);
+-        }
+-    }
+-
+-  /* Check for unmodified keys */
+-  if ((mask == 0 || mask == GDK_SHIFT_MASK) && keycode != 0)
+-    {
+-      if ((keyval >= GDK_KEY_a && keyval <= GDK_KEY_z)
+-           || (keyval >= GDK_KEY_A && keyval <= GDK_KEY_Z)
+-           || (keyval >= GDK_KEY_0 && keyval <= GDK_KEY_9)
+-           || (keyval >= GDK_KEY_kana_fullstop && keyval <= GDK_KEY_semivoicedsound)
+-           || (keyval >= GDK_KEY_Arabic_comma && keyval <= GDK_KEY_Arabic_sukun)
+-           || (keyval >= GDK_KEY_Serbian_dje && keyval <= GDK_KEY_Cyrillic_HARDSIGN)
+-           || (keyval >= GDK_KEY_Greek_ALPHAaccent && keyval <= GDK_KEY_Greek_omega)
+-           || (keyval >= GDK_KEY_hebrew_doublelowline && keyval <= GDK_KEY_hebrew_taf)
+-           || (keyval >= GDK_KEY_Thai_kokai && keyval <= GDK_KEY_Thai_lekkao)
+-           || (keyval >= GDK_KEY_Hangul && keyval <= GDK_KEY_Hangul_Special)
+-           || (keyval >= GDK_KEY_Hangul_Kiyeog && keyval <= GDK_KEY_Hangul_J_YeorinHieuh)
+-           || keyval_is_forbidden (keyval)) {
+-        GtkWidget *dialog;
+-        char *name;
+-
+-        name = binding_name (keyval, keycode, mask, TRUE);
+-
+-        dialog =
+-          gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+-                                  GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+-                                  GTK_MESSAGE_WARNING,
+-                                  GTK_BUTTONS_CANCEL,
+-                                  _("The shortcut \"%s\" cannot be used because it will become impossible to type using this key.\n"
+-                                  "Please try with a key such as Control, Alt or Shift at the same time."),
+-                                  name);
+-
+-        g_free (name);
+-        gtk_dialog_run (GTK_DIALOG (dialog));
+-        gtk_widget_destroy (dialog);
+-
+-        /* set it back to its previous value. */
+-        g_object_set (G_OBJECT (cell),
+-                      "accel-key", item->keyval,
+-                      "keycode", item->keycode,
+-                      "accel-mods", item->mask,
+-                      NULL);
+-        return;
+-      }
+-    }
+-
+-  /* flag to see if the new accelerator was in use by something */
+-  if (data.conflict_item != NULL)
+-    {
+-      GtkWidget *dialog;
+-      char *name;
+-      int response;
+-
+-      name = binding_name (keyval, keycode, mask, TRUE);
+-
+-      dialog =
+-        gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+-                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+-                                GTK_MESSAGE_WARNING,
+-                                GTK_BUTTONS_CANCEL,
+-                                _("The shortcut \"%s\" is already used for\n\"%s\""),
+-                                name, data.conflict_item->description);
+-      g_free (name);
+-
+-      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+-          _("If you reassign the shortcut to \"%s\", the \"%s\" shortcut "
+-            "will be disabled."),
+-          item->description,
+-          data.conflict_item->description);
+-
+-      gtk_dialog_add_button (GTK_DIALOG (dialog),
+-                             _("_Reassign"),
+-                             GTK_RESPONSE_ACCEPT);
+-
+-      gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+-                                       GTK_RESPONSE_ACCEPT);
+-
+-      response = gtk_dialog_run (GTK_DIALOG (dialog));
+-      gtk_widget_destroy (dialog);
+-
+-      if (response == GTK_RESPONSE_ACCEPT)
+-        {
+-	  g_object_set (G_OBJECT (data.conflict_item), "binding", "", NULL);
+-
+-          str = binding_name (keyval, keycode, mask, FALSE);
+-          g_object_set (G_OBJECT (item), "binding", str, NULL);
+-
+-          g_free (str);
+-        }
+-      else
+-        {
+-          /* set it back to its previous value. */
+-        g_object_set (G_OBJECT (cell),
+-                      "accel-key", item->keyval,
+-                      "keycode", item->keycode,
+-                      "accel-mods", item->mask,
+-                      NULL);
+-        }
+-
+-      return;
+-    }
+-
+-  str = binding_name (keyval, keycode, mask, FALSE);
+-  g_object_set (G_OBJECT (item), "binding", str, NULL);
+-
+-  g_free (str);
+-}
+-
+-static void
+-accel_cleared_callback (GtkCellRendererText *cell,
+-                        const char          *path_string,
+-                        gpointer             data)
+-{
+-  GtkTreeView *view = (GtkTreeView *) data;
+-  GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
+-  CcKeyboardItem *item;
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-
+-  model = gtk_tree_view_get_model (view);
+-  gtk_tree_model_get_iter (model, &iter, path);
+-  gtk_tree_path_free (path);
+-  gtk_tree_model_get (model, &iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      -1);
+-
+-  /* sanity check */
+-  if (item == NULL)
+-    return;
+-
+-  /* Unset the key */
+-  g_object_set (G_OBJECT (item), "binding", "", NULL);
+-}
+-
+-static gchar *
+-find_free_settings_path ()
+-{
+-  char **used_names;
+-  char *dir = NULL;
+-  int i, num, n_names;
+-
+-  used_names = g_settings_get_strv (binding_settings, "custom-keybindings");
+-  n_names = g_strv_length (used_names);
+-
+-  for (num = 0; dir == NULL; num++)
+-    {
+-      char *tmp;
+-      gboolean found = FALSE;
+-
+-      tmp = g_strdup_printf ("%s/custom%d/", CUSTOM_KEYS_BASENAME, num);
+-      for (i = 0; i < n_names && !found; i++)
+-        found = strcmp (used_names[i], tmp) == 0;
+-
+-      if (!found)
+-        dir = tmp;
+-      else
+-        g_free (tmp);
+-    }
+-
+-  return dir;
+-}
+-
+-static void
+-add_custom_shortcut (GtkTreeView  *tree_view,
+-                     GtkTreeModel *model)
+-{
+-  CcKeyboardItem *item;
+-  GtkTreePath *path;
+-  gchar *settings_path;
+-
+-  item = cc_keyboard_item_new (CC_KEYBOARD_ITEM_TYPE_GSETTINGS_PATH);
+-
+-  settings_path = find_free_settings_path ();
+-  cc_keyboard_item_load_from_gsettings_path (item, settings_path, TRUE);
+-  g_free (settings_path);
+-
+-  item->model = model;
+-
+-  if (edit_custom_shortcut (item) &&
+-      item->command && item->command[0])
+-    {
+-      GPtrArray *keys_array;
+-      GtkTreeIter iter;
+-      GHashTable *hash;
+-      GVariantBuilder builder;
+-      char **settings_paths;
+-      int i;
+-
+-      hash = get_hash_for_group (BINDING_GROUP_USER);
+-      keys_array = g_hash_table_lookup (hash, CUSTOM_SHORTCUTS_ID);
+-      if (keys_array == NULL)
+-        {
+-          keys_array = g_ptr_array_new ();
+-          g_hash_table_insert (hash, g_strdup (CUSTOM_SHORTCUTS_ID), keys_array);
+-        }
+-
+-      g_ptr_array_add (keys_array, item);
+-
+-      gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+-      gtk_list_store_set (GTK_LIST_STORE (model), &iter, DETAIL_KEYENTRY_COLUMN, item, -1);
+-
+-      settings_paths = g_settings_get_strv (binding_settings, "custom-keybindings");
+-      g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
+-      for (i = 0; settings_paths[i]; i++)
+-        g_variant_builder_add (&builder, "s", settings_paths[i]);
+-      g_variant_builder_add (&builder, "s", item->gsettings_path);
+-      g_settings_set_value (binding_settings, "custom-keybindings",
+-                            g_variant_builder_end (&builder));
+-
+-      /* make the new shortcut visible */
+-      path = gtk_tree_model_get_path (model, &iter);
+-      gtk_tree_view_expand_to_path (tree_view, path);
+-      gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0, 0);
+-      gtk_tree_path_free (path);
+-    }
+-  else
+-    {
+-      g_object_unref (item);
+-    }
+-}
+-
+-static void
+-add_button_clicked (GtkWidget  *button,
+-                    GtkBuilder *builder)
+-{
+-  GtkTreeView *treeview;
+-  GtkTreeModel *model;
+-  GtkTreeModel *section_model;
+-  GtkTreeIter iter;
+-  gboolean found, cont;
+-
+-  treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder,
+-                                                    "shortcut_treeview"));
+-  model = gtk_tree_view_get_model (treeview);
+-
+-  /* Select the Custom Shortcuts section
+-   * before adding the shortcut itself */
+-  section_model = gtk_tree_view_get_model (GTK_TREE_VIEW (WID (builder, "section_treeview")));
+-  cont = gtk_tree_model_get_iter_first (section_model, &iter);
+-  found = FALSE;
+-  while (cont)
+-    {
+-      BindingGroupType group;
+-
+-      gtk_tree_model_get (section_model, &iter,
+-                          SECTION_GROUP_COLUMN, &group,
+-                          -1);
+-
+-      if (group == BINDING_GROUP_USER)
+-        {
+-          found = TRUE;
+-          break;
+-        }
+-      cont = gtk_tree_model_iter_next (section_model, &iter);
+-    }
+-  if (found)
+-    {
+-      GtkTreeSelection *selection;
+-
+-      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (WID (builder, "section_treeview")));
+-      gtk_tree_selection_select_iter (selection, &iter);
+-    }
+-
+-  /* And add the shortcut */
+-  add_custom_shortcut (treeview, model);
+-}
+-
+-static void
+-remove_button_clicked (GtkWidget  *button,
+-                       GtkBuilder *builder)
+-{
+-  GtkTreeView *treeview;
+-  GtkTreeModel *model;
+-  GtkTreeSelection *selection;
+-  GtkTreeIter iter;
+-
+-  treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder,
+-                                                    "shortcut_treeview"));
+-  model = gtk_tree_view_get_model (treeview);
+-
+-  selection = gtk_tree_view_get_selection (treeview);
+-  if (gtk_tree_selection_get_selected (selection, NULL, &iter))
+-    {
+-      remove_custom_shortcut (model, &iter);
+-    }
+-}
+-
+-static int
+-section_sort_item  (GtkTreeModel *model,
+-                    GtkTreeIter  *a,
+-                    GtkTreeIter  *b,
+-                    gpointer      data)
+-{
+-  char *a_desc;
+-  int   a_group;
+-  char *b_desc;
+-  int   b_group;
+-  int   ret;
+-
+-  gtk_tree_model_get (model, a,
+-                      SECTION_DESCRIPTION_COLUMN, &a_desc,
+-                      SECTION_GROUP_COLUMN, &a_group,
+-                      -1);
+-  gtk_tree_model_get (model, b,
+-                      SECTION_DESCRIPTION_COLUMN, &b_desc,
+-                      SECTION_GROUP_COLUMN, &b_group,
+-                      -1);
+-
+-  if (a_group == b_group && a_desc && b_desc)
+-    ret = g_utf8_collate (a_desc, b_desc);
+-  else
+-    ret = a_group - b_group;
+-
+-  g_free (a_desc);
+-  g_free (b_desc);
+-
+-  return ret;
+-}
+-
+-static gboolean
+-sections_separator_func (GtkTreeModel *model,
+-                         GtkTreeIter  *iter,
+-                         gpointer      data)
+-{
+-  BindingGroupType type;
+-
+-  gtk_tree_model_get (model, iter, SECTION_GROUP_COLUMN, &type, -1);
+-
+-  return type == BINDING_GROUP_SEPARATOR;
+-}
+-
+-static void
+-xkb_options_combo_changed (GtkCellRendererCombo *combo,
+-                           gchar                *model_path,
+-                           GtkTreeIter          *model_iter,
+-                           gpointer              data)
+-{
+-  GtkTreeView *shortcut_treeview;
+-  GtkTreeModel *shortcut_model;
+-  GtkTreeIter shortcut_iter;
+-  GtkTreeSelection *selection;
+-  CcKeyboardOption *option;
+-  ShortcutType type;
+-  GtkBuilder *builder = data;
+-
+-  shortcut_treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder, "shortcut_treeview"));
+-  selection = gtk_tree_view_get_selection (shortcut_treeview);
+-  if (!gtk_tree_selection_get_selected (selection, &shortcut_model, &shortcut_iter))
+-    return;
+-
+-  gtk_tree_model_get (shortcut_model, &shortcut_iter,
+-                      DETAIL_KEYENTRY_COLUMN, &option,
+-                      DETAIL_TYPE_COLUMN, &type,
+-                      -1);
+-
+-  if (type != SHORTCUT_TYPE_XKB_OPTION)
+-    return;
+-
+-  cc_keyboard_option_set_selection (option, model_iter);
+-}
+-
+-static gboolean
+-poke_xkb_option_row (GtkTreeModel *model,
+-                     GtkTreePath  *path,
+-                     GtkTreeIter  *iter,
+-                     gpointer      option)
+-{
+-  gpointer item;
+-
+-  gtk_tree_model_get (model, iter,
+-                      DETAIL_KEYENTRY_COLUMN, &item,
+-                      -1);
+-
+-  if (item != option)
+-    return FALSE;
+-
+-  gtk_tree_model_row_changed (model, path, iter);
+-  return TRUE;
+-}
+-
+-static void
+-xkb_option_changed (CcKeyboardOption *option,
+-                    gpointer          data)
+-{
+-  GtkTreeModel *model = data;
+-
+-  gtk_tree_model_foreach (model, poke_xkb_option_row, option);
+-}
+-
+-static void
+-setup_keyboard_options (GtkListStore *store)
+-{
+-  GList *l;
+-
+-  for (l = cc_keyboard_option_get_all (); l; l = l->next)
+-    g_signal_connect (l->data, "changed",
+-                      G_CALLBACK (xkb_option_changed), store);
+-}
+-
+-static void
+-setup_dialog (CcPanel *panel, GtkBuilder *builder)
+-{
+-  GtkCellRenderer *renderer;
+-  GtkTreeViewColumn *column;
+-  GtkWidget *widget;
+-  GtkTreeView *treeview;
+-  GtkTreeSelection *selection;
+-  GtkTable *table;
+-  GList *focus_chain;
+-  CcShell *shell;
+-  GtkListStore *model;
+-  GtkTreeModelSort *sort_model;
+-  GtkStyleContext *context;
+-
+-  gtk_widget_set_size_request (GTK_WIDGET (panel), -1, 400);
+-
+-  /* Setup the section treeview */
+-  treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder, "section_treeview"));
+-  gtk_tree_view_set_row_separator_func (GTK_TREE_VIEW (treeview),
+-					sections_separator_func,
+-					panel,
+-					NULL);
+-
+-  renderer = gtk_cell_renderer_text_new ();
+-  column = gtk_tree_view_column_new_with_attributes (_("Section"),
+-                                                     renderer,
+-                                                     "text", SECTION_DESCRIPTION_COLUMN,
+-                                                     NULL);
+-  g_object_set (renderer,
+-                "width-chars", 20,
+-                "ellipsize", PANGO_ELLIPSIZE_END,
+-                NULL);
+-
+-  gtk_tree_view_append_column (treeview, column);
+-
+-  model = gtk_list_store_new (SECTION_N_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
+-  sort_model = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (model)));
+-  gtk_tree_view_set_model (treeview, GTK_TREE_MODEL (sort_model));
+-  g_object_unref (model);
+-
+-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (sort_model),
+-                                   SECTION_DESCRIPTION_COLUMN,
+-                                   section_sort_item,
+-                                   panel,
+-                                   NULL);
+-
+-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model),
+-                                        SECTION_DESCRIPTION_COLUMN,
+-                                        GTK_SORT_ASCENDING);
+-  g_object_unref (sort_model);
+-
+-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+-
+-  gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
+-
+-  g_signal_connect (selection, "changed",
+-                    G_CALLBACK (section_selection_changed), builder);
+-  section_selection_changed (selection, builder);
+-
+-  /* Setup the shortcut treeview */
+-  treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder,
+-                                                    "shortcut_treeview"));
+-
+-  binding_settings = g_settings_new (BINDINGS_SCHEMA);
+-
+-  renderer = gtk_cell_renderer_text_new ();
+-  g_object_set (G_OBJECT (renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+-
+-  column = gtk_tree_view_column_new_with_attributes (NULL, renderer, NULL);
+-  gtk_tree_view_column_set_cell_data_func (column, renderer, description_set_func, NULL, NULL);
+-  gtk_tree_view_column_set_resizable (column, FALSE);
+-  gtk_tree_view_column_set_expand (column, TRUE);
+-
+-  gtk_tree_view_append_column (treeview, column);
+-
+-  renderer = (GtkCellRenderer *) g_object_new (GTK_TYPE_CELL_RENDERER_ACCEL,
+-                                               "accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP,
+-                                               NULL);
+-
+-  g_signal_connect (treeview, "button_press_event",
+-                    G_CALLBACK (start_editing_cb), renderer);
+-  g_signal_connect (treeview, "row-activated",
+-                    G_CALLBACK (start_editing_kb_cb), renderer);
+-
+-  g_signal_connect (renderer, "accel_edited",
+-                    G_CALLBACK (accel_edited_callback),
+-                    treeview);
+-  g_signal_connect (renderer, "accel_cleared",
+-                    G_CALLBACK (accel_cleared_callback),
+-                    treeview);
+-
+-  column = gtk_tree_view_column_new_with_attributes (NULL, renderer, NULL);
+-  gtk_tree_view_column_set_cell_data_func (column, renderer, accel_set_func, NULL, NULL);
+-  gtk_tree_view_column_set_resizable (column, FALSE);
+-  gtk_tree_view_column_set_expand (column, FALSE);
+-
+-  renderer = (GtkCellRenderer *) g_object_new (GTK_TYPE_CELL_RENDERER_COMBO,
+-                                               "has-entry", FALSE,
+-                                               "text-column", XKB_OPTION_DESCRIPTION_COLUMN,
+-                                               "editable", TRUE,
+-                                               "ellipsize", PANGO_ELLIPSIZE_END,
+-                                               "width-chars", 25,
+-                                               NULL);
+-  g_signal_connect (renderer, "changed",
+-                    G_CALLBACK (xkb_options_combo_changed), builder);
+-
+-  gtk_tree_view_column_pack_end (column, renderer, FALSE);
+-
+-  gtk_tree_view_column_set_cell_data_func (column, renderer, accel_set_func, NULL, NULL);
+-
+-  gtk_tree_view_append_column (treeview, column);
+-
+-  model = gtk_list_store_new (DETAIL_N_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
+-  gtk_tree_view_set_model (treeview, GTK_TREE_MODEL (model));
+-  g_object_unref (model);
+-
+-  setup_keyboard_options (model);
+-
+-  widget = GTK_WIDGET (gtk_builder_get_object (builder, "actions_swindow"));
+-  context = gtk_widget_get_style_context (widget);
+-  gtk_style_context_set_junction_sides (context, GTK_JUNCTION_BOTTOM);
+-  widget = GTK_WIDGET (gtk_builder_get_object (builder, "shortcut-toolbar"));
+-  context = gtk_widget_get_style_context (widget);
+-  gtk_style_context_set_junction_sides (context, GTK_JUNCTION_TOP);
+-
+-  /* set up the focus chain */
+-  focus_chain = g_list_append (NULL, WID (builder, "sections_swindow"));
+-  focus_chain = g_list_append (focus_chain, WID (builder, "actions_swindow"));
+-  focus_chain = g_list_append (focus_chain, WID (builder, "shortcut-toolbar"));
+-
+-  table = GTK_TABLE (gtk_builder_get_object (builder, "shortcuts_table"));
+-  gtk_container_set_focus_chain (GTK_CONTAINER (table), focus_chain);
+-  g_list_free (focus_chain);
+-
+-  /* set up the dialog */
+-  shell = cc_panel_get_shell (CC_PANEL (panel));
+-  widget = cc_shell_get_toplevel (shell);
+-
+-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+-  g_signal_connect (selection, "changed",
+-                    G_CALLBACK (shortcut_selection_changed),
+-                    WID (builder, "remove-toolbutton"));
+-
+-  /* setup the custom shortcut dialog */
+-  custom_shortcut_dialog = WID (builder,
+-                                "custom-shortcut-dialog");
+-  custom_shortcut_name_entry = WID (builder,
+-                                    "custom-shortcut-name-entry");
+-  custom_shortcut_command_entry = WID (builder,
+-                                       "custom-shortcut-command-entry");
+-  g_signal_connect (WID (builder, "add-toolbutton"),
+-                    "clicked", G_CALLBACK (add_button_clicked), builder);
+-  g_signal_connect (WID (builder, "remove-toolbutton"),
+-                    "clicked", G_CALLBACK (remove_button_clicked), builder);
+-
+-  gtk_dialog_set_default_response (GTK_DIALOG (custom_shortcut_dialog),
+-                                   GTK_RESPONSE_OK);
+-
+-  gtk_window_set_transient_for (GTK_WINDOW (custom_shortcut_dialog),
+-                                GTK_WINDOW (widget));
+-
+-  gtk_window_set_resizable (GTK_WINDOW (custom_shortcut_dialog), FALSE);
+-}
+-
+-static void
+-on_window_manager_change (const char *wm_name, CcPanel *panel)
+-{
+-  reload_sections (panel);
+-}
+-
+-void
+-keyboard_shortcuts_init (CcPanel *panel, GtkBuilder *builder)
+-{
+-  g_object_set_data (G_OBJECT (panel), "builder", builder);
+-  wm_common_register_window_manager_change ((GFunc) on_window_manager_change,
+-                                            panel);
+-  setup_dialog (panel, builder);
+-  reload_sections (panel);
+-}
+-
+-gboolean
+-keyboard_shortcuts_set_section (CcPanel *panel, const char *section)
+-{
+-  GtkBuilder *builder;
+-  GtkTreeModel *section_model;
+-  GtkTreeIter iter;
+-  gboolean found, cont;
+-
+-  builder = g_object_get_data (G_OBJECT (panel), "builder");
+-  if (builder == NULL)
+-    {
+-      /* Remember the section name to be set later */
+-      g_object_set_data_full (G_OBJECT (panel), "section-to-set", g_strdup (section), g_free);
+-      return TRUE;
+-    }
+-  section_model = gtk_tree_view_get_model (GTK_TREE_VIEW (WID (builder, "section_treeview")));
+-  cont = gtk_tree_model_get_iter_first (section_model, &iter);
+-  found = FALSE;
+-  while (cont)
+-    {
+-      char *id;
+-
+-      gtk_tree_model_get (section_model, &iter,
+-                          SECTION_ID_COLUMN, &id,
+-                          -1);
+-
+-      if (g_strcmp0 (id, section) == 0)
+-        {
+-          found = TRUE;
+-          g_free (id);
+-          break;
+-        }
+-      g_free (id);
+-      cont = gtk_tree_model_iter_next (section_model, &iter);
+-    }
+-  if (found)
+-    {
+-      GtkTreeSelection *selection;
+-
+-      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (WID (builder, "section_treeview")));
+-      gtk_tree_selection_select_iter (selection, &iter);
+-    }
+-  else
+-    {
+-      g_warning ("Could not find section '%s' to switch to.", section);
+-    }
+-
+-  return found;
+-}
+-
+-void
+-keyboard_shortcuts_dispose (CcPanel *panel)
+-{
+-  if (kb_system_sections != NULL)
+-    {
+-      g_hash_table_destroy (kb_system_sections);
+-      kb_system_sections = NULL;
+-    }
+-  if (kb_apps_sections != NULL)
+-    {
+-      g_hash_table_destroy (kb_apps_sections);
+-      kb_apps_sections = NULL;
+-    }
+-  if (kb_user_sections != NULL)
+-    {
+-      g_hash_table_destroy (kb_user_sections);
+-      kb_user_sections = NULL;
+-    }
+-
+-  g_clear_object (&binding_settings);
+-
+-  g_clear_pointer (&custom_shortcut_dialog, gtk_widget_destroy);
+-
+-  cc_keyboard_option_clear_all ();
+-}
+diff --git a/panels/keyboard/keyboard-shortcuts.h b/panels/keyboard/keyboard-shortcuts.h
+deleted file mode 100644
+index d035590..0000000
+--- a/panels/keyboard/keyboard-shortcuts.h
++++ /dev/null
+@@ -1,27 +0,0 @@
+-/*
+- * Copyright (C) 2010 Intel, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- * Authors: Thomas Wood <thomas.wood@intel.com>
+- *          Rodrigo Moya <rodrigo@gnome.org>
+- */
+-
+-#include <gtk/gtk.h>
+-#include <shell/cc-panel.h>
+-
+-void keyboard_shortcuts_init (CcPanel *panel, GtkBuilder *builder);
+-gboolean keyboard_shortcuts_set_section (CcPanel *panel, const char *section);
+-void keyboard_shortcuts_dispose (CcPanel *panel);
+diff --git a/panels/keyboard/unity-keybindings.pc.in b/panels/keyboard/unity-keybindings.pc.in
+deleted file mode 100644
+index 6bc80d9..0000000
+--- a/panels/keyboard/unity-keybindings.pc.in
++++ /dev/null
+@@ -1,10 +0,0 @@
+-prefix=@prefix@
+-datarootdir=@datarootdir@
+-datadir=@datadir@
+-pkgdatadir=${datadir}/@PACKAGE@
+-keysdir=${pkgdatadir}/keybindings
+-
+-Name: unity-keybindings
+-Description: Keybindings configuration for GNOME applications
+-Version: @VERSION@
+-
+diff --git a/panels/keyboard/unity-keyboard-panel.desktop.in.in b/panels/keyboard/unity-keyboard-panel.desktop.in.in
+deleted file mode 100644
+index f8a72cb..0000000
+--- a/panels/keyboard/unity-keyboard-panel.desktop.in.in
++++ /dev/null
+@@ -1,13 +0,0 @@
+-[Desktop Entry]
+-_Name=Keyboard
+-_Comment=Change keyboard settings
+-Exec=unity-control-center keyboard
+-Icon=input-keyboard
+-Terminal=false
+-Type=Application
+-StartupNotify=true
+-Categories=GNOME;GTK;Settings;HardwareSettings;X-Unity-Settings-Panel;
+-OnlyShowIn=Unity;
+-X-Unity-Settings-Panel=keyboard
+-# Translators: those are keywords for the keyboard control-center panel
+-_Keywords=Shortcut;Repeat;Blink;
+diff --git a/panels/keyboard/wm-common.c b/panels/keyboard/wm-common.c
+deleted file mode 100644
+index 203dec9..0000000
+--- a/panels/keyboard/wm-common.c
++++ /dev/null
+@@ -1,184 +0,0 @@
+-#include <X11/Xatom.h>
+-#include <gdk/gdkx.h>
+-#include <gdk/gdk.h>
+-#include <string.h>
+-#include <glib.h>
+-#include <glib-object.h>
+-#include "wm-common.h"
+-
+-typedef struct _WMCallbackData
+-{
+-  GFunc func;
+-  gpointer data;
+-} WMCallbackData;
+-
+-/* Our WM Window */
+-static Window wm_window = None;
+-
+-static char *
+-wm_common_get_window_manager_property (Atom atom)
+-{
+-  Atom utf8_string, type;
+-  int result;
+-  char *retval;
+-  int format;
+-  gulong nitems;
+-  gulong bytes_after;
+-  gchar *val;
+-
+-  if (wm_window == None)
+-    return NULL;
+-
+-  utf8_string = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "UTF8_STRING", False);
+-
+-  gdk_error_trap_push ();
+-
+-  val = NULL;
+-  result = XGetWindowProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+-		  	       wm_window,
+-			       atom,
+-			       0, G_MAXLONG,
+-			       False, utf8_string,
+-			       &type, &format, &nitems,
+-			       &bytes_after, (guchar **) &val);
+-
+-  if (gdk_error_trap_pop () || result != Success ||
+-      type != utf8_string || format != 8 || nitems == 0 ||
+-      !g_utf8_validate (val, nitems, NULL))
+-    {
+-      retval = NULL;
+-    }
+-  else
+-    {
+-      retval = g_strndup (val, nitems);
+-    }
+-
+-  if (val)
+-    XFree (val);
+-
+-  return retval;
+-}
+-
+-char*
+-wm_common_get_current_window_manager (void)
+-{
+-  Atom atom = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "_NET_WM_NAME", False);
+-  char *result;
+-
+-  result = wm_common_get_window_manager_property (atom);
+-  if (result)
+-    return result;
+-  else
+-    return g_strdup (WM_COMMON_UNKNOWN);
+-}
+-
+-char**
+-wm_common_get_current_keybindings (void)
+-{
+-  Atom keybindings_atom = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "_GNOME_WM_KEYBINDINGS", False);
+-  char *keybindings = wm_common_get_window_manager_property (keybindings_atom);
+-  char **results;
+-
+-  if (keybindings)
+-    {
+-      char **p;
+-      results = g_strsplit(keybindings, ",", -1);
+-      for (p = results; *p; p++)
+-	g_strstrip (*p);
+-      g_free (keybindings);
+-    }
+-  else
+-    {
+-      Atom wm_atom = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "_NET_WM_NAME", False);
+-      char *wm_name = wm_common_get_window_manager_property (wm_atom);
+-      char *to_copy[] = { NULL, NULL };
+-
+-      to_copy[0] = wm_name ? wm_name : WM_COMMON_UNKNOWN;
+-
+-      results = g_strdupv (to_copy);
+-      g_free (wm_name);
+-    }
+-
+-  return results;
+-}
+-
+-static void
+-update_wm_window (void)
+-{
+-  Window *xwindow;
+-  Atom type;
+-  gint format;
+-  gulong nitems;
+-  gulong bytes_after;
+-
+-  XGetWindowProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), GDK_ROOT_WINDOW (),
+-		      XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "_NET_SUPPORTING_WM_CHECK", False),
+-		      0, G_MAXLONG, False, XA_WINDOW, &type, &format,
+-		      &nitems, &bytes_after, (guchar **) &xwindow);
+-
+-  if (type != XA_WINDOW)
+-    {
+-      wm_window = None;
+-     return;
+-    }
+-
+-  gdk_error_trap_push ();
+-  XSelectInput (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), *xwindow, StructureNotifyMask | PropertyChangeMask);
+-  XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), False);
+-
+-  if (gdk_error_trap_pop ())
+-    {
+-       XFree (xwindow);
+-       wm_window = None;
+-       return;
+-    }
+-
+-    wm_window = *xwindow;
+-    XFree (xwindow);
+-}
+-
+-static GdkFilterReturn
+-wm_window_event_filter (GdkXEvent *xev,
+-			GdkEvent  *event,
+-			gpointer   data)
+-{
+-  WMCallbackData *ncb_data = (WMCallbackData*) data;
+-  XEvent *xevent = (XEvent *)xev;
+-
+-  if ((xevent->type == DestroyNotify &&
+-       wm_window != None && xevent->xany.window == wm_window) ||
+-      (xevent->type == PropertyNotify &&
+-       xevent->xany.window == GDK_ROOT_WINDOW () &&
+-       xevent->xproperty.atom == (XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),  "_NET_SUPPORTING_WM_CHECK", False))) ||
+-      (xevent->type == PropertyNotify &&
+-       wm_window != None && xevent->xany.window == wm_window &&
+-       xevent->xproperty.atom == (XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "_NET_WM_NAME", False))))
+-    {
+-      update_wm_window ();
+-      (* ncb_data->func) ((gpointer)wm_common_get_current_window_manager(),
+-		   	  ncb_data->data);
+-    }
+-
+-  return GDK_FILTER_CONTINUE;
+-}
+-
+-void
+-wm_common_register_window_manager_change (GFunc    func,
+-					  gpointer data)
+-{
+-  WMCallbackData *ncb_data;
+-
+-  ncb_data = g_new0 (WMCallbackData, 1);
+-
+-  ncb_data->func = func;
+-  ncb_data->data = data;
+-
+-  gdk_window_add_filter (NULL, wm_window_event_filter, ncb_data);
+-
+-  update_wm_window ();
+-
+-  XSelectInput (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), GDK_ROOT_WINDOW (), PropertyChangeMask);
+-  XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), False);
+-}
+-
+-
+diff --git a/panels/keyboard/wm-common.h b/panels/keyboard/wm-common.h
+deleted file mode 100644
+index 4da0d28..0000000
+--- a/panels/keyboard/wm-common.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-#ifndef WM_COMMON_H
+-#define WM_COMMON_H
+-
+-#define WM_COMMON_METACITY "Metacity"
+-#define WM_COMMON_SAWFISH  "Sawfish"
+-#define WM_COMMON_UNKNOWN  "Unknown"
+-
+-gchar *wm_common_get_current_window_manager (void);
+-/* Returns a strv of keybinding names for the window manager;
+- * using _GNOME_WM_KEYBINDINGS if available, _NET_WM_NAME otherwise. */
+-char **wm_common_get_current_keybindings (void);
+-
+-void   wm_common_register_window_manager_change (GFunc    func,
+-						 gpointer data);
+-
+-#endif /* WM_COMMON_H */
+-
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 48e087a..cf010d3 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -22,16 +22,6 @@ panels/display/unity-display-panel.desktop.in.in
+ panels/info/cc-info-panel.c
+ panels/info/unity-info-panel.desktop.in.in
+ [type: gettext/glade]panels/info/info.ui
+-panels/keyboard/00-multimedia.xml.in
+-panels/keyboard/01-input-sources.xml.in
+-panels/keyboard/01-launchers.xml.in
+-panels/keyboard/01-screenshot.xml.in
+-panels/keyboard/01-system.xml.in
+-panels/keyboard/50-accessibility.xml.in
+-panels/keyboard/cc-keyboard-option.c
+-panels/keyboard/unity-keyboard-panel.desktop.in.in
+-[type: gettext/glade]panels/keyboard/gnome-keyboard-panel.ui
+-panels/keyboard/keyboard-shortcuts.c
+ panels/mouse/cc-mouse-panel.c
+ panels/mouse/unity-mouse-panel.desktop.in.in
+ panels/mouse/gnome-mouse-properties.c
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+index f3e7dbb..3cab6d4 100644
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -3,7 +3,6 @@ panels/background/gnome-background-panel.desktop.in
+ panels/datetime/gnome-datetime-panel.desktop.in
+ panels/display/gnome-display-panel.desktop.in
+ panels/info/gnome-info-panel.desktop.in
+-panels/keyboard/gnome-keyboard-panel.desktop.in
+ panels/mouse/gnome-mouse-panel.desktop.in
+ panels/network/gnome-network-panel.desktop.in
+ panels/online-accounts/gnome-online-accounts-panel.desktop.in
+-- 
+1.9.1
+

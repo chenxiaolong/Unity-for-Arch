@@ -1,0 +1,2547 @@
+From 3c76da6d7f056b7c5afab45a1a2d181b34953d1d Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 5 Apr 2014 19:36:29 -0400
+Subject: [PATCH 07/17] Remove Power panel
+
+---
+ configure.ac                                   |    7 -
+ man/unity-control-center.xml                   |    9 -
+ panels/Makefile.am                             |    1 -
+ panels/power/Makefile.am                       |   36 -
+ panels/power/cc-power-panel.c                  | 1162 ------------------------
+ panels/power/cc-power-panel.h                  |   73 --
+ panels/power/icons/24x24/Makefile.am           |   14 -
+ panels/power/icons/24x24/unity-power-panel.svg |  373 --------
+ panels/power/icons/48x48/Makefile.am           |   14 -
+ panels/power/icons/48x48/unity-power-panel.svg |  111 ---
+ panels/power/icons/Makefile.am                 |   22 -
+ panels/power/power-module.c                    |   41 -
+ panels/power/power.ui                          |  501 ----------
+ panels/power/unity-power-panel.desktop.in.in   |   13 -
+ po/POTFILES.in                                 |    3 -
+ po/POTFILES.skip                               |    1 -
+ 16 files changed, 2381 deletions(-)
+ delete mode 100644 panels/power/Makefile.am
+ delete mode 100644 panels/power/cc-power-panel.c
+ delete mode 100644 panels/power/cc-power-panel.h
+ delete mode 100644 panels/power/icons/24x24/Makefile.am
+ delete mode 100644 panels/power/icons/24x24/unity-power-panel.svg
+ delete mode 100644 panels/power/icons/48x48/Makefile.am
+ delete mode 100644 panels/power/icons/48x48/unity-power-panel.svg
+ delete mode 100644 panels/power/icons/Makefile.am
+ delete mode 100644 panels/power/power-module.c
+ delete mode 100644 panels/power/power.ui
+ delete mode 100644 panels/power/unity-power-panel.desktop.in.in
+
+diff --git a/configure.ac b/configure.ac
+index 5edf8a8..45d3c6a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -125,8 +125,6 @@ PKG_CHECK_MODULES(INFO_PANEL, $COMMON_MODULES libgtop-2.0 gl x11
+ PKG_CHECK_MODULES(MEDIA_PANEL, $COMMON_MODULES)
+ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+                   unity-settings-daemon x11)
+-PKG_CHECK_MODULES(POWER_PANEL, $COMMON_MODULES upower-glib >= 0.9.1
+-                  unity-settings-daemon)
+ PKG_CHECK_MODULES(REGION_PANEL, $COMMON_MODULES
+                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION
+                   gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
+@@ -360,11 +358,6 @@ panels/screen/Makefile
+ panels/screen/unity-screen-panel.desktop.in
+ panels/info/Makefile
+ panels/info/unity-info-panel.desktop.in
+-panels/power/Makefile
+-panels/power/unity-power-panel.desktop.in
+-panels/power/icons/Makefile
+-panels/power/icons/24x24/Makefile
+-panels/power/icons/48x48/Makefile
+ panels/universal-access/Makefile
+ panels/universal-access/unity-universal-access-panel.desktop.in
+ panels/user-accounts/Makefile
+diff --git a/man/unity-control-center.xml b/man/unity-control-center.xml
+index a89a269..7312035 100644
+--- a/man/unity-control-center.xml
++++ b/man/unity-control-center.xml
+@@ -124,15 +124,6 @@
+                         </varlistentry>
+ 
+                         <varlistentry>
+-                                <term><option>power</option></term>
+-
+-                                <listitem><para>The power panel shows
+-                                the fill level of batteries and can
+-                                configure what happens when the computer
+-                                is idle or runs out of battery.</para></listitem>
+-                        </varlistentry>
+-
+-                        <varlistentry>
+                                 <term><option>region</option></term>
+ 
+                                 <listitem><para>The region panel
+diff --git a/panels/Makefile.am b/panels/Makefile.am
+index 4426de7..83984ee 100644
+--- a/panels/Makefile.am
++++ b/panels/Makefile.am
+@@ -3,7 +3,6 @@ SUBDIRS= \
+ 	common \
+ 	datetime \
+ 	screen \
+-	power \
+ 	display \
+ 	mouse \
+ 	region \
+diff --git a/panels/power/Makefile.am b/panels/power/Makefile.am
+deleted file mode 100644
+index 3a5c1d2..0000000
+--- a/panels/power/Makefile.am
++++ /dev/null
+@@ -1,36 +0,0 @@
+-cappletname = power
+-
+-SUBDIRS = icons
+-
+-INCLUDES = 						\
+-	$(PANEL_CFLAGS)					\
+-	$(POWER_PANEL_CFLAGS)				\
+-	-DGNOMECC_UI_DIR="\"$(uidir)\""			\
+-	-DGNOMELOCALEDIR="\"$(datadir)/locale\""	\
+-	-DGNOMECC_DATA_DIR="\"$(pkgdatadir)\""		\
+-	-I$(srcdir)/../../shell/			\
+-	$(NULL)
+-
+-ccpanelsdir = $(PANELS_DIR)
+-ccpanels_LTLIBRARIES = libpower.la
+-
+-libpower_la_SOURCES =		\
+-	power-module.c		\
+-	cc-power-panel.c	\
+-	cc-power-panel.h
+-
+-libpower_la_LIBADD = $(PANEL_LIBS) $(POWER_PANEL_LIBS)
+-libpower_la_LDFLAGS = $(PANEL_LDFLAGS)
+-
+-uidir = $(pkgdatadir)/ui
+-dist_ui_DATA = power.ui
+-
+-@INTLTOOL_DESKTOP_RULE@
+-
+-desktopdir = $(datadir)/applications
+-desktop_in_files = unity-power-panel.desktop.in
+-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+-
+-CLEANFILES = $(desktop_in_files) $(desktop_DATA)
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/power/cc-power-panel.c b/panels/power/cc-power-panel.c
+deleted file mode 100644
+index f288eca..0000000
+--- a/panels/power/cc-power-panel.c
++++ /dev/null
+@@ -1,1162 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- * Copyright (C) 2008 William Jon McCann <jmccann@redhat.com>
+- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include <config.h>
+-
+-#include <libupower-glib/upower.h>
+-#include <glib/gi18n.h>
+-#include <unity-settings-daemon/gsd-enums.h>
+-
+-#include "cc-power-panel.h"
+-
+-#define WID(b, w) (GtkWidget *) gtk_builder_get_object (b, w)
+-
+-CC_PANEL_REGISTER (CcPowerPanel, cc_power_panel)
+-
+-#define POWER_PANEL_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), CC_TYPE_POWER_PANEL, CcPowerPanelPrivate))
+-
+-struct _CcPowerPanelPrivate
+-{
+-  GSettings     *lock_settings;
+-  GSettings     *gsd_settings;
+-  GSettings     *power_settings;
+-  GCancellable  *cancellable;
+-  GtkBuilder    *builder;
+-  GDBusProxy    *proxy;
+-  UpClient      *up_client;
+-  GtkWidget     *levelbar_primary;
+-};
+-
+-enum
+-{
+-  ACTION_MODEL_TEXT,
+-  ACTION_MODEL_VALUE,
+-  ACTION_MODEL_SENSITIVE
+-};
+-
+-static void
+-cc_power_panel_get_property (GObject    *object,
+-                              guint       property_id,
+-                              GValue     *value,
+-                              GParamSpec *pspec)
+-{
+-  switch (property_id)
+-    {
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-static void
+-cc_power_panel_set_property (GObject      *object,
+-                              guint         property_id,
+-                              const GValue *value,
+-                              GParamSpec   *pspec)
+-{
+-  switch (property_id)
+-    {
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-static void
+-cc_power_panel_dispose (GObject *object)
+-{
+-  CcPowerPanelPrivate *priv = CC_POWER_PANEL (object)->priv;
+-
+-  if (priv->gsd_settings)
+-    {
+-      g_object_unref (priv->gsd_settings);
+-      priv->gsd_settings = NULL;
+-    }
+-  if (priv->power_settings)
+-    {
+-      g_object_unref (priv->power_settings);
+-      priv->power_settings = NULL;
+-    }
+-  if (priv->cancellable != NULL)
+-    {
+-      g_cancellable_cancel (priv->cancellable);
+-      g_object_unref (priv->cancellable);
+-      priv->cancellable = NULL;
+-    }
+-  if (priv->builder != NULL)
+-    {
+-      g_object_unref (priv->builder);
+-      priv->builder = NULL;
+-    }
+-  if (priv->proxy != NULL)
+-    {
+-      g_object_unref (priv->proxy);
+-      priv->proxy = NULL;
+-    }
+-  if (priv->up_client != NULL)
+-    {
+-      g_object_unref (priv->up_client);
+-      priv->up_client = NULL;
+-    }
+-
+-  G_OBJECT_CLASS (cc_power_panel_parent_class)->dispose (object);
+-}
+-
+-static void
+-on_lock_settings_changed (GSettings     *settings,
+-                          const char    *key,
+-                          CcPowerPanel *panel)
+-{
+-}
+-
+-static const char *
+-cc_power_panel_get_help_uri (CcPanel *panel)
+-{
+-  if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
+-    return "help:ubuntu-help/power";
+-  else
+-    return "help:gnome-help/power";
+-}
+-
+-static void
+-cc_power_panel_class_init (CcPowerPanelClass *klass)
+-{
+-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+-  CcPanelClass *panel_class = CC_PANEL_CLASS (klass);
+-
+-  g_type_class_add_private (klass, sizeof (CcPowerPanelPrivate));
+-
+-  object_class->get_property = cc_power_panel_get_property;
+-  object_class->set_property = cc_power_panel_set_property;
+-  object_class->dispose = cc_power_panel_dispose;
+-
+-  panel_class->get_help_uri = cc_power_panel_get_help_uri;
+-}
+-
+-static gchar *
+-get_timestring (guint64 time_secs)
+-{
+-  gchar* timestring = NULL;
+-  gint  hours;
+-  gint  minutes;
+-
+-  /* Add 0.5 to do rounding */
+-  minutes = (int) ( ( time_secs / 60.0 ) + 0.5 );
+-
+-  if (minutes == 0)
+-    {
+-      timestring = g_strdup (_("Unknown time"));
+-      return timestring;
+-    }
+-
+-  if (minutes < 60)
+-    {
+-      timestring = g_strdup_printf (ngettext ("%i minute",
+-                                    "%i minutes",
+-                                    minutes), minutes);
+-      return timestring;
+-    }
+-
+-  hours = minutes / 60;
+-  minutes = minutes % 60;
+-
+-  if (minutes == 0)
+-    {
+-      timestring = g_strdup_printf (ngettext (
+-                                    "%i hour",
+-                                    "%i hours",
+-                                    hours), hours);
+-      return timestring;
+-    }
+-
+-  /* TRANSLATOR: "%i %s %i %s" are "%i hours %i minutes"
+-   * Swap order with "%2$s %2$i %1$s %1$i if needed */
+-  timestring = g_strdup_printf (_("%i %s %i %s"),
+-                                hours, ngettext ("hour", "hours", hours),
+-                                minutes, ngettext ("minute", "minutes", minutes));
+-  return timestring;
+-}
+-
+-static void
+-set_device_battery_primary (CcPowerPanel *panel, GVariant *device)
+-{
+-  CcPowerPanelPrivate *priv = panel->priv;
+-  gchar *details = NULL;
+-  gchar *time_string = NULL;
+-  gdouble percentage;
+-  GtkWidget *widget;
+-  guint64 time;
+-  UpDeviceState state;
+-
+-  /* set the device */
+-  g_variant_get (device,
+-                 "(susdut)",
+-                 NULL, /* object_path */
+-                 NULL, /* kind */
+-                 NULL, /* icon_name */
+-                 &percentage,
+-                 &state,
+-                 &time);
+-
+-  /* set the percentage */
+-  gtk_level_bar_set_value (GTK_LEVEL_BAR (priv->levelbar_primary),
+-                           percentage / 100.0f);
+-
+-  /* clear the warning */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "image_primary_warning"));
+-  gtk_widget_hide (widget);
+-
+-  /* set the description */
+-  if (time > 0)
+-    {
+-      time_string = get_timestring (time);
+-      switch (state)
+-        {
+-          case UP_DEVICE_STATE_CHARGING:
+-          case UP_DEVICE_STATE_PENDING_CHARGE:
+-            /* TRANSLATORS: %1 is a time string, e.g. "1 hour 5 minutes" */
+-            details = g_strdup_printf(_("Charging - %s until fully charged"),
+-                                      time_string);
+-            break;
+-          case UP_DEVICE_STATE_DISCHARGING:
+-          case UP_DEVICE_STATE_PENDING_DISCHARGE:
+-            if (percentage < 20)
+-              {
+-                /* TRANSLATORS: %1 is a time string, e.g. "1 hour 5 minutes" */
+-                details = g_strdup_printf(_("Caution low battery, %s remaining"),
+-                                          time_string);
+-                /* show the warning */
+-                gtk_widget_show (widget);
+-              }
+-            else
+-              {
+-                /* TRANSLATORS: %1 is a time string, e.g. "1 hour 5 minutes" */
+-                details = g_strdup_printf(_("Using battery power - %s remaining"),
+-                                          time_string);
+-              }
+-            break;
+-          default:
+-            details = g_strdup_printf ("error: %s",
+-                                       up_device_state_to_string (state));
+-            break;
+-        }
+-    }
+-  else
+-    {
+-      switch (state)
+-        {
+-          case UP_DEVICE_STATE_CHARGING:
+-          case UP_DEVICE_STATE_PENDING_CHARGE:
+-            /* TRANSLATORS: primary battery */
+-            details = g_strdup(_("Charging"));
+-            break;
+-          case UP_DEVICE_STATE_DISCHARGING:
+-          case UP_DEVICE_STATE_PENDING_DISCHARGE:
+-            /* TRANSLATORS: primary battery */
+-            details = g_strdup(_("Using battery power"));
+-            break;
+-          case UP_DEVICE_STATE_FULLY_CHARGED:
+-            /* TRANSLATORS: primary battery */
+-            details = g_strdup(_("Charging - fully charged"));
+-            break;
+-          case UP_DEVICE_STATE_EMPTY:
+-            /* TRANSLATORS: primary battery */
+-            details = g_strdup(_("Empty"));
+-            break;
+-          default:
+-            details = g_strdup_printf ("error: %s",
+-                                       up_device_state_to_string (state));
+-            break;
+-        }
+-    }
+-  if (details == NULL)
+-    goto out;
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "label_battery_primary"));
+-  gtk_label_set_label (GTK_LABEL (widget), details);
+-
+-  /* show the primary device */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_primary"));
+-  gtk_widget_show (widget);
+-
+-  /* hide the addon device until we stumble upon the device */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_battery_addon"));
+-  gtk_widget_hide (widget);
+-out:
+-  g_free (time_string);
+-  g_free (details);
+-}
+-
+-static void
+-set_device_ups_primary (CcPowerPanel *panel, GVariant *device)
+-{
+-  CcPowerPanelPrivate *priv = panel->priv;
+-  gchar *details = NULL;
+-  gchar *time_string = NULL;
+-  gdouble percentage;
+-  GtkWidget *widget;
+-  guint64 time;
+-  UpDeviceState state;
+-
+-  /* set the device */
+-  g_variant_get (device,
+-                 "(susdut)",
+-                 NULL, /* object_path */
+-                 NULL, /* kind */
+-                 NULL, /* icon_name */
+-                 &percentage,
+-                 &state,
+-                 &time);
+-
+-  /* set the percentage */
+-  gtk_level_bar_set_value (GTK_LEVEL_BAR (priv->levelbar_primary),
+-                           percentage / 100.0f);
+-
+-  /* always show the warning */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "image_primary_warning"));
+-  gtk_widget_show (widget);
+-
+-  /* set the description */
+-  if (time > 0)
+-    {
+-      time_string = get_timestring (time);
+-      switch (state)
+-        {
+-          case UP_DEVICE_STATE_DISCHARGING:
+-            if (percentage < 20)
+-              {
+-                /* TRANSLATORS: %1 is a time string, e.g. "1 hour 5 minutes" */
+-                details = g_strdup_printf(_("Caution low UPS, %s remaining"),
+-                                          time_string);
+-              }
+-            else
+-              {
+-                /* TRANSLATORS: %1 is a time string, e.g. "1 hour 5 minutes" */
+-                details = g_strdup_printf(_("Using UPS power - %s remaining"),
+-                                          time_string);
+-              }
+-            break;
+-          default:
+-            details = g_strdup_printf ("error: %s",
+-                                       up_device_state_to_string (state));
+-            break;
+-        }
+-    }
+-  else
+-    {
+-      switch (state)
+-        {
+-          case UP_DEVICE_STATE_DISCHARGING:
+-            if (percentage < 20)
+-              {
+-                /* TRANSLATORS: UPS battery */
+-                details = g_strdup(_("Caution low UPS"));
+-              }
+-            else
+-              {
+-                /* TRANSLATORS: UPS battery */
+-                details = g_strdup(_("Using UPS power"));
+-              }
+-            break;
+-          default:
+-            details = g_strdup_printf ("error: %s",
+-                                       up_device_state_to_string (state));
+-            break;
+-        }
+-    }
+-  if (details == NULL)
+-    goto out;
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "label_battery_primary"));
+-  gtk_label_set_label (GTK_LABEL (widget), details);
+-
+-  /* show the primary device */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_primary"));
+-  gtk_widget_show (widget);
+-
+-  /* hide the addon device as extra UPS devices are not possible */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_battery_addon"));
+-  gtk_widget_hide (widget);
+-out:
+-  g_free (time_string);
+-  g_free (details);
+-}
+-
+-static void
+-set_device_battery_additional (CcPowerPanel *panel, GVariant *device)
+-{
+-  CcPowerPanelPrivate *priv = panel->priv;
+-  gchar *details = NULL;
+-  GtkWidget *widget;
+-  UpDeviceState state;
+-
+-  /* set the device */
+-  g_variant_get (device,
+-                 "(susdut)",
+-                 NULL, /* object_path */
+-                 NULL, /* kind */
+-                 NULL, /* icon_name */
+-                 NULL, /* percentage */
+-                 &state,
+-                 NULL /* time */);
+-
+-  /* set the description */
+-  switch (state)
+-    {
+-      case UP_DEVICE_STATE_FULLY_CHARGED:
+-        /* TRANSLATORS: secondary battery is normally in the media bay */
+-        details = g_strdup(_("Your secondary battery is fully charged"));
+-        break;
+-      case UP_DEVICE_STATE_EMPTY:
+-        /* TRANSLATORS: secondary battery is normally in the media bay */
+-        details = g_strdup(_("Your secondary battery is empty"));
+-        break;
+-      default:
+-        break;
+-    }
+-  if (details == NULL)
+-    goto out;
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "label_battery_addon"));
+-  gtk_label_set_label (GTK_LABEL (widget), details);
+-
+-  /* show the addon device */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_battery_addon"));
+-  gtk_widget_show (widget);
+-out:
+-  g_free (details);
+-}
+-
+-static void
+-add_device_secondary (CcPowerPanel *panel,
+-                      GVariant *device,
+-                      guint *secondary_devices_cnt)
+-{
+-  CcPowerPanelPrivate *priv = panel->priv;
+-  const gchar *icon_name = NULL;
+-  gdouble percentage;
+-  guint64 time;
+-  UpDeviceKind kind;
+-  UpDeviceState state;
+-  GtkWidget *vbox;
+-  GtkWidget *hbox;
+-  GtkWidget *widget;
+-  GString *status;
+-  GString *description;
+-  gboolean show_caution = FALSE;
+-
+-  g_variant_get (device,
+-                 "(susdut)",
+-                 NULL,
+-                 &kind,
+-                 NULL,
+-                 &percentage,
+-                 &state,
+-                 &time);
+-
+-  switch (kind)
+-    {
+-      case UP_DEVICE_KIND_UPS:
+-        icon_name = "uninterruptible-power-supply";
+-        show_caution = TRUE;
+-        break;
+-      case UP_DEVICE_KIND_MOUSE:
+-        icon_name = "input-mouse";
+-        break;
+-      case UP_DEVICE_KIND_KEYBOARD:
+-        icon_name = "input-keyboard";
+-        break;
+-      case UP_DEVICE_KIND_TABLET:
+-        icon_name = "input-tablet";
+-        break;
+-      case UP_DEVICE_KIND_PDA:
+-        icon_name = "pda";
+-        break;
+-      case UP_DEVICE_KIND_PHONE:
+-        icon_name = "phone";
+-        break;
+-      case UP_DEVICE_KIND_MEDIA_PLAYER:
+-        icon_name = "multimedia-player";
+-        break;
+-      case UP_DEVICE_KIND_COMPUTER:
+-        icon_name = "computer";
+-        show_caution = TRUE;
+-        break;
+-      default:
+-        icon_name = "battery";
+-        break;
+-    }
+-
+-  switch (kind)
+-    {
+-      case UP_DEVICE_KIND_MOUSE:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Wireless mouse"));
+-        break;
+-      case UP_DEVICE_KIND_KEYBOARD:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Wireless keyboard"));
+-        break;
+-      case UP_DEVICE_KIND_UPS:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Uninterruptible power supply"));
+-        break;
+-      case UP_DEVICE_KIND_PDA:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Personal digital assistant"));
+-        break;
+-      case UP_DEVICE_KIND_PHONE:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Cellphone"));
+-        break;
+-      case UP_DEVICE_KIND_MEDIA_PLAYER:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Media player"));
+-        break;
+-      case UP_DEVICE_KIND_TABLET:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Tablet"));
+-        break;
+-      case UP_DEVICE_KIND_COMPUTER:
+-        /* TRANSLATORS: secondary battery */
+-        description = g_string_new (_("Computer"));
+-        break;
+-      default:
+-        /* TRANSLATORS: secondary battery, misc */
+-        description = g_string_new (_("Battery"));
+-        break;
+-    }
+-  g_string_prepend (description, "<b>");
+-  g_string_append (description, "</b>");
+-
+-  switch (state)
+-    {
+-      case UP_DEVICE_STATE_CHARGING:
+-      case UP_DEVICE_STATE_PENDING_CHARGE:
+-        /* TRANSLATORS: secondary battery */
+-        status = g_string_new(C_("Battery power", "Charging"));
+-        break;
+-      case UP_DEVICE_STATE_DISCHARGING:
+-      case UP_DEVICE_STATE_PENDING_DISCHARGE:
+-        if (percentage < 10 && show_caution)
+-          {
+-            /* TRANSLATORS: secondary battery */
+-            status = g_string_new (C_("Battery power", "Caution"));
+-          }
+-        else if (percentage < 30)
+-          {
+-            /* TRANSLATORS: secondary battery */
+-            status = g_string_new (C_("Battery power", "Low"));
+-          }
+-        else
+-          {
+-            /* TRANSLATORS: secondary battery */
+-            status = g_string_new (C_("Battery power", "Good"));
+-          }
+-        break;
+-      case UP_DEVICE_STATE_FULLY_CHARGED:
+-        /* TRANSLATORS: primary battery */
+-        status = g_string_new(C_("Battery power", "Charging - fully charged"));
+-        break;
+-      case UP_DEVICE_STATE_EMPTY:
+-        /* TRANSLATORS: primary battery */
+-        status = g_string_new(C_("Battery power", "Empty"));
+-        break;
+-      default:
+-        status = g_string_new (up_device_state_to_string (state));
+-        break;
+-    }
+-  g_string_prepend (status, "<small>");
+-  g_string_append (status, "</small>");
+-
+-  /* create the new widget */
+-  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+-  gtk_widget_set_hexpand (hbox, TRUE);
+-  widget = gtk_image_new ();
+-  gtk_misc_set_alignment (GTK_MISC (widget), 0.5f, 0.0f);
+-  gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DND);
+-  gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+-  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+-  widget = gtk_label_new ("");
+-  gtk_misc_set_alignment (GTK_MISC (widget), 0.0f, 0.5f);
+-  gtk_label_set_markup (GTK_LABEL (widget), description->str);
+-  gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+-  widget = gtk_label_new ("");
+-  gtk_misc_set_alignment (GTK_MISC (widget), 0.0f, 0.5f);
+-  gtk_label_set_markup (GTK_LABEL (widget), status->str);
+-  gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+-  widget = gtk_level_bar_new ();
+-  gtk_widget_set_margin_right (widget, 32);
+-  gtk_widget_set_margin_top (widget, 3);
+-  gtk_level_bar_set_value (GTK_LEVEL_BAR (widget), percentage / 100.0f);
+-  gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+-  gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+-
+-  /* add to the grid */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "grid_secondary"));
+-
+-  /* two devices wide */
+-  gtk_grid_attach (GTK_GRID (widget), hbox,
+-                   *secondary_devices_cnt % 2,
+-                   (*secondary_devices_cnt / 2) - 1,
+-                   1, 1);
+-  (*secondary_devices_cnt)++;
+-
+-  /* show panel */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_secondary"));
+-  gtk_widget_show_all (widget);
+-
+-  g_string_free (description, TRUE);
+-  g_string_free (status, TRUE);
+-}
+-
+-static void
+-get_devices_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
+-{
+-  CcPowerPanel *panel;
+-  CcPowerPanelPrivate *priv;
+-  gboolean got_primary = FALSE;
+-  gboolean ups_as_primary_device = FALSE;
+-  GError *error = NULL;
+-  gsize n_devices;
+-  GList *children;
+-  GList *l;
+-  GtkWidget *widget;
+-  guint i;
+-  guint secondary_devices_cnt = 0;
+-  GVariant *child;
+-  GVariant *result;
+-  GVariant *untuple;
+-  UpDeviceKind kind;
+-  UpDeviceState state;
+-
+-  result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
+-  if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+-    {
+-      g_error_free (error);
+-      return; /* Must exit before accessing freed memory */
+-    }
+-
+-  panel = CC_POWER_PANEL (user_data);
+-  priv = panel->priv;
+-
+-  /* empty the secondary box */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "grid_secondary"));
+-  children = gtk_container_get_children (GTK_CONTAINER (widget));
+-  for (l = children; l != NULL; l = l->next)
+-    gtk_container_remove (GTK_CONTAINER (widget), l->data);
+-  g_list_free (children);
+-
+-  /* hide both panels initially */
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_primary"));
+-  gtk_widget_hide (widget);
+-  widget = GTK_WIDGET (gtk_builder_get_object (priv->builder,
+-                                               "box_secondary"));
+-  gtk_widget_hide (widget);
+-
+-  if (result == NULL)
+-    {
+-      g_printerr ("Error getting devices: %s\n", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  untuple = g_variant_get_child_value (result, 0);
+-  n_devices = g_variant_n_children (untuple);
+-
+-  /* first we look for a discharging UPS, which is promoted to the
+-   * primary device if it's discharging. Otherwise we use the first
+-   * listed laptop battery as the primary device */
+-  for (i = 0; i < n_devices; i++)
+-    {
+-      child = g_variant_get_child_value (untuple, i);
+-      g_variant_get (child,
+-                     "(susdut)",
+-                     NULL,
+-                     &kind,
+-                     NULL,
+-                     NULL,
+-                     &state,
+-                     NULL);
+-      if (kind == UP_DEVICE_KIND_UPS &&
+-          state == UP_DEVICE_STATE_DISCHARGING)
+-        {
+-          ups_as_primary_device = TRUE;
+-        }
+-      g_variant_unref (child);
+-    }
+-
+-  /* add the devices now we know the state-of-play */
+-  for (i = 0; i < n_devices; i++)
+-    {
+-      child = g_variant_get_child_value (untuple, i);
+-      g_variant_get (child,
+-                     "(susdut)",
+-                     NULL,
+-                     &kind,
+-                     NULL,
+-                     NULL,
+-                     NULL,
+-                     NULL);
+-      if (kind == UP_DEVICE_KIND_LINE_POWER)
+-        {
+-          /* do nothing */
+-        }
+-      else if (kind == UP_DEVICE_KIND_UPS && ups_as_primary_device)
+-        {
+-          set_device_ups_primary (panel, child);
+-        }
+-      else if (kind == UP_DEVICE_KIND_BATTERY && !ups_as_primary_device)
+-        {
+-          if (!got_primary)
+-            {
+-              set_device_battery_primary (panel, child);
+-              got_primary = TRUE;
+-            }
+-          else
+-            {
+-              set_device_battery_additional (panel, child);
+-            }
+-        }
+-      else
+-        {
+-          add_device_secondary (panel, child, &secondary_devices_cnt);
+-        }
+-      g_variant_unref (child);
+-    }
+-
+-  g_variant_unref (untuple);
+-  g_variant_unref (result);
+-}
+-
+-static void
+-on_properties_changed (GDBusProxy *proxy,
+-                       GVariant   *changed_properties,
+-                       GStrv       invalidated_properties,
+-                       gpointer    user_data)
+-{
+-  CcPowerPanelPrivate *priv = CC_POWER_PANEL (user_data)->priv;
+-
+-  /* get the new state */
+-  g_dbus_proxy_call (priv->proxy,
+-                     "GetDevices",
+-                     NULL,
+-                     G_DBUS_CALL_FLAGS_NONE,
+-                     -1,
+-                     priv->cancellable,
+-                     get_devices_cb,
+-                     user_data);
+-}
+-
+-static void
+-got_power_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
+-{
+-  GError *error = NULL;
+-  GDBusProxy *proxy;
+-  CcPowerPanelPrivate *priv;
+-
+-  proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+-  if (proxy == NULL)
+-    {
+-      g_printerr ("Error creating proxy: %s\n", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  /* Access user_data after checking for error because user_data might be
+-     disposed already. */
+-  priv = CC_POWER_PANEL (user_data)->priv;
+-  priv->proxy = proxy;
+-
+-  /* we want to change the primary device changes */
+-  g_signal_connect (priv->proxy,
+-                    "g-properties-changed",
+-                    G_CALLBACK (on_properties_changed),
+-                    user_data);
+-
+-  /* get the initial state */
+-  g_dbus_proxy_call (priv->proxy,
+-                     "GetDevices",
+-                     NULL,
+-                     G_DBUS_CALL_FLAGS_NONE,
+-                     200, /* we don't want to randomly expand the dialog */
+-                     priv->cancellable,
+-                     get_devices_cb,
+-                     user_data);
+-}
+-
+-static void
+-combo_time_changed_cb (GtkWidget *widget, CcPowerPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  gint value;
+-  gboolean ret;
+-  const gchar *key = (const gchar *)g_object_get_data (G_OBJECT(widget), "_gsettings_key");
+-
+-  /* no selection */
+-  ret = gtk_combo_box_get_active_iter (GTK_COMBO_BOX(widget), &iter);
+-  if (!ret)
+-    return;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+-  gtk_tree_model_get (model, &iter,
+-                      1, &value,
+-                      -1);
+-
+-  /* set both keys */
+-  g_settings_set_int (self->priv->gsd_settings, key, value);
+-}
+-
+-static void
+-combo_enum_changed_cb (GtkWidget *widget, CcPowerPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  gint value;
+-  gboolean ret;
+-  const gchar *key = (const gchar *)g_object_get_data (G_OBJECT(widget), "_gsettings_key");
+-
+-  /* no selection */
+-  ret = gtk_combo_box_get_active_iter (GTK_COMBO_BOX(widget), &iter);
+-  if (!ret)
+-    return;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+-  gtk_tree_model_get (model, &iter,
+-                      1, &value,
+-                      -1);
+-
+-  /* set both battery and ac keys */
+-  g_settings_set_enum (self->priv->gsd_settings, key, value);
+-}
+-
+-static void
+-disable_unavailable_combo_items (CcPowerPanel *self,
+-                                 GtkComboBox *combo_box)
+-{
+-  gboolean enabled;
+-  gboolean ret;
+-  gint value_tmp;
+-  GtkCellRenderer *renderer;
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-
+-  /* setup the renderer */
+-  renderer = gtk_cell_renderer_text_new ();
+-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo_box), renderer, TRUE);
+-  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combo_box), renderer,
+-                                  "text", ACTION_MODEL_TEXT,
+-                                  "sensitive", ACTION_MODEL_SENSITIVE,
+-                                  NULL);
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (combo_box);
+-  ret = gtk_tree_model_get_iter_first (model, &iter);
+-  if (!ret)
+-    return;
+-
+-  /* disable any actions we cannot do */
+-  do
+-    {
+-      gtk_tree_model_get (model, &iter,
+-                          ACTION_MODEL_VALUE, &value_tmp,
+-                          -1);
+-      switch (value_tmp) {
+-      case GSD_POWER_ACTION_SUSPEND:
+-        enabled = up_client_get_can_suspend (self->priv->up_client);
+-        break;
+-      case GSD_POWER_ACTION_HIBERNATE:
+-        enabled = up_client_get_can_hibernate (self->priv->up_client);
+-        break;
+-      default:
+-        enabled = TRUE;
+-      }
+-      gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+-                          ACTION_MODEL_SENSITIVE, enabled,
+-                          -1);
+-    } while (gtk_tree_model_iter_next (model, &iter));
+-}
+-
+-static void
+-set_value_for_combo (GtkComboBox *combo_box, gint value)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  gint value_tmp;
+-  gboolean ret;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (combo_box);
+-  ret = gtk_tree_model_get_iter_first (model, &iter);
+-  if (!ret)
+-    return;
+-
+-  /* try to make the UI match the setting */
+-  do
+-    {
+-      gtk_tree_model_get (model, &iter,
+-                          1, &value_tmp,
+-                          -1);
+-      if (value == value_tmp)
+-        {
+-          gtk_combo_box_set_active_iter (combo_box, &iter);
+-          break;
+-        }
+-    } while (gtk_tree_model_iter_next (model, &iter));
+-}
+-
+-static void
+-set_ac_battery_ui_mode (CcPowerPanel *self)
+-{
+-  gboolean has_batteries = FALSE;
+-  gboolean has_lid = FALSE;
+-  gboolean ret;
+-  GError *error = NULL;
+-  GPtrArray *devices;
+-  guint i;
+-  UpDevice *device;
+-  UpDeviceKind kind;
+-  CcPowerPanelPrivate *priv = self->priv;
+-
+-  /* this is sync, but it's cached in the daemon and so quick */
+-  ret = up_client_enumerate_devices_sync (self->priv->up_client, NULL, &error);
+-  if (!ret)
+-    {
+-      g_warning ("failed to get device list: %s", error->message);
+-      g_error_free (error);
+-      goto out;
+-    }
+-
+-  devices = up_client_get_devices (self->priv->up_client);
+-  for (i=0; i<devices->len; i++)
+-    {
+-      device = g_ptr_array_index (devices, i);
+-      g_object_get (device,
+-                    "kind", &kind,
+-                    NULL);
+-      if (kind == UP_DEVICE_KIND_BATTERY ||
+-          kind == UP_DEVICE_KIND_UPS)
+-        {
+-          has_batteries = TRUE;
+-          break;
+-        }
+-    }
+-  g_ptr_array_unref (devices);
+-
+-  has_lid = up_client_get_lid_is_present (self->priv->up_client);
+-
+-out:
+-  gtk_widget_set_visible (WID (priv->builder, "combobox_lid_ac"), has_lid);
+-  gtk_widget_set_visible (WID (priv->builder, "label_lid_action"), has_lid);
+-  gtk_widget_set_visible (WID (priv->builder, "combobox_lid_battery"), has_batteries && has_lid);
+-  gtk_widget_set_visible (WID (priv->builder, "label_header_battery"), has_batteries);
+-  gtk_widget_set_visible (WID (priv->builder, "label_header_ac"), has_batteries);
+-  gtk_widget_set_visible (WID (priv->builder, "combobox_sleep_battery"), has_batteries);
+-  gtk_widget_set_visible (WID (priv->builder, "label_critical"), has_batteries);
+-  gtk_widget_set_visible (WID (priv->builder, "combobox_critical"), has_batteries);
+-}
+-
+-static gboolean
+-activate_link_cb (GtkLabel *label, gchar *uri, CcPowerPanel *self)
+-{
+-  CcShell *shell;
+-  GError *error = NULL;
+-
+-  shell = cc_panel_get_shell (CC_PANEL (self));
+-  if (cc_shell_set_active_panel_from_id (shell, uri, NULL, &error) == FALSE)
+-    {
+-      g_warning ("Failed to activate %s panel: %s", uri, error->message);
+-      g_error_free (error);
+-    }
+-  return TRUE;
+-}
+-
+-static void
+-cc_power_panel_init (CcPowerPanel *self)
+-{
+-  GError     *error;
+-  GtkWidget  *widget;
+-  gint        value;
+-  char       *text;
+-
+-  self->priv = POWER_PANEL_PRIVATE (self);
+-
+-  self->priv->builder = gtk_builder_new ();
+-
+-  error = NULL;
+-  gtk_builder_add_from_file (self->priv->builder,
+-                             GNOMECC_UI_DIR "/power.ui",
+-                             &error);
+-
+-  if (error != NULL)
+-    {
+-      g_warning ("Could not load interface file: %s", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  /* add levelbar */
+-  self->priv->levelbar_primary = GTK_WIDGET
+-    (gtk_builder_get_object (self->priv->builder, "levelbar_primary"));
+-  self->priv->cancellable = g_cancellable_new ();
+-
+-  /* get initial icon state */
+-  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+-                            G_DBUS_PROXY_FLAGS_NONE,
+-                            NULL,
+-                            "org.gnome.SettingsDaemon.Power",
+-                            "/org/gnome/SettingsDaemon/Power",
+-                            "org.gnome.SettingsDaemon.Power",
+-                            self->priv->cancellable,
+-                            got_power_proxy_cb,
+-                            self);
+-
+-  /* find out if there are any battery or UPS devices attached
+-   * and setup UI accordingly */
+-  self->priv->up_client = up_client_new ();
+-  set_ac_battery_ui_mode (self);
+-
+-  self->priv->gsd_settings = g_settings_new ("org.gnome.settings-daemon.plugins.power");
+-  g_signal_connect (self->priv->gsd_settings,
+-                    "changed",
+-                    G_CALLBACK (on_lock_settings_changed),
+-                    self);
+-
+-  /* auto-sleep time */
+-  value = g_settings_get_int (self->priv->gsd_settings, "sleep-inactive-ac-timeout");
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "combobox_sleep_ac"));
+-  set_value_for_combo (GTK_COMBO_BOX (widget), value);
+-  g_object_set_data (G_OBJECT(widget), "_gsettings_key", "sleep-inactive-ac-timeout");
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (combo_time_changed_cb),
+-                    self);
+-  value = g_settings_get_int (self->priv->gsd_settings, "sleep-inactive-battery-timeout");
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "combobox_sleep_battery"));
+-  set_value_for_combo (GTK_COMBO_BOX (widget), value);
+-  g_object_set_data (G_OBJECT(widget), "_gsettings_key", "sleep-inactive-battery-timeout");
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (combo_time_changed_cb),
+-                    self);
+-
+-  /* actions */
+-  value = g_settings_get_enum (self->priv->gsd_settings, "critical-battery-action");
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "combobox_critical"));
+-  disable_unavailable_combo_items (self, GTK_COMBO_BOX (widget));
+-  set_value_for_combo (GTK_COMBO_BOX (widget), value);
+-  g_object_set_data (G_OBJECT(widget), "_gsettings_key", "critical-battery-action");
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (combo_enum_changed_cb),
+-                    self);
+-
+-  /* set screen link */
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "label_screen_settings"));
+-  /* TRANSLATORS: this is a link to the "Brightness and Lock" control center panel */
+-  text = g_strdup_printf ("<span size=\"small\">%s</span>",
+-                          _("Tip: <a href=\"screen\">screen brightness</a> affects how much power is used"));
+-  gtk_label_set_markup (GTK_LABEL (widget), text);
+-  g_free (text);
+-
+-  g_signal_connect (widget, "activate-link",
+-                    G_CALLBACK (activate_link_cb),
+-                    self);
+-
+-  value = g_settings_get_enum (self->priv->gsd_settings, "lid-close-ac-action");
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "combobox_lid_ac"));
+-  disable_unavailable_combo_items (self, GTK_COMBO_BOX (widget));
+-  set_value_for_combo (GTK_COMBO_BOX (widget), value);
+-  g_object_set_data (G_OBJECT(widget), "_gsettings_key", "lid-close-ac-action");
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (combo_enum_changed_cb),
+-                    self);
+-
+-  value = g_settings_get_enum (self->priv->gsd_settings, "lid-close-battery-action");
+-  widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                               "combobox_lid_battery"));
+-  disable_unavailable_combo_items (self, GTK_COMBO_BOX (widget));
+-  set_value_for_combo (GTK_COMBO_BOX (widget), value);
+-  g_object_set_data (G_OBJECT(widget), "_gsettings_key", "lid-close-battery-action");
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (combo_enum_changed_cb),
+-                    self);
+-
+-  widget = WID (self->priv->builder, "vbox_power");
+-  gtk_widget_reparent (widget, (GtkWidget *) self);
+-
+-  /* Set up Unity-specific controls */
+-  /* References:
+-   *  https://wiki.ubuntu.com/Power
+-   *  https://docs.google.com/document/d/1ILTJDiDCd25Npt2AmgzF8aOnZZECxTfM0hvsbWT2BxA/edit?pli=1#heading=h.i5lg1g344bsb
+-   */
+-  // First check the schema is installed
+-  GSettingsSchemaSource *schema_source = g_settings_schema_source_ref (
+-              g_settings_schema_source_get_default ());
+-  GSettingsSchema *schema = g_settings_schema_source_lookup (
+-              schema_source,
+-              "com.canonical.indicator.power",
+-              TRUE);
+-  g_settings_schema_source_unref (schema_source);
+-
+-  if (schema)
+-    {
+-      widget = GTK_WIDGET (gtk_builder_get_object (self->priv->builder,
+-                                                   "combobox_indicator"));
+-      self->priv->power_settings = g_settings_new ("com.canonical.indicator.power");
+-      g_settings_bind (self->priv->power_settings, "icon-policy",
+-                       widget, "active-id", G_SETTINGS_BIND_DEFAULT);
+-      g_settings_schema_unref (schema);
+-    }
+-  else
+-    {
+-      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "separator_indicator")));
+-      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "label_indicator")));
+-      gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (self->priv->builder, "combobox_indicator")));
+-    }
+-
+-}
+-
+-void
+-cc_power_panel_register (GIOModule *module)
+-{
+-  cc_power_panel_register_type (G_TYPE_MODULE (module));
+-  g_io_extension_point_implement (CC_SHELL_PANEL_EXTENSION_POINT,
+-                                  CC_TYPE_POWER_PANEL,
+-                                  "power", 0);
+-}
+-
+diff --git a/panels/power/cc-power-panel.h b/panels/power/cc-power-panel.h
+deleted file mode 100644
+index 01f6828..0000000
+--- a/panels/power/cc-power-panel.h
++++ /dev/null
+@@ -1,73 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-
+-#ifndef _CC_POWER_PANEL_H
+-#define _CC_POWER_PANEL_H
+-
+-#include <shell/cc-panel.h>
+-
+-G_BEGIN_DECLS
+-
+-#define CC_TYPE_POWER_PANEL cc_power_panel_get_type()
+-
+-#define CC_POWER_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
+-  CC_TYPE_POWER_PANEL, CcPowerPanel))
+-
+-#define CC_POWER_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_CAST ((klass), \
+-  CC_TYPE_POWER_PANEL, CcPowerPanelClass))
+-
+-#define CC_IS_POWER_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), \
+-  CC_TYPE_POWER_PANEL))
+-
+-#define CC_IS_POWER_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_TYPE ((klass), \
+-  CC_TYPE_POWER_PANEL))
+-
+-#define CC_POWER_PANEL_GET_CLASS(obj) \
+-  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+-  CC_TYPE_POWER_PANEL, CcPowerPanelClass))
+-
+-typedef struct _CcPowerPanel CcPowerPanel;
+-typedef struct _CcPowerPanelClass CcPowerPanelClass;
+-typedef struct _CcPowerPanelPrivate CcPowerPanelPrivate;
+-
+-struct _CcPowerPanel
+-{
+-  CcPanel parent;
+-
+-  CcPowerPanelPrivate *priv;
+-};
+-
+-struct _CcPowerPanelClass
+-{
+-  CcPanelClass parent_class;
+-};
+-
+-GType cc_power_panel_get_type (void) G_GNUC_CONST;
+-
+-void  cc_power_panel_register (GIOModule *module);
+-
+-G_END_DECLS
+-
+-#endif /* _CC_POWER_PANEL_H */
+diff --git a/panels/power/icons/24x24/Makefile.am b/panels/power/icons/24x24/Makefile.am
+deleted file mode 100644
+index 601ff78..0000000
+--- a/panels/power/icons/24x24/Makefile.am
++++ /dev/null
+@@ -1,14 +0,0 @@
+-NULL =
+-
+-icondir = $(datadir)/icons/hicolor/24x24/apps
+-icon_DATA = 				\
+-	unity-power-panel.svg			\
+-	$(NULL)
+-
+-EXTRA_DIST = \
+-	$(icon_DATA)
+-
+-clean-local :
+-	rm -f *~
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/power/icons/24x24/unity-power-panel.svg b/panels/power/icons/24x24/unity-power-panel.svg
+deleted file mode 100644
+index 586830b..0000000
+--- a/panels/power/icons/24x24/unity-power-panel.svg
++++ /dev/null
+@@ -1,373 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+-
+-<svg
+-   xmlns:svg="http://www.w3.org/2000/svg"
+-   xmlns="http://www.w3.org/2000/svg"
+-   xmlns:xlink="http://www.w3.org/1999/xlink"
+-   version="1.0"
+-   width="24"
+-   height="24"
+-   id="svg2">
+-  <defs
+-     id="defs4">
+-    <linearGradient
+-       id="linearGradient4977">
+-      <stop
+-         id="stop4979"
+-         style="stop-color:#fede92;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop4985"
+-         style="stop-color:#947a48;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient4609">
+-      <stop
+-         id="stop5157"
+-         style="stop-color:#828282;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop4613"
+-         style="stop-color:#8c8c8c;stop-opacity:0"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3280">
+-      <stop
+-         id="stop3282"
+-         style="stop-color:black;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3284"
+-         style="stop-color:black;stop-opacity:0"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3254">
+-      <stop
+-         id="stop3256"
+-         style="stop-color:white;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3258"
+-         style="stop-color:white;stop-opacity:0"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient5582">
+-      <stop
+-         id="stop5584"
+-         style="stop-color:#ececea;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop5643"
+-         style="stop-color:#c9cbc5;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       x1="26.486135"
+-       y1="34.276428"
+-       x2="35.22097"
+-       y2="34.18198"
+-       id="linearGradient2915"
+-       xlink:href="#linearGradient3280"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.51546386,0,0,0.51064015,-0.40206066,0.03609856)" />
+-    <linearGradient
+-       x1="41.803463"
+-       y1="0.54486883"
+-       x2="43.496803"
+-       y2="0.52608395"
+-       id="linearGradient2924"
+-       xlink:href="#linearGradient4977"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.65709783,0,0,0.59217152,-7.4970312,3.6244954)" />
+-    <linearGradient
+-       x1="21.86738"
+-       y1="33.412502"
+-       x2="35.557938"
+-       y2="23.620872"
+-       id="linearGradient2930"
+-       xlink:href="#linearGradient3254"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.51130139,0,0,0.51064015,-0.18082224,-0.06176544)" />
+-    <linearGradient
+-       x1="41.239082"
+-       y1="1.4987891"
+-       x2="43.551842"
+-       y2="1.4875617"
+-       id="linearGradient2933"
+-       xlink:href="#linearGradient4977"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.64479906,0,0,0.59356675,-4.5528592,1.962562)" />
+-    <radialGradient
+-       cx="17.281263"
+-       cy="34.6222"
+-       r="12.098177"
+-       fx="17.281263"
+-       fy="34.6222"
+-       id="radialGradient2939"
+-       xlink:href="#linearGradient5582"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.13886395,-0.04971704,0.04911327,0.15308711,7.3109023,11.863119)" />
+-    <linearGradient
+-       x1="2.9810703"
+-       y1="18.378832"
+-       x2="1.0000001"
+-       y2="18.378832"
+-       id="linearGradient2958"
+-       xlink:href="#linearGradient4609"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.50477768,0,0,0.51968751,0.49522226,-1.5512497)" />
+-    <linearGradient
+-       id="linearGradient3146-7">
+-      <stop
+-         id="stop3148-0"
+-         style="stop-color:#af9315;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3160-4"
+-         style="stop-color:#c1a917;stop-opacity:1"
+-         offset="0.35133624" />
+-      <stop
+-         id="stop3152-8"
+-         style="stop-color:#d3bf1a;stop-opacity:1"
+-         offset="0.50020754" />
+-      <stop
+-         id="stop3162-0"
+-         style="stop-color:#f5eeaf;stop-opacity:1"
+-         offset="0.85000002" />
+-      <stop
+-         id="stop3158-4"
+-         style="stop-color:#ecdc5f;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3217-7">
+-      <stop
+-         id="stop3219-5"
+-         style="stop-color:#af9315;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3221-8"
+-         style="stop-color:#d3bf1a;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3236-9">
+-      <stop
+-         id="stop3238-1"
+-         style="stop-color:#f3e99d;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3240-0"
+-         style="stop-color:#ecdc60;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3351-2">
+-      <stop
+-         id="stop3353-7"
+-         style="stop-color:#60625e;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3355-6"
+-         style="stop-color:#2d2e2c;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       id="linearGradient3367-8">
+-      <stop
+-         id="stop3369-2"
+-         style="stop-color:#191919;stop-opacity:1"
+-         offset="0" />
+-      <stop
+-         id="stop3371-9"
+-         style="stop-color:#4d4d4d;stop-opacity:1"
+-         offset="0.32156199" />
+-      <stop
+-         id="stop3373-9"
+-         style="stop-color:#7e7e7e;stop-opacity:1"
+-         offset="0.53021115" />
+-      <stop
+-         id="stop3375-6"
+-         style="stop-color:#a0a0a0;stop-opacity:1"
+-         offset="0.85266888" />
+-      <stop
+-         id="stop3377-0"
+-         style="stop-color:#7e7e7e;stop-opacity:1"
+-         offset="1" />
+-    </linearGradient>
+-    <linearGradient
+-       x1="25.500298"
+-       y1="10.985043"
+-       x2="17.499449"
+-       y2="10.985043"
+-       id="linearGradient2927"
+-       xlink:href="#linearGradient3146-7"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.624969,0,0,0.58563391,-1.4368386,-4.5615252)" />
+-    <linearGradient
+-       x1="23.5"
+-       y1="10.75928"
+-       x2="23.5"
+-       y2="40.236942"
+-       id="linearGradient2931"
+-       xlink:href="#linearGradient3254"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.50000003,0,0,0.67847984,0.24999878,-5.2999552)" />
+-    <linearGradient
+-       x1="13"
+-       y1="25.336233"
+-       x2="38"
+-       y2="25.312698"
+-       id="linearGradient2936"
+-       xlink:href="#linearGradient3351-2"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.54166285,0,0,0.65135318,-1.8124029,-3.8797347)" />
+-    <radialGradient
+-       cx="19.717636"
+-       cy="16.677069"
+-       r="12.46875"
+-       fx="19.717636"
+-       fy="16.677069"
+-       id="radialGradient2944"
+-       xlink:href="#linearGradient3236-9"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.37520764,0,0,0.12645539,3.9916569,1.7145214)" />
+-    <radialGradient
+-       cx="19.161945"
+-       cy="24.691038"
+-       r="12.46875"
+-       fx="19.161945"
+-       fy="24.691038"
+-       id="radialGradient2946"
+-       xlink:href="#linearGradient3254"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.68177008,-0.21986787,0.06796164,0.2358182,-3.9284569,3.8275375)" />
+-    <linearGradient
+-       x1="13.96536"
+-       y1="10.495919"
+-       x2="20.682875"
+-       y2="31.382992"
+-       id="linearGradient2949"
+-       xlink:href="#linearGradient3254"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.49999998,0,0,0.63324809,1.2500005,-3.646543)" />
+-    <linearGradient
+-       x1="33.5625"
+-       y1="19.125"
+-       x2="9.4987011"
+-       y2="19.125"
+-       id="linearGradient2955"
+-       xlink:href="#linearGradient3146-7"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.54166289,0,0,0.66321438,0.35424864,-5.4438146)" />
+-    <linearGradient
+-       x1="33.50008"
+-       y1="28.375"
+-       x2="9.4992361"
+-       y2="28.375"
+-       id="linearGradient2959"
+-       xlink:href="#linearGradient3367-8"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.54166289,0,0,0.65563044,0.35424864,-4.052963)" />
+-    <radialGradient
+-       cx="21.34375"
+-       cy="14.125"
+-       r="11.96875"
+-       fx="21.34375"
+-       fy="14.125"
+-       id="radialGradient2962"
+-       xlink:href="#linearGradient3280"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.75196036,0,0,0.25065266,-4.0496664,17.459702)" />
+-    <linearGradient
+-       x1="18.5625"
+-       y1="11.1875"
+-       x2="17.71875"
+-       y2="12.534899"
+-       id="linearGradient3701"
+-       xlink:href="#linearGradient3217-7"
+-       gradientUnits="userSpaceOnUse"
+-       gradientTransform="matrix(0.62496898,0,0,0.59957255,-1.4368387,-5.1937947)" />
+-  </defs>
+-  <path
+-     d="M 18.667219,13.6 C 22.298427,11.812181 25.394502,6.7731958 20.383464,6.0361885 18.327613,5.7338208 5.9567806,8.0386584 0,11.102"
+-     id="path4593"
+-     style="fill:none;stroke:url(#linearGradient2958);stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+-  <path
+-     d="m 21,21.000171 a 9.000021,3 0 0 1 -18.0000419,0 9.000021,3 0 1 1 18.0000419,0 z"
+-     id="path3278"
+-     style="opacity:0.7;color:black;fill:url(#radialGradient2962);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 11.187507,2.8311568 C 7.98304,2.9731135 5.5000472,3.9565206 5.5000472,5.1258635 l 0,15.0794995 c 0,1.266681 2.9119787,2.29471 6.4999538,2.294709 3.587975,0 6.499954,-1.028028 6.499954,-2.294709 l 0,-15.0794995 c 0,-1.2666793 -2.911979,-2.2947067 -6.499954,-2.2947067 -0.196218,0 -0.383709,-0.00603 -0.575517,0 -0.07771,0.00244 -0.16007,-0.0034 -0.236977,0 z"
+-     id="path2230"
+-     style="color:black;fill:url(#linearGradient2959);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 11.424484,1.5199368 C 8.1089414,1.6252 5.5000472,2.6299288 5.5000472,3.8411872 l 0,4.3108935 c 0,1.2813316 2.9119782,2.3212513 6.4999538,2.3212503 3.587975,0 6.499954,-1.0399193 6.499954,-2.3212503 l 0,-4.3108935 c 0,-1.2813316 -2.911979,-2.3212504 -6.499954,-2.3212504 -0.196218,0 -0.383709,-0.00609 -0.575517,0 z"
+-     id="path2232"
+-     style="color:black;fill:url(#linearGradient2955);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 11.250002,3.00256 C 8.2920111,3.1396707 6,4.089505 6,5.2189273 L 6,19.783632 C 6,21.007068 8.6880007,22.000001 12,22 c 3.312,0 6,-0.992931 6,-2.216368 L 18,5.2189273 C 18,3.9954919 15.312002,3.00256 12,3.00256 c -0.181123,0 -0.354194,-0.00576 -0.531249,0 -0.07173,0.00232 -0.147759,-0.00323 -0.21875,0 z"
+-     id="path3288"
+-     style="opacity:0.2;color:black;fill:url(#linearGradient2949);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="m 18.508055,3.5007041 a 6.5080554,2.0080551 0 0 1 -13.01611,0 6.5080554,2.0080551 0 1 1 13.01611,0 z"
+-     id="path3164"
+-     style="color:black;fill:url(#radialGradient2944);fill-opacity:1;fill-rule:nonzero;stroke:url(#radialGradient2946);stroke-width:0.98388958;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="m 5.5000457,8.1703004 0,12.0500346 c 0,1.258414 2.9119793,2.279736 6.4999543,2.279735 3.587976,0 6.499955,-1.021321 6.499955,-2.279735 l 0,-12.0500346"
+-     id="path2217"
+-     style="color:black;fill:none;stroke:url(#linearGradient2936);stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="m 18.499955,8.6821097 0,-4.8833334 c 0,-1.2579481 -2.911979,-2.2788891 -6.499955,-2.2788891 -0.270852,-0.00435 -0.541687,0 -0.812495,0 C 7.9830397,1.6608654 5.5000457,2.6374936 5.5000457,3.7987763 l 0,4.8833334"
+-     id="path2219"
+-     style="color:black;fill:none;stroke:#bca020;stroke-width:0.99999976;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 11.171876,2.5025636 C 8.524447,2.6253178 6.4999999,3.3484109 6.4999999,4.1987632 c 0,0.7753756 0,14.8283258 0,15.6050368 0,0.936303 2.4639969,1.6962 5.5000001,1.6962 3.036004,0 5.5,-0.759897 5.5,-1.6962 0,-0.718656 0,-14.8863797 0,-15.6050368 0,-0.936302 -2.463996,-1.6961996 -5.5,-1.6961996 -0.18975,0 -0.377681,-0.00577 -0.562499,0 -0.08663,0.00271 -0.180225,-0.00395 -0.265625,0 z"
+-     id="path2206"
+-     style="opacity:0.49019608;color:black;fill:none;stroke:url(#linearGradient2931);stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="m 11.687509,1.0019957 c -1.052656,0.047069 -1.9060339,0.3361752 -2.1287987,0.6954408 -0.00412,0.00714 -0.015864,0.029389 -0.019525,0.036603 -0.00163,0.00362 -0.01795,0.014672 -0.019525,0.018299 -0.00141,0.00362 0.0013,0.014642 0,0.018304 -0.00597,0.018382 -0.016831,0.054499 -0.019525,0.073204 -4.063e-4,0.00376 2.727e-4,0.014534 0,0.018304 -1.358e-4,0.00376 0,1.18578 0,1.1895687 0,0.00381 -1.358e-4,0.014523 0,0.018299 2.727e-4,0.00376 -4.063e-4,0.014549 0,0.018299 0.00271,0.018705 0.013538,0.054821 0.019525,0.073205 0.0013,0.00371 -0.00141,0.014651 0,0.018299 0.00152,0.00362 0.017819,0.014681 0.019525,0.018299 0.0037,0.0072 0.015375,0.02946 0.019525,0.036604 0.2448219,0.3948365 1.2446257,0.6954403 2.4412837,0.6954403 1.196661,0 2.196465,-0.3006038 2.441286,-0.6954403 0.0042,-0.00714 0.01586,-0.029394 0.01953,-0.036604 0.0016,-0.00362 0.01795,-0.014672 0.01953,-0.018299 0.0014,-0.00362 -0.0013,-0.014642 0,-0.018299 0.006,-0.018383 0.01683,-0.0545 0.01953,-0.073205 4.07e-4,-0.00376 -2.72e-4,-0.014534 0,-0.018299 1.37e-4,-0.00376 0,-0.01451 0,-0.018299 0,-0.00381 1.37e-4,-1.1857923 0,-1.1895687 -2.72e-4,-0.00376 4.07e-4,-0.014549 0,-0.018304 -0.0027,-0.018704 -0.01355,-0.054821 -0.01953,-0.073204 -0.0013,-0.00371 0.0014,-0.014651 0,-0.018304 -0.0015,-0.00362 -0.01782,-0.014681 -0.01953,-0.018299 -0.0037,-0.0072 -0.01537,-0.02946 -0.01953,-0.036603 C 14.196459,1.3026 13.196655,1.0019957 11.999994,1.0019957 c -0.107808,0 -0.20826,-0.004681 -0.312485,0 z"
+-     id="path3198"
+-     style="color:black;fill:url(#linearGradient2927);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 11.68751,0.50214437 C 11.03703,0.5435717 10.353967,0.63228393 9.7909117,0.98491135 9.5568314,1.1139984 9.4567986,1.3623128 9.5000756,1.6185999 c 0.00688,0.3519171 -0.012937,0.7068336 0.00859,1.0571122 0.09627,0.2901617 0.4171723,0.4347984 0.6848004,0.5430229 0.895191,0.3148241 1.873249,0.338587 2.805647,0.2054206 0.474667,-0.086714 0.984332,-0.1931055 1.35386,-0.5251752 C 14.5651,2.7298562 14.485387,2.449441 14.499902,2.2146066 14.486902,1.9007203 14.525622,1.5800318 14.480332,1.2703383 14.253073,0.90219901 13.805286,0.76959889 13.410834,0.66116335 12.848188,0.52035688 12.265171,0.49224153 11.68751,0.50214437 z"
+-     id="path3205"
+-     style="color:black;fill:none;stroke:url(#linearGradient3701);stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+-  <path
+-     d="M 12.440747,12.509775 5.5,16.006355 l 0,3.99609 6.517242,2.497555 5.855392,-4.852395 1.569212,-3.425219 c 0.241417,-0.64223 -0.305398,-1.84272 -0.965669,-1.712611 l -6.03543,0 z"
+-     id="rect4575"
+-     style="fill:url(#radialGradient2939);fill-opacity:1;stroke:#505050;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+-  <rect
+-     width="1.8475682"
+-     height="6.8244071"
+-     rx="0.96103257"
+-     ry="0.95384544"
+-     x="21.485083"
+-     y="-1.1373754"
+-     transform="matrix(0.44688956,0.89458914,-0.81962503,0.57290035,0,0)"
+-     id="rect4583"
+-     style="fill:url(#linearGradient2933);fill-opacity:1;stroke:#735c37;stroke-width:0.50270915;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+-  <path
+-     d="M 6,16.441942 12,18.486136 18.065479,14.04 C 19.759932,13.085271 15.110555,12.91646 12.483534,13 L 6,16.441942 z"
+-     id="path4607"
+-     style="opacity:0.8;fill:url(#linearGradient2930);fill-opacity:1;stroke:none" />
+-  <rect
+-     width="1.8828082"
+-     height="6.8083663"
+-     rx="1"
+-     ry="1"
+-     x="19.037525"
+-     y="0.53184259"
+-     transform="matrix(0.4199126,0.90756455,-0.82405643,0.56650772,0,0)"
+-     id="rect5009"
+-     style="fill:url(#linearGradient2924);fill-opacity:1;stroke:#735c37;stroke-width:0.50359643;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+-  <path
+-     d="M 12,18.486136 18,14.138 17.46967,17.428 12,21.9 12,18.486136 z"
+-     id="rect5353"
+-     style="opacity:0.4;fill:url(#linearGradient2915);fill-opacity:1;stroke:none" />
+-</svg>
+diff --git a/panels/power/icons/48x48/Makefile.am b/panels/power/icons/48x48/Makefile.am
+deleted file mode 100644
+index b13f365..0000000
+--- a/panels/power/icons/48x48/Makefile.am
++++ /dev/null
+@@ -1,14 +0,0 @@
+-NULL =
+-
+-icondir = $(datadir)/icons/hicolor/48x48/apps
+-icon_DATA = 				\
+-	unity-power-panel.svg			\
+-	$(NULL)
+-
+-EXTRA_DIST = \
+-	$(icon_DATA)
+-
+-clean-local :
+-	rm -f *~
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/power/icons/48x48/unity-power-panel.svg b/panels/power/icons/48x48/unity-power-panel.svg
+deleted file mode 100644
+index 86d65fc..0000000
+--- a/panels/power/icons/48x48/unity-power-panel.svg
++++ /dev/null
+@@ -1,111 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+-<!-- Created with Inkscape (http://www.inkscape.org/) -->
+-<svg id="svg2" xmlns="http://www.w3.org/2000/svg" height="48" width="48" version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
+- <defs id="defs4">
+-  <linearGradient id="linearGradient4977">
+-   <stop id="stop4979" style="stop-color:#fee7b1" offset="0"/>
+-   <stop id="stop4981" style="stop-color:#ebd4b4" offset=".38734"/>
+-   <stop id="stop4983" style="stop-color:#c8a775" offset=".61351"/>
+-   <stop id="stop4985" style="stop-color:#b0935b" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient3254">
+-   <stop id="stop3256" style="stop-color:#fff" offset="0"/>
+-   <stop id="stop3258" style="stop-color:#fff;stop-opacity:0" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient3257">
+-   <stop id="stop3259" style="stop-color:#876c41" offset="0"/>
+-   <stop id="stop3261" style="stop-color:#a2824e" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient2915" y2="34.182" gradientUnits="userSpaceOnUse" x2="35.221" y1="34.276" x1="26.486">
+-   <stop id="stop3282" offset="0"/>
+-   <stop id="stop3284" style="stop-opacity:0" offset="1"/>
+-  </linearGradient>
+-  <radialGradient id="radialGradient2918" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" cy="37.5" cx="9.5" gradientTransform="matrix(2 0 0 2 -4.3004 -34.4)"/>
+-  <radialGradient id="radialGradient2921" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" cy="37.5" cx="9.5" gradientTransform="matrix(2 .000071482 -.000071484 2 -9.3966 -36.501)"/>
+-  <linearGradient id="linearGradient2924" y2=".52608" xlink:href="#linearGradient4977" gradientUnits="userSpaceOnUse" x2="43.497" gradientTransform="translate(-3.3274 5.6403)" y1=".52608" x1="40.131"/>
+-  <linearGradient id="linearGradient2926" y2="6.4688" xlink:href="#linearGradient3257" gradientUnits="userSpaceOnUse" x2="41.39" gradientTransform="translate(-3.3274 5.6403)" y1="-5.9632" x1="41.163"/>
+-  <linearGradient id="linearGradient2930" y2="27.234" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" x2="34.25" y1="35.973" x1="19.022"/>
+-  <linearGradient id="linearGradient2933" y2=".52608" xlink:href="#linearGradient4977" gradientUnits="userSpaceOnUse" x2="43.497" gradientTransform="translate(.93839 3.103)" y1=".52608" x1="40.131"/>
+-  <linearGradient id="linearGradient2935" y2="6.4688" xlink:href="#linearGradient3257" gradientUnits="userSpaceOnUse" x2="41.39" gradientTransform="translate(.93839 3.103)" y1="-5.9632" x1="41.163"/>
+-  <radialGradient id="radialGradient2939" gradientUnits="userSpaceOnUse" cy="34.103" cx="21.865" gradientTransform="matrix(1.2292 -.37658 .24133 .78775 -13.178 13.863)" r="12.098">
+-   <stop id="stop5584" style="stop-color:#e3e3df" offset="0"/>
+-   <stop id="stop5643" style="stop-color:#bfc1bb" offset=".55379"/>
+-   <stop id="stop5586" style="stop-color:#7b7f77" offset="1"/>
+-  </radialGradient>
+-  <linearGradient id="linearGradient2941" y2="30.549" gradientUnits="userSpaceOnUse" x2="22.562" y1="30.743" x1="27.098">
+-   <stop id="stop5637" style="stop-color:#51524e" offset="0"/>
+-   <stop id="stop5639" style="stop-color:#747670" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient2958" y2="19" gradientUnits="userSpaceOnUse" x2="2" y1="18.5" x1="46.03">
+-   <stop id="stop4611" style="stop-color:#555" offset="0"/>
+-   <stop id="stop5155" style="stop-color:#8c8c8c" offset=".32802"/>
+-   <stop id="stop5157" style="stop-color:#8c8c8c" offset=".91085"/>
+-   <stop id="stop4613" style="stop-color:#8c8c8c;stop-opacity:0" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient3146-7">
+-   <stop id="stop3148-0" style="stop-color:#af9315" offset="0"/>
+-   <stop id="stop3160-4" style="stop-color:#c1a917" offset=".35134"/>
+-   <stop id="stop3152-8" style="stop-color:#d3bf1a" offset=".50021"/>
+-   <stop id="stop3162-0" style="stop-color:#f5eeaf" offset="0.85"/>
+-   <stop id="stop3158-4" style="stop-color:#ecdc5f" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient2920" y2="12.535" gradientUnits="userSpaceOnUse" x2="17.719" gradientTransform="matrix(1.1249 0 0 1.1991 -.18624 -9.8876)" y1="11.188" x1="18.562">
+-   <stop id="stop3219-5" style="stop-color:#af9315" offset="0"/>
+-   <stop id="stop3221-8" style="stop-color:#d3bf1a" offset="1"/>
+-  </linearGradient>
+-  <radialGradient id="radialGradient2923" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" cy="11.205" cx="19.864" gradientTransform="matrix(1.4758 -.10929 .035466 .37202 -7.0248 .99090)" r="4"/>
+-  <linearGradient id="linearGradient2927" y2="10.985" xlink:href="#linearGradient3146-7" gradientUnits="userSpaceOnUse" x2="17.499" gradientTransform="matrix(1.1249 0 0 1.1991 -.18624 -9.8876)" y1="10.985" x1="25.5"/>
+-  <linearGradient id="linearGradient2931" y2="36" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" x2="24" gradientTransform="matrix(1.0416 0 0 1.4262 -.47858 -12.86)" y1="10.996" x1="23.5"/>
+-  <linearGradient id="linearGradient2936" y2="25.313" gradientUnits="userSpaceOnUse" x2="38" gradientTransform="matrix(1.0416 0 0 1.3034 -2.5619 -8.2878)" y1="25.336" x1="13">
+-   <stop id="stop3353-7" style="stop-color:#60625e" offset="0"/>
+-   <stop id="stop3355-6" style="stop-color:#2d2e2c" offset="1"/>
+-  </linearGradient>
+-  <linearGradient id="linearGradient2939" y2="18.613" gradientUnits="userSpaceOnUse" x2="25.532" gradientTransform="matrix(1.0451 0 0 1.1057 1.6944 -9.1176)" y1="9.9905" x1="31.187">
+-   <stop id="stop3267-5" style="stop-color:#c4a000" offset="0"/>
+-   <stop id="stop3269-9" style="stop-color:#c4a000;stop-opacity:0" offset="1"/>
+-  </linearGradient>
+-  <radialGradient id="radialGradient2941" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" cy="24.691" cx="19.162" gradientTransform="matrix(1.3103 -.43885 .13062 .47069 -6.6135 7.1524)" r="12.469"/>
+-  <radialGradient id="radialGradient2944" gradientUnits="userSpaceOnUse" cy="16.677" cx="19.718" gradientTransform="matrix(.72113 0 0 .25240 8.6084 2.9348)" r="12.469">
+-   <stop id="stop3238-1" style="stop-color:#f3e99d" offset="0"/>
+-   <stop id="stop3240-0" style="stop-color:#ecdc60" offset="1"/>
+-  </radialGradient>
+-  <radialGradient id="radialGradient2946" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" cy="24.691" cx="19.162" gradientTransform="matrix(1.3103 -.43885 .13062 .47069 -6.6135 7.1524)" r="12.469"/>
+-  <linearGradient id="linearGradient2949" y2="31.383" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" x2="20.683" gradientTransform="matrix(1 0 0 1.3332 2.5 -9.9927)" y1="10.496" x1="13.965"/>
+-  <linearGradient id="linearGradient2952" y2="34.174" xlink:href="#linearGradient3254" gradientUnits="userSpaceOnUse" x2="17.125" gradientTransform="matrix(1.0416 0 0 1.3659 1.6047 -10.809)" y1="20.231" x1="12.25"/>
+-  <linearGradient id="linearGradient2955" y2="19.125" xlink:href="#linearGradient3146-7" gradientUnits="userSpaceOnUse" x2="9.4987" gradientTransform="matrix(1.0416 0 0 1.3271 1.6047 -11.418)" y1="19.125" x1="33.562"/>
+-  <linearGradient id="linearGradient2959" y2="28.375" gradientUnits="userSpaceOnUse" x2="9.4992" gradientTransform="matrix(1.0416 0 0 1.312 1.6047 -8.6344)" y1="28.375" x1="33.5">
+-   <stop id="stop3369-2" style="stop-color:#191919" offset="0"/>
+-   <stop id="stop3371-9" style="stop-color:#4d4d4d" offset=".32156"/>
+-   <stop id="stop3373-9" style="stop-color:#7e7e7e" offset=".53021"/>
+-   <stop id="stop3375-6" style="stop-color:#a0a0a0" offset=".85267"/>
+-   <stop id="stop3377-0" style="stop-color:#7e7e7e" offset="1"/>
+-  </linearGradient>
+-  <radialGradient id="radialGradient2962" gradientUnits="userSpaceOnUse" cy="14.125" cx="21.344" gradientTransform="matrix(1.2533 0 0 .51258 -2.7494 33.626)" r="11.969">
+-   <stop id="stop3282-3" offset="0"/>
+-   <stop id="stop3284-2" style="stop-opacity:0" offset="1"/>
+-  </radialGradient>
+- </defs>
+- <path id="path4593" style="stroke:url(#linearGradient2958);stroke-width:2.9;fill:none" d="m36 28c7.194-3.44 13.327-11.982 3.4-13.4-4.073-0.582-26.599 2.505-38.4 8.4"/>
+- <path id="path3278" style="opacity:.7;color:black;fill:url(#radialGradient2962)" d="m39 40.866a15 6.135 0 0 1 -30 0 15 6.135 0 1 1 30 0z"/>
+- <path id="path2230" style="color:black;fill:url(#linearGradient2959)" d="m22.438 5.1412c-6.163 0.284-10.938 2.2519-10.938 4.5918v30.175c0 2.5347 5.5999 4.5919 12.5 4.5919 6.8998 0 12.5-2.0572 12.5-4.5919v-30.175c0-2.5347-5.5999-4.5919-12.5-4.5919-0.37734 0-0.73789-0.012069-1.1067 0-0.14944 0.00486-0.30782-0.00682-0.45572 0z"/>
+- <path id="path2232" style="color:black;fill:url(#linearGradient2955)" d="m22.893 2.5173c-6.376 0.2107-11.393 2.2212-11.393 4.645v8.6264c0 2.564 5.5999 4.645 12.5 4.645 6.8998 0 12.5-2.0809 12.5-4.645v-8.6264c0-2.564-5.5999-4.645-12.5-4.645-0.37734 0-0.73789-0.012209-1.1067 0z"/>
+- <path id="rect3244" style="opacity:.2;color:black;fill:url(#linearGradient2952)" d="m15.146 11.046h5.2082v33.208l-5.2082-1.1098v-32.099z"/>
+- <path id="path3288" style="opacity:.2;color:black;fill:url(#linearGradient2949)" d="m22.5 4.0054c-5.916 0.2886-10.5 2.2883-10.5 4.666v30.663c0 2.576 5.376 4.666 12 4.666s12-2.09 12-4.666v-30.663c0-2.5752-5.376-4.6656-12-4.6656-0.36225 0-0.70839-0.01213-1.0625 0-0.14346 0.00491-0.29552-0.00683-0.4375 0z"/>
+- <path id="path3164" style="stroke-linejoin:round;color:black;stroke:url(#radialGradient2946);stroke-linecap:round;stroke-width:.98389;fill:url(#radialGradient2944)" d="m36.508 6.5a12.508 4.0081 0 0 1 -25.016 0 12.508 4.0081 0 1 1 25.016 0z"/>
+- <path id="path3263" style="opacity:0.639;stroke-linejoin:round;color:black;stroke:url(#radialGradient2941);stroke-linecap:round;stroke-width:.98389;fill:url(#linearGradient2939)" d="m36.508 6.5a12.508 4.0081 0 0 1 -25.016 0 12.508 4.0081 0 1 1 25.016 0z"/>
+- <path id="path2217" style="stroke-linejoin:round;color:black;stroke:url(#linearGradient2936);stroke-linecap:round;fill:none" d="m11.5 15.825v24.113c0 2.5182 5.5999 4.5619 12.5 4.5619 6.8998 0 12.5-2.0437 12.5-4.5619v-24.113"/>
+- <path id="path2219" style="stroke-linejoin:round;color:black;stroke:#bca020;stroke-linecap:round;fill:none" d="m36.5 16.849v-9.7719c0-2.5172-5.5999-4.5602-12.5-4.5602-0.37733 0-0.73789-0.011986-1.1067 0-0.14944 0.00483-0.30782-0.00677-0.45572 0-6.1623 0.28211-10.937 2.2364-10.937 4.5602v9.7719"/>
+- <path id="path2206" style="opacity:.49020;stroke-linejoin:round;color:black;stroke:url(#linearGradient2931);stroke-linecap:round;fill:none" d="m22.275 3.5414c-5.5153 0.25804-9.7328 1.7781-9.7328 3.5656v32.803c0 1.9682 5.1332 3.5656 11.458 3.5656 6.3249 0 11.458-1.5974 11.458-3.5656 0-1.5107-0.000001-31.293 0-32.803 0-1.9682-5.1332-3.5656-11.458-3.5656-0.3953 0-0.78682-0.012124-1.1718 0-0.18048 0.0057-0.37546-0.00827-0.55337 0z"/>
+- <path id="path3198" style="color:black;fill:url(#linearGradient2927)" d="m23.438 1.5043c-1.8948 0.096375-3.4309 0.68835-3.8318 1.424-0.0075 0.01463-0.02855 0.060185-0.03515 0.074947-0.003 0.00744-0.03231 0.030039-0.03515 0.037474-0.0026 0.00744 0.0024 0.029979 0 0.037475-0.0108 0.037641-0.03029 0.11159-0.03515 0.14989-0.000732 0.00767 0.000489 0.029761 0 0.037475-0.000245 0.00767 0 2.428 0 2.4358 0 0.00778-0.000245 0.02974 0 0.037474 0.000489 0.00767-0.000732 0.029788 0 0.037474 0.0049 0.038299 0.02437 0.11225 0.03515 0.14989 0.0024 0.00756-0.0026 0.030002 0 0.037474 0.0028 0.00744 0.03207 0.030063 0.03515 0.037474 0.0066 0.014762 0.02767 0.060318 0.03515 0.074946 0.44068 0.80847 2.2403 1.424 4.3943 1.424s3.9536-0.61552 4.3943-1.424c0.0075-0.01463 0.02855-0.060185 0.03515-0.074946 0.003-0.00744 0.0323-0.030038 0.03515-0.037474 0.0026-0.00744-0.0024-0.029978 0-0.037474 0.0108-0.037641 0.03029-0.11159 0.03515-0.14989 0.000733-0.00767-0.00049-0.029761 0-0.037474 0.000246-0.00767 0-0.029713 0-0.037474 0-0.00778 0.000246-2.428 0-2.4358-0.00049-0.00767 0.000733-0.029788 0-0.037475-0.0049-0.038299-0.02438-0.11225-0.03515-0.14989-0.0024-0.00756 0.0026-0.030003 0-0.037475-0.0028-0.00744-0.03208-0.030062-0.03515-0.037474-0.0066-0.014762-0.02767-0.060316-0.03515-0.074947-0.44068-0.80847-2.2403-1.424-4.3943-1.424-0.19405 0-0.37487-0.0096-0.56247 0z"/>
+- <path id="path3225" style="opacity:.6;color:black;fill:url(#radialGradient2923)" d="m27.937 2.9885a3.9373 1.0003 0 0 1 -7.8746 0 3.9373 1.0003 0 1 1 7.8746 0z"/>
+- <path id="path3205" style="stroke-linejoin:round;color:black;stroke:url(#linearGradient2920);stroke-linecap:round;fill:none" d="m23.438 1.5043c-1.8948 0.096375-3.4309 0.68835-3.8318 1.424-0.0075 0.01463-0.02855 0.060185-0.03515 0.074947-0.003 0.00744-0.03229 0.030039-0.03515 0.037474-0.0026 0.00744 0.0024 0.029978 0 0.037474-0.0108 0.037642-0.03029 0.11159-0.03515 0.14989-0.000731 0.00767 0.00049 0.029761 0 0.037475-0.000244 0.00767 0 2.428 0 2.4358 0 0.00778-0.000244 0.02974 0 0.037474 0.00049 0.00767-0.000731 0.029788 0 0.037474 0.0049 0.0383 0.02437 0.11225 0.03515 0.14989 0.0024 0.00756-0.0026 0.030003 0 0.037474 0.0028 0.00744 0.03207 0.030062 0.03515 0.037474 0.0066 0.014763 0.02767 0.060317 0.03515 0.074947 0.44068 0.80847 2.2403 1.424 4.3943 1.424s3.9536-0.61552 4.3943-1.424c0.0075-0.01463 0.02855-0.060185 0.03515-0.074947 0.003-0.00744 0.03231-0.030039 0.03515-0.037474 0.0026-0.00744-0.0024-0.029978 0-0.037474 0.0108-0.037642 0.03029-0.11159 0.03515-0.14989 0.000731-0.00767-0.000489-0.029761 0-0.037474 0.000245-0.00767 0-0.029714 0-0.037474 0-0.00778 0.000245-2.428 0-2.4358-0.000489-0.00767 0.000731-0.029788 0-0.037475-0.0049-0.038299-0.02438-0.11225-0.03515-0.14989-0.0024-0.00756 0.0026-0.030003 0-0.037475-0.0028-0.00744-0.03207-0.030062-0.03515-0.037474-0.0066-0.014761-0.02767-0.060316-0.03515-0.074946-0.44068-0.80847-2.2403-1.424-4.3943-1.424-0.19405 0-0.37487-0.0096-0.56247 0z"/>
+- <path id="rect4575" style="stroke-linejoin:round;stroke:url(#linearGradient2941);fill:url(#radialGradient2939)" d="m27 25.5-11.5 4.9v5.6l10.5 3.5 10-6.8 2.6-4.8c0.4-0.9-0.506-2.582-1.6-2.4h-10z"/>
+- <path id="path5631" style="opacity:.3" d="m24.5 36.25a1.75 1.75 0 0 1 -3.5 0 1.75 1.75 0 1 1 3.5 0z"/>
+- <rect id="rect4583" style="stroke:url(#linearGradient2935);stroke-width:0.5;fill:url(#linearGradient2933)" transform="matrix(.51057 .85984 -.86201 .50689 0 0)" rx="1.9993" ry="1.9993" height="11.497" width="2.8653" y="-2.1195" x="41.32"/>
+- <path id="path4607" style="opacity:.8;fill:url(#linearGradient2930)" d="m16 30.7 10 3.3 9.686-5.6c3.314-1.87-3.548-2.503-8.686-2.339l-11 4.639z"/>
+- <path id="path5629" style="opacity:.3" d="m19.5 34.25a1.75 1.75 0 0 1 -3.5 0 1.75 1.75 0 1 1 3.5 0z"/>
+- <rect id="rect5009" style="stroke:url(#linearGradient2926);stroke-width:0.5;fill:url(#linearGradient2924)" transform="matrix(.49310 .86997 -.87207 .48939 0 0)" rx="1.9993" ry="1.9993" height="11.497" width="2.8653" y=".41772" x="37.054"/>
+- <path id="path5005" style="opacity:.8;fill:url(#radialGradient2921)" d="m10.6 38.5a1 1 0 0 1 -2 0 1 1 0 1 1 2 0z"/>
+- <path id="path5007" style="opacity:.8;fill:url(#radialGradient2918)" d="m15.7 40.6a1 1 0 0 1 -2 0 1 1 0 1 1 2 0z"/>
+- <path id="rect5353" style="opacity:.3;fill:url(#linearGradient2915)" d="m26 34 9.7-5.6v3.9l-9.7 6.6v-4.9z"/>
+-</svg>
+diff --git a/panels/power/icons/Makefile.am b/panels/power/icons/Makefile.am
+deleted file mode 100644
+index 72fae16..0000000
+--- a/panels/power/icons/Makefile.am
++++ /dev/null
+@@ -1,22 +0,0 @@
+-
+-SUBDIRS = 24x24 48x48
+-
+-gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
+-
+-if MAINTAINER_MODE
+-
+-install-data-hook:
+-	@-if test -z "$(DESTDIR)"; then \
+-		echo "Updating Gtk icon cache."; \
+-		$(gtk_update_icon_cache); \
+-	else \
+-		echo "*** Icon cache not updated.  After install, run this:"; \
+-		echo "***   $(gtk_update_icon_cache)"; \
+-	fi
+-
+-clean-local :
+-	rm -f *~
+-
+-endif
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/power/power-module.c b/panels/power/power-module.c
+deleted file mode 100644
+index e35b3e2..0000000
+--- a/panels/power/power-module.c
++++ /dev/null
+@@ -1,41 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- *
+- */
+-
+-#include <config.h>
+-
+-#include "cc-power-panel.h"
+-
+-#include <glib/gi18n-lib.h>
+-
+-void
+-g_io_module_load (GIOModule *module)
+-{
+-  bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+-
+-  /* register the panel */
+-  cc_power_panel_register (module);
+-}
+-
+-void
+-g_io_module_unload (GIOModule *module)
+-{
+-}
+diff --git a/panels/power/power.ui b/panels/power/power.ui
+deleted file mode 100644
+index 1eb6b88..0000000
+--- a/panels/power/power.ui
++++ /dev/null
+@@ -1,501 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<interface>
+-  <!-- interface-requires gtk+ 3.0 -->
+-  <object class="GtkListStore" id="liststore_critical">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gint"/>
+-      <!-- column-name sensitive -->
+-      <column type="gboolean"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">Hibernate</col>
+-        <col id="1">3</col>
+-        <col id="2">True</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">Power off</col>
+-        <col id="1">2</col>
+-        <col id="2">True</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkListStore" id="liststore_time">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gint"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">5 minutes</col>
+-        <col id="1">300</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">10 minutes</col>
+-        <col id="1">600</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">20 minutes</col>
+-        <col id="1">1200</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">30 minutes</col>
+-        <col id="1">1800</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">1 hour</col>
+-        <col id="1">3600</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">2 hours</col>
+-        <col id="1">7200</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">Don't suspend</col>
+-        <col id="1">0</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkListStore" id="liststore_lid">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gint"/>
+-      <!-- column-name sensitive -->
+-      <column type="gboolean"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">Suspend</col>
+-        <col id="1">1</col>
+-        <col id="2">True</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">Do nothing</col>
+-        <col id="1">5</col>
+-        <col id="2">True</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkListStore" id="liststore_indicator">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gchararray"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">When battery is present</col>
+-        <col id="1">present</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">When battery is charging/in use</col>
+-        <col id="1">charge</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">Never</col>
+-        <col id="1">never</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkWindow" id="window_power">
+-    <property name="can_focus">False</property>
+-    <property name="resizable">False</property>
+-    <child>
+-      <object class="GtkVBox" id="vbox_power">
+-        <property name="visible">True</property>
+-        <property name="can_focus">False</property>
+-        <property name="border_width">12</property>
+-        <property name="spacing">3</property>
+-        <child>
+-          <object class="GtkGrid" id="grid_combos">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="margin_left">53</property>
+-            <property name="margin_right">60</property>
+-            <property name="margin_bottom">24</property>
+-            <property name="orientation">vertical</property>
+-            <property name="row_spacing">6</property>
+-            <property name="column_spacing">12</property>
+-            <child>
+-              <object class="GtkLabel" id="label_header_battery">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="label" translatable="yes">On battery power</property>
+-                <property name="halign">center</property>
+-                <attributes>
+-                  <attribute name="scale" value="0.82999999999999996"/>
+-                </attributes>
+-              </object>
+-              <packing>
+-                <property name="left_attach">1</property>
+-                <property name="top_attach">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLabel" id="label_header_ac">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="label" translatable="yes">When plugged in</property>
+-                <property name="halign">center</property>
+-                <attributes>
+-                  <attribute name="scale" value="0.82999999999999996"/>
+-                </attributes>
+-              </object>
+-              <packing>
+-                <property name="left_attach">2</property>
+-                <property name="top_attach">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLabel" id="label7">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="halign">end</property>
+-                <property name="label" translatable="yes">Suspend when inactive for</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">0</property>
+-                <property name="top_attach">1</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBoxText" id="combobox_sleep_battery">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_time</property>
+-                <property name="hexpand">True</property>
+-                <accessibility>
+-                  <relation type="labelled-by" target="label_header_battery"/>
+-                  <relation type="labelled-by" target="label7"/>
+-                </accessibility>
+-              </object>
+-              <packing>
+-                <property name="left_attach">1</property>
+-                <property name="top_attach">1</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBoxText" id="combobox_sleep_ac">
+-                <property name="width_request">150</property>
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_time</property>
+-                <property name="hexpand">True</property>
+-                <accessibility>
+-                  <relation type="labelled-by" target="label_header_ac"/>
+-                  <relation type="labelled-by" target="label7"/>
+-                </accessibility>
+-              </object>
+-              <packing>
+-                <property name="left_attach">2</property>
+-                <property name="top_attach">1</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLabel" id="label_critical">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="halign">end</property>
+-                <property name="label" translatable="yes">When power is _critically low</property>
+-                <property name="use_underline">True</property>
+-                <property name="mnemonic_widget">combobox_critical</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">0</property>
+-                <property name="top_attach">2</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBox" id="combobox_critical">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_critical</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">1</property>
+-                <property name="top_attach">2</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLabel" id="label_lid_action">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="halign">end</property>
+-                <property name="label" translatable="yes">When the lid is closed</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">0</property>
+-                <property name="top_attach">3</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBox" id="combobox_lid_battery">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_lid</property>
+-                <property name="hexpand">True</property>
+-                <accessibility>
+-                  <relation type="labelled-by" target="label_header_battery"/>
+-                  <relation type="labelled-by" target="label_lid_action"/>
+-                </accessibility>
+-              </object>
+-              <packing>
+-                <property name="left_attach">1</property>
+-                <property name="top_attach">3</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBox" id="combobox_lid_ac">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_lid</property>
+-                <property name="hexpand">True</property>
+-                <accessibility>
+-                  <relation type="labelled-by" target="label_header_ac"/>
+-                  <relation type="labelled-by" target="label_lid_action"/>
+-                </accessibility>
+-              </object>
+-              <packing>
+-                <property name="left_attach">2</property>
+-                <property name="top_attach">3</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkSeparator" id="separator_indicator">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">0</property>
+-                <property name="top_attach">4</property>
+-                <property name="width">4</property>
+-                <property name="height">1</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLabel" id="label_indicator">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="halign">end</property>
+-                <property name="label" translatable="yes">Show battery status in the _menu bar</property>
+-                <property name="use_underline">True</property>
+-              </object>
+-              <packing>
+-                <property name="left_attach">0</property>
+-                <property name="top_attach">5</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkComboBoxText" id="combobox_indicator">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="model">liststore_indicator</property>
+-                <property name="hexpand">True</property>
+-                <accessibility>
+-                  <relation type="labelled-by" target="label_indicator"/>
+-                </accessibility>
+-              </object>
+-              <packing>
+-                <property name="left_attach">1</property>
+-                <property name="top_attach">5</property>
+-                <property name="width">2</property>
+-                <property name="height">1</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">False</property>
+-            <property name="position">0</property>
+-          </packing>
+-        </child>
+-        <child>
+-          <object class="GtkBox" id="box_primary">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="margin_left">53</property>
+-            <property name="margin_right">60</property>
+-            <property name="orientation">vertical</property>
+-            <property name="spacing">3</property>
+-            <child>
+-              <object class="GtkBox" id="box_primary_header">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="spacing">3</property>
+-                <child>
+-                  <object class="GtkImage" id="image_primary_warning">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="icon_name">dialog-warning-symbolic</property>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">True</property>
+-                    <property name="position">0</property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkLabel" id="label_battery_primary">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="xalign">0</property>
+-                    <property name="label">55 minutes until fully charged</property>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">True</property>
+-                    <property name="fill">True</property>
+-                    <property name="position">1</property>
+-                  </packing>
+-                </child>
+-                <child>
+-                  <object class="GtkBox" id="box_battery_addon">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="spacing">3</property>
+-                    <child>
+-                      <object class="GtkImage" id="image_battery_addon">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="xalign">1</property>
+-                        <property name="stock">gtk-info</property>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">True</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <object class="GtkLabel" id="label_battery_addon">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="xalign">1</property>
+-                        <property name="label">Your secondary battery is empty</property>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">True</property>
+-                        <property name="position">1</property>
+-                      </packing>
+-                    </child>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">False</property>
+-                    <property name="position">2</property>
+-                  </packing>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkLevelBar" id="levelbar_primary">
+-                <property name="can_focus">False</property>
+-                <property name="visible">True</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">1</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">False</property>
+-            <property name="position">1</property>
+-          </packing>
+-        </child>
+-        <child>
+-          <object class="GtkLabel" id="label_screen_settings">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="margin_left">53</property>
+-            <property name="margin_right">40</property>
+-            <property name="xalign">0</property>
+-            <property name="yalign">0.49000000953674316</property>
+-            <property name="ypad">4</property>
+-            <property name="label">Tip: &lt;a href="moo"&gt;Screen Settings&lt;/a&gt; affect how much power is used</property>
+-            <property name="use_markup">True</property>
+-            <property name="track_visited_links">False</property>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">False</property>
+-            <property name="position">2</property>
+-          </packing>
+-        </child>
+-        <child>
+-          <object class="GtkBox" id="box_secondary">
+-            <property name="visible">True</property>
+-            <property name="can_focus">False</property>
+-            <property name="margin_top">15</property>
+-            <property name="orientation">vertical</property>
+-            <property name="spacing">24</property>
+-            <child>
+-              <object class="GtkSeparator" id="separator_secondary">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkGrid" id="grid_secondary">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="margin_left">9</property>
+-                <property name="margin_right">28</property>
+-                <property name="margin_bottom">15</property>
+-                <property name="row_spacing">18</property>
+-                <property name="column_spacing">6</property>
+-                <property name="column_homogeneous">True</property>
+-                <child>
+-                  <placeholder/>
+-                </child>
+-                <child>
+-                  <placeholder/>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">1</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">False</property>
+-            <property name="fill">False</property>
+-            <property name="position">3</property>
+-          </packing>
+-        </child>
+-      </object>
+-    </child>
+-  </object>
+-  <object class="GtkSizeGroup" id="sizegroup_combos">
+-    <widgets>
+-      <widget name="combobox_lid_battery"/>
+-      <widget name="combobox_lid_ac"/>
+-      <widget name="combobox_critical"/>
+-      <widget name="combobox_sleep_battery"/>
+-      <widget name="combobox_sleep_ac"/>
+-      <widget name="combobox_sleep_ac"/>
+-    </widgets>
+-  </object>
+-</interface>
+diff --git a/panels/power/unity-power-panel.desktop.in.in b/panels/power/unity-power-panel.desktop.in.in
+deleted file mode 100644
+index 2e33ca9..0000000
+--- a/panels/power/unity-power-panel.desktop.in.in
++++ /dev/null
+@@ -1,13 +0,0 @@
+-[Desktop Entry]
+-_Name=Power
+-_Comment=Power management settings
+-Exec=unity-control-center power
+-Icon=unity-power-panel
+-Terminal=false
+-Type=Application
+-StartupNotify=true
+-Categories=GNOME;GTK;Settings;DesktopSettings;X-Unity-Settings-Panel;HardwareSettings
+-OnlyShowIn=Unity;
+-X-Unity-Settings-Panel=power
+-# Translators: those are keywords for the power control-center panel
+-_Keywords=Power;Sleep;Suspend;Hibernate;Battery;
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 917bd48..c99f8ff 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -28,9 +28,6 @@ panels/mouse/gnome-mouse-properties.c
+ [type: gettext/glade]panels/mouse/gnome-mouse-properties.ui
+ panels/mouse/gnome-mouse-test.c
+ [type: gettext/glade]panels/mouse/gnome-mouse-test.ui
+-panels/power/cc-power-panel.c
+-panels/power/unity-power-panel.desktop.in.in
+-[type: gettext/glade]panels/power/power.ui
+ panels/region/unity-region-panel.desktop.in.in
+ [type: gettext/glade]panels/region/unity-region-panel.ui
+ panels/region/gnome-region-panel-formats.c
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+index 7968016..1411b20 100644
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -5,7 +5,6 @@ panels/display/gnome-display-panel.desktop.in
+ panels/info/gnome-info-panel.desktop.in
+ panels/mouse/gnome-mouse-panel.desktop.in
+ panels/online-accounts/gnome-online-accounts-panel.desktop.in
+-panels/power/gnome-power-panel.desktop.in
+ panels/region/gnome-region-panel.desktop.in
+ panels/screen/gnome-screen-panel.desktop.in
+ panels/sound/data/gnome-sound-panel.desktop.in
+-- 
+1.9.1
+

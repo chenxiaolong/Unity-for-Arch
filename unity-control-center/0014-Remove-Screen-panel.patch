@@ -1,0 +1,1313 @@
+From 2dc9be93e2e5d77fc50c5f9a89bb064a12d6ae08 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 5 Apr 2014 20:15:54 -0400
+Subject: [PATCH 14/17] Remove Screen panel
+
+---
+ configure.ac                                   |   3 -
+ man/unity-control-center.xml                   |   8 -
+ panels/Makefile.am                             |   1 -
+ panels/screen/Makefile.am                      |  33 --
+ panels/screen/cc-screen-panel.c                | 573 -------------------------
+ panels/screen/cc-screen-panel.h                |  73 ----
+ panels/screen/screen-module.c                  |  41 --
+ panels/screen/screen.ui                        | 439 -------------------
+ panels/screen/unity-screen-panel.desktop.in.in |  13 -
+ po/POTFILES.in                                 |   2 -
+ po/POTFILES.skip                               |   1 -
+ 11 files changed, 1187 deletions(-)
+ delete mode 100644 panels/screen/Makefile.am
+ delete mode 100644 panels/screen/cc-screen-panel.c
+ delete mode 100644 panels/screen/cc-screen-panel.h
+ delete mode 100644 panels/screen/screen-module.c
+ delete mode 100644 panels/screen/screen.ui
+ delete mode 100644 panels/screen/unity-screen-panel.desktop.in.in
+
+diff --git a/configure.ac b/configure.ac
+index 36b4923..85a2f47 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -126,7 +126,6 @@ PKG_CHECK_MODULES(APPEARANCE_PANEL, $COMMON_MODULES libxml-2.0 gnome-desktop-3.0
+ PKG_CHECK_MODULES(DATETIME_PANEL, $COMMON_MODULES timezonemap
+                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
+ PKG_CHECK_MODULES(MEDIA_PANEL, $COMMON_MODULES)
+-PKG_CHECK_MODULES(SCREEN_PANEL, $COMMON_MODULES)
+ PKG_CHECK_MODULES(SOUND_PANEL, $COMMON_MODULES libxml-2.0
+                   libcanberra-gtk3 >= $CANBERRA_REQUIRED_VERSION
+                   libpulse >= $PA_REQUIRED_VERSION
+@@ -296,8 +295,6 @@ panels/sound/data/icons/48x48/apps/Makefile
+ panels/sound/data/icons/48x48/devices/Makefile
+ panels/sound/data/icons/scalable/Makefile
+ panels/sound/data/icons/scalable/devices/Makefile
+-panels/screen/Makefile
+-panels/screen/unity-screen-panel.desktop.in
+ po/Makefile.in
+ shell/Makefile
+ shell/unity-control-center.desktop.in
+diff --git a/man/unity-control-center.xml b/man/unity-control-center.xml
+index 3d4faef..4c9d1c7 100644
+--- a/man/unity-control-center.xml
++++ b/man/unity-control-center.xml
+@@ -95,14 +95,6 @@
+                         </varlistentry>
+ 
+                         <varlistentry>
+-                                <term><option>screen</option></term>
+-
+-                                <listitem><para>The screen panel contains
+-                                settings that control the screen brightness
+-                                and screen lock behavior.</para></listitem>
+-                        </varlistentry>
+-
+-                        <varlistentry>
+                                 <term><option>sound</option></term>
+ 
+                                 <listitem><para>The sound panel shows
+diff --git a/panels/Makefile.am b/panels/Makefile.am
+index 6d3480e..605f7b0 100644
+--- a/panels/Makefile.am
++++ b/panels/Makefile.am
+@@ -2,7 +2,6 @@ SUBDIRS= \
+ 	appearance \
+ 	common \
+ 	datetime \
+-	screen \
+ 	sound
+ 
+ -include $(top_srcdir)/git.mk
+diff --git a/panels/screen/Makefile.am b/panels/screen/Makefile.am
+deleted file mode 100644
+index 4d60cd4..0000000
+--- a/panels/screen/Makefile.am
++++ /dev/null
+@@ -1,33 +0,0 @@
+-cappletname = screen
+-
+-INCLUDES = 						\
+-	$(PANEL_CFLAGS)					\
+-	$(SCREEN_PANEL_CFLAGS)			\
+-	-DGNOMECC_UI_DIR="\"$(uidir)\""			\
+-	-DGNOMELOCALEDIR="\"$(datadir)/locale\""	\
+-	-DGNOMECC_DATA_DIR="\"$(pkgdatadir)\""		\
+-	$(NULL)
+-
+-ccpanelsdir = $(PANELS_DIR)
+-ccpanels_LTLIBRARIES = libscreen.la
+-
+-libscreen_la_SOURCES =		\
+-	screen-module.c		\
+-	cc-screen-panel.c	\
+-	cc-screen-panel.h
+-
+-libscreen_la_LIBADD = $(PANEL_LIBS) $(SCREEN_PANEL_LIBS)
+-libscreen_la_LDFLAGS = $(PANEL_LDFLAGS)
+-
+-uidir = $(pkgdatadir)/ui
+-dist_ui_DATA = screen.ui
+-
+-@INTLTOOL_DESKTOP_RULE@
+-
+-desktopdir = $(datadir)/applications
+-desktop_in_files = unity-screen-panel.desktop.in
+-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+-
+-CLEANFILES = $(desktop_in_files) $(desktop_DATA)
+-
+--include $(top_srcdir)/git.mk
+diff --git a/panels/screen/cc-screen-panel.c b/panels/screen/cc-screen-panel.c
+deleted file mode 100644
+index 5e64c63..0000000
+--- a/panels/screen/cc-screen-panel.c
++++ /dev/null
+@@ -1,573 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- * Copyright (C) 2008 William Jon McCann <jmccann@redhat.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-#include <string.h>
+-
+-#include "cc-screen-panel.h"
+-
+-CC_PANEL_REGISTER (CcScreenPanel, cc_screen_panel)
+-
+-#define SCREEN_PANEL_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), CC_TYPE_SCREEN_PANEL, CcScreenPanelPrivate))
+-
+-#define WID(s) GTK_WIDGET (gtk_builder_get_object (self->priv->builder, s))
+-
+-struct _CcScreenPanelPrivate
+-{
+-  GSettings     *lock_settings;
+-  GSettings     *gsd_settings;
+-  GSettings     *session_settings;
+-  GSettings     *lockdown_settings;
+-  GCancellable  *cancellable;
+-  GtkBuilder    *builder;
+-  GDBusProxy    *proxy;
+-  gboolean       setting_brightness;
+-};
+-
+-
+-static void
+-cc_screen_panel_get_property (GObject    *object,
+-                              guint       property_id,
+-                              GValue     *value,
+-                              GParamSpec *pspec)
+-{
+-  switch (property_id)
+-    {
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-static void
+-cc_screen_panel_set_property (GObject      *object,
+-                              guint         property_id,
+-                              const GValue *value,
+-                              GParamSpec   *pspec)
+-{
+-  switch (property_id)
+-    {
+-    default:
+-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+-    }
+-}
+-
+-static void
+-cc_screen_panel_dispose (GObject *object)
+-{
+-  CcScreenPanelPrivate *priv = CC_SCREEN_PANEL (object)->priv;
+-
+-  if (priv->lock_settings)
+-    {
+-      g_object_unref (priv->lock_settings);
+-      priv->lock_settings = NULL;
+-    }
+-  if (priv->gsd_settings)
+-    {
+-      g_object_unref (priv->gsd_settings);
+-      priv->gsd_settings = NULL;
+-    }
+-  if (priv->session_settings)
+-    {
+-      g_object_unref (priv->session_settings);
+-      priv->session_settings = NULL;
+-    }
+-  if (priv->lockdown_settings)
+-    {
+-      g_object_unref (priv->lockdown_settings);
+-      priv->lockdown_settings = NULL;
+-    }
+-  if (priv->cancellable != NULL)
+-    {
+-      g_cancellable_cancel (priv->cancellable);
+-      g_object_unref (priv->cancellable);
+-      priv->cancellable = NULL;
+-    }
+-  if (priv->builder != NULL)
+-    {
+-      g_object_unref (priv->builder);
+-      priv->builder = NULL;
+-    }
+-  if (priv->proxy != NULL)
+-    {
+-      g_object_unref (priv->proxy);
+-      priv->proxy = NULL;
+-    }
+-
+-  G_OBJECT_CLASS (cc_screen_panel_parent_class)->dispose (object);
+-}
+-
+-static void
+-on_lock_settings_changed (GSettings     *settings,
+-                          const char    *key,
+-                          CcScreenPanel *panel)
+-{
+-  if (g_str_equal (key, "lock-delay") == FALSE)
+-    return;
+-}
+-
+-static void
+-update_lock_screen_sensitivity (CcScreenPanel *self)
+-{
+-  GtkWidget *widget;
+-  gboolean   locked;
+-
+-  widget = WID ("screen_lock_main_box");
+-  locked = g_settings_get_boolean (self->priv->lockdown_settings, "disable-lock-screen");
+-  gtk_widget_set_sensitive (widget, !locked);
+-}
+-
+-static void
+-on_lockdown_settings_changed (GSettings     *settings,
+-                              const char    *key,
+-                              CcScreenPanel *panel)
+-{
+-  if (g_str_equal (key, "disable-lock-screen") == FALSE)
+-    return;
+-
+-  update_lock_screen_sensitivity (panel);
+-}
+-
+-static const char *
+-cc_screen_panel_get_help_uri (CcPanel *panel)
+-{
+-  if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
+-    return "help:ubuntu-help/prefs-display";
+-  else
+-    return "help:gnome-help/prefs-display";
+-}
+-
+-static void
+-cc_screen_panel_class_init (CcScreenPanelClass *klass)
+-{
+-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+-  CcPanelClass *panel_class = CC_PANEL_CLASS (klass);
+-
+-  g_type_class_add_private (klass, sizeof (CcScreenPanelPrivate));
+-
+-  object_class->get_property = cc_screen_panel_get_property;
+-  object_class->set_property = cc_screen_panel_set_property;
+-  object_class->dispose = cc_screen_panel_dispose;
+-
+-  panel_class->get_help_uri = cc_screen_panel_get_help_uri;
+-}
+-
+-static void
+-set_brightness_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
+-{
+-  GError *error = NULL;
+-  GVariant *result;
+-
+-  CcScreenPanelPrivate *priv = CC_SCREEN_PANEL (user_data)->priv;
+-
+-  /* not setting, so pay attention to changed signals */
+-  priv->setting_brightness = FALSE;
+-  result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
+-  if (result == NULL)
+-    {
+-      g_printerr ("Error setting brightness: %s\n", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-}
+-
+-static void
+-brightness_slider_value_changed_cb (GtkRange *range, gpointer user_data)
+-{
+-  guint percentage;
+-  CcScreenPanelPrivate *priv = CC_SCREEN_PANEL (user_data)->priv;
+-
+-  /* do not loop */
+-  if (priv->setting_brightness)
+-    return;
+-
+-  priv->setting_brightness = TRUE;
+-
+-  /* push this to g-p-m */
+-  percentage = (guint) gtk_range_get_value (range);
+-  g_dbus_proxy_call (priv->proxy,
+-                     "SetPercentage",
+-                     g_variant_new ("(u)",
+-                                    percentage),
+-                     G_DBUS_CALL_FLAGS_NONE,
+-                     -1,
+-                     priv->cancellable,
+-                     set_brightness_cb,
+-                     user_data);
+-}
+-
+-static void
+-get_brightness_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
+-{
+-  GError *error = NULL;
+-  GVariant *result;
+-  guint brightness;
+-  GtkRange *range;
+-  CcScreenPanel *self = CC_SCREEN_PANEL (user_data);
+-
+-  result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
+-  if (result == NULL)
+-    {
+-      /* We got cancelled, so we're probably exiting */
+-      if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+-        {
+-          g_error_free (error);
+-          return;
+-	}
+-
+-      gtk_widget_hide (WID ("screen_brightness_hscale"));
+-      gtk_widget_hide (WID ("screen_auto_reduce_checkbutton"));
+-      gtk_widget_hide (WID ("brightness-frame"));
+-      g_object_set (G_OBJECT (WID ("turn-off-alignment")), "left-padding", 0, NULL);
+-
+-      if (error->message &&
+-      	  strstr (error->message, "No backlight devices present") == NULL)
+-        {
+-          g_warning ("Error getting brightness: %s", error->message);
+-        }
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  /* set the slider */
+-  g_variant_get (result,
+-                 "(u)",
+-                 &brightness);
+-  range = GTK_RANGE (WID ("screen_brightness_hscale"));
+-  gtk_range_set_range (range, 0, 100);
+-  gtk_range_set_increments (range, 1, 10);
+-  gtk_range_set_value (range, brightness);
+-  g_signal_connect (range,
+-                    "value-changed",
+-                    G_CALLBACK (brightness_slider_value_changed_cb),
+-                    user_data);
+-  g_variant_unref (result);
+-}
+-
+-static void
+-on_signal (GDBusProxy *proxy,
+-           gchar      *sender_name,
+-           gchar      *signal_name,
+-           GVariant   *parameters,
+-           gpointer    user_data)
+-{
+-  CcScreenPanel *self = CC_SCREEN_PANEL (user_data);
+-
+-  if (g_strcmp0 (signal_name, "Changed") == 0)
+-    {
+-      /* changed, but ignoring */
+-      if (self->priv->setting_brightness)
+-        return;
+-
+-      /* retrieve the value again from g-s-d */
+-      g_dbus_proxy_call (self->priv->proxy,
+-                         "GetPercentage",
+-                         NULL,
+-                         G_DBUS_CALL_FLAGS_NONE,
+-                         200, /* we don't want to randomly move the bar */
+-                         self->priv->cancellable,
+-                         get_brightness_cb,
+-                         user_data);
+-    }
+-}
+-
+-static void
+-got_power_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
+-{
+-  GError *error = NULL;
+-  CcScreenPanelPrivate *priv = CC_SCREEN_PANEL (user_data)->priv;
+-
+-  priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+-  if (priv->proxy == NULL)
+-    {
+-      g_printerr ("Error creating proxy: %s\n", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  /* we want to change the bar if the user presses brightness buttons */
+-  g_signal_connect (priv->proxy,
+-                    "g-signal",
+-                    G_CALLBACK (on_signal),
+-                    user_data);
+-
+-  /* get the initial state */
+-  g_dbus_proxy_call (priv->proxy,
+-                     "GetPercentage",
+-                     NULL,
+-                     G_DBUS_CALL_FLAGS_NONE,
+-                     200, /* we don't want to randomly move the bar */
+-                     priv->cancellable,
+-                     get_brightness_cb,
+-                     user_data);
+-}
+-
+-static void
+-set_idle_delay_from_dpms (CcScreenPanel *self,
+-                          int            value)
+-{
+-  guint off_delay;
+-
+-  off_delay = 0;
+-
+-  if (value > 0)
+-    off_delay = (guint) value;
+-
+-  g_settings_set (self->priv->session_settings, "idle-delay", "u", off_delay);
+-}
+-
+-static void
+-dpms_combo_changed_cb (GtkWidget *widget, CcScreenPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  gint value;
+-  gboolean ret;
+-
+-  /* no selection */
+-  ret = gtk_combo_box_get_active_iter (GTK_COMBO_BOX(widget), &iter);
+-  if (!ret)
+-    return;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+-  gtk_tree_model_get (model, &iter,
+-                      1, &value,
+-                      -1);
+-
+-  g_settings_set (self->priv->session_settings, "idle-delay", "u", value);
+-
+-  set_idle_delay_from_dpms (self, value);
+-}
+-
+-static void
+-lock_combo_changed_cb (GtkWidget *widget, CcScreenPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  guint delay;
+-  gboolean ret;
+-
+-  /* no selection */
+-  ret = gtk_combo_box_get_active_iter (GTK_COMBO_BOX(widget), &iter);
+-  if (!ret)
+-    return;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+-  gtk_tree_model_get (model, &iter,
+-                      1, &delay,
+-                      -1);
+-  g_settings_set (self->priv->lock_settings, "lock-delay", "u", delay);
+-}
+-
+-static void
+-set_dpms_value_for_combo (GtkComboBox *combo_box, CcScreenPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  gint value;
+-  gint value_tmp, value_prev;
+-  gboolean ret;
+-  guint i;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (combo_box);
+-  ret = gtk_tree_model_get_iter_first (model, &iter);
+-  if (!ret)
+-    return;
+-
+-  value_prev = 0;
+-  i = 0;
+-
+-  /* try to make the UI match the AC setting */
+-  g_settings_get (self->priv->session_settings, "idle-delay",  "u", &value);
+-  do
+-    {
+-      gtk_tree_model_get (model, &iter,
+-                          1, &value_tmp,
+-                          -1);
+-      if (value == value_tmp)
+-        {
+-          gtk_combo_box_set_active_iter (combo_box, &iter);
+-          return;
+-        }
+-      value_prev = value_tmp;
+-      i++;
+-    } while (gtk_tree_model_iter_next (model, &iter));
+-
+-  /* If we didn't find the setting in the list */
+-  gtk_combo_box_set_active (combo_box, i - 1);
+-}
+-
+-static void
+-set_lock_value_for_combo (GtkComboBox *combo_box, CcScreenPanel *self)
+-{
+-  GtkTreeIter iter;
+-  GtkTreeModel *model;
+-  guint value;
+-  gint value_tmp, value_prev;
+-  gboolean ret;
+-  guint i;
+-
+-  /* get entry */
+-  model = gtk_combo_box_get_model (combo_box);
+-  ret = gtk_tree_model_get_iter_first (model, &iter);
+-  if (!ret)
+-    return;
+-
+-  value_prev = 0;
+-  i = 0;
+-
+-  /* try to make the UI match the lock setting */
+-  g_settings_get (self->priv->lock_settings, "lock-delay", "u", &value);
+-
+-  do
+-    {
+-      gtk_tree_model_get (model, &iter,
+-                          1, &value_tmp,
+-                          -1);
+-      if (value == value_tmp ||
+-          (value_tmp > value_prev && value < value_tmp))
+-        {
+-          gtk_combo_box_set_active_iter (combo_box, &iter);
+-          return;
+-        }
+-      value_prev = value_tmp;
+-      i++;
+-    } while (gtk_tree_model_iter_next (model, &iter));
+-
+-  /* If we didn't find the setting in the list */
+-  gtk_combo_box_set_active (combo_box, i - 1);
+-}
+-
+-static void
+-cc_screen_panel_init (CcScreenPanel *self)
+-{
+-  GError     *error;
+-  GtkWidget  *widget;
+-
+-  self->priv = SCREEN_PANEL_PRIVATE (self);
+-
+-  self->priv->builder = gtk_builder_new ();
+-
+-  error = NULL;
+-  gtk_builder_add_from_file (self->priv->builder,
+-                             GNOMECC_UI_DIR "/screen.ui",
+-                             &error);
+-
+-  if (error != NULL)
+-    {
+-      g_warning ("Could not load interface file: %s", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  self->priv->cancellable = g_cancellable_new ();
+-
+-  /* get initial brightness version */
+-  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+-                            G_DBUS_PROXY_FLAGS_NONE,
+-                            NULL,
+-                            "org.gnome.SettingsDaemon",
+-                            "/org/gnome/SettingsDaemon/Power",
+-                            "org.gnome.SettingsDaemon.Power.Screen",
+-                            self->priv->cancellable,
+-                            got_power_proxy_cb,
+-                            self);
+-
+-  self->priv->lock_settings = g_settings_new ("org.gnome.desktop.screensaver");
+-  g_signal_connect (self->priv->lock_settings,
+-                    "changed",
+-                    G_CALLBACK (on_lock_settings_changed),
+-                    self);
+-  self->priv->gsd_settings = g_settings_new ("org.gnome.settings-daemon.plugins.power");
+-  self->priv->session_settings = g_settings_new ("org.gnome.desktop.session");
+-  self->priv->lockdown_settings = g_settings_new ("org.gnome.desktop.lockdown");
+-  g_signal_connect (self->priv->lockdown_settings,
+-                    "changed",
+-                    G_CALLBACK (on_lockdown_settings_changed),
+-                    self);
+-
+-  /* bind the auto dim checkbox */
+-  widget = WID ("screen_auto_reduce_checkbutton");
+-  g_settings_bind (self->priv->gsd_settings,
+-                   "idle-dim",
+-                   widget, "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-
+-  /* display off time */
+-  widget = WID ("screen_brightness_combobox");
+-  set_dpms_value_for_combo (GTK_COMBO_BOX (widget), self);
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (dpms_combo_changed_cb),
+-                    self);
+-
+-  /* bind the screen lock checkbox */
+-  widget = WID ("screen_lock_on_switch");
+-  g_settings_bind (self->priv->lock_settings,
+-                   "lock-enabled",
+-                   widget, "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-
+-  /* lock time */
+-  widget = WID ("screen_lock_combobox");
+-  set_lock_value_for_combo (GTK_COMBO_BOX (widget), self);
+-  g_signal_connect (widget, "changed",
+-                    G_CALLBACK (lock_combo_changed_cb),
+-                    self);
+-
+-  widget = WID ("screen_lock_hbox");
+-  g_settings_bind (self->priv->lock_settings,
+-                   "lock-enabled",
+-                   widget, "sensitive",
+-                   G_SETTINGS_BIND_GET);
+-
+-  widget = WID ("show_notifications_check");
+-  g_settings_bind (self->priv->lock_settings,
+-                   "show-notifications",
+-                   widget, "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-  if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
+-    gtk_widget_hide (widget);
+-
+-  update_lock_screen_sensitivity (self);
+-
+-  /* bind the screen lock suspend checkbutton */
+-  widget = WID ("screen_lock_suspend_checkbutton");
+-  g_settings_bind (self->priv->lock_settings,
+-                   "ubuntu-lock-on-suspend",
+-                   widget, "active",
+-                   G_SETTINGS_BIND_DEFAULT);
+-
+-  widget = WID ("screen_vbox");
+-  gtk_widget_reparent (widget, (GtkWidget *) self);
+-  g_object_set (self, "valign", GTK_ALIGN_START, NULL);
+-}
+-
+-void
+-cc_screen_panel_register (GIOModule *module)
+-{
+-  cc_screen_panel_register_type (G_TYPE_MODULE (module));
+-  g_io_extension_point_implement (CC_SHELL_PANEL_EXTENSION_POINT,
+-                                  CC_TYPE_SCREEN_PANEL,
+-                                  "screen", 0);
+-}
+-
+diff --git a/panels/screen/cc-screen-panel.h b/panels/screen/cc-screen-panel.h
+deleted file mode 100644
+index 6280b78..0000000
+--- a/panels/screen/cc-screen-panel.h
++++ /dev/null
+@@ -1,73 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- */
+-
+-
+-#ifndef _CC_SCREEN_PANEL_H
+-#define _CC_SCREEN_PANEL_H
+-
+-#include <shell/cc-panel.h>
+-
+-G_BEGIN_DECLS
+-
+-#define CC_TYPE_SCREEN_PANEL cc_screen_panel_get_type()
+-
+-#define CC_SCREEN_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
+-  CC_TYPE_SCREEN_PANEL, CcScreenPanel))
+-
+-#define CC_SCREEN_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_CAST ((klass), \
+-  CC_TYPE_SCREEN_PANEL, CcScreenPanelClass))
+-
+-#define CC_IS_SCREEN_PANEL(obj) \
+-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), \
+-  CC_TYPE_SCREEN_PANEL))
+-
+-#define CC_IS_SCREEN_PANEL_CLASS(klass) \
+-  (G_TYPE_CHECK_CLASS_TYPE ((klass), \
+-  CC_TYPE_SCREEN_PANEL))
+-
+-#define CC_SCREEN_PANEL_GET_CLASS(obj) \
+-  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+-  CC_TYPE_SCREEN_PANEL, CcScreenPanelClass))
+-
+-typedef struct _CcScreenPanel CcScreenPanel;
+-typedef struct _CcScreenPanelClass CcScreenPanelClass;
+-typedef struct _CcScreenPanelPrivate CcScreenPanelPrivate;
+-
+-struct _CcScreenPanel
+-{
+-  CcPanel parent;
+-
+-  CcScreenPanelPrivate *priv;
+-};
+-
+-struct _CcScreenPanelClass
+-{
+-  CcPanelClass parent_class;
+-};
+-
+-GType cc_screen_panel_get_type (void) G_GNUC_CONST;
+-
+-void  cc_screen_panel_register (GIOModule *module);
+-
+-G_END_DECLS
+-
+-#endif /* _CC_SCREEN_PANEL_H */
+diff --git a/panels/screen/screen-module.c b/panels/screen/screen-module.c
+deleted file mode 100644
+index afa67dc..0000000
+--- a/panels/screen/screen-module.c
++++ /dev/null
+@@ -1,41 +0,0 @@
+-/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*-
+- *
+- * Copyright (C) 2010 Red Hat, Inc
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+- *
+- */
+-
+-#include <config.h>
+-
+-#include "cc-screen-panel.h"
+-
+-#include <glib/gi18n-lib.h>
+-
+-void
+-g_io_module_load (GIOModule *module)
+-{
+-  bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+-
+-  /* register the panel */
+-  cc_screen_panel_register (module);
+-}
+-
+-void
+-g_io_module_unload (GIOModule *module)
+-{
+-}
+diff --git a/panels/screen/screen.ui b/panels/screen/screen.ui
+deleted file mode 100644
+index 939ed9f..0000000
+--- a/panels/screen/screen.ui
++++ /dev/null
+@@ -1,439 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<interface>
+-  <!-- interface-requires gtk+ 3.0 -->
+-  <object class="GtkListStore" id="lock_liststore">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gint"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">Screen turns off</col>
+-        <col id="1">0</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">30 seconds</col>
+-        <col id="1">30</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">1 minute</col>
+-        <col id="1">60</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">2 minutes</col>
+-        <col id="1">120</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">3 minutes</col>
+-        <col id="1">180</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">5 minutes</col>
+-        <col id="1">300</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">10 minutes</col>
+-        <col id="1">600</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">30 minutes</col>
+-        <col id="1">1800</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">1 hour</col>
+-        <col id="1">3600</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkListStore" id="screen_brightness_liststore">
+-    <columns>
+-      <!-- column-name name -->
+-      <column type="gchararray"/>
+-      <!-- column-name value -->
+-      <column type="gint"/>
+-    </columns>
+-    <data>
+-      <row>
+-        <col id="0" translatable="yes">1 minute</col>
+-        <col id="1">60</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">2 minutes</col>
+-        <col id="1">120</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">3 minutes</col>
+-        <col id="1">180</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">5 minutes</col>
+-        <col id="1">300</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">10 minutes</col>
+-        <col id="1">600</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">30 minutes</col>
+-        <col id="1">1800</col>
+-      </row>
+-      <row>
+-        <col id="0" translatable="yes">1 hour</col>
+-        <col id="1">3600</col>
+-      </row>
+-      <row>
+-	<col id="0" translatable="yes">Never</col>
+-	<col id="1">0</col>
+-      </row>
+-    </data>
+-  </object>
+-  <object class="GtkWindow" id="window1">
+-    <child>
+-      <object class="GtkVBox" id="screen_vbox">
+-        <property name="visible">True</property>
+-        <property name="orientation">vertical</property>
+-        <child>
+-          <object class="GtkVBox" id="vbox9">
+-            <property name="visible">True</property>
+-            <property name="border_width">10</property>
+-            <property name="orientation">vertical</property>
+-            <property name="spacing">12</property>
+-            <child>
+-              <object class="GtkFrame" id="brightness-frame">
+-                <property name="visible">True</property>
+-                <property name="label_xalign">0</property>
+-                <property name="shadow_type">none</property>
+-                <child>
+-                  <object class="GtkAlignment" id="alignment1">
+-                    <property name="visible">True</property>
+-                    <property name="top_padding">6</property>
+-                    <property name="left_padding">12</property>
+-                    <child>
+-                      <object class="GtkVBox" id="vbox3">
+-                        <property name="visible">True</property>
+-                        <property name="orientation">vertical</property>
+-                        <property name="spacing">6</property>
+-                        <child>
+-                          <object class="GtkHScale" id="screen_brightness_hscale">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">True</property>
+-                            <property name="digits">0</property>
+-                            <property name="draw_value">False</property>
+-                            <property name="value_pos">bottom</property>
+-                            <accessibility>
+-                              <relation type="labelled-by" target="brightness-section-heading"/>
+-                            </accessibility>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">0</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkCheckButton" id="screen_auto_reduce_checkbutton">
+-                            <property name="label" translatable="yes">_Dim screen to save power</property>
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">True</property>
+-                            <property name="receives_default">False</property>
+-                            <property name="use_action_appearance">False</property>
+-                            <property name="use_underline">True</property>
+-                            <property name="draw_indicator">True</property>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">1</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                    </child>
+-                  </object>
+-                </child>
+-                <child type="label">
+-                  <object class="GtkLabel" id="brightness-section-heading">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="label" translatable="yes">Brightness</property>
+-                    <property name="use_markup">True</property>
+-                    <attributes>
+-                      <attribute name="weight" value="bold"/>
+-                    </attributes>
+-                  </object>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">0</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkAlignment" id="turn-off-alignment">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="top_padding">6</property>
+-                <property name="left_padding">12</property>
+-                <child>
+-                  <object class="GtkHBox" id="hbox9">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="spacing">6</property>
+-                    <child>
+-                      <object class="GtkLabel" id="turn_off_after_label">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="xalign">0</property>
+-                        <property name="label" translatable="yes">_Turn screen off when inactive for:</property>
+-                        <property name="use_underline">True</property>
+-                        <property name="mnemonic_widget">screen_brightness_combobox</property>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">0</property>
+-                      </packing>
+-                    </child>
+-                    <child>
+-                      <object class="GtkComboBoxText" id="screen_brightness_combobox">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="model">screen_brightness_liststore</property>
+-                      </object>
+-                      <packing>
+-                        <property name="expand">False</property>
+-                        <property name="fill">False</property>
+-                        <property name="position">1</property>
+-                      </packing>
+-                    </child>
+-                  </object>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">True</property>
+-                <property name="fill">True</property>
+-                <property name="position">1</property>
+-              </packing>
+-            </child>
+-            <child>
+-              <object class="GtkFrame" id="frame2">
+-                <property name="visible">True</property>
+-                <property name="can_focus">False</property>
+-                <property name="label_xalign">0</property>
+-                <property name="shadow_type">none</property>
+-                <child>
+-                  <object class="GtkAlignment" id="alignment2">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="top_padding">6</property>
+-                    <property name="left_padding">12</property>
+-                    <child>
+-                      <object class="GtkVBox" id="screen_lock_main_box">
+-                        <property name="visible">True</property>
+-                        <property name="can_focus">False</property>
+-                        <property name="spacing">6</property>
+-                        <child>
+-                          <object class="GtkHBox" id="hbox8">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <child>
+-                              <object class="GtkSwitch" id="screen_lock_on_switch">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <accessibility>
+-                                  <relation type="labelled-by" target="lock-section-heading"/>
+-                                </accessibility>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">False</property>
+-                            <property name="position">0</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkHBox" id="screen_lock_hbox">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="spacing">6</property>
+-                            <child>
+-                              <object class="GtkLabel" id="lock_screen_after_label">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="xalign">0</property>
+-                                <property name="label" translatable="yes">_Lock screen after:</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="mnemonic_widget">screen_lock_combobox</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkComboBoxText" id="screen_lock_combobox">
+-                                <property name="visible">True</property>
+-                                <property name="model">lock_liststore</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">1</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">False</property>
+-                            <property name="position">1</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkHBox" id="screen_suspend_hbox">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <property name="spacing">6</property>
+-                            <child>
+-                              <object class="GtkCheckButton" id="screen_lock_suspend_checkbutton">
+-                                <property name="label" translatable="yes">Require my password when waking from suspend</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">False</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">False</property>
+-                            <property name="fill">False</property>
+-                            <property name="position">2</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkHBox" id="hbox2">
+-                            <property name="can_focus">False</property>
+-                            <property name="no_show_all">True</property>
+-                            <child>
+-                              <object class="GtkCheckButton" id="screen_lock_not_home_checkbutton">
+-                                <property name="label" translatable="yes" comments="To translators: This asks whether you want to lock the screen (through the screensaver) when you're detected to be physically in your home (your house, etc.)">Don't lock when at home</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="xalign">0</property>
+-                                <property name="draw_indicator">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">True</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkLinkButton" id="screen_locations_linkbutton">
+-                                <property name="label" translatable="yes">Locations...</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">True</property>
+-                                <property name="has_tooltip">False</property>
+-                                <property name="use_action_appearance">False</property>
+-                                <property name="relief">none</property>
+-                                <property name="image_position">right</property>
+-                                <property name="uri">http://glade.gnome.org</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">1</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">3</property>
+-                          </packing>
+-                        </child>
+-                        <child>
+-                          <object class="GtkBox" id="show_notifications_box">
+-                            <property name="visible">True</property>
+-                            <property name="can_focus">False</property>
+-                            <child>
+-                              <object class="GtkCheckButton" id="show_notifications_check">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="xalign">0</property>
+-                                <property name="label" translatable="yes">Show _notifications when locked</property>
+-                                <property name="use_underline">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">True</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                          <packing>
+-                            <property name="expand">True</property>
+-                            <property name="fill">True</property>
+-                            <property name="position">4</property>
+-                          </packing>
+-                        </child>
+-                      </object>
+-                    </child>
+-                  </object>
+-                </child>
+-                <child type="label">
+-                  <object class="GtkLabel" id="lock-section-heading">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="label" translatable="yes">Lock</property>
+-                    <property name="use_markup">True</property>
+-                    <attributes>
+-                      <attribute name="weight" value="bold"/>
+-                    </attributes>
+-                  </object>
+-                </child>
+-              </object>
+-              <packing>
+-                <property name="expand">False</property>
+-                <property name="fill">True</property>
+-                <property name="position">2</property>
+-              </packing>
+-            </child>
+-          </object>
+-          <packing>
+-            <property name="expand">True</property>
+-            <property name="fill">True</property>
+-            <property name="position">0</property>
+-          </packing>
+-        </child>
+-      </object>
+-    </child>
+-  </object>
+-  <object class="GtkSizeGroup" id="sizegroup1">
+-    <widgets>
+-      <widget name="screen_brightness_combobox"/>
+-      <widget name="screen_lock_combobox"/>
+-    </widgets>
+-  </object>
+-  <object class="GtkSizeGroup" id="sizegroup2">
+-    <widgets>
+-      <widget name="turn_off_after_label"/>
+-      <widget name="lock_screen_after_label"/>
+-    </widgets>
+-  </object>
+-</interface>
+diff --git a/panels/screen/unity-screen-panel.desktop.in.in b/panels/screen/unity-screen-panel.desktop.in.in
+deleted file mode 100644
+index fab8112..0000000
+--- a/panels/screen/unity-screen-panel.desktop.in.in
++++ /dev/null
+@@ -1,13 +0,0 @@
+-[Desktop Entry]
+-_Name=Brightness & Lock
+-_Comment=Screen brightness and lock settings
+-Exec=unity-control-center screen
+-Icon=system-lock-screen
+-Terminal=false
+-Type=Application
+-StartupNotify=true
+-Categories=GNOME;GTK;Settings;DesktopSettings;X-Unity-Settings-Panel;X-GNOME-PersonalSettings
+-OnlyShowIn=Unity;
+-X-Unity-Settings-Panel=screen
+-# Translators: those are keywords for the brightness and lock control-center panel
+-_Keywords=Brightness;Lock;Dim;Blank;Monitor;
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index d33d704..0af926f 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -16,8 +16,6 @@ panels/datetime/datetime-prefs.c
+ panels/datetime/datetime-prefs-locations.c
+ panels/datetime/unity-datetime-panel.desktop.in.in
+ panels/datetime/utils.c
+-panels/screen/unity-screen-panel.desktop.in.in
+-[type: gettext/glade]panels/screen/screen.ui
+ panels/sound/cc-sound-panel.c
+ panels/sound/gvc-balance-bar.c
+ panels/sound/gvc-channel-bar.c
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+index 4b8bb62..e30a3a8 100644
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -2,7 +2,6 @@ egg-list-box/egg-flow-box.c
+ panels/background/gnome-background-panel.desktop.in
+ panels/datetime/gnome-datetime-panel.desktop.in
+ panels/online-accounts/gnome-online-accounts-panel.desktop.in
+-panels/screen/gnome-screen-panel.desktop.in
+ panels/sound/data/gnome-sound-panel.desktop.in
+ panels/sound/data/sounds/gnome-sounds-default.xml.in
+ panels/sound/gvc/gvc-mixer-control.c
+-- 
+1.9.1
+

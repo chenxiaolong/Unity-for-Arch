@@ -1,29 +1,107 @@
-From 8d79d8784cfd14f3ce7f848b4e88d1d0e56b2534 Mon Sep 17 00:00:00 2001
+From 0064fbe86b596e40773f5b18235dce4cb9a03721 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-Date: Thu, 3 Apr 2014 22:39:11 -0400
-Subject: [PATCH] Remove incompatible bluetooth panel
+Date: Sat, 5 Apr 2014 18:53:37 -0400
+Subject: [PATCH 01/17] Remove Bluetooth panel
 
 ---
- panels/bluetooth/Makefile.am                       |  31 +-
+ configure.ac                                       |  12 -
+ man/unity-control-center.xml                       |   9 -
+ panels/Makefile.am                                 |   4 -
+ panels/bluetooth/Makefile.am                       |  40 -
  panels/bluetooth/bluetooth.gresource.xml           |   6 -
  panels/bluetooth/bluetooth.ui                      | 736 ----------------
  panels/bluetooth/cc-bluetooth-panel.c              | 946 ---------------------
  panels/bluetooth/cc-bluetooth-panel.h              |  59 --
- .../bluetooth/unity-bluetooth-panel.desktop.in.in  |   2 +-
- 6 files changed, 3 insertions(+), 1777 deletions(-)
+ .../bluetooth/unity-bluetooth-panel.desktop.in.in  |  11 -
+ po/POTFILES.in                                     |   3 -
+ po/POTFILES.skip                                   |   1 -
+ 11 files changed, 1827 deletions(-)
+ delete mode 100644 panels/bluetooth/Makefile.am
  delete mode 100644 panels/bluetooth/bluetooth.gresource.xml
  delete mode 100644 panels/bluetooth/bluetooth.ui
  delete mode 100644 panels/bluetooth/cc-bluetooth-panel.c
  delete mode 100644 panels/bluetooth/cc-bluetooth-panel.h
+ delete mode 100644 panels/bluetooth/unity-bluetooth-panel.desktop.in.in
 
-diff --git a/panels/bluetooth/Makefile.am b/panels/bluetooth/Makefile.am
-index 183440e..3e07f75 100644
---- a/panels/bluetooth/Makefile.am
-+++ b/panels/bluetooth/Makefile.am
-@@ -1,40 +1,13 @@
- # This is used in PANEL_CFLAGS
- cappletname = bluetooth
+diff --git a/configure.ac b/configure.ac
+index 75677dc..7265f3d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -170,11 +170,6 @@ if test "x$have_networkmanager" = xno ; then
+ fi
+ AM_CONDITIONAL(BUILD_NETWORK, [test x$have_networkmanager = xyes])
  
+-# Check for gnome-bluetooth
+-PKG_CHECK_MODULES(BLUETOOTH, $COMMON_MODULES gnome-bluetooth-1.0 >= 3.5.5,
+-		  [have_bluetooth=yes], have_bluetooth=no)
+-AM_CONDITIONAL(BUILD_BLUETOOTH, [test x$have_bluetooth = xyes])
+-
+ # Check for CUPS 1.4 or newer
+ AC_ARG_ENABLE([cups],
+               AS_HELP_STRING([--disable-cups], [disable CUPS support (default: enabled)]),,
+@@ -400,8 +395,6 @@ panels/Makefile
+ panels/common/Makefile
+ panels/appearance/Makefile
+ panels/appearance/unity-appearance-panel.desktop.in
+-panels/bluetooth/Makefile
+-panels/bluetooth/unity-bluetooth-panel.desktop.in
+ panels/datetime/Makefile
+ panels/datetime/unity-datetime-panel.desktop.in
+ panels/display/Makefile
+@@ -484,11 +477,6 @@ if test "x$have_networkmanager" = "xyes"; then
+ else
+ 	AC_MSG_NOTICE([   Network panel disabled])
+ fi
+-if test "x$have_bluetooth" = "xyes"; then
+-	AC_MSG_NOTICE([** gnome-bluetooth (Bluetooth panel)])
+-else
+-	AC_MSG_NOTICE([   Bluetooth panel disabled])
+-fi
+ if test "x$enable_cups" = "xyes"; then
+ 	AC_MSG_NOTICE([** CUPS (Printers panel)])
+ else
+diff --git a/man/unity-control-center.xml b/man/unity-control-center.xml
+index 44645d1..7e0806e 100644
+--- a/man/unity-control-center.xml
++++ b/man/unity-control-center.xml
+@@ -77,15 +77,6 @@
+                         </varlistentry>
+ 
+                         <varlistentry>
+-                                <term><option>bluetooth</option></term>
+-
+-                                <listitem><para>The bluetooth panel lets you
+-                                configure your computer's Bluetooth adapter,
+-                                and pair the computer with Bluetooth keyboards,
+-                                phones, etc.</para></listitem>
+-                        </varlistentry>
+-
+-                        <varlistentry>
+                                 <term><option>color</option></term>
+ 
+                                 <listitem><para>The color panel can calibrate
+diff --git a/panels/Makefile.am b/panels/Makefile.am
+index b55b8d4..6ac50dc 100644
+--- a/panels/Makefile.am
++++ b/panels/Makefile.am
+@@ -26,8 +26,4 @@ if BUILD_NETWORK
+ SUBDIRS += network
+ endif
+ 
+-if BUILD_BLUETOOTH
+-SUBDIRS += bluetooth
+-endif
+-
+ -include $(top_srcdir)/git.mk
+diff --git a/panels/bluetooth/Makefile.am b/panels/bluetooth/Makefile.am
+deleted file mode 100644
+index 183440e..0000000
+--- a/panels/bluetooth/Makefile.am
++++ /dev/null
+@@ -1,40 +0,0 @@
+-# This is used in PANEL_CFLAGS
+-cappletname = bluetooth
+-
 -ccpanelsdir = $(PANELS_DIR)
 -ccpanels_LTLIBRARIES = libbluetooth.la
 -
@@ -51,18 +129,16 @@ index 183440e..3e07f75 100644
 -cc-bluetooth-resources.h: bluetooth.gresource.xml $(resource_files)
 -	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name cc_bluetooth $<
 -
- desktopdir = $(datadir)/applications
- desktop_in_in_files = untiy-bluetooth-panel.desktop.in.in
- desktop_in_files = unity-bluetooth-panel.desktop.in
- desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
- @INTLTOOL_DESKTOP_RULE@
- 
+-desktopdir = $(datadir)/applications
+-desktop_in_in_files = untiy-bluetooth-panel.desktop.in.in
+-desktop_in_files = unity-bluetooth-panel.desktop.in
+-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+-@INTLTOOL_DESKTOP_RULE@
+-
 -CLEANFILES = $(desktop_DATA) $(BUILT_SOURCES)
 -EXTRA_DIST = $(man_MANS) $(desktop_in_in_files) $(resource_files) bluetooth.gresource.xml
-+CLEANFILES = $(desktop_DATA)
-+EXTRA_DIST = $(desktop_in_in_files)
- 
- -include $(top_srcdir)/git.mk
+-
+--include $(top_srcdir)/git.mk
 diff --git a/panels/bluetooth/bluetooth.gresource.xml b/panels/bluetooth/bluetooth.gresource.xml
 deleted file mode 100644
 index 95f0a07..0000000
@@ -1835,18 +1911,47 @@ index 2a37d74..0000000
 -#endif /* _CC_BLUETOOTH_PANEL_H */
 -
 diff --git a/panels/bluetooth/unity-bluetooth-panel.desktop.in.in b/panels/bluetooth/unity-bluetooth-panel.desktop.in.in
-index fabf7fa..f3577b9 100644
+deleted file mode 100644
+index fabf7fa..0000000
 --- a/panels/bluetooth/unity-bluetooth-panel.desktop.in.in
-+++ b/panels/bluetooth/unity-bluetooth-panel.desktop.in.in
-@@ -2,7 +2,7 @@
- _Name=Bluetooth
- _Comment=Configure Bluetooth settings
- Icon=bluetooth
++++ /dev/null
+@@ -1,11 +0,0 @@
+-[Desktop Entry]
+-_Name=Bluetooth
+-_Comment=Configure Bluetooth settings
+-Icon=bluetooth
 -Exec=unity-control-center bluetooth
-+Exec=gnome-control-center bluetooth
- Terminal=false
- Type=Application
- Categories=GTK;GNOME;Settings;X-GNOME-NetworkSettings;HardwareSettings;X-Unity-Settings-Panel;
+-Terminal=false
+-Type=Application
+-Categories=GTK;GNOME;Settings;X-GNOME-NetworkSettings;HardwareSettings;X-Unity-Settings-Panel;
+-OnlyShowIn=Unity;
+-StartupNotify=true
+-X-Unity-Settings-Panel=bluetooth
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index b48e3fb..1aa623d 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -6,9 +6,6 @@ panels/appearance/bg-colors-source.c
+ panels/appearance/cc-appearance-item.c
+ panels/appearance/cc-appearance-panel.c
+ panels/appearance/unity-appearance-panel.desktop.in.in
+-panels/bluetooth/unity-bluetooth-panel.desktop.in.in
+-[type: gettext/glade]panels/bluetooth/bluetooth.ui
+-panels/bluetooth/cc-bluetooth-panel.c
+ panels/color/cc-color-panel.c
+ [type: gettext/glade]panels/color/color.ui
+ panels/color/unity-color-panel.desktop.in.in
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+index ad5d325..92a9d3c 100644
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -1,6 +1,5 @@
+ egg-list-box/egg-flow-box.c
+ panels/background/gnome-background-panel.desktop.in
+-panels/bluetooth/gnome-bluetooth-panel.desktop.in
+ panels/color/gnome-color-panel.desktop.in
+ panels/datetime/gnome-datetime-panel.desktop.in
+ panels/display/gnome-display-panel.desktop.in
 -- 
 1.9.1
 
