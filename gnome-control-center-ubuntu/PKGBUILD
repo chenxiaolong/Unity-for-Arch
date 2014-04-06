@@ -24,12 +24,16 @@ conflicts=('gnome-control-center')
 options=('!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz")
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        '0001-Clear-GTK-MODULES-Before-Starting.patch')
 sha512sums=('d69125f31bb3d5cf51161836617327b221eb5b9992e1f9db84121602723295496091ea5e4c1e7017ecd2f9d943197843c7c195b58738b3527220e38e52525987'
-            '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97')
+            '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97'
+            'e4af362d67fda91b3f03dbe8f18781e31b60448aa7b9947d81acf37f823a2c5e5c8330c68af0aa6155573811be20e5dadac0f4e51576dd1be4e35599394a6900')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  patch -p1 -i "${srcdir}/0001-Clear-GTK-MODULES-Before-Starting.patch"
 
   # Apply Ubuntu's patches
     # Disable patches
