@@ -12,24 +12,28 @@ arch=('i686' 'x86_64')
 groups=('unity')
 url="https://launchpad.net/unity-control-center"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'modemmanager' 'libgnomekbd' 'webkitgtk3' 'system-config-printer' 'unity-settings-daemon' 'ibus')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'vala' 'desktop-file-utils')
-optdepends=('gnome-user-share: Bluetooth and WebDAV file sharing'
-            'rygel: media sharing'
-            'vino: screen sharing'
-            'openssh: remote login')
-conflicts=('gnome-control-center-unity' 'credentials-preferences' 'credentials-preferences-ubuntu')
+depends=('gnome-desktop' 'gnome-menus' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'gnome-settings-daemon')
+makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'git')
 options=('!emptydirs')
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001-Build-fix.patch'
-        '0002-Remove-terminal-shortcut.patch'
-        '0003-Remove-lid-close.patch'
-        '0004-Remove-Ubuntu-language.patch'
-        '0005-Remove-ubuntu-system-proxy.patch'
-        '0006-Remove-update-manager.patch'
-        '0007-Remove-ubuntu-help.patch'
-        '0001-Remove-incompatible-bluetooth-panel.patch')
+        '0001-Remove-Bluetooth-panel.patch'
+        '0002-Remove-Wacom-panel.patch'
+        '0003-Remove-Color-panel.patch'
+        '0004-Remove-Printers-panel.patch'
+        '0005-Remove-Keyboard-panel.patch'
+        '0006-Remove-Network-panel.patch'
+        '0007-Remove-Power-panel.patch'
+        '0008-Remove-Region-panel.patch'
+        '0009-Remove-Display-panel.patch'
+        '0010-Remove-User-Accounts-panel.patch'
+        '0011-Remove-Universal-Access-panel.patch'
+        '0012-Remove-Info-panel.patch'
+        '0013-Remove-Mouse-panel.patch'
+        '0014-Remove-Screen-panel.patch'
+        '0015-Remove-Sound-panel.patch'
+        '0016-Remove-Ubuntu-specific-language-code.patch'
+        '0017-Remove-Ubuntu-help-links.patch')
 sha512sums=('49b10a7a768daac1bea222d286ce9fd530f6718664d2f21edc8dc10009fac35f0dae40c785d9460171bc1e132350ead4279eaef0c2af6a8366e68bd435042ddf'
             'd06ac925143f98d1da4505b4140d7011a8167ae1e6f8503145674666ed3b6f6e57fd3d3c900af4577ebff621a528be7a02724810fe165b275a332f09addd7313'
             'da3d1112ce6781fc345d862a194147952cd1b4f4b35b880250895b5ad00c7c3b7ffcf59984aa14e70e9ef314709602546eae950791b7b71c28849a44773881fe'
@@ -43,14 +47,26 @@ sha512sums=('49b10a7a768daac1bea222d286ce9fd530f6718664d2f21edc8dc10009fac35f0da
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001-Build-fix.patch"
-  patch -p1 -i "${srcdir}/0002-Remove-terminal-shortcut.patch"
-  patch -p1 -i "${srcdir}/0003-Remove-lid-close.patch"
-  patch -p1 -i "${srcdir}/0004-Remove-Ubuntu-language.patch"
-  patch -p1 -i "${srcdir}/0005-Remove-ubuntu-system-proxy.patch"
-  patch -p1 -i "${srcdir}/0006-Remove-update-manager.patch"
-  patch -p1 -i "${srcdir}/0007-Remove-ubuntu-help.patch"
-  patch -p1 -i "${srcdir}/0001-Remove-incompatible-bluetooth-panel.patch"
+  git init
+  git add .
+  git commit -m 'Initial commit'
+  git am "${srcdir}/0001-Remove-Bluetooth-panel.patch"
+  git am "${srcdir}/0002-Remove-Wacom-panel.patch"
+  git am "${srcdir}/0003-Remove-Color-panel.patch"
+  git am "${srcdir}/0004-Remove-Printers-panel.patch"
+  git am "${srcdir}/0005-Remove-Keyboard-panel.patch"
+  git am "${srcdir}/0006-Remove-Network-panel.patch"
+  git am "${srcdir}/0007-Remove-Power-panel.patch"
+  git am "${srcdir}/0008-Remove-Region-panel.patch"
+  git am "${srcdir}/0009-Remove-Display-panel.patch"
+  git am "${srcdir}/0010-Remove-User-Accounts-panel.patch"
+  git am "${srcdir}/0011-Remove-Universal-Access-panel.patch"
+  git am "${srcdir}/0012-Remove-Info-panel.patch"
+  git am "${srcdir}/0013-Remove-Mouse-panel.patch"
+  git am "${srcdir}/0014-Remove-Screen-panel.patch"
+  git am "${srcdir}/0015-Remove-Sound-panel.patch"
+  git am "${srcdir}/0016-Remove-Ubuntu-specific-language-code.patch"
+  git am "${srcdir}/0017-Remove-Ubuntu-help-links.patch"
 }
 
 build() {
@@ -83,6 +99,9 @@ package() {
 
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
+
+  # This is called by gnome-control-center
+  mv "${pkgdir}"/usr/bin/unity-control-center{,-real}
 }
 
 # vim:set ts=2 sw=2 et:
