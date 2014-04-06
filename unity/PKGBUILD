@@ -104,7 +104,6 @@ build() {
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DUSE_GSETTINGS=TRUE \
-    -Duse_pch=OFF \
     ..
 
   make
