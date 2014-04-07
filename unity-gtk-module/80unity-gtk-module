@@ -1,14 +1,12 @@
-if [ -f "${HOME}/.config/enable-gtk-appmenu" ]; then
-  if [ -n "$GTK_MODULES" ]; then
+if [ -n "$GTK_MODULES" ]; then
     GTK_MODULES="${GTK_MODULES}:unity-gtk-module"
-  else
+else
     GTK_MODULES="unity-gtk-module"
-  fi
-
-  if [ -z "$UBUNTU_MENUPROXY" ]; then
-    UBUNTU_MENUPROXY=1
-  fi
-
-  export GTK_MODULES
-  export UBUNTU_MENUPROXY
 fi
+
+if [ -z "$UBUNTU_MENUPROXY" ]; then
+    UBUNTU_MENUPROXY=1
+fi
+
+export GTK_MODULES
+export UBUNTU_MENUPROXY
