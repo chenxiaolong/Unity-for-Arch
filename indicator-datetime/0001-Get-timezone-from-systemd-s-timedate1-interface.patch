@@ -1,0 +1,442 @@
+From d156e9b3b1dc7761f0658a2e837fcb79f31fa001 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 6 Apr 2014 22:26:15 -0400
+Subject: [PATCH] Get timezone from systemd's timedate1 interface
+
+---
+ data/com.canonical.indicator.datetime.gschema.xml |  2 +-
+ include/datetime/timezone-file.h                  |  1 +
+ include/datetime/timezone-systemd.h               | 60 ++++++++++++++++++
+ include/datetime/timezones-live.h                 |  3 +
+ src/CMakeLists.txt                                | 21 ++++++-
+ src/main.cpp                                      | 16 +++--
+ src/timedate1-interface.xml                       | 74 +++++++++++++++++++++++
+ src/timezone-file.cpp                             |  9 ++-
+ src/timezone-systemd.cpp                          | 71 ++++++++++++++++++++++
+ src/timezones-live.cpp                            | 17 +++++-
+ 10 files changed, 265 insertions(+), 9 deletions(-)
+ create mode 100644 include/datetime/timezone-systemd.h
+ create mode 100644 src/timedate1-interface.xml
+ create mode 100644 src/timezone-systemd.cpp
+
+diff --git a/data/com.canonical.indicator.datetime.gschema.xml b/data/com.canonical.indicator.datetime.gschema.xml
+index 1a5922c..6f415cd 100644
+--- a/data/com.canonical.indicator.datetime.gschema.xml
++++ b/data/com.canonical.indicator.datetime.gschema.xml
+@@ -98,7 +98,7 @@
+ 			<default>false</default>
+ 			<summary>Show the auto-detected location in the indicator</summary>
+ 			<description>
+-			  Shows your current location (determined from geoclue and /etc/timezone) in indicator-datetime's menu.
++			  Shows your current location (determined from geoclue and systemd's timedated) in indicator-datetime's menu.
+ 			</description>
+ 		</key>
+ 		<key name="show-locations" type="b">
+diff --git a/include/datetime/timezone-file.h b/include/datetime/timezone-file.h
+index a67c01a..e8896fb 100644
+--- a/include/datetime/timezone-file.h
++++ b/include/datetime/timezone-file.h
+@@ -40,6 +40,7 @@ public:
+     FileTimezone();
+     FileTimezone(const std::string& filename);
+     ~FileTimezone();
++    static bool have_file(const std::string& filename);
+ 
+ private:
+     void set_filename(const std::string& filename);
+diff --git a/include/datetime/timezone-systemd.h b/include/datetime/timezone-systemd.h
+new file mode 100644
+index 0000000..08eb25d
+--- /dev/null
++++ b/include/datetime/timezone-systemd.h
+@@ -0,0 +1,60 @@
++/*
++ * Copyright 2014 Xiao-Long Chen <chenxiaolong@cxl.epac.to>
++ *
++ * This program is free software: you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 3, as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranties of
++ * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
++ * PURPOSE.  See the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Authors:
++ *   Charles Kerr <charles.kerr@canonical.com>
++ */
++
++#ifndef INDICATOR_DATETIME_SYSTEMD_TIMEZONE_H
++#define INDICATOR_DATETIME_SYSTEMD_TIMEZONE_H
++
++#include <datetime/timezone.h> // base class
++
++#include <string> // std::string
++
++#include "timedate1.h"
++#include <glib.h>
++#include <gio/gio.h>
++
++namespace unity {
++namespace indicator {
++namespace datetime {
++
++/**
++ * \brief A #Timezone that gets its information from systemd
++ */
++class SystemdTimezone : public Timezone
++{
++public:
++    SystemdTimezone();
++    ~SystemdTimezone();
++
++private:
++    static void on_timezone_changed(gpointer gself);
++    void set_timezone();
++
++    GCancellable * m_cancellable = nullptr;
++    Timedate1 * m_timedate = nullptr;
++
++    // we have raw pointers and glib tags in here, so disable copying
++    SystemdTimezone(const SystemdTimezone&) =delete;
++    SystemdTimezone& operator=(const SystemdTimezone&) =delete;
++};
++
++} // namespace datetime
++} // namespace indicator
++} // namespace unity
++
++#endif // INDICATOR_DATETIME_SYSTEMD_TIMEZONE_H
+diff --git a/include/datetime/timezones-live.h b/include/datetime/timezones-live.h
+index ca4ef31..0d026f6 100644
+--- a/include/datetime/timezones-live.h
++++ b/include/datetime/timezones-live.h
+@@ -24,6 +24,7 @@
+ #include <datetime/timezones.h>
+ #include <datetime/timezone-file.h>
+ #include <datetime/timezone-geoclue.h>
++#include <datetime/timezone-systemd.h>
+ 
+ #include <memory> // shared_ptr<>
+ 
+@@ -44,7 +45,9 @@ private:
+     void update_geolocation();
+     void update_timezones();
+ 
++    bool m_etc_timezone = false;
+     FileTimezone m_file;
++    SystemdTimezone m_systemd;
+     std::shared_ptr<const Settings> m_settings;
+     std::shared_ptr<GeoclueTimezone> m_geo;
+ };
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 9bc22f2..79060d1 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -7,6 +7,21 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g ${CXX_WARNING_ARGS} ${GCO
+ add_definitions (-DTIMEZONE_FILE="/etc/timezone"
+                  -DG_LOG_DOMAIN="Indicator-Datetime")
+ 
++# This interface xml can only be generated when the timedated daemon and DBus
++# are available
++#gdbus introspect                                       \
++#       --xml                                           \
++#       --system                                        \
++#       --dest org.freedesktop.timedate1                \
++#       --object-path /org/freedesktop/timedate1        \
++#       > timedate1-interface.xml
++
++add_custom_command (
++    OUTPUT timedate1.h timedate1.c
++    COMMAND gdbus-codegen --interface-prefix org.freedesktop. --generate-c-code timedate1 ${CMAKE_CURRENT_SOURCE_DIR}/timedate1-interface.xml
++    COMMENT "Generating code for systemd's timedate1 interface"
++)
++
+ add_library (${SERVICE_LIB} STATIC
+              actions.cpp
+              actions-live.cpp
+@@ -29,9 +44,13 @@ add_library (${SERVICE_LIB} STATIC
+              snap.cpp
+              timezone-file.cpp
+              timezone-geoclue.cpp
++             timezone-systemd.cpp
+              timezones-live.cpp
+-             utils.c)
++             utils.c
++             timedate1.h
++             timedate1.c)
+ include_directories (${CMAKE_SOURCE_DIR})
++include_directories (${CMAKE_CURRENT_BINARY_DIR})
+ link_directories (${SERVICE_DEPS_LIBRARY_DIRS})
+ 
+ add_executable (${SERVICE_EXEC} main.cpp)
+diff --git a/src/main.cpp b/src/main.cpp
+index c7b35e5..8cc9992 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -31,6 +31,7 @@
+ #include <datetime/state.h>
+ #include <datetime/timezone-file.h>
+ #include <datetime/timezones-live.h>
++#include <datetime/timezone-systemd.h>
+ 
+ #include <glib/gi18n.h> // bindtextdomain()
+ #include <gio/gio.h>
+@@ -67,19 +68,26 @@ main(int /*argc*/, char** /*argv*/)
+     std::shared_ptr<Settings> live_settings(new LiveSettings);
+     std::shared_ptr<Timezones> live_timezones(new LiveTimezones(live_settings, TIMEZONE_FILE));
+     std::shared_ptr<Clock> live_clock(new LiveClock(live_timezones));
+-    std::shared_ptr<Timezone> file_timezone(new FileTimezone(TIMEZONE_FILE));
++
++    std::shared_ptr<Timezone> timezone(nullptr);
++
++    if (FileTimezone::have_file(TIMEZONE_FILE))
++        timezone = std::shared_ptr<Timezone>(new FileTimezone(TIMEZONE_FILE));
++    else
++        timezone = std::shared_ptr<Timezone>(new SystemdTimezone());
++
+     const auto now = live_clock->localtime();
+     state->settings = live_settings;
+     state->clock = live_clock;
+     state->locations.reset(new SettingsLocations(live_settings, live_timezones));
+-    auto calendar_month = new MonthPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now);
++    auto calendar_month = new MonthPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now);
+     state->calendar_month.reset(calendar_month);
+-    state->calendar_upcoming.reset(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now));
++    state->calendar_upcoming.reset(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now));
+     std::shared_ptr<Actions> actions(new LiveActions(state));
+     MenuFactory factory(actions, state);
+ 
+     // snap decisions
+-    std::shared_ptr<UpcomingPlanner> upcoming_planner(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now));
++    std::shared_ptr<UpcomingPlanner> upcoming_planner(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now));
+     ClockWatcherImpl clock_watcher(live_clock, upcoming_planner);
+     Snap snap;
+     clock_watcher.alarm_reached().connect([&snap](const Appointment& appt){
+diff --git a/src/timedate1-interface.xml b/src/timedate1-interface.xml
+new file mode 100644
+index 0000000..27a58af
+--- /dev/null
++++ b/src/timedate1-interface.xml
+@@ -0,0 +1,74 @@
++<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
++"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
++<node>
++ <interface name="org.freedesktop.DBus.Peer">
++  <method name="Ping"/>
++  <method name="GetMachineId">
++   <arg type="s" name="machine_uuid" direction="out"/>
++  </method>
++ </interface>
++ <interface name="org.freedesktop.DBus.Introspectable">
++  <method name="Introspect">
++   <arg name="data" type="s" direction="out"/>
++  </method>
++ </interface>
++ <interface name="org.freedesktop.DBus.Properties">
++  <method name="Get">
++   <arg name="interface" direction="in" type="s"/>
++   <arg name="property" direction="in" type="s"/>
++   <arg name="value" direction="out" type="v"/>
++  </method>
++  <method name="GetAll">
++   <arg name="interface" direction="in" type="s"/>
++   <arg name="properties" direction="out" type="a{sv}"/>
++  </method>
++  <method name="Set">
++   <arg name="interface" direction="in" type="s"/>
++   <arg name="property" direction="in" type="s"/>
++   <arg name="value" direction="in" type="v"/>
++  </method>
++  <signal name="PropertiesChanged">
++   <arg type="s" name="interface"/>
++   <arg type="a{sv}" name="changed_properties"/>
++   <arg type="as" name="invalidated_properties"/>
++  </signal>
++ </interface>
++ <interface name="org.freedesktop.timedate1">
++  <property name="Timezone" type="s" access="read">
++  </property>
++  <property name="LocalRTC" type="b" access="read">
++  </property>
++  <property name="CanNTP" type="b" access="read">
++   <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
++  </property>
++  <property name="NTP" type="b" access="read">
++  </property>
++  <property name="NTPSynchronized" type="b" access="read">
++   <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
++  </property>
++  <property name="TimeUSec" type="t" access="read">
++   <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
++  </property>
++  <property name="RTCTimeUSec" type="t" access="read">
++   <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
++  </property>
++  <method name="SetTime">
++   <arg type="x" direction="in"/>
++   <arg type="b" direction="in"/>
++   <arg type="b" direction="in"/>
++  </method>
++  <method name="SetTimezone">
++   <arg type="s" direction="in"/>
++   <arg type="b" direction="in"/>
++  </method>
++  <method name="SetLocalRTC">
++   <arg type="b" direction="in"/>
++   <arg type="b" direction="in"/>
++   <arg type="b" direction="in"/>
++  </method>
++  <method name="SetNTP">
++   <arg type="b" direction="in"/>
++   <arg type="b" direction="in"/>
++  </method>
++ </interface>
++</node>
+diff --git a/src/timezone-file.cpp b/src/timezone-file.cpp
+index c99897a..4430372 100644
+--- a/src/timezone-file.cpp
++++ b/src/timezone-file.cpp
+@@ -32,7 +32,8 @@ FileTimezone::FileTimezone()
+ 
+ FileTimezone::FileTimezone(const std::string& filename)
+ {
+-    set_filename(filename);
++    if (have_file(filename))
++        set_filename(filename);
+ }
+ 
+ FileTimezone::~FileTimezone()
+@@ -111,6 +112,12 @@ FileTimezone::reload()
+     }
+ }
+ 
++bool
++FileTimezone::have_file(const std::string& filename)
++{
++    return g_file_test(filename.c_str(), G_FILE_TEST_EXISTS);
++}
++
+ } // namespace datetime
+ } // namespace indicator
+ } // namespace unity
+diff --git a/src/timezone-systemd.cpp b/src/timezone-systemd.cpp
+new file mode 100644
+index 0000000..466aec6
+--- /dev/null
++++ b/src/timezone-systemd.cpp
+@@ -0,0 +1,71 @@
++/*
++ * Copyright 2014 Xiao-Long Chen <chenxiaolong@cxl.epac.to>
++ *
++ * This program is free software: you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 3, as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranties of
++ * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
++ * PURPOSE.  See the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include <datetime/timezone-systemd.h>
++
++namespace unity {
++namespace indicator {
++namespace datetime {
++
++SystemdTimezone::SystemdTimezone() : m_cancellable(g_cancellable_new())
++{
++    GError * error = nullptr;
++    m_timedate = timedate1_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
++                                                  G_DBUS_PROXY_FLAGS_NONE,
++                                                  "org.freedesktop.timedate1",
++                                                  "/org/freedesktop/timedate1",
++                                                  m_cancellable,
++                                                  &error);
++
++    if (!m_timedate)
++    {
++        g_warning("Could not get proxy for timedate1: %s", error->message);
++        g_clear_error(&error);
++        return;
++    }
++
++    set_timezone();
++
++    g_signal_connect_swapped(m_timedate,
++                             "notify::timezone",
++                             G_CALLBACK(on_timezone_changed),
++                             this);
++}
++
++SystemdTimezone::~SystemdTimezone()
++{
++    g_cancellable_cancel(m_cancellable);
++    g_clear_object(&m_cancellable);
++    g_clear_object(&m_timedate);
++}
++
++void
++SystemdTimezone::on_timezone_changed(gpointer gself)
++{
++    static_cast<SystemdTimezone*>(gself)->set_timezone();
++}
++
++void
++SystemdTimezone::set_timezone()
++{
++    const gchar * tz_new = timedate1_get_timezone(m_timedate);
++    timezone.set(tz_new);
++}
++
++} // namespace datetime
++} // namespace indicator
++} // namespace unity
+diff --git a/src/timezones-live.cpp b/src/timezones-live.cpp
+index 4902b76..8e4db27 100644
+--- a/src/timezones-live.cpp
++++ b/src/timezones-live.cpp
+@@ -28,9 +28,21 @@ namespace datetime {
+ LiveTimezones::LiveTimezones(const std::shared_ptr<const Settings>& settings,
+                              const std::string& filename):
+     m_file(filename),
++    m_systemd(),
+     m_settings(settings)
+ {
+-    m_file.timezone.changed().connect([this](const std::string&){update_timezones();});
++    m_etc_timezone = FileTimezone::have_file(filename);
++
++    if (m_etc_timezone)
++    {
++        g_warning("Getting timezone from /etc/timezone");
++        m_file.timezone.changed().connect([this](const std::string&){update_timezones();});
++    }
++    else
++    {
++        g_warning("Getting timezone from systemd's timedate1 interface");
++        m_systemd.timezone.changed().connect([this](const std::string&){update_timezones();});
++    }
+ 
+     m_settings->show_detected_location.changed().connect([this](bool){update_geolocation();});
+     update_geolocation();
+@@ -54,7 +66,8 @@ void LiveTimezones::update_geolocation()
+ 
+ void LiveTimezones::update_timezones()
+ {
+-    const auto a = m_file.timezone.get();
++    const auto tz = m_etc_timezone ? m_file.timezone : m_systemd.timezone;
++    const auto a = tz.get();
+     const auto b = m_geo ? m_geo->timezone.get() : "";
+ 
+     timezone.set(a.empty() ? b : a);
+-- 
+1.9.1
+

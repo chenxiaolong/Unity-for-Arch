@@ -6,7 +6,7 @@ pkgname=indicator-datetime
 _actual_ver=13.10.0
 _extra_ver=+14.04.20140328
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -16,18 +16,17 @@ makedepends=('intltool' 'cmake')
 groups=('unity')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Port_to_systemd_timedated.patch'
+        '0001-Get-timezone-from-systemd-s-timedate1-interface.patch'
         '0002_Not_a_phone.patch')
 sha512sums=('776b1defb9ea4edc2ea5dc58835b01b5de4b836498ae03d0416cfd7f04ee11a48fa6fa8388a567d26f8b962761c3cf8ced984797c346c4c90bd8d5cf9456db46'
-            '57c0b1846c946bcc2fffd45b933c83fa7ef14e1e19e4431238be4a406bc6565aba5c80dabaed5fc8b46d83377c71d5d2c55331599813827fa70290a9f02dd51b'
+            'd48a0e1b1c27726af4a20dda8e63d30fbd588a1f17363275bf5ee3a0537673496f2d1b7e9b3fb3f8d32f3a6c72b10cff29070fc95b6ea404a482b9a3c2edf031'
             'b91c27dba2b08b69e597f9165406f68325b5d822e26d7dc5aa271a7f62b77d715cb78dfae93792b345d922ace383f6ed98cb63f096745ef37a3f7df5c4b37298')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  # Port to systemd's timedated
-  #patch -p1 -i "${srcdir}/0001_Port_to_systemd_timedated.patch"
-
+  # Port to systemd's timedated (because /etc/timezone is no longer used)
+  patch -p1 -i "${srcdir}/0001-Get-timezone-from-systemd-s-timedate1-interface.patch"
   patch -p1 -i "${srcdir}/0002_Not_a_phone.patch"
 }
 
