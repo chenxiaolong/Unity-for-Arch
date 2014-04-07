@@ -1,11 +1,19 @@
 post_install() {
   gio-querymodules usr/lib/gio/modules
+
+  # This service must be enabled to avoid issues with Unity
+  systemctl enable bamfwatcher.service
+  systemctl start bamfwatcher.service
 }
 
 post_upgrade() {
-  post_install ${1}
+  post_install
+}
+
+pre_remove() {
+  systemctl disable bamfwatcher.service
 }
 
 post_remove() {
-  post_install ${1}
+  gio-querymodules usr/lib/gio/modules
 }
