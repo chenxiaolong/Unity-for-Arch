@@ -4,9 +4,9 @@
 
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
-_extra_ver=+14.04.20140320
-pkgver=${_actual_ver}daily14.03.20
-pkgrel=2
+_extra_ver=+14.04.20140403
+pkgver=${_actual_ver}daily14.04.03
+pkgrel=1
 pkgdesc="An indicator to host the menus from an application"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
@@ -22,7 +22,7 @@ options=('!emptydirs')
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('372e76e393046d313bc038a08658775d779da3c658692b0159c3bff5dd717660cdb8961fa0331171b11e77ae4fb3060d711acab42bcaca7ec40a717d1992a5db'
+sha512sums=('e5dfc112e1f7e044c58f3e2db91d7ca090bce43fb26e4328ffb98559a57ca144d00bd70addd002ddd5e0b41b24cc7910602fee293bf3db8e17fb067fcd1502dc'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
 prepare() {
