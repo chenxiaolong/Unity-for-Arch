@@ -17,12 +17,23 @@ provides=('zeitgeist-datahub' "zeitgeist=${pkgver}")
 conflicts=('zeitgeist-datahub' 'zeitgeist')
 replaces=('zeitgeist-datahub')
 source=("https://launchpad.net/zeitgeist/${pkgver%.*}/${pkgver}/+download/zeitgeist-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001-WhereClause-Fix-array-length-to-work-with-string.joi.patch')
 sha512sums=('9886396ea153fc12de81fdee2acf645b33a2af0c0fa3533c18f6c80c68c506ee9f790f37f99677ce6c3546a0f9ef5e5c251bc9411e0d882df796479edd9e817c'
-            'b0f482f11403f9afdbfbd3419ecb41773167636419883986e8eaa3db6035bcc1cdfb579132c9cad516d956ed3f8110e07523c380274136eccb25ed6a38caee0f')
+            'b0f482f11403f9afdbfbd3419ecb41773167636419883986e8eaa3db6035bcc1cdfb579132c9cad516d956ed3f8110e07523c380274136eccb25ed6a38caee0f'
+            '23a31a268b003627500cccc06b551df7f6895101c7a43c1ffdc4f5163533532f82b562a1d5a8c9b8c4b38a270e76311a0e77df8d9cc00ccd90c6341efa53dc7a')
 
 prepare() {
   cd "${srcdir}/zeitgeist-${pkgver}"
+
+  # Fix from upstream git to fix issue with vala 0.24 where invalid SQL
+  # statements such as:
+  #
+  # ... (timestamp <= 1234 AND (interpretation = 1 AND manifestation = 1 AND ) AND )
+  #
+  # which completely breaks zeitgeist.
+  patch -p1 -i "${srcdir}/0001-WhereClause-Fix-array-length-to-work-with-string.joi.patch"
+
   sed -i 's/python -/$PYTHON -/' configure configure.ac
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
