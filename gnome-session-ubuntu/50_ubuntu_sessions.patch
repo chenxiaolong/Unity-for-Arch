@@ -42,7 +42,7 @@ Forwarded: Not needed
 @@ -0,0 +1,4 @@
 +[GNOME Session]
 +_Name=Unity
-+RequiredComponents=unity-settings-daemon;compiz;
++RequiredComponents=gnome-settings-daemon;compiz;
 +DesktopName=Unity
 --- /dev/null
 +++ b/data/ubuntu.desktop.in
