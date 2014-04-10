@@ -4,8 +4,8 @@
 
 pkgname=gnome-screensaver-ubuntu
 pkgver=3.6.1
-_ubuntu_rel=0ubuntu11
-pkgrel=14
+_ubuntu_rel=0ubuntu13
+pkgrel=15
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gnome-screensaver/${pkgver%.*}/g
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-screensaver_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'gnome-screensaver.pam')
 sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
-            '9022d1d6b54c7eeac0b511a55df814e318afa0f6984cca5d139b951d8f97065d5408178a568713105e088f6850878c5658a991682def0ce28cbf48b182a2e45e'
+            'ea209105b78bca29e3f5c44e8acee5654a60358e246078c25375c6d91f31997fc8865157915a46e85924cc55fe95bd4824c727500a054fdb348f185bce4cadc6'
             'aed0933feed70a9b16da80d6e4716641cd45d2fd3fadbace3dfeb02b1a07124ee659f470277f8ce93492c6f7cf3cc9996bc60598724eea1955975604ff8f324d')
 
 prepare() {
