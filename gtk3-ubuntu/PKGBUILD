@@ -2,10 +2,10 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu5
-_ubuntu_ver=3.10.7
+_ubuntu_rel=0ubuntu1
+_ubuntu_ver=3.10.8
 pkgver=3.12.0
-pkgrel=1
+pkgrel=2
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -21,7 +21,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('3834d7e46a8d6227d0414950bb3f47b270eade0732cc60bb57e0773b4148b2a0bd8700e935e4f2f4c7c65c6b805d71581c0a00853e6ca14fd22c348f33ed3647'
-            'b62aa4a60c10187fc23bd6c8c373ecd886a0ed73a5dabd27fb37a6586d48e18e5959a35e8df264554af3a6b542823b712da10fc52c9727548a9d9c9ff6a16787'
+            '84fde1a8d0c1eb7b28a598f4c5e16226a1c467a7d0697d8e64c6cff6efe4f0513f8d4aad1287456eeb89fb9287648f9bbbb73b777e98df08437c47b91c2249b0'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
