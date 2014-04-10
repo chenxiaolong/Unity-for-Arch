@@ -6,7 +6,7 @@
 
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu2
-pkgver=1.9.14
+pkgver=1.10.0
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
@@ -35,8 +35,7 @@ backup=('etc/apparmor.d/lightdm-guest-session'
         'etc/lightdm/lightdm-gtk-greeter-ubuntu.conf'
         'etc/lightdm/users.conf')
 install=lightdm.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.diff.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"
         'lightdm.service'
         'lightdm-gtk-greeter.conf'
         'lightdm.tmpfiles.d'
@@ -46,8 +45,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}.
         'lightdm.rules'
         'guest-session-cross-distro.patch'
         'guest-session-add-default-gsettings-support.patch')
-sha512sums=('681dc1e91fbd9c33b65827b24144a946f911c88177c051848fb9647946bf672edd3e4da759b914779f1af36bc1bcde7ddc5a3ac3bf8dd36e2c2a0c9806ec386b'
-            '642666b20fa9353cd198208c2420eef0dd3f4bf9e33d588b1a88d27130c467f8b8c523263abd5bd8be7c176a0ca69ec14b49dacc7eba4ae2a7abae4d488cd5e8'
+sha512sums=('12a4d27c5ac6026a552535bad8ff2add116ce4bac71f92f5636347292b92cb61fb398e92fc1785379fd8ef9509406be2424459a89ce6057125d526a5b8352cd5'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -63,14 +61,12 @@ prepare() {
 
   # Apply Ubuntu patches
 
-  patch -p1 -i "${srcdir}/lightdm_${pkgver}-${_ubuntu_rel}.diff"
-
   # Disable patches
     # Do not use Ubuntu's language-tools
       sed -i '/04_language_handling.patch/d' debian/patches/series
 
-  for i in $(grep -v '#' debian/patches/series); do
-    patch -p1 -i "debian/patches/${i}"
+  for i in $(grep -v '#' "${srcdir}"/debian/patches/series); do
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
   done
 
   # Do not depend on Debian/Ubuntu specific adduser package
