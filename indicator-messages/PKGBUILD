@@ -4,9 +4,9 @@
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+14.04.20140321
+_extra_ver=+14.04.20140410
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-messages"
@@ -17,7 +17,7 @@ groups=('unity')
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('95a493a82db549b65aebee4e9417b0f517aef93a3aa92cd72918c4b2c24f3a419721bcc00dfbceb00373c603cf9217628e20068a411bbcb074a2c3110545a000'
+sha512sums=('33d23c3b17421858e277f417e6f5e8185d557448e515c626a339f1855cbaf5ad14d8ab19d16816aa602f49a385ba411be7d34ef37f116343ccfe52df3b28f2db'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 prepare() {
