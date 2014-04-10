@@ -1,0 +1,51 @@
+From 8fcfc79c6dd4bd8bcace84fc4472192b3e115525 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 19:45:01 -0400
+Subject: [PATCH] Use gnome-settings-daemon
+
+---
+ configure.ac             | 4 ++--
+ src/settings-daemon.vala | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 714aa5a..9be9d3b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -36,9 +36,9 @@ AC_DEFINE_UNQUOTED([INDICATOR_FILE_DIR], ["${prefix}/share/unity/indicators"], [
+ INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator3-0.4`
+ AC_SUBST(INDICATORDIR)
+ 
+-USD_BINARY=`$PKG_CONFIG --variable=binary unity-settings-daemon`
++USD_BINARY=`$PKG_CONFIG --variable=binary gnome-settings-daemon`
+ if test -z "$USD_BINARY"; then
+-    AC_MSG_ERROR([Could not find path to unity-settings-daemon binary])
++    AC_MSG_ERROR([Could not find path to gnome-settings-daemon binary])
+ fi
+ AC_DEFINE_UNQUOTED([USD_BINARY], ["$USD_BINARY"], [Path to g-s-d])
+ 
+diff --git a/src/settings-daemon.vala b/src/settings-daemon.vala
+index 9cf3908..66d159f 100644
+--- a/src/settings-daemon.vala
++++ b/src/settings-daemon.vala
+@@ -156,7 +156,7 @@ public class SettingsDaemon : Object
+         if (n_names != 0)
+             return;
+ 
+-        debug ("All bus names acquired, starting unity-settings-daemon");
++        debug ("All bus names acquired, starting gnome-settings-daemon");
+ 
+         try
+         {
+@@ -164,7 +164,7 @@ public class SettingsDaemon : Object
+         }
+         catch (SpawnError e)
+         {
+-            debug ("Could not start unity-settings-daemon: %s", e.message);
++            debug ("Could not start gnome-settings-daemon: %s", e.message);
+         }
+     }
+ }
+-- 
+1.9.1
+
