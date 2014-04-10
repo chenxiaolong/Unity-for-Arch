@@ -42,6 +42,8 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
+
+  rm -rf "${pkgdir}/usr/share/upstart/"
 }
 
 # vim:set ts=2 sw=2 et:
