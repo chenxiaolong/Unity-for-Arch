@@ -4,9 +4,9 @@
 
 pkgname=nux
 _actual_ver=4.0.6
-_extra_ver=+14.04.20140311.1
+_extra_ver=+14.04.20140409
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=100
+pkgrel=1
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
@@ -22,7 +22,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}
         '0001_autoconf.patch'
         '01_blacklist_llvmpipe.patch'
         '50_check_unity_support')
-sha512sums=('2db3a35e8e5f8d0a251c0306902146dbbac332b3db40bad4e600e845a13204aedb20c9cc684d1124d4cc8a29165199cc108c0288161741940d379cd41f96001f'
+sha512sums=('894a0e980edce766d43066f4e69fb98aef7b7b2c8fb8343db15e41944908471955cc6e677d840ccaf481cc5399ff69c56f73963779c0b3af152dfdcc32d29284'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
             'a6122d47bef574df7e4f3aa3ddff34ca7a6e291878665f3dfdbb9ea071394180ab31aadcb79efd53ebb1ec2a86a15d53c9394478305c3fd5f10ece049265b374'
             '1e82b11357f9db45fa6fff002cef11acaf53a8381e2bc28b84e9e0300502c0b1922d9273b44d4cfbbd51d004a9eb1eb2e780db7a39e2d9153c9c4efafb9314a9')
