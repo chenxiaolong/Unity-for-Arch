@@ -3,9 +3,9 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu=3.8.6.1-0ubuntu10
+_ubuntu=3.8.6.1-0ubuntu11
 pkgver=3.12.0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
