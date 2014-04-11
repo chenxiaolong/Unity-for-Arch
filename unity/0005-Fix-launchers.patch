@@ -1,6 +1,17 @@
+From 3b3209cb84c4cd16eb134b38d75a3658ea036f55 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:11:47 -0400
+Subject: [PATCH 5/7] Fix launchers
+
+---
+ com.canonical.Unity.gschema.xml | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
+index 74f6562..5f7749a 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -57,14 +57,11 @@
+@@ -87,15 +87,12 @@
    <schema path="/com/canonical/unity/launcher/" id="com.canonical.Unity.Launcher" gettext-domain="unity">
      <key type="as" name="favorites">
        <default>[
@@ -12,6 +23,11 @@
          'application://libreoffice-impress.desktop',
 -        'application://ubuntu-software-center.desktop',
 -        'application://ubuntu-amazon-default.desktop',
-         'application://unity-control-center.desktop',
+-        'application://unity-control-center.desktop',
++        'application://gnome-control-center.desktop',
          'unity://running-apps',
          'unity://expo-icon',
+         'unity://devices'
+-- 
+1.9.1
+

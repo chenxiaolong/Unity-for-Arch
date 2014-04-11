@@ -1,6 +1,17 @@
+From b23f05a4db892c77e0e602c8c058703df06e7080 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:17:50 -0400
+Subject: [PATCH 7/7] Remove social.scope
+
+---
+ com.canonical.Unity.gschema.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
+index 5f7749a..daa0f83 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -90,7 +90,7 @@
+@@ -122,7 +122,7 @@
    </schema>
    <schema path="/com/canonical/unity/dash/" id="com.canonical.Unity.Dash" gettext-domain="unity">
      <key type="as" name="scopes">
@@ -9,3 +20,6 @@
        <summary>List of scope ids specifying which scopes should be created and the order to display them in.</summary>
        <description>The scopes listed in the scope bar will be ordered according to this list.</description>
      </key>
+-- 
+1.9.1
+

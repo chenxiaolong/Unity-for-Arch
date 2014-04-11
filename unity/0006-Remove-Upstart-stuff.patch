@@ -1,69 +1,98 @@
+From ee285795445076af5e53825f85791d56fd4914de Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:17:13 -0400
+Subject: [PATCH 6/7] Remove Upstart stuff
+
+---
+ lockscreen/LockScreenController.cpp             |  4 --
+ lockscreen/LockScreenController.h               |  5 +-
+ services/CMakeLists.txt                         |  9 ---
+ services/panel-service.c                        | 64 ---------------------
+ services/unity-panel-service-lockscreen.conf.in |  8 ---
+ services/unity-panel-service.conf.in            | 18 ------
+ unity-shared/CMakeLists.txt                     |  1 -
+ unity-shared/UpstartWrapper.cpp                 | 74 -------------------------
+ unity-shared/UpstartWrapper.h                   | 53 ------------------
+ 9 files changed, 1 insertion(+), 235 deletions(-)
+ delete mode 100644 services/unity-panel-service-lockscreen.conf.in
+ delete mode 100644 services/unity-panel-service.conf.in
+ delete mode 100644 unity-shared/UpstartWrapper.cpp
+ delete mode 100644 unity-shared/UpstartWrapper.h
+
+diff --git a/lockscreen/LockScreenController.cpp b/lockscreen/LockScreenController.cpp
+index 07db7ac..e8bc70e 100644
 --- a/lockscreen/LockScreenController.cpp
 +++ b/lockscreen/LockScreenController.cpp
-@@ -41,11 +41,9 @@
- }
+@@ -51,13 +51,11 @@ DECLARE_LOGGER(logger, "unity.lockscreen");
  
- Controller::Controller(session::Manager::Ptr const& session_manager,
+ Controller::Controller(DBusManager::Ptr const& dbus_manager,
+                        session::Manager::Ptr const& session_manager,
 -                       UpstartWrapper::Ptr const& upstart_wrapper,
                         ShieldFactoryInterface::Ptr const& shield_factory,
                         bool test_mode)
-   : session_manager_(session_manager)
+   : opacity([this] { return fade_animator_.GetCurrentValue(); })
+   , dbus_manager_(dbus_manager)
+   , session_manager_(session_manager)
 -  , upstart_wrapper_(upstart_wrapper)
    , shield_factory_(shield_factory)
-   , fade_animator_(FADE_DURATION)
-   , test_mode_(test_mode)
-@@ -74,7 +72,6 @@
+   , fade_animator_(LOCK_FADE_DURATION)
+   , blank_window_animator_(IDLE_FADE_DURATION)
+@@ -106,7 +104,6 @@ Controller::Controller(DBusManager::Ptr const& dbus_manager,
  
-       if (Settings::Instance().lockscreen_type() == Type::UNITY)
-       {
--        upstart_wrapper_->Emit("desktop-unlock");
-         indicators_.reset();
-       }
+       shields_.clear();
+ 
+-      upstart_wrapper_->Emit("desktop-unlock");
+       indicators_.reset();
      }
-@@ -189,7 +186,6 @@
- void Controller::LockScreenUsingUnity()
+     else if (!prompt_activation_)
+@@ -387,7 +384,6 @@ void Controller::OnScreenSaverActivationRequest(bool activate)
+ void Controller::LockScreen()
  {
    indicators_ = std::make_shared<indicator::LockScreenDBusIndicators>();
 -  upstart_wrapper_->Emit("desktop-lock");
  
    ShowShields();
  }
+diff --git a/lockscreen/LockScreenController.h b/lockscreen/LockScreenController.h
+index 434b95c..4faa97b 100644
 --- a/lockscreen/LockScreenController.h
 +++ b/lockscreen/LockScreenController.h
-@@ -25,7 +25,6 @@
- 
+@@ -27,7 +27,6 @@
  #include "LockScreenShieldFactory.h"
+ #include "ScreenSaverDBusManager.h"
  #include "unity-shared/BackgroundEffectHelper.h"
 -#include "unity-shared/UpstartWrapper.h"
  
  namespace unity
  {
-@@ -36,7 +35,6 @@
+@@ -38,7 +37,6 @@ class Controller : public sigc::trackable
  {
  public:
-   Controller(session::Manager::Ptr const& session_manager,
+   Controller(DBusManager::Ptr const&, session::Manager::Ptr const&,
 -             UpstartWrapper::Ptr const& upstart_wrapper = std::make_shared<UpstartWrapper>(),
               ShieldFactoryInterface::Ptr const& shield_factory = std::make_shared<ShieldFactory>(),
               bool test_mode = false);
  
-@@ -61,7 +59,6 @@
-   nux::ObjectWeakPtr<AbstractShield> primary_shield_;
+@@ -74,7 +72,6 @@ private:
+   DBusManager::Ptr dbus_manager_;
    session::Manager::Ptr session_manager_;
    indicator::Indicators::Ptr indicators_;
 -  UpstartWrapper::Ptr upstart_wrapper_;
    ShieldFactoryInterface::Ptr shield_factory_;
+ 
    nux::animation::AnimateValue<double> fade_animator_;
-   connection::Wrapper uscreen_connection_;
-@@ -73,4 +70,4 @@
+@@ -98,4 +95,4 @@ private:
  }
  }
  
 -#endif
 \ No newline at end of file
 +#endif
+diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
+index 4514ff1..f53d053 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
-@@ -12,9 +12,6 @@
+@@ -12,9 +12,6 @@ set(UNITY_PANEL_SERVICE_DEPS
      indicator3-0.4>=12.10.2
      x11
      libido3-0.1>=13.0.0
@@ -73,7 +102,7 @@
      dbus-1
  )
  
-@@ -55,9 +52,3 @@
+@@ -55,9 +52,3 @@ link_directories(${LIB_PATHS})
  add_executable(unity-panel-service ${PANEL_SOURCES})
  target_link_libraries(unity-panel-service ${LIBS})
  install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/unity/)
@@ -83,6 +112,8 @@
 -
 -configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+diff --git a/services/panel-service.c b/services/panel-service.c
+index 5c7102a..4ac2792 100644
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
 @@ -33,10 +33,6 @@
@@ -96,7 +127,7 @@
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -83,8 +79,6 @@
+@@ -83,8 +79,6 @@ struct _PanelServicePrivate
  
    IndicatorObjectEntry *pressed_entry;
    gboolean use_event;
@@ -105,7 +136,7 @@
  };
  
  /* Globals */
-@@ -151,22 +145,6 @@
+@@ -150,22 +144,6 @@ panel_service_class_dispose (GObject *self)
    g_idle_remove_by_data (self);
    gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
  
@@ -128,7 +159,7 @@
    if (GTK_IS_WIDGET (priv->last_menu) &&
        gtk_widget_get_realized (GTK_WIDGET (priv->last_menu)))
      {
-@@ -587,24 +565,6 @@
+@@ -617,24 +595,6 @@ initial_resync (PanelService *self)
    return FALSE;
  }
  
@@ -153,7 +184,7 @@
  static void
  update_keybinding (GSettings *settings, const gchar *key, gpointer data)
  {
-@@ -716,29 +676,6 @@
+@@ -746,29 +706,6 @@ panel_service_init (PanelService *self)
    update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
    update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
    update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
@@ -183,7 +214,7 @@
  }
  
  static gboolean
-@@ -885,7 +822,6 @@
+@@ -915,7 +852,6 @@ initial_load_default_or_custom_indicators (PanelService *self, GList *indicators
    suppress_signals = FALSE;
  
    g_idle_add ((GSourceFunc)initial_resync, self);
@@ -191,8 +222,26 @@
  }
  
  PanelService *
+diff --git a/services/unity-panel-service-lockscreen.conf.in b/services/unity-panel-service-lockscreen.conf.in
+deleted file mode 100644
+index b6a3cb6..0000000
+--- a/services/unity-panel-service-lockscreen.conf.in
++++ /dev/null
+@@ -1,8 +0,0 @@
+-description "Backing Service for the Unity Panel"
+-author "Andrea Azzarone <andrea.azzarone@canonical.com>"
+-
+-start on desktop-lock
+-stop on desktop-unlock
+-
+-respawn
+-exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service --lockscreen-mode
+\ No newline at end of file
+diff --git a/services/unity-panel-service.conf.in b/services/unity-panel-service.conf.in
+deleted file mode 100644
+index 742e39b..0000000
 --- a/services/unity-panel-service.conf.in
-+++ b/services/unity-panel-service.conf.in
++++ /dev/null
 @@ -1,18 +0,0 @@
 -description "Backing Service for the Unity Panel"
 -author "Ted Gould <ted@ubuntu.com>"
@@ -212,21 +261,11 @@
 -
 -respawn
 -exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
---- a/services/unity-panel-service-lockscreen.conf.in
-+++ b/services/unity-panel-service-lockscreen.conf.in
-@@ -1,8 +0,0 @@
--description "Backing Service for the Unity Panel"
--author "Andrea Azzarone <andrea.azzarone@canonical.com>"
--
--start on desktop-lock
--stop on desktop-unlock
--
--respawn
--exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service --lockscreen-mode
-\ No newline at end of file
+diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
+index b56c779..1e6233a 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
-@@ -67,7 +67,6 @@
+@@ -67,7 +67,6 @@ set (UNITY_SHARED_SOURCES
       UnitySettings.cpp
       UnityWindowStyle.cpp
       UnityWindowView.cpp
@@ -234,8 +273,11 @@
       UserThumbnailProvider.cpp
       VScrollBarOverlayWindow.cpp
       WindowButtons.cpp
+diff --git a/unity-shared/UpstartWrapper.cpp b/unity-shared/UpstartWrapper.cpp
+deleted file mode 100644
+index eda8239..0000000
 --- a/unity-shared/UpstartWrapper.cpp
-+++ b/unity-shared/UpstartWrapper.cpp
++++ /dev/null
 @@ -1,74 +0,0 @@
 -// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
 -/*
@@ -311,8 +353,11 @@
 -}
 -
 -}
+diff --git a/unity-shared/UpstartWrapper.h b/unity-shared/UpstartWrapper.h
+deleted file mode 100644
+index 3be88d9..0000000
 --- a/unity-shared/UpstartWrapper.h
-+++ b/unity-shared/UpstartWrapper.h
++++ /dev/null
 @@ -1,53 +0,0 @@
 -// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
 -/*
@@ -367,3 +412,6 @@
 -}
 -
 -#endif
+-- 
+1.9.1
+

@@ -2,10 +2,10 @@
 
 pkgname=unity
 _actual_ver=7.2.0
-_extra_ver=+14.04.20140403
+_extra_ver=+14.04.20140410.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -20,71 +20,49 @@ conflicts=('unity-core')
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        '0001_Remove_gtest.patch'
-        '0002_ArchLinux_Branding.patch'
-        '0003_Revert_r3134_Remove_Systray_Whitelist.patch'
-        '0005_Disable_Werror.patch'
-        '0008_Remove_Launchers.patch'
-        '0010_The_future_is_systemd.patch'
-        '0011_Remove_social_scope.patch'
+        '0001-Disable-tests.patch'
+        '0002-Arch-Linux-branding.patch'
+        '0003-Revert-r3134-Remove-Systray-Whitelist.patch'
+        '0004-Disable-Werror.patch'
+        '0005-Fix-launchers.patch'
+        '0006-Remove-Upstart-stuff.patch'
+        '0007-Remove-social.scope.patch'
         'com.ubuntu.user-interface.gschema.xml'
         'launcher_bfb.png'
-        'unity-migrate-dconf-path.desktop'
         '10_unity.gschema.override'
-        'com.canonical.Unity.Panel.Service.service'
         '99unity-panel-service'
         'unity-debug')
-sha512sums=('b213716e7fcf0fe22bdc4bae402e0ce403612b777f6a0c379ac7c789ab695547818d18f8906dfb61ddb4b62c11909bcc69496d953904cc6f0ff583790a9f6842'
-            'be7b0080c55b159f009262c8135aa68a1c6a20fba02eabe70724d6793dd00192561a25c176f3a515d72cf95ed4f3e40118942adce54c0d3059af541a8d2953bb'
-            '3be3303e6b6f023ca246b23c0293ce3987a070f74bf92d9ab07d2255f2254743078f4111007ef414a37b7368d86e80ae1350f2a956300a6ac5495f41bfd7878e'
-            'c3421eb14e6f6c94e53d5f14341c7f9e6a770a71f02b9dded97fe5d0ded9efa1e7c0fc1df90b0709d1bec5126df8be7469612689344eea616868e6541bec42fb'
-            'ed40106d1056fb341a2f3c309842a34b9544c1ce9b824bd915f7c4ef44355f25366405387c6bcaf07c1dc35668eeae6281a0b9880f8ee7c6aeaac424d9b04a85'
-            'f9bef454bce75006d4d1535647c6d606a1a8df1e59578b6bb248e4d331d97ce67e03f3266f112c1d9877061ebab5065f36e3b0bb5702266931302caa12343398'
-            'afd4b3d93c8a762b3245340cee4f10a7f3a6e33aee6eb766dee9c4c76a4a0047b0a9eee1663fd48d73e4bcc0f6855f62e460fa36f07739876f02f57ee3f4d4f6'
-            'ba36657f714a5fae7fa7e3012438bc951f7812093078245f1e5180daf1618502bbc46a63604032a165ad421c8e450f297155a986c2fe29895b96bdf3cb33114a'
-            'd910b32832602e6f9b6a3f2c2476b96593df0b745077468436a3c995a21c88c684cc9a190d93cee6051a8194dd637f35a387691bdb979a380b431ac6b00c4351'
+sha512sums=('bd002f9dc51838f9f25aaf2897f5ac7255751a67369b9cd6f926f97fe2c3cbb87937348e8b9238f92fc5e6705691780710bc5bd8c98a836391ca51b07b86e86a'
+            '51c8e68de99be111fe4300a8f23be7422e4f6219c96834788d0478a70d89d2127568e3de2728a0a13a3e3a2a6bb392d63ddebca1626544f91a155c40919d8491'
+            'e904d19cdb5da8d25da0ac165055e90759c492213dfd7f9911e784485938550ba6f142c4a394532b12b93bd1ca6eea1868669ce87bc4027d1e36a11d52452542'
+            'eb9504715020b12e85e12a2155362f89d8716ab91554989cf7935aeb7df7f28e4eda6c4535cf0d12459025b934e9c6e5367655f8460ccc3541be475028ef51cb'
+            '9f8ef4e9e741da11ad194ae2fa9b724d777517cc7f4414caeca985360bdaf5037c88e500be26ec7cd7029cd5e55a7a2bbd7a1881580eda5b94a1fe439f1556c7'
+            '6b0c2d04e9fb907b271e69239f4e9d1c242098507fdf9471d2b4404fc50b8542738cfc12cf9ec1a2d60f2a032737851660bf0d2d7f87fa5f7b88f9efdf069b8e'
+            '7e2f7c9e6f44f59eb2ed0402bf020a4abab56d1376d13bbac5a7a2705c9301e23284cba5c91218d2caa8dbbb16b864bb79091c197ef6fe6ce96199c0476fbf29'
+            '374ed6634cfade376a1fc951974dfc50cd7a82c149ba6de22f5deb0aee50f0f6b66eb5f07390f7da7bcf04faf8ae9c02cf8ead0864a62a6c3a9708f8df88fc08'
+            '50f95f2745e8ae41dc47714a02988b70ab055b1578647a430c85dd8bc9d6edf4f4d689e5f411b8195b8c81f3921c9a06b6a96f3ad9e56545c0860479d5217d07'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
-            '8eb535adc7aefd95c0ccfdd35525b4be764c4377ae5fc6002ad6ef6fd84b733c9054f8228083ce50eac1f970fdc1ef987ad1eb47813e7621b481ec3f490a9df7'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
-            '76931a0d26c6a12e21dd0201f5ed8726ff0222f62cbcf4715d782b5b216d288fd4a7834188053a8df56a4c73af2db0b0b64fc2c0298ac0d383e8e42a0c6b85de'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  # Arch Linux branding: "Ubuntu Desktop" -> "Arch Linux Desktop"
-  # (thanks to qiuwei!)
-  patch -p1 -i "${srcdir}/0002_ArchLinux_Branding.patch"
-
-  # Upstream support for the systray whitelist was removed
-  patch -p1 -i "${srcdir}/0003_Revert_r3134_Remove_Systray_Whitelist.patch"
-
-  # Do not treat warnings as errors
-  patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
-
-  # Remove launchers for Ubuntu's stupid Amazon crap, Ubuntu One (can be
-  # manually re-added), Ubuntu's Software Center (not packaged in Arch Linux),
-  # and Ubuntu's Ubiquity LiveCD installer
-  patch -p1 -i "${srcdir}/0008_Remove_Launchers.patch"
-
-  patch -p1 -i "${srcdir}/0010_The_future_is_systemd.patch"
-
-  patch -p1 -i "${srcdir}/0011_Remove_social_scope.patch"
+  patch -p1 -i "${srcdir}/0001-Disable-tests.patch"
+  patch -p1 -i "${srcdir}/0002-Arch-Linux-branding.patch"
+  patch -p1 -i "${srcdir}/0003-Revert-r3134-Remove-Systray-Whitelist.patch"
+  patch -p1 -i "${srcdir}/0004-Disable-Werror.patch"
+  patch -p1 -i "${srcdir}/0005-Fix-launchers.patch"
+  patch -p1 -i "${srcdir}/0006-Remove-Upstart-stuff.patch"
+  patch -p1 -i "${srcdir}/0007-Remove-social.scope.patch"
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
   for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
-
-  # Disable gtest
-  patch -p1 -i "${srcdir}/0001_Remove_gtest.patch"
-
-  # Ubuntu Desktop -> Arch Linux Desktop
-  sed -i '/msgid "Ubuntu Desktop"/ {n;s/Ubuntu/Arch Linux/}' po/*.po
-  sed -i 's/Ubuntu Desktop/Arch Linux Desktop/g' po/*.po
 }
 
 build() {
@@ -124,13 +102,6 @@ package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 
-  # Install dconf path migration stuff
-  install -dm755 "${pkgdir}/etc/xdg/autostart/"
-  install -m644 "${srcdir}/unity-migrate-dconf-path.desktop" \
-    "${pkgdir}/etc/xdg/autostart/"
-  install -m755 ../tools/migration-scripts/01_unity_change_dconf_path \
-    "${pkgdir}/usr/lib/unity/"
-
   # Install profile convert files
   install -dm755 "${pkgdir}/usr/lib/compiz/migration/"
   install -m644 ../tools/convert-files/* "${pkgdir}/usr/lib/compiz/migration/"
@@ -151,19 +122,6 @@ package() {
   install -m644 "${srcdir}/launcher_bfb.png" \
     "${pkgdir}/usr/share/unity/icons/launcher_bfb.png"
 
-  # Check for missing GSettings schemas
-  pushd "${pkgdir}/usr/share/glib-2.0/schemas/"
-  if \
-    [ ! -f org.compiz.networkarearegion.gschema.xml ] || \
-    [ ! -f org.compiz.unitydialog.gschema.xml ] || \
-    [ ! -f org.compiz.unitymtgrabhandles.gschema.xml ] || \
-    [ ! -f org.compiz.unityshell.gschema.xml ]; then
-    error "GSettings schemas didn't get installed"'!'
-    error "Please tar and upload the src/ directory and report a bug."
-    exit 1
-  fi
-  popd
-
   # Change window dragging key back to Alt. Super conflicts with Unity's other
   # hotkeys.
   install -m644 "${srcdir}/10_unity.gschema.override" \
@@ -171,12 +129,6 @@ package() {
 
   install -m644 "${srcdir}/com.ubuntu.user-interface.gschema.xml" \
     "${pkgdir}/usr/share/glib-2.0/schemas/"
-
-  # unity-panel-service is now started by an Upstart user job. I'm not quite
-  # sure how to use systemd's user services to do the same thing yet.
-  install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
-  install -m644 "${srcdir}/com.canonical.Unity.Panel.Service.service" \
-    "${pkgdir}/usr/share/dbus-1/services/"
 
   # Fix launching of unity-panel-service (from unity-gentoo project)
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"

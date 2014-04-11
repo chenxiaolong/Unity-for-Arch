@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=com.canonical.Unity.Panel.Service
-Exec=/usr/lib/unity/unity-panel-service

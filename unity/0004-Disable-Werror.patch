@@ -1,6 +1,18 @@
+From d371ac3f7376da5d089157332a6590536ce73d07 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:10:51 -0400
+Subject: [PATCH 4/7] Disable -Werror
+
+---
+ CMakeLists.txt          | 2 +-
+ services/CMakeLists.txt | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1477461..4bc6504 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -196,7 +196,7 @@
+@@ -193,7 +193,7 @@ if (BOOT_LOGGER)
      SET (BOOT_LOGGER_FLAG "-DENABLE_LOGGER")
  endif (BOOT_LOGGER)
  
@@ -9,9 +21,11 @@
  
  option (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS "Disable errors when local typedefs are unused" ON)
  if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
+diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
+index 103c885..4514ff1 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
-@@ -38,7 +38,7 @@
+@@ -38,7 +38,7 @@ set(PANEL_SOURCES
  set(CFLAGS
      ${SERVICE_DEPS_CFLAGS}
      ${SERVICE_DEPS_CFLAGS_OTHER}
@@ -20,3 +34,6 @@
      )
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
+-- 
+1.9.1
+

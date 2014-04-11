@@ -1,6 +1,21 @@
+From 7b62ae260a404a0da267a9b7026bdb750931d5a0 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:09:48 -0400
+Subject: [PATCH 3/7] Revert r3134: Remove Systray Whitelist
+
+---
+ com.canonical.Unity.gschema.xml |  7 +++++
+ panel/PanelTray.cpp             | 48 +++++++++++++++++++++---------
+ panel/PanelTray.h               |  4 +--
+ tests/CMakeLists.txt            |  1 -
+ tests/test_panel_tray.cpp       | 65 -----------------------------------------
+ 5 files changed, 44 insertions(+), 81 deletions(-)
+
+diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
+index b1d2445..74f6562 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -81,6 +81,13 @@
+@@ -109,6 +109,13 @@
        <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
      </key>
    </schema>
@@ -14,6 +29,8 @@
    <schema path="/com/canonical/unity/devices/" id="com.canonical.Unity.Devices" gettext-domain="unity">
      <key type="as" name="blacklist">
          <default>[]</default>
+diff --git a/panel/PanelTray.cpp b/panel/PanelTray.cpp
+index 8c1f169..8d1c782 100644
 --- a/panel/PanelTray.cpp
 +++ b/panel/PanelTray.cpp
 @@ -17,8 +17,6 @@
@@ -25,7 +42,7 @@
  #include "PanelTray.h"
  #include "unity-shared/PanelStyle.h"
  #include "unity-shared/UnitySettings.h"
-@@ -30,7 +28,6 @@
+@@ -30,7 +28,6 @@ namespace
  {
  const std::string SETTINGS_NAME = "com.canonical.Unity.Panel";
  const int PADDING = 3;
@@ -33,7 +50,7 @@
  }
  
  namespace unity
-@@ -38,11 +35,18 @@
+@@ -38,11 +35,18 @@ namespace unity
  
  PanelTray::PanelTray(int monitor)
    : View(NUX_TRACKER_LOCATION)
@@ -52,7 +69,7 @@
    auto gtkwindow = glib::object_cast<GtkWindow>(window_);
    gtk_window_set_type_hint(gtkwindow, GDK_WINDOW_TYPE_HINT_DOCK);
    gtk_window_set_has_resize_grip(gtkwindow, FALSE);
-@@ -78,6 +82,8 @@
+@@ -78,6 +82,8 @@ PanelTray::PanelTray(int monitor)
  
  PanelTray::~PanelTray()
  {
@@ -61,7 +78,7 @@
    if (gtk_widget_get_realized(window_))
    {
      // We call Release since we're deleting the window here manually,
-@@ -128,13 +134,38 @@
+@@ -128,13 +134,38 @@ void PanelTray::Sync()
  
  gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTray* self)
  {
@@ -101,7 +118,7 @@
  
    if (accept)
    {
-@@ -153,15 +184,6 @@
+@@ -153,15 +184,6 @@ gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTra
    return accept ? TRUE : FALSE;
  }
  
@@ -117,9 +134,11 @@
  void PanelTray::OnTrayIconRemoved(NaTrayManager* manager, NaTrayChild* removed)
  {
    for (auto child : children_)
+diff --git a/panel/PanelTray.h b/panel/PanelTray.h
+index b2ff8e0..e11fe93 100644
 --- a/panel/PanelTray.h
 +++ b/panel/PanelTray.h
-@@ -46,8 +46,6 @@
+@@ -46,8 +46,6 @@ public:
    void Sync();
    Window xid();
  
@@ -128,7 +147,7 @@
  protected:
    void Draw(nux::GraphicsEngine& gfx_content, bool force_draw);
    std::string GetName() const;
-@@ -61,8 +59,10 @@
+@@ -61,8 +59,10 @@ private:
  
    int WidthOfTray();
  
@@ -139,9 +158,11 @@
  
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 99dfd97..b9d9c3a 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -249,7 +249,6 @@
+@@ -250,7 +250,6 @@ if (ENABLE_X_SUPPORT)
                   test_panel_menu_view.cpp
                   test_panel_service.cpp
                   test_panel_style.cpp
@@ -149,6 +170,8 @@
                   test_panel_view.cpp
                   test_places_group.cpp
                   test_preview_player.cpp
+diff --git a/tests/test_panel_tray.cpp b/tests/test_panel_tray.cpp
+index c407576..e69de29 100644
 --- a/tests/test_panel_tray.cpp
 +++ b/tests/test_panel_tray.cpp
 @@ -1,65 +0,0 @@
@@ -217,3 +240,6 @@
 -  EXPECT_FALSE(unity::PanelTray::FilterTray("Ubuntu", "Unity", "Hello world!"));
 -}
 -
+-- 
+1.9.1
+

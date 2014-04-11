@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Migrate Unity dconf path
-Comment=Migrate Unity's dconf path from /desktop/unity to /com/canonical/unity
-Exec=/usr/lib/unity/01_unity_change_dconf_path
-Terminal=false
-Type=Application
-Categories=
-OnlyShowIn=Unity;
