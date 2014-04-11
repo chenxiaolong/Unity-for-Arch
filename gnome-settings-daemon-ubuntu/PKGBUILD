@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 pkgname=gnome-settings-daemon-ubuntu
-_ubuntu=3.8.6.1-0ubuntu11
+_ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0.1
 pkgrel=2
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -18,17 +18,27 @@ conflicts=('gnome-settings-daemon')
 options=('!emptydirs')
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/3.12/${pkgname%-*}-${pkgver}.tar.xz"
-        '64_restore_terminal_keyboard_shortcut_schema.patch'
-        'ubuntu-lid-close-suspend.patch')
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${pkgver}-${_ppa_rel}.debian.tar.gz"
+        '0001-Do-not-hide-cursor.patch')
 sha512sums=('9f2de0a47acd82b24ada4e0eae84f6e326a7237455d1069b8896b6cbccc089abad6b3e9ca93baf3154ab353659219e7a161c92e0f625c031507dbadf7d8a8ff2'
-            'd67a7ebdc5f1cb0b91f567231945e451f336ba45c4ce917c16f085f01f8ff5df8ecb7d1513dd66031fe9f5db9ea5af420adaceb74dee74719f5eb10b9a9e7db3'
-            'a9b190aae37ce3d8dd262695306bb26a19586acca11ac3de61df44957baa5db4c75e57e99142c84c98edf1522b08335896131f2fbf5f8b05308a99dd7041fd9e')
+            '1b2ee2e7db7fa5b06d83fb2a8d92e8ad7a551e91d50e25383f9bce1c0335478ac2c47504f3d065767596fb2a69bffaa22d4973fbf2ab121f937673b2adb7b170'
+            'f0e4971759ea7553afb998d55124dff7450288d7079057911a61da1b9625272ce19b3dc8f0dbce9b3418e86aaf666954269ed42512e2d1ed37b8b4bf123725e2')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
-  patch -p1 -i "${srcdir}/64_restore_terminal_keyboard_shortcut_schema.patch"
-  patch -p1 -i "${srcdir}/ubuntu-lid-close-suspend.patch"
+  patch -p1 -i "${srcdir}/0001-Do-not-hide-cursor.patch"
+
+  # Apply Ubuntu's patches
+    # Disable patches
+      # Ubuntu specific
+        sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/53_sync_input_sources_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
+
+  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+    msg "Applying patch ${i} ..."
+    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  done
 }
 
 build() {
@@ -52,6 +62,10 @@ build() {
 package() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+
+  install -dm755 "${pkgdir}/usr/bin/"
+  ln -s /usr/lib/gnome-settings-daemon/gnome-settings-daemon \
+    "${pkgdir}/usr/bin/unity-settings-daemon"
 }
 
 # vim:set ts=2 sw=2 et:
