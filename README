@@ -66,6 +66,7 @@ Order to compile/install:
 58: lightdm-ubuntu                 -> Cross-desktop lightweight display manager
 59: lightdm-unity-greeter          -> The LightDM greeter for Unity
 60: unity                          -> Desktop shell designed for efficiency
+61: unity-language-packs           -> Unity language packs
 
 * Optional packages
 
