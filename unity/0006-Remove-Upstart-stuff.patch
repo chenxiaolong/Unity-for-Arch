@@ -1,7 +1,7 @@
-From ee285795445076af5e53825f85791d56fd4914de Mon Sep 17 00:00:00 2001
+From d946f04b8a1e4b578c83bd81b0e55c24f8b853fa Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
-Subject: [PATCH 6/7] Remove Upstart stuff
+Subject: [PATCH 6/6] Remove Upstart stuff
 
 ---
  lockscreen/LockScreenController.cpp             |  4 --
@@ -10,10 +10,11 @@ Subject: [PATCH 6/7] Remove Upstart stuff
  services/panel-service.c                        | 64 ---------------------
  services/unity-panel-service-lockscreen.conf.in |  8 ---
  services/unity-panel-service.conf.in            | 18 ------
+ tools/unity.cmake                               |  3 +-
  unity-shared/CMakeLists.txt                     |  1 -
  unity-shared/UpstartWrapper.cpp                 | 74 -------------------------
  unity-shared/UpstartWrapper.h                   | 53 ------------------
- 9 files changed, 1 insertion(+), 235 deletions(-)
+ 10 files changed, 2 insertions(+), 237 deletions(-)
  delete mode 100644 services/unity-panel-service-lockscreen.conf.in
  delete mode 100644 services/unity-panel-service.conf.in
  delete mode 100644 unity-shared/UpstartWrapper.cpp
@@ -261,6 +262,21 @@ index 742e39b..0000000
 -
 -respawn
 -exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
+diff --git a/tools/unity.cmake b/tools/unity.cmake
+index c761551..dd5b75e 100755
+--- a/tools/unity.cmake
++++ b/tools/unity.cmake
+@@ -113,9 +113,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
+ 
+     try:
+         debug_mode = 2 if advanced_debug else 1 if debug else 0
+-        subprocess.call(["stop", "unity-panel-service"])
++        subprocess.call(["killall", "unity-panel-service"])
+         unity_instance = process_and_start_unity (verbose, debug_mode, compiz_path, compiz_args, log_file)
+-        subprocess.call(["start", "unity-panel-service"])
+         unity_instance.wait()
+     except KeyboardInterrupt, e:
+         try:
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
 index b56c779..1e6233a 100644
 --- a/unity-shared/CMakeLists.txt
@@ -413,5 +429,5 @@ index 3be88d9..0000000
 -
 -#endif
 -- 
-1.9.1
+1.9.2
 

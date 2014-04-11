@@ -1,7 +1,7 @@
 From 7b62ae260a404a0da267a9b7026bdb750931d5a0 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 3/7] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 3/6] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-1.9.1
+1.9.2
 
