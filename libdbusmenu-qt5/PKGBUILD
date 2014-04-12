@@ -12,7 +12,7 @@ url="https://launchpad.net/libdbusmenu-qt"
 license=('LGPL')
 groups=('unity')
 depends=('qjson' 'qt5-base')
-makedepends=('cmake')
+makedepends=('cmake' 'doxygen')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libdbusmenu-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('028ef2d7d7845050e4deea10d71a77fd22a21d3504df28fcd29eec193990592d2fbe716d8839d425a567facd0eca6cbad9117542e8ad774f8b541833606aea24')
 
