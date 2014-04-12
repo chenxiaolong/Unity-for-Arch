@@ -26,6 +26,11 @@ for i in ${PACKAGES[@]}; do
 
   PKGBUILD_VER=$(eval "echo \${_ver_${i//-/_}}")
 
+  # Skip non-14.04 packages
+  if ! grep -q 14.04 <<< ${UBUNTU_VER}; then
+    continue
+  fi
+
   if [[ "${PKGBUILD_VER}" != "${UBUNTU_VER#*:}" ]]; then
     echo "${LINE_THICK}"
     echo "Package: language-pack-${i}"
