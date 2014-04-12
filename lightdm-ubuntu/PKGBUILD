@@ -5,9 +5,9 @@
 # optdepends.
 
 pkgname=lightdm-ubuntu
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu3
 pkgver=1.10.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/lightdm"
@@ -28,8 +28,7 @@ optdepends=('accountsservice: DBus interface for querying user information'
 provides=("lightdm=${pkgver}" "liblightdm-qt4=${pkgver}")
 conflicts=('lightdm' 'liblightdm-qt4')
 options=('emptydirs')
-backup=('etc/apparmor.d/lightdm-guest-session'
-        'etc/lightdm/keys.conf'
+backup=('etc/lightdm/keys.conf'
         'etc/lightdm/lightdm.conf'
         'etc/lightdm/lightdm-gtk-greeter.conf'
         'etc/lightdm/lightdm-gtk-greeter-ubuntu.conf'
@@ -45,7 +44,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         'lightdm.rules'
         'guest-session-cross-distro.patch'
         'guest-session-add-default-gsettings-support.patch')
-sha512sums=('12a4d27c5ac6026a552535bad8ff2add116ce4bac71f92f5636347292b92cb61fb398e92fc1785379fd8ef9509406be2424459a89ce6057125d526a5b8352cd5'
+sha512sums=('743354741ec985c2ce6048d2a572f2554cb7ab05d7630f07a99428931e83ff9595943014873325a4926ceee2fbad90bad124ed0d35ca190b5df57f71a4798fa5'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
