@@ -5,7 +5,7 @@
 pkgname=qt4-ubuntu
 _ubuntu='4.8.5+git192-g085f851+dfsg-2ubuntu4'
 pkgver=4.8.5
-pkgrel=100
+pkgrel=101
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL' 'FDL' 'custom')
@@ -38,7 +38,6 @@ source=("http://download.qt-project.org/official_releases/qt/4.8/${pkgver}/${_pk
         'qtbug-31579.patch' 'qtbug-32534.patch' 'qtbug-32908.patch'
         'libmng2.patch' 'CVE-2013-4549.patch'
         'kubuntu_14_systemtrayicon.diff'
-        'kubuntu_17_enable_qtwebkit_for_qtassistant.diff'
         'kubuntu_28_xi2.1.patch'
         'kubuntu_30_translucent_drag_pixmap.diff'
         'kubuntu_31_unity_workarea_atom.diff'
@@ -60,7 +59,6 @@ sha512sums=('47118d1aa30c59a1eb74e805023cd060edcb35bb0944fe6651889254b75acbd4b83
             '0c0ee5356f9ccaac6bfb4e7502c3fac87bd228ae493b354523f3021222f3b6d209de68b9dcce29a4e638d46485859af6aa498b8616a226a5537dab4f8e4795ef'
             'ad4356856e721a3bb76ce48e369432e550df832adb11dce472db1c44dd6e7824ba5085a03748751a852b1342ba9c62c48323dcc684e0b86ce7b199466a45dd37'
             'ab5ba9e1f72f19b8a83e64d012465918477285bf5d550f0cee09aafe63a16f64fa9d463d4ff4e10ce0619b4752f91b2adc23815fb4565cb11f6b3bd68cdb5603'
-            '3853d9cddec87b8612a063684e144914cd65fd193b4310a3e619b343827999b1669ee093b7c77225cd15e20c5a974b8b58713f7167778a63e416b0002d42dade'
             '1f899598142c50c40546cd05958abab5e72b5b361e5519556ae8849bf53dcf3e650e6bacfc4066e81607fc07916adc812a19d2d4ada2d2eac813d82fced89e67'
             '32ce5a74bfe92b103bd67bff87eedb60cc960fd3daa4300a69f7b53adcb11fc2c08b22bb9e83cdb1fdc08810c9d78c304e14b17e7270a3bd34bc72a92b079a0a'
             'bc3ba4e6421db8412aed81e3765a817e77cdcbf56abbbe65589d1a98f83e118332fb05045d8ecd2c5c66740d181bfdfcc472d493a33b67dfc73f06b79ee50ed7'
@@ -74,7 +72,6 @@ prepare() {
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}"/kubuntu_14_systemtrayicon.diff
-  patch -p1 -i "${srcdir}"/kubuntu_17_enable_qtwebkit_for_qtassistant.diff
   patch -p1 -i "${srcdir}"/kubuntu_28_xi2.1.patch
   patch -p1 -i "${srcdir}"/kubuntu_30_translucent_drag_pixmap.diff
   patch -p1 -i "${srcdir}"/kubuntu_31_unity_workarea_atom.diff
@@ -195,11 +192,4 @@ package() {
 
     # The TGA plugin is broken (FS#33568)
     rm "${pkgdir}"/usr/lib/qt4/plugins/imageformats/libqtga.so
-
-    # Remove QtWebkit
-    rm -r "${pkgdir}"/usr/include/qt4/QtWebKit/
-    rm "${pkgdir}"/usr/lib/libQtWebKit.*
-    rm "${pkgdir}"/usr/lib/pkgconfig/QtWebKit.pc
-    rm -r "${pkgdir}"/usr/lib/qt4/imports/QtWebKit/
-    rm "${pkgdir}"/usr/lib/qt4/plugins/designer/libqwebview.so
 }
