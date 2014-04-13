@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 url="http://zeitgeist-project.com/"
 license=('GPL2' 'LGPL2.1')
 depends=('json-glib' 'telepathy-glib' 'gtk3')
-makedepends=('intltool' 'gobject-introspection' 'vala' 'raptor' 'python2-rdflib')
+makedepends=('intltool' 'gobject-introspection' 'vala' 'raptor' 'python2-rdflib' 'xapian-core')
 provides=('zeitgeist-datahub' "zeitgeist=${pkgver}")
 conflicts=('zeitgeist-datahub' 'zeitgeist')
 replaces=('zeitgeist-datahub')
