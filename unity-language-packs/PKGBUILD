@@ -119,7 +119,7 @@ for i in ${packages[@]}; do
 
   # Launchpad's redirection is too slow
   #source+=("https://launchpad.net/ubuntu/+archive/primary/+files/language-pack-${_name}_${_ver}.tar.gz")
-  source+=("http://archive.ubuntu.com/ubuntu/pool/main/l/language-pack-${_name}/language-pack-${_name}_${_ver}.tar.gz")
+  source+=("http://mirrors.kernel.org/ubuntu/pool/main/l/language-pack-${_name}/language-pack-${_name}_${_ver}.tar.gz")
 done
 
 package() {
