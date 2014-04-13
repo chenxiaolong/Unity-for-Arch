@@ -35,6 +35,7 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  intltoolize -f
   autoreconf -vfi
   ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-keyboard
   make
