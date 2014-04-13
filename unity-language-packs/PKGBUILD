@@ -7,6 +7,7 @@ translations=(
   indicator-appmenu
   indicator-bluetooth
   indicator-datetime
+  indicator-keyboard
   indicator-messages
   indicator-power
   indicator-printers
@@ -105,7 +106,7 @@ done
 
 pkgname=unity-language-packs
 pkgver=14.04
-pkgrel=3
+pkgrel=4
 pkgdesc="Ubuntu's Unity-related translations"
 arch=('any')
 url="https://translations.launchpad.net/ubuntu"
