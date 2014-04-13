@@ -476,4 +476,5 @@ echo "Attempting to acquire lock on local repo..."
 
   # TODO: Enable signing
   repo-add ${LOCALREPO}/${REPO}.db.tar.xz ${LOCALREPO}/*.pkg.tar.xz
+  repo-add -f ${LOCALREPO}/${REPO}.files.tar.xz ${LOCALREPO}/*.pkg.tar.xz
 ) 123>${LOCALREPO}/repo.lock
