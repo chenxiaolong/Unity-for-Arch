@@ -5,7 +5,7 @@
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The Control Center for GNOME and Unity"
 arch=('i686' 'x86_64')
 groups=('gnome' 'unity')
@@ -25,15 +25,18 @@ options=('!emptydirs')
 install=gnome-control-center.install
 source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-control-center/gnome-control-center_${pkgver}-${_ppa_rel}.debian.tar.gz"
-        '0001-Clear-GTK-MODULES-Before-Starting.patch')
+        '0001-Clear-GTK-MODULES-Before-Starting.patch'
+        '0002-Reimplement-support-for-loading-external-panels.patch')
 sha512sums=('d69125f31bb3d5cf51161836617327b221eb5b9992e1f9db84121602723295496091ea5e4c1e7017ecd2f9d943197843c7c195b58738b3527220e38e52525987'
             '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97'
-            'e4af362d67fda91b3f03dbe8f18781e31b60448aa7b9947d81acf37f823a2c5e5c8330c68af0aa6155573811be20e5dadac0f4e51576dd1be4e35599394a6900')
+            'e4af362d67fda91b3f03dbe8f18781e31b60448aa7b9947d81acf37f823a2c5e5c8330c68af0aa6155573811be20e5dadac0f4e51576dd1be4e35599394a6900'
+            '961f524727204f45470de8e5bc4cf7a8b18d138602aef8ddd88257652bda382dd308088abdaa7ef773a8abd1354f26c15c9db2f63b361662febdb4945f097165')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   patch -p1 -i "${srcdir}/0001-Clear-GTK-MODULES-Before-Starting.patch"
+  patch -p1 -i "${srcdir}/0002-Reimplement-support-for-loading-external-panels.patch"
 
   # Apply Ubuntu's patches
     # Disable patches
@@ -55,6 +58,7 @@ prepare() {
         sed -i '/revert_git_info_packagekit_api.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/ubuntu_region_packagekit.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/zz_add_fallback_panels_dir.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/ubuntu_external_panels.patch/d' "${srcdir}/debian/patches/series"
       # There are currently no packages compatible with this library (assuming it even works)
         sed -i '/revert_git_drop_library.patch/d' "${srcdir}/debian/patches/series"
       # We have gnome-bluetooth 3.12

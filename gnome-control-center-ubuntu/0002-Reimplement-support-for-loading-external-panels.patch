@@ -1,0 +1,382 @@
+From 629dae6fc93861b4052017685cafb768f86023a4 Mon Sep 17 00:00:00 2001
+From: Tim Lunn <tim@feathertop.org>
+Date: Sun, 28 Apr 2013 11:59:58 +1000
+Subject: [PATCH] Reimplement support for loading external panels
+
+Also brings back support for hiding icons based on XDG_CURRENT_DESKTOP
+and the ShowIn values in desktop files.
+
+This does not re-implement the gmenu loading code. So for now we
+just look for a desktop file in the following format
+gnome-'panelname'-panel.desktop or 'panelname'-ccpanel.desktop.
+launchers (that are not actual modules) are loaded from the static
+list all_launchers, hard-coded into the patch.
+
+Any external module that use the following macro will need to change
+CC_PANEL_REGISTER() -> CC_PANEL_REGISTER_EXTERNAL()
+---
+ configure.ac            |   3 ++
+ shell/Makefile.am       |   3 +-
+ shell/cc-panel-loader.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++-
+ shell/cc-panel-loader.h |   1 +
+ shell/cc-panel.h        |   8 ++++
+ shell/cc-window.c       |  97 +++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 223 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4100481..36f620b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -331,6 +331,9 @@ dnl =======================================
+ dnl Panels
+ dnl =======================================
+ 
++PANELS_DIR="${libdir}/control-center-1/panels"
++AC_SUBST(PANELS_DIR)
++
+ PANEL_CFLAGS="-I\$(top_srcdir)/ -DG_LOG_DOMAIN=\"\\\"\$(cappletname)-cc-panel\\\"\" -DPANEL_ID=\"\\\"\$(cappletname)\\\"\""
+ AC_SUBST(PANEL_CFLAGS)
+ 
+diff --git a/shell/Makefile.am b/shell/Makefile.am
+index ad7a68f..ac096c9 100644
+--- a/shell/Makefile.am
++++ b/shell/Makefile.am
+@@ -85,7 +85,8 @@ if BUILD_BLUETOOTH
+ gnome_control_center_LDADD += $(top_builddir)/panels/bluetooth/libbluetooth.la
+ endif
+ 
+-AM_CPPFLAGS = -DGNOMELOCALEDIR="\"$(datadir)/locale\""
++AM_CPPFLAGS =  -DGNOMELOCALEDIR="\"$(datadir)/locale\""    \
++   -DPANELS_DIR="\"$(PANELS_DIR)\""
+ 
+ # Dbus service file
+ servicefiledir = $(datadir)/dbus-1/services
+diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
+index 26576dc..6f8e2c2 100644
+--- a/shell/cc-panel-loader.c
++++ b/shell/cc-panel-loader.c
+@@ -26,6 +26,15 @@
+ 
+ #include "cc-panel-loader.h"
+ 
++/* This is a list of desktop file launchers that should be loaded
++where they are available */
++static struct {
++  const char *name;
++} all_launchers[] = {
++  {"unity-tweak-tool"},
++  {"system-config-printer"},
++};
++
+ #ifndef CC_PANEL_LOADER_NO_GTYPES
+ 
+ /* Extension points */
+@@ -149,6 +158,37 @@ parse_categories (GDesktopAppInfo *app)
+   return retval;
+ }
+ 
++static gboolean
++parse_show_in (GDesktopAppInfo *app)
++{
++  const char *env;
++  gboolean result;
++
++  env = g_getenv ("XDG_CURRENT_DESKTOP");
++  result = g_desktop_app_info_get_show_in (app, env);
++
++  return result;
++}
++
++static gboolean
++cc_panel_loader_add_item (CcShellModel *model, const char *name, GDesktopAppInfo *app )
++{
++  int category;
++  gboolean show;
++
++  category = parse_categories (app);
++  if (G_UNLIKELY (category < 0))
++    return FALSE;
++
++  show = parse_show_in (app);
++  if (!show)
++    return FALSE;
++
++  cc_shell_model_add_item (model, category, G_APP_INFO (app), name);
++
++  return TRUE;
++}
++
+ void
+ cc_panel_loader_fill_model (CcShellModel *model)
+ {
+@@ -159,6 +199,7 @@ cc_panel_loader_fill_model (CcShellModel *model)
+       GDesktopAppInfo *app;
+       char *desktop_name;
+       int category;
++      gboolean show;
+ 
+       desktop_name = g_strconcat ("gnome-", all_panels[i].name,
+                                   "-panel.desktop", NULL);
+@@ -176,11 +217,80 @@ cc_panel_loader_fill_model (CcShellModel *model)
+       if (G_UNLIKELY (category < 0))
+         continue;
+ 
++      show = parse_show_in (app);
++      if (!show)
++        continue;
++
+       cc_shell_model_add_item (model, category, G_APP_INFO (app), all_panels[i].name);
+       g_object_unref (app);
+     }
+ }
+ 
++void
++cc_panel_loader_external_fill_model (CcShellModel *model, GIOExtensionPoint *extension_point)
++{
++  GList *panels, *l;
++  /* Load native panel modules/plugins */
++  panels = g_io_extension_point_get_extensions (extension_point);
++
++  for (l = panels; l != NULL; l = l->next)
++    {
++      GIOExtension *extension;
++      const gchar *name;
++
++      GDesktopAppInfo *app;
++      char *desktop_name;
++
++      extension = l->data;
++
++      name = g_io_extension_get_name (extension);
++
++      desktop_name = g_strconcat ("gnome-", name, "-panel.desktop", NULL);
++      app = g_desktop_app_info_new (desktop_name);
++      g_free (desktop_name);
++
++      if (app == NULL) {
++        desktop_name = g_strconcat (name, "-ccpanel.desktop", NULL);
++        app = g_desktop_app_info_new (desktop_name);
++        g_free (desktop_name);
++      }
++
++      if (app == NULL)
++        {
++          g_warning ("Ignoring broken panel %s (missing desktop file)",
++                     name);
++          continue;
++        }
++      cc_panel_loader_add_item(model, name, app);
++      g_object_unref (app);
++
++  }
++  g_list_free (l);
++
++  /* Load desktop launchers */
++  int i;
++
++  for (i = 0; i < G_N_ELEMENTS (all_launchers); i++)
++    {
++      GDesktopAppInfo *app;
++      char *desktop_name;
++
++      desktop_name = g_strconcat (all_launchers[i].name, ".desktop", NULL);
++      app = g_desktop_app_info_new (desktop_name);
++      g_free (desktop_name);
++
++      if (app == NULL)
++        {
++          g_warning ("Ignoring launcher %s (missing desktop file)",
++                     all_launchers[i].name);
++          continue;
++        }
++      cc_panel_loader_add_item(model, all_launchers[i].name, app);
++      g_object_unref (app);
++    }
++
++}
++
+ #ifndef CC_PANEL_LOADER_NO_GTYPES
+ 
+ static GHashTable *panel_types;
+@@ -208,7 +318,8 @@ cc_panel_loader_load_by_name (CcShell     *shell,
+   ensure_panel_types ();
+ 
+   get_type = g_hash_table_lookup (panel_types, name);
+-  g_return_val_if_fail (get_type != NULL, NULL);
++  if (get_type == NULL)
++    return NULL;
+ 
+   return g_object_new (get_type (),
+                        "shell", shell,
+diff --git a/shell/cc-panel-loader.h b/shell/cc-panel-loader.h
+index 23599cb..469789e 100644
+--- a/shell/cc-panel-loader.h
++++ b/shell/cc-panel-loader.h
+@@ -29,6 +29,7 @@
+ G_BEGIN_DECLS
+ 
+ void     cc_panel_loader_fill_model     (CcShellModel  *model);
++void     cc_panel_loader_external_fill_model     (CcShellModel  *model, GIOExtensionPoint *extension_point);
+ GList   *cc_panel_loader_get_panels     (void);
+ void     cc_panel_loader_add_option_groups (GOptionContext  *context,
+                                             GVariantBuilder *builder);
+diff --git a/shell/cc-panel.h b/shell/cc-panel.h
+index 593eef7..c4cfa1f 100644
+--- a/shell/cc-panel.h
++++ b/shell/cc-panel.h
+@@ -45,6 +45,14 @@ G_BEGIN_DECLS
+ #define CC_PANEL_REGISTER(PluginName, plugin_name)                      \
+   G_DEFINE_TYPE (PluginName, plugin_name, CC_TYPE_PANEL)
+ 
++#define CC_PANEL_REGISTER_EXTERNAL(PluginName, plugin_name)             \
++  G_DEFINE_TYPE_WITH_CODE (PluginName, plugin_name, CC_TYPE_PANEL,      \
++  GIOExtensionPoint *ep;                                                \
++  ep = g_io_extension_point_register ("CcPanel");                       \
++  g_io_extension_point_set_required_type (ep, CC_TYPE_PANEL);           \
++  g_io_extension_point_implement (CC_SHELL_PANEL_EXTENSION_POINT,       \
++  g_define_type_id, PANEL_ID, 0))
++
+ typedef struct CcPanelPrivate CcPanelPrivate;
+ 
+ typedef struct _CcPanel       CcPanel;
+diff --git a/shell/cc-window.c b/shell/cc-window.c
+index 29b28e6..e131607 100644
+--- a/shell/cc-window.c
++++ b/shell/cc-window.c
+@@ -100,6 +100,8 @@ struct _CcWindowPrivate
+ 
+   CcPanel *active_panel;
+ 
++  GIOExtensionPoint *extension_point;
++
+   int monitor_num;
+   CcSmallScreen small_screen;
+ };
+@@ -139,6 +141,53 @@ get_icon_name_from_g_icon (GIcon *gicon)
+   return NULL;
+ }
+ 
++static CcPanel *
++external_load_by_id (CcWindow     *self,
++                     const char   *name,
++                     GVariant    *parameters)
++{
++  CcWindowPrivate *priv = self->priv;
++  GIOExtension *extension;
++  GType panel_type = G_TYPE_INVALID;
++
++  /* check if there is an plugin that implements this panel */
++  extension = g_io_extension_point_get_extension_by_name (priv->extension_point, name);
++  if (extension)
++    panel_type = g_io_extension_get_type (extension);
++
++  if (panel_type == G_TYPE_INVALID)
++    {
++      g_warning ("Could not find the loadable module for panel '%s'", name);
++      return NULL;
++    }
++
++  return g_object_new (panel_type,
++                       "shell", CC_SHELL (self),
++                       "parameters", parameters,
++                       NULL);
++}
++
++static void
++external_launch_by_id (const char *name)
++{
++  GDesktopAppInfo *app;
++  char *desktop_name;
++  const char *command;
++
++  desktop_name = g_strconcat (name, ".desktop", NULL);
++  app = g_desktop_app_info_new (desktop_name);
++  g_free (desktop_name);
++
++  command = g_app_info_get_executable ( G_APP_INFO (app));
++
++  if (command && command[0])
++    {
++      g_spawn_command_line_async (command, NULL);
++    }
++  g_object_unref (app);
++
++}
++
+ static gboolean
+ activate_panel (CcWindow           *self,
+                 const gchar        *id,
+@@ -154,6 +203,16 @@ activate_panel (CcWindow           *self,
+     return FALSE;
+ 
+   priv->current_panel = GTK_WIDGET (cc_panel_loader_load_by_name (CC_SHELL (self), id, parameters));
++  if (!priv->current_panel)
++    {
++      priv->current_panel = GTK_WIDGET (external_load_by_id(self, id, parameters));
++      if (!priv->current_panel)
++        {
++          external_launch_by_id (id);
++          return FALSE;
++        }
++    }
++
+   cc_shell_set_active_panel (CC_SHELL (self), CC_PANEL (priv->current_panel));
+   gtk_widget_show (priv->current_panel);
+ 
+@@ -874,8 +933,43 @@ setup_model (CcWindow *shell)
+   add_category_view (shell, CC_CATEGORY_SYSTEM, C_("category", "System"));
+ 
+   cc_panel_loader_fill_model (CC_SHELL_MODEL (shell->priv->store));
++  cc_panel_loader_external_fill_model (CC_SHELL_MODEL (shell->priv->store),shell->priv->extension_point);
++}
++
++static void
++load_panel_plugins (CcWindow *shell)
++{
++  GList *modules;
++  GList *panels, *l;
++
++  /* only allow this function to be run once to prevent modules being loaded
++   * twice
++   */
++
++  if (shell->priv->extension_point)
++    return;
++
++  /* make sure the base type is registered */
++  g_type_from_name ("CcPanel");
++
++  shell->priv->extension_point
++    = g_io_extension_point_register (CC_SHELL_PANEL_EXTENSION_POINT);
++
++  /* load all the plugins in the panels directory */
++  modules = g_io_modules_load_all_in_directory (PANELS_DIR);
++
++  panels = g_io_extension_point_get_extensions (shell->priv->extension_point);
++
++  for (l = panels; l != NULL; l= l->next)
++    {
++       g_debug ("modules %s", g_io_extension_get_name (l->data));
++    }
++  g_list_free (l);
++  g_list_free (modules);
+ }
+ 
++
++
+ static void
+ previous_button_clicked_cb (GtkButton *button,
+                             CcWindow  *shell)
+@@ -1447,6 +1541,9 @@ create_main_page (CcWindow *self)
+ 
+   gtk_widget_set_size_request (priv->scrolled_window, FIXED_WIDTH, -1);
+ 
++  /* load the panels that are implemented as plugins */
++  load_panel_plugins (self);
++
+   /* load the available settings panels */
+   setup_model (self);
+ }
+-- 
+1.9.2
+
