@@ -5,7 +5,7 @@
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0
-pkgrel=5
+pkgrel=6
 pkgdesc="The Control Center for GNOME and Unity"
 arch=('i686' 'x86_64')
 groups=('gnome' 'unity')
@@ -113,6 +113,12 @@ package() {
     --dir "${pkgdir}/usr/share/applications/" \
     --add-only-show-in=Unity \
     "${pkgdir}/usr/share/applications/gnome-region-panel.desktop"
+
+  # Hide Displays panel in Unity (it only works with gnome-shell)
+  desktop-file-install \
+    --dir "${pkgdir}/usr/share/applications/" \
+    --remove-only-show-in=Unity \
+    "${pkgdir}/usr/share/applications/gnome-display-panel.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
