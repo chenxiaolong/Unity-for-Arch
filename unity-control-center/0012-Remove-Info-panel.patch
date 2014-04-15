@@ -1,7 +1,7 @@
 From c2bcef15b5abc7b6defc60fd4633fea1ddf00dfb Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:07:03 -0400
-Subject: [PATCH 12/17] Remove Info panel
+Subject: [PATCH 12/19] Remove Info panel
 
 ---
  configure.ac                                 |    4 -
@@ -4364,5 +4364,5 @@ index eaf3b82..c9ecad0 100644
  panels/online-accounts/gnome-online-accounts-panel.desktop.in
  panels/screen/gnome-screen-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

@@ -6,7 +6,7 @@ pkgname=unity-control-center
 _actual_ver=14.04.3
 _extra_ver=+14.04.20140328
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="The Control Center for Unity"
 arch=('i686' 'x86_64')
 groups=('unity')
@@ -33,16 +33,29 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         '0014-Remove-Screen-panel.patch'
         '0015-Remove-Sound-panel.patch'
         '0016-Remove-Ubuntu-specific-language-code.patch'
-        '0017-Remove-Ubuntu-help-links.patch')
+        '0017-Remove-Ubuntu-help-links.patch'
+        '0018-Launch-gnome-control-center-if-no-arguments.patch'
+        '0019-Hide-navigation-bar.patch')
 sha512sums=('49b10a7a768daac1bea222d286ce9fd530f6718664d2f21edc8dc10009fac35f0dae40c785d9460171bc1e132350ead4279eaef0c2af6a8366e68bd435042ddf'
-            'd06ac925143f98d1da4505b4140d7011a8167ae1e6f8503145674666ed3b6f6e57fd3d3c900af4577ebff621a528be7a02724810fe165b275a332f09addd7313'
-            'da3d1112ce6781fc345d862a194147952cd1b4f4b35b880250895b5ad00c7c3b7ffcf59984aa14e70e9ef314709602546eae950791b7b71c28849a44773881fe'
-            '8abc8c0e3727a1e57116d943c16918754041007b1be45c8e2a0f4f945c94193008a75f72dcc123d70def6b43e1c347f1b0804d3cad44dc098b1b216cf31fb09d'
-            'a23e0d001e28a2c4659400f901e15d291777f242ebf404e9b4e29a9779a386a606f55428f73780906b5c35f1f204d2b96d279c6917cc63601a7058d7975f3ac8'
-            'de56dc2349bb29940a501534d4861e5a0fed3c7a0a33b8fdb8dca97cb9bec4334133b122bd609eb9ced1325bdfb85a87fb9bad7745f666daa6a607d8fd0f9a0d'
-            'fa0284c2bbe7a5897f0f4dad2adc6acd5a3df7ef6143986af4538fae97e88bd76cea0d701e82a01534a49f3bdddf9dd2c1eb025babba85e07914d7ae5323fe14'
-            '778672208f47bd0db457bacfa345d1110a667c2cacc981c4b2a2f559de283295c2781bbb9d1782b86ecb66aea3de594b67f7998b040d9d0d23b3dca104c2c9f7'
-            'a3f914042db1c82e19e4bf8cb2c915b107244e4466f3a1b0f0eb5f15512db43115701842037e81b7daf98a790a45f00110840e4c17ed4350793d877c384d0e5c')
+            '40fbaacad3f8788b4882af90a2e9d5c00a73dc9e5f387a92c9d550f011e2797f61fada4794ec40f11c67b623dd369d249c55236d75f5c28f6da5de9634fa7cf4'
+            'eeb5e5c10b60ebe83fec93a191a1da8a3b22b92b4fc678051d8d033e7aabf2a2e97234c31a6dae65da45c6a6feadc3bb861ce38eb458f6b873a7c95dbe821125'
+            '398a87f6344db58e6423291597f489e45b2e53f707648925508e63c32ae46677918e0e1b812039c41fac0f476f17490c0b1aeeda89f3996f085c070cfb8e230a'
+            '3692d4b9aefddc083ef17bf26fe7b7d3f7592f4684101ded11fb54dd0ca38560a69fe17ee3271b3744e084691fa2a22155dd2903558c96c0864cb30f25c286f5'
+            '7d27d144ac84aa6b5e9040362c0278b7d9c43ae7c5e2cca313a92e9abde404edfcad8ab447cefac1da54e441a091db4d5ec873d4ff2854ff0b83e764d1763e92'
+            '0b9c1c6d0df5486def035d0d0617e1c1c7c82dcb9f824e004705aa559357af1841db86f66d2bb615ce339738e01e2c8771b250dbcd5a115a83b6e9fa4ba2949b'
+            'f294d23e6dce69473537044a6634a3072a741107cec265243cf7000c6900af3d09a571339a3ff5ca3da1da96398b7b193558eedd0bacff03f39604a989602651'
+            '7c18c93b082cfb67ca964898ce85ef8d02d21c3f00e98ab047ef1a03f1f194d49431254a269945aee1631bac5bed53841693a61d7bd28f9d0fec0464d1fc9b7e'
+            '4cc703f6e883cc5d42c999fbe7c4139056b0917dbdea38b3f57741f31a6a49ba6b62073789738a1eae3c6fa2dfc08aaa8647a5471064d2ab270c2037d8c07b65'
+            '406ca755eb185bf1988d91e4e426da0a904c6cbb2c04c8f15fa30ba1c6730715f4381706cda7148c3e26746e414cc2ffee42b91f2d122148fdbcf7f0b2358b56'
+            'e40a3ecac95a0d52205f91b9f94c515197b31d630349459c8c16ff0bda6e03cfda90d9c1f2a9fd9893d68ae4f794fdc92a591858611bfd15ce390609f408c882'
+            '50696a95abe0e69b946ad70683ed2fdac855d5a65458d3158ad533f7e5448e979a9b849f7ddac1ac1ac1eb57369fe9355b8aede894f795ca22a290a884a6ec1b'
+            '9914359fe944fa70a1782a12ce4d4f7b0392bf438fba98bf892e027cc5d13e961400cee891ab44f73c2274b3020196231b15f2e763eabfad449f02de6c19936d'
+            'd53bd0cdd3079f2a15a82db5ac0518600a99d8daba9a6f1b328376ff896c45343fcfced9e2b63cb634e37ad0cfe24b6fcb3c120eff65054c1ea0bb16a27818c5'
+            '514aa0bd8c5e41315135e03b75cb0e3f371f33dd4e8f3618e2e9a8cef3fba34059ccb1a9c16fc844b1682ad82d4f89811e61ca331294ed4fccc8c8f61f41e134'
+            '0f77a4747133e2ced353cdbac4e964ed08dde133d54fe15d3ddf64506f6f67e999b41618a2dd33bebbaad3658a9ae958cf438f707c24bac603bf070c4296d499'
+            '5a2ec538ecab6333be737da0110ab7d05d108dd91c83deaa2281194edb0615be5d78bd180c48fc98b4956f4a3e7ba0f99829b253e79b976d60012cd221a3f33f'
+            'c953187afce8e42ff17916c8bb787ee685bef8cf0e71c9153a1a634a32e969ed779e7b829e33f13569ea5914e1cdc4a109004beed85f5292365f42bfb4455718'
+            '13cb8edfaa83da58b6bb35fd4733354d231f62b4680a6fbbaa108756cbbf25376a43bc27b5bdebc84e5018c8fd0aab329f298afa14e3b91323bc97f6fa849655')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -67,6 +80,8 @@ prepare() {
   git am "${srcdir}/0015-Remove-Sound-panel.patch"
   git am "${srcdir}/0016-Remove-Ubuntu-specific-language-code.patch"
   git am "${srcdir}/0017-Remove-Ubuntu-help-links.patch"
+  git am "${srcdir}/0018-Launch-gnome-control-center-if-no-arguments.patch"
+  git am "${srcdir}/0019-Hide-navigation-bar.patch"
 }
 
 build() {
@@ -100,8 +115,22 @@ package() {
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
 
-  # This is called by gnome-control-center
-  mv "${pkgdir}"/usr/bin/unity-control-center{,-real}
+  rm "${pkgdir}"/usr/share/applications/unity-control-center.desktop
+
+  create_launcher() {
+    local script="/usr/lib/unity-control-center-1/exec-${1}"
+    cat > "${pkgdir}${script}" << EOF
+#!/usr/bin/bash
+/usr/bin/unity-control-center ${1}
+EOF
+    chmod 755 "${pkgdir}${script}"
+
+    sed -ri "/Exec=/ s|^.*$|Exec=${script}|g" \
+      "${pkgdir}/usr/share/applications/unity-${1}-panel.desktop"
+  }
+
+  create_launcher appearance
+  create_launcher datetime
 }
 
 # vim:set ts=2 sw=2 et:

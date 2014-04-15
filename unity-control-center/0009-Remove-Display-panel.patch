@@ -1,7 +1,7 @@
 From d39d5964668d3872996cf7df5226ce57fb881892 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:45:29 -0400
-Subject: [PATCH 09/17] Remove Display panel
+Subject: [PATCH 09/19] Remove Display panel
 
 ---
  configure.ac                                       |    3 -
@@ -7565,5 +7565,5 @@ index 238d3d4..7094a39 100644
  panels/mouse/gnome-mouse-panel.desktop.in
  panels/online-accounts/gnome-online-accounts-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

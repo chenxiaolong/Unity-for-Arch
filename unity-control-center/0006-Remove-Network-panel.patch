@@ -1,7 +1,7 @@
 From 6003c192c4370937918f7563f2f111dd68a6f820 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:32:34 -0400
-Subject: [PATCH 06/17] Remove Network panel
+Subject: [PATCH 06/19] Remove Network panel
 
 ---
  configure.ac                                     |   20 -
@@ -13079,5 +13079,5 @@ index 8a43b37..0124770 100644
  					command_list="applications effects input outputs"
  					;;
 -- 
-1.9.1
+1.9.2
 

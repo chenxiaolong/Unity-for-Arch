@@ -1,0 +1,50 @@
+From 80da4446809c95e41e180b019b8ee7acc2d21335 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Tue, 15 Apr 2014 14:01:04 -0400
+Subject: [PATCH 18/19] Launch gnome-control-center if no arguments
+
+---
+ shell/control-center.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/shell/control-center.c b/shell/control-center.c
+index 7969f6a..2aafaef 100644
+--- a/shell/control-center.c
++++ b/shell/control-center.c
+@@ -23,6 +23,7 @@
+ 
+ #include <glib/gi18n.h>
+ #include <stdlib.h>
++#include <stdio.h>
+ 
+ #include "gnome-control-center.h"
+ 
+@@ -301,6 +302,16 @@ application_startup_cb (GApplication       *application,
+ int
+ main (int argc, char **argv)
+ {
++  // Launch gnome-control-center if there are no arguments
++  if (argc == 1)
++  {
++    printf ("%s", "Ran with no arguments; launching gnome-control-center\n");
++    fflush (stdout);
++    execl ("/usr/bin/gnome-control-center",
++           "/usr/bin/gnome-control-center",
++           (char *) NULL);
++  }
++
+   GnomeControlCenter *shell;
+   GtkApplication *application;
+   int status;
+@@ -324,7 +335,7 @@ main (int argc, char **argv)
+   shell = gnome_control_center_new ();
+ 
+   /* enforce single instance of this application */
+-  application = gtk_application_new ("org.gnome.ControlCenter", G_APPLICATION_HANDLES_COMMAND_LINE);
++  application = gtk_application_new ("org.gnome.ControlCenterUnity", G_APPLICATION_HANDLES_COMMAND_LINE);
+   g_signal_connect (application, "startup",
+                     G_CALLBACK (application_startup_cb), shell);
+   g_signal_connect (application, "command-line",
+-- 
+1.9.2
+

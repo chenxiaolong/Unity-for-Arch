@@ -1,7 +1,7 @@
 From a37eb00ab09fea98e94cb7d941b02e194a5596b4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:52:42 -0400
-Subject: [PATCH 10/17] Remove User Accounts panel
+Subject: [PATCH 10/19] Remove User Accounts panel
 
 ---
  configure.ac                                       |   61 +-
@@ -18391,5 +18391,5 @@ index 7094a39..f70ea44 100644
 -panels/user-accounts/fingerprint-strings.h
  shell/gnome-control-center.desktop.in
 -- 
-1.9.1
+1.9.2
 

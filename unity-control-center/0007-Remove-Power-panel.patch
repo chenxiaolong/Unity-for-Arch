@@ -1,7 +1,7 @@
 From 3c76da6d7f056b7c5afab45a1a2d181b34953d1d Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:36:29 -0400
-Subject: [PATCH 07/17] Remove Power panel
+Subject: [PATCH 07/19] Remove Power panel
 
 ---
  configure.ac                                   |    7 -
@@ -2543,5 +2543,5 @@ index 7968016..1411b20 100644
  panels/screen/gnome-screen-panel.desktop.in
  panels/sound/data/gnome-sound-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

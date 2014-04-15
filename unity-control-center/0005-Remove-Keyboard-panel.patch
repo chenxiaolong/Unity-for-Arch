@@ -1,7 +1,7 @@
 From 06e3a91e1efb7e2e38bbc776e27aaaac99da087f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:28:13 -0400
-Subject: [PATCH 05/17] Remove Keyboard panel
+Subject: [PATCH 05/19] Remove Keyboard panel
 
 ---
  configure.ac                                       |    8 -
@@ -5110,5 +5110,5 @@ index f3e7dbb..3cab6d4 100644
  panels/network/gnome-network-panel.desktop.in
  panels/online-accounts/gnome-online-accounts-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

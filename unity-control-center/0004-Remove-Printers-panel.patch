@@ -1,7 +1,7 @@
 From c3a8a34df2da8111eaf91f30ce20330bd5e8bdce Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:23:24 -0400
-Subject: [PATCH 04/17] Remove Printers panel
+Subject: [PATCH 04/19] Remove Printers panel
 
 ---
  configure.ac                                       |   41 -
@@ -16976,5 +16976,5 @@ index c0c3a0e..f3e7dbb 100644
  panels/screen/gnome-screen-panel.desktop.in
  panels/sound/data/gnome-sound-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

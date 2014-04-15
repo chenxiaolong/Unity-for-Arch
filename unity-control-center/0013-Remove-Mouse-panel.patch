@@ -1,7 +1,7 @@
 From 10209aafc8b7ea420f357520dece76f1d3a336a9 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:11:19 -0400
-Subject: [PATCH 13/17] Remove Mouse panel
+Subject: [PATCH 13/19] Remove Mouse panel
 
 ---
  configure.ac                                 |    4 -
@@ -6849,5 +6849,5 @@ index c9ecad0..4b8bb62 100644
  panels/screen/gnome-screen-panel.desktop.in
  panels/sound/data/gnome-sound-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

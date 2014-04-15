@@ -1,7 +1,7 @@
 From d2b58b544ee543a662a0a220b09174ed6247dfa0 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:14:13 -0400
-Subject: [PATCH 03/17] Remove Color panel
+Subject: [PATCH 03/19] Remove Color panel
 
 ---
  configure.ac                                      |   12 -
@@ -7142,5 +7142,5 @@ index 185f06e..c0c3a0e 100644
  panels/display/gnome-display-panel.desktop.in
  panels/info/gnome-info-panel.desktop.in
 -- 
-1.9.1
+1.9.2
 

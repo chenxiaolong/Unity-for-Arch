@@ -1,7 +1,7 @@
 From f237f4d6e87f9ffb6c3c41047c703c4aa91f0b50 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:59:27 -0400
-Subject: [PATCH 11/17] Remove Universal Access panel
+Subject: [PATCH 11/19] Remove Universal Access panel
 
 ---
  configure.ac                                       |    3 -
@@ -5680,5 +5680,5 @@ index f70ea44..eaf3b82 100644
 -panels/universal-access/gnome-universal-access-panel.desktop.in
  shell/gnome-control-center.desktop.in
 -- 
-1.9.1
+1.9.2
 

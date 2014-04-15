@@ -1,7 +1,7 @@
 From 34e0e1d48f3c56d4fee5095a38d0915f10cf8b3f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 19:06:05 -0400
-Subject: [PATCH 02/17] Remove Wacom panel
+Subject: [PATCH 02/19] Remove Wacom panel
 
 ---
  configure.ac                                 |   29 -
@@ -10177,5 +10177,5 @@ index 92a9d3c..185f06e 100644
 -panels/wacom/gnome-wacom-panel.desktop.in
  shell/gnome-control-center.desktop.in
 -- 
-1.9.1
+1.9.2
 

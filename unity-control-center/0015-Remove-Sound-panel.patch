@@ -1,7 +1,7 @@
 From f6c5dc973dafea7a149062941bd0b53bceb17895 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:19:52 -0400
-Subject: [PATCH 15/17] Remove Sound panel
+Subject: [PATCH 15/19] Remove Sound panel
 
 ---
  configure.ac                                       |    31 -
@@ -44103,5 +44103,5 @@ index 0124770..53f84ea 100644
  	esac
  
 -- 
-1.9.1
+1.9.2
 

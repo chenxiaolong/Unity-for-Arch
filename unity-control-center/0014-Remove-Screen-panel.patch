@@ -1,7 +1,7 @@
 From 2dc9be93e2e5d77fc50c5f9a89bb064a12d6ae08 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:15:54 -0400
-Subject: [PATCH 14/17] Remove Screen panel
+Subject: [PATCH 14/19] Remove Screen panel
 
 ---
  configure.ac                                   |   3 -
@@ -1309,5 +1309,5 @@ index 4b8bb62..e30a3a8 100644
  panels/sound/data/sounds/gnome-sounds-default.xml.in
  panels/sound/gvc/gvc-mixer-control.c
 -- 
-1.9.1
+1.9.2
 
