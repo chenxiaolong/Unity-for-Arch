@@ -27,7 +27,6 @@ translations=(
   unity-lens-video
   unity-scope-home
   unity-settings-daemon
-  unity_webapps
 )
 
 basever='14.04+20140410'
@@ -106,7 +105,7 @@ done
 
 pkgname=unity-language-packs
 pkgver=14.04
-pkgrel=4
+pkgrel=5
 pkgdesc="Ubuntu's Unity-related translations"
 arch=('any')
 url="https://translations.launchpad.net/ubuntu"
