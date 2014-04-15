@@ -5,13 +5,13 @@
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0
-pkgrel=4
+pkgrel=5
 pkgdesc="The Control Center for GNOME and Unity"
 arch=('i686' 'x86_64')
 groups=('gnome' 'unity')
 url="http://www.gnome.org"
 license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'libmm-glib' 'libgnomekbd' 'grilo' 'webkitgtk3')
+depends=('accountsservice' 'cups-pk-helper' 'gnome-bluetooth' 'gnome-desktop' 'gnome-menus' 'gnome-online-accounts' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'network-manager-applet' 'sound-theme-freedesktop' 'upower' 'libpwquality' 'gnome-color-manager' 'smbclient' 'libmm-glib' 'libgnomekbd' 'grilo' 'webkitgtk3' 'unity-control-center')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'modemmanager' 'vala' 'desktop-file-utils')
 optdepends=('system-config-printer: Printer settings'
             'gnome-user-share: Bluetooth and WebDAV file sharing'
