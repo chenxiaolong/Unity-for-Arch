@@ -1,7 +1,7 @@
-From 629dae6fc93861b4052017685cafb768f86023a4 Mon Sep 17 00:00:00 2001
+From f3e5ce109939aaeb865c51d41c7d4c518988c313 Mon Sep 17 00:00:00 2001
 From: Tim Lunn <tim@feathertop.org>
 Date: Sun, 28 Apr 2013 11:59:58 +1000
-Subject: [PATCH] Reimplement support for loading external panels
+Subject: [PATCH 2/2] Reimplement support for loading external panels
 
 Also brings back support for hiding icons based on XDG_CURRENT_DESKTOP
 and the ShowIn values in desktop files.
@@ -14,14 +14,17 @@ list all_launchers, hard-coded into the patch.
 
 Any external module that use the following macro will need to change
 CC_PANEL_REGISTER() -> CC_PANEL_REGISTER_EXTERNAL()
+
+Modified by Xiao-Long Chen to load unity-tweak-tool and various
+unity-control-center settings panels.
 ---
  configure.ac            |   3 ++
  shell/Makefile.am       |   3 +-
- shell/cc-panel-loader.c | 113 +++++++++++++++++++++++++++++++++++++++++++++++-
+ shell/cc-panel-loader.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++-
  shell/cc-panel-loader.h |   1 +
  shell/cc-panel.h        |   8 ++++
- shell/cc-window.c       |  97 +++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 223 insertions(+), 2 deletions(-)
+ shell/cc-window.c       |  97 ++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 225 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 4100481..36f620b 100644
@@ -52,10 +55,10 @@ index ad7a68f..ac096c9 100644
  # Dbus service file
  servicefiledir = $(datadir)/dbus-1/services
 diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
-index 26576dc..6f8e2c2 100644
+index 26576dc..afe5673 100644
 --- a/shell/cc-panel-loader.c
 +++ b/shell/cc-panel-loader.c
-@@ -26,6 +26,15 @@
+@@ -26,6 +26,17 @@
  
  #include "cc-panel-loader.h"
  
@@ -65,13 +68,15 @@ index 26576dc..6f8e2c2 100644
 +  const char *name;
 +} all_launchers[] = {
 +  {"unity-tweak-tool"},
++  {"unity-appearance-panel"},
++  {"unity-datetime-panel"},
 +  {"system-config-printer"},
 +};
 +
  #ifndef CC_PANEL_LOADER_NO_GTYPES
  
  /* Extension points */
-@@ -149,6 +158,37 @@ parse_categories (GDesktopAppInfo *app)
+@@ -149,6 +160,37 @@ parse_categories (GDesktopAppInfo *app)
    return retval;
  }
  
@@ -109,7 +114,7 @@ index 26576dc..6f8e2c2 100644
  void
  cc_panel_loader_fill_model (CcShellModel *model)
  {
-@@ -159,6 +199,7 @@ cc_panel_loader_fill_model (CcShellModel *model)
+@@ -159,6 +201,7 @@ cc_panel_loader_fill_model (CcShellModel *model)
        GDesktopAppInfo *app;
        char *desktop_name;
        int category;
@@ -117,7 +122,7 @@ index 26576dc..6f8e2c2 100644
  
        desktop_name = g_strconcat ("gnome-", all_panels[i].name,
                                    "-panel.desktop", NULL);
-@@ -176,11 +217,80 @@ cc_panel_loader_fill_model (CcShellModel *model)
+@@ -176,11 +219,80 @@ cc_panel_loader_fill_model (CcShellModel *model)
        if (G_UNLIKELY (category < 0))
          continue;
  
@@ -198,7 +203,7 @@ index 26576dc..6f8e2c2 100644
  #ifndef CC_PANEL_LOADER_NO_GTYPES
  
  static GHashTable *panel_types;
-@@ -208,7 +318,8 @@ cc_panel_loader_load_by_name (CcShell     *shell,
+@@ -208,7 +320,8 @@ cc_panel_loader_load_by_name (CcShell     *shell,
    ensure_panel_types ();
  
    get_type = g_hash_table_lookup (panel_types, name);

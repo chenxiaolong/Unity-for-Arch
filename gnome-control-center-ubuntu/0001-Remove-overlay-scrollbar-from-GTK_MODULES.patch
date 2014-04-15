@@ -1,7 +1,7 @@
-From ed13edf3bef8eedd11ff2f0f915d0e5f494a6102 Mon Sep 17 00:00:00 2001
+From cc3094d728910b3848763f231399e4788f08cef0 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 14 Apr 2014 16:41:15 -0400
-Subject: [PATCH] Remove overlay-scrollbar from GTK_MODULES
+Subject: [PATCH 1/2] Remove overlay-scrollbar from GTK_MODULES
 
 ---
  shell/main.c | 23 +++++++++++++++++++++++

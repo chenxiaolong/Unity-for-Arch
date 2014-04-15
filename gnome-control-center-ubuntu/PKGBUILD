@@ -5,7 +5,7 @@
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~trusty1
 pkgver=3.12.0
-pkgrel=3
+pkgrel=4
 pkgdesc="The Control Center for GNOME and Unity"
 arch=('i686' 'x86_64')
 groups=('gnome' 'unity')
@@ -29,8 +29,8 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         '0002-Reimplement-support-for-loading-external-panels.patch')
 sha512sums=('d69125f31bb3d5cf51161836617327b221eb5b9992e1f9db84121602723295496091ea5e4c1e7017ecd2f9d943197843c7c195b58738b3527220e38e52525987'
             '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97'
-            '9218737fb6a339bde918b7c9f8bf32188f9a3e0e1eab466158d56e2485cf4c1fc5083a6540134c97daeac83953c824c7b7eab1a473f553f88f7186cb78d927c3'
-            '961f524727204f45470de8e5bc4cf7a8b18d138602aef8ddd88257652bda382dd308088abdaa7ef773a8abd1354f26c15c9db2f63b361662febdb4945f097165')
+            '5f2c2188b6f4e1d4999e031ba8638bac29ba6688f331ad8cfc6c3fe4c104eeebaf3a53cea5ecbd5cc7c925cfad3138a86b893f996df2ae035b61ebcdc6e862d1'
+            '0e205e82d74d47a15bb802bcac66328dd5cd69b8a4ac92420bdc6138dc124b1fec6757ee04cc9391e0d7e67360762bfbf6ee104a2b3a6736862c8ae016248e88')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
@@ -113,18 +113,6 @@ package() {
     --dir "${pkgdir}/usr/share/applications/" \
     --add-only-show-in=Unity \
     "${pkgdir}/usr/share/applications/gnome-region-panel.desktop"
-
-  # Make the Background panel show up in Unity
-  desktop-file-install \
-    --dir "${pkgdir}/usr/share/applications/" \
-    --add-only-show-in=Unity \
-    "${pkgdir}/usr/share/applications/gnome-background-panel.desktop"
-
-  # Make the Date & Time panel show up in Unity
-  desktop-file-install \
-    --dir "${pkgdir}/usr/share/applications/" \
-    --add-only-show-in=Unity \
-    "${pkgdir}/usr/share/applications/gnome-datetime-panel.desktop"
 }
 
 # vim:set ts=2 sw=2 et:
