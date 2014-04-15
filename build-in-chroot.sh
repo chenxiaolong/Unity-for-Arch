@@ -427,6 +427,8 @@ EOF
 
 # Workaround makepkg bug for SCM packages
 cat > ${CHROOT}/stage2.sh << EOF
+su - builder -c 'git config --global user.email dummy@dummy'
+su - builder -c 'git config --global user.name dummy'
 su - builder -c 'cd /tmp/${PACKAGE} && \\
                  find -maxdepth 1 -type d -empty -name src \
                       -exec touch {}/stupid-makepkg \\;'
