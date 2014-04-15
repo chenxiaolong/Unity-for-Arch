@@ -22,14 +22,14 @@ Order to compile/install:
 14: indicator-messages             -> Collects messages that need a response
 15: bamf                           -> Application matching framework
 16: sni-qt                         -> Turns Qt tray icons into appindicators
-17: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
-18: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
-19: gnome-session-ubuntu           -> GNOME Session Manager
-20: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
-21: unity-control-center-ubuntu    -> Utilities to configure the Unity desktop
-22: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
-23: metacity-ubuntu                -> Window manager for GNOME
-24: libtimezonemap                 -> GTK+3 timezone map widget
+17: libtimezonemap                 -> GTK+3 timezone map widget
+18: gsettings-desktop-schemas-ubuntu -> Shared GSettings schemas for the desktop
+19: gnome-settings-daemon-ubuntu   -> Daemon handling the GNOME session settings
+20: gnome-session-ubuntu           -> GNOME Session Manager
+21: gnome-screensaver-ubuntu       -> GNOME screen saver and locker
+22: unity-control-center-ubuntu    -> Utilities to configure the Unity desktop
+23: gnome-control-center-ubuntu    -> Utilities to configure the GNOME desktop
+24: metacity-ubuntu                -> Window manager for GNOME
 25: properties-cpp                 -> C++11 library providing properties/signals
 26: lightdm-ubuntu                 -> Cross-desktop lightweight display manager
 27: indicator-application          -> Takes menus and puts then in the panel
