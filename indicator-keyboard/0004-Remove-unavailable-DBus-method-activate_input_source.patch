@@ -1,7 +1,7 @@
-From ff48c60552c7b2533fd5ccd114de7abfd9a09c09 Mon Sep 17 00:00:00 2001
+From 5c072590c745cea7dc8e8187b1ea44f66b797ed7 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 12 Apr 2014 14:23:53 -0400
-Subject: [PATCH 4/4] Remove unavailable DBus method activate_input_source
+Subject: [PATCH 4/5] Remove unavailable DBus method activate_input_source
 
 ---
  lib/Makefile.am          |  1 -

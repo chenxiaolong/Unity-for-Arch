@@ -1,7 +1,7 @@
-From 61cf01ecb317bd1a55e43a22579c04042b304927 Mon Sep 17 00:00:00 2001
+From 9f0355e254838218d727edbb415ab791ecfcbb26 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:39:56 -0400
-Subject: [PATCH 1/4] vala build fix
+Subject: [PATCH 1/5] vala build fix
 
 ---
  data/Makefile.am | 2 +-

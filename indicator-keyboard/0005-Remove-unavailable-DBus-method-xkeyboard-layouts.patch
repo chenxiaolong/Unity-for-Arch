@@ -1,0 +1,64 @@
+From b5406b917438b6831e6471559ffe5a43bf3fb55d Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Wed, 16 Apr 2014 17:06:46 -0400
+Subject: [PATCH 5/5] Remove unavailable DBus method xkeyboard-layouts
+
+---
+ deps/accountsservice.vapi |  1 -
+ lib/main.vala             | 20 ++------------------
+ 2 files changed, 2 insertions(+), 19 deletions(-)
+
+diff --git a/deps/accountsservice.vapi b/deps/accountsservice.vapi
+index 809726d..ad16174 100644
+--- a/deps/accountsservice.vapi
++++ b/deps/accountsservice.vapi
+@@ -86,7 +86,6 @@ namespace Act {
+ 		public bool xhas_messages { get; }
+ 		[CCode (array_length = false, array_null_terminated = true)]
+ 		[NoAccessorMethod]
+-		public string[] xkeyboard_layouts { owned get; }
+ 		public signal void changed ();
+ 		public signal void sessions_changed ();
+ 	}
+diff --git a/lib/main.vala b/lib/main.vala
+index af0068b..9a01207 100644
+--- a/lib/main.vala
++++ b/lib/main.vala
+@@ -248,9 +248,9 @@ public class Indicator.Keyboard.Service : Object {
+ 
+ 				if (user != null && ((!) user).is_loaded) {
+ 					if (true) {
+-						var layouts = ((!) user).xkeyboard_layouts;
++						string[] layouts = null;
+ 
+-						if (layouts.length <= 0) {
++						if (true) {
+ 							var user_list = LightDM.UserList.get_instance ();
+ 							LightDM.User? light_user = user_list.get_user_by_name ((!) greeter_user);
+ 
+@@ -422,22 +422,6 @@ public class Indicator.Keyboard.Service : Object {
+ 				var done = false;
+ 
+ 				if (!done) {
+-					var layouts = user.xkeyboard_layouts;
+-					foreach (var layout in layouts) {
+-						done = true;
+-
+-						var source = layout;
+-						source = source.replace (" ", "+");
+-						source = source.replace ("\t", "+");
+-
+-						if (!added.contains (source)) {
+-							list.add (source);
+-							added.add (source);
+-						}
+-					}
+-				}
+-
+-				if (!done) {
+ 					var user_list = LightDM.UserList.get_instance ();
+ 					LightDM.User? light_user = user_list.get_user_by_name (user.user_name);
+ 
+-- 
+1.9.2
+

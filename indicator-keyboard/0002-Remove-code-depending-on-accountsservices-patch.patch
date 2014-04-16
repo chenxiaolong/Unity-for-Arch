@@ -1,7 +1,7 @@
-From 40459fa67655bb5c4f30e1b2ba86e7faa25d5bea Mon Sep 17 00:00:00 2001
+From e8ee57fd6e613c440ee9c4ac49423cc97188d679 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:46:47 -0400
-Subject: [PATCH 2/4] Remove code depending on accountsservices patch
+Subject: [PATCH 2/5] Remove code depending on accountsservices patch
 
 ---
  lib/main.vala | 46 +---------------------------------------------

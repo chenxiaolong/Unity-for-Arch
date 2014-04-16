@@ -1,7 +1,7 @@
-From f4d0487f914d0c3e21c22d3b0c41e42cdfab6982 Mon Sep 17 00:00:00 2001
+From 8183de7b12c4d47b536b413ab5f778aaf605cd64 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 21:42:15 -0400
-Subject: [PATCH 3/4] Use gnome-control-center
+Subject: [PATCH 3/5] Use gnome-control-center
 
 ---
  lib/main.vala   | 2 +-
