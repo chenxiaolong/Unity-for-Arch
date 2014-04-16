@@ -24,13 +24,19 @@ LINE_THIN=$(printline '-')
 for i in ${PACKAGES[@]}; do
   UBUNTU_VER=$(grep -A2 "Package: unity-scope-${i}$" Sources | sed -n 's/^Version: \(.*\)/\1/p')
 
-  PKGBUILD_VER=$(eval "echo \${_ver_${i}} \${_rel_${i}}")
+  PKGBUILD_VER=$(eval "echo \${_ver_${i}}-\${_rel_${i}}")
 
-  echo "${LINE_THICK}"
-  echo "Package: unity-scope-${i}"
-  echo "${LINE_THIN}"
-  echo "PKGBUILD version: ${PKGBUILD_VER}"
-  echo "Ubuntu version:   ${UBUNTU_VER}"
+  if [[ "${i}" == "home" ]]; then
+    continue
+  fi
+
+  if [[ "${PKGBUILD_VER}" != "${UBUNTU_VER#*:}" ]]; then
+    echo "${LINE_THICK}"
+    echo "Package: unity-scope-${i}"
+    echo "${LINE_THIN}"
+    echo "PKGBUILD version: ${PKGBUILD_VER}"
+    echo "Ubuntu version:   ${UBUNTU_VER}"
+  fi
 done
 
 rm Sources
