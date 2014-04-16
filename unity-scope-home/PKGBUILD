@@ -5,7 +5,7 @@ _actual_ver=6.8.2
 _extra_ver=+14.04.20131029.1
 _sso_ver=13.10
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="Home scope that aggregates results from multiple scopes"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-scope-home"
@@ -28,7 +28,7 @@ sha512sums=('8f94915f4a3f4c70ac244e7974d000626805b2a4217abeed28b2137cce4e7c6c5ed
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch"
+  #patch -p1 -i "${srcdir}/0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch"
   patch -p1 -i "${srcdir}/0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch"
   patch -p1 -i "${srcdir}/0003-Show-description-of-error-code.patch"
 }
