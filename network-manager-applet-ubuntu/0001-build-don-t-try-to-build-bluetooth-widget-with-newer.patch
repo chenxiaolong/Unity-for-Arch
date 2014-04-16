@@ -1,0 +1,34 @@
+From 9495d6340477705382beed47cbdd29af366e504a Mon Sep 17 00:00:00 2001
+From: Dan Winship <danw@gnome.org>
+Date: Mon, 23 Dec 2013 16:26:18 -0500
+Subject: [PATCH] build: don't try to build bluetooth widget with newer
+ gnome-bluetooth
+
+Since the plugin API no longer exists.
+
+(Also, fix the configure output to not print two "checking for"
+messages.)
+
+https://bugzilla.gnome.org/show_bug.cgi?id=720108
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 5092a08..199602d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -194,9 +194,9 @@ case "${with_bluetooth}" in
+ 	no)	AC_MSG_NOTICE(Bluetooth support disabled)
+ 		;;
+ 	*)
+-		AC_MSG_CHECKING(for gnome-bluetooth)
+ 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
+ 				  gnome-bluetooth-1.0 >= 2.27.6
++				  gnome-bluetooth-1.0 < 3.11.0
+ 				  libnm-util >= 0.9.4
+ 				  libnm-glib >= 0.9.4,
+ 				  have_gbt=yes, have_gbt=no)
+-- 
+1.9.2
+

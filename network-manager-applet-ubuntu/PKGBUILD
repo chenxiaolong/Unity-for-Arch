@@ -6,30 +6,32 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu3
-_ubuntu_ver=0.9.8.8
-pkgver=0.9.8.9
-pkgrel=2
+_ubuntu_rel=0ubuntu4
+pkgver=0.9.8.8
+pkgrel=1
+epoch=1
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org/projects/NetworkManager/"
 license=('GPL')
 depends=("networkmanager>=${pkgver%.*}" 'libsecret' 'gtk3' 'libnotify' 'gnome-icon-theme' 'mobile-broadband-provider-info' 'iso-codes' 'libappindicator3')
-makedepends=('intltool' 'gnome-bluetooth' 'gobject-introspection')
-# Not in official package's deps
-makedepends+=('libmm-glib' 'modemmanager')
+makedepends=('intltool' 'gnome-bluetooth' 'gobject-introspection' 'modemmanager')
 optdepends=('gnome-bluetooth: for PAN/DUN support')
 provides=("network-manager-applet=${pkgver}")
 conflicts=('network-manager-applet')
 options=('!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('25b9e19856e8804cfa7b00310c25bc73ee1236b3a0c26721be4131a2138076c8cfad4d6c494fa27dbe8a109a8df7fa27c3d927d9d07ca494f0fc46bb0917baf7'
-            '88a1ba6d19c9a9244f859e45d33c83c331d3fafba0a41abb46b34e20cb52a743eee8e7aef1368ccc4688d055f77fdd7237747c4a1c8ceb3321af22f67c25ecb5')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001-build-don-t-try-to-build-bluetooth-widget-with-newer.patch')
+sha512sums=('a43cb00ac60b9401a035aac22a3384625624ca7e3b852106c55c1dc79a6a409d68f482615df6420778cafee0eb38e0088768198de78af52358db48ce9b7222f7'
+            'b5062edaf95e33d98a2b77a7ee688215771fa83d71a0a49b8406388ec80e3f7096e018a6c2a50ec9e9f31c70a44d4758ef41167262128e024d7e49892dd83902'
+            '37ea0ec9b025f1883964b1d47395b0303154a662de1c5245b95e620dd722b3c76ff348fd4209733f319584a399568aebace01617399d91e126b4f85c57afe747')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
+
+  patch -p1 -i "${srcdir}/0001-build-don-t-try-to-build-bluetooth-widget-with-newer.patch"
 
   # Apply Ubuntu's patches
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
