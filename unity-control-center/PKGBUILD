@@ -62,6 +62,8 @@ prepare() {
 
   git init
   git add .
+  git config user.email dummy@dummy
+  git config user.name dummy
   git commit -m 'Initial commit'
   git am "${srcdir}/0001-Remove-Bluetooth-panel.patch"
   git am "${srcdir}/0002-Remove-Wacom-panel.patch"
