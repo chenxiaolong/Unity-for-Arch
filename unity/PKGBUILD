@@ -2,7 +2,7 @@
 
 pkgname=unity
 _actual_ver=7.2.0
-_extra_ver=+14.04.20140414.1
+_extra_ver=+14.04.20140416
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -32,8 +32,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '10_unity.gschema.override'
         '99unity-panel-service'
         'unity-debug')
-sha512sums=('bc8fd99710b085fe27c2f5ef3567aef22ee8329919a86f24057e166c3fb47dfb143394fb7bfb656117bad4ff332ee4c4dd6a8be5d355d0cf04c6a816f62b367f'
-            '2d8ef1ca138bf10fbef3df289058183ae35ec55898a166bcf1b881a90b165d3d5c40e6d6271faf88dd9aa7711dc0d26c0b15e8896c2abf22f975854149850ecd'
+sha512sums=('37116904102b6b412dca5678414dbc8e564371d844926ee8b1be4f4aa79d291bc0485de7b51bb7e304a5c655e0dad9cbc83c52b92aeab4d52bc38cde3c5a009a'
+            '83fdfe424b06d246017e8278afbbafde10fdb4798a4afdcd588fe7f69f0a519fc26d99549dd1780636387a3223abf2ea1054f36f97cb619306e1c5235e622d86'
             '2dcc95a763a610c03c6c8a5d050d3b41c6869b889fe2298949803b96080fd9724fae25456eede0e904826ac36d1134d55e4761480d1765e31d308d96cc6637ec'
             '1b7f48bb278db760948f23eda6de630eb566421e8c91d2088570ff56ddf521757c7238522f0df23edec8e09d75eb2ce2720df001c70f43e15b3a3757d3b2781b'
             'ef6b2c3e77e7b57c020aa8a8fa83d386aa254cb29ad0c2c360c863da160f770a52dad4c70216a4cb6333a0a3fafb287a43500b8cfc82c9b1bae792b50a34b6a1'
@@ -74,7 +74,6 @@ build() {
   [[ -d build ]] && rm -rvf build/
   mkdir build/ && cd build/
 
-  PATH="${srcdir}/cmake/bin:${PATH}" \
   cmake -Wno-dev \
     -DCOMPIZ_BUILD_WITH_RPATH=FALSE \
     -DCOMPIZ_PACKAGING_ENABLED=TRUE \
@@ -84,7 +83,7 @@ build() {
     -DUSE_GSETTINGS=TRUE \
     ..
 
-  make
+  make -j1
 
   # Make sure that the GSettings schema files were created
   pushd generated/glib-2.0/schemas/
