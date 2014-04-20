@@ -4,9 +4,33 @@ The session contains:
  (TryExec enables to show them or not depends on the package installed)
 Forwarded: Not needed
 
+diff --git a/data/Makefile.am b/data/Makefile.am
+index d1d8d25..0b4fa40 100644
+--- a/data/Makefile.am
++++ b/data/Makefile.am
+@@ -12,7 +12,7 @@ hwcompatdir = $(pkgdatadir)
+ hwcompat_DATA = hardware-compatibility
+ 
+ xsessiondir = $(datadir)/xsessions
+-xsession_in_files = gnome.desktop.in
++xsession_in_files = gnome.desktop.in ubuntu.desktop.in
+ 
+ if BUILD_SESSION_SELECTOR
+ xsession_in_files += gnome-custom-session.desktop.in
+@@ -25,7 +25,7 @@ wayland_session_in_files = gnome-wayland.desktop.in
+ wayland_session_DATA = $(wayland_session_in_files:.desktop.in=.desktop)
+ 
+ sessiondir = $(datadir)/gnome-session/sessions
+-session_in_in_files = gnome.session.desktop.in.in gnome-dummy.session.desktop.in.in gnome-wayland.session.desktop.in.in
++session_in_in_files = gnome.session.desktop.in.in gnome-dummy.session.desktop.in.in gnome-wayland.session.desktop.in.in ubuntu.session.desktop.in.in
+ session_in_files = $(session_in_in_files:.session.desktop.in.in=.session.desktop.in)
+ session_DATA = $(session_in_files:.session.desktop.in=.session)
+ 
+diff --git a/data/gnome.desktop.in b/data/gnome.desktop.in
+index b54b99c..7ab5736 100644
 --- a/data/gnome.desktop.in
 +++ b/data/gnome.desktop.in
-@@ -1,7 +1,8 @@
+@@ -1,8 +1,9 @@
  [Desktop Entry]
  _Name=GNOME
  _Comment=This session logs you into GNOME
@@ -16,34 +40,11 @@ Forwarded: Not needed
 +TryExec=gnome-shell
  Icon=
  Type=Application
+ DesktopNames=GNOME
 +X-LightDM-DesktopName=GNOME
---- a/data/Makefile.am
-+++ b/data/Makefile.am
-@@ -13,7 +13,7 @@
- hwcompat_DATA = hardware-compatibility
-
- xsessiondir = $(datadir)/xsessions
--xsession_in_files = gnome.desktop.in
-+xsession_in_files = gnome.desktop.in ubuntu.desktop.in
-
- if BUILD_SESSION_SELECTOR
- xsession_in_files += gnome-custom-session.desktop.in
-@@ -26,7 +26,7 @@
- desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
- sessiondir = $(datadir)/gnome-session/sessions
--session_in_in_files = gnome.session.desktop.in.in gnome-dummy.session.desktop.in.in gnome-wayland.session.desktop.in.in
-+session_in_in_files = gnome.session.desktop.in.in gnome-dummy.session.desktop.in.in gnome-wayland.session.desktop.in.in ubuntu.session.desktop.in.in
- session_in_files = $(session_in_in_files:.session.desktop.in.in=.session.desktop.in)
- session_DATA = $(session_in_files:.session.desktop.in=.session)
-
---- /dev/null
-+++ b/data/ubuntu.session.desktop.in.in
-@@ -0,0 +1,4 @@
-+[GNOME Session]
-+_Name=Unity
-+RequiredComponents=gnome-settings-daemon;compiz;
-+DesktopName=Unity
+diff --git a/data/ubuntu.desktop.in b/data/ubuntu.desktop.in
+new file mode 100644
+index 0000000..49cd704
 --- /dev/null
 +++ b/data/ubuntu.desktop.in
 @@ -0,0 +1,8 @@
@@ -55,3 +56,13 @@ Forwarded: Not needed
 +Icon=
 +Type=Application
 +X-LightDM-DesktopName=Unity
+diff --git a/data/ubuntu.session.desktop.in.in b/data/ubuntu.session.desktop.in.in
+new file mode 100644
+index 0000000..1adf61c
+--- /dev/null
++++ b/data/ubuntu.session.desktop.in.in
+@@ -0,0 +1,4 @@
++[GNOME Session]
++_Name=Unity
++RequiredComponents=gnome-settings-daemon;compiz;
++DesktopName=Unity
