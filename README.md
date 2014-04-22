@@ -1,3 +1,5 @@
+[![Build Status](http://jenkins.cxl.epac.to/job/ArchLinux_Build_Package/badge/icon)](https://jenkins.cxl.epac.to/job/ArchLinux_Build_Package/)
+
 Unity-for-Arch
 ==============
 This project is a port of the Ubuntu Unity desktop and most of its features to Arch Linux. Please see the [Arch Wiki](https://wiki.archlinux.org/index.php/unity) for more information.
