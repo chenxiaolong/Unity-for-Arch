@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 license=('LGPL' 'MPL')
 url="http://cairographics.org/"
 depends=('libpng' 'libxrender' 'libxext' 'fontconfig' 'pixman>=0.28.0' 'glib2' 'mesa' 'libgl' 'sh' 'lzo2')
-makedepends=('mesa-libgl' 'librsvg' 'gtk2' 'poppler-glib' 'libspectre' 'gtk-doc' 'valgrind')
+makedepends=('mesa-libgl' 'librsvg' 'poppler-glib' 'libspectre' 'gtk-doc' 'valgrind')
 provides=('cairo-xcb' "cairo=${_actual_ver}")
 replaces=('cairo-xcb')
 conflicts=('cairo')
