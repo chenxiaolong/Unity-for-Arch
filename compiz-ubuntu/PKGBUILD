@@ -17,7 +17,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -181,6 +181,11 @@ package() {
 
   # Remove GConf schemas
   rm -rv "${pkgdir}/usr/share/gconf/"
+
+  # Don't disable gnomecompat plugin
+  rm "${pkgdir}/etc/compizconfig/upgrades/com.canonical.unity.unity.07.upgrade"
+  sed -ri '/s0_active_plugins/s/$/;gnomecompat/g' \
+    "${srcdir}/etc/compizconfig/unity.ini"
 }
 
 # vim:set ts=2 sw=2 et:
