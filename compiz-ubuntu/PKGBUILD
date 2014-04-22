@@ -185,7 +185,7 @@ package() {
   # Don't disable gnomecompat plugin
   rm "${pkgdir}/etc/compizconfig/upgrades/com.canonical.unity.unity.07.upgrade"
   sed -ri '/s0_active_plugins/s/$/;gnomecompat/g' \
-    "${srcdir}/etc/compizconfig/unity.ini"
+    "${pkgdir}/etc/compizconfig/unity.ini"
 }
 
 # vim:set ts=2 sw=2 et:
