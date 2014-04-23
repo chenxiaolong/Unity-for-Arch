@@ -31,6 +31,7 @@ show_list = False
 show_pkgbase = False
 show_pkgdir = False
 
+
 class subpackage:
     def __init__(self, pkgname, pkgver):
         self.pkgname = pkgname
@@ -55,10 +56,11 @@ class subpackage:
         vcmp = pyalpm.vercmp(self.pkgver, self.instver)
         return vcmp > 0
 
+
 class pkgbuild:
     def __init__(self, pkgbase):
         self.pkgbase = pkgbase
-        self.rdesc = None # Description from README.md
+        self.rdesc = None  # Description from README.md
         self.subpackages = []
 
         # Don't do anything if we're listing packages
@@ -105,6 +107,7 @@ class pkgbuild:
             return output[0]
         else:
             return None
+
 
 def parse_arguments():
     global show, show_list, show_pkgbase, show_pkgdir
@@ -162,6 +165,7 @@ def parse_arguments():
     if args.pkgdir:
         show_pkgdir = True
 
+
 def parse_source():
     global packages
 
@@ -191,6 +195,7 @@ def parse_source():
 
             else:
                 ready = False
+
 
 def main():
     # Parse command line arguments
