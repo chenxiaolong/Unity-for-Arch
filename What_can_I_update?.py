@@ -112,32 +112,32 @@ def parse_arguments():
     # Parse arguments from command line
     argParser = argparse.ArgumentParser()
     argParser.formatter_class = argparse.RawDescriptionHelpFormatter
-    argParser.description = textwrap.dedent("""
+    argParser.description = textwrap.dedent('''
     Arch Linux package update checker script for a group of PKGBUILDs
     ------------------------------------------------------------------
-      Package list file: """ + list_source + """
-    """)
+      Package list file: ''' + list_source + '''
+    ''')
 
     # Show and list are mutually exclusive
     showGroup = argParser.add_mutually_exclusive_group()
-    showGroup.add_argument("-s", "--show",
-                           help="List of information to show. Valid options: pkgver, instver",
+    showGroup.add_argument('-s', '--show',
+                           help='List of information to show. Valid options: pkgver, instver',
                            action='store',
                            nargs='+',
-                           default=["pkgver", "instver"])
+                           default=['pkgver', 'instver'])
     showGroup.add_argument('-b', '--pkgbase',
                            help='Show base package name instead of each subpackage\'s name',
                            action='store_true')
-    showGroup.add_argument("-d", "--pkgdir",
-                           help="Only show package directory names of upgradable packages",
+    showGroup.add_argument('-d', '--pkgdir',
+                           help='Only show package directory names of upgradable packages',
                            action='store_true')
-    showGroup.add_argument("-l", "--list",
-                           help="Print package list from " + list_source + " and quit",
+    showGroup.add_argument('-l', '--list',
+                           help='Print package list from ' + list_source + ' and quit',
                            action='store_true')
-    argParser.add_argument("-v", "--version",
-                           help="Show script version",
+    argParser.add_argument('-v', '--version',
+                           help='Show script version',
                            action='version',
-                           version="Version: " + script_version)
+                           version='Version: ' + script_version)
     args = argParser.parse_args()
 
     invalid = []
@@ -150,7 +150,7 @@ def parse_arguments():
                 invalid.append(opt)
 
     if invalid:
-        print("Invalid options for -s/--show:", invalid)
+        print('Invalid options for -s/--show:', invalid)
         sys.exit(1)
 
     if args.list:
@@ -214,20 +214,20 @@ def main():
                     break
 
                 elif show_pkgbase:
-                    print("Package base        : " + package.pkgbase)
+                    print('Package base        : ' + package.pkgbase)
                     if 'pkgver' in show:
-                        print("  PKGBUILD version  : " + subpackage.pkgver)
+                        print('  PKGBUILD version  : ' + subpackage.pkgver)
                     if 'instver' in show:
-                        print("  Installed version : " + subpackage.instver)
+                        print('  Installed version : ' + subpackage.instver)
                     print('')
                     break
 
                 else:
-                    print("Package name        : " + subpackage.pkgname)
+                    print('Package name        : ' + subpackage.pkgname)
                     if 'pkgver' in show:
-                        print("  PKGBUILD version  : " + subpackage.pkgver)
+                        print('  PKGBUILD version  : ' + subpackage.pkgver)
                     if 'instver' in show:
-                        print("  Installed version : " + subpackage.instver)
+                        print('  Installed version : ' + subpackage.instver)
                     print('')
 
 if __name__ == '__main__':
