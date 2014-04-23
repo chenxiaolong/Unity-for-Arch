@@ -3,11 +3,17 @@
 
 import argparse
 import os
-import pyalpm
 import re
 import subprocess
 import sys
 import textwrap
+
+try:
+    import pyalpm
+except:
+    print('Please install the pyalpm package')
+    sys.exit(1)
+
 from pycman import config
 from pycman import pkginfo
 
