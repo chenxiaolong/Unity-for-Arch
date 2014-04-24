@@ -18,7 +18,7 @@ from pycman import config
 from pycman import pkginfo
 
 list_source = 'README.md'
-script_version = 'Tue, 22 Apr 2014 17:10:05 -0400'
+script_version = 'Thu, 24 Apr 2014 13:07:55 -0400'
 topdir = os.path.dirname(os.path.realpath(__file__))
 
 handle = config.init_with_config('/etc/pacman.conf')
@@ -40,7 +40,10 @@ class subpackage:
         self.upgrade = False
 
         self.instver = self.get_installed_version()
-        self.upgrade = self.need_upgrade()
+        if self.instver:
+            self.upgrade = self.need_upgrade()
+        else:
+            self.upgrade = True
 
     def __str__(self):
         return(self.pkgname)
@@ -223,7 +226,11 @@ def main():
                     if 'pkgver' in show:
                         print('  PKGBUILD version  : ' + subpackage.pkgver)
                     if 'instver' in show:
-                        print('  Installed version : ' + subpackage.instver)
+                        msg = '  Installed version : %s'
+                        if subpackage.instver:
+                            print(msg % subpackage.instver)
+                        else:
+                            print(msg % '(not installed)')
                     print('')
                     break
 
@@ -232,7 +239,11 @@ def main():
                     if 'pkgver' in show:
                         print('  PKGBUILD version  : ' + subpackage.pkgver)
                     if 'instver' in show:
-                        print('  Installed version : ' + subpackage.instver)
+                        msg = '  Installed version : %s'
+                        if subpackage.instver:
+                            print(msg % subpackage.instver)
+                        else:
+                            print(msg % '(not installed)')
                     print('')
 
 if __name__ == '__main__':
