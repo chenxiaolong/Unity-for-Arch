@@ -10,7 +10,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-greeter"
 license=('GPL3' 'LGPL3')
 groups=('unity-extra')
-depends=('cantarell-fonts' 'gnome-doc-utils' 'ido' 'libindicator3' 'lightdm-ubuntu')
+depends=('cantarell-fonts' 'gnome-doc-utils' 'ido' 'libindicator3' 'lightdm-ubuntu' 'gnome-desktop' 'libcanberra')
 makedepends=('gnome-common' 'gnome-doc-utils' 'gnome-settings-daemon' 'imagemagick' 'intltool' 'librsvg' 'vala')
 optdepends=("ubuntu-themes: Ubuntu's Ambiance and Radiance themes"
             "ubuntu-wallpapers: Ubuntu's default wallpapers"

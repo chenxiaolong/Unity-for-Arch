@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 groups=('unity')
 url="https://launchpad.net/unity-control-center"
 license=('GPL')
-depends=('gnome-desktop' 'gnome-menus' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'gnome-settings-daemon' 'libtimezonemap')
+depends=('libnotify' 'gnome-desktop' 'gnome-menus' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'gnome-settings-daemon' 'libtimezonemap')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'git')
 options=('!emptydirs')
 install=unity-control-center.install
@@ -111,7 +111,7 @@ package() {
   make DESTDIR="${pkgdir}" install
 
   # Fix a warning
-  chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
+#   chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
   chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
 
   # Use language packs

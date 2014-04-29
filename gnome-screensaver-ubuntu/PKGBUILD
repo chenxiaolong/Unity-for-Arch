@@ -11,7 +11,7 @@ arch=('i686' 'x86_64')
 license=('GPL')
 url="http://live.gnome.org/GnomeScreensaver"
 backup=('etc/pam.d/gnome-screensaver')
-depends=('dbus-glib' 'libgnomekbd' 'gnome-desktop' 'gsettings-desktop-schemas' 'libsystemd')
+depends=('cairo' 'dbus-glib' 'libgnomekbd' 'gnome-desktop' 'gsettings-desktop-schemas' 'libsystemd')
 makedepends=('pkgconfig' 'intltool' 'libxss' 'gnome-common')
 provides=("gnome-screensaver=${pkgver}")
 conflicts=('gnome-screensaver')

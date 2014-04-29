@@ -40,7 +40,7 @@ build() {
 
 package_libindicator() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('gtk2' 'glib2')
+  depends=('cairo' 'gtk2' 'glib2')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
 

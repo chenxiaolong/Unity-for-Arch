@@ -66,7 +66,7 @@ package_libindicate() {
 
 package_libindicate-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=("libindicate=${pkgver}" 'gtk2' 'python2-gobject2')
+  depends=('cairo' "libindicate=${pkgver}" 'gtk2' 'python2-gobject2')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
 
@@ -80,7 +80,7 @@ package_libindicate-gtk2() {
 
 package_libindicate-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=("libindicate=${pkgver}" 'gtk3')
+  depends=('cairo' "libindicate=${pkgver}" 'gtk3')
 
   cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
 

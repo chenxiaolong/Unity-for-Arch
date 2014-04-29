@@ -12,7 +12,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libtiff' 'libpng' 'sqlite' 'ca-certificates' 'dbus'
         'fontconfig' 'libgl' 'libxrandr' 'libxv' 'libxi' 'alsa-lib'
-        'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libmng')
+        'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libmng' 'mesa')
 makedepends=('postgresql-libs' 'mariadb' 'unixodbc' 'cups' 'gtk2' 'libfbclient'
              'mesa')
 optdepends=('qtchooser: set the default Qt toolkit'
