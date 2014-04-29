@@ -43,7 +43,7 @@ url="https://launchpad.net/unity-scope-NAME"
 license=('GPL' 'custom')
 groups=('unity')
 
-depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'unity-scope-home')
+depends=('dee' 'glib2' 'libunity' 'python' 'python-gobject' 'unity-scope-home' 'hicolor-icon-theme')
 # audacious, clementine, gmusicbrowser, guayadeque, musique
 depends+=('python-dbus')
 # calculator

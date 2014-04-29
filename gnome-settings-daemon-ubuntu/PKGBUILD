@@ -4,7 +4,7 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _ppa_rel=0ubuntu1~trusty1
-_ppa_ver=3.12.0.1
+_ppa_ver=3.12.1
 pkgver=3.12.1
 pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
@@ -22,7 +22,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/3.12/${pkgname%-*}
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.gz"
         '0001-Do-not-hide-cursor.patch')
 sha512sums=('496182d9e01e97f59465bc5b9b48881d4ec85aefd0d1c5018645d5524deb7fd01022efb32c3daa8cebaef12ecffb746ac1346072c3074949d6cde5f57cca00ae'
-            '1b2ee2e7db7fa5b06d83fb2a8d92e8ad7a551e91d50e25383f9bce1c0335478ac2c47504f3d065767596fb2a69bffaa22d4973fbf2ab121f937673b2adb7b170'
+            '1be09e6e215e6e316de345bc462069f6f0adcba1b02b8ad634b7050cc0d6062e2d6706d756703642f53a065f2e4fdcf9253bb6005287de03dccc42c2824b83a8'
             'f0e4971759ea7553afb998d55124dff7450288d7079057911a61da1b9625272ce19b3dc8f0dbce9b3418e86aaf666954269ed42512e2d1ed37b8b4bf123725e2')
 
 prepare() {

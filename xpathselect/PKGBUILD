@@ -10,6 +10,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/xpathselect"
 license=('GPL')
 groups=('unity')
+depends=('gcc-libs')
 makedepends=('boost' 'cmake')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/xpathselect_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Disable_Tests.patch')

@@ -31,7 +31,6 @@ options=('emptydirs')
 backup=('etc/lightdm/keys.conf'
         'etc/lightdm/lightdm.conf'
         'etc/lightdm/lightdm-gtk-greeter.conf'
-        'etc/lightdm/lightdm-gtk-greeter-ubuntu.conf'
         'etc/lightdm/users.conf')
 install=lightdm.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"

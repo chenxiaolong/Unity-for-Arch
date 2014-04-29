@@ -38,7 +38,7 @@ build() {
 
 package_overlay-scrollbar() {
   pkgdesc="Scrollbar overlayed widget"
-  depends=('liboverlay-scrollbar' 'liboverlay-scrollbar3')
+  depends=('dconf' 'liboverlay-scrollbar' 'liboverlay-scrollbar3')
   install=overlay-scrollbar.install
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
@@ -55,7 +55,7 @@ package_overlay-scrollbar() {
 
 package_liboverlay-scrollbar3() {
   pkgdesc="Scrollbar overlayed widget - GTK 3 library"
-  depends=('gtk3')
+  depends=('cairo' 'gtk3')
 
   cd "${srcdir}/${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
   make DESTDIR="${pkgdir}/" install

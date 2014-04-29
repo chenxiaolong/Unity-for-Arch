@@ -10,7 +10,7 @@ pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
 license=('LGPL')
-depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache')
+depends=('atk' 'pango' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'shared-mime-info' 'cairo' 'libcups' 'gtk-update-icon-cache' 'python2')
 makedepends=('pkg-config' 'gobject-introspection' 'gtk-doc')
 provides=("gtk2=${pkgver}")
 conflicts=('gtk2')

@@ -4,7 +4,7 @@
 
 pkgname=gnome-control-center-ubuntu
 _ppa_rel=0ubuntu1~trusty1
-_ppa_ver=3.12.0
+_ppa_ver=3.12.1
 pkgver=3.12.1
 pkgrel=1
 pkgdesc="The Control Center for GNOME and Unity"
@@ -29,7 +29,7 @@ source=("http://download.gnome.org/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%
         '0001-Remove-overlay-scrollbar-from-GTK_MODULES.patch'
         '0002-Reimplement-support-for-loading-external-panels.patch')
 sha512sums=('35b765fc11182b0f7eec6bc31934f51ccbf01dde9f2e7deed6c84ca9811bd0a00783d75bd3fab7004fe41cc29740b6d6e0a7f3c6391a482eefcab0129d0278fe'
-            '44c56821b55746df8bfb6ca0aa303f63353f0350d23617d5f245d777c39c3e5989db41006dfffbaf131bb1b43a6c474075acff14f9ea5c10e34c4af9fb89bd97'
+            'b15ff578f1d00448d2cc756b296be9055ea6ec86c6cb64ce388adfe64831f521cb6ae5e58389c45061021819f10a693dd515eb775ec6188030d14bdbc144203f'
             '5f2c2188b6f4e1d4999e031ba8638bac29ba6688f331ad8cfc6c3fe4c104eeebaf3a53cea5ecbd5cc7c925cfad3138a86b893f996df2ae035b61ebcdc6e862d1'
             '0e205e82d74d47a15bb802bcac66328dd5cd69b8a4ac92420bdc6138dc124b1fec6757ee04cc9391e0d7e67360762bfbf6ee104a2b3a6736862c8ae016248e88')
 
@@ -97,7 +97,7 @@ package() {
   make DESTDIR="${pkgdir}" install
 
   # Fix a warning
-  chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
+#   chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
   chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
 
   # Ubuntu specific files

@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
 depends=('bamf' 'boost' 'cairo-ubuntu' 'compiz-ubuntu>=0.9.11' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux>=4.0.6' 'unity-asset-pool' 'unity-scope-home' 'libxi' 'xpathselect' 'zeitgeist-ubuntu' 'lightdm-unity-greeter')
-makedepends=('cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
+makedepends=('chrpath' 'cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
 conflicts=('unity-core')
@@ -139,6 +139,9 @@ package() {
 
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
+  
+  # Fix insecure rpath in libunityshell.so
+  chrpath --replace /usr/lib/compiz "$pkgdir/usr/lib/compiz/libunityshell.so"
 }
 
 # vim:set ts=2 sw=2 et:

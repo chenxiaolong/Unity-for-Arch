@@ -11,7 +11,7 @@ pkgdesc="Removes the headache of applications matching into a simple DBus daemon
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
-depends=('libgtop' 'libwnck3' 'glib2')
+depends=('libgtop' 'libwnck3' 'glib2' 'procps-ng')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'libxml2' 'libxslt' 'vala')
 provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")
 replaces=('libbamf3' 'bamfdaemon')
