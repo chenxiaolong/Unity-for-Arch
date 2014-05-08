@@ -5,7 +5,7 @@ _actual_ver=7.2.0
 _extra_ver=+14.04.20140423
 _ubuntu_rel=0ubuntu1.2
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -141,7 +141,7 @@ package() {
   rm -r "${pkgdir}/usr/share/locale/"
   
   # Fix insecure rpath in libunityshell.so
-  chrpath --replace /usr/lib/compiz "$pkgdir/usr/lib/compiz/libunityshell.so"
+  chrpath --replace /usr/lib/libunity:/usr/lib/compiz "$pkgdir/usr/lib/compiz/libunityshell.so"
 }
 
 # vim:set ts=2 sw=2 et:
