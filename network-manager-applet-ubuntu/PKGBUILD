@@ -7,7 +7,8 @@
 
 pkgname=network-manager-applet-ubuntu
 _ubuntu_rel=0ubuntu4
-pkgver=0.9.8.8
+_ubuntu_ver=0.9.8.8
+pkgver=0.9.8.10
 pkgrel=1
 epoch=1
 pkgdesc="GNOME frontends to NetWorkmanager"
@@ -22,16 +23,12 @@ conflicts=('network-manager-applet')
 options=('!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        '0001-build-don-t-try-to-build-bluetooth-widget-with-newer.patch')
-sha512sums=('a43cb00ac60b9401a035aac22a3384625624ca7e3b852106c55c1dc79a6a409d68f482615df6420778cafee0eb38e0088768198de78af52358db48ce9b7222f7'
-            'b5062edaf95e33d98a2b77a7ee688215771fa83d71a0a49b8406388ec80e3f7096e018a6c2a50ec9e9f31c70a44d4758ef41167262128e024d7e49892dd83902'
-            '37ea0ec9b025f1883964b1d47395b0303154a662de1c5245b95e620dd722b3c76ff348fd4209733f319584a399568aebace01617399d91e126b4f85c57afe747')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+sha512sums=('c943eff9eaba1f28ad9101c659d4e3da72d6190dd7fd58f3c3d54bcc53c21ec33247aee6dc7a3d7348efd905876f699c39fb3f64cf46f5f627a3976deaa06fa2'
+            'b5062edaf95e33d98a2b77a7ee688215771fa83d71a0a49b8406388ec80e3f7096e018a6c2a50ec9e9f31c70a44d4758ef41167262128e024d7e49892dd83902')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
-
-  patch -p1 -i "${srcdir}/0001-build-don-t-try-to-build-bluetooth-widget-with-newer.patch"
 
   # Apply Ubuntu's patches
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
