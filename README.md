@@ -71,6 +71,7 @@ To compile from source, just build all of the packages in the following order:
 | gsettings-qt                     | Library to access GSettings from Qt        |
 | dee-qt                           | Qt5 bindings for dee                       |
 | libdbusmenu-qt5                  | Qt5 implementation of DBusMenu protocol    |
+| libcolumbus                      | Small, fast, error tolerant matcher        |
 | hud                              | Backend for the Unity HUD                  |
 | network-manager-applet-ubuntu    | NetworkManager applet w/indicator support  |
 | overlay-scrollbar                | Overlay scrollbars for GTK+2 and GTK+3     |
@@ -81,7 +82,6 @@ To compile from source, just build all of the packages in the following order:
 | nux                              | An OpenGL toolkit for Unity                |
 | unity-asset-pool                 | Design assets for Unity                    |
 | nautilus-ubuntu                  | File manager for GNOME and Unity           |
-| libcolumbus                      | Small, fast, error tolerant matcher        |
 | zeitgeist-ubuntu                 | Service for logging user activities        |
 | unity-lens-applications          | Unity lens for searching applications      |
 | unity-lens-files                 | Unity lens for searching files             |
