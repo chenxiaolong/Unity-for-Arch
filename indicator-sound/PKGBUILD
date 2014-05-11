@@ -6,7 +6,7 @@ pkgname=indicator-sound
 _actual_ver=12.10.2
 _extra_ver=+14.04.20140401
 pkgver=${_actual_ver}daily14.04.01
-pkgrel=2
+pkgrel=3
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
@@ -29,6 +29,8 @@ prepare() {
 
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
   patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
+
+  sed -i 's/unity-control-center/gnome-control-center/g' src/service.vala
 }
 
 build() {
