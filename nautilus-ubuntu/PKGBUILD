@@ -4,9 +4,9 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ppa_rel=0ubuntu1~trusty1
-pkgver=3.12.0
-pkgrel=2
+_ppa_rel=0ubuntu1~trusty2
+pkgver=3.12.2
+pkgrel=1
 pkgdesc="GNOME and Unity file manager"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -16,9 +16,9 @@ url="http://www.gnome.org"
 options=('!emptydirs')
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.gz")
-sha512sums=('e42eef48564c8b1fd0cb1cadee285be0c8b1e0840527498f4e4e2d25719d31d3dc1c780cd09e521f187ed98502e0b223aaac589ca22bdc6a4e3bd4c3495feb7d'
-            '95f31d7f526f83ca53885b3fce1e0960ae9d478511461f9ee115c91031307c65a218ac56c69f90f616a330789d2d64a201bd1c3237fc30ad6947eda064e5f3e1')
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.xz")
+sha512sums=('59a80fef3cedff5393061aeead552eec80bbd920ae71b918bb21ca6fc59ba1c4e85c641885a12dde5208345b8659f9d4a6e1ddf865f4cb94afd5a3a339839c01'
+            'deb4133045d00dad8a79cf8e405073c450a6bd69c3653afe67efacb967f1e89f5c3f46a135997a85df8de8c6bf485e1afdd7d9225ab6a1cb5f839792afbb4187')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
