@@ -6,7 +6,7 @@
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_rel=0ubuntu1
 _ubuntu_ver=3.10.1
-pkgver=3.12.0
+pkgver=3.12.2
 pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=('any')
@@ -19,7 +19,7 @@ conflicts=("${pkgname%-*}")
 install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
-sha512sums=('7e1f24c0294ddb94e7a588567d1ecdbd3b0eaf8bb616d95ccf6ec75d0fad50cc84e9d839df5c6d183d4b5d176e1546d96e1b6e6d1f812427d72f11575a7ca29d'
+sha512sums=('256fa971517c6305b50c91ac00a80f350b833f5527e271eeec0311b360ee5e20820d030403d6caa07c7a11ca551f12320c5c40074722d5249abddbde0e42a970'
             'b8f7efdba2a87fd748cca656945caa74097f91aa321623e60a234e4bdc4174575294e677e0b6bd7c77df00fcf91e9a4ceaf57cf5c72a2cee88eca9366cd317b4')
 
 prepare() {
