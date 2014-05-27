@@ -6,7 +6,7 @@ pkgname=nux
 _actual_ver=4.0.6
 _extra_ver=+14.04.20140409
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/nux"
@@ -36,6 +36,9 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  export CFLAGS="${CFLAGS} -Wno-error=unused-function"
+  export CXXFLAGS="${CXXFLAGS} -Wno-error=unused-function"
 
   autoreconf -vfi
 
