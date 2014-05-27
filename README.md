@@ -70,7 +70,6 @@ To compile from source, just build all of the packages in the following order:
 | indicator-sound                  | Indicator to show a unified sound menu     |
 | gsettings-qt                     | Library to access GSettings from Qt        |
 | dee-qt                           | Qt5 bindings for dee                       |
-| libdbusmenu-qt5                  | Qt5 implementation of DBusMenu protocol    |
 | libcolumbus                      | Small, fast, error tolerant matcher        |
 | hud                              | Backend for the Unity HUD                  |
 | network-manager-applet-ubuntu    | NetworkManager applet w/indicator support  |
