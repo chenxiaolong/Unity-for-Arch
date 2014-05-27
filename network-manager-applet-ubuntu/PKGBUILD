@@ -6,10 +6,10 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu4.1
 _ubuntu_ver=0.9.8.8
 pkgver=0.9.8.10
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
@@ -25,7 +25,7 @@ install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
 sha512sums=('c943eff9eaba1f28ad9101c659d4e3da72d6190dd7fd58f3c3d54bcc53c21ec33247aee6dc7a3d7348efd905876f699c39fb3f64cf46f5f627a3976deaa06fa2'
-            'b5062edaf95e33d98a2b77a7ee688215771fa83d71a0a49b8406388ec80e3f7096e018a6c2a50ec9e9f31c70a44d4758ef41167262128e024d7e49892dd83902')
+            'eecfe307f7d172384a6907d2830e8d2642c4d205973576b87bb8a09d7a798bad0014c5b80f24a29f5473a56ab18fff60410b224479ef316139fc68f8a453d6a3')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
