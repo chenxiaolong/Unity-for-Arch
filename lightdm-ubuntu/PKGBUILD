@@ -5,8 +5,8 @@
 # optdepends.
 
 pkgname=lightdm-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=1.11.1
+_ubuntu_rel=0ubuntu2
+pkgver=1.11.2
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
@@ -43,7 +43,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         'lightdm.rules'
         '0001-guest-account-Use-cross-distro-commands.patch'
         '0002-guest-account-Add-default-GSettings-support.patch')
-sha512sums=('c55a4ce40ba76999508e21aaa67bc5cc65d23598309fbd843a2efc4d719025a95a0741045c4f6f5d13cab26d396f6666586e0f7537875461cd2b5c6c14b5b801'
+sha512sums=('a559f11c252496a0672d80122ae3d111e35599c850a7a0109538a8753bf34c2a3a0d1859ed52da4a87293fc3ed3f0076f7838d97a9882efec8138490d88a55ab'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
