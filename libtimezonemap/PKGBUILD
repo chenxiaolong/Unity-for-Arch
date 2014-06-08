@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 pkgname=libtimezonemap
-pkgver=0.4.1
+pkgver=0.4.3
 pkgrel=1
 pkgdesc="GTK+3 timezone map widget"
 arch=('i686' 'x86_64')
@@ -11,7 +11,7 @@ groups=('unity')
 depends=('cairo' 'gtk3' 'json-glib')
 makedepends=('gobject-introspection' 'intltool')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.tar.gz")
-sha512sums=('25a72747e8a81d1afddad007599f188ee7435240e17f431f28f4fe2b6f4c777c9a999d5eeb8d66bde4c8f0a7495f3dae38f5f47fb1b82896a0602e779670ad87')
+sha512sums=('0e93039987ee160eb35d9f5e0fe5e49d5cb5d19d3c2a518f3e7c1aa861abc288c364b89f0c5b6d713b5f610c23453c4e962519d2a0f70d6f6731b3618744ef13')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
