@@ -5,7 +5,7 @@ source "$(dirname ${0})/PKGBUILD"
 echo "Downloading Ubuntu 14.04 Source Package Database..."
 [ -f Sources.bz2 ] && rm Sources.bz2
 [ -f Sources ] && rm Sources
-curl -O http://archive.ubuntu.com/ubuntu/dists/trusty/main/source/Sources.bz2
+curl -O http://archive.ubuntu.com/ubuntu/dists/utopic/main/source/Sources.bz2
 bunzip2 Sources.bz2
 PACKAGES=($(grep "Package: language-pack" Sources | sed 's/Package: language-pack-//g'))
 
