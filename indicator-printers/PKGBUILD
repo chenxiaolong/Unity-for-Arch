@@ -3,9 +3,10 @@
 pkgname=indicator-printers
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
-_extra_ver=+14.04.20140313
-pkgver=${_actual_ver}daily14.03.13
-pkgrel=101
+_extra_ver=+14.10.20140527
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+epoch=1
 pkgdesc="Indicator showing active print jobs"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-printers"
@@ -15,8 +16,8 @@ depends=('cups' 'libdbusmenu-glib' 'libdbusmenu-gtk3' 'libindicator3')
 makedepends=('intltool' 'python2')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('19e48137ae9cdf47355f2c87e90ce37182687d58b9866a56e2fb9320c8de0afb8ff3a85492536d25810dcd1a7e5a89a84f7285ea642a5d72b7e82d203a2fd786'
-            'fbb8ca2d94272eb04c7853b25b20f36b7fb4682ada8d6a473c8cf860a006e6ef681d64738a100356e8b4d41a7e68daab9d6919216af9aee522d65caae3e15389')
+sha512sums=('c62e329678403b22f568e1731c2ad13742c67c68ed71267f8dac5fb166c5ab8d7fbf97ccda1ad490d78bf4e07ad67dc468f949cabdab614909d80e8217a933da'
+            'd640a91dfba30331c7ede519fd556c33dd5c10c4303eb847eb3d8274e7ded70650f9e0a774de495a63d7e71cdc652dfe45c6dd5848a32c5c0e5193573c96b420')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
