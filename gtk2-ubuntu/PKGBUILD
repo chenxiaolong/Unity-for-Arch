@@ -3,7 +3,7 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu1.1
 pkgver=2.24.23
 pkgrel=1
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
@@ -21,7 +21,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_xid-collision-debug.patch')
 sha512sums=('e6db7d61d753f5d8ce0f41e99b461decda364d04314ff58838d2f98f29aab22313c0b5898f2cf56ddd3a18e0544f47ad796e673390d464ee2160b2542c5f558b'
-            '18f328d8001b1abd5139086ce6b581d073ad6134e526e280d54cc23fade47552a6f5a2fd2b6eaab4c4196933c7d6eebeb700921a2fc63494a3c1ee5292a7d799'
+            'aff37611db0b59bb0e519ccd251a7cbea28f94f3e30237112fb723f547d07c1ca6ea0bbc3f7011093959e20a4c6dab7c3be670da6a6fe762dc47857b328fa207'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
 prepare() {
@@ -52,6 +52,8 @@ prepare() {
         echo 'backport_search_printer_location.patch' >> "${srcdir}/debian/patches/series"
       # Print to current directory by default
         echo 'git_print_default_location.patch' >> "${srcdir}/debian/patches/series"
+      # Clean up dangling signal handler
+        echo 'backport_gtkmountoperation_signal_fix.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     patch -p1 -i "${srcdir}/debian/patches/${i}"
