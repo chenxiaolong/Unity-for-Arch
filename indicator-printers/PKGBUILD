@@ -6,6 +6,7 @@ _actual_ver=0.1.7
 _extra_ver=+14.04.20140527
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
+epoch=1
 pkgdesc="Indicator showing active print jobs"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-printers"
