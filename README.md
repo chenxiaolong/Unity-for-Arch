@@ -61,7 +61,6 @@ To compile from source, just build all of the packages in the following order:
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
-| indicator-bluetooth              | Indicator to show the bluetooth status     |
 | indicator-datetime               | Indicator to show the date and time        |
 | indicator-keyboard               | Indicator to show kb. layout/input method  |
 | indicator-power                  | Indicator to show battery information      |
