@@ -1,14 +1,14 @@
-From 36fe6f107113ec21975d2066383a0079de780453 Mon Sep 17 00:00:00 2001
+From 3737ab2d883d1bccd68cffcc65ef027bf4f579c6 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:11:47 -0400
-Subject: [PATCH 5/6] Fix launchers
+Subject: [PATCH 5/7] Fix launchers
 
 ---
  com.canonical.Unity.gschema.xml | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index 74f6562..5f7749a 100644
+index 9fb8c3d..db3edab 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
 @@ -87,15 +87,12 @@
@@ -29,5 +29,5 @@ index 74f6562..5f7749a 100644
          'unity://expo-icon',
          'unity://devices'
 -- 
-1.9.2
+2.0.0
 
