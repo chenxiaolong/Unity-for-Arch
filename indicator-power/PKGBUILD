@@ -2,9 +2,10 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+14.04.20140411
-pkgver=${_actual_ver}daily14.04.11
-pkgrel=2
+_extra_ver=+14.10.20140428
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-power"
@@ -16,7 +17,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Not_a_phone.patch'
         '0001-upower-0.99-DBus-API.patch')
-sha512sums=('f9aad4219eaf43328c3b0909da5b824a4d5885d344288642d6bfb2a818366253833951061bf1a8c11bace178d87947a79dd0819c92c3abdfad202cbf9a754c81'
+sha512sums=('8cf1d01628b476264d084b403f725448a02b5699960e3a4edfb68c751ab391eb6e445f079265eb311661e051515952bf0eb1191929aeb0e7466e3a206bc6ff40'
             'e7ce61788b59995f950b24b75899e517749319a209fd3b857cde26f8610ae0ddbefb82bf32e445b306caa65fac32871c1e7b6fd5c72e6debf88553ca9e12dcfc'
             '13873995d1d57710cdd75b2dd08fc69dbc13b68d5e8a459098e8cd4ea8327ea3657e2c1c5343611d8a5f8ce0d4586b4d25fb43ae66a23e77be725ec5c049e958')
 
