@@ -6,10 +6,10 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 pkgname=network-manager-applet-ubuntu
-_ubuntu_rel=0ubuntu4.1
+_ubuntu_rel=0ubuntu6
 _ubuntu_ver=0.9.8.8
 pkgver=0.9.8.10
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="GNOME frontends to NetWorkmanager"
 arch=('i686' 'x86_64')
@@ -23,14 +23,17 @@ conflicts=('network-manager-applet')
 options=('!emptydirs')
 install=network-manager-applet.install
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz")
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('c943eff9eaba1f28ad9101c659d4e3da72d6190dd7fd58f3c3d54bcc53c21ec33247aee6dc7a3d7348efd905876f699c39fb3f64cf46f5f627a3976deaa06fa2'
-            'eecfe307f7d172384a6907d2830e8d2642c4d205973576b87bb8a09d7a798bad0014c5b80f24a29f5473a56ab18fff60410b224479ef316139fc68f8a453d6a3')
+            '68df9d224b77629fb21e6651c815b8b9d36be5f7d2010f6e91a86c67523c364ed8b1a1d798929212d3c43a92824882aa7edd64327474404b50482667d7c6024e')
 
 prepare() {
   cd "${srcdir}/${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
+
+  sed -i '/git_use_paths_in_vpn_name_files_4867951.patch/d' "${srcdir}/debian/patches/series"
+
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
     patch -p1 -i "${srcdir}/debian/patches/${i}"
