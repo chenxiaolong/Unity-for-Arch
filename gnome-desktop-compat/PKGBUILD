@@ -10,7 +10,7 @@ url="http://www.gnome.org"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
 depends=('gsettings-desktop-schemas' 'gtk3' 'libxkbfile' 'xkeyboard-config' 'iso-codes')
-makedepends=('intltool' 'gobject-introspection' 'itstool')
+makedepends=('gnome-common' 'intltool' 'gobject-introspection' 'itstool')
 groups=('gnome')
 source=("http://ftp.gnome.org/pub/gnome/sources/gnome-desktop/3.8/gnome-desktop-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-desktop3_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
