@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 url="http://www.gnome.org"
 license=('GPL')
 depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libibus' 'librsvg' 'libgweather' 'geocode-glib' 'geoclue2' 'nss')
-makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
+makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl' 'python2')
 groups=('gnome' 'unity')
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=('gnome-settings-daemon')
