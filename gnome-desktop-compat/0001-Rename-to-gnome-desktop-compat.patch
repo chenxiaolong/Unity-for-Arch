@@ -1,0 +1,224 @@
+From 79ae85ca0a8c6b5127565b7177325f6ffd094098 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 15:51:55 -0400
+Subject: [PATCH] Rename to gnome-desktop-compat
+
+---
+ configure.ac                                       |  6 ++--
+ docs/reference/gnome-desktop3/Makefile.am          |  2 +-
+ libgnome-desktop/Makefile.am                       | 36 +++++++++++-----------
+ .../gnome-desktop-3.0-uninstalled.pc.in            | 11 -------
+ libgnome-desktop/gnome-desktop-3.0.pc.in           | 12 --------
+ .../gnome-desktop-compat-3.0-uninstalled.pc.in     | 11 +++++++
+ libgnome-desktop/gnome-desktop-compat-3.0.pc.in    | 12 ++++++++
+ 7 files changed, 45 insertions(+), 45 deletions(-)
+ delete mode 100644 libgnome-desktop/gnome-desktop-3.0-uninstalled.pc.in
+ delete mode 100644 libgnome-desktop/gnome-desktop-3.0.pc.in
+ create mode 100644 libgnome-desktop/gnome-desktop-compat-3.0-uninstalled.pc.in
+ create mode 100644 libgnome-desktop/gnome-desktop-compat-3.0.pc.in
+
+diff --git a/configure.ac b/configure.ac
+index 3c9fbe0..354a9a2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -184,7 +184,7 @@ YELP_HELP_INIT
+ 
+ dnl Language Support
+ 
+-GETTEXT_PACKAGE=gnome-desktop-3.0
++GETTEXT_PACKAGE=gnome-desktop-compat-3.0
+ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
+ 		   [The gettext translation domain])
+ AC_SUBST(GETTEXT_PACKAGE)
+@@ -199,8 +199,8 @@ GTK_DOC_CHECK([1.4])
+ AC_CONFIG_FILES([
+ Makefile
+ libgnome-desktop/Makefile
+-libgnome-desktop/gnome-desktop-3.0.pc
+-libgnome-desktop/gnome-desktop-3.0-uninstalled.pc
++libgnome-desktop/gnome-desktop-compat-3.0.pc
++libgnome-desktop/gnome-desktop-compat-3.0-uninstalled.pc
+ docs/Makefile
+ docs/reference/Makefile
+ docs/reference/gnome-desktop3/Makefile
+diff --git a/docs/reference/gnome-desktop3/Makefile.am b/docs/reference/gnome-desktop3/Makefile.am
+index 89bd0ae..113f5ad 100644
+--- a/docs/reference/gnome-desktop3/Makefile.am
++++ b/docs/reference/gnome-desktop3/Makefile.am
+@@ -68,7 +68,7 @@ expand_content_files=
+ # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
+ # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
+ INCLUDES=$(GNOME_DESKTOP_CFLAGS) -I$(top_srcdir)/libgnome-desktop -DGNOME_DESKTOP_USE_UNSTABLE_API
+-GTKDOC_LIBS=$(GNOME_DESKTOP_LIBS) $(top_builddir)/libgnome-desktop/libgnome-desktop-3.la
++GTKDOC_LIBS=$(GNOME_DESKTOP_LIBS) $(top_builddir)/libgnome-desktop/libgnome-desktop-compat-3.la
+ 
+ # This includes the standard gtk-doc make rules, copied by gtkdocize.
+ include $(top_srcdir)/gtk-doc.make
+diff --git a/libgnome-desktop/Makefile.am b/libgnome-desktop/Makefile.am
+index 7041be5..71267e1 100644
+--- a/libgnome-desktop/Makefile.am
++++ b/libgnome-desktop/Makefile.am
+@@ -1,7 +1,7 @@
+ CLEANFILES =
+ 
+ noinst_LTLIBRARIES =
+-lib_LTLIBRARIES = libgnome-desktop-3.la
++lib_LTLIBRARIES = libgnome-desktop-compat-3.la
+ 
+ AM_CPPFLAGS =							\
+ 	-I$(top_srcdir)						\
+@@ -40,7 +40,7 @@ introspection_sources = 		\
+ 	gnome-languages.c		\
+ 	edid-parse.c
+ 
+-libgnome_desktop_3_la_SOURCES = 	\
++libgnome_desktop_compat_3_la_SOURCES = 	\
+ 	$(introspection_sources)	\
+ 	gnome-datetime-source.h		\
+ 	gnome-datetime-source.c		\
+@@ -49,22 +49,22 @@ libgnome_desktop_3_la_SOURCES = 	\
+ 	edid.h				\
+ 	locarchive.h
+ 
+-libgnome_desktop_3_la_LIBADD =	\
++libgnome_desktop_compat_3_la_LIBADD =	\
+ 	$(XLIB_LIBS)		\
+ 	$(LIBM)			\
+ 	$(GNOME_DESKTOP_LIBS)	\
+ 	libgsystem.la           \
+ 	-lrt
+ 
+-libgnome_desktop_3_la_LDFLAGS = \
++libgnome_desktop_compat_3_la_LDFLAGS = \
+ 	-version-info $(LT_VERSION) \
+ 	-export-symbols-regex "^gnome_.*" \
+ 	-no-undefined
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+-pkgconfig_DATA = gnome-desktop-3.0.pc
++pkgconfig_DATA = gnome-desktop-compat-3.0.pc
+ 
+-libgnome_desktopdir = $(includedir)/gnome-desktop-3.0/libgnome-desktop
++libgnome_desktopdir = $(includedir)/gnome-desktop-compat-3.0/libgnome-desktop
+ libgnome_desktop_HEADERS = \
+         gnome-bg.h                      \
+         gnome-bg-crossfade.h            \
+@@ -79,7 +79,7 @@ libgnome_desktop_HEADERS = \
+ 	gnome-languages.h
+ 
+ if USE_INTERNAL_PNP_IDS
+-pnpdatadir = $(datadir)/libgnome-desktop-3.0
++pnpdatadir = $(datadir)/libgnome-desktop-compat-3.0
+ pnpdata_DATA = pnp.ids
+ endif
+ pnpdata_DATA_dist = pnp.ids
+@@ -97,16 +97,16 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+ 
+ if HAVE_INTROSPECTION
+ 
+-GnomeDesktop-3.0.gir: libgnome-desktop-3.la
+-GnomeDesktop_3_0_gir_INCLUDES = GObject-2.0 Gtk-3.0 GDesktopEnums-3.0
+-GnomeDesktop_3_0_gir_PACKAGES = gdk-pixbuf-2.0 glib-2.0 gobject-2.0 gio-2.0 gtk+-3.0 gsettings-desktop-schemas
+-GnomeDesktop_3_0_gir_EXPORT_PACKAGES = gnome-desktop-3.0
+-GnomeDesktop_3_0_gir_CFLAGS = -DGNOME_DESKTOP_USE_UNSTABLE_API -I$(top_srcdir)
+-GnomeDesktop_3_0_gir_LIBS = libgnome-desktop-3.la
+-GnomeDesktop_3_0_gir_FILES = $(introspection_sources) $(libgnome_desktop_HEADERS)
+-GnomeDesktop_3_0_gir_SCANNERFLAGS = --identifier-prefix=Gnome --symbol-prefix=gnome
++GnomeDesktop-Compat-3.0.gir: libgnome-desktop-compat-3.la
++GnomeDesktop_Compat_3_0_gir_INCLUDES = GObject-2.0 Gtk-3.0 GDesktopEnums-3.0
++GnomeDesktop_Compat_3_0_gir_PACKAGES = gdk-pixbuf-2.0 glib-2.0 gobject-2.0 gio-2.0 gtk+-3.0 gsettings-desktop-schemas
++GnomeDesktop_Compat_3_0_gir_EXPORT_PACKAGES = gnome-desktop-compat-3.0
++GnomeDesktop_Compat_3_0_gir_CFLAGS = -DGNOME_DESKTOP_USE_UNSTABLE_API -I$(top_srcdir)
++GnomeDesktop_Compat_3_0_gir_LIBS = libgnome-desktop-compat-3.la
++GnomeDesktop_Compat_3_0_gir_FILES = $(introspection_sources) $(libgnome_desktop_HEADERS)
++GnomeDesktop_Compat_3_0_gir_SCANNERFLAGS = --identifier-prefix=Gnome --symbol-prefix=gnome
+ INTROSPECTION_SCANNER_ARGS += $(patsubst %,--c-include='libgnome-desktop/%',$(libgnome_desktop_HEADERS))
+-INTROSPECTION_GIRS += GnomeDesktop-3.0.gir
++INTROSPECTION_GIRS += GnomeDesktop-Compat-3.0.gir
+ 
+ girdir = $(datadir)/gir-1.0
+ gir_DATA = $(INTROSPECTION_GIRS)
+@@ -118,8 +118,8 @@ CLEANFILES += $(gir_DATA) $(typelib_DATA)
+ endif
+ 
+ EXTRA_DIST = \
+-	gnome-desktop-3.0.pc.in			\
+-	gnome-desktop-3.0-uninstalled.pc.in	\
++	gnome-desktop-compat-3.0.pc.in			\
++	gnome-desktop-compat-3.0-uninstalled.pc.in	\
+ 	$(pnpdata_DATA_dist)
+ 
+ MAINTAINERCLEANFILES = \
+diff --git a/libgnome-desktop/gnome-desktop-3.0-uninstalled.pc.in b/libgnome-desktop/gnome-desktop-3.0-uninstalled.pc.in
+deleted file mode 100644
+index 2f1c680..0000000
+--- a/libgnome-desktop/gnome-desktop-3.0-uninstalled.pc.in
++++ /dev/null
+@@ -1,11 +0,0 @@
+-prefix=@prefix@
+-exec_prefix=@exec_prefix@
+-libdir=@libdir@
+-includedir=@includedir@
+-
+-Name: gnome-desktop-3.0
+-Description: Utility library for loading .desktop files
+-Requires: gtk+-3.0 gsettings-desktop-schemas
+-Version: @VERSION@
+-Libs: ${pc_top_builddir}/${pcfiledir}/libgnome-desktop-3.la
+-Cflags: -I${pc_top_builddir}/${pcfiledir}/..
+diff --git a/libgnome-desktop/gnome-desktop-3.0.pc.in b/libgnome-desktop/gnome-desktop-3.0.pc.in
+deleted file mode 100644
+index 1c501c5..0000000
+--- a/libgnome-desktop/gnome-desktop-3.0.pc.in
++++ /dev/null
+@@ -1,12 +0,0 @@
+-prefix=@prefix@
+-exec_prefix=@exec_prefix@
+-libdir=@libdir@
+-includedir=@includedir@
+-
+-Name: gnome-desktop-3.0
+-Description: Utility library for loading .desktop files
+-Requires: gtk+-3.0 gsettings-desktop-schemas
+-Requires.private: xkbfile
+-Version: @VERSION@
+-Libs: -L${libdir} -lgnome-desktop-3
+-Cflags: -I${includedir}/gnome-desktop-3.0
+diff --git a/libgnome-desktop/gnome-desktop-compat-3.0-uninstalled.pc.in b/libgnome-desktop/gnome-desktop-compat-3.0-uninstalled.pc.in
+new file mode 100644
+index 0000000..e029f42
+--- /dev/null
++++ b/libgnome-desktop/gnome-desktop-compat-3.0-uninstalled.pc.in
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: gnome-desktop-compat-3.0
++Description: Utility library for loading .desktop files
++Requires: gtk+-3.0 gsettings-desktop-schemas
++Version: @VERSION@
++Libs: ${pc_top_builddir}/${pcfiledir}/libgnome-desktop-compat-3.la
++Cflags: -I${pc_top_builddir}/${pcfiledir}/..
+diff --git a/libgnome-desktop/gnome-desktop-compat-3.0.pc.in b/libgnome-desktop/gnome-desktop-compat-3.0.pc.in
+new file mode 100644
+index 0000000..b7564b9
+--- /dev/null
++++ b/libgnome-desktop/gnome-desktop-compat-3.0.pc.in
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: gnome-desktop-compat-3.0
++Description: Utility library for loading .desktop files
++Requires: gtk+-3.0 gsettings-desktop-schemas
++Requires.private: xkbfile
++Version: @VERSION@
++Libs: -L${libdir} -lgnome-desktop-compat-3
++Cflags: -I${includedir}/gnome-desktop-compat-3.0
+-- 
+2.0.0
+
