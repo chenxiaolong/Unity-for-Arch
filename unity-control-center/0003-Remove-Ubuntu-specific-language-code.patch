@@ -1,7 +1,7 @@
 From fdd054304b578ab40bf64fb06363e80962a87f66 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:25:21 -0400
-Subject: [PATCH 3/6] Remove Ubuntu-specific language code
+Subject: [PATCH 3/7] Remove Ubuntu-specific language code
 
 ---
  panels/common/cc-common-language.c  | 89 ++-----------------------------------

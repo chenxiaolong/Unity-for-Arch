@@ -1,7 +1,7 @@
 From 6c834176c4197625639c8fb74a5556507d7f06ec Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:54:41 -0400
-Subject: [PATCH 5/6] Allow gnome-control-center to run at the same time
+Subject: [PATCH 5/7] Allow gnome-control-center to run at the same time
 
 ---
  shell/control-center.c | 2 +-

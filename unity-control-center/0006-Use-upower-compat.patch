@@ -1,7 +1,7 @@
 From 75c8e0aa1aca05e2b67ca77ad012eaf41666d8f0 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 22:57:56 -0400
-Subject: [PATCH 6/6] Use upower-compat
+Subject: [PATCH 6/7] Use upower-compat
 
 ---
  configure.ac | 2 +-

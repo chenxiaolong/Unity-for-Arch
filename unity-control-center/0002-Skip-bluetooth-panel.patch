@@ -1,7 +1,7 @@
 From 4986dad712cef4e7d6b8444134ac41e70c6eb06b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:31:50 -0400
-Subject: [PATCH 2/6] Skip bluetooth panel
+Subject: [PATCH 2/7] Skip bluetooth panel
 
 ---
  configure.ac | 4 +---

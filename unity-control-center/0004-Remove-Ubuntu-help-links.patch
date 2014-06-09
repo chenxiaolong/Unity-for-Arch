@@ -1,7 +1,7 @@
 From e4b441ef811105f8b01d83fda522431a1eca9310 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:53:27 -0400
-Subject: [PATCH 4/6] Remove Ubuntu help links
+Subject: [PATCH 4/7] Remove Ubuntu help links
 
 ---
  panels/bluetooth/cc-bluetooth-panel.c     | 2 +-

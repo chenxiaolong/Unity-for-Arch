@@ -6,7 +6,7 @@ pkgname=unity-control-center
 _actual_ver=14.10.0
 _extra_ver=+14.10.20140604
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="The Control Center for Unity"
 arch=('i686' 'x86_64')
 groups=('unity')
@@ -14,6 +14,7 @@ url="https://launchpad.net/unity-control-center"
 license=('GPL')
 depends=('accountsservice' 'cups-pk-helper' 'libnotify' 'gnome-desktop-compat' 'gnome-menus' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libtimezonemap' 'network-manager-applet' 'sound-theme-freedesktop' 'upower-compat' 'libpwquality' 'gnome-color-manager' 'smbclient' 'libmm-glib' 'libgnomekbd' 'grilo' 'clutter-gtk' 'unity-settings-daemon' 'system-config-printer' 'webkitgtk')
 makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'modemmanager' 'vala')
+optdepends=('gnome-control-center: For bluetooth panel')
 options=('!emptydirs')
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -22,14 +23,20 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         '0003-Remove-Ubuntu-specific-language-code.patch'
         '0004-Remove-Ubuntu-help-links.patch'
         '0005-Allow-gnome-control-center-to-run-at-the-same-time.patch'
-        '0006-Use-upower-compat.patch')
+        '0006-Use-upower-compat.patch'
+        '0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch'
+        'system-config-printer-unity.desktop'
+        'unity-bluetooth-panel.desktop')
 sha512sums=('fb89795a618f00af029e2458ea7f7590cedd967a52ffb608999c1fbcd928ae3db5d4bd110074019728f2cf3fb7ddb3085aae1f606b5e52d7e3bf33e146c9a2dd'
-            'ebd452cdd41fc5d77b3a933e65198afc298fa9f3459a3ec5d3667a1a1a094385922e2247f656257a0c2d675dfe36ba3a26d09c15ae4be064ba307ec16c619fcf'
-            '79cc29781661c99c87eca41b5cfcd9ec8b9235bec29c53b7185a99a20af58f76258bf05db8eb44748c0157a7c59836159548b8e8f341b7565f1fe760c9bdbabe'
-            'daf787cb63033d6f6489157b202b42106136a0b827db9f4dd26dad3cd7f150f4019f8f6ec09aca055f7b1376fa34dc6af5ebb767b4a8768c78126045b33119d4'
-            '404bf3df6609c7e4a2e105729b25e544bdfef181a404ce77435e769e0b74d3b5a0b4d3c27415b028e55a4610f513a4ccc68d97af9e16825bac878e4806132c87'
-            '889c7bfe64a29fba11fb1f6318ae8ed406ee8db88b4d8e03a9c132069c361ade1355817285e78bfeed82e27f36926beda665d62a5d0a3c697be3e71e9e5fd366'
-            'ba19ca83a00ec13139d1fd8a3f13cce1fa8cb798b7db1f3b9a80aae26512ba8328fa49e2a3f4866b490ab73b46acacbfac542f16c7c26af168b54242c2f76c4e')
+            '06f7a2a14a211ee9012bbcfaacef82ae810ef9eb0797568210188d04ca70fc79344f18c2ad09c1ca0331d214889f6b5d6beae86ebc607226082afacf9fcd27f5'
+            '5e20922fdc28acf90757743fdbb93715cade67a93a135ffcefd27dbadab11e60fb3d5848be7240b267ec2ea24e415a3f0bef3461e4c479a63e6adf3adba6bb51'
+            '753deaaf6fcf71998d2f9389bb34672cc60e96099b5d04e3e2eebc5e9af6f50e0d349e5202c17203617d430d1fe56bf9a6215bae417f198519e0f43efef292a5'
+            '20bf406e5966269f669c50b8fd8a72bf0329089871a9b5267dcce460b8aca32cdb57ede944f38aeb2ae036e7ed55596f4aba1a32a9c7d35a8ee2c64801f338c8'
+            'b42154629eb7ab34bbab83eabd1f225cceac63d029d5a3659313a4f37d2a76e99bc627c8a6915d76b25931a256148bb0277884dfe6c5d09eca0ea7fa49f13b3b'
+            '6a741e4654abf78725b49a1cc62fbe803e541fba7bab7c2a959bdcebc5b2a47faafbb3078e590c689b7a5120abfa68f8e96606e5b5fe0d38cc79bde6ed7c406f'
+            'cfe96957cec333e171b5ecb34116765e3214534470646c2c541343270900c17bdfedf2df88f3c8536e483ce5375abc02d95dfbef0c7ba773c7c73911b4572d00'
+            '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
+            '1118e18b0df7bfaebfdd0f39ff88a44e6e296068562b5a980f5b0de7f750ca6843c812945abb75365df01214ee141c49a64bfcceb5a98f60d5c88808f7cfc16e')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -39,6 +46,7 @@ prepare() {
   patch -p1 -i "${srcdir}/0004-Remove-Ubuntu-help-links.patch"
   patch -p1 -i "${srcdir}/0005-Allow-gnome-control-center-to-run-at-the-same-time.patch"
   patch -p1 -i "${srcdir}/0006-Use-upower-compat.patch"
+  patch -p1 -i "${srcdir}/0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch"
 }
 
 build() {
@@ -76,6 +84,13 @@ package() {
     --logo panels/info/UbuntuLogoBlank.png \
     --text "Unity for Arch" \
     --output "${pkgdir}/usr/share/unity-control-center/ui/UbuntuLogo.png"
+
+  # We'll just ship another desktop file for system-config-printer instead of
+  # providing a patched package
+  install -m644 "${srcdir}/system-config-printer-unity.desktop" \
+                "${pkgdir}/usr/share/applications/"
+  install -m644 "${srcdir}/unity-bluetooth-panel.desktop" \
+                "${pkgdir}/usr/share/applications/"
 }
 
 # vim:set ts=2 sw=2 et:

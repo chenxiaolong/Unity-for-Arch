@@ -1,7 +1,7 @@
 From 3935aa5b40df5c810e32e7103f9af820a64ede72 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:11:20 -0400
-Subject: [PATCH 1/6] Use gnome-desktop-compat
+Subject: [PATCH 1/7] Use gnome-desktop-compat
 
 ---
  configure.ac | 14 +++++++-------
