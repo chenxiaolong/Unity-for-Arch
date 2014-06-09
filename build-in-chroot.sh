@@ -316,6 +316,22 @@ if [ "x${USE_CCACHE}" = "xtrue" ]; then
   sed -i '/^\s*BUILDENV/ s/!ccache/ccache/g' ${CHROOT}/etc/makepkg.conf
 fi
 
+# Set up /etc/pacman.conf if local repo already exists
+# TODO: Enable signature verification
+if [ -f "${LOCALREPO}/${REPO}.db" ]; then
+#  cat >> ${CHROOT}/etc/pacman.conf << EOF
+#[${REPO}]
+#SigLevel = Never
+#Server = file://$(readlink -f ${LOCALREPO})
+#EOF
+
+  sed -i "/^\[core\]/ i\\
+[${REPO}] \\
+SigLevel = Never \\
+Server = file://$(readlink -f ${LOCALREPO}) \\
+" ${CHROOT}/etc/pacman.conf
+fi
+
 for i in ${OTHERREPOS[@]}; do
   i=${i/@ARCH@/${ARCH}}
   cat >> ${CHROOT}/etc/pacman.conf << EOF
@@ -395,22 +411,6 @@ fi
   flock 123 || (echo "Failed to acquire lock on local repo!" && exit 1)
   if [ -f "${LOCALREPO}/${REPO}.db" ] || [[ ! -z "${OTHERREPOS[@]}" ]] \
                                       || [[ ! -z "${OTHERREPOS_PRE[@]}" ]]; then
-    # Set up /etc/pacman.conf if local repo already exists
-    # TODO: Enable signature verification
-    if [ -f "${LOCALREPO}/${REPO}.db" ]; then
-#      cat >> ${CHROOT}/etc/pacman.conf << EOF
-#[${REPO}]
-#SigLevel = Never
-#Server = file://$(readlink -f ${LOCALREPO})
-#EOF
-
-      sed -i "/^\[core\]/ i\\
-[${REPO}] \\
-SigLevel = Never \\
-Server = file://$(readlink -f ${LOCALREPO}) \\
-" ${CHROOT}/etc/pacman.conf
-    fi
-
     setarch ${ARCH} systemd-nspawn ${NSPAWN_ARGS[@]} \
                     pacman -Syu --noconfirm ${PROGRESSBAR}
   fi
