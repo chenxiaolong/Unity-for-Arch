@@ -1,14 +1,28 @@
+From 26aafa37eabc92ab430e4a0bd3ce1536f1962ef7 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 16:23:30 -0400
+Subject: [PATCH 2/5] Remove accountsservice dependency
+
+---
+ configure.ac                            |  2 +-
+ plugins/keyboard/gsd-keyboard-manager.c | 72 ---------------------------------
+ 2 files changed, 1 insertion(+), 73 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index eeb05c8..b891cb1 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -195,7 +195,7 @@
+@@ -195,7 +195,7 @@ else
  fi
  AM_CONDITIONAL(HAVE_IBUS, test "x$enable_ibus" == "xyes")
  
--PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
-+PKG_CHECK_MODULES(KEYBOARD, xkbfile $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
+-PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile $IBUS_MODULE gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
++PKG_CHECK_MODULES(KEYBOARD, xkbfile $IBUS_MODULE gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
  
  dnl ---------------------------------------------------------------------------
  dnl - Housekeeping plugin stuff
+diff --git a/plugins/keyboard/gsd-keyboard-manager.c b/plugins/keyboard/gsd-keyboard-manager.c
+index c9676ec..6324950 100644
 --- a/plugins/keyboard/gsd-keyboard-manager.c
 +++ b/plugins/keyboard/gsd-keyboard-manager.c
 @@ -50,8 +50,6 @@
@@ -20,7 +34,7 @@
  #include "gnome-settings-session.h"
  #include "gnome-settings-profile.h"
  #include "gsd-keyboard-manager.h"
-@@ -1010,67 +1008,6 @@
+@@ -1019,67 +1017,6 @@ apply_xkb_settings (GsdKeyboardManager *manager,
          XkbLockModifiers (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XkbUseCoreKbd, LockMask, 0);
  }
  
@@ -86,26 +100,31 @@
 -}
 -
  static gboolean
- apply_input_sources_settings (GSettings          *settings,
-                               gpointer            keys,
-@@ -1086,20 +1023,11 @@
-         gchar *layout = NULL;
-         gchar *variant = NULL;
-         gchar **options = NULL;
+ apply_input_source (GsdKeyboardManager *manager,
+                     guint               current)
+@@ -1179,8 +1116,6 @@ apply_input_sources_settings (GSettings          *settings,
+         GVariant *sources;
+         guint n_sources;
+         guint current;
 -        ActUserManager *user_manager;
 -        gboolean user_manager_loaded;
  
          sources = g_settings_get_value (priv->input_sources_settings, KEY_INPUT_SOURCES);
-         current = g_settings_get_uint (priv->input_sources_settings, KEY_CURRENT_INPUT_SOURCE);
          n_sources = g_variant_n_children (sources);
+@@ -1198,13 +1133,6 @@ apply_input_sources_settings (GSettings          *settings,
+                 goto exit;
+         }
  
 -        user_manager = act_user_manager_get_default ();
 -        g_object_get (user_manager, "is-loaded", &user_manager_loaded, NULL);
 -        if (user_manager_loaded)
--                manager_notify_is_loaded_cb (G_OBJECT (user_manager), NULL, settings);
+-                manager_notify_is_loaded_cb (G_OBJECT (user_manager), NULL, priv->input_sources_settings);
 -        else
--                g_signal_connect (user_manager, "notify::is-loaded", G_CALLBACK (manager_notify_is_loaded_cb), settings);
+-                g_signal_connect (user_manager, "notify::is-loaded", G_CALLBACK (manager_notify_is_loaded_cb), priv->input_sources_settings);
 -
-         if (n_sources < 1)
-                 goto exit;
+         apply_input_source (manager, current);
  
+ exit:
+-- 
+2.0.0
+

@@ -1,0 +1,197 @@
+From 1239fd1a8df47ccc78410d8f7d0df22899c4bc83 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 22:49:19 -0400
+Subject: [PATCH] Use upower-compat
+
+---
+ configure.ac                      |  6 +++---
+ plugins/power/gsd-power-manager.c | 10 +++++-----
+ plugins/power/test.py             | 32 ++++++++++++++++----------------
+ 3 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4ca5461..24287d9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -215,7 +215,7 @@ dnl ---------------------------------------------------------------------------
+ dnl - xrandr plugin stuff
+ dnl ---------------------------------------------------------------------------
+ 
+-PKG_CHECK_MODULES(XRANDR, [gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION upower-glib >= $UPOWER_REQUIRED_VERSION])
++PKG_CHECK_MODULES(XRANDR, [gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION upower-glib-compat >= $UPOWER_REQUIRED_VERSION])
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl - orientation plugin stuff
+@@ -234,7 +234,7 @@ PKG_CHECK_MODULES(SOUND, [libpulse >= $PA_REQUIRED_VERSION $GUDEV_PKG libpulse-m
+ # ---------------------------------------------------------------------------
+ # Power
+ # ---------------------------------------------------------------------------
+-PKG_CHECK_MODULES(POWER, upower-glib >= $UPOWER_REQUIRED_VERSION gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION $GUDEV_PKG libcanberra-gtk3 libnotify x11 xext xtst)
++PKG_CHECK_MODULES(POWER, upower-glib-compat >= $UPOWER_REQUIRED_VERSION gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION $GUDEV_PKG libcanberra-gtk3 libnotify x11 xext xtst)
+ 
+ if test x$have_gudev != xno; then
+ 	PKG_CHECK_MODULES(BACKLIGHT_HELPER,
+@@ -289,7 +289,7 @@ AC_ARG_ENABLE(packagekit,
+ 
+ if test x$WANT_PACKAGEKIT = xyes ; then
+        PK_REQUIRED_VERSION=0.7.4
+-       PKG_CHECK_MODULES(PACKAGEKIT, glib-2.0 packagekit-glib2 >= $PK_REQUIRED_VERSION upower-glib >= $UPOWER_REQUIRED_VERSION gudev-1.0 libnotify >= $LIBNOTIFY_REQUIRED_VERSION,
++       PKG_CHECK_MODULES(PACKAGEKIT, glib-2.0 packagekit-glib2 >= $PK_REQUIRED_VERSION upower-glib-compat >= $UPOWER_REQUIRED_VERSION gudev-1.0 libnotify >= $LIBNOTIFY_REQUIRED_VERSION,
+              [have_packagekit=true
+               AC_DEFINE(HAVE_PACKAGEKIT, 1, [Define if PackageKit should be used])],
+              [have_packagekit=false])
+diff --git a/plugins/power/gsd-power-manager.c b/plugins/power/gsd-power-manager.c
+index 7e50349..53cfb58 100644
+--- a/plugins/power/gsd-power-manager.c
++++ b/plugins/power/gsd-power-manager.c
+@@ -55,11 +55,11 @@
+ #define GNOME_SESSION_DBUS_PATH_PRESENCE        "/org/gnome/SessionManager/Presence"
+ #define GNOME_SESSION_DBUS_INTERFACE_PRESENCE   "org.gnome.SessionManager.Presence"
+ 
+-#define UPOWER_DBUS_NAME                        "org.freedesktop.UPower"
+-#define UPOWER_DBUS_PATH                        "/org/freedesktop/UPower"
+-#define UPOWER_DBUS_PATH_KBDBACKLIGHT           "/org/freedesktop/UPower/KbdBacklight"
+-#define UPOWER_DBUS_INTERFACE                   "org.freedesktop.UPower"
+-#define UPOWER_DBUS_INTERFACE_KBDBACKLIGHT      "org.freedesktop.UPower.KbdBacklight"
++#define UPOWER_DBUS_NAME                        "org.freedesktop.UPowerCompat"
++#define UPOWER_DBUS_PATH                        "/org/freedesktop/UPowerCompat"
++#define UPOWER_DBUS_PATH_KBDBACKLIGHT           "/org/freedesktop/UPowerCompat/KbdBacklight"
++#define UPOWER_DBUS_INTERFACE                   "org.freedesktop.UPowerCompat"
++#define UPOWER_DBUS_INTERFACE_KBDBACKLIGHT      "org.freedesktop.UPowerCompat.KbdBacklight"
+ 
+ #define GSD_POWER_SETTINGS_SCHEMA               "org.gnome.settings-daemon.plugins.power"
+ #define GSD_XRANDR_SETTINGS_SCHEMA              "org.gnome.settings-daemon.plugins.xrandr"
+diff --git a/plugins/power/test.py b/plugins/power/test.py
+index bb4ff0e..60df1d5 100755
+--- a/plugins/power/test.py
++++ b/plugins/power/test.py
+@@ -448,7 +448,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+             dbus.UInt32(gsdpowerenums.GSM_INHIBITOR_FLAG_SUSPEND))
+ 
+         # Close the lid
+-        self.obj_upower.Set('org.freedesktop.UPower', 'LidIsClosed', True)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'LidIsClosed', True)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check that we've blanked
+@@ -469,7 +469,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+             dbus.UInt32(gsdpowerenums.GSM_INHIBITOR_FLAG_SUSPEND))
+ 
+         # Close the lid
+-        self.obj_upower.Set('org.freedesktop.UPower', 'LidIsClosed', True)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'LidIsClosed', True)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check that we've blanked
+@@ -488,14 +488,14 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+             dbus.UInt32(gsdpowerenums.GSM_INHIBITOR_FLAG_SUSPEND))
+ 
+         # Close the lid
+-        self.obj_upower.Set('org.freedesktop.UPower', 'LidIsClosed', True)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'LidIsClosed', True)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check that we've blanked
+         self.check_blank(2)
+ 
+         # Reopen the lid
+-        self.obj_upower.Set('org.freedesktop.UPower', 'LidIsClosed', False)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'LidIsClosed', False)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check for unblanking
+@@ -550,7 +550,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+         time.sleep (1)
+ 
+         # Close the lid
+-        self.obj_upower.Set('org.freedesktop.UPower', 'LidIsClosed', True)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'LidIsClosed', True)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check for no suspend, and for no screen blanking
+@@ -566,14 +566,14 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+ 
+         # add a fake battery with 30%/2 hours charge to upower
+         bat_path = self.obj_upower.AddDischargingBattery('mock_BAT', 'Mock Bat', 30.0, 1200)
+-        obj_bat = self.system_bus_con.get_object('org.freedesktop.UPower', bat_path)
++        obj_bat = self.system_bus_con.get_object('org.freedesktop.UPowerCompat', bat_path)
+         self.obj_upower.EmitSignal('', 'DeviceAdded', 's', [bat_path],
+                                    dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         time.sleep(1)
+ 
+         # now change battery to critical charge
+-        obj_bat.Set('org.freedesktop.UPower.Device', 'TimeToEmpty',
++        obj_bat.Set('org.freedesktop.UPowerCompat.Device', 'TimeToEmpty',
+                     dbus.Int64(30, variant_level=1),
+                     dbus_interface=dbus.PROPERTIES_IFACE)
+         obj_bat.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+@@ -594,7 +594,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+ 
+         # add a fake battery with 2%/1 minute charge to upower
+         bat_path = self.obj_upower.AddDischargingBattery('mock_BAT', 'Mock Bat', 2.0, 60)
+-        obj_bat = self.system_bus_con.get_object('org.freedesktop.UPower', bat_path)
++        obj_bat = self.system_bus_con.get_object('org.freedesktop.UPowerCompat', bat_path)
+         self.obj_upower.EmitSignal('', 'DeviceAdded', 's', [bat_path],
+                                    dbus_interface='org.freedesktop.DBus.Mock')
+ 
+@@ -613,21 +613,21 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+ 
+         # add two fake batteries to upower
+         bat1_path = self.obj_upower.AddDischargingBattery('mock_BAT1', 'Bat0', 30.0, 1200)
+-        obj_bat1 = self.system_bus_con.get_object('org.freedesktop.UPower', bat1_path)
++        obj_bat1 = self.system_bus_con.get_object('org.freedesktop.UPowerCompat', bat1_path)
+         self.obj_upower.EmitSignal('', 'DeviceAdded', 's', [bat1_path],
+                                    dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         bat2_path = self.obj_upower.AddDischargingBattery('mock_BAT2', 'Bat2', 40.0, 1600)
+-        obj_bat2 = self.system_bus_con.get_object('org.freedesktop.UPower', bat2_path)
++        obj_bat2 = self.system_bus_con.get_object('org.freedesktop.UPowerCompat', bat2_path)
+         self.obj_upower.EmitSignal('', 'DeviceAdded', 's', [bat2_path],
+                                    dbus_interface='org.freedesktop.DBus.Mock')
+         time.sleep(1)
+ 
+         # now change one battery to critical charge
+-        obj_bat1.Set('org.freedesktop.UPower.Device', 'TimeToEmpty',
++        obj_bat1.Set('org.freedesktop.UPowerCompat.Device', 'TimeToEmpty',
+                      dbus.Int64(30, variant_level=1),
+                      dbus_interface=dbus.PROPERTIES_IFACE)
+-        obj_bat1.Set('org.freedesktop.UPower.Device', 'Energy',
++        obj_bat1.Set('org.freedesktop.UPowerCompat.Device', 'Energy',
+                      dbus.Double(0.5, variant_level=1),
+                      dbus_interface=dbus.PROPERTIES_IFACE)
+         obj_bat1.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+@@ -639,10 +639,10 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+         self.check_no_suspend(5)
+ 
+         # now change the other battery to critical charge as well
+-        obj_bat2.Set('org.freedesktop.UPower.Device', 'TimeToEmpty',
++        obj_bat2.Set('org.freedesktop.UPowerCompat.Device', 'TimeToEmpty',
+                      dbus.Int64(25, variant_level=1),
+                      dbus_interface=dbus.PROPERTIES_IFACE)
+-        obj_bat2.Set('org.freedesktop.UPower.Device', 'Energy',
++        obj_bat2.Set('org.freedesktop.UPowerCompat.Device', 'Energy',
+                      dbus.Double(0.4, variant_level=1),
+                      dbus_interface=dbus.PROPERTIES_IFACE)
+         obj_bat2.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+@@ -694,7 +694,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+         self.check_dim(idle_delay + 2)
+ 
+         # Plug in the AC
+-        self.obj_upower.Set('org.freedesktop.UPower', 'OnBattery', False)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'OnBattery', False)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check that we undim
+@@ -704,7 +704,7 @@ class PowerPluginTest(gsdtestcase.GSDTestCase):
+         self.check_dim(idle_delay + 2)
+ 
+         # Unplug the AC
+-        self.obj_upower.Set('org.freedesktop.UPower', 'OnBattery', True)
++        self.obj_upower.Set('org.freedesktop.UPowerCompat', 'OnBattery', True)
+         self.obj_upower.EmitSignal('', 'Changed', '', [], dbus_interface='org.freedesktop.DBus.Mock')
+ 
+         # Check that we undim
+-- 
+2.0.0
+
