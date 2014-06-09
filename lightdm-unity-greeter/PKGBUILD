@@ -4,7 +4,7 @@
 pkgname=lightdm-unity-greeter
 _ubuntu_rel=0ubuntu2
 pkgver=14.10.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The greeter (login screen) application for Unity. It is implemented as a LightDM greeter."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-greeter"
@@ -17,14 +17,12 @@ optdepends=("ubuntu-themes: Ubuntu's Ambiance and Radiance themes"
             "ttf-ubuntu-font-family: Ubuntu's default font")
 install=unity-greeter.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pkgver}-${_ubuntu_rel}.tar.gz"
-        '0001-Use-gnome-settings-daemon.patch'
         'spawn_indicators.patch'
         'unity-greeter-indicators-start'
         '10-unity.defaults'
         '50-unity-greeter.rules'
         'logo.png')
 sha512sums=('61b0112ea33f63d6d6212f8412b98c2be30cf9bca80c21c621d5d3998d7b2b731c6af73d4caace802560f1f8bb56056a1fb0ec61e86bc1d736c01423882318c6'
-            '730a6ebb6eb16a6b48ecab297c17641dfe71ac72ecfe0e136544cc125b96f272d830a9596b019df220d03f8460541a2ecefd61769ea2d6f82345bc81f8c11d8f'
             '0fa758888e10bbf54bb1e6a4273dd3efc396ce8338aa1ab2e8f794a81c554b394805cf445c6179998786cd3d40d6eb0025382d1a2f028b5887c5b10957c4f34e'
             'e43c177d0255af961bbf9198868e32a1a762bb70e117f80c3c2ce4b54d23f4955cc1c4c32b68751b021116f8e6d26133b24845c03ae459c2209e8313e28a0bc6'
             'ee5d1f17dddd99ba55bbaca8aff5e8487c9b9f7e1eef570d2adb3d2519e19ef437b160414468ef85a8c1b14af1eee23c714e2086291701edfbab2f43064e2cd7'
@@ -38,9 +36,6 @@ prepare() {
   for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
-
-  # We don't use unity-settings-daemon as it's incompatible with GNOME 3.12
-  patch -p1 -i "${srcdir}/0001-Use-gnome-settings-daemon.patch"
 
   # Patch from unity-gentoo for spawning the indicator services since the
   # DBus activation method is deprecated
