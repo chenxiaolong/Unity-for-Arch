@@ -4,7 +4,7 @@ pkgname=unity-settings-daemon
 _actual_ver=14.04.0
 _extra_ver=+14.10.20140605
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-settings-daemon"
@@ -18,11 +18,13 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-dae
         '0001-Use-gnome-desktop-compat.patch'
         '0002-Remove-accountsservice-dependency.patch'
         '0003-Use-upower-compat.patch'
+        '0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch'
         '0002-Remove-lid-close.patch')
 sha512sums=('3e3a30effd8b006174bedc6e04e9552f15108f6aac18aa915b59f1958b9d3e86bffc42cebe2ee54b5055529cda92b0308e86500efaebbe4a1d727938e9fee1a3'
-            '6e59b54a662be578de05db2c5627c36dd193d0320cc5b1fc9f5aa3438a6870f9dabba6906b9c2227ab078d813e4ea6cb6c785045d8e5b4a91660cb4e4b95892c'
-            '407d6303796b24fdcc7e40ecf16e68c3588245c2c9970e30d79217fc33bf597b6d975176e4333ad34a2297fe10952785c518eb14f3ff113770606b3ac68445d7'
-            '4f4ee627f6084a13dadff68c11ca504c98395af8de1aea812790647439382a143c430e4b3eef96de87e5fc221670bbc0ab34ed23564f541b4a74adae3f6bf5e4'
+            'a6b95df3ac8bb05c217ecb5cca6da4a7c411d153064efa9a596f931d9bb878e6489ca2d88d566cf621c79c195c7104ad18b3309900b1f8d5e321ac9ac95076ae'
+            'a81ed0404fce6381a13b546775eba90b5aef950c2ce32ebf70d49438841646cad54a82460cd77a4b42b5ad98d46c3e5cfbe298e6283b2d5a7e076eedc59ce59b'
+            '38403438559dc7a00c0bf4d0ffecd019f1942e91cd9080b991ec5d9c2d192b13dd0f82d08edac19531e0366902d75dab6e1fd11e3a479289868c8376c8986189'
+            'ecf114ce359893eb9b134ae901313f380d9243c9eb5cd4573bb29c0dc1c9c4681eb3c7b3d363d718220428f7760e21bcf514a3429af5c00afe91b368bb9dd7dc'
             '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
 
 prepare() {
@@ -31,6 +33,7 @@ prepare() {
   patch -p1 -i "${srcdir}/0001-Use-gnome-desktop-compat.patch"
   patch -p1 -i "${srcdir}/0002-Remove-accountsservice-dependency.patch"
   patch -p1 -i "${srcdir}/0003-Use-upower-compat.patch"
+  patch -p1 -i "${srcdir}/0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch"
 #  patch -p1 -i "${srcdir}/0002-Remove-lid-close.patch"
 }
 

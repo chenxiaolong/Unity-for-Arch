@@ -1,7 +1,7 @@
-From 1239fd1a8df47ccc78410d8f7d0df22899c4bc83 Mon Sep 17 00:00:00 2001
+From e71c1b5890cdf1437fca0c74807f4e0bd64f640f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 22:49:19 -0400
-Subject: [PATCH] Use upower-compat
+Subject: [PATCH 3/4] Use upower-compat
 
 ---
  configure.ac                      |  6 +++---
@@ -10,7 +10,7 @@ Subject: [PATCH] Use upower-compat
  3 files changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 4ca5461..24287d9 100644
+index b891cb1..0af5a5d 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -215,7 +215,7 @@ dnl ---------------------------------------------------------------------------
