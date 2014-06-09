@@ -11,6 +11,7 @@ url="https://launchpad.net/unity-settings-daemon"
 license=('GPL')
 groups=('unity')
 depends=('gnome-desktop-compat' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libappindicator3' 'libcanberra-pulse' 'libnotify' 'librsvg' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower-compat')
+makedepends=('intltool')
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
