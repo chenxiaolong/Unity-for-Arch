@@ -17,7 +17,7 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
@@ -33,14 +33,15 @@ options=('emptydirs')
 conflicts=('compiz')
 provides=('compiz-core' 'compiz')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/~townsend/+archive/compiz-nvidia-refresh-test/+files/compiz_0.9.11+14.10.20140606-0ubuntu2ppa1.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('e4bfd7302158da4a9afd98706790b039f3560e255c4a6ea91fef167e6b19ea590497a28609786944e93b52bc3c2d484a543d90bdfb96e9c46ea44ebbc81ad184'
+sha512sums=('046ce99633328c2bf4cb0a5b52de6ba4516e32fbb4dd798dc37feb7730fb63eae1e0633e5a1b0896bc7689104460c420132aeaed6c036760e7a0fe89d09659fd'
             '257e44de6ad6d02fd45b76797ef71d1cd98238ca27ac678b33116b2c7db2865d37fe54d6c6c7e60333a83d17ca8efb220a0b59a0865b7f86a4417db4fc90d903'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
@@ -49,7 +50,8 @@ sha512sums=('e4bfd7302158da4a9afd98706790b039f3560e255c4a6ea91fef167e6b19ea59049
             'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 prepare() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+  cd compiz.utopic
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
@@ -66,15 +68,19 @@ prepare() {
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
 
   # Apply Ubuntu patches
-  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+#  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+
+  sed -i '/100_workaround_virtualbox_hang.patch/d' debian/patches/series
 
   for i in $(grep -v '#' debian/patches/series); do
+    msg "Applying ${i}"
     patch -p1 -i "debian/patches/${i}"
   done
 }
 
 build() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+  cd compiz.utopic
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
@@ -110,7 +116,8 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
+  cd compiz.utopic/build
   make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
