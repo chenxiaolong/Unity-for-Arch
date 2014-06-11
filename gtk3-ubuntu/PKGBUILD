@@ -7,9 +7,9 @@
 # vercheck-gnome: name=gtk+, majorver=3.12
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 pkgver=3.12.2
-pkgrel=3
+pkgrel=4
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -22,10 +22,10 @@ provides=("gtk3=${pkgver}")
 conflicts=('gtk3')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.xz"
         'arch_settings.ini')
 sha512sums=('4a8d2f52328587d73e30f363bdbbd91322dae0198f5581a2da3ebbe96ef0a0635193d2537e8fc127dc0950a24df42862233edd3a873dcbd166dc675bae849c9e'
-            '6573217f37d1565ff68efd16cffbec64fb6b7aa762061d9363aff5d6c7fbac47d071b124c67b82eb48825e37a5d342c16ee33956af2a61d57db2a2540dffb3ad'
+            '03a21078011b8f56c41bc64e8adec15ce00252fd1d60dbf796faf19effe27a1e3707d1384316e4529a6681c16e8c65fb532a3e0ecb381ddb2aee9cc62f879c4a'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -45,6 +45,10 @@ prepare() {
       # Other
         echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
         echo 'uimanager-guard-against-nested-node-updates.patch' >> "${srcdir}/debian/patches/series"
+        echo 'gtkdialog-don-t-use-csd-when-use-header-bar-is-FALSE.patch' >> "${srcdir}/debian/patches/series"
+        echo 'gtkaboutdialog-support-showing-buttons-in-action-are.patch' >> "${srcdir}/debian/patches/series"
+        echo 'message-dialog-restore-traditional-look-on-unity.patch' >> "${srcdir}/debian/patches/series"
+        echo 'revert-fix-up-builder.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
