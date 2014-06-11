@@ -5,6 +5,11 @@
 # Contributor: Tor Krill <tor@krill.nu>
 # Contributor: Will Rea <sillywilly@gmail.com>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=0.9
+
 pkgname=network-manager-applet-ubuntu
 _ubuntu_rel=0ubuntu6
 _ubuntu_ver=0.9.8.8

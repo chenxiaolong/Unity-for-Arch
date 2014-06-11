@@ -2,6 +2,12 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+# vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
+
 pkgname=gnome-session-ubuntu
 _ubuntu='3.9.90-0ubuntu12'
 pkgver=3.12.1

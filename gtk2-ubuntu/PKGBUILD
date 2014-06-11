@@ -2,6 +2,11 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: Christopher Reimer <github@creimer.net>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=gtk+2.0, repo=utopic
+# vercheck-archlinux: name=gtk2, repo=extra, arch=x86_64
+# vercheck-gnome: name=gtk+, majorver=2.24
+
 pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu1.1
 pkgver=2.24.23

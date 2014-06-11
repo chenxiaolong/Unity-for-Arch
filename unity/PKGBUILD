@@ -1,5 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=unity
 _actual_ver=7.2.0
 _extra_ver=+14.10.20140606.1

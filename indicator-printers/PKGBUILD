@@ -1,5 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-printers
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7

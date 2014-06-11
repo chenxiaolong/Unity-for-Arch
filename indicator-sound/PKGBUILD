@@ -2,6 +2,10 @@
 # Original Maintainer: Balló György <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-sound
 _actual_ver=12.10.2
 _extra_ver=+14.10.20140509

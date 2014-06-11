@@ -3,6 +3,11 @@
 # Contributor: Jaroslav Lichtblau <dragonlord@aur.archlinux.org>
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_rel=1ubuntu1
 _ubuntu_ver=3.12.0

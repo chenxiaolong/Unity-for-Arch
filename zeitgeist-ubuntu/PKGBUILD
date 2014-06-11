@@ -3,6 +3,10 @@
 # Contributor: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: György Balló <ballogy@freestart.hu>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-launchpad: name=${pkgname%-*}
+
 pkgname=zeitgeist-ubuntu
 pkgver=0.9.14
 _ubuntu_rel=0ubuntu4

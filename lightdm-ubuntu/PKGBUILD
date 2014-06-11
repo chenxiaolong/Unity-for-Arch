@@ -4,6 +4,10 @@
 # Qt libraries and recommend the installation of those respective tookits using
 # optdepends.
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-launchpad: name=${pkgname%-*}
+
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=1.11.3

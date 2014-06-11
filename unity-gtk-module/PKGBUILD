@@ -1,5 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
 _extra_ver=+14.04.20140403

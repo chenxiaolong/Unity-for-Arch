@@ -1,6 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+
 pkgname=upower-compat
 pkgver=0.9.23
 pkgrel=1

@@ -1,5 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-ubuntudb: pkgprefix=unity-scope-, verprefix=_ver_, relprefix=_rel_, skip=home, repo=utopic
+
 # When updating, check if any packages are missing when compared to
 # /usr/share/unity/client-scopes.json
 

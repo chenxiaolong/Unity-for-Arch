@@ -1,6 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=evemu
 pkgver=1.2.0
 pkgrel=100

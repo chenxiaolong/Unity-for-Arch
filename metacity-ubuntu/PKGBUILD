@@ -2,6 +2,11 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: format="${pkgver%.*} ${_ubuntu_rel}"
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=community, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=2.34
+
 pkgname=metacity-ubuntu
 _ubuntu_rel=0ubuntu4
 pkgver=2.34.13.${_ubuntu_rel}

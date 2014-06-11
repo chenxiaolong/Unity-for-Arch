@@ -2,6 +2,10 @@
 
 # Some comments are taken from the Ubuntu packaging files
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-launchpad: name=${pkgname%-*}
+
 pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu2

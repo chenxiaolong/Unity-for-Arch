@@ -1,5 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+
 pkgname=unity-scope-home
 _actual_ver=6.8.2
 _extra_ver=+14.04.20131029.1

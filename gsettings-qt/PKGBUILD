@@ -1,5 +1,8 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+
 pkgname=gsettings-qt
 _actual_ver=0.1
 _extra_ver=+14.10.20140606

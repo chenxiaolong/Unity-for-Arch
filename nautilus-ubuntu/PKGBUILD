@@ -2,6 +2,12 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
+# vercheck-gnome: name=${pkgbase%-*}, majorver=3.12
+# vercheck-ppa: name=${pkgbase%-*}, url=ppa:gnome3-team/gnome3-staging
+
 pkgbase=nautilus-ubuntu
 pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
 _ppa_rel=0ubuntu1~trusty2

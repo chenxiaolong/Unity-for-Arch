@@ -2,6 +2,9 @@
 
 # Based on Arch's gnome-control-center package
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+
 pkgname=unity-control-center
 _actual_ver=14.10.0
 _extra_ver=+14.10.20140604

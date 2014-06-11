@@ -1,6 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: Christopher Reimer <github@creimer.net>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=gtk+3.0, repo=utopic
+# vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
+# vercheck-gnome: name=gtk+, majorver=3.12
+
 pkgname=gtk3-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=3.12.2

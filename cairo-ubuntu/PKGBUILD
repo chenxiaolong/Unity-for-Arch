@@ -2,6 +2,9 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: Brice Carpentier <brice@daknet.org>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+
 pkgname=cairo-ubuntu
 _actual_ver=1.13.0
 _extra_ver='~20140204'

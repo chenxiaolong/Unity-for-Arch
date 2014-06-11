@@ -1,6 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: Jan de Groot <jan@archlinux.org>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}3, repo=utopic
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.8
+
 pkgname=gnome-desktop-compat
 _ubuntu_rel=0ubuntu3
 pkgver=3.8.4

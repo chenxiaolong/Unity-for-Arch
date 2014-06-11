@@ -1,5 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-ubuntudb: pkgprefix=language-pack-, verprefix=_ver_, ignorerel, onlyver=".*14.10.*", repo=utopic
+
 # Thanks to the unity-gentoo project for many of the ideas used in here!
 
 translations=(

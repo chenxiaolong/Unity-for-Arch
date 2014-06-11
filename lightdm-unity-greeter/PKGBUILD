@@ -1,6 +1,10 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Taken from M0Rf30 morf3089 at gmail dot com
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname#*-}, repo=utopic
+# vercheck-launchpad: name=${pkgname#*-}
+
 pkgname=lightdm-unity-greeter
 _ubuntu_rel=0ubuntu2
 pkgver=14.10.0
