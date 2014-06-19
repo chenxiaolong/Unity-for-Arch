@@ -8,9 +8,9 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.10.20140509
+_extra_ver=+14.10.20140611
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         'com.ubuntu.sound.gschema.xml'
         '0001_Not_a_phone.patch'
         '0002_Remove_tests.patch')
-sha512sums=('ff6ed7ea0391fffa5b913f012de95000ac47960832cbbcc8e9742c0a751f1d1f1c74eae11816dc730e5d0c3c06bc609847e5c0c357039fa178f34bbf8e26b4b5'
+sha512sums=('588af80adb2683ce866b86e0acb436c99018468543b4da1e4936b2ceb0280d9e0a1e81b938e684518e6c8529e9d6ac775ab3487680281ba6ead3c4f5a9dea27d'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
             '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b')
