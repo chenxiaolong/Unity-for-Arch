@@ -5,13 +5,10 @@
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=+14.04.20140403
+_extra_ver=+14.10.20140618
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=3
-
-# Override AUR version
+pkgrel=1
 epoch=2
-
 pkgdesc="Unity GTK+ Module"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-gtk-module"
@@ -24,7 +21,7 @@ replaces=('appmenu-gtk2' 'appmenu-gtk3')
 conflicts=('appmenu-gtk2' 'appmenu-gtk3')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '80unity-gtk-module')
-sha512sums=('dca50543f7259f5d1b00a0886d53108f8fd939c7066df8c948154e615bbc29ba2879daca25f3fe6e1dba5e166773a98e2e3072c57bf58713088f75923790eb5e'
+sha512sums=('224d2213d5956bcdb6b7c197dfb0dcc9f18f70a896d5aacd05eed290045e8968490f3b85df1d31b5e89b112575449f46b06d4fabc42a07ca9bb797e5e6efd6a1'
             'e30db7e3e1aba0abf100e619c667bac16d0a25ee3d9c67f65af532ab1a512dce5966e3c94f5d938c378dc30d9ed766fc2c9fa62e96235f29d923be5bad7f3a45')
 
 build() {
