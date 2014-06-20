@@ -350,6 +350,14 @@ Server = ${i#*::} \\
 " ${CHROOT}/etc/pacman.conf
 done
 
+# Enable multilib on x86_64
+if [[ "${ARCH}" == x86_64 ]]; then
+  cat >> ${CHROOT}/etc/pacman.conf << EOF
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+EOF
+fi
+
 # Copy packaging
 mkdir ${CHROOT}/tmp/${PACKAGE}/
 cp -v "${PACKAGE_DIR}/PKGBUILD" ${CHROOT}/tmp/${PACKAGE}/
@@ -417,6 +425,9 @@ fi
 
   # Download sources and install build dependencies
   cat > ${CHROOT}/stage1.sh << EOF
+if [[ "${ARCH}" == "x86_64" ]]; then
+  yes | pacman -S gcc-multilib gcc-libs-multilib libtool-multilib
+fi
 su - builder -c 'export CCACHE_DIR="${CCACHE_DIR}" && cd /tmp/${PACKAGE} && \\
                  makepkg --syncdeps --nobuild --noextract --nocolor \\
                          --noconfirm --skipinteg ${PROGRESSBAR}'
