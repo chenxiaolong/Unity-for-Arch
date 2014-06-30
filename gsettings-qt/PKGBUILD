@@ -5,7 +5,7 @@
 
 pkgname=gsettings-qt
 _actual_ver=0.1
-_extra_ver=+14.10.20140606
+_extra_ver=+14.10.20140624
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Library to access GSettings from Qt"
@@ -16,7 +16,7 @@ groups=('unity')
 depends=('qt5-base' 'qt5-declarative')
 makedepends=('qtchooser')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('88a6fab4d07eb89d726837621727074dde9bd5edadeb441416d8edc7763ef27b51fa746903453e630fd32e47f3bd07ae48c19d9f57278ed1609a66715fdfe25f')
+sha512sums=('18506607a76deb5cde303db9a65194d9bc8155b9bb78002ac8ff76be6b4711ce74ee5e376424cac032f313e0fe8de4079b0e583aa4ebfe6c32db7cea6394aa80')
 
 build() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
