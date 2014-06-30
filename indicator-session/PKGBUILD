@@ -8,9 +8,9 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+14.04.20140410
-pkgver=${_actual_ver}daily14.04.10
-pkgrel=3
+_extra_ver=+14.10.20140620
+pkgver=${_actual_ver}daily14.06.20
+pkgrel=1
 pkgdesc="Indicator showing session management, status and user switching"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-session"
@@ -23,7 +23,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         'indicator-session.service'
         '0002_There_is_no_help.patch')
-sha512sums=('8578dba1874e16d720b867c5aaacea115545886a0f520b90bb636fabc8e5c569041005d3201187d4d9ab8381e7f250ab452cf2ce90f4280209e54d59a9a29d01'
+sha512sums=('71118a5d39a6c4bf8d855a5125ec77efe693139f6f7dd80baf5c70db4e452a0f2cf8d5ae490ecd3620098c53dbdf66a67d818b59fe5929abf322a66746bb4de0'
             '540c76c0f68b028194bb1000dd61a0c24f2f16427e79d237b94b8c65fe5e3e16eb6ea645f0fd33d734113727e25b6eb7452cb72f72399c9e8d370f74abba7511'
             '5326ff4022fe86fa3162d1f46341f2f352d4859bd5024da81d5640465cd3b242abedf820c2589c1da05e2eec3fc2e7535a2e4f2f8489333cb001e279094a4a15')
 
