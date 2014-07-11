@@ -90,7 +90,7 @@ def get_bash_var(var):
         )
 
         if not output or not output.partition('\n')[0]:
-            raise Exception('Failed to get bash variable: ' + error)
+            return None
 
         return output.partition('\n')[0].split(' ')
 
@@ -100,7 +100,7 @@ def get_bash_var(var):
         )
 
         if not output or not output.partition('\n')[0]:
-            raise Exception('Failed to get bash variable: ' + error)
+            return None
 
         return output.partition('\n')[0]
 
