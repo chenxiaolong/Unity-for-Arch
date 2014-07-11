@@ -7,9 +7,9 @@
 
 pkgname=unity-control-center
 _actual_ver=14.10.0
-_extra_ver=+14.10.20140604
+_extra_ver=+14.10.20140702.1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="The Control Center for Unity"
 arch=('i686' 'x86_64')
 groups=('unity')
@@ -30,7 +30,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         '0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch'
         'system-config-printer-unity.desktop'
         'unity-bluetooth-panel.desktop')
-sha512sums=('fb89795a618f00af029e2458ea7f7590cedd967a52ffb608999c1fbcd928ae3db5d4bd110074019728f2cf3fb7ddb3085aae1f606b5e52d7e3bf33e146c9a2dd'
+sha512sums=('7652dec9e00462aa7fed7b3b3d5b57a5eaef976ca86cb04b54dfabe40dccac12e19519bc3b9b6a42b5e9e2604ce7adef38d80c0566b86c12efc9e5ca647c2198'
             '06f7a2a14a211ee9012bbcfaacef82ae810ef9eb0797568210188d04ca70fc79344f18c2ad09c1ca0331d214889f6b5d6beae86ebc607226082afacf9fcd27f5'
             '5e20922fdc28acf90757743fdbb93715cade67a93a135ffcefd27dbadab11e60fb3d5848be7240b267ec2ea24e415a3f0bef3461e4c479a63e6adf3adba6bb51'
             '753deaaf6fcf71998d2f9389bb34672cc60e96099b5d04e3e2eebc5e9af6f50e0d349e5202c17203617d430d1fe56bf9a6215bae417f198519e0f43efef292a5'
