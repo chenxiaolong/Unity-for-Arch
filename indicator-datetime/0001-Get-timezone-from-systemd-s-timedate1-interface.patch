@@ -1,35 +1,35 @@
-From d156e9b3b1dc7761f0658a2e837fcb79f31fa001 Mon Sep 17 00:00:00 2001
+From 37298ab5f9d201207a5c19e8e8b09f86d28a94e3 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 6 Apr 2014 22:26:15 -0400
 Subject: [PATCH] Get timezone from systemd's timedate1 interface
 
 ---
- data/com.canonical.indicator.datetime.gschema.xml |  2 +-
- include/datetime/timezone-file.h                  |  1 +
- include/datetime/timezone-systemd.h               | 60 ++++++++++++++++++
- include/datetime/timezones-live.h                 |  3 +
- src/CMakeLists.txt                                | 21 ++++++-
- src/main.cpp                                      | 16 +++--
- src/timedate1-interface.xml                       | 74 +++++++++++++++++++++++
- src/timezone-file.cpp                             |  9 ++-
- src/timezone-systemd.cpp                          | 71 ++++++++++++++++++++++
- src/timezones-live.cpp                            | 17 +++++-
- 10 files changed, 265 insertions(+), 9 deletions(-)
+ ...com.canonical.indicator.datetime.gschema.xml.in |  2 +-
+ include/datetime/timezone-file.h                   |  1 +
+ include/datetime/timezone-systemd.h                | 60 +++++++++++++++++
+ include/datetime/timezones-live.h                  |  3 +
+ src/CMakeLists.txt                                 | 19 ++++++
+ src/main.cpp                                       | 10 ++-
+ src/timedate1-interface.xml                        | 74 +++++++++++++++++++++
+ src/timezone-file.cpp                              |  9 ++-
+ src/timezone-systemd.cpp                           | 76 ++++++++++++++++++++++
+ src/timezones-live.cpp                             | 17 ++++-
+ 10 files changed, 266 insertions(+), 5 deletions(-)
  create mode 100644 include/datetime/timezone-systemd.h
  create mode 100644 src/timedate1-interface.xml
  create mode 100644 src/timezone-systemd.cpp
 
-diff --git a/data/com.canonical.indicator.datetime.gschema.xml b/data/com.canonical.indicator.datetime.gschema.xml
-index 1a5922c..6f415cd 100644
---- a/data/com.canonical.indicator.datetime.gschema.xml
-+++ b/data/com.canonical.indicator.datetime.gschema.xml
+diff --git a/data/com.canonical.indicator.datetime.gschema.xml.in b/data/com.canonical.indicator.datetime.gschema.xml.in
+index 62b42c1..149c7ea 100644
+--- a/data/com.canonical.indicator.datetime.gschema.xml.in
++++ b/data/com.canonical.indicator.datetime.gschema.xml.in
 @@ -98,7 +98,7 @@
  			<default>false</default>
- 			<summary>Show the auto-detected location in the indicator</summary>
- 			<description>
+ 			<_summary>Show the auto-detected location in the indicator</_summary>
+ 			<_description>
 -			  Shows your current location (determined from geoclue and /etc/timezone) in indicator-datetime's menu.
 +			  Shows your current location (determined from geoclue and systemd's timedated) in indicator-datetime's menu.
- 			</description>
+ 			</_description>
  		</key>
  		<key name="show-locations" type="b">
 diff --git a/include/datetime/timezone-file.h b/include/datetime/timezone-file.h
@@ -133,10 +133,10 @@ index ca4ef31..0d026f6 100644
      std::shared_ptr<GeoclueTimezone> m_geo;
  };
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 9bc22f2..79060d1 100644
+index af09c71..5dc339e 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -7,6 +7,21 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g ${CXX_WARNING_ARGS} ${GCO
+@@ -4,6 +4,21 @@ set (SERVICE_EXEC "indicator-datetime-service")
  add_definitions (-DTIMEZONE_FILE="/etc/timezone"
                   -DG_LOG_DOMAIN="Indicator-Datetime")
  
@@ -155,26 +155,31 @@ index 9bc22f2..79060d1 100644
 +    COMMENT "Generating code for systemd's timedate1 interface"
 +)
 +
- add_library (${SERVICE_LIB} STATIC
-              actions.cpp
-              actions-live.cpp
-@@ -29,9 +44,13 @@ add_library (${SERVICE_LIB} STATIC
-              snap.cpp
-              timezone-file.cpp
-              timezone-geoclue.cpp
-+             timezone-systemd.cpp
-              timezones-live.cpp
--             utils.c)
-+             utils.c
-+             timedate1.h
-+             timedate1.c)
+ # handwritten sources
+ set (SERVICE_C_SOURCES
+      utils.c)
+@@ -29,8 +44,11 @@ set (SERVICE_CXX_SOURCES
+      snap.cpp
+      timezone-file.cpp
+      timezone-geoclue.cpp
++     timezone-systemd.cpp
+      timezones-live.cpp
+      utils.c
++     timedate1.h
++     timedate1.c
+      wakeup-timer-mainloop.cpp)
+ if (HAVE_UBUNTU_HW_ALARM_H)
+   set (SERVICE_CXX_SOURCES ${SERVICE_CXX_SOURCES} wakeup-timer-uha.cpp)
+@@ -55,6 +73,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
+ 
+ add_library (${SERVICE_LIB} STATIC ${SERVICE_C_SOURCES} ${SERVICE_CXX_SOURCES} ${SERVICE_GENERATED_SOURCES})
  include_directories (${CMAKE_SOURCE_DIR})
 +include_directories (${CMAKE_CURRENT_BINARY_DIR})
  link_directories (${SERVICE_DEPS_LIBRARY_DIRS})
  
  add_executable (${SERVICE_EXEC} main.cpp)
 diff --git a/src/main.cpp b/src/main.cpp
-index c7b35e5..8cc9992 100644
+index cc81cd7..38a5f25 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
 @@ -31,6 +31,7 @@
@@ -182,14 +187,14 @@ index c7b35e5..8cc9992 100644
  #include <datetime/timezone-file.h>
  #include <datetime/timezones-live.h>
 +#include <datetime/timezone-systemd.h>
+ #include <datetime/wakeup-timer-mainloop.h>
  
- #include <glib/gi18n.h> // bindtextdomain()
- #include <gio/gio.h>
-@@ -67,19 +68,26 @@ main(int /*argc*/, char** /*argv*/)
-     std::shared_ptr<Settings> live_settings(new LiveSettings);
-     std::shared_ptr<Timezones> live_timezones(new LiveTimezones(live_settings, TIMEZONE_FILE));
-     std::shared_ptr<Clock> live_clock(new LiveClock(live_timezones));
--    std::shared_ptr<Timezone> file_timezone(new FileTimezone(TIMEZONE_FILE));
+ #ifdef HAVE_UBUNTU_HW_ALARM_H
+@@ -135,7 +136,14 @@ main(int /*argc*/, char** /*argv*/)
+     textdomain(GETTEXT_PACKAGE);
+ 
+     auto engine = create_engine();
+-    auto timezone = std::make_shared<FileTimezone>(TIMEZONE_FILE);
 +
 +    std::shared_ptr<Timezone> timezone(nullptr);
 +
@@ -198,24 +203,9 @@ index c7b35e5..8cc9992 100644
 +    else
 +        timezone = std::shared_ptr<Timezone>(new SystemdTimezone());
 +
-     const auto now = live_clock->localtime();
-     state->settings = live_settings;
-     state->clock = live_clock;
-     state->locations.reset(new SettingsLocations(live_settings, live_timezones));
--    auto calendar_month = new MonthPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now);
-+    auto calendar_month = new MonthPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now);
-     state->calendar_month.reset(calendar_month);
--    state->calendar_upcoming.reset(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now));
-+    state->calendar_upcoming.reset(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now));
-     std::shared_ptr<Actions> actions(new LiveActions(state));
+     auto state = create_state(engine, timezone);
+     auto actions = std::make_shared<LiveActions>(state);
      MenuFactory factory(actions, state);
- 
-     // snap decisions
--    std::shared_ptr<UpcomingPlanner> upcoming_planner(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, file_timezone)), now));
-+    std::shared_ptr<UpcomingPlanner> upcoming_planner(new UpcomingPlanner(std::shared_ptr<RangePlanner>(new SimpleRangePlanner(engine, timezone)), now));
-     ClockWatcherImpl clock_watcher(live_clock, upcoming_planner);
-     Snap snap;
-     clock_watcher.alarm_reached().connect([&snap](const Appointment& appt){
 diff --git a/src/timedate1-interface.xml b/src/timedate1-interface.xml
 new file mode 100644
 index 0000000..27a58af
@@ -297,10 +287,10 @@ index 0000000..27a58af
 + </interface>
 +</node>
 diff --git a/src/timezone-file.cpp b/src/timezone-file.cpp
-index c99897a..4430372 100644
+index bbe48f7..6802b87 100644
 --- a/src/timezone-file.cpp
 +++ b/src/timezone-file.cpp
-@@ -32,7 +32,8 @@ FileTimezone::FileTimezone()
+@@ -85,7 +85,8 @@ FileTimezone::FileTimezone()
  
  FileTimezone::FileTimezone(const std::string& filename)
  {
@@ -310,8 +300,8 @@ index c99897a..4430372 100644
  }
  
  FileTimezone::~FileTimezone()
-@@ -111,6 +112,12 @@ FileTimezone::reload()
-     }
+@@ -154,6 +155,12 @@ FileTimezone::reload()
+         timezone.set(new_timezone);
  }
  
 +bool
@@ -325,10 +315,10 @@ index c99897a..4430372 100644
  } // namespace unity
 diff --git a/src/timezone-systemd.cpp b/src/timezone-systemd.cpp
 new file mode 100644
-index 0000000..466aec6
+index 0000000..d288d01
 --- /dev/null
 +++ b/src/timezone-systemd.cpp
-@@ -0,0 +1,71 @@
+@@ -0,0 +1,76 @@
 +/*
 + * Copyright 2014 Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 + *
@@ -394,6 +384,11 @@ index 0000000..466aec6
 +SystemdTimezone::set_timezone()
 +{
 +    const gchar * tz_new = timedate1_get_timezone(m_timedate);
++
++    if (tz_new == nullptr) {
++        return;
++    }
++
 +    timezone.set(tz_new);
 +}
 +
@@ -438,5 +433,5 @@ index 4902b76..8e4db27 100644
  
      timezone.set(a.empty() ? b : a);
 -- 
-1.9.1
+2.0.1
 

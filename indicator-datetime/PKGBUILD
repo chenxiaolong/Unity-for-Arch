@@ -8,9 +8,9 @@
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+14.04.20140415.3
+_extra_ver=+14.10.20140701
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="A very, very simple clock"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-datetime"
@@ -22,8 +22,8 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001-Get-timezone-from-systemd-s-timedate1-interface.patch'
         '0002_Not_a_phone.patch')
-sha512sums=('9b4fd126ce077c9e8c7d2f81570638ee9ad8ba8a2334bd4135864f6ebacc9892dca21403626cc078a1b9ecd710d8083d0df6bcdff32cafa8f2aaf5102c3e4dac'
-            'd48a0e1b1c27726af4a20dda8e63d30fbd588a1f17363275bf5ee3a0537673496f2d1b7e9b3fb3f8d32f3a6c72b10cff29070fc95b6ea404a482b9a3c2edf031'
+sha512sums=('4d9ae9297c91c616533f73c1b3f2e5a8c65f6746eca1dbb86e5cdb52e55485c29822b71ebe8183c47f0fd793e76671c71cf772b95f2c4ab7e01b18893ced950b'
+            'dff4c2d02631a68a3ade6b3fb662f38495685498ff4e7c9ca1f2ee7d82eb7f93f991d071c050e6d012fe03947d30579c95b5e27483b0096df24be7254d468de3'
             'b91c27dba2b08b69e597f9165406f68325b5d822e26d7dc5aa271a7f62b77d715cb78dfae93792b345d922ace383f6ed98cb63f096745ef37a3f7df5c4b37298')
 
 prepare() {
