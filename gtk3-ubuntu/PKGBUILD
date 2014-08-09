@@ -7,9 +7,9 @@
 # vercheck-gnome: name=gtk+, majorver=3.12
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu6
 pkgver=3.12.2
-pkgrel=5
+pkgrel=6
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -25,7 +25,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('4a8d2f52328587d73e30f363bdbbd91322dae0198f5581a2da3ebbe96ef0a0635193d2537e8fc127dc0950a24df42862233edd3a873dcbd166dc675bae849c9e'
-            'b372088cb63d93cc6e2c7b9dc7569befede1a552f5f2b412f169a9a8721c2c04e53f688df940bea0de1ecbdb00da4051ef9f5f14b5d460b3951e4a3b6ad06354'
+            '8948d74c5c61f94487a3667a226df72eeefebbee30935b6e6506c4702da050a5f99010ce4e91ecb7f38ff79bf1c00ae843a61f19a6d394b125cdef4f87198999'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -49,6 +49,7 @@ prepare() {
         echo 'gtkaboutdialog-support-showing-buttons-in-action-are.patch' >> "${srcdir}/debian/patches/series"
         echo 'message-dialog-restore-traditional-look-on-unity.patch' >> "${srcdir}/debian/patches/series"
         echo 'git-menu-binding-emit-submenu-close-after-activate.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_reftests-Improve-workaround-for-GtkGrid-bug.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
