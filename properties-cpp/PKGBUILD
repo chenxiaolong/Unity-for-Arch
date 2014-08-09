@@ -5,7 +5,7 @@
 
 pkgname=properties-cpp
 _actual_ver=0.0.1
-_extra_ver=+14.04.20140220
+_extra_ver=+14.10.20140730
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="C++11 library providing properties/signals"
@@ -15,7 +15,7 @@ license=('LGPL')
 groups=('unity')
 makedepends=('cmake')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/properties-cpp_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('4e9227615d61922c7d0a9e10106259c0921da312ed951df82908309b594c2a63fa93055a3d34474b980abd289531738a3ca353a83a4827cdb02a967aa0dfae75')
+sha512sums=('44627c548ac31abb191254246006e73bc3e8a0c489062a253c1815e3588b62eb7578d56b1ef7f5016b23ba1e09ab964354e55930b076d9c439ad5484eb7ea6d3')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
