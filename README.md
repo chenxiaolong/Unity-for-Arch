@@ -62,7 +62,6 @@ To compile from source, just build all of the packages in the following order:
 | upower-compat                    | Abstraction API for power devices          |
 | unity-settings-daemon            | Daemon handling the Unity session settings |
 | unity-control-center             | Utilities to configure the Unity desktop   |
-| metacity-ubuntu                  | Window manager for GNOME                   |
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
 | indicator-application            | Takes menus and puts them in the panel     |
