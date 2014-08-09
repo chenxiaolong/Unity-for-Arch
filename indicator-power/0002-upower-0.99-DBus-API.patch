@@ -1,80 +1,52 @@
-From b78f6b6d900979b04633b2507c2226e8ad254509 Mon Sep 17 00:00:00 2001
+From 6c3c28dcf2b75fbd702e2b01d8a60041c7fe368f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 9 Apr 2014 13:40:46 -0400
-Subject: [PATCH] upower 0.99 DBus API
+Subject: [PATCH 2/2] upower 0.99 DBus API
 
 Please be nice if the code is utter crap :) I'm a newbie with DBus
 ---
- configure.ac                   |   4 +-
- src/Makefile.am                |  19 ---
+ CMakeLists.txt                 |   1 +
+ src/CMakeLists.txt             |   4 -
  src/device-provider-upower.c   | 375 ++++++++++++++++++-----------------------
  src/device.h                   |  32 +---
  src/org.freedesktop.UPower.xml |  43 -----
- 5 files changed, 168 insertions(+), 305 deletions(-)
+ 5 files changed, 166 insertions(+), 289 deletions(-)
  delete mode 100644 src/org.freedesktop.UPower.xml
 
-diff --git a/configure.ac b/configure.ac
-index ca7e793..23e3f05 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -32,12 +32,14 @@ LT_INIT
- # Dependencies
- ###########################
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 30be771..9217676 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,6 +33,7 @@ include (CheckIncludeFile)
+ include (FindPkgConfig)
  
-+UPOWER_REQUIRED_VERSION=0.99.0
- GLIB_REQUIRED_VERSION=2.35.4
- GIO_REQUIRED_VERSION=2.26
- GIO_UNIX_REQUIRED_VERSION=2.26
- GUDEV_REQUIRED_VERSION=204
- 
--PKG_CHECK_MODULES([SERVICE_DEPS],[glib-2.0 >= $GLIB_REQUIRED_VERSION
-+PKG_CHECK_MODULES([SERVICE_DEPS],[upower-glib >= $UPOWER_REQUIRED_VERSION
-+                                  glib-2.0 >= $GLIB_REQUIRED_VERSION
-                                   gio-2.0 >= $GIO_REQUIRED_VERSION
-                                   gio-unix-2.0 >= $GIO_UNIX_REQUIRED_VERSION
-                                   gudev-1.0 >= $GUDEV_REQUIRED_VERSION
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 2461592..cab6a17 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -9,30 +9,11 @@ SHARED_CFLAGS = \
- 
- ###
- ###
--
--upower_dbus_sources = \
--  dbus-upower.c \
--  dbus-upower.h
--
--$(upower_dbus_sources): org.freedesktop.UPower.xml
--	$(AM_V_GEN) gdbus-codegen \
--	  --c-namespace Dbus \
--	  --interface-prefix org.freedesktop \
--	  --generate-c-code dbus-upower \
--          $^
--
--BUILT_SOURCES += $(upower_dbus_sources)
--CLEANFILES += $(upower_dbus_sources)
--EXTRA_DIST += org.freedesktop.UPower.xml
--
--###
--###
- ###
- 
- noinst_LIBRARIES = libindicatorpower-upower.a libindicatorpower-service.a
- 
- libindicatorpower_upower_a_SOURCES = \
--  $(upower_dbus_sources) \
-   device-provider-upower.c \
-   device-provider-upower.h
- 
+ pkg_check_modules(SERVICE_DEPS REQUIRED
++                  upower-glib>=0.99.0
+                   glib-2.0>=2.36
+                   gio-2.0>=2.36
+                   gio-unix-2.0>=2.36
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 7a4a297..66ea239 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -16,10 +16,6 @@ set(SERVICE_MANUAL_SOURCES
+ # generated sources
+ include(GdbusCodegen)
+ set(SERVICE_GENERATED_SOURCES)
+-add_gdbus_codegen_with_namespace(SERVICE_GENERATED_SOURCES dbus-upower
+-                                 org.freedesktop
+-                                 Dbus
+-                                 ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.UPower.xml)
+ add_gdbus_codegen_with_namespace(SERVICE_GENERATED_SOURCES dbus-battery
+                                  com.canonical.indicator.power
+                                  Dbus
 diff --git a/src/device-provider-upower.c b/src/device-provider-upower.c
-index 7c12beb..dcb4176 100644
+index 400a060..410fd9d 100644
 --- a/src/device-provider-upower.c
 +++ b/src/device-provider-upower.c
-@@ -19,10 +19,15 @@
- 
- #include "config.h"
+@@ -17,10 +17,15 @@
+  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
  
 -#include "dbus-upower.h"
  #include "device.h"
@@ -89,7 +61,7 @@ index 7c12beb..dcb4176 100644
  
  #define BUS_NAME "org.freedesktop.UPower"
  #define BUS_PATH "/org/freedesktop/UPower"
-@@ -35,7 +40,9 @@ struct _IndicatorPowerDeviceProviderUPowerPriv
+@@ -33,7 +38,9 @@ struct _IndicatorPowerDeviceProviderUPowerPriv
  {
    GDBusConnection * bus;
  
@@ -100,7 +72,7 @@ index 7c12beb..dcb4176 100644
    GHashTable * devices; /* dbus object path --> IndicatorPowerDevice */
    GCancellable * cancellable;
  
-@@ -66,12 +73,6 @@ G_DEFINE_TYPE_WITH_CODE (
+@@ -64,12 +71,6 @@ G_DEFINE_TYPE_WITH_CODE (
  ****  UPOWER DBUS
  ***/
  
@@ -113,7 +85,7 @@ index 7c12beb..dcb4176 100644
  static void
  emit_devices_changed (IndicatorPowerDeviceProviderUPower * self)
  {
-@@ -79,97 +80,63 @@ emit_devices_changed (IndicatorPowerDeviceProviderUPower * self)
+@@ -77,97 +78,63 @@ emit_devices_changed (IndicatorPowerDeviceProviderUPower * self)
  }
  
  static void
@@ -177,7 +149,7 @@ index 7c12beb..dcb4176 100644
 -      gdouble percentage = 0;
 -      gint64 time_to_empty = 0;
 -      gint64 time_to_full = 0;
--      time_t time;
+-      gint64 time;
 -      IndicatorPowerDevice * device;
 -      IndicatorPowerDeviceProviderUPowerPriv * p = data->self->priv;
 -      GVariant * dict = g_variant_get_child_value (response, 0);
@@ -195,7 +167,7 @@ index 7c12beb..dcb4176 100644
 -                                INDICATOR_POWER_DEVICE_STATE, (gint)state,
 -                                INDICATOR_POWER_DEVICE_OBJECT_PATH, data->path,
 -                                INDICATOR_POWER_DEVICE_PERCENTAGE, percentage,
--                                INDICATOR_POWER_DEVICE_TIME, (guint64)time,
+-                                INDICATOR_POWER_DEVICE_TIME, time,
 -                                NULL);
 -        }
 -      else
@@ -204,7 +176,7 @@ index 7c12beb..dcb4176 100644
 -                                               kind,
 -                                               percentage,
 -                                               state,
--                                               time);
+-                                               (time_t)time);
 -
 -          g_hash_table_insert (p->devices,
 -                               g_strdup (data->path),
@@ -258,7 +230,7 @@ index 7c12beb..dcb4176 100644
  }
  
  /*
-@@ -228,154 +195,85 @@ refresh_device_soon (IndicatorPowerDeviceProviderUPower * self,
+@@ -226,154 +193,85 @@ refresh_device_soon (IndicatorPowerDeviceProviderUPower * self,
  ***/
  
  static void
@@ -459,7 +431,7 @@ index 7c12beb..dcb4176 100644
      }
  }
  
-@@ -423,13 +321,23 @@ my_dispose (GObject * o)
+@@ -421,13 +319,23 @@ my_dispose (GObject * o)
        p->queued_paths_timer = 0;
      }
  
@@ -486,7 +458,7 @@ index 7c12beb..dcb4176 100644
    g_hash_table_remove_all (p->devices);
  
    g_clear_object (&p->bus);
-@@ -497,10 +405,55 @@ indicator_power_device_provider_upower_init (IndicatorPowerDeviceProviderUPower
+@@ -495,10 +403,55 @@ indicator_power_device_provider_upower_init (IndicatorPowerDeviceProviderUPower
                                             g_free,
                                             NULL);
  
@@ -547,13 +519,13 @@ index 7c12beb..dcb4176 100644
  
  /***
 diff --git a/src/device.h b/src/device.h
-index 3a10f89..1dbd1a4 100644
+index d867707..134e165 100644
 --- a/src/device.h
 +++ b/src/device.h
 @@ -25,6 +25,7 @@ License along with this library. If not, see
  #define __INDICATOR_POWER_DEVICE_H__
  
- #include <glib-object.h>
+ #include <gio/gio.h> /* GIcon */
 +#include <libupower-glib/upower.h>
  
  G_BEGIN_DECLS
@@ -647,5 +619,5 @@ index 7b73583..0000000
 -</node>
 \ No newline at end of file
 -- 
-1.9.1
+2.0.4
 
