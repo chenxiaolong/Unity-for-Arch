@@ -21,12 +21,12 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=3
+pkgrel=4
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
 # The schemas from gnome-settings-daemon are needed
 depends+=('gnome-settings-daemon')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
@@ -34,7 +34,7 @@ optdepends=('gnome-control-center: GNOME Control Center'
             'unity-control-center: Unity Control Center')
 groups=('unity')
 options=('emptydirs')
-conflicts=('compiz')
+conflicts=('compiz' 'metacity-ubuntu')
 provides=('compiz-core' 'compiz')
 install=compiz-ubuntu.install
 source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
