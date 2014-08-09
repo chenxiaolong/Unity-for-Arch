@@ -6,27 +6,27 @@
 # vercheck-launchpad: name=${pkgname#*-}
 
 pkgname=lightdm-unity-greeter
-_ubuntu_rel=0ubuntu2
-pkgver=14.10.0
-pkgrel=2
+_ubuntu_rel=0ubuntu1
+pkgver=14.10.1
+pkgrel=1
 pkgdesc="The greeter (login screen) application for Unity. It is implemented as a LightDM greeter."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-greeter"
 license=('GPL3' 'LGPL3')
 groups=('unity-extra')
-depends=('cantarell-fonts' 'gnome-doc-utils' 'ido' 'libindicator3' 'lightdm-ubuntu' 'gnome-desktop' 'libcanberra')
+depends=('cantarell-fonts' 'gnome-doc-utils' 'ido' 'libindicator3' 'lightdm-ubuntu' 'libcanberra' 'libxext')
 makedepends=('gnome-common' 'gnome-doc-utils' 'unity-settings-daemon' 'imagemagick' 'intltool' 'librsvg' 'vala')
 optdepends=("ubuntu-themes: Ubuntu's Ambiance and Radiance themes"
             "ubuntu-wallpapers: Ubuntu's default wallpapers"
             "ttf-ubuntu-font-family: Ubuntu's default font")
 install=unity-greeter.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pkgver}-${_ubuntu_rel}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pkgver}-${_ubuntu_rel}.tar.xz"
         'spawn_indicators.patch'
         'unity-greeter-indicators-start'
         '10-unity.defaults'
         '50-unity-greeter.rules'
         'logo.png')
-sha512sums=('61b0112ea33f63d6d6212f8412b98c2be30cf9bca80c21c621d5d3998d7b2b731c6af73d4caace802560f1f8bb56056a1fb0ec61e86bc1d736c01423882318c6'
+sha512sums=('5b26e92d895cb10a661c53e30e8194d019a7c57c0e1dd65e0e11abc3064bb44f678c35b318746544250e2d0f1b7bde07df48046fccbe7de9b01a9f2ce808c03b'
             '0fa758888e10bbf54bb1e6a4273dd3efc396ce8338aa1ab2e8f794a81c554b394805cf445c6179998786cd3d40d6eb0025382d1a2f028b5887c5b10957c4f34e'
             'e43c177d0255af961bbf9198868e32a1a762bb70e117f80c3c2ce4b54d23f4955cc1c4c32b68751b021116f8e6d26133b24845c03ae459c2209e8313e28a0bc6'
             'ee5d1f17dddd99ba55bbaca8aff5e8487c9b9f7e1eef570d2adb3d2519e19ef437b160414468ef85a8c1b14af1eee23c714e2086291701edfbab2f43064e2cd7'
