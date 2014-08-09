@@ -6,7 +6,7 @@
 
 pkgname=unity
 _actual_ver=7.3.0
-_extra_ver=+14.10.20140708
+_extra_ver=+14.10.20140731.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -37,8 +37,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         '10_unity.gschema.override'
         '99unity-panel-service'
         'unity-debug')
-sha512sums=('8e33752293d09cb4e9475637077ab07d45e5e76fc0d6401f9af4343a94aa0f0dbfda330b97990bfc15593589dee23a7f85e4e8688854462dfefc0b206f99acc3'
-            'be0aaa1246d23c8d61b1e16d57f99f742b1f6f9cc3e0a40380a79818187cfdd4d3f22f01c682dbcfe5df6640a1b35050dbdddc45ba0baf51f547713b68cd1f8b'
+sha512sums=('8dacd5db8fd44c95409bd4414624854777f1f1545037f38dcc9efe322688655f000f58413f624d347183248c62c1e4aec0b36b93ce6e3bf3f5eeb39dcf7f9832'
+            '29d6f463c2348378a7b1c8aaf9d62cda85e31662f851aeeb46cd5f12c51dedd98ed02e70efdddba0c970a03272a885050792650d711cc29505e84a9cbc56b18a'
             '099d0d8825202875936dd68c1aa45ebcf6aafeaedff94e2ffd3cfc29371204752c476a44a64e5f02d980d20b89452444570b75beb699c6f6e7d27b09444b1445'
             'a59c9a0f01a484264fd1707d26e65c8cf4e367c113d24b6538b62f6871dac98f72bc6074099153a07dcf9151804fdfe68d694a1e8e3fa533c7f3fc59e29ff9ec'
             '8b242209c48a884c5384ac37e8e6193295815002b49ae8f2fa3f75847e7e9f72429b2c8fcabee0fbcea0af50b876bf9f84cc1d2b8f0624f4326cbb423663d3a7'
