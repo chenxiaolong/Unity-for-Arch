@@ -38,14 +38,14 @@ conflicts=('compiz' 'metacity-ubuntu')
 provides=('compiz-core' 'compiz')
 install=compiz-ubuntu.install
 source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.11%2B14.10.20140707-0ubuntu1ppa1.tar.gz"
+        "https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.12%2B14.10.20140812-0ubuntu1ppa1.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('aa18cb4e31f82e46f6583ce5742c96f5fc8b3a27bc992a5a8fb17a9ceac191a0d3bfca0d275c7f6c5d63513cd6b0537e8c51a90a417875955b91a4264f477e8f'
+sha512sums=('c6f06c36f233a426b9b1c5198083f4f9ac69fd905fc465ddc870a258ce2cd95507f41a67020962b374c4a92a5f0ece18a2562057fd7c70e09f1e9361cf8ec7bf'
             '39711bc5545e780850652b1ec79098fdc80287f885b3ed04e4d72c266ffe1f90d5a5e6ce0a64599eae7841c149914ca124f8236a6fde5965335b976fb23fca1c'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
