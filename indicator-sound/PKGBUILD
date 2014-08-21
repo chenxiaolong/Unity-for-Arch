@@ -2,16 +2,21 @@
 # Original Maintainer: Balló György <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.04.20140401
-pkgver=${_actual_ver}daily14.04.01
-pkgrel=3
+_extra_ver=+14.10.20140611
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+epoch=1
 pkgdesc="A unified sound menu"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-sound"
 license=('GPL')
-depends=('accountsservice' 'dconf' 'libgee06' 'libnotify' 'libpulse' 'libxml2')
+depends=('accountsservice' 'dconf' 'libgee06' 'libnotify' 'libpulse' 'libxml2' 'unity-control-center')
 makedepends=('cmake' 'gobject-introspection' 'intltool' 'vala')
 groups=('unity')
 install=${pkgname}.install
@@ -19,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         'com.ubuntu.sound.gschema.xml'
         '0001_Not_a_phone.patch'
         '0002_Remove_tests.patch')
-sha512sums=('73a3c1f2febf569e77118fd3cf7e2dcf9abef818f1829b4a07a1f843b6b39b41fa41d2d74dc8086c6a712a1fa2684faa57ef7a0aa9a5f9d7b782054cb8202513'
+sha512sums=('588af80adb2683ce866b86e0acb436c99018468543b4da1e4936b2ceb0280d9e0a1e81b938e684518e6c8529e9d6ac775ab3487680281ba6ead3c4f5a9dea27d'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
             '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b')
@@ -29,8 +34,6 @@ prepare() {
 
   patch -p1 -i "${srcdir}/0001_Not_a_phone.patch"
   patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
-
-  sed -i 's/unity-control-center/gnome-control-center/g' src/service.vala
 }
 
 build() {

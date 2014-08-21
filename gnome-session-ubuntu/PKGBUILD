@@ -2,10 +2,16 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+# vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
+
 pkgname=gnome-session-ubuntu
 _ubuntu='3.9.90-0ubuntu12'
 pkgver=3.12.1
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL')
@@ -25,7 +31,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         'timeout.patch'
         'polkit-gnome-authentication-agent-1-unity.desktop')
 sha512sums=('ee435aa31e2971f4d7246c748cace17a67f5697cbf016084aea4c263b2b2c096590b50920bc70ab45fb11e1470558f9c5b8864a37ae838f4a306ddc49acc5f2b'
-            '2ebc62e49a465b985f95b3a330a4be08d3fd153def975964d7be6075b6cc9b26e1c62bfcdff12b8bef3aa6117214195cc21621c14d78550e31d2bcba9cdc6e42'
+            '366692daaabaa5e183b5190708040dc5767dc6e5fff9268d8ac6a0dfbc4840eab66cb28aa3e35409953631c45bad2d11fd60313499ea2ef6f8126e2e8f6c1071'
             '538a2cbeb99fa76ce951339216cd37e0294d3f3420f4fdb808c344b16de491a9407e9ea26875e05b56ad6d9eeda598ce0e92d5aa2bf930a48a1e4861f9770f0a'
             'bc9be93af5e57b6fff7ccfe0f69e9023be335f0d8c5a9dabdfa82201b56fa722cb67d05a3144824f7de6d521fd50d2c99e13a59ac67f8d3bf25496843b0740d5'
             '47727fa3d2bde5b633c395ca14c93864913ec78c3e83c97c3bdc5880747cfa547004a38f96f3c33dbb29e51aa659382871f034be04065ad216303d9d8574bfeb'

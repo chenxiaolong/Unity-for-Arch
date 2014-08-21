@@ -1,11 +1,15 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Contributor: Christopher Reimer <github@creimer.net>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=gtk+3.0, repo=utopic
+# vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
+# vercheck-gnome: name=gtk+, majorver=3.12
+
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1
-_ubuntu_ver=3.10.8
+_ubuntu_rel=0ubuntu6
 pkgver=3.12.2
-pkgrel=1
+pkgrel=6
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=('i686' 'x86_64')
 url="http://www.gtk.org/"
@@ -18,10 +22,10 @@ provides=("gtk3=${pkgver}")
 conflicts=('gtk3')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
         'arch_settings.ini')
 sha512sums=('4a8d2f52328587d73e30f363bdbbd91322dae0198f5581a2da3ebbe96ef0a0635193d2537e8fc127dc0950a24df42862233edd3a873dcbd166dc675bae849c9e'
-            '84fde1a8d0c1eb7b28a598f4c5e16226a1c467a7d0697d8e64c6cff6efe4f0513f8d4aad1287456eeb89fb9287648f9bbbb73b777e98df08437c47b91c2249b0'
+            '8948d74c5c61f94487a3667a226df72eeefebbee30935b6e6506c4702da050a5f99010ce4e91ecb7f38ff79bf1c00ae843a61f19a6d394b125cdef4f87198999'
             '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
 
 prepare() {
@@ -41,6 +45,11 @@ prepare() {
       # Other
         echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
         echo 'uimanager-guard-against-nested-node-updates.patch' >> "${srcdir}/debian/patches/series"
+        echo 'gtkdialog-don-t-use-csd-when-use-header-bar-is-FALSE.patch' >> "${srcdir}/debian/patches/series"
+        echo 'gtkaboutdialog-support-showing-buttons-in-action-are.patch' >> "${srcdir}/debian/patches/series"
+        echo 'message-dialog-restore-traditional-look-on-unity.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git-menu-binding-emit-submenu-close-after-activate.patch' >> "${srcdir}/debian/patches/series"
+        echo 'git_reftests-Improve-workaround-for-GtkGrid-bug.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."

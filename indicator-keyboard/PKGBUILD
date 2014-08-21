@@ -1,29 +1,30 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+
 pkgname=indicator-keyboard
 _actual_ver=0.0.0
-_extra_ver=+14.04.20140410.1
+_extra_ver=+14.10.20140620.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Indicator for switching keyboard layouts and input methods"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-keyboard"
 license=('GPL')
 groups=('unity')
-depends=('accountsservice' 'gnome-desktop' 'gucharmap' 'ibus' 'libgee06' 'libgnomekbd' 'lightdm-ubuntu')
+depends=('accountsservice' 'gnome-desktop' 'gucharmap' 'ibus' 'libgee06' 'libgnomekbd' 'lightdm-ubuntu' 'unity-control-center')
 makedepends=('gobject-introspection' 'intltool' 'vala')
 conflicts=('ibus-ubuntu')
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001-vala-build-fix.patch'
         '0002-Remove-code-depending-on-accountsservices-patch.patch'
-        '0003-Use-gnome-control-center.patch'
         '0004-Remove-unavailable-DBus-method-activate_input_source.patch'
         '0005-Remove-unavailable-DBus-method-xkeyboard-layouts.patch')
-sha512sums=('70acaa61fe8ad0c53aad7d5d5d47493b22a6e8ba88b6953725a8e66f4eac0b9a261af500f812e4f35a41f9c52ccd3cc3d898035e2e6f59258a331254a0243087'
+sha512sums=('82c9ba708a248f654984ae01cebd098905bab75308124d7cfca6f8dbb3a8f838b9239015802853237472ed5ce780a50a09a6f178afecad771baf4ba62f4ee118'
             '086277521ac258c89583d797fbc9f16facd28d5df11eae7f08997c287534ec48152e529140300c614cb9af642b8462ba96ef866fcc9cdb59128a10644aaf9979'
             '603264679325b534053da8a8e6134c54738a60d0c6b84811b3d89f128640a4b2890ad2b6d34526452d1269cf539eaa58f648b38ee846550bc6cdb41d43af68f5'
-            'a09d6df819e34f15329984b65202fc61bda5b597477bfebd08091b4630c64ce1ac1bc663d05787bc1b90a30e3b82aace33e2e34ddd1cbb2f9230e14d535a8748'
             '80b1d3ff4fe41a961b08f2f73900f5e8cabfafb26f6e03d181422e55d249a221983d1ad245283800b807b56d663b308734514830852a5c97839dfa730184eaaa'
             'f4dd44109e5512ae342322b8478a64517966877c60dc61bd3ed9f8cd864bdb5d5c6f94b3c9f01b4ace171c0b35e5ce93893b1418e7d94bdc201e5a8adfab796d')
 
@@ -31,7 +32,6 @@ prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   patch -p1 -i "${srcdir}/0001-vala-build-fix.patch"
   patch -p1 -i "${srcdir}/0002-Remove-code-depending-on-accountsservices-patch.patch"
-  patch -p1 -i "${srcdir}/0003-Use-gnome-control-center.patch"
   patch -p1 -i "${srcdir}/0004-Remove-unavailable-DBus-method-activate_input_source.patch"
   patch -p1 -i "${srcdir}/0005-Remove-unavailable-DBus-method-xkeyboard-layouts.patch"
 }
@@ -47,4 +47,6 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
+
+  rm -r "${pkgdir}"/usr/share/upstart/
 }

@@ -2,6 +2,10 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
 _extra_ver=+14.04.20140404
@@ -12,7 +16,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/indicator-appmenu"
 license=('GPL')
 groups=('unity')
-depends=('dconf' 'libappindicator3' 'libindicator3' 'libdbusmenu-gtk3' 'bamf')
+depends=('dconf' 'libappindicator3' 'libindicator3' 'libdbusmenu-gtk3' 'bamf-ubuntu')
 makedepends=('gtk-doc' 'intltool' 'vala')
 optdepends=('unity-gtk-module: support for GTK+ 2 and GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')

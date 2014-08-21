@@ -1,0 +1,25 @@
+From 75c8e0aa1aca05e2b67ca77ad012eaf41666d8f0 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 22:57:56 -0400
+Subject: [PATCH 6/7] Use upower-compat
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 700f551..ba08a32 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -131,7 +131,7 @@ PKG_CHECK_MODULES(MEDIA_PANEL, $COMMON_MODULES)
+ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+                   unity-settings-daemon x11)
+ PKG_CHECK_MODULES(NETWORK_PANEL, $COMMON_MODULES)
+-PKG_CHECK_MODULES(POWER_PANEL, $COMMON_MODULES upower-glib >= 0.9.1
++PKG_CHECK_MODULES(POWER_PANEL, $COMMON_MODULES upower-glib-compat >= 0.9.1
+                   unity-settings-daemon)
+ PKG_CHECK_MODULES(COLOR_PANEL, $COMMON_MODULES colord >= 0.1.8)
+ PKG_CHECK_MODULES(PRINTERS_PANEL, $COMMON_MODULES
+-- 
+2.0.0
+

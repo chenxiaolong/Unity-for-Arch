@@ -1,0 +1,53 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+
+pkgname=upower-compat
+pkgver=0.9.23
+pkgrel=1
+pkgdesc="Abstraction for enumerating power devices, listening to device events and querying history and statistics"
+arch=('i686' 'x86_64')
+url="http://upower.freedesktop.org"
+license=('GPL')
+depends=('systemd-tools' 'systemd' 'libusb' 'polkit' 'dbus-glib' 'libimobiledevice')
+makedepends=('intltool' 'docbook-xsl' 'gobject-introspection' 'systemd')
+backup=('etc/UPower/UPower-compat.conf')
+source=("${url}/releases/upower-${pkgver}.tar.xz"
+        '0001-Rename-to-upower-compat.patch')
+sha512sums=('526ef95e43faf61744ba2bbf80bae23bc5c8672130563a87a7f18f00d85b16e2069814ad70dd66ce6ce698037b522d78579cc2135e2af0c2a636230cfa662c6d'
+            '4e8b75d9c1d059f2c1a51f5b46477290b699af610d5bbf5a857859545e2c9bcbdb3ed60bc9d54d4448a0803216cf050a737ba98bbffbf432560a8947d6fa906a')
+
+prepare() {
+  cd "upower-${pkgver}"
+
+  patch -p1 -i "${srcdir}/0001-Rename-to-upower-compat.patch"
+
+  rm src/up-daemon-glue.h
+  rm src/up-device-glue.h
+  rm src/up-kbd-backlight-glue.h
+  rm src/up-qos-glue.h
+  rm src/up-wakeups-glue.h
+}
+
+build() {
+  cd "upower-${pkgver}"
+
+  autoreconf -vfi
+  intltoolize -f
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/${pkgname} \
+    --disable-static
+
+  make
+}
+
+package() {
+  cd "upower-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}

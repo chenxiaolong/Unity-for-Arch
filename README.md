@@ -36,6 +36,7 @@ To compile from source, just build all of the packages in the following order:
 | gtk2-ubuntu                      | GTK toolkit 2.0 with Ubuntu's patches      |
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |
 | qt4-ubuntu                       | Qt 4 toolkit with Ubuntu's patches         |
+| lib32-qt4-ubuntu                 | Qt 4 toolkit (x86-64 only)                 |
 | libdbusmenu                      | Library for passing menus over DBus        |
 | ido                              | Widgets and objects used for indicators    |
 | libindicator                     | Symbols and functions for indicators       |
@@ -47,21 +48,24 @@ To compile from source, just build all of the packages in the following order:
 | libunity                         | Library for integrating with Unity         |
 | libunity-misc                    | Differently licensed stuff for Unity       |
 | indicator-messages               | Collects messages that need a response     |
-| bamf                             | Application matching framework             |
+| bamf-ubuntu                      | Application matching framework             |
 | sni-qt                           | Turns Qt 4 tray icons into indicators      |
+| lib32-qjson                      | A lib that maps JSON to QVariant (32-bit)  |
+| lib32-libdbusmenu-qt             | Qt implementation of DBusMenu (32-bit)     |
+| lib32-sni-qt                     | Same description as sni-qt (32-bit)        |
 | libtimezonemap                   | GTK+3 timezone map widget                  |
 | gsettings-desktop-schemas-ubuntu | Shared GSettings schemas for the desktop   |
 | gnome-settings-daemon-ubuntu     | Daemon handling the GNOME session settings |
 | gnome-session-ubuntu             | GNOME Session Manager                      |
 | gnome-screensaver-ubuntu         | GNOME screen saver and locker              |
+| gnome-desktop-compat             | Common API for various GNOME modules       |
+| upower-compat                    | Abstraction API for power devices          |
+| unity-settings-daemon            | Daemon handling the Unity session settings |
 | unity-control-center             | Utilities to configure the Unity desktop   |
-| gnome-control-center-ubuntu      | Utilities to configure the GNOME desktop   |
-| metacity-ubuntu                  | Window manager for GNOME                   |
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
-| indicator-bluetooth              | Indicator to show the bluetooth status     |
 | indicator-datetime               | Indicator to show the date and time        |
 | indicator-keyboard               | Indicator to show kb. layout/input method  |
 | indicator-power                  | Indicator to show battery information      |

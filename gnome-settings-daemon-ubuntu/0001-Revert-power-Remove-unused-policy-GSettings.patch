@@ -1,0 +1,116 @@
+From 882ab0e630c6cba8d58d51cf7117643f4b78c0b8 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 22:54:29 -0400
+Subject: [PATCH] Revert "power: Remove unused policy GSettings"
+
+This reverts commit c9967937490e89a21e33603ef0426100fe0a8562.
+---
+ ...settings-daemon.plugins.power.gschema.xml.in.in | 35 ++++++++++++++++++++++
+ plugins/power/gsd-power-manager.c                  | 32 ++++++++++++++++++++
+ 2 files changed, 67 insertions(+)
+
+diff --git a/data/org.gnome.settings-daemon.plugins.power.gschema.xml.in.in b/data/org.gnome.settings-daemon.plugins.power.gschema.xml.in.in
+index 1fd60e7..b8c10e4 100644
+--- a/data/org.gnome.settings-daemon.plugins.power.gschema.xml.in.in
++++ b/data/org.gnome.settings-daemon.plugins.power.gschema.xml.in.in
+@@ -66,5 +66,40 @@
+       <summary>Battery critical low action</summary>
+       <description>The action to take when the battery is critically low.</description>
+     </key>
++    <key name="percentage-low" type="i">
++      <default>10</default>
++      <_summary>Percentage considered low</_summary>
++      <_description>The percentage of the battery when it is considered low. Only valid when use-time-for-policy is false.</_description>
++    </key>
++    <key name="percentage-critical" type="i">
++      <default>3</default>
++      <_summary>Percentage considered critical</_summary>
++      <_description>The percentage of the battery when it is considered critical. Only valid when use-time-for-policy is false.</_description>
++    </key>
++    <key name="percentage-action" type="i">
++      <default>2</default>
++      <_summary>Percentage action is taken</_summary>
++      <_description>The percentage of the battery when the critical action is performed. Only valid when use-time-for-policy is false.</_description>
++    </key>
++    <key name="time-low" type="i">
++      <default>1200</default>
++      <_summary>The time remaining when low</_summary>
++      <_description>The time remaining in seconds of the battery when it is considered low. Only valid when use-time-for-policy is true.</_description>
++    </key>
++    <key name="time-critical" type="i">
++      <default>300</default>
++      <_summary>The time remaining when critical</_summary>
++      <_description>The time remaining in seconds of the battery when it is considered critical. Only valid when use-time-for-policy is true.</_description>
++    </key>
++    <key name="time-action" type="i">
++      <default>120</default>
++      <_summary>The time remaining when action is taken</_summary>
++      <_description>The time remaining in seconds of the battery when critical action is taken. Only valid when use-time-for-policy is true.</_description>
++    </key>
++    <key name="use-time-for-policy" type="b">
++      <default>true</default>
++      <_summary>Whether to use time-based notifications</_summary>
++      <_description>If time based notifications should be used. If set to false, then the percentage change is used instead, which may fix a broken ACPI BIOS.</_description>
++    </key>
+   </schema>
+ </schemalist>
+diff --git a/plugins/power/gsd-power-manager.c b/plugins/power/gsd-power-manager.c
+index 7a50ef3..8c981c8 100644
+--- a/plugins/power/gsd-power-manager.c
++++ b/plugins/power/gsd-power-manager.c
+@@ -125,6 +125,14 @@ struct GsdPowerManagerPrivate
+         GSettings               *settings_screensaver;
+         GSettings               *settings_xrandr;
+ 
++        gboolean                 use_time_primary;
++        guint                    action_percentage;
++        guint                    action_time;
++        guint                    critical_percentage;
++        guint                    critical_time;
++        guint                    low_percentage;
++        guint                    low_time;
++
+         /* Screensaver */
+         GsdScreenSaver          *screensaver_proxy;
+         gboolean                 screensaver_active;
+@@ -2010,6 +2018,10 @@ engine_settings_key_changed_cb (GSettings *settings,
+                                 const gchar *key,
+                                 GsdPowerManager *manager)
+ {
++        if (g_strcmp0 (key, "use-time-for-policy") == 0) {
++                manager->priv->use_time_primary = g_settings_get_boolean (settings, key);
++                return;
++        }
+         if (g_str_has_prefix (key, "sleep-inactive") ||
+             g_str_equal (key, "idle-delay") ||
+             g_str_equal (key, "idle-dim")) {
+@@ -2329,6 +2341,26 @@ on_rr_screen_acquired (GObject      *object,
+         g_signal_connect (manager->priv->device_composite, "notify::warning-level",
+                           G_CALLBACK (engine_device_warning_changed_cb), manager);
+ 
++        /* get percentage policy */
++        manager->priv->low_percentage = g_settings_get_int (manager->priv->settings,
++                                                            "percentage-low");
++        manager->priv->critical_percentage = g_settings_get_int (manager->priv->settings,
++                                                                 "percentage-critical");
++        manager->priv->action_percentage = g_settings_get_int (manager->priv->settings,
++                                                               "percentage-action");
++
++        /* get time policy */
++        manager->priv->low_time = g_settings_get_int (manager->priv->settings,
++                                                      "time-low");
++        manager->priv->critical_time = g_settings_get_int (manager->priv->settings,
++                                                           "time-critical");
++        manager->priv->action_time = g_settings_get_int (manager->priv->settings,
++                                                         "time-action");
++
++        /* we can disable this if the time remaining is inaccurate or just plain wrong */
++        manager->priv->use_time_primary = g_settings_get_boolean (manager->priv->settings,
++                                                                  "use-time-for-policy");
++
+         /* create IDLETIME watcher */
+         manager->priv->idle_monitor = gnome_idle_monitor_new ();
+ 
+-- 
+2.0.0
+

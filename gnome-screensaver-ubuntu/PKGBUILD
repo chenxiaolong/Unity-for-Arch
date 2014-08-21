@@ -2,6 +2,11 @@
 # Original Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Jan de Groot <jgc@archlinux.org>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-archlinux: name=${pkgname%-*}, repo=community, arch=x86_64
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.6
+
 pkgname=gnome-screensaver-ubuntu
 pkgver=3.6.1
 _ubuntu_rel=0ubuntu13

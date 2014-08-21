@@ -2,6 +2,10 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=libindicate-qt
 _ubuntu_rel=5
 pkgver=0.2.5.91.${_ubuntu_rel}

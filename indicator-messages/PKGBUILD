@@ -2,9 +2,13 @@
 # Original Maintainer: György Balló <ballogy@freestart.hu>
 # Contributor: thn81 <root@scrat>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+14.04.20140410
+_extra_ver=+14.10.20140725
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A place on the user's desktop that collects messages that need a response"
@@ -17,7 +21,7 @@ groups=('unity')
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('33d23c3b17421858e277f417e6f5e8185d557448e515c626a339f1855cbaf5ad14d8ab19d16816aa602f49a385ba411be7d34ef37f116343ccfe52df3b28f2db'
+sha512sums=('faa3db687fb83a801749a037a7b222a64c6b70d7e92fcd86b3e61fd67e23059329d04a4b295504a4fa5c22476a690468a3aee7f7a887926c081bff4fd252702f'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 prepare() {

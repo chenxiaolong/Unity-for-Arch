@@ -1,9 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=indicator-printers
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
-_extra_ver=+14.04.20140527
+_extra_ver=+14.10.20140527
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -16,8 +20,8 @@ depends=('cups' 'libdbusmenu-glib' 'libdbusmenu-gtk3' 'libindicator3')
 makedepends=('intltool' 'python2')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('11537316104b84a04e7856a09d129a34c655c3dffd7456e4bb6be6c074135ff06a8010c7ffe83b50294ebdef7b55d3b93faccd58693fcd306972fd1e54d0ff67'
-            '984286eefe7711a722dc150eaad697fd23b7fb6a9a9c681a156f4a1651d2beb7588aeeb317cdd0e3a1f88ca3cdbfd1d7a6c035fa0ee01aea9c05b019924412f8')
+sha512sums=('c62e329678403b22f568e1731c2ad13742c67c68ed71267f8dac5fb166c5ab8d7fbf97ccda1ad490d78bf4e07ad67dc468f949cabdab614909d80e8217a933da'
+            'd640a91dfba30331c7ede519fd556c33dd5c10c4303eb847eb3d8274e7ded70650f9e0a774de495a63d7e71cdc652dfe45c6dd5848a32c5c0e5193573c96b420')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"

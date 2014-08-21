@@ -1,7 +1,7 @@
-From 7b62ae260a404a0da267a9b7026bdb750931d5a0 Mon Sep 17 00:00:00 2001
+From 760dda249aa63207b3b1dfa39a7464d071c9fbe5 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 3/6] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 3/7] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -12,7 +12,7 @@ Subject: [PATCH 3/6] Revert r3134: Remove Systray Whitelist
  5 files changed, 44 insertions(+), 81 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index b1d2445..74f6562 100644
+index b1d2445..9fb8c3d 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
 @@ -109,6 +109,13 @@
@@ -21,7 +21,7 @@ index b1d2445..74f6562 100644
    </schema>
 +  <schema path="/com/canonical/unity/panel/" id="com.canonical.Unity.Panel" gettext-domain="unity">
 +    <key type="as" name="systray-whitelist">
-+      <default>[ 'JavaEmbeddedFrame', 'Wine', 'Update-notifier', 'ibus-ui-gtk' ]</default>
++      <default>[ 'JavaEmbeddedFrame', 'Wine', 'Update-notifier' ]</default>
 +      <summary>List of client names, resource classes or wm classes to allow in the Panel's systray implementation.</summary>
 +      <description>"" (empty) will not allow any tray icons, "all" will allow all tray icons, otherwise there will be an attempt to match each icon to a value here.</description>
 +    </key>
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-1.9.2
+2.0.0
 

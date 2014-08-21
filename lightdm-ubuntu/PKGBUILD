@@ -4,9 +4,13 @@
 # Qt libraries and recommend the installation of those respective tookits using
 # optdepends.
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-launchpad: name=${pkgname%-*}
+
 pkgname=lightdm-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=1.11.2
+_ubuntu_rel=0ubuntu1
+pkgver=1.11.5
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
@@ -43,7 +47,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         'lightdm.rules'
         '0001-guest-account-Use-cross-distro-commands.patch'
         '0002-guest-account-Add-default-GSettings-support.patch')
-sha512sums=('a559f11c252496a0672d80122ae3d111e35599c850a7a0109538a8753bf34c2a3a0d1859ed52da4a87293fc3ed3f0076f7838d97a9882efec8138490d88a55ab'
+sha512sums=('1450bb6503a871a935754670024360730875657edb9fbba2694f135be4e24a229714e405642cb5866a83036798e54ccc0a32e4fe8b2688a332903f5aebe7f425'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -51,8 +55,8 @@ sha512sums=('a559f11c252496a0672d80122ae3d111e35599c850a7a0109538a8753bf34c2a3a0
             '6f59d97515b37d53fb4f56de0f65994710e02c197c6d4c096aa7cdb9fe518d29223960018ae4ad8003056fed3210f47f3aa459c85b8efca80089f2046196892c'
             '3b482f7e551df20a5c5d9331a420275d1dad5bb6aad287247baea82dc40dc31dca22db4da180fbb950865e37cf94f1737fa1ee7ec2f5233540f82f2f570a408b'
             '8d6aa12c4d129c25e56ecf2904db4e294d46631d11bd8bec2f20a76c871ba758094abb24616d3d2038a684fbb736ee61d1f80697d525d62c4dc68113e101194f'
-            '989446c266b0cd531159128e20f1e24c62547eefa05c7c01eb4260941b096bf78806d3d6b505b69bbe30455d89ed3ce298473286b2f240138bb1d2f69e73f1ad'
-            '1d263269cca582d37d1dddbe20e3eb71aca732f8b21c61f726904ed8b284c7a5115f5fe66aa141ca6373ad41e8ccbf30cbca85f82c15e1e96331d596afc6427b')
+            '445555d42cabc5f61343582b2c3bac5c0447131f84a0b01876b8bbff10071394fd78eaff2c0fc10be1b8ac74bd2385af113f1e85a78b6a43ec064c5d3df8e578'
+            '26c0e6ac74b2739b8a83286dc0d02b9935d2a84c8e7ee49d0160ebdda6b5dc2d0543f03b0541bf2022559165ab35a283dfc09add964282bd2eebff50324f74ce')
 
 prepare() {
   cd "${srcdir}/lightdm-${pkgver}"
@@ -129,7 +133,7 @@ package() {
 
   # Install binaries and scripts
   install -dm755 "${pkgdir}"/usr/bin/
-  install -m755 debian/guest-account "${pkgdir}"/usr/bin/
+  install -m755 debian/guest-account.sh "${pkgdir}"/usr/bin/guest-account
   install -m755 debian/lightdm-session "${pkgdir}"/usr/bin/
   install -m755 debian/lightdm-greeter-session "${pkgdir}"/usr/lib/lightdm/
   chmod +x "${pkgdir}"/usr/lib/lightdm/lightdm-greeter-session

@@ -2,10 +2,15 @@
 # Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=qt4-x11, repo=utopic
+# vercheck-archlinux: name=qt4, repo=extra, arch=x86_64
+
 pkgname=qt4-ubuntu
-_ubuntu='4.8.5+git192-g085f851+dfsg-2ubuntu4'
-pkgver=4.8.5
-pkgrel=101
+_ubuntu_rel='1ubuntu2'
+_ubuntu_ver='4.8.6+dfsg'
+pkgver=4.8.6
+pkgrel=1
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL' 'FDL' 'custom')
@@ -31,69 +36,37 @@ conflicts=('qt' 'qt4' 'qt-ubuntu')
 options=('staticlibs') # libQtUiTools builds as static only
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://download.qt-project.org/official_releases/qt/4.8/${pkgver}/${_pkgfqn}.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_ubuntu}.debian.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.gz"
         'qtconfig-qt4.desktop' 'assistant-qt4.desktop' 'designer-qt4.desktop'
         'linguist-qt4.desktop' 'qdbusviewer-qt4.desktop'
         'improve-cups-support.patch'
-        'qtbug-31579.patch' 'qtbug-32534.patch' 'qtbug-32908.patch'
-        'libmng2.patch' 'CVE-2013-4549.patch'
+        'CVE-2014-0190.patch'
         'kubuntu_14_systemtrayicon.diff'
-        'kubuntu_28_xi2.1.patch'
-        'kubuntu_30_translucent_drag_pixmap.diff'
-        'kubuntu_31_unity_workarea_atom.diff'
-        'kubuntu_93_disable_overlay_scrollbars.diff'
-        'kubuntu_94_xinput_valuators_fix.diff'
-        'kubuntu_95_qt_disable_bounce.diff'
-        'kubuntu_glib-honor-ExcludeSocketNotifiers-flag.diff')
-sha512sums=('47118d1aa30c59a1eb74e805023cd060edcb35bb0944fe6651889254b75acbd4b83700ba92a9bc215663474d26330cb44f084098c380fac9270742659e5864eb'
-            'cbf7bf4b35d90f1b95b1ae8c62004b0b00e2502b3f5d9d4b45738c63bb6a0c3a55d0a3ae808c6b2dbd7116733dd96f87ce293435c34f8601243178805ddc665a'
+        'kubuntu_93_disable_overlay_scrollbars.diff')
+sha512sums=('c2d07c3cf9d687cb9b93e337c89df3f0055bd02bc8aa5ecd55d3ffb238b31a4308aeabc3c51a4f94ac76a1b00796f047513d02e427ed93ae8dd99f836fff7692'
+            '7f403a580462f32b002d43d9b9c6e9d365c0f98c131a70806e32e865d9a7bfd97064234258299a99c2675d50fba8efb78e4066429b6faefae820e307ad5f42a6'
             'fbcc1ec9ca04b93941c37d02326f33f3a84cb7630ca83f234845eebdb1875676aa8b27553981d8d42b2d5fcf227c7423228f704efc74a5df25a9ae05c5385fda'
             'c08b74d70e557d968672ad3251c70e23d0447f30f5d62bc63f6165cbb8c372e63b96b1e61e8888e48bc4f589705c95951f9e05723cf998963ddb7585b0f2e246'
             '29b3f2b05e27b2c8db3967bb426dfd2ee96e0715e284fc524d58c33fff55756bbb327ba166af943ce5e3fe825b2a3fc44f85c96d5117d25036b3606d7a49047d'
             'fbe3e343678b6cf7f94c97d5fb151028afdfa2fd27a19cbd583da999782f5a71c61a9282fb6284271290b3f5370e6b214b2edd1c05ee1e09d6345389b98be961'
             '5700f5f2187b8c2fee11798463a2dd1f88fb1f90ab02a787fb7cb869f073f69c8380126013094864eae203fc246397a1bb7e354715f5873bd170166afdf33c27'
             '4a8f828c79bde81ab1e39c9eaba4ef553582d85b62d6d182dda02820c4c8e046de6a25cc77d228955ed37fbc5b55f697a0a464af0bb3e171849851639e9ef4ee'
-            'e18ce74955f495acda7c2c2192d968e0230f23a3ea096a050c92f5472de80e4191e75347af6825bd71dc4f9f59122d7620ddadef51d59e4cddcf4a7111a53893'
-            '9dfdd2df15ca333f99f33d372505a1b9c144af5ce62022dc4918f6c940acfd4bf670b5d6a136ca7765d83cc2aef87fd6903726c50d6817ac670f023aea214093'
-            '1370dffd609aa88c8341b820d7d6f794ac1cb981d15b7c3c933b3c63bf60c93d27f9224c64fbc6a5dd9811f5737d7549a788cd6424dac1d6c76c8428b7bc5e30'
-            '0c0ee5356f9ccaac6bfb4e7502c3fac87bd228ae493b354523f3021222f3b6d209de68b9dcce29a4e638d46485859af6aa498b8616a226a5537dab4f8e4795ef'
-            'ad4356856e721a3bb76ce48e369432e550df832adb11dce472db1c44dd6e7824ba5085a03748751a852b1342ba9c62c48323dcc684e0b86ce7b199466a45dd37'
-            'ab5ba9e1f72f19b8a83e64d012465918477285bf5d550f0cee09aafe63a16f64fa9d463d4ff4e10ce0619b4752f91b2adc23815fb4565cb11f6b3bd68cdb5603'
-            '1f899598142c50c40546cd05958abab5e72b5b361e5519556ae8849bf53dcf3e650e6bacfc4066e81607fc07916adc812a19d2d4ada2d2eac813d82fced89e67'
-            '32ce5a74bfe92b103bd67bff87eedb60cc960fd3daa4300a69f7b53adcb11fc2c08b22bb9e83cdb1fdc08810c9d78c304e14b17e7270a3bd34bc72a92b079a0a'
-            'bc3ba4e6421db8412aed81e3765a817e77cdcbf56abbbe65589d1a98f83e118332fb05045d8ecd2c5c66740d181bfdfcc472d493a33b67dfc73f06b79ee50ed7'
-            '822312858826fa4195233d6acb140c51e91fefb07fd51fd4bb21e404c67a628c3b61ca5a41f1199ac55190b85fc58a2b584b29b32d30662db3b9df8e3f3be133'
-            'db4906eb5d389d8d7cb6266f453b9a7a1396857ae7ba6860e638477bffce34c538e0421c713db90f0c141eb99d85d36f12179c65f961a490ee82eeb70299c417'
-            '818e81fa57fd7e6e77b367f27788848fca4cce1d832f9d45b895ae2e10556fbe72e1933844ce0a81c5892ab381527d5c9e66f89688ae43c037b6397ce4297c30'
-            'af516f311bff24442e0add0513231aabb25de73bd34a1d17fee2f0efb223bd5f24d5e8d9e7b80d2012f3fec89a1d02c1eadbb8f176311a139a79f90ad671a43d')
+            '4bbb356b46027d6ba01ba25d11b5e445916c0d1102b3d9c56afb03a74636ef06c3f07bad2c84b9175663d8807a03cb2c6332fdf735ccfbf96870210510a9cef2'
+            'c987f478e6da84e26ef5085c2a354cf085227e75af84d24b1497cfb046cfed89858bfed21850cf9dc0f5df2b66f9eed3ca8955a8c9df81cdddc9b98257231319'
+            '822312858826fa4195233d6acb140c51e91fefb07fd51fd4bb21e404c67a628c3b61ca5a41f1199ac55190b85fc58a2b584b29b32d30662db3b9df8e3f3be133')
 
 prepare() {
   cd ${_pkgfqn}
 
   # Apply Ubuntu patches
   patch -p1 -i "${srcdir}"/kubuntu_14_systemtrayicon.diff
-  patch -p1 -i "${srcdir}"/kubuntu_28_xi2.1.patch
-  patch -p1 -i "${srcdir}"/kubuntu_30_translucent_drag_pixmap.diff
-  patch -p1 -i "${srcdir}"/kubuntu_31_unity_workarea_atom.diff
   patch -p1 -i "${srcdir}"/kubuntu_93_disable_overlay_scrollbars.diff
-  patch -p1 -i "${srcdir}"/kubuntu_94_xinput_valuators_fix.diff
-  patch -p1 -i "${srcdir}"/kubuntu_95_qt_disable_bounce.diff
-  patch -p1 -i "${srcdir}"/kubuntu_glib-honor-ExcludeSocketNotifiers-flag.diff
 
   # (FS#28381) (KDEBUG#180051)
   patch -p1 -i "${srcdir}"/improve-cups-support.patch
 
-  # (FS#36028) (QTBUG#31579)
-  patch -p1 -i "${srcdir}"/qtbug-31579.patch
-  # (FS#36394) (QTBUG#32534)
-  patch -p1 -i "${srcdir}"/qtbug-32534.patch
-  # (FS#36947) (QTBUG#32908)
-  patch -p1 -i "${srcdir}"/qtbug-32908.patch
-
-  # (FS#38081)
-  patch -p1 -i "${srcdir}"/CVE-2013-4549.patch
-  # (QTBUG#34894)
-  patch -p1 -i "${srcdir}"/libmng2.patch
+  # QTBUG#38367
+  patch -p1 -i "${srcdir}"/CVE-2014-0190.patch
 
   sed -i "s|-O2|${CXXFLAGS}|" mkspecs/common/{g++,gcc}-base.conf
   sed -i "/^QMAKE_LFLAGS_RPATH/s| -Wl,-rpath,||g" mkspecs/common/gcc-base-unix.conf

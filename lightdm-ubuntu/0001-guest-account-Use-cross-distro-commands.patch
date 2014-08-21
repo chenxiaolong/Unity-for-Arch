@@ -1,17 +1,17 @@
-From 978b54a62fff02c7adfc8794db75969869fb291b Mon Sep 17 00:00:00 2001
+From 6fe2d933bfd3e47fb2a468d8769c5284176712a7 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 13 Apr 2014 01:01:44 -0400
 Subject: [PATCH 1/2] guest-account: Use cross-distro commands
 
 ---
- debian/guest-account | 45 +++++++++++++++++++++++++++++++++++----------
+ debian/guest-account.sh | 45 +++++++++++++++++++++++++++++++++++----------
  1 file changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/debian/guest-account b/debian/guest-account
-index 47cfe70..77312ba 100644
---- a/debian/guest-account
-+++ b/debian/guest-account
-@@ -10,7 +10,12 @@
+diff --git a/debian/guest-account.sh b/debian/guest-account.sh
+index 6090898..e5b0d6d 100644
+--- a/debian/guest-account.sh
++++ b/debian/guest-account.sh
+@@ -20,7 +20,12 @@ fi
  
  add_account ()
  {
@@ -25,11 +25,11 @@ index 47cfe70..77312ba 100644
    USER=`echo $HOME | sed 's/\(.*\)guest/guest/'`
  
    # if $USER already exists, it must be a locked system account with no existing
-@@ -36,7 +41,21 @@ add_account ()
+@@ -46,7 +51,21 @@ add_account ()
      fi
    else
      # does not exist, so create it
--    adduser --system --no-create-home --home / --gecos "Guest" --group --shell /bin/bash $USER || {
+-    adduser --system --no-create-home --home / --gecos $(gettext "Guest") --group --shell /bin/bash $USER || {
 +    # Arch Linux modification: Ubuntu/Debian uses their own adduser package,
 +    # which works differently from the own provided by the shadow package.
 +    # Instead, use useradd, which works in any distro.
@@ -43,12 +43,12 @@ index 47cfe70..77312ba 100644
 +    # --group          -> --user-group
 +    # --shell          -> --shell
 +    #
-+    #adduser --system --no-create-home --home / --gecos "Guest" --group --shell /bin/bash $USER || {
-+    useradd --system --no-create-home --home-dir / --comment "Guest" --user-group --shell /bin/bash $USER || {
++    #adduser --system --no-create-home --home / --gecos $(gettext "Guest") --group --shell /bin/bash $USER || {
++    useradd --system --no-create-home --home-dir / --comment $(gettext "Guest") --user-group --shell /bin/bash $USER || {
          umount "$HOME"
          rm -rf "$HOME"
          exit 1
-@@ -115,10 +134,15 @@ remove_account ()
+@@ -125,10 +144,15 @@ remove_account ()
      echo "Error: invalid user $USER"
      exit 1
    }
@@ -66,7 +66,7 @@ index 47cfe70..77312ba 100644
      echo "Error: user $USER is not a system user."
      exit 1
    fi
-@@ -138,17 +162,18 @@ remove_account ()
+@@ -148,17 +172,18 @@ remove_account ()
    rm -rf "$HOME"
  
    # remove leftovers in /tmp
@@ -92,5 +92,5 @@ index 47cfe70..77312ba 100644
  
  case "$1" in
 -- 
-1.9.2
+2.0.4
 

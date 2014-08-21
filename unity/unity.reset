@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Reset all of Unity's settings for the current user
+
+echo "This will reset all of Unity's settings. Continue only if you know exactly"
+echo "what is being done. This WILL reset the settings for the launcher, dash,"
+echo "indicators, etc."
+echo ""
+echo "This program will:"
+echo "  1. Switch to the metacity window manager"
+echo "  2. Reset Unity's dconf/GSettings settings"
+echo
+read -p "Continue (y/N) " PROCEED
+
+if [ "x${PROCEED}" == "xy" ] || [ "x${PROCEED}" == "xY" ]; then
+  echo
+
+  echo -n "Switching to the metacity window manager..."
+  metacity --replace &>/dev/null &
+  echo "DONE"
+
+  echo -n "Killing indicator services..."
+  for i in indicator-application-service \
+           indicator-bluetooth-service \
+           indicator-datetime-service \
+           indicator-keyboard-service \
+           indicator-messages-service \
+           indicator-power-service \
+           indicator-printers-service \
+           indicator-session-service \
+           indicator-sound-service; do
+    killall ${i} &>/dev/null
+  done
+  echo "DONE"
+
+  echo -n "Waiting for Compiz/Unity to exit..."
+  while $(pgrep compiz$ &>/dev/null); do
+    sleep 0.1
+  done
+  echo "DONE"
+
+  echo -n "Resetting Unity's dconf/GSettings settings..."
+  dconf reset -f /com/canonical/indicator/
+  dconf reset -f /com/canonical/unity/
+  dconf reset -f /desktop/unity/
+  echo "DONE"
+
+  echo
+  echo "Please log out and log back in. To log out, run:"
+  echo "  gnome-session-quit --logout"
+  echo ""
+  echo "If that fails, try:"
+  echo "  killall -s 9 gnome-session"
+fi

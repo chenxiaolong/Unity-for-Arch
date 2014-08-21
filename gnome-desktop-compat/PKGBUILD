@@ -1,0 +1,71 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jan@archlinux.org>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}3, repo=utopic
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.8
+
+pkgname=gnome-desktop-compat
+_ubuntu_rel=0ubuntu3
+pkgver=3.8.4
+pkgrel=1
+pkgdesc="Library with common API for various GNOME modules"
+url="http://www.gnome.org"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL')
+depends=('gsettings-desktop-schemas' 'gtk3' 'libxkbfile' 'xkeyboard-config' 'iso-codes')
+makedepends=('gnome-common' 'intltool' 'gobject-introspection' 'itstool')
+groups=('gnome')
+source=("http://ftp.gnome.org/pub/gnome/sources/gnome-desktop/3.8/gnome-desktop-${pkgver}.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-desktop3_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
+        '0001-Rename-to-gnome-desktop-compat.patch')
+sha512sums=('e5932bd73f0be85b79dc63af1766633c56044078313ea764a7faabaaabb52af8ffcc59361a0d65509626fa83c6afcc2ac1fb4e64b49ad06d220994dcfc10c31d'
+            'c236c867c25ff2b09cddaf6c4cd9a14a9ccf15c98e8c34d770002566a76b8166dc0c87eeacfdb8fb75d0fdc5eb3c43ee52fab3070466c51af42261b706de7fa1'
+            'cbd48180b0bd42302033b8a354e1f25d906e1ddd61e5b4036d8b5168fde8346451385b542019972d8142a95019cc14861492ba776d8b131901dd0d4d01c8b998')
+
+prepare() {
+  cd "gnome-desktop-${pkgver}"
+
+  patch -p1 -i "${srcdir}"/0001-Rename-to-gnome-desktop-compat.patch
+
+  patches="${srcdir}/debian/patches"
+
+  sed -i '/ubuntu_language_list_from_SUPPORTED.patch/d' "${patches}"/series
+  sed -i '/ubuntu_language.patch/d' "${patches}"/series
+
+  sed -i 's/gnome-desktop-3/gnome-desktop-compat-3/g' \
+    "${patches}"/02_refuse_to_break_GL_compositors.patch
+
+  for i in $(grep -v '#' "${patches}"/series); do
+    msg "Applying ${i}"
+    patch -p1 -i "${patches}/${i}"
+  done
+
+  sed -ri '/SUBDIRS/s/\sdocs\s/ /' Makefile.am
+}
+
+build() {
+  cd "gnome-desktop-${pkgver}"
+
+  autoreconf -vfi
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/${pkgname} \
+    --disable-static \
+    --disable-gtk-doc \
+    --disable-gtk-doc-html \
+    --disable-desktop-docs \
+    --with-gnome-distributor="Arch Linux"
+
+  make
+}
+
+package() {
+  cd "gnome-desktop-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  rm "${pkgdir}/usr/share/gnome/gnome-version.xml"
+}

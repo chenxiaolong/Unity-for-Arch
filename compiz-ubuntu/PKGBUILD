@@ -2,14 +2,18 @@
 
 # Some comments are taken from the Ubuntu packaging files
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-launchpad: name=${pkgname%-*}
+
 pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.11
-_extra_ver=+14.04.20140423
+_extra_ver=+14.10.20140707
 
 # AUR Fix
-pkgver=0.9.11.14.04.20140423
+pkgver=0.9.11.14.10.20140707
 realver=${_actual_ver}${_extra_ver/+/.}
 
 if [ "${pkgver}" != "${realver}" ]; then
@@ -17,12 +21,12 @@ if [ "${pkgver}" != "${realver}" ]; then
   exit 1
 fi
 
-pkgrel=1
+pkgrel=4
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=('i686' 'x86_64')
 license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity-ubuntu' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
 # The schemas from gnome-settings-daemon are needed
 depends+=('gnome-settings-daemon')
 makedepends=('boost' 'cmake' 'intltool' 'libwnck')
@@ -30,26 +34,28 @@ optdepends=('gnome-control-center: GNOME Control Center'
             'unity-control-center: Unity Control Center')
 groups=('unity')
 options=('emptydirs')
-conflicts=('compiz')
+conflicts=('compiz' 'metacity-ubuntu')
 provides=('compiz-core' 'compiz')
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.11%2B14.10.20140707-0ubuntu1ppa1.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         'compiz.reset'
         '0002_Fix_cmake_install_dir.patch'
         '0003_Fix_python_install_command.patch'
         '0004_Use_python2.patch'
         '0005_Disable_Werror.patch')
-sha512sums=('17abde38a1432300b3b68e6fd817072941c93ad05729ca850e55badbf0ea33918f7af0cc6cc9094d7005b1c1d25431eeed09b3c8a8722d21ec362894518dc88c'
-            '9c29f38a7c7c7537275ee12d57573bff9c2fcdbdead1f1d29bb624135e79e5e52ddb7a128f506de9299db2750a6dcdfbe6b14db4773d52707e9f1626514189e5'
-            '4fd96e13e6df21977a04a00a2bc440683a80d11d23c8e7dd9ad357ce833e8c18e2445998f514ef4ae9cdf05872bbbed6a46deec4eaf869ee414b6d75c760aa4d'
+sha512sums=('aa18cb4e31f82e46f6583ce5742c96f5fc8b3a27bc992a5a8fb17a9ceac191a0d3bfca0d275c7f6c5d63513cd6b0537e8c51a90a417875955b91a4264f477e8f'
+            'c880584ccb9ae455b14ea9ea1dbeeca72fb91d0dd3d1d9761e115a94a164ad1daf452f88a66aff21341cf0f646ac43db971e2346e568f7f5bc5d3be0976a4b50'
+            '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
             '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
             'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 prepare() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+  cd compiz.utopic
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
@@ -66,15 +72,19 @@ prepare() {
   patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
 
   # Apply Ubuntu patches
-  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+#  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+
+  sed -i '/100_workaround_virtualbox_hang.patch/d' debian/patches/series
 
   for i in $(grep -v '#' debian/patches/series); do
+    msg "Applying ${i}"
     patch -p1 -i "debian/patches/${i}"
   done
 }
 
 build() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
+  cd compiz.utopic
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
@@ -110,7 +120,8 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
+#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
+  cd compiz.utopic/build
   make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
