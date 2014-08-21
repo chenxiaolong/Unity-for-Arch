@@ -9,7 +9,7 @@ _actual_ver=7.3.0
 _extra_ver=+14.10.20140731.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
@@ -36,7 +36,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         'launcher_bfb.png'
         '10_unity.gschema.override'
         '99unity-panel-service'
-        'unity-debug')
+        'unity-debug'
+        'run_this_if_unity_is_on_fire.py')
 sha512sums=('8dacd5db8fd44c95409bd4414624854777f1f1545037f38dcc9efe322688655f000f58413f624d347183248c62c1e4aec0b36b93ce6e3bf3f5eeb39dcf7f9832'
             '29d6f463c2348378a7b1c8aaf9d62cda85e31662f851aeeb46cd5f12c51dedd98ed02e70efdddba0c970a03272a885050792650d711cc29505e84a9cbc56b18a'
             '099d0d8825202875936dd68c1aa45ebcf6aafeaedff94e2ffd3cfc29371204752c476a44a64e5f02d980d20b89452444570b75beb699c6f6e7d27b09444b1445'
@@ -50,7 +51,8 @@ sha512sums=('8dacd5db8fd44c95409bd4414624854777f1f1545037f38dcc9efe322688655f000
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
-            'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5')
+            'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
+            'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
@@ -147,6 +149,9 @@ package() {
   
   # Fix insecure rpath in libunityshell.so
   chrpath --replace /usr/lib/libunity:/usr/lib/compiz "$pkgdir/usr/lib/compiz/libunityshell.so"
+
+  # FIRE!
+  install -m755 "${srcdir}/run_this_if_unity_is_on_fire.py" "${pkgdir}/usr/bin/"
 }
 
 # vim:set ts=2 sw=2 et:
