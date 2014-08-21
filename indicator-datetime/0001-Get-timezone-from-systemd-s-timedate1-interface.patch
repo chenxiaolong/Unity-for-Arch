@@ -1,4 +1,4 @@
-From 37298ab5f9d201207a5c19e8e8b09f86d28a94e3 Mon Sep 17 00:00:00 2001
+From 4485a84dc3de462032a78dd27c415a03ff076c1c Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 6 Apr 2014 22:26:15 -0400
 Subject: [PATCH] Get timezone from systemd's timedate1 interface
@@ -20,7 +20,7 @@ Subject: [PATCH] Get timezone from systemd's timedate1 interface
  create mode 100644 src/timezone-systemd.cpp
 
 diff --git a/data/com.canonical.indicator.datetime.gschema.xml.in b/data/com.canonical.indicator.datetime.gschema.xml.in
-index 62b42c1..149c7ea 100644
+index 4e4acd8..ca673e1 100644
 --- a/data/com.canonical.indicator.datetime.gschema.xml.in
 +++ b/data/com.canonical.indicator.datetime.gschema.xml.in
 @@ -98,7 +98,7 @@
@@ -133,7 +133,7 @@ index ca4ef31..0d026f6 100644
      std::shared_ptr<GeoclueTimezone> m_geo;
  };
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index af09c71..5dc339e 100644
+index e583334..8684ecb 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -4,6 +4,21 @@ set (SERVICE_EXEC "indicator-datetime-service")
@@ -158,8 +158,8 @@ index af09c71..5dc339e 100644
  # handwritten sources
  set (SERVICE_C_SOURCES
       utils.c)
-@@ -29,8 +44,11 @@ set (SERVICE_CXX_SOURCES
-      snap.cpp
+@@ -33,8 +48,11 @@ set (SERVICE_CXX_SOURCES
+      sound.cpp
       timezone-file.cpp
       timezone-geoclue.cpp
 +     timezone-systemd.cpp
@@ -167,10 +167,10 @@ index af09c71..5dc339e 100644
       utils.c
 +     timedate1.h
 +     timedate1.c
-      wakeup-timer-mainloop.cpp)
- if (HAVE_UBUNTU_HW_ALARM_H)
-   set (SERVICE_CXX_SOURCES ${SERVICE_CXX_SOURCES} wakeup-timer-uha.cpp)
-@@ -55,6 +73,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
+      wakeup-timer-mainloop.cpp
+      wakeup-timer-powerd.cpp)
+ 
+@@ -57,6 +75,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
  
  add_library (${SERVICE_LIB} STATIC ${SERVICE_C_SOURCES} ${SERVICE_CXX_SOURCES} ${SERVICE_GENERATED_SOURCES})
  include_directories (${CMAKE_SOURCE_DIR})
@@ -179,7 +179,7 @@ index af09c71..5dc339e 100644
  
  add_executable (${SERVICE_EXEC} main.cpp)
 diff --git a/src/main.cpp b/src/main.cpp
-index cc81cd7..38a5f25 100644
+index 48d3d20..82d258d 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
 @@ -31,6 +31,7 @@
@@ -187,10 +187,10 @@ index cc81cd7..38a5f25 100644
  #include <datetime/timezone-file.h>
  #include <datetime/timezones-live.h>
 +#include <datetime/timezone-systemd.h>
- #include <datetime/wakeup-timer-mainloop.h>
+ #include <datetime/wakeup-timer-powerd.h>
+ #include <notifications/notifications.h>
  
- #ifdef HAVE_UBUNTU_HW_ALARM_H
-@@ -135,7 +136,14 @@ main(int /*argc*/, char** /*argv*/)
+@@ -120,7 +121,14 @@ main(int /*argc*/, char** /*argv*/)
      textdomain(GETTEXT_PACKAGE);
  
      auto engine = create_engine();
@@ -433,5 +433,5 @@ index 4902b76..8e4db27 100644
  
      timezone.set(a.empty() ? b : a);
 -- 
-2.0.1
+2.1.0
 
