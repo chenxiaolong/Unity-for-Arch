@@ -9,13 +9,13 @@ _actual_ver=7.3.0
 _extra_ver=+14.10.20140731.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity"
 license=('GPL')
-depends=('bamf' 'boost' 'cairo-ubuntu' 'compiz-ubuntu>=0.9.11' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux>=4.0.6' 'unity-asset-pool' 'unity-scope-home' 'libxi' 'xpathselect' 'zeitgeist-ubuntu' 'lightdm-unity-greeter')
+depends=('bamf-ubuntu' 'boost' 'cairo-ubuntu' 'compiz-ubuntu>=0.9.11' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux>=4.0.6' 'unity-asset-pool' 'unity-scope-home' 'libxi' 'xpathselect' 'zeitgeist-ubuntu' 'lightdm-unity-greeter')
 makedepends=('chrpath' 'cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
 groups=('unity')
 provides=("unity-core=${_actual_ver}")
