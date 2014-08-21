@@ -12,7 +12,7 @@ pkgname=gnome-settings-daemon-ubuntu
 _ppa_rel=0ubuntu1~utopic2
 _ppa_ver=3.12.2
 pkgver=3.12.2
-pkgrel=4
+pkgrel=5
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -46,6 +46,7 @@ prepare() {
       # Ubuntu specific
         sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
         sed -i '/53_sync_input_sources_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
+        sed -i '/ubuntu-fix-desktop-file.patch/d' "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying patch ${i} ..."
