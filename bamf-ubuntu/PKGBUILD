@@ -3,25 +3,26 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
-# vercheck-launchpad: name=${pkgname}
+# vercheck-ubuntu: name=bamf, repo=utopic
+# vercheck-launchpad: name=bamf
 
-pkgname=bamf
+pkgname=bamf-ubuntu
 _actual_ver=0.5.1
 _extra_ver=+14.04.20140409
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=('i686' 'x86_64')
 url="https://launchpad.net/bamf"
 license=('GPL')
 depends=('libgtop' 'libwnck3' 'glib2' 'procps-ng')
 makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'libxml2' 'libxslt' 'vala')
-provides=('FEATURE-bamf-webapps' "libbamf3=${pkgver}" "bamfdaemon=${pkgver}")
-replaces=('libbamf3' 'bamfdaemon')
+provides=("bamf=${pkgver}")
+replaces=('bamf')
+conflicts=('bamf')
 groups=('unity')
 install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
         'bamfwatcher.c'
         'update-bamf-index.pl'
         'bamfwatcher.service')
@@ -31,7 +32,7 @@ sha512sums=('08b1dd3afa60b3e95987dd256eef169b38824e79264f4881a5b746e08daf46a8d64
             'b2e899e2916efc6e04af34c3bffc14f6254caaf42d2e3cee88277dde4c191dd93cab14246091beb5d4cfb8a242559b8361a7c4c1dc70c31034ade52689322b83')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/bamf-${_actual_ver}${_extra_ver}"
 
   sed -i 's/-Werror/-Wno-error/g' configure.ac
 }
@@ -41,7 +42,7 @@ build() {
 
   gcc bamfwatcher.c -lprocps -o bamfwatcher
 
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "bamf-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
@@ -57,7 +58,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${srcdir}/bamf-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 

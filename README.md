@@ -48,7 +48,7 @@ To compile from source, just build all of the packages in the following order:
 | libunity                         | Library for integrating with Unity         |
 | libunity-misc                    | Differently licensed stuff for Unity       |
 | indicator-messages               | Collects messages that need a response     |
-| bamf                             | Application matching framework             |
+| bamf-ubuntu                      | Application matching framework             |
 | sni-qt                           | Turns Qt 4 tray icons into indicators      |
 | lib32-qjson                      | A lib that maps JSON to QVariant (32-bit)  |
 | lib32-libdbusmenu-qt             | Qt implementation of DBusMenu (32-bit)     |
