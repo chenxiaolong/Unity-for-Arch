@@ -6,7 +6,7 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+14.10.20140730
+_extra_ver=+14.10.20140822
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -21,7 +21,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001-Not-a-phone.patch'
         '0002-upower-0.99-DBus-API.patch')
-sha512sums=('9699aa87b8050897b21686f45d3d2dba2b570d9f3fdfaa45fb1e49c929bca2bd650eeb8feb58285f62892eac4ce75732cc85630748ea2772736adcfb3b5a16c5'
+sha512sums=('27dab3a97a11e6aed958bbf81fb386d2fee2c9f98833816830108955f8432bd8d479561e560a2ec9576704d4ae1c3ed0f67bccc6b09eac7725ec3c585900c1e2'
             'c3d16a8029dcaa8ebf6b43fa8d3c45bb1210e613f40ce88b4487699936629aca25a632e50ffcfbff98176891d7730a61f72f9d03ed9e072606223a6f0fa07a2e'
             '656a8a7cb8e61aae66d59f543de9b5cd779e34705ef48f8f930cd246f388c3e69752bc8bf47e61f22205ab5ff1779cf6b50d64c521b1969a2209be864d0961a7')
 
