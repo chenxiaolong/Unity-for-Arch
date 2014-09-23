@@ -17,6 +17,7 @@ arch=('i686' 'x86_64')
 url="https://launchpad.net/libappindicator"
 license=('LGPL')
 makedepends=('dbus-glib' 'libindicator' 'libindicator3' 'libdbusmenu-gtk2' 'libdbusmenu-gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'perl-xml-libxml' 'gtk-doc')
+depends=('libappindicator3')
 groups=('unity')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_Timeout.patch')
