@@ -4,32 +4,31 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=gtk+3.0, repo=utopic
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
-# vercheck-gnome: name=gtk+, majorver=3.12
+# vercheck-gnome: name=gtk+, majorver=3.14
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu6
-pkgver=3.12.2
-pkgrel=6
+_ubuntu_rel=0ubuntu7
+_ubuntu_ver=3.12.2
+pkgver=3.14.0
+pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="http://www.gtk.org/"
-install=arch_gtk3.install
-depends=('atk' 'cairo' 'gtk-update-icon-cache' 'libcups' 'libxcursor' 'libxinerama' 'libxrandr' 'libxi' 'libxcomposite' 'libxdamage' 'pango' 'shared-mime-info' 'colord' 'at-spi2-atk' 'wayland' 'libxkbcommon')
-makedepends=('gobject-introspection')
-optdepends=('gnome-themes-standard: Default widget theme'
-            'gnome-icon-theme: Default icon theme')
+install=gtk3.install
+depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama
+         libxrandr libxi libxcomposite libxdamage pango shared-mime-info
+         colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme)
+makedepends=(gobject-introspection python2)
 provides=("gtk3=${pkgver}")
 conflicts=('gtk3')
 license=('LGPL')
 source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${pkgver}-${_ubuntu_rel}.debian.tar.gz"
-        'arch_settings.ini')
-sha512sums=('4a8d2f52328587d73e30f363bdbbd91322dae0198f5581a2da3ebbe96ef0a0635193d2537e8fc127dc0950a24df42862233edd3a873dcbd166dc675bae849c9e'
-            '8948d74c5c61f94487a3667a226df72eeefebbee30935b6e6506c4702da050a5f99010ce4e91ecb7f38ff79bf1c00ae843a61f19a6d394b125cdef4f87198999'
-            '1642d77622d61234e316e8fcbc803a6a5556c606e37e56aa5981ef2f2df85bfa959c31b5d1bff248b340760e1178281cb0d7abdf540c5f7d4b62cb383a67c685')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+sha512sums=('2abfd67dec83c2b52526ca7594bceeb77bd3247e31fab2e0d770c894b13a92d859ff9d24aa592f37720145aa86a708e9d2a0654851df23ca2b3ea68c3924891f'
+            '52e492cbd39720e3d4afd87c0443cb76418e0b1b8994c797082c3226947a4990f38646840238bae91b6007506c5704c0bc46357dbe6d16c864a427a15be28b87')
 
 prepare() {
-  cd "${srcdir}/gtk+-${pkgver}"
+  cd "gtk+-${pkgver}"
 
   # Apply Ubuntu Patches
     echo > "${srcdir}/debian/patches/series"
@@ -42,14 +41,6 @@ prepare() {
         echo '017_no_offscreen_device_grabbing.patch' >> "${srcdir}/debian/patches/series"
       # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
         echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> "${srcdir}/debian/patches/series"
-      # Other
-        echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> "${srcdir}/debian/patches/series"
-        echo 'uimanager-guard-against-nested-node-updates.patch' >> "${srcdir}/debian/patches/series"
-        echo 'gtkdialog-don-t-use-csd-when-use-header-bar-is-FALSE.patch' >> "${srcdir}/debian/patches/series"
-        echo 'gtkaboutdialog-support-showing-buttons-in-action-are.patch' >> "${srcdir}/debian/patches/series"
-        echo 'message-dialog-restore-traditional-look-on-unity.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git-menu-binding-emit-submenu-close-after-activate.patch' >> "${srcdir}/debian/patches/series"
-        echo 'git_reftests-Improve-workaround-for-GtkGrid-bug.patch' >> "${srcdir}/debian/patches/series"
 
   for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
     msg "Applying ${i} ..."
@@ -58,7 +49,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/gtk+-${pkgver}"
+  cd "gtk+-${pkgver}"
 
   autoreconf -vfi
 
@@ -80,11 +71,8 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/gtk+-${pkgver}"
+  cd "gtk+-${pkgver}"
   make DESTDIR="${pkgdir}" install
-
-  install -Dm644 "${srcdir}/arch_settings.ini" \
-    "${pkgdir}/etc/gtk-3.0/settings.ini"
 }
 
 # vim:set ts=2 sw=2 et:
