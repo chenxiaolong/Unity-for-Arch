@@ -8,32 +8,32 @@
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+14.10.20140814.1
+_extra_ver=+14.10.20140925
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A place on the user's desktop that collects messages that need a response"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/indicator-messages"
-license=('GPL')
-depends=('hicolor-icon-theme' 'libindicator3')
-makedepends=('gobject-introspection' 'gtk-doc' 'intltool' 'vala')
-groups=('unity')
+license=(GPL)
+depends=(hicolor-icon-theme libindicator3)
+makedepends=(gobject-introspection gtk-doc intltool vala)
+groups=(unity)
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('0af7c3b683bec303d4449f3722c3e9f084d2fa08699328b36ba8a6a497ba84ca646712bcfb4bebdc9d3950e0aaa9a20414f08fffdb51413a1e18d930bf0320e3'
+sha512sums=('4f6dbd99e176e34348200c61653a78de1a9518a54a161ee81980e1b433044eb1d9b2323611a5b2a63af4533b105e7f00574346a52888c329608f34f085f0afb4'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p1 -i ../0001_autoconf.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations -Wno-error=return-type"
+  export CFLAGS+=" -Wno-error=deprecated-declarations -Wno-error=return-type"
 
   gtkdocize
   intltoolize -f
@@ -43,7 +43,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 
