@@ -5,32 +5,34 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-session-ubuntu
 _ubuntu='3.9.90-0ubuntu12'
-pkgver=3.12.1
-pkgrel=2
+pkgver=3.14.0
+pkgrel=1
 pkgdesc="The GNOME Session Handler"
-arch=('i686' 'x86_64')
-license=('GPL' 'LGPL')
-depends=('systemd' 'dconf' 'gsettings-desktop-schemas' 'gtk3' 'gnome-desktop' 'mesa' 'hicolor-icon-theme' 'json-glib' 'libgl' 'libsm' 'libxtst' 'dbus-glib' 'polkit-gnome')
-makedepends=('gnome-common' 'gtk-doc' 'intltool' 'mesa' 'xtrans')
-groups=('gnome')
+arch=(i686 x86_64)
+license=(GPL LGPL)
+depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
+         hicolor-icon-theme json-glib libgl libsm libxtst systemd dbus-glib
+         polkit-gnome)
+makedepends=(intltool mesa gtk-doc xtrans)
+groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
-conflicts=('gnome-session')
-options=('!emptydirs')
+conflicts=(gnome-session)
+options=(!emptydirs)
 install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        '50_ubuntu_sessions.patch'
-        '52_xdg_current_desktop.patch'
-        '95_dbus_request_shutdown.patch'
-        '103_kill_the_fail_whale.patch'
-        'timeout.patch'
-        'polkit-gnome-authentication-agent-1-unity.desktop')
-sha512sums=('ee435aa31e2971f4d7246c748cace17a67f5697cbf016084aea4c263b2b2c096590b50920bc70ab45fb11e1470558f9c5b8864a37ae838f4a306ddc49acc5f2b'
+        50_ubuntu_sessions.patch
+        52_xdg_current_desktop.patch
+        95_dbus_request_shutdown.patch
+        103_kill_the_fail_whale.patch
+        timeout.patch
+        polkit-gnome-authentication-agent-1-unity.desktop)
+sha512sums=('7a1b1bd229e38963d5e104fd9b649ab597b4026a59b87820c8517699e63cb066f2aa52b74eb30a052dc4017c30eb16dc16a779a14580af9c1e876edcdd9bd020'
             '366692daaabaa5e183b5190708040dc5767dc6e5fff9268d8ac6a0dfbc4840eab66cb28aa3e35409953631c45bad2d11fd60313499ea2ef6f8126e2e8f6c1071'
             '538a2cbeb99fa76ce951339216cd37e0294d3f3420f4fdb808c344b16de491a9407e9ea26875e05b56ad6d9eeda598ce0e92d5aa2bf930a48a1e4861f9770f0a'
             'bc9be93af5e57b6fff7ccfe0f69e9023be335f0d8c5a9dabdfa82201b56fa722cb67d05a3144824f7de6d521fd50d2c99e13a59ac67f8d3bf25496843b0740d5'
@@ -39,19 +41,19 @@ sha512sums=('ee435aa31e2971f4d7246c748cace17a67f5697cbf016084aea4c263b2b2c096590
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af')
 
 prepare() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   # Increase timeout, for slow machines
-  patch -p1 -i "${srcdir}/timeout.patch"
+  patch -p1 -i ../timeout.patch
 
-  patch -p1 -i "${srcdir}/50_ubuntu_sessions.patch"
-  patch -p1 -i "${srcdir}/52_xdg_current_desktop.patch"
+  patch -p1 -i ../50_ubuntu_sessions.patch
+  patch -p1 -i ../52_xdg_current_desktop.patch
   #patch -p1 -i "${srcdir}/95_dbus_request_shutdown.patch"
-  patch -p1 -i "${srcdir}/103_kill_the_fail_whale.patch"
+  patch -p1 -i ../103_kill_the_fail_whale.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
@@ -68,10 +70,10 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 
-  # symlink session files so that KDM can find them
+  # Symlink session files so that KDM can find them
   install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
   ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
 
@@ -79,5 +81,3 @@ package() {
   install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
     "${pkgdir}/etc/xdg/autostart/"
 }
-
-# vim:set ts=2 sw=2 et:
