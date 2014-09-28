@@ -1,6 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 # Original Maintainer: Andrea Scarpino <andrea@archlinux.org>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=qjson, repo=utopic
+
 pkgname=lib32-qjson
 pkgver=0.8.1
 pkgrel=1
