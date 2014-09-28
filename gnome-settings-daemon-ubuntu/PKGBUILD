@@ -5,57 +5,57 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-settings-daemon-ubuntu
-_ppa_rel=0ubuntu1~utopic2
+_ppa_rel=0ubuntu1~utopic3
 _ppa_ver=3.12.2
-pkgver=3.12.2
-pkgrel=5
+pkgver=3.14.0
+pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="http://www.gnome.org"
-license=('GPL')
-depends=('dconf' 'gnome-desktop' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'libcanberra-pulse' 'libnotify' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower' 'libibus' 'librsvg' 'libgweather' 'geocode-glib' 'geoclue2' 'nss')
-makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl' 'python2')
-groups=('gnome' 'unity')
+license=(GPL)
+depends=(dconf gnome-desktop gsettings-desktop-schemas-ubuntu hicolor-icon-theme
+         libcanberra-pulse libnotify libsystemd libwacom pulseaudio
+         pulseaudio-alsa upower librsvg libgweather geocode-glib geoclue2 nss)
+makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
+groups=(gnome unity)
 provides=("gnome-settings-daemon=${pkgver}")
-conflicts=('gnome-settings-daemon')
-options=('!emptydirs')
+conflicts=(gnome-settings-daemon)
+options=(!emptydirs)
 install=gnome-settings-daemon.install
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/3.12/${pkgname%-*}-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver}-${_ppa_rel}.debian.tar.xz"
-        '0001-Do-not-hide-cursor.patch'
-        '0001-Revert-power-Remove-unused-policy-GSettings.patch')
-sha512sums=('d8063933ace4dfc9943991b5e6d29811546dec362cd3e26ec3c1c355ee2bbb854fb6fcc37ebaee78d70342ea2f6ae46325712dc6e20e6404ed54b0ee81c4bb8c'
-            'bcfd61193828362fbd1f137ca55089ca40d87bea187c907f370ada24314885b58494d4cee35aa439ef1002e969ded3e5b519e02fb330d3ad268a7ff755297c1b'
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
+        0001-Do-not-hide-cursor.patch
+        0001-Revert-power-Remove-unused-policy-GSettings.patch
+        0001-Restore-terminal-keyboard-shortcut.patch)
+sha512sums=('9b965d087a3a634907f7bf7878cae585d0d511b701668253b22cedfc45b782f70c18d6b32ab8c5999cb5aa14dc65c6d7b3abd327df59a9c84545037385fabae6'
+            '7ecd72ae28d0f574014cc8948336a83867d64432184bbdf9ad39211445777782d6f107934cd294fa639b4e0d281893a60b8931d0bb480f0f962b888367117d81'
             'f0e4971759ea7553afb998d55124dff7450288d7079057911a61da1b9625272ce19b3dc8f0dbce9b3418e86aaf666954269ed42512e2d1ed37b8b4bf123725e2'
-            'ca8db79e946cbd293ce8d647c37c00fb3e5802e18fd47789f3926bd7ec99306a6016128399102eb99c586a3c6e8a5757d74e659891ecfe2a4fc30c393da1b971')
+            'ca8db79e946cbd293ce8d647c37c00fb3e5802e18fd47789f3926bd7ec99306a6016128399102eb99c586a3c6e8a5757d74e659891ecfe2a4fc30c393da1b971'
+            '066938691b4d58ed5169e18758f3305bc05613cf0295c20b0874d5b437c268c1d2f26a24610a9ad86e9b9beda763f15730ff69c8850fb989d5ec0d8bf4a297f0')
 
 prepare() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
-  patch -p1 -i "${srcdir}/0001-Do-not-hide-cursor.patch"
+  patch -p1 -i ../0001-Do-not-hide-cursor.patch
 
   # Needed for unity-settings-daemon
-  patch -p1 -i "${srcdir}/0001-Revert-power-Remove-unused-policy-GSettings.patch"
+  patch -p1 -i ../0001-Revert-power-Remove-unused-policy-GSettings.patch
+
+  patch -p1 -i ../0001-Restore-terminal-keyboard-shortcut.patch
 
   # Apply Ubuntu's patches
-    # Disable patches
-      # Ubuntu specific
-        sed -i '/43_disable_locale_settings.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/53_sync_input_sources_to_accountsservice.patch/d' "${srcdir}/debian/patches/series"
-        sed -i '/ubuntu-fix-desktop-file.patch/d' "${srcdir}/debian/patches/series"
-
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
-    msg "Applying patch ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
-  done
+  patch -p1 -i ../debian/patches/revert_background_dropping.patch
+  patch -p1 -i ../debian/patches/52_sync_background_to_accountsservice.patch
+  patch -p1 -i ../debian/patches/63_gnome_disable_background_plugin.patch
+  patch -p1 -i ../debian/patches/ubuntu-lid-close-suspend.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
@@ -73,8 +73,6 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
-
-# vim:set ts=2 sw=2 et:
