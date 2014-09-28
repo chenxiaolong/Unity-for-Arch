@@ -6,39 +6,40 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.12
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
 
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=3.12.2
-pkgrel=3
+_ubuntu_ver=3.12.2
+pkgver=3.14.0
+pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
-arch=('any')
+arch=(any)
 url="http://live.gnome.org/"
-license=('GPL')
-depends=('dconf' 'glib2')
-makedepends=('intltool' 'gobject-introspection')
+license=(GPL)
+depends=(glib2)
+makedepends=(intltool gobject-introspection python2)
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
 install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${pkgver}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('256fa971517c6305b50c91ac00a80f350b833f5527e271eeec0311b360ee5e20820d030403d6caa07c7a11ca551f12320c5c40074722d5249abddbde0e42a970'
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+sha512sums=('42095b169fc631c5cac21cdcc6188ed06bb3c2336a2d27e667f02b49bf73ece81a8c4d54205069cf0dcf015aa7cf116b44df244f4a30123880d38fade28e43db'
             '93ac18052e9666a8597e9c3c7e0fbb42269bdecd630c78de31c93267567e63f653fa8b312c6f137a1f59e02eb779cb387fd7bf3a17478e668019b2d680d4b1bd')
 
 prepare() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
 
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "../debian/patches/${i}"
   done
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
     --disable-schemas-compile
@@ -46,9 +47,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   make DESTDIR="${pkgdir}" install
 }
-
-# vim:set ts=2 sw=2 et:
