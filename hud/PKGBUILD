@@ -6,33 +6,35 @@
 
 pkgname=hud
 _actual_ver=14.10
-_extra_ver=+14.10.20140617
+_extra_ver=+14.10.20140924
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Backend for the Unity HUD"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/hud"
-license=('GPL')
-groups=('unity')
-depends=('bamf-ubuntu' 'libdbusmenu-gtk3' 'sqlite' 'gsettings-qt' 'libcolumbus' 'libdbusmenu-qt5' 'dee-qt')
-makedepends=('cmake' 'gnome-common' 'gnome-doc-utils' 'gobject-introspection' 'gtk-doc' 'intltool' 'qt5-base' 'python2-distribute' 'vala')
+license=(GPL)
+groups=(unity)
+depends=(bamf-ubuntu libdbusmenu-gtk3 sqlite gsettings-qt libcolumbus
+         libdbusmenu-qt5 dee-qt)
+makedepends=(cmake gnome-common gnome-doc-utils gobject-introspection gtk-doc
+             intltool qt5-base python2-distribute vala)
 optdepends=('indicator-appmenu: HUD support')
 install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_Python_2.patch'
-        '0002_Remove_tests.patch'
-        '0003_Remove_voice_recognition.patch')
-sha512sums=('1ac30e64ded807ed8a4ff1850a9d86b37391f3b954805ba80f46815c61265d4b9dfe9175277a9ee17bad585b8f1881d4cfb7614fd9d30c1578f85327214dc3ab'
+        0001_Python_2.patch
+        0002_Remove_tests.patch
+        0003_Remove_voice_recognition.patch)
+sha512sums=('e1718f5e54eb659ab21e65527b858638c17fccd171a91ca0bf54989559c2fe2f35321f728883f909cb6e12b0f030b7ad8889e0eabd7127e8fa6e7601ca45b1e0'
             '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90'
             '546aa6b2c1a6e9f9de8f6c4a5d53fe48af39e0f0a96a2e2c3923d44187046ee7da89cba6b9e043e2cf14fd1b333db18fc0d91cb7530b7bc2394080d2b690e602'
             '599b9c5e1acbb530bc225a8b0f5e68ff4863b57009da35d75bebbf9b40655903405fe00434b375f1d699d52bdeb4c27ef6539f36634e77ce8c72f09ff4a21805')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001_Python_2.patch"
-  patch -p1 -i "${srcdir}/0002_Remove_tests.patch"
-  patch -p1 -i "${srcdir}/0003_Remove_voice_recognition.patch"
+  patch -p1 -i ../0001_Python_2.patch
+  patch -p1 -i ../0002_Remove_tests.patch
+  patch -p1 -i ../0003_Remove_voice_recognition.patch
 
   sed -i '/mscgen/d;/UseMscgen/d' docs/CMakeLists.txt
   rm cmake/UseMscgen.cmake
@@ -46,7 +48,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   rm -rf build && mkdir build && cd build
   cmake .. \
@@ -63,10 +65,8 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 
   rm -r "${pkgdir}/usr/share/upstart/"
 }
-
-# vim:set ts=2 sw=2 et:
