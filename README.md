@@ -58,7 +58,6 @@ To compile from source, just build all of the packages in the following order:
 | gnome-settings-daemon-ubuntu     | Daemon handling the GNOME session settings |
 | gnome-session-ubuntu             | GNOME Session Manager                      |
 | gnome-screensaver-ubuntu         | GNOME screen saver and locker              |
-| gnome-desktop-compat             | Common API for various GNOME modules       |
 | upower-compat                    | Abstraction API for power devices          |
 | unity-settings-daemon            | Daemon handling the Unity session settings |
 | unity-control-center             | Utilities to configure the Unity desktop   |
