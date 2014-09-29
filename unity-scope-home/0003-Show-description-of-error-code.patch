@@ -1,7 +1,7 @@
-From f5b31134c738303089348db0dd58051a1beee394 Mon Sep 17 00:00:00 2001
+From 8211b626ded5384d64361585733452a7e472476b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 7 Apr 2014 20:27:48 -0400
-Subject: [PATCH 3/3] Show description of error code
+Subject: [PATCH 3/4] Show description of error code
 
 ---
  src/smart-scopes-search.vala | 4 +++-
@@ -25,5 +25,5 @@ index 55a1bfd..80b97ea 100644
        if (msg.status_code != 200)
        {
 -- 
-1.9.1
+2.1.1
 

@@ -1,0 +1,80 @@
+From a3478dd58dd1aaef0d60ce7bf01b263e5b0a3f96 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 29 Sep 2014 14:03:27 -0400
+Subject: [PATCH 4/4] Fix vala 0.26 errors
+
+---
+ src/scope.vala                  | 22 ++++++++++++++++++----
+ src/smart-scopes-interface.vala |  3 ++-
+ src/smart-scopes-parse.vala     |  1 +
+ 3 files changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/src/scope.vala b/src/scope.vala
+index e3a4fc3..456c012 100644
+--- a/src/scope.vala
++++ b/src/scope.vala
+@@ -104,7 +104,14 @@ public class HomeScope : Unity.AggregatorScope
+     scope_mgr.start_master_scopes ();
+ 
+     debug ("Exporting home scope");
+-    export ();
++    try
++    {
++      export ();
++    }
++    catch (Error e)
++    {
++      warning ("Cannot export home scope: %s", e.message);
++    }
+ 
+     scope_mgr.notify["remote-content-search"].connect ((obj, pspec) =>
+     {
+@@ -570,9 +577,16 @@ public class HomeScope : Unity.AggregatorScope
+         (activation.action_type == Unity.Protocol.ActionType.ACTIVATE_RESULT ||
+          activation.action_type == Unity.Protocol.ActionType.PREVIEW_RESULT))
+     {
+-      var preview = yield handle_preview (activation, session_id, server_sid);
+-      handle_metrics (Unity.Protocol.ActionType.PREVIEW_RESULT, scope_id, session_id, server_sid);
+-      return preview;
++      try
++      {
++        var preview = yield handle_preview (activation, session_id, server_sid);
++        handle_metrics (Unity.Protocol.ActionType.PREVIEW_RESULT, scope_id, session_id, server_sid);
++        return preview;
++      }
++      catch (Error e)
++      {
++        warning ("Preview request for scope %s failed: %s", activation.scope_id, e.message);
++      }
+     }
+ 
+     handle_metrics (activation.action_type, scope_id, session_id, server_sid);
+diff --git a/src/smart-scopes-interface.vala b/src/smart-scopes-interface.vala
+index 4cd3a0c..440fdcb 100644
+--- a/src/smart-scopes-interface.vala
++++ b/src/smart-scopes-interface.vala
+@@ -22,7 +22,8 @@ namespace Unity.HomeScope.SmartScopes {
+   public enum ScopeType
+   {
+     ClientScope,
+-    ServerScope
++    ServerScope,
++    InvalidScope
+   }
+ 
+   public struct RecommendedScope
+diff --git a/src/smart-scopes-parse.vala b/src/smart-scopes-parse.vala
+index 5e6b44c..8fb03d4 100644
+--- a/src/smart-scopes-parse.vala
++++ b/src/smart-scopes-parse.vala
+@@ -151,6 +151,7 @@ namespace Unity.HomeScope.SmartScopes {
+             else if (type_str == "server")
+               tp = ScopeType.ServerScope;
+             else
++              tp = ScopeType.InvalidScope;
+               invalid_type = true;
+ 
+             if (!invalid_type)
+-- 
+2.1.1
+

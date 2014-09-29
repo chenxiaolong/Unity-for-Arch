@@ -1,7 +1,7 @@
-From 8fd70710dbe668dfaf9c47409402b7616a9ab823 Mon Sep 17 00:00:00 2001
+From 2e685f380bdfc611c6de8a46615868afa4c11599 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 7 Apr 2014 20:27:16 -0400
-Subject: [PATCH 2/3] productsearch.ubuntu.com only accepts locale string
+Subject: [PATCH 2/4] productsearch.ubuntu.com only accepts locale string
  without encoding
 
 ---
@@ -40,5 +40,5 @@ index eabe963..55a1bfd 100644
  
          return sb.str;
 -- 
-1.9.1
+2.1.1
 

@@ -8,36 +8,39 @@ _actual_ver=6.8.2
 _extra_ver=+14.04.20131029.1
 _sso_ver=13.10
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="Home scope that aggregates results from multiple scopes"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/unity-scope-home"
-license=('GPL')
-groups=('unity')
-depends=('dee' 'glib2' 'json-glib' 'libgee06' 'libsoup' 'libunity' 'lsb-release')
-makedepends=('gnome-common' 'intltool' 'vala')
+license=(GPL)
+groups=(unity)
+depends=(dee glib2 json-glib libgee06 libsoup libunity lsb-release)
+makedepends=(gnome-common intltool vala)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/ubuntu-sso-client_${_sso_ver}.orig.tar.gz"
-        '0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch'
-        '0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch'
-        '0003-Show-description-of-error-code.patch')
+        0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch
+        0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch
+        0003-Show-description-of-error-code.patch
+        0004-Fix-vala-0.26-errors.patch)
 sha512sums=('8f94915f4a3f4c70ac244e7974d000626805b2a4217abeed28b2137cce4e7c6c5ed2836b723a6b2e9b7f6fe3cf95cdd151e9c5bac577c3989e10d1367a5aa772'
             'c476c0026ca23d7f7ffe5bbf0de6c26b8522d0a785c496b495d8116d63065dc69768a963e05e926326a663e9f50ab2ba3560b349d3912d931eb1b575a8a3f24e'
-            'a61ce677aeb91b21f8cec381c2b669c865cab5240f9da12b991e2d9dc7c3e365760abe38814bbff6b4bc9ccff3aa4b9d2a61997964d5a6a6a92eb6cee263ee0d'
-            'e345fbf169afd087522f66f6c129d58143193ba0d4d287fc79bb6b7a1319d2cc692df0c43e6bfe19b429af92b2faab53daba6a9a0c63059770c92a511dbfb0cf'
-            '939fa85674fe3f5fe3108b9196d17ef6d1c42cbb1163ea7a350c08d67ac353d9168aaa97da32512c3f9862df6b3cef58311b3a2a2d418a31995ccf11c0582507')
+            'ffca4eaaa84c80239fb5ca531b8782f0be252295e03d3a37bcfb750250e44dfa6c9272cd42438176186d71985d69a138bb28e8ef2bdccc4aedd6c1cb325efd06'
+            '711a8cb2f5ba75530913f8f47990f9cbb801579026b96c39a010fa1594ee7e025dfac7d873e917e3b0d78d5cc38edadf0cd601193571e89efb477dc5fb2e1445'
+            'df20c30ea36d2d8a7600db0263812ea26d9b33174073cb1fde57c1184511d4f3339f713cb938df65ed22477c40a947db8a422cf051e481a96d3fa070e3c8e559'
+            '66cf3e94b1aca5a2e677803ab956e1a24cc29ae6af22c63f2d77a6a73f35c4bfeffdbb838eae8a40ee885a6a396b98ff4761d84d58b7f3de3462ca23dd60c933')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   #patch -p1 -i "${srcdir}/0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch"
   patch -p1 -i "${srcdir}/0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch"
   patch -p1 -i "${srcdir}/0003-Show-description-of-error-code.patch"
+  patch -p1 -i "${srcdir}/0004-Fix-vala-0.26-errors.patch"
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   autoreconf -vfi
   intltoolize -f
   ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
@@ -45,10 +48,10 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 
-  cd "${srcdir}/ubuntu-sso-client-${_sso_ver}/data/"
+  cd "../ubuntu-sso-client-${_sso_ver}/data/"
   # Ubuntu's Smart Scope server does not use a trusted certificate
   install -dm755 "${pkgdir}/etc/ssl/certs/"
   install -m644 UbuntuOne-Go_Daddy_CA.pem \
