@@ -8,21 +8,22 @@ pkgname=dee-ubuntu
 _actual_ver=1.2.7
 _extra_ver=+14.04.20140324
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
+epoch=1
 pkgdesc="Model to synchronize multiple instances over DBus"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/dee"
-license=('LGPL')
-groups=('unity')
-depends=('dbus-glib' 'glib2' 'icu' 'python' 'python-gobject' 'python2' 'python2-gobject')
-makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'vala')
+license=(LGPL)
+groups=(unity)
+depends=(dbus-glib glib2 icu python python-gobject python2 python2-gobject)
+makedepends=(gnome-common gobject-introspection gtk-doc vala)
 provides=("dee=${pkgver}")
-conflicts=('dee')
+conflicts=(dee)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('ce961e94a0d925dff778a654d694664a440748287b986cafeadc5a370e4bbb1a9dcbed0ca5b9624ddd4f975d92d702f61e0ca086e2718727f68aca8bd7091f0f')
 
 build() {
-  cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
+  cd "dee-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
 
@@ -36,7 +37,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/dee-${_actual_ver}${_extra_ver}"
+  cd "dee-${_actual_ver}${_extra_ver}"
 
   cd build-python3/
   make DESTDIR="${pkgdir}/" install
