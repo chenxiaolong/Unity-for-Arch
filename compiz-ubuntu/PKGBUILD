@@ -10,43 +10,38 @@ pkgname=compiz-ubuntu
 
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.9.12
-_extra_ver=+14.10.20140812
+_extra_ver=+14.10.20140918
 
-# AUR Fix
-pkgver=0.9.12.14.10.20140812
-realver=${_actual_ver}${_extra_ver/+/.}
-
-if [ "${pkgver}" != "${realver}" ]; then
-  echo "PKGBUILD needs to be updated!"
-  exit 1
-fi
+pkgver=${_actual_ver}${_extra_ver/+/.}
 
 pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
-arch=('i686' 'x86_64')
-license=('GPL')
-depends=('boost-libs' 'dbus' 'fuse' 'glibmm' 'glu' 'librsvg' 'libxcomposite' 'libxdamage' 'libxinerama' 'libxrandr' 'libxslt' 'libwnck' 'mesa' 'metacity' 'startup-notification' 'protobuf' 'pyrex' 'gsettings-desktop-schemas')
+arch=(i686 x86_64)
+license=(GPL)
+depends=(boost-libs dbus fuse glibmm glu librsvg libxcomposite libxdamage
+         libxinerama libxrandr libxslt libwnck3 mesa metacity
+         startup-notification protobuf pyrex gsettings-desktop-schemas)
 # The schemas from gnome-settings-daemon are needed
-depends+=('gnome-settings-daemon')
-makedepends=('boost' 'cmake' 'intltool' 'libwnck')
+depends+=(gnome-settings-daemon)
+makedepends=(boost cmake intltool)
 optdepends=('gnome-control-center: GNOME Control Center'
             'unity-control-center: Unity Control Center')
-groups=('unity')
-options=('emptydirs')
-conflicts=('compiz' 'metacity-ubuntu')
-provides=('compiz-core' 'compiz')
+groups=(unity)
+options=(emptydirs)
+conflicts=(compiz metacity-ubuntu)
+provides=(compiz-core compiz)
 install=compiz-ubuntu.install
-source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.12%2B14.10.20140812-0ubuntu1ppa1.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        #"https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.12%2B14.10.20140812-0ubuntu1ppa1.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        'compiz.reset'
-        '0002_Fix_cmake_install_dir.patch'
-        '0003_Fix_python_install_command.patch'
-        '0004_Use_python2.patch'
-        '0005_Disable_Werror.patch')
-sha512sums=('c6f06c36f233a426b9b1c5198083f4f9ac69fd905fc465ddc870a258ce2cd95507f41a67020962b374c4a92a5f0ece18a2562057fd7c70e09f1e9361cf8ec7bf'
-            '39711bc5545e780850652b1ec79098fdc80287f885b3ed04e4d72c266ffe1f90d5a5e6ce0a64599eae7841c149914ca124f8236a6fde5965335b976fb23fca1c'
+        compiz.reset
+        0002_Fix_cmake_install_dir.patch
+        0003_Fix_python_install_command.patch
+        0004_Use_python2.patch
+        0005_Disable_Werror.patch)
+sha512sums=('a28c1a84e8a09b8373d9fdbbb31438c8a98af72516fcc419b143f057907888312182b9d1cf63ded4b7455b7fbac93cecdf66f527250bb6b9718263ee2e5088aa'
+            'f4e2dcea99b1fc476bb76ba6dd8d46110e918d4ac47cc089d338091d0442a0e9d8c114d8e4d6436927e2d5ba51f6ad22fe2486076bafd9590b078bb0cb819c35'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
             'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
@@ -54,25 +49,25 @@ sha512sums=('c6f06c36f233a426b9b1c5198083f4f9ac69fd905fc465ddc870a258ce2cd95507f
             'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
 
 prepare() {
-#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
-  cd compiz.utopic
+  cd "compiz-${_actual_ver}${_extra_ver}"
+#  cd compiz.utopic
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
-  patch -p1 -i "${srcdir}/0002_Fix_cmake_install_dir.patch"
+  patch -p1 -i ../0002_Fix_cmake_install_dir.patch
 
   # Compiz's build system appends --install-layout=deb to the python 2 install
   # command (for python-compizconfig and ccsm) whether or not COMPIZ_DEB_BUILD
   # is set to 1
-  patch -p1 -i "${srcdir}/0003_Fix_python_install_command.patch"
+  patch -p1 -i ../0003_Fix_python_install_command.patch
 
   # Use python 2
-  patch -p1 -i "${srcdir}/0004_Use_python2.patch"
+  patch -p1 -i ../0004_Use_python2.patch
 
   # Don't treat warnings as errors
-  patch -p1 -i "${srcdir}/0005_Disable_Werror.patch"
+  patch -p1 -i ../0005_Disable_Werror.patch
 
   # Apply Ubuntu patches
-#  patch -p1 -i "${srcdir}/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i ../compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 
   sed -i '/100_workaround_virtualbox_hang.patch/d' debian/patches/series
 
@@ -83,8 +78,8 @@ prepare() {
 }
 
 build() {
-#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}"
-  cd compiz.utopic
+  cd "compiz-${_actual_ver}${_extra_ver}"
+#  cd compiz.utopic
 
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
@@ -120,8 +115,8 @@ build() {
 }
 
 package() {
-#  cd "${srcdir}/compiz-${_actual_ver}${_extra_ver}/build"
-  cd compiz.utopic/build
+  cd "compiz-${_actual_ver}${_extra_ver}/build"
+#  cd compiz.utopic/build
   make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
@@ -198,5 +193,3 @@ package() {
   sed -ri '/s0_active_plugins/s/$/;gnomecompat/g' \
     "${pkgdir}/etc/compizconfig/unity.ini"
 }
-
-# vim:set ts=2 sw=2 et:
