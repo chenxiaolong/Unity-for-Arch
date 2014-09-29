@@ -10,6 +10,7 @@ _extra_ver=+14.10.20140915
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
+epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=(i686 x86_64)
