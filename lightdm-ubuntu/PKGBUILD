@@ -9,20 +9,19 @@
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=lightdm-ubuntu
-_ubuntu_rel=0ubuntu1
-pkgver=1.11.7
+_ubuntu_rel=0ubuntu2
+pkgver=1.11.9
 pkgrel=1
 pkgdesc="A lightweight display manager"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/lightdm"
 # Libraries are LGPLv3+, everything else is GPLv3+
-license=('GPL3' 'LGPL3')
-groups=('unity-extra')
-# Is dbus-glib still needed or is debian/control out of date?
-depends=('libgcrypt' 'libxcb' 'libxdmcp' 'libxklavier')
+license=(GPL3 LGPL3)
+groups=(unity)
+depends=(libgcrypt libxcb libxdmcp libxklavier)
 # Useful dependencies, but not required
 #depends=('gnome-themes-standard' 'gnome-backgrounds' 'gnome-icon-theme' 'webkitgtk3')
-makedepends=('gnome-common' 'gobject-introspection' 'gtk-doc' 'gtk3' 'intltool' 'qt4' 'qt5-base' 'yelp-tools')
+makedepends=(gnome-common gobject-introspection gtk-doc gtk3 intltool qt4 qt5-base yelp-tools)
 optdepends=('accountsservice: DBus interface for querying user information'
             'gnome-keyring: For pam_gnome_keyring.so in the greeter PAM config'
             'gtk3: For using the GTK greeter'
@@ -30,24 +29,24 @@ optdepends=('accountsservice: DBus interface for querying user information'
             'qt4: To use the qt4 version of liblightdm-qt'
             'qt5-base: To use the qt5 version of liblightdm-qt')
 provides=("lightdm=${pkgver}" "liblightdm-qt4=${pkgver}")
-conflicts=('lightdm' 'liblightdm-qt4')
-options=('emptydirs')
-backup=('etc/lightdm/keys.conf'
-        'etc/lightdm/lightdm.conf'
-        'etc/lightdm/lightdm-gtk-greeter.conf'
-        'etc/lightdm/users.conf')
+conflicts=(lightdm liblightdm-qt4)
+options=(emptydirs)
+backup=(etc/lightdm/keys.conf
+        etc/lightdm/lightdm.conf
+        etc/lightdm/lightdm-gtk-greeter.conf
+        etc/lightdm/users.conf)
 install=lightdm.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"
-        'lightdm.service'
-        'lightdm-gtk-greeter.conf'
-        'lightdm.tmpfiles.d'
-        'lightdm.pam'
-        'lightdm-autologin.pam'
-        'lightdm-greeter.pam'
-        'lightdm.rules'
-        '0001-guest-account-Use-cross-distro-commands.patch'
-        '0002-guest-account-Add-default-GSettings-support.patch')
-sha512sums=('9daf72959e171164077e1effe826c7af64a874abaa807d0eff313aecac9c2aa595056272f00c9fcd1f841a0db8c15264e40ef2413fcdbabb9318165fe536f053'
+        lightdm.service
+        lightdm-gtk-greeter.conf
+        lightdm.tmpfiles.d
+        lightdm.pam
+        lightdm-autologin.pam
+        lightdm-greeter.pam
+        lightdm.rules
+        0001-guest-account-Use-cross-distro-commands.patch
+        0002-guest-account-Add-default-GSettings-support.patch)
+sha512sums=('184b38a177f2d7cb64ba841501333a08a756683b5198b26e0c3ee02063df4eae9d9b62489560c469296effb2ab2aba5b9e562eac4410ab411d3bbf4cdeeb9757'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -59,7 +58,7 @@ sha512sums=('9daf72959e171164077e1effe826c7af64a874abaa807d0eff313aecac9c2aa5950
             '26c0e6ac74b2739b8a83286dc0d02b9935d2a84c8e7ee49d0160ebdda6b5dc2d0543f03b0541bf2022559165ab35a283dfc09add964282bd2eebff50324f74ce')
 
 prepare() {
-  cd "${srcdir}/lightdm-${pkgver}"
+  cd "lightdm-${pkgver}"
 
   # Apply Ubuntu patches
 
@@ -67,21 +66,21 @@ prepare() {
     # Do not use Ubuntu's language-tools
       sed -i '/04_language_handling.patch/d' debian/patches/series
 
-  for i in $(grep -v '#' "${srcdir}"/debian/patches/series); do
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+  for i in $(grep -v '#' ../debian/patches/series); do
+    patch -p1 -i "../debian/patches/${i}"
   done
 
   # Do not depend on Debian/Ubuntu specific adduser package
-  patch -p1 -i "${srcdir}"/0001-guest-account-Use-cross-distro-commands.patch
+  patch -p1 -i ../0001-guest-account-Use-cross-distro-commands.patch
 
   # Add support for settings GSettings/dconf defaults in the guest session. Just
   # put the files in /etc/guest-session/gsettings/. The file format is the same
   # as the regular GSettings override files.
-  patch -p1 -i "${srcdir}"/0002-guest-account-Add-default-GSettings-support.patch
+  patch -p1 -i ../0002-guest-account-Add-default-GSettings-support.patch
 }
 
 build() {
-  cd "${srcdir}/lightdm-${pkgver}"
+  cd "lightdm-${pkgver}"
 
   export MOC4=moc-qt4
   export MOC5=moc-qt5
@@ -105,7 +104,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/lightdm-${pkgver}"
+  cd "lightdm-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 
   install -dm755 "${pkgdir}/usr/lib/systemd/system/"
