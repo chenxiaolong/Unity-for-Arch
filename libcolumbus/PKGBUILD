@@ -8,19 +8,20 @@ pkgname=libcolumbus
 _actual_ver=1.1.0
 _extra_ver=+14.04.20140325.3
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
+epoch=1
 pkgdesc="A small, fast, error tolerant matcher"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/libcolumbus"
-license=('LGPL')
-groups=('unity')
-depends=('icu')
-makedepends=('boost' 'cmake' 'sparsehash')
+license=(LGPL)
+groups=(unity)
+depends=(icu)
+makedepends=(boost cmake sparsehash)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('510f059dc3e5438c60b1d5fef41c5f0681374a721fe9df286e8bed7147c3268cacb9d588bf36c10169a3460bb25b1cda0ac52c2f7b2880a4f0a28aa1988b738c')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   mkdir build
   cd build
   cmake .. \
@@ -31,8 +32,6 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
