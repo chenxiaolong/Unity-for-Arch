@@ -94,7 +94,6 @@ To compile from source, just build all of the packages in the following order:
 | unity-scopes                     | Unity scopes for searching online sources  |
 | compiz-ubuntu                    | Compositing window manager                 |
 | xpathselect                      | Select tree objects using XPath queries    |
-| cairo-ubuntu                     | Vector graphics library                    |
 | lightdm-unity-greeter            | LightDM greeter for Unity                  |
 | unity                            | Desktop shell designed for efficiency      |
 | unity-language-packs             | Unity language packs                       |
