@@ -77,7 +77,6 @@ To compile from source, just build all of the packages in the following order:
 | hud                              | Backend for the Unity HUD                  |
 | network-manager-applet-ubuntu    | NetworkManager applet w/indicator support  |
 | overlay-scrollbar                | Overlay scrollbars for GTK+2 and GTK+3     |
-| evemu                            | Linux Evdev Event Emulation Library        |
 | frame                            | Open Input Framework Frame Library         |
 | grail                            | Gesture recognition and instantiation lib. |
 | geis                             | Implementation of the GEIS interface       |
