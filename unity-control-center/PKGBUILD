@@ -7,31 +7,37 @@
 
 pkgname=unity-control-center
 _actual_ver=14.10.0
-_extra_ver=+14.10.20140702.1
+_extra_ver=+14.10.20140922
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="The Control Center for Unity"
-arch=('i686' 'x86_64')
-groups=('unity')
+arch=(i686 x86_64)
+groups=(unity)
 url="https://launchpad.net/unity-control-center"
-license=('GPL')
-depends=('accountsservice' 'cups-pk-helper' 'libnotify' 'gnome-desktop-compat' 'gnome-menus' 'gsettings-desktop-schemas' 'gtk3-ubuntu' 'libgtop' 'libtimezonemap' 'network-manager-applet' 'sound-theme-freedesktop' 'upower-compat' 'libpwquality' 'gnome-color-manager' 'smbclient' 'libmm-glib' 'libgnomekbd' 'grilo' 'clutter-gtk' 'unity-settings-daemon' 'system-config-printer' 'webkitgtk')
-makedepends=('gnome-common' 'gnome-doc-utils' 'intltool' 'docbook-xsl' 'modemmanager' 'vala')
+license=(GPL)
+depends=(accountsservice cups-pk-helper libnotify gnome-menus
+         gsettings-desktop-schemas gtk3-ubuntu libgtop libtimezonemap
+         network-manager-applet sound-theme-freedesktop upower-compat
+         libpwquality gnome-color-manager smbclient libmm-glib libgnomekbd
+         grilo clutter-gtk unity-settings-daemon system-config-printer
+         webkitgtk)
+makedepends=(gnome-common gnome-doc-utils intltool docbook-xsl modemmanager
+             vala)
 optdepends=('gnome-control-center: For bluetooth panel')
-options=('!emptydirs')
+options=(!emptydirs)
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001-Use-gnome-desktop-compat.patch'
-        '0002-Skip-bluetooth-panel.patch'
-        '0003-Remove-Ubuntu-specific-language-code.patch'
-        '0004-Remove-Ubuntu-help-links.patch'
-        '0005-Allow-gnome-control-center-to-run-at-the-same-time.patch'
-        '0006-Use-upower-compat.patch'
-        '0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch'
-        'system-config-printer-unity.desktop'
-        'unity-bluetooth-panel.desktop')
-sha512sums=('7652dec9e00462aa7fed7b3b3d5b57a5eaef976ca86cb04b54dfabe40dccac12e19519bc3b9b6a42b5e9e2604ce7adef38d80c0566b86c12efc9e5ca647c2198'
-            '06f7a2a14a211ee9012bbcfaacef82ae810ef9eb0797568210188d04ca70fc79344f18c2ad09c1ca0331d214889f6b5d6beae86ebc607226082afacf9fcd27f5'
+        0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
+        0002-Skip-bluetooth-panel.patch
+        0003-Remove-Ubuntu-specific-language-code.patch
+        0004-Remove-Ubuntu-help-links.patch
+        0005-Allow-gnome-control-center-to-run-at-the-same-time.patch
+        0006-Use-upower-compat.patch
+        0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch
+        system-config-printer-unity.desktop
+        unity-bluetooth-panel.desktop)
+sha512sums=('77119e01c2e4115680e6080c7c4e063e4c9a311507f9f8244ef3b4bf457e73815859574f5616b3928f166153bbc997d043979adeb0b7c8a626a621bc0ff41efb'
+            'baff5349e5ea08a2970f5baac308052ac2f90636ce8b56193be762603a2fb26e553c750c53baf439b238ea91123a37efdfc8e319021ff1309f30a597c8e3516e'
             '5e20922fdc28acf90757743fdbb93715cade67a93a135ffcefd27dbadab11e60fb3d5848be7240b267ec2ea24e415a3f0bef3461e4c479a63e6adf3adba6bb51'
             '753deaaf6fcf71998d2f9389bb34672cc60e96099b5d04e3e2eebc5e9af6f50e0d349e5202c17203617d430d1fe56bf9a6215bae417f198519e0f43efef292a5'
             '20bf406e5966269f669c50b8fd8a72bf0329089871a9b5267dcce460b8aca32cdb57ede944f38aeb2ae036e7ed55596f4aba1a32a9c7d35a8ee2c64801f338c8'
@@ -42,18 +48,18 @@ sha512sums=('7652dec9e00462aa7fed7b3b3d5b57a5eaef976ca86cb04b54dfabe40dccac12e19
             '1118e18b0df7bfaebfdd0f39ff88a44e6e296068562b5a980f5b0de7f750ca6843c812945abb75365df01214ee141c49a64bfcceb5a98f60d5c88808f7cfc16e')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
-  patch -p1 -i "${srcdir}/0001-Use-gnome-desktop-compat.patch"
-  patch -p1 -i "${srcdir}/0002-Skip-bluetooth-panel.patch"
-  patch -p1 -i "${srcdir}/0003-Remove-Ubuntu-specific-language-code.patch"
-  patch -p1 -i "${srcdir}/0004-Remove-Ubuntu-help-links.patch"
-  patch -p1 -i "${srcdir}/0005-Allow-gnome-control-center-to-run-at-the-same-time.patch"
-  patch -p1 -i "${srcdir}/0006-Use-upower-compat.patch"
-  patch -p1 -i "${srcdir}/0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+  patch -p1 -i ../0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
+  patch -p1 -i ../0002-Skip-bluetooth-panel.patch
+  patch -p1 -i ../0003-Remove-Ubuntu-specific-language-code.patch
+  patch -p1 -i ../0004-Remove-Ubuntu-help-links.patch
+  patch -p1 -i ../0005-Allow-gnome-control-center-to-run-at-the-same-time.patch
+  patch -p1 -i ../0006-Use-upower-compat.patch
+  patch -p1 -i ../0007-Remove-overlay-scrollbar-from-GTK_MODULES.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
   intltoolize -f
@@ -72,7 +78,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}" install
 
@@ -95,5 +101,3 @@ package() {
   install -m644 "${srcdir}/unity-bluetooth-panel.desktop" \
                 "${pkgdir}/usr/share/applications/"
 }
-
-# vim:set ts=2 sw=2 et:
