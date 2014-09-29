@@ -1,7 +1,7 @@
-From 760dda249aa63207b3b1dfa39a7464d071c9fbe5 Mon Sep 17 00:00:00 2001
+From e48657eacaec15636c54675c13a2d27b65652335 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 3/7] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 3/8] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -12,10 +12,10 @@ Subject: [PATCH 3/7] Revert r3134: Remove Systray Whitelist
  5 files changed, 44 insertions(+), 81 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index b1d2445..9fb8c3d 100644
+index 331d9f5..26e4b7e 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -109,6 +109,13 @@
+@@ -122,6 +122,13 @@
        <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
      </key>
    </schema>
@@ -159,7 +159,7 @@ index b2ff8e0..e11fe93 100644
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 99dfd97..b9d9c3a 100644
+index 50aca16..87b6c94 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -250,7 +250,6 @@ if (ENABLE_X_SUPPORT)
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-2.0.0
+2.1.1
 

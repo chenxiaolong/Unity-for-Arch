@@ -1,7 +1,7 @@
-From 57f116f025a5bc047e2a76f3ba2afa3ab10ec4cd Mon Sep 17 00:00:00 2001
+From efb83fa34f075a59209c8ba51f845532ddea2ce0 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:08:54 -0400
-Subject: [PATCH 2/7] Arch Linux branding
+Subject: [PATCH 2/8] Arch Linux branding
 
 ---
  panel/PanelMenuView.cpp                             | 2 +-
@@ -49,5 +49,5 @@ index bd89fe2..321d341 100644
      def test_panel_title_with_restored_application(self):
          """Panel must display application name for a non-maximised application."""
 -- 
-2.0.0
+2.1.1
 

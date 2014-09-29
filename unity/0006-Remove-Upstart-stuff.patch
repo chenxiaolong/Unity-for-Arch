@@ -1,7 +1,7 @@
-From ce0b0cd5105079c56b9e39615f7d8b9b3689429b Mon Sep 17 00:00:00 2001
+From 3a556e0c475cf621ef1d431831cf027073278f0d Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
-Subject: [PATCH 6/7] Remove Upstart stuff
+Subject: [PATCH 6/8] Remove Upstart stuff
 
 ---
  lockscreen/LockScreenController.cpp             |  4 --
@@ -21,7 +21,7 @@ Subject: [PATCH 6/7] Remove Upstart stuff
  delete mode 100644 unity-shared/UpstartWrapper.h
 
 diff --git a/lockscreen/LockScreenController.cpp b/lockscreen/LockScreenController.cpp
-index 34fddae..dae12e9 100644
+index 04cdcdb..afc0473 100644
 --- a/lockscreen/LockScreenController.cpp
 +++ b/lockscreen/LockScreenController.cpp
 @@ -51,13 +51,11 @@ DECLARE_LOGGER(logger, "unity.lockscreen");
@@ -46,35 +46,35 @@ index 34fddae..dae12e9 100644
        accelerator_controller_.reset();
        indicators_.reset();
      }
-@@ -401,7 +398,6 @@ void Controller::OnScreenSaverActivationRequest(bool activate)
+@@ -417,7 +414,6 @@ void Controller::OnScreenSaverActivationRequest(bool activate)
  void Controller::LockScreen()
  {
    indicators_ = std::make_shared<indicator::LockScreenDBusIndicators>();
 -  upstart_wrapper_->Emit("desktop-lock");
  
-   accelerator_controller_ = std::make_shared<AcceleratorController>();
+   accelerator_controller_ = std::make_shared<AcceleratorController>(session_manager_);
    auto activate_key = WindowManager::Default().activate_indicators_key();
 diff --git a/lockscreen/LockScreenController.h b/lockscreen/LockScreenController.h
-index 8e53269..9a3762f 100644
+index 383e157..b14ad50 100644
 --- a/lockscreen/LockScreenController.h
 +++ b/lockscreen/LockScreenController.h
-@@ -28,7 +28,6 @@
- #include "LockScreenAcceleratorController.h"
+@@ -29,7 +29,6 @@
  #include "ScreenSaverDBusManager.h"
+ #include "UserPromptView.h"
  #include "unity-shared/BackgroundEffectHelper.h"
 -#include "unity-shared/UpstartWrapper.h"
  
  namespace unity
  {
-@@ -39,7 +38,6 @@ class Controller : public sigc::trackable
- {
- public:
+@@ -44,7 +43,6 @@ public:
+   typedef std::shared_ptr<Controller> Ptr;
+ 
    Controller(DBusManager::Ptr const&, session::Manager::Ptr const&,
 -             UpstartWrapper::Ptr const& upstart_wrapper = std::make_shared<UpstartWrapper>(),
               ShieldFactoryInterface::Ptr const& shield_factory = std::make_shared<ShieldFactory>(),
               bool test_mode = false);
  
-@@ -77,7 +75,6 @@ private:
+@@ -83,7 +81,6 @@ private:
    session::Manager::Ptr session_manager_;
    indicator::Indicators::Ptr indicators_;
    AcceleratorController::Ptr accelerator_controller_;
@@ -107,7 +107,7 @@ index 4514ff1..f53d053 100644
 -configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
 diff --git a/services/panel-service.c b/services/panel-service.c
-index a161cac..33f6594 100644
+index b3bb404..a277155 100644
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
 @@ -33,10 +33,6 @@
@@ -121,7 +121,7 @@ index a161cac..33f6594 100644
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -83,8 +79,6 @@ struct _PanelServicePrivate
+@@ -86,8 +82,6 @@ struct _PanelServicePrivate
  
    IndicatorObjectEntry *pressed_entry;
    gboolean use_event;
@@ -130,7 +130,7 @@ index a161cac..33f6594 100644
  };
  
  /* Globals */
-@@ -150,22 +144,6 @@ panel_service_class_dispose (GObject *self)
+@@ -153,22 +147,6 @@ panel_service_class_dispose (GObject *self)
    g_idle_remove_by_data (self);
    gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
  
@@ -153,7 +153,7 @@ index a161cac..33f6594 100644
    if (GTK_IS_WIDGET (priv->last_menu) &&
        gtk_widget_get_realized (GTK_WIDGET (priv->last_menu)))
      {
-@@ -617,24 +595,6 @@ initial_resync (PanelService *self)
+@@ -628,24 +606,6 @@ initial_resync (PanelService *self)
    return FALSE;
  }
  
@@ -178,7 +178,7 @@ index a161cac..33f6594 100644
  static void
  update_keybinding (GSettings *settings, const gchar *key, gpointer data)
  {
-@@ -746,29 +706,6 @@ panel_service_init (PanelService *self)
+@@ -757,29 +717,6 @@ panel_service_init (PanelService *self)
    update_keybinding (priv->gsettings, MENU_TOGGLE_KEYBINDING_KEY, &priv->menu_toggle);
    update_keybinding (priv->gsettings, SHOW_DASH_KEY, &priv->show_dash);
    update_keybinding (priv->gsettings, SHOW_HUD_KEY, &priv->show_hud);
@@ -208,7 +208,7 @@ index a161cac..33f6594 100644
  }
  
  static gboolean
-@@ -915,7 +852,6 @@ initial_load_default_or_custom_indicators (PanelService *self, GList *indicators
+@@ -926,7 +863,6 @@ initial_load_default_or_custom_indicators (PanelService *self, GList *indicators
    suppress_signals = FALSE;
  
    g_idle_add ((GSourceFunc)initial_resync, self);
@@ -256,10 +256,10 @@ index 742e39b..0000000
 -respawn
 -exec ${CMAKE_INSTALL_PREFIX}/lib/unity/unity-panel-service
 diff --git a/tools/unity.cmake b/tools/unity.cmake
-index c761551..dd5b75e 100755
+index 15d0368..1e493e2 100755
 --- a/tools/unity.cmake
 +++ b/tools/unity.cmake
-@@ -113,9 +113,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
+@@ -126,9 +126,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
  
      try:
          debug_mode = 2 if advanced_debug else 1 if debug else 0
@@ -271,10 +271,10 @@ index c761551..dd5b75e 100755
      except KeyboardInterrupt, e:
          try:
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
-index b56c779..1e6233a 100644
+index ed39e58..6dfac60 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
-@@ -67,7 +67,6 @@ set (UNITY_SHARED_SOURCES
+@@ -68,7 +68,6 @@ set (UNITY_SHARED_SOURCES
       UnitySettings.cpp
       UnityWindowStyle.cpp
       UnityWindowView.cpp
@@ -422,5 +422,5 @@ index 3be88d9..0000000
 -
 -#endif
 -- 
-2.0.0
+2.1.1
 

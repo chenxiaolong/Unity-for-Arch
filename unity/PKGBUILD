@@ -5,75 +5,83 @@
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
-_actual_ver=7.3.0
-_extra_ver=+14.10.20140731.1
+_actual_ver=7.3.1
+_extra_ver=+14.10.20140915
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/unity"
-license=('GPL')
-depends=('bamf-ubuntu' 'boost' 'cairo-ubuntu' 'compiz-ubuntu>=0.9.11' 'clutter-gtk' 'gjs' 'gnome-desktop' 'gnome-screensaver' 'gnome-session-ubuntu' 'hud' 'ido' 'libgnomeui' 'libindicator' 'libindicator3' 'libnotify' 'libunique' 'libunity' 'libunity-misc' 'libxfixes' 'nux>=4.0.6' 'unity-asset-pool' 'unity-scope-home' 'libxi' 'xpathselect' 'zeitgeist-ubuntu' 'lightdm-unity-greeter')
-makedepends=('chrpath' 'cmake' 'doxygen' 'intltool' 'patchutils' 'pkg-config' 'python2-distribute')
-groups=('unity')
-provides=("unity-core=${_actual_ver}")
-conflicts=('unity-core')
+license=(GPL)
+depends=(bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs gnome-desktop
+         gnome-screensaver gnome-session-ubuntu hud ido libgnomeui libindicator
+         libindicator3 libnotify libunique libunity libunity-misc libxfixes nux
+         unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
+         lightdm-unity-greeter)
+makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
+             python2-distribute)
+groups=(unity)
 
-options=('!ccache')
+#options=(!ccache)
 install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        '0001-Disable-tests.patch'
-        '0002-Arch-Linux-branding.patch'
-        '0003-Revert-r3134-Remove-Systray-Whitelist.patch'
-        '0004-Disable-Werror.patch'
-        '0005-Fix-launchers.patch'
-        '0006-Remove-Upstart-stuff.patch'
-        '0007-Remove-social.scope.patch'
-        'com.ubuntu.user-interface.gschema.xml'
-        'launcher_bfb.png'
-        '10_unity.gschema.override'
-        '99unity-panel-service'
-        'unity-debug'
-        'run_this_if_unity_is_on_fire.py')
-sha512sums=('8dacd5db8fd44c95409bd4414624854777f1f1545037f38dcc9efe322688655f000f58413f624d347183248c62c1e4aec0b36b93ce6e3bf3f5eeb39dcf7f9832'
-            '29d6f463c2348378a7b1c8aaf9d62cda85e31662f851aeeb46cd5f12c51dedd98ed02e70efdddba0c970a03272a885050792650d711cc29505e84a9cbc56b18a'
-            '099d0d8825202875936dd68c1aa45ebcf6aafeaedff94e2ffd3cfc29371204752c476a44a64e5f02d980d20b89452444570b75beb699c6f6e7d27b09444b1445'
-            'a59c9a0f01a484264fd1707d26e65c8cf4e367c113d24b6538b62f6871dac98f72bc6074099153a07dcf9151804fdfe68d694a1e8e3fa533c7f3fc59e29ff9ec'
-            '8b242209c48a884c5384ac37e8e6193295815002b49ae8f2fa3f75847e7e9f72429b2c8fcabee0fbcea0af50b876bf9f84cc1d2b8f0624f4326cbb423663d3a7'
-            'c88f127ec87e8ed8a91604e1a766d66753097c35f3653f033ba6aec7970b6b9cd834f7d8056a64fb4c4200db5f221c7e2a53bbff66f165f489f2e8ef9eab38b5'
-            '0c81b0889a131c38eb0a424a85609024e8416d18dc43088c91d568afe602d4f845348246c4c800dabdd90c801dc32a13b5b0c4d68508070ba0b2e0bff610c882'
-            '81151a09c36517690999488e85a19c2109bdd02b42d1b9748727ba905dd26769c52c35d7909041f814ead8ff75d874109bd6511787734a44c5868e889e92696c'
-            '9af54da788fdda80679711c0c15658c044b11be9a0f5fb8066d9b0e36818a436138a9e56a3d9e20d6af061135cfd8c6def0adf84c9b5bc7ce9b770aed75bc5c7'
+        0001-Disable-tests.patch
+        0002-Arch-Linux-branding.patch
+        0003-Revert-r3134-Remove-Systray-Whitelist.patch
+        0004-Disable-Werror.patch
+        0005-Fix-launchers.patch
+        0006-Remove-Upstart-stuff.patch
+        0007-Remove-social.scope.patch
+        0008-Remove-xpathselect-dependency.patch
+        com.ubuntu.user-interface.gschema.xml
+        launcher_bfb.png
+        10_unity.gschema.override
+        99unity-panel-service
+        unity-debug
+        run_this_if_unity_is_on_fire.py
+        unity.pam)
+sha512sums=('491708dd1fe4dbdf37c2a8a7876c95918e65ef466b1a0d8e57e2179e86bec75c09d25fcc5f5900d022769589ffa1242aae4e90d712023dfb18a4b95190c90026'
+            '1ce86ffafc71d5c22b26298ee779a6158a1ef30ca3c98ab704c83c9f93d471d1b5230715c38b409c2df9ad42fe1a31b8bda011323b402c17816ac67f8d3c586b'
+            '8c1ede40177dd7106d8c41b45bae3658d916f73ecd68b1ef47996fc19f0b4109dc58a41aa5444498ad52caecdd14f4dc53b2acfe619e3197d7d24842b9bb0251'
+            '00f679aeb3a416f71ab1a8335c5c019daf09ab2d0b5a1ca45c060e5692dae05222ef90d303ee35442ad74da0f8e72501134fc03b43fa00584a43bea54fdfa4c3'
+            'f6789016ad6fd7721a4750a7bf2fab03376dac6a031d73dfa84ec6df54ee9c32fed49dfd00b06f770cf99f0ebfec2ba2c58ce3722517f145352ca9575fc5fdd4'
+            'bf905087b763b1f06171ccf22cdbb16bc7c37c2e93443ad42c437fea52a3c9cb6107498915120f9e8caf200951503188c1d7ae6d7642d20eb3da421e4a8ebe41'
+            '1c522f8376e909fbe56de3f7dfba7b1178f385eb87de556c339be7219dae807d7f05318ec6879c70601c61a97500e0b4cb4e1a09d3457d5126dfb47b826c3657'
+            'a4a21b215afc4846f4ec6f201516be92b050c9fda763c36d9bc5ed1bdbc818cdf92b4b2cb4abee82de1ee36018e83c4e8ef6f78b40c34ad6cf5cdc1d2361bd35'
+            'feae208b5b63e6c8781c37a186c0efa4a18b81aa1fe5387c63a6668596dac20ee92c37fe512583ba7e125beb3a0ac9f0787e04f0ade1cd6e619f6025f5eedccc'
+            'b7d05067a32d2ec9e9e8b4b5b4f99c02ddeda6917f8c13834bd60ab0127b149cbd43124900633511892e187c08b30cc4e62d8c305cdcc805cf32f2efc1df7702'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
-            'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d')
+            'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
+            '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001-Disable-tests.patch"
-  patch -p1 -i "${srcdir}/0002-Arch-Linux-branding.patch"
-  patch -p1 -i "${srcdir}/0003-Revert-r3134-Remove-Systray-Whitelist.patch"
-  patch -p1 -i "${srcdir}/0004-Disable-Werror.patch"
-  patch -p1 -i "${srcdir}/0005-Fix-launchers.patch"
-  patch -p1 -i "${srcdir}/0006-Remove-Upstart-stuff.patch"
-  patch -p1 -i "${srcdir}/0007-Remove-social.scope.patch"
+  patch -p1 -i ../0001-Disable-tests.patch
+  patch -p1 -i ../0002-Arch-Linux-branding.patch
+  patch -p1 -i ../0003-Revert-r3134-Remove-Systray-Whitelist.patch
+  patch -p1 -i ../0004-Disable-Werror.patch
+  patch -p1 -i ../0005-Fix-launchers.patch
+  patch -p1 -i ../0006-Remove-Upstart-stuff.patch
+  patch -p1 -i ../0007-Remove-social.scope.patch
+  patch -p1 -i ../0008-Remove-xpathselect-dependency.patch
 
   # Apply Ubuntu patches
-  patch -p1 -i "${srcdir}/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i "../unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
   for i in $(grep -v '#' debian/patches/series); do
     patch -p1 -i "debian/patches/${i}"
   done
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   # (From debian/rules) http://ccache.samba.org/manual.html#_precompiled_headers
   export CCACHE_SLOPPINESS=time_macros
@@ -87,6 +95,7 @@ build() {
     -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_SYSCONFDIR=/etc \
     -DUSE_GSETTINGS=TRUE \
     ..
 
@@ -105,7 +114,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
   make DESTDIR="${pkgdir}/" install
 
   # Install profile convert files
@@ -152,6 +161,8 @@ package() {
 
   # FIRE!
   install -m755 "${srcdir}/run_this_if_unity_is_on_fire.py" "${pkgdir}/usr/bin/"
-}
 
-# vim:set ts=2 sw=2 et:
+  # Install PAM configuration file
+  rm "${pkgdir}/etc/pam.d/unity"
+  install -m644 "${srcdir}/unity.pam" "${pkgdir}/etc/pam.d/unity"
+}

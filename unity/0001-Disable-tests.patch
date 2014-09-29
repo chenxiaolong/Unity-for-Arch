@@ -1,17 +1,17 @@
-From 4ddf636534fb65bc08eacca4af61f020019b73dd Mon Sep 17 00:00:00 2001
+From 9dbd6fae91fa21e6b64d44c3c52e8f020ecc5e42 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:06:38 -0400
-Subject: [PATCH 1/7] Disable tests
+Subject: [PATCH 1/8] Disable tests
 
 ---
  CMakeLists.txt | 49 -------------------------------------------------
  1 file changed, 49 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c60ebdc..1477461 100644
+index 14cfded..9e26dc5 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -276,56 +276,7 @@ endif ()
+@@ -277,56 +277,7 @@ endif ()
  # subdirs
  add_subdirectory(doc)
  
@@ -69,5 +69,5 @@ index c60ebdc..1477461 100644
  add_subdirectory(UnityCore)
  add_subdirectory(guides)
 -- 
-2.0.0
+2.1.1
 

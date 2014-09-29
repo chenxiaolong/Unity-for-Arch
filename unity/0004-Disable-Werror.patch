@@ -1,7 +1,7 @@
-From 3d975cfd9292a68a4e612f14a4ca9e19bb171b59 Mon Sep 17 00:00:00 2001
+From a4bfd591d66d61b7d17ec460a9b80904b67ffd11 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
-Subject: [PATCH 4/7] Disable -Werror
+Subject: [PATCH 4/8] Disable -Werror
 
 ---
  CMakeLists.txt          | 2 +-
@@ -9,7 +9,7 @@ Subject: [PATCH 4/7] Disable -Werror
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 1477461..4bc6504 100644
+index 9e26dc5..17e3d09 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -193,7 +193,7 @@ if (BOOT_LOGGER)
@@ -35,5 +35,5 @@ index 103c885..4514ff1 100644
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.0.0
+2.1.1
 
