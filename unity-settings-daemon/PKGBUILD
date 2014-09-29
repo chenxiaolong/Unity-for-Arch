@@ -5,43 +5,47 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=14.04.0
-_extra_ver=+14.10.20140605
+_extra_ver=+14.10.20140922
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Unity Settings Daemon"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
-license=('GPL')
-groups=('unity')
-depends=('gnome-desktop-compat' 'gnome-settings-daemon-ubuntu' 'gsettings-desktop-schemas-ubuntu' 'hicolor-icon-theme' 'ibus' 'libappindicator3' 'libcanberra-pulse' 'libnotify' 'librsvg' 'libsystemd' 'libwacom' 'pulseaudio' 'pulseaudio-alsa' 'upower-compat')
-makedepends=('intltool' 'xf86-input-wacom' 'libxslt' 'docbook-xsl')
+license=(GPL)
+groups=(unity)
+depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu
+         hicolor-icon-theme ibus libappindicator3 libcanberra-pulse libnotify
+         librsvg libsystemd libwacom libxkbfile mesa pulseaudio pulseaudio-alsa
+         upower-compat)
+makedepends=(intltool xf86-input-wacom libxslt docbook-xsl)
+conflicts=(gnome-desktop-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001-Use-gnome-desktop-compat.patch'
-        '0002-Remove-accountsservice-dependency.patch'
-        '0003-Use-upower-compat.patch'
-        '0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch'
-        '0002-Remove-lid-close.patch')
-sha512sums=('3e3a30effd8b006174bedc6e04e9552f15108f6aac18aa915b59f1958b9d3e86bffc42cebe2ee54b5055529cda92b0308e86500efaebbe4a1d727938e9fee1a3'
-            'a6b95df3ac8bb05c217ecb5cca6da4a7c411d153064efa9a596f931d9bb878e6489ca2d88d566cf621c79c195c7104ad18b3309900b1f8d5e321ac9ac95076ae'
-            'a81ed0404fce6381a13b546775eba90b5aef950c2ce32ebf70d49438841646cad54a82460cd77a4b42b5ad98d46c3e5cfbe298e6283b2d5a7e076eedc59ce59b'
-            '38403438559dc7a00c0bf4d0ffecd019f1942e91cd9080b991ec5d9c2d192b13dd0f82d08edac19531e0366902d75dab6e1fd11e3a479289868c8376c8986189'
-            'ecf114ce359893eb9b134ae901313f380d9243c9eb5cd4573bb29c0dc1c9c4681eb3c7b3d363d718220428f7760e21bcf514a3429af5c00afe91b368bb9dd7dc'
+        0001-keyboard-Move-code-to-get-the-XkbRF_VarDefsRec-here.patch
+        0002-Remove-accountsservice-dependency.patch
+        0003-Use-upower-compat.patch
+        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+        0002-Remove-lid-close.patch)
+sha512sums=('dd3dfd96eb25308d46fa1c115b73d3c56d7168e86469fc3ca6e59a2dd2a24557670d83ef867f603fea9edbb89cee42ed07a77d048713141c71557f224138ae36'
+            'f9788d0ca52abd7d0e35dbe84728ef1759093801b44a6a27b2235efb226df5f469610518b2ca41c9a896ef216b33d34000f3f723443a00d65e6522471581cd5e'
+            'acd7f8eb250b69a1092ca8917d8a9304d386b81e53d5a9be7bbd3cf09afa30ba8f5d50a173e8073ea6e38319361f7391225e3190c878a19ff15073d8508cd0c2'
+            '186f53141b4ce0443709df8a65c4ed6090ee3173f16b079f70e21dba5bc3d7dbba90b87d674b76807b4fba026d842dec95cedbb88f66091fc3cfc38895532a7a'
+            '26f783ec485ac6cdb05bd127fc86af50fe1675cd7c0b7b665f70a427c044e952e3f3d3844c6b67911421efdb951839978c397bfd03737de879d1b61b8a0ec90d'
             '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i "${srcdir}/0001-Use-gnome-desktop-compat.patch"
-  patch -p1 -i "${srcdir}/0002-Remove-accountsservice-dependency.patch"
-  patch -p1 -i "${srcdir}/0003-Use-upower-compat.patch"
-  patch -p1 -i "${srcdir}/0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch"
-#  patch -p1 -i "${srcdir}/0002-Remove-lid-close.patch"
+  patch -p1 -i ../0001-keyboard-Move-code-to-get-the-XkbRF_VarDefsRec-here.patch
+  patch -p1 -i ../0002-Remove-accountsservice-dependency.patch
+  patch -p1 -i ../0003-Use-upower-compat.patch
+  patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+#  patch -p1 -i ../0002-Remove-lid-close.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
   intltoolize -f
@@ -61,7 +65,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 
   install -dm755 "${pkgdir}/usr/bin/"

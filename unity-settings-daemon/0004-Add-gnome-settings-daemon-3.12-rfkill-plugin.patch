@@ -1,4 +1,4 @@
-From 9dc324acaa666a51a2668d6b609c80bea98530ec Mon Sep 17 00:00:00 2001
+From fa234960de5911a756642da0f99b02fbd54d77da Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 9 Jun 2014 15:10:08 -0400
 Subject: [PATCH 4/4] Add gnome-settings-daemon 3.12 rfkill plugin
@@ -30,10 +30,10 @@ Subject: [PATCH 4/4] Add gnome-settings-daemon 3.12 rfkill plugin
  create mode 100644 plugins/rfkill/test-rfkill.c
 
 diff --git a/configure.ac b/configure.ac
-index 0af5a5d..827e7c3 100644
+index a562fb1..b60d72e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -392,6 +392,21 @@ fi
+@@ -404,6 +404,21 @@ fi
  AM_CONDITIONAL(BUILD_PRINT_NOTIFICATIONS, [test x"$enable_cups" = x"yes"])
  
  # ---------------------------------------------------------------------------
@@ -55,7 +55,7 @@ index 0af5a5d..827e7c3 100644
  # Enable Profiling
  # ---------------------------------------------------------------------------
  AC_ARG_ENABLE(profiling,
-@@ -510,6 +525,7 @@ plugins/media-keys/gvc/Makefile
+@@ -522,6 +537,7 @@ plugins/media-keys/gvc/Makefile
  plugins/mouse/Makefile
  plugins/orientation/Makefile
  plugins/print-notifications/Makefile
@@ -63,7 +63,7 @@ index 0af5a5d..827e7c3 100644
  plugins/remote-display/Makefile
  plugins/screensaver-proxy/Makefile
  plugins/smartcard/Makefile
-@@ -557,6 +573,7 @@ echo "
+@@ -570,6 +586,7 @@ echo "
          Smartcard support:        ${have_smartcard_support}
          Cups support:             ${enable_cups}
          Wacom support:            ${have_wacom}
@@ -1582,5 +1582,5 @@ index 67f6ae0..f1eb354 100644
  [type: gettext/ini]plugins/screensaver-proxy/screensaver-proxy.gnome-settings-plugin.in
  plugins/smartcard/gsd-smartcard.c
 -- 
-2.0.0
+2.1.1
 

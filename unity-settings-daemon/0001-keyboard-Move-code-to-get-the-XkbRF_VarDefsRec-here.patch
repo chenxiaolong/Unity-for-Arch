@@ -1,0 +1,256 @@
+From 324a71ed98d97f9fd234bf8dd1d8bb608ceffcba Mon Sep 17 00:00:00 2001
+From: Rui Matos <tiagomatos@gmail.com>
+Date: Wed, 12 Feb 2014 22:14:10 +0100
+Subject: [PATCH 1/4] keyboard: Move code to get the XkbRF_VarDefsRec here
+
+GnomeXkbInfo needs to drop its X dependency to be used on a wayland
+compositor gnome-shell and in that case the xkb data path is an
+implementation detail.
+
+This g-s-d plugin will still be used on X only setups so we'll move
+the code here.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=724277
+---
+ configure.ac                                |  5 +-
+ plugins/keyboard/Makefile.am                |  5 ++
+ plugins/keyboard/gsd-keyboard-manager.c     |  7 +--
+ plugins/keyboard/gsd-xkb-utils.c            | 90 +++++++++++++++++++++++++++++
+ plugins/keyboard/gsd-xkb-utils.h            | 32 ++++++++++
+ plugins/keyboard/test-keyboard-ibus-utils.c |  1 +
+ 6 files changed, 135 insertions(+), 5 deletions(-)
+ create mode 100644 plugins/keyboard/gsd-xkb-utils.c
+ create mode 100644 plugins/keyboard/gsd-xkb-utils.h
+
+diff --git a/configure.ac b/configure.ac
+index 79f34ea..fc76d2c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -204,7 +204,10 @@ else
+ fi
+ AM_CONDITIONAL(HAVE_IBUS, test "x$enable_ibus" == "xyes")
+ 
+-PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
++PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile xkeyboard-config $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
++
++XKB_BASE=$($PKG_CONFIG --variable xkb_base xkeyboard-config)
++AC_SUBST(XKB_BASE)
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl - Housekeeping plugin stuff
+diff --git a/plugins/keyboard/Makefile.am b/plugins/keyboard/Makefile.am
+index a749f7f..6d24508 100644
+--- a/plugins/keyboard/Makefile.am
++++ b/plugins/keyboard/Makefile.am
+@@ -19,6 +19,8 @@ libkeyboard_la_SOURCES = 	\
+ 	gsd-keyboard-plugin.c	\
+ 	gsd-keyboard-manager.h	\
+ 	gsd-keyboard-manager.c	\
++	gsd-xkb-utils.h		\
++	gsd-xkb-utils.c		\
+ 	$(NULL)
+ 
+ libkeyboard_la_CPPFLAGS = \
+@@ -28,6 +30,7 @@ libkeyboard_la_CPPFLAGS = \
+ 	-DDATADIR=\""$(pkgdatadir)"\"			\
+ 	-DLIBEXECDIR=\""$(libexecdir)"\"		\
+ 	-DGNOME_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
++	-DXKB_BASE=\""$(XKB_BASE)"\"			\
+ 	$(AM_CPPFLAGS)
+ 
+ libkeyboard_la_CFLAGS = \
+@@ -52,6 +55,8 @@ usd_test_keyboard_SOURCES =	\
+ 	test-keyboard.c		\
+ 	gsd-keyboard-manager.h	\
+ 	gsd-keyboard-manager.c	\
++	gsd-xkb-utils.h		\
++	gsd-xkb-utils.c		\
+ 	$(NULL)
+ 
+ usd_test_keyboard_CFLAGS = $(libkeyboard_la_CFLAGS)
+diff --git a/plugins/keyboard/gsd-keyboard-manager.c b/plugins/keyboard/gsd-keyboard-manager.c
+index c9676ec..219ada1 100644
+--- a/plugins/keyboard/gsd-keyboard-manager.c
++++ b/plugins/keyboard/gsd-keyboard-manager.c
+@@ -38,9 +38,7 @@
+ #include <gdk/gdkx.h>
+ #include <gtk/gtk.h>
+ 
+-#include <X11/XKBlib.h>
+ #include <X11/keysym.h>
+-#include <X11/extensions/XKBrules.h>
+ 
+ #define GNOME_DESKTOP_USE_UNSTABLE_API
+ #include <libgnome-desktop/gnome-languages.h>
+@@ -57,6 +55,7 @@
+ #include "gsd-keyboard-manager.h"
+ #include "gsd-input-helper.h"
+ #include "gsd-enums.h"
++#include "gsd-xkb-utils.h"
+ 
+ #define GSD_KEYBOARD_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GSD_TYPE_KEYBOARD_MANAGER, GsdKeyboardManagerPrivate))
+ 
+@@ -987,7 +986,7 @@ apply_xkb_settings (GsdKeyboardManager *manager,
+         XkbRF_VarDefsRec *xkb_var_defs;
+         gchar *rules_file_path;
+ 
+-        gnome_xkb_info_get_var_defs (&rules_file_path, &xkb_var_defs);
++        gsd_xkb_get_var_defs (&rules_file_path, &xkb_var_defs);
+ 
+         free (xkb_var_defs->options);
+         xkb_var_defs->options = options;
+@@ -1013,7 +1012,7 @@ apply_xkb_settings (GsdKeyboardManager *manager,
+         if (gdk_error_trap_pop ())
+                 g_warning ("Error loading XKB rules");
+ 
+-        gnome_xkb_info_free_var_defs (xkb_var_defs);
++        gsd_xkb_free_var_defs (xkb_var_defs);
+         g_free (rules_file_path);
+ 
+         XkbLockModifiers (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XkbUseCoreKbd, LockMask, 0);
+diff --git a/plugins/keyboard/gsd-xkb-utils.c b/plugins/keyboard/gsd-xkb-utils.c
+new file mode 100644
+index 0000000..515e98d
+--- /dev/null
++++ b/plugins/keyboard/gsd-xkb-utils.c
+@@ -0,0 +1,90 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2012 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include "config.h"
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include <glib.h>
++#include <gdk/gdk.h>
++#include <gdk/gdkx.h>
++
++#include "gsd-xkb-utils.h"
++
++#ifndef XKB_RULES_FILE
++#define XKB_RULES_FILE "evdev"
++#endif
++#ifndef XKB_LAYOUT
++#define XKB_LAYOUT "us"
++#endif
++#ifndef XKB_MODEL
++#define XKB_MODEL "pc105+inet"
++#endif
++
++void
++gsd_xkb_get_var_defs (char             **rules,
++                      XkbRF_VarDefsRec **var_defs)
++{
++        Display *display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
++        char *tmp;
++
++        g_return_if_fail (rules != NULL);
++        g_return_if_fail (var_defs != NULL);
++
++        *rules = NULL;
++        *var_defs = g_new0 (XkbRF_VarDefsRec, 1);
++
++        gdk_error_trap_push ();
++
++        /* Get it from the X property or fallback on defaults */
++        if (!XkbRF_GetNamesProp (display, rules, *var_defs) || !*rules) {
++                *rules = strdup (XKB_RULES_FILE);
++                (*var_defs)->model = strdup (XKB_MODEL);
++                (*var_defs)->layout = strdup (XKB_LAYOUT);
++                (*var_defs)->variant = NULL;
++                (*var_defs)->options = NULL;
++        }
++
++        gdk_error_trap_pop_ignored ();
++
++        tmp = *rules;
++
++        if (*rules[0] == '/')
++                *rules = g_strdup (*rules);
++        else
++                *rules = g_build_filename (XKB_BASE, "rules", *rules, NULL);
++
++        free (tmp);
++}
++
++void
++gsd_xkb_free_var_defs (XkbRF_VarDefsRec *var_defs)
++{
++        g_return_if_fail (var_defs != NULL);
++
++        free (var_defs->model);
++        free (var_defs->layout);
++        free (var_defs->variant);
++        free (var_defs->options);
++
++        g_free (var_defs);
++}
++
+diff --git a/plugins/keyboard/gsd-xkb-utils.h b/plugins/keyboard/gsd-xkb-utils.h
+new file mode 100644
+index 0000000..e8a5946
+--- /dev/null
++++ b/plugins/keyboard/gsd-xkb-utils.h
+@@ -0,0 +1,32 @@
++/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
++ *
++ * Copyright (C) 2012 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#ifndef __GSD_XKB_UTILS_H
++#define __GSD_XKB_UTILS_H
++
++#include <X11/XKBlib.h>
++#include <X11/extensions/XKBrules.h>
++
++void
++gsd_xkb_get_var_defs (char             **rules,
++                      XkbRF_VarDefsRec **var_defs);
++void
++gsd_xkb_free_var_defs (XkbRF_VarDefsRec *var_defs);
++
++#endif  /* __GSD_XKB_UTILS_H */
+diff --git a/plugins/keyboard/test-keyboard-ibus-utils.c b/plugins/keyboard/test-keyboard-ibus-utils.c
+index 6af034a..2365b9d 100644
+--- a/plugins/keyboard/test-keyboard-ibus-utils.c
++++ b/plugins/keyboard/test-keyboard-ibus-utils.c
+@@ -1,3 +1,4 @@
++#include "gsd-xkb-utils.c"
+ #include "gsd-keyboard-manager.c"
+ 
+ static void
+-- 
+2.1.1
+

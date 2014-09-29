@@ -1,4 +1,4 @@
-From 0b422c424b4e86fc79ddb1ae42f69ecb0bfbad7d Mon Sep 17 00:00:00 2001
+From 6b370035df389264798bd36e7e541fa761c2812e Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:23:30 -0400
 Subject: [PATCH 2/4] Remove accountsservice dependency
@@ -9,23 +9,23 @@ Subject: [PATCH 2/4] Remove accountsservice dependency
  2 files changed, 1 insertion(+), 73 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index eeb05c8..b891cb1 100644
+index fc76d2c..552dd79 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -195,7 +195,7 @@ else
+@@ -204,7 +204,7 @@ else
  fi
  AM_CONDITIONAL(HAVE_IBUS, test "x$enable_ibus" == "xyes")
  
--PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile $IBUS_MODULE gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
-+PKG_CHECK_MODULES(KEYBOARD, xkbfile $IBUS_MODULE gnome-desktop-compat-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
+-PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile xkeyboard-config $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
++PKG_CHECK_MODULES(KEYBOARD, xkbfile xkeyboard-config $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
  
- dnl ---------------------------------------------------------------------------
- dnl - Housekeeping plugin stuff
+ XKB_BASE=$($PKG_CONFIG --variable xkb_base xkeyboard-config)
+ AC_SUBST(XKB_BASE)
 diff --git a/plugins/keyboard/gsd-keyboard-manager.c b/plugins/keyboard/gsd-keyboard-manager.c
-index c9676ec..6324950 100644
+index 219ada1..d103b0b 100644
 --- a/plugins/keyboard/gsd-keyboard-manager.c
 +++ b/plugins/keyboard/gsd-keyboard-manager.c
-@@ -50,8 +50,6 @@
+@@ -48,8 +48,6 @@
  #include <ibus.h>
  #endif
  
@@ -34,7 +34,7 @@ index c9676ec..6324950 100644
  #include "gnome-settings-session.h"
  #include "gnome-settings-profile.h"
  #include "gsd-keyboard-manager.h"
-@@ -1019,67 +1017,6 @@ apply_xkb_settings (GsdKeyboardManager *manager,
+@@ -1018,67 +1016,6 @@ apply_xkb_settings (GsdKeyboardManager *manager,
          XkbLockModifiers (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XkbUseCoreKbd, LockMask, 0);
  }
  
@@ -102,7 +102,7 @@ index c9676ec..6324950 100644
  static gboolean
  apply_input_source (GsdKeyboardManager *manager,
                      guint               current)
-@@ -1179,8 +1116,6 @@ apply_input_sources_settings (GSettings          *settings,
+@@ -1178,8 +1115,6 @@ apply_input_sources_settings (GSettings          *settings,
          GVariant *sources;
          guint n_sources;
          guint current;
@@ -111,7 +111,7 @@ index c9676ec..6324950 100644
  
          sources = g_settings_get_value (priv->input_sources_settings, KEY_INPUT_SOURCES);
          n_sources = g_variant_n_children (sources);
-@@ -1198,13 +1133,6 @@ apply_input_sources_settings (GSettings          *settings,
+@@ -1197,13 +1132,6 @@ apply_input_sources_settings (GSettings          *settings,
                  goto exit;
          }
  
@@ -126,5 +126,5 @@ index c9676ec..6324950 100644
  
  exit:
 -- 
-2.0.0
+2.1.1
 
