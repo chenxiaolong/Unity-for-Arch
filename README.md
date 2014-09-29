@@ -93,7 +93,6 @@ To compile from source, just build all of the packages in the following order:
 | unity-scope-home                 | Unity lens for aggregating search results  |
 | unity-scopes                     | Unity scopes for searching online sources  |
 | compiz-ubuntu                    | Compositing window manager                 |
-| xpathselect                      | Select tree objects using XPath queries    |
 | lightdm-unity-greeter            | LightDM greeter for Unity                  |
 | unity                            | Desktop shell designed for efficiency      |
 | unity-language-packs             | Unity language packs                       |
