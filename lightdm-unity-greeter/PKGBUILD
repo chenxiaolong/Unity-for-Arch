@@ -8,7 +8,7 @@
 pkgname=lightdm-unity-greeter
 _ubuntu_rel=0ubuntu1
 pkgver=14.10.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The greeter (login screen) application for Unity. It is implemented as a LightDM greeter."
 arch=('i686' 'x86_64')
 url="https://launchpad.net/unity-greeter"
@@ -70,6 +70,8 @@ build() {
     --sbindir=/usr/bin \
     --libexecdir=/usr/lib/lightdm
 
+   make || :
+   sed -i '1i#include <gtk/gtkx.h>' src/menubar.c
    make
 }
 
