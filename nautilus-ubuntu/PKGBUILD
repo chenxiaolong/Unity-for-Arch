@@ -9,42 +9,44 @@
 # vercheck-ppa: name=${pkgbase%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgbase=nautilus-ubuntu
-pkgname=('nautilus-ubuntu' 'libnautilus-extension-ubuntu')
-_ppa_rel=0ubuntu1~trusty2
-pkgver=3.12.2
+pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
+_ppa_rel=0ubuntu1~utopic1
+pkgver=3.14.0
 pkgrel=1
 pkgdesc="GNOME and Unity file manager"
-arch=('i686' 'x86_64')
-license=('GPL')
-depends=('libexif' 'gnome-desktop' 'exempi' 'gvfs' 'desktop-file-utils' 'gnome-icon-theme' 'dconf' 'libtracker-sparql' 'libnotify' 'nautilus-sendto' 'libunity' 'libzeitgeist')
-makedepends=('intltool' 'gobject-introspection' 'python')
+arch=(i686 x86_64)
+license=(GPL)
+depends=(libexif gnome-desktop exempi gvfs desktop-file-utils dconf
+         libtracker-sparql libnotify nautilus-sendto libunity libzeitgeist)
+makedepends=(intltool gobject-introspection python python2 python2-packagekit)
 url="http://www.gnome.org"
-options=('!emptydirs')
+options=(!emptydirs)
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${pkgver}-${_ppa_rel}.debian.tar.xz")
-sha512sums=('59a80fef3cedff5393061aeead552eec80bbd920ae71b918bb21ca6fc59ba1c4e85c641885a12dde5208345b8659f9d4a6e1ddf865f4cb94afd5a3a339839c01'
-            'deb4133045d00dad8a79cf8e405073c450a6bd69c3653afe67efacb967f1e89f5c3f46a135997a85df8de8c6bf485e1afdd7d9225ab6a1cb5f839792afbb4187')
+        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+sha512sums=('114e7edebd84e6c3bdc0afdc2822b80c16d361f8417973eaed7bdd3fe3af239dd2eed3f02657b02142ecee36250cec675849518c688ef40b397e5e9b115d692f'
+            '100b7a190f9ce3ef2c30900478a842693861fbd761d038095618812a9ac60100e2f79c152a0e57dffe9f29321b2bf0533f8850646ef5aad1a0cbc0a80ab74a0a')
 
 prepare() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
 
   # Disable patches
-    # Don't use Ubuntu help
-      sed -i '/15_use-ubuntu-help.patch/d' "${srcdir}/debian/patches/series"
+    sed -i -e '/15_use-ubuntu-help.patch/d' \
+           -e '/08_clean_session_capplet.patch/d' \
+           ../debian/patches/series
 
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "../debian/patches/${i}"
   done
 
   sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
 }
 
 build() {
-  cd "${srcdir}/${pkgname%-*}-${pkgver}"
+  cd "${pkgname%-*}-${pkgver}"
 
   autoreconf -vfi
 
@@ -64,12 +66,12 @@ build() {
 }
 
 package_nautilus-ubuntu() {
-  depends+=('libnautilus-extension-ubuntu')
-  groups=('gnome')
+  depends+=(libnautilus-extension-ubuntu)
+  groups=(gnome unity)
   provides=("nautilus=${pkgver}")
-  conflicts=('nautilus')
+  conflicts=(nautilus)
 
-  cd "${srcdir}/nautilus-${pkgver}"
+  cd "nautilus-${pkgver}"
   make DESTDIR="${pkgdir}/" install
 
   # Split libnautilus-extension
@@ -88,16 +90,14 @@ package_nautilus-ubuntu() {
   install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
 
   # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+  #rm -r "${pkgdir}/usr/share/locale/"
 }
 
 package_libnautilus-extension-ubuntu() {
   pkgdesc="Library for extending the ${pkgdesc}"
-  depends=('cairo' 'gtk3')
+  depends=(cairo gtk3)
   provides=("libnautilus-extension=${pkgver}")
-  conflicts=('libnautilus-extension')
+  conflicts=(libnautilus-extension)
 
   mv n-e/* "${pkgdir}/"
 }
-
-# vim:set ts=2 sw=2 et:
