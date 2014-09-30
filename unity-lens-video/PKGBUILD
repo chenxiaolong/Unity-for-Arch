@@ -7,23 +7,22 @@
 pkgname=unity-lens-video
 _actual_ver=0.3.15
 _extra_ver=+13.10.20130920
-pkgver=${_actual_ver}.daily13.09.20
-pkgrel=102
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+epoch=1
 pkgdesc="Unity Video lens"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/unity-lens-videos"
-license=('GPL')
-depends=('dee' 'json-glib' 'libgee06' 'libsoup-gnome' 'libunity' 'libzeitgeist' 'unity-lens-music')
-makedepends=('gnome-common' 'intltool' 'vala')
-provides=("unity-scope-video-remote=${pkgver}")
-conflicts=('unity-scope-video-remote')
-replaces=('unity-scope-video-remote')
-groups=('unity')
+license=(GPL)
+depends=(dee json-glib libgee06 libsoup-gnome libunity libzeitgeist
+         unity-lens-music)
+makedepends=(gnome-common intltool vala)
+groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('8afe4c92d3c85345c9a6e448227b775305afd9605af7ad147a43bec3485334a1b15c4b2ee0620230d25866bf6712d2fc5507cf2a6e90818fa896dca1295913b8')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
   intltoolize -f
@@ -32,8 +31,6 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
