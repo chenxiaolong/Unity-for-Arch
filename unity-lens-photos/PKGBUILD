@@ -7,21 +7,23 @@
 pkgname=unity-lens-photos
 _actual_ver=1.0
 _extra_ver=+14.04.20140318
-pkgver=${_actual_ver}.daily14.03.18
-pkgrel=2
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+epoch=1
 pkgdesc="Unity lens for browsing photos"
-arch=('any')
+arch=(any)
 url="https://launchpad.net/unity-lens-photos"
-license=('GPL')
-groups=('unity')
-depends=('python-httplib2' 'python-gobject' 'python-oauthlib' 'dee' 'libunity' 'libsoup' 'libsoup-gnome')
-makedepends=('python' 'python-distutils-extra')
+license=(GPL)
+groups=(unity)
+depends=(python-httplib2 python-gobject python-oauthlib dee libunity libsoup
+         libsoup-gnome)
+makedepends=(python python-distutils-extra)
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('8a61f8966dcec0aad69d6134bd67a211a6bc78bc81f997022b2950a556a89b019e9c1d28b5cb1840d85f513d7b8b105f2148903bb03b29647a4302330d4de61d')
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   python setup.py install --root="${pkgdir}/" --optimize=1
 
@@ -39,5 +41,3 @@ package() {
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
 }
-
-# vim:set ts=2 sw=2 et:
