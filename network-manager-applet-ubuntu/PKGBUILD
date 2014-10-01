@@ -15,45 +15,48 @@ pkgname=(network-manager-applet-ubuntu libnm-gtk-ubuntu)
 _ubuntu_rel=0ubuntu6
 _ubuntu_ver=0.9.8.8
 pkgver=0.9.10.0
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Applet for managing network connections"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="http://www.gnome.org/projects/NetworkManager/"
-license=('GPL' 'LGPL2.1')
-makedepends=(libnm-glib libsecret gtk3 gnome-icon-theme mobile-broadband-provider-info iso-codes libnotify libmm-glib intltool gobject-introspection)
+license=(GPL LGPL2.1)
+makedepends=(libnm-glib libsecret gtk3 gnome-icon-theme
+             mobile-broadband-provider-info iso-codes libnotify libmm-glib
+             intltool gobject-introspection)
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*.*}/${pkgbase%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.xz"
-        '0001-nm-applet-use-indicator.patch')
+        0001-nm-applet-use-indicator.patch)
 sha512sums=('d9472bb6613fa8feb7bbde15932542adcfdb99897d6f1376ea4d511a6ff785debb0b4dd630deb7dc6ba2c244ca2487a00cd8c758274a914d61864370226e2b1d'
             '68df9d224b77629fb21e6651c815b8b9d36be5f7d2010f6e91a86c67523c364ed8b1a1d798929212d3c43a92824882aa7edd64327474404b50482667d7c6024e'
             '9d876446ff9199b48702315210f94fba7216411d7d16975ef4677daa6aafd7237bd7370882db546850a9a9e3824bcd8ba6c71756f919376194b2ef5e87d1666f')
 
 prepare() {
-  cd "${srcdir}/${pkgbase%-*}-${pkgver}"
+  cd "${pkgbase%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
 
-  sed -i '/git_use_paths_in_vpn_name_files_4867951.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp289466_always_show_tray_icon.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp328572-dxteam-connect-text.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp330571_dxteam_wired_connect_text.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp330608_dxteam_gsm_connect_text.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp341684_device_sensitive_disconnect_notify.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/applet-wifi-menu-before-vpn.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/key-certificate-extensions.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/lp829673_gconf_hide_applet.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/nm-applet-use-indicator.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/hide_policy_items_env_var.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/0001_Move_on_with_enter_in_the_country_page_of_the_new_mobile_wizard.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/set_atk_relations.patch/d' "${srcdir}/debian/patches/series"
-  sed -i '/11-user-connections.patch/d' "${srcdir}/debian/patches/series"
+  sed -i -e '/git_use_paths_in_vpn_name_files_4867951.patch/d' \
+         -e '/lp289466_always_show_tray_icon.patch/d' \
+         -e '/lp328572-dxteam-connect-text.patch/d' \
+         -e '/lp330571_dxteam_wired_connect_text.patch/d' \
+         -e '/lp330608_dxteam_gsm_connect_text.patch/d' \
+         -e '/lp341684_device_sensitive_disconnect_notify.patch/d' \
+         -e '/applet-wifi-menu-before-vpn.patch/d' \
+         -e '/key-certificate-extensions.patch/d' \
+         -e '/lp829673_gconf_hide_applet.patch/d' \
+         -e '/nm-applet-use-indicator.patch/d' \
+         -e '/hide_policy_items_env_var.patch/d' \
+         -e '/0001_Move_on_with_enter_in_the_country_page_of_the_new_mobile_wizard.patch/d' \
+         -e '/set_atk_relations.patch/d' \
+         -e '/11-user-connections.patch/d' \
+         ../debian/patches/series
 
-  patch -p1 -i "${srcdir}/0001-nm-applet-use-indicator.patch"
+  patch -p1 -i ../0001-nm-applet-use-indicator.patch
 
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "../debian/patches/${i}"
   done
 
   sed -i 's/-Werror//g' m4/compiler_warnings.m4
@@ -81,11 +84,16 @@ build() {
   make -j1
 }
 
+check() {
+  cd "${pkgbase%-*}-${pkgver}"
+  make -k check
+}
+
 package_network-manager-applet-ubuntu() {
-  depends=(libnm-gtk libmm-glib libnotify libsecret libappindicator3)
+  depends=(libnm-gtk-ubuntu libmm-glib libnotify libsecret libappindicator3)
   install=network-manager-applet.install
   provides=("network-manager-applet=${pkgver}")
-  conflicts=('network-manager-applet')
+  conflicts=(network-manager-applet)
 
   cd "${pkgbase%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" install
@@ -132,9 +140,9 @@ package_network-manager-applet-ubuntu() {
 
 package_libnm-gtk-ubuntu() {
   pkgdesc="NetworkManager GUI library"
-  depends=('libnm-glib' 'gtk3' 'mobile-broadband-provider-info' 'iso-codes' 'libappindicator3')
+  depends=(libnm-glib gtk3 mobile-broadband-provider-info iso-codes)
   provides=("libnm-gtk=${pkgver}")
-  conflicts=('libnm-gtk')
+  conflicts=(libnm-gtk)
 
   cd "${pkgbase%-*}-${pkgver}"
   make DESTDIR="${pkgdir}" -C src/libnm-gtk install
