@@ -5,11 +5,13 @@
 # vercheck-ubuntu: name=gtk+3.0, repo=utopic
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
 # vercheck-gnome: name=gtk+, majorver=3.14
+# vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
+
+_use_ppa=true
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu7
-_ubuntu_ver=3.12.2
-pkgver=3.14.0
+_ppa_rel=0ubuntu1~utopic1
+pkgver=3.14.1
 pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
@@ -20,31 +22,37 @@ depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama
          colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme)
 makedepends=(gobject-introspection python2)
 provides=("gtk3=${pkgver}")
-conflicts=('gtk3')
-license=('LGPL')
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('2abfd67dec83c2b52526ca7594bceeb77bd3247e31fab2e0d770c894b13a92d859ff9d24aa592f37720145aa86a708e9d2a0654851df23ca2b3ea68c3924891f'
-            '52e492cbd39720e3d4afd87c0443cb76418e0b1b8994c797082c3226947a4990f38646840238bae91b6007506c5704c0bc46357dbe6d16c864a427a15be28b87')
+conflicts=(gtk3)
+license=(LGPL)
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz")
+
+if [[ "${_use_ppa}" != "true" ]]; then
+  source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+else
+  source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+fi
+
+sha512sums=('ae754fcaafc801da77b332e4a19e22ae12701811189a15816ba56d7b46ce714be3428f44ee58d978b648825986c5f08f86aeb0a546edf84475723da99e2602ba'
+            'f2ce95fc35785fbb72e6471d1984630e34b43c7fe63bbaa8a1faa00232697d37f43fe66591e0cf0e1525b990f57f77a76cc9278cb0ad5a9c60ecab83cacf0dce')
 
 prepare() {
   cd "gtk+-${pkgver}"
 
   # Apply Ubuntu Patches
-    echo > "${srcdir}/debian/patches/series"
+    echo > ../debian/patches/series
     # Enable patches
       # https://bugs.launchpad.net/indicator-messages/+bug/1088162
       # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
-        echo 'ubuntu_gtk_custom_menu_items.patch' >> "${srcdir}/debian/patches/series"
+        echo 'ubuntu_gtk_custom_menu_items.patch' >> ../debian/patches/series
       # Do not allow offscreen widgets to grab the cursor
-        echo '016_no_offscreen_widgets_grabbing.patch' >> "${srcdir}/debian/patches/series"
-        echo '017_no_offscreen_device_grabbing.patch' >> "${srcdir}/debian/patches/series"
+        echo '016_no_offscreen_widgets_grabbing.patch' >> ../debian/patches/series
+        echo '017_no_offscreen_device_grabbing.patch' >> ../debian/patches/series
       # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
-        echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> "${srcdir}/debian/patches/series"
+        echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
 
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "../debian/patches/${i}"
   done
 }
 
@@ -74,5 +82,3 @@ package() {
   cd "gtk+-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
-
-# vim:set ts=2 sw=2 et:
