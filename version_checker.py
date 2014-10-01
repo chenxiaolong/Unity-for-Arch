@@ -282,7 +282,9 @@ def get_ppa_ver(params):
             if not match:
                 continue
 
-            if native or norel:
+            if native:
+                latest = match.group(1) + ' ' + match.group(2)
+            elif norel:
                 latest = match.group(1)
             else:
                 latest = ' '.join(match.groups())
