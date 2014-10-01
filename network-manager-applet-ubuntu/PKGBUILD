@@ -132,7 +132,7 @@ package_network-manager-applet-ubuntu() {
 
 package_libnm-gtk-ubuntu() {
   pkgdesc="NetworkManager GUI library"
-  depends=(libnm-glib gtk3 mobile-broadband-provider-info iso-codes)
+  depends=('libnm-glib' 'gtk3' 'mobile-broadband-provider-info' 'iso-codes' 'libappindicator3')
   provides=("libnm-gtk=${pkgver}")
   conflicts=('libnm-gtk')
 
