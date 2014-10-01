@@ -479,6 +479,14 @@ def find_pkgbuild():
     raise Exception('Could not find PKGBUILD file')
 
 
-filename = find_pkgbuild()
-vcinfos = parse_pkgbuild_meta()
-print_versions(vcinfos)
+try:
+    filename = find_pkgbuild()
+    vcinfos = parse_pkgbuild_meta()
+
+    if not vcinfos:
+        print('No version checker metadata in the PKGBUILD')
+    else:
+        print_versions(vcinfos)
+
+except KeyboardInterrupt:
+    pass
