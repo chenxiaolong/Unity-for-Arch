@@ -1,7 +1,7 @@
-From 5c072590c745cea7dc8e8187b1ea44f66b797ed7 Mon Sep 17 00:00:00 2001
+From 831a1936908fe3adacd8bc3ee534d0b6f7e109f7 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 12 Apr 2014 14:23:53 -0400
-Subject: [PATCH 4/5] Remove unavailable DBus method activate_input_source
+Subject: [PATCH 3/5] Remove unavailable DBus method activate_input_source
 
 ---
  lib/Makefile.am          |  1 -
@@ -12,7 +12,7 @@ Subject: [PATCH 4/5] Remove unavailable DBus method activate_input_source
  delete mode 100644 lib/keyboard-plugin.vala
 
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index 27aeaff..59cb45c 100644
+index 88bf389..879bc33 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -12,7 +12,6 @@ indicator_keyboard_service_SOURCES = main.vala            \
@@ -53,7 +53,7 @@ index 5ee8ea2..0000000
 -	public abstract void activate_input_source (uint index) throws IOError;
 -}
 diff --git a/lib/main.vala b/lib/main.vala
-index 3b422a3..af0068b 100644
+index 030b51e..57d9bac 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
 @@ -50,7 +50,6 @@ public class Indicator.Keyboard.Service : Object {
@@ -114,7 +114,7 @@ index 3b422a3..af0068b 100644
  		try {
  			unity_session = Bus.get_proxy_sync (BusType.SESSION, name, "/com/canonical/Unity/Session");
 diff --git a/tests/main.vala b/tests/main.vala
-index 7669288..38d975d 100644
+index dca3b8b..d6d46a3 100644
 --- a/tests/main.vala
 +++ b/tests/main.vala
 @@ -133,45 +133,6 @@ public class Tests : Object, Fixture {
@@ -172,5 +172,5 @@ index 7669288..38d975d 100644
  	Test.add_data_func ("/indicator-keyboard-service/activate-keyboard-layout-chart", Fixture.create<Tests> (Tests.test_activate_keyboard_layout_chart));
  	Test.add_data_func ("/indicator-keyboard-service/activate-text-entry-settings", Fixture.create<Tests> (Tests.test_activate_text_entry_settings));
 -- 
-1.9.2
+2.1.1
 

@@ -1,0 +1,39 @@
+From 5e88a1cce894057db089b54b96c5833624bee856 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Tue, 30 Sep 2014 23:50:36 -0400
+Subject: [PATCH 5/5] Vala 0.26 fixes
+
+---
+ lib/ibus-menu.vala      | 2 +-
+ lib/indicator-menu.vala | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ibus-menu.vala b/lib/ibus-menu.vala
+index c0862ac..62bd88e 100644
+--- a/lib/ibus-menu.vala
++++ b/lib/ibus-menu.vala
+@@ -295,7 +295,7 @@ public class Indicator.Keyboard.IBusMenu : MenuModel {
+ 		return menu.get_item_link (item_index, link);
+ 	}
+ 
+-	public override void get_item_links (int item_index, out HashTable<string, MenuModel>? links) {
++	public override void get_item_links (int item_index, out HashTable<string, MenuModel> links) {
+ 		menu.get_item_links (item_index, out links);
+ 	}
+ 
+diff --git a/lib/indicator-menu.vala b/lib/indicator-menu.vala
+index 8e5661e..1cd6796 100644
+--- a/lib/indicator-menu.vala
++++ b/lib/indicator-menu.vala
+@@ -122,7 +122,7 @@ public class Indicator.Keyboard.IndicatorMenu : MenuModel {
+ 		indicator_menu.get_item_attributes (item_index, out attributes);
+ 	}
+ 
+-	public override void get_item_links (int item_index, out HashTable<string, MenuModel>? links) {
++	public override void get_item_links (int item_index, out HashTable<string, MenuModel> links) {
+ 		indicator_menu.get_item_links (item_index, out links);
+ 	}
+ 
+-- 
+2.1.1
+
