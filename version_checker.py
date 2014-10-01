@@ -198,7 +198,7 @@ def get_archlinux_ver(params):
     arch = params['arch']
 
     url = 'https://www.archlinux.org/packages/%s/%s/%s/' % (repo, arch, name)
-    regex = r'^.*%s\ (.*)-(.*)\ .+$' % name
+    regex = r'^.*%s\ (.*)-(.*)\ .+$' % re.escape(name)
 
     with urllib.request.urlopen(url) as f:
         for line in f:
@@ -244,7 +244,7 @@ def get_launchpad_ver(params):
         tarname = name
 
     url = 'https://launchpad.net/%s/+download' % name
-    regex = r'>%s[-_]+(.+?)\.tar' % tarname
+    regex = r'>%s[-_]+(.+?)\.tar' % re.escape(tarname)
 
     with urllib.request.urlopen(url) as f:
         for line in f:
@@ -268,11 +268,11 @@ def get_ppa_ver(params):
         (ppaurl, name[0:1], name)
 
     if native:
-        regex = r'>%s_(.+?)-(.+?)\.tar\.[a-z\.]+<' % name
+        regex = r'>%s_(.+?)-(.+?)\.tar\.[a-z\.]+<' % re.escape(name)
     elif norel:
-        regex = r'>%s_(.+?)\.(debian|diff)\.[a-z\.]+<' % name
+        regex = r'>%s_(.+?)\.(debian|diff)\.[a-z\.]+<' % re.escape(name)
     else:
-        regex = r'>%s_(.+?)-(.+?)\.(?:debian|diff)\.[a-z\.]+<' % name
+        regex = r'>%s_(.+?)-(.+?)\.(?:debian|diff)\.[a-z\.]+<' % re.escape(name)
 
     latest = None
 
