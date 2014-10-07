@@ -8,7 +8,7 @@ pkgname=dee-ubuntu
 _actual_ver=1.2.7
 _extra_ver=+14.04.20140324
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Model to synchronize multiple instances over DBus"
 arch=(i686 x86_64)
@@ -27,22 +27,26 @@ build() {
 
   autoreconf -vfi
 
-  mkdir build-python3 && cd build-python3
+  [[ -d build-python3 ]] || mkdir build-python3
+  pushd build-python3
   PYTHON=python3 ../configure --prefix=/usr --enable-gtk-doc
   make
-  cd ..
+  popd
 
-  mkdir build-python2 && cd build-python2
+  [[ -d build-python2 ]] || mkdir build-python2
+  pushd build-python2
   PYTHON=python2 ../configure --prefix=/usr
+  popd
 }
 
 package() {
   cd "dee-${_actual_ver}${_extra_ver}"
 
-  cd build-python3/
+  pushd build-python3/
   make DESTDIR="${pkgdir}/" install
-  cd ..
+  popd
 
-  cd build-python2/bindings/python/
+  pushd build-python2/bindings/python/
   make DESTDIR="${pkgdir}/" install
+  popd
 }
