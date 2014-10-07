@@ -10,32 +10,28 @@ pkgname=ido
 _actual_ver=13.10.0
 _extra_ver=+14.04.20140423
 pkgver=${_actual_ver}daily14.04.23
-pkgrel=1
+pkgrel=2
 pkgdesc="Widgets and other objects used for indicators"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/ido"
-license=('LGPL')
-depends=('gtk3-ubuntu' 'glib2')
-makedepends=('gobject-introspection' 'gtk-doc' 'vala' 'xorg-util-macros')
-groups=('unity')
-provides=('ido3')
-conflicts=('ido3')
+license=(LGPL)
+depends=(gtk3-ubuntu)
+makedepends=(gobject-introspection gtk-doc vala xorg-util-macros)
+groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/ido_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('f271b9b090ed8ca3cdb025337812190c54e216210adab3b2702abbc8a2df26e33a545b264c6f29f08cbda649a6a442e51d11a57c30e3b9558c79c93c3e61cae7')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS+=" -Wno-error"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static --disable-introspection
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
