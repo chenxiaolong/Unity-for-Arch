@@ -9,7 +9,7 @@
 pkgname=libindicate-qt
 _ubuntu_rel=5
 pkgver=0.2.5.91
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="A set of Qt bindings for libindicate"
 arch=(i686 x86_64)
@@ -47,5 +47,3 @@ package() {
   # Not present in Ubuntu packages
   rm -rvf "${pkgdir}/usr/include/libindicate-qt/CMakeFiles"
 }
-
-# vim:set ts=2 sw=2 et:
