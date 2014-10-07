@@ -1,0 +1,47 @@
+From 8d6d508d37eb7a8a5273e95668f120bb9541d9a5 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Tue, 7 Oct 2014 17:13:46 -0400
+Subject: [PATCH 2/2] Python 2 fixes
+
+---
+ configure.ac                 | 2 +-
+ examples/im-client.py        | 2 +-
+ examples/listen-and-print.py | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index a5d66e8..efbb757 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -216,7 +216,7 @@ PKG_CHECK_MODULES([INDICATE_PYTHON], [python-$PYTHON_VERSION >= $PYTHON_REQUIRED
+ )
+ 
+ # libpyglib-2.0-python* doesn't have a pkgconfig unfortunately
+-INDICATE_PYTHON_LIBS+=" -lpyglib-2.0-python$PYTHON_VERSION"
++INDICATE_PYTHON_LIBS+=" -lpyglib-2.0-python2"
+ 
+ AC_SUBST(INDICATE_PYTHON_CFLAGS)
+ AC_SUBST(INDICATE_PYTHON_LIBS)
+diff --git a/examples/im-client.py b/examples/im-client.py
+index ff10014..316f4b1 100644
+--- a/examples/im-client.py
++++ b/examples/im-client.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ #
+ #Copyright 2009 Canonical Ltd.
+ #
+diff --git a/examples/listen-and-print.py b/examples/listen-and-print.py
+index 5058599..9d0cde8 100644
+--- a/examples/listen-and-print.py
++++ b/examples/listen-and-print.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ #
+ #Copyright 2009 Canonical Ltd.
+ #
+-- 
+2.1.2
+

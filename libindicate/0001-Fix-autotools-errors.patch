@@ -1,0 +1,71 @@
+From acca2e23c6c0748377616684afe04cfcb47c934e Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Tue, 7 Oct 2014 17:12:06 -0400
+Subject: [PATCH 1/2] Fix autotools errors
+
+---
+ configure.ac                | 2 +-
+ libindicate-gtk/Makefile.am | 4 ++--
+ libindicate-gtk/Makefile.in | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ba8df8a..a5d66e8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3,7 +3,7 @@ AC_INIT(libindicate, 12.10.1, ted@canonical.com)
+ 
+ AC_PREREQ(2.53)
+ 
+-AM_CONFIG_HEADER(config.h)
++AC_CONFIG_HEADERS(config.h)
+ AM_INIT_AUTOMAKE(libindicate, 12.10.1)
+ 
+ AM_MAINTAINER_MODE
+diff --git a/libindicate-gtk/Makefile.am b/libindicate-gtk/Makefile.am
+index 87c392a..1001ebe 100644
+--- a/libindicate-gtk/Makefile.am
++++ b/libindicate-gtk/Makefile.am
+@@ -44,7 +44,7 @@ libindicate_gtk_la_CFLAGS = \
+ 	$(COVERAGE_CFLAGS) \
+ 	-I $(top_srcdir) \
+ 	-Wall -Werror \
+-	$(LIBINDICATEGTK_CFLAGS)
++	$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs
+ 
+ libindicate_gtk_la_LIBADD = \
+ 	../libindicate/libindicate.la \
+@@ -99,7 +99,7 @@ IndicateGtk_0_7_gir_INCLUDES = \
+ 	GdkPixbuf-2.0 \
+ 	Indicate-0.7
+ IndicateGtk_0_7_gir_CFLAGS = \
+-	$(LIBINDICATEGTK_CFLAGS) \
++	$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs \
+ 	-I$(top_builddir) \
+ 	-I$(top_srcdir) \
+ 	-I$(top_builddir)/libindicate
+diff --git a/libindicate-gtk/Makefile.in b/libindicate-gtk/Makefile.in
+index f0b14c0..83f07d5 100644
+--- a/libindicate-gtk/Makefile.in
++++ b/libindicate-gtk/Makefile.in
+@@ -408,7 +408,7 @@ libindicate_gtk_la_CFLAGS = \
+ 	$(COVERAGE_CFLAGS) \
+ 	-I $(top_srcdir) \
+ 	-Wall -Werror \
+-	$(LIBINDICATEGTK_CFLAGS)
++	$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs
+ 
+ libindicate_gtk_la_LIBADD = \
+ 	../libindicate/libindicate.la \
+@@ -455,7 +455,7 @@ INTROSPECTION_COMPILER_ARGS = \
+ @HAVE_INTROSPECTION_TRUE@	Indicate-0.7
+ 
+ @HAVE_INTROSPECTION_TRUE@IndicateGtk_0_7_gir_CFLAGS = \
+-@HAVE_INTROSPECTION_TRUE@	$(LIBINDICATEGTK_CFLAGS) \
++@HAVE_INTROSPECTION_TRUE@	$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs \
+ @HAVE_INTROSPECTION_TRUE@	-I$(top_builddir) \
+ @HAVE_INTROSPECTION_TRUE@	-I$(top_srcdir) \
+ @HAVE_INTROSPECTION_TRUE@	-I$(top_builddir)/libindicate
+-- 
+2.1.2
+

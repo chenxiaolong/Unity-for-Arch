@@ -7,90 +7,79 @@
 # vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libindicate
-pkgname=('libindicate' 'libindicate-gtk2' 'libindicate-gtk3')
+pkgname=(libindicate libindicate-gtk2 libindicate-gtk3)
 pkgver=12.10.1
-pkgrel=111
-pkgdesc="A small library for applications to raise 'flags' on DBus for other components of the desktop to pick up and visualize"
-arch=('i686' 'x86_64')
+pkgrel=1
+epoch=1
+pkgdesc="Library for raising indicators via DBus"
+arch=(i686 x86_64)
 url="https://launchpad.net/libindicate"
-license=('LGPL')
-makedepends=('libdbusmenu-glib' 'dbus-glib' 'gtk2' 'gtk3' 'gobject-introspection' 'vala' 'gtk-sharp-2' 'pygtk' 'gnome-doc-utils' 'perl-xml-libxml')
-groups=('unity')
+license=(LGPL)
+makedepends=(libdbusmenu-glib dbus-glib gtk2 gtk3 gobject-introspection vala
+             gtk-sharp-2 pygtk gnome-doc-utils perl-xml-libxml)
+groups=(unity)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
-        '0001_autoconf.patch')
+        0001-Fix-autotools-errors.patch
+        0002-Python-2-fixes.patch)
 sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06'
-            '83a860e35dfaf968a602a4240aaecf92a967bcbfe40fbbbae7f29679ffea9b928307c75e7569cecaf9b8e3134af231fc6e1adb32700b7eeba9d2e21c10d7b09d')
+            'd6e644a074d47f309b771572df7a86b748d76ef1d8263bc193f27dd5bf5d576c6ffc6ad9eddfe247d3ed93cf88773435af18705e51073033b98850dcd69541b5'
+            'a1e090fc1e8e49ad8de3bdc164d52b60fc1ea3dc2dd2da1a856a6943e9e198c2c3843d93872ab076421d8e2fc720bb3c4d919f33d154f107fe9d4bd99e6de66b')
 
 prepare() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${pkgbase}-${pkgver}"
 
-  patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p1 -i ../0001-Fix-autotools-errors.patch
+  patch -p1 -i ../0002-Python-2-fixes.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${pkgbase}-${pkgver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error=deprecated-declarations"
-
-  # Python 2 fix
-  sed -i "s|^\(#!.*python\)$|\12|" examples/{im-client,listen-and-print}.py
-  sed -i 's/-lpyglib-2\.0-python$PYTHON_VERSION/-lpyglib-2.0-python2/' configure{,.ac}
-
-  # libindicate-gtk2 won't install if libindicate isn't installed yet
-  sed -i 's|$(LIBINDICATEGTK_CFLAGS)|$(LIBINDICATEGTK_CFLAGS) -L../libindicate/.libs|' libindicate-gtk/Makefile.{am,in}
+  export CFLAGS+=" -Wno-error=deprecated-declarations"
 
   autoreconf -vfi
 
-  export MAKEFLAGS="-j1"
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 --disable-static PYTHON=python2
-  make
+  make -j1
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
   ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
-  make
+  make -j1
   popd
 }
 
 package_libindicate() {
-  depends=('libdbusmenu-glib' 'dbus-glib')
+  depends=(libdbusmenu-glib dbus-glib)
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${pkgbase}-${pkgver}/build-gtk2"
 
-  export MAKEFLAGS="-j1"
-
-  make -C libindicate DESTDIR="${pkgdir}" install
-  make -C bindings/mono/indicate DESTDIR="${pkgdir}" install
-  make -C tests DESTDIR="${pkgdir}" install
-  make -C docs DESTDIR="${pkgdir}" install
+  make -j1 -C libindicate DESTDIR="${pkgdir}" install
+  make -j1 -C bindings/mono/indicate DESTDIR="${pkgdir}" install
+  make -j1 -C tests DESTDIR="${pkgdir}" install
+  make -j1 -C docs DESTDIR="${pkgdir}" install
 }
 
 package_libindicate-gtk2() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=('cairo' "libindicate=${pkgver}" 'gtk2' 'python2-gobject2')
+  depends=(cairo libindicate gtk2 python2-gobject2)
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk2"
+  cd "${pkgbase}-${pkgver}/build-gtk2"
 
-  export MAKEFLAGS="-j1"
-
-  make -C libindicate-gtk DESTDIR="${pkgdir}" install
-  make -C bindings/python DESTDIR="${pkgdir}" install
-  make -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
-  make -C examples DESTDIR="${pkgdir}" install
+  make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
+  make -j1 -C bindings/python DESTDIR="${pkgdir}" install
+  make -j1 -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
+  make -j1 -C examples DESTDIR="${pkgdir}" install
 }
 
 package_libindicate-gtk3(){
   pkgdesc+=" (GTK+ 3 library)"
-  depends=('cairo' "libindicate=${pkgver}" 'gtk3')
+  depends=(cairo libindicate gtk3)
 
-  cd "${srcdir}/${pkgbase}-${pkgver}/build-gtk3"
+  cd "${pkgbase}-${pkgver}/build-gtk3"
 
-  export MAKEFLAGS="-j1"
-
-  make -C libindicate-gtk DESTDIR="${pkgdir}" install
+  make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
 }
-
-# vim:set ts=2 sw=2 et:
