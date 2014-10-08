@@ -10,34 +10,35 @@ pkgname=indicator-datetime
 _actual_ver=13.10.0
 _extra_ver=+14.10.20140819
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="A very, very simple clock"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/indicator-datetime"
-license=('GPL')
-depends=('evolution-data-server' 'gstreamer' 'libtimezonemap' 'properties-cpp' 'unity-control-center')
-makedepends=('intltool' 'cmake')
-groups=('unity')
+license=(GPL)
+depends=(evolution-data-server gstreamer libtimezonemap properties-cpp
+         unity-control-center)
+makedepends=(intltool cmake)
+groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001-Get-timezone-from-systemd-s-timedate1-interface.patch'
-        '0002_Not_a_phone.patch')
+        0001-Get-timezone-from-systemd-s-timedate1-interface.patch
+        0002_Not_a_phone.patch)
 sha512sums=('222d4dde517200bf4e5aa50be1ab45a7d8e6b7d984984cee2333f975018fd5363ede68be7481f75d3312177ecc0240c363ca04f769a0f2d73cdcc3ead193573f'
             '0d0abd6269e89ee1785a36bc0f5e17a8f9dd5b29a1416fcac9ae923d4ccd036aae139719aacca7d8b97f31ddcd8454b08c0edede8236f98e7c09b32665a99158'
             'b91c27dba2b08b69e597f9165406f68325b5d822e26d7dc5aa271a7f62b77d715cb78dfae93792b345d922ace383f6ed98cb63f096745ef37a3f7df5c4b37298')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Port to systemd's timedated (because /etc/timezone is no longer used)
-  patch -p1 -i "${srcdir}/0001-Get-timezone-from-systemd-s-timedate1-interface.patch"
-  patch -p1 -i "${srcdir}/0002_Not_a_phone.patch"
+  patch -p1 -i ../0001-Get-timezone-from-systemd-s-timedate1-interface.patch
+  patch -p1 -i ../0002_Not_a_phone.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS+=" -Wno-error"
 
   mkdir build
   cd build
@@ -51,7 +52,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/build/"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
 
   make DESTDIR="${pkgdir}/" install
 
@@ -60,5 +61,3 @@ package() {
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
 }
-
-# vim:set ts=2 sw=2 et:
