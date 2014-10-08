@@ -9,28 +9,27 @@ pkgname=frame
 _actual_ver=2.5.0
 _extra_ver=daily13.06.05
 pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=100
+pkgrel=1
+epoch=1
 pkgdesc="Touch Frame Library"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/frame"
-license=('LGPL')
-depends=('gcc-libs' 'libxi')
-makedepends=('asciidoc' 'xorg-server-devel')
-groups=('unity')
-options=('!emptydirs')
+license=(LGPL)
+depends=(libxi)
+makedepends=(asciidoc xorg-server-devel)
+groups=(unity)
+options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('c8b2a1df86c9ccc6bd17c97a04d94827994fc15737ab933081d73636909148c5f8f1f47a6d4fe3f99ae048261246bb16b2ecdb2e079090e5e68fc90ab1eec98c')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   autoreconf -vfi
   ./configure --prefix=/usr --disable-static
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
