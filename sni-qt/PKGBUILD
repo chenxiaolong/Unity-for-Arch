@@ -8,28 +8,27 @@
 
 pkgname=sni-qt
 pkgver=0.2.6
-pkgrel=107
+pkgrel=1
+epoch=1
 pkgdesc="A Qt plugin which turns all QSystemTrayIcon into StatusNotifierItems (appindicators)"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/sni-qt"
-license=('GPL')
-depends=('libdbusmenu-qt' 'qt4-ubuntu')
-makedepends=('cmake')
-groups=('unity')
+license=(GPL)
+depends=(libdbusmenu-qt qt4-ubuntu)
+makedepends=(cmake)
+groups=(unity)
 source=("http://launchpad.net/${pkgname}/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.bz2")
 sha512sums=('aa4cffeb3a5a70d65bd5ff42dcdd1c8efd107ade32a104b9a91696aecfb39a7a15d151f7491030ac0d7df796f2c7e4e6c3c0b7e32ee07a7cdc949da757147621')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
 
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
 
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
