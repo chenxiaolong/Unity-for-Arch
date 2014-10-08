@@ -21,7 +21,7 @@ optdepends=('lib32-libxinerama: Xinerama support'
             'lib32-libxcursor: Xcursor support'
             'lib32-libxfixes: Xfixes support')
 makedepends=(cups gcc-multilib lib32-{mesa,libcups,libxfixes,gtk2})
-makedepends+=('lib32-gstreamer0.10' 'lib32-gstreamer0.10-base')
+makedepends+=(lib32-gstreamer0.10 lib32-gstreamer0.10-base)
 options=('staticlibs') # libQtUiTools builds as static only FS#36606
 provides=(lib32-qtwebkit lib32-qt4)
 replaces=(lib32-qtwebkit 'lib32-qt<=4.8.4')
@@ -29,7 +29,7 @@ conflicts=(lib32-qtwebkit lib32-qt lib32-qt4)
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://download.qt-project.org/official_releases/qt/4.8/${pkgver}/${_pkgfqn}.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/qt4-x11_${_ubuntu}.debian.tar.gz"
-        'kubuntu_14_systemtrayicon.diff')
+        kubuntu_14_systemtrayicon.diff)
 sha512sums=('c2d07c3cf9d687cb9b93e337c89df3f0055bd02bc8aa5ecd55d3ffb238b31a4308aeabc3c51a4f94ac76a1b00796f047513d02e427ed93ae8dd99f836fff7692'
             '7f403a580462f32b002d43d9b9c6e9d365c0f98c131a70806e32e865d9a7bfd97064234258299a99c2675d50fba8efb78e4066429b6faefae820e307ad5f42a6'
             'c987f478e6da84e26ef5085c2a354cf085227e75af84d24b1497cfb046cfed89858bfed21850cf9dc0f5df2b66f9eed3ca8955a8c9df81cdddc9b98257231319')
@@ -38,7 +38,7 @@ prepare() {
   cd $srcdir/$_pkgfqn
 
   # Apply Ubuntu patches
-  patch -p1 -i "${srcdir}"/kubuntu_14_systemtrayicon.diff
+  patch -p1 -i ../kubuntu_14_systemtrayicon.diff
 
   export QT4DIR=$srcdir/$_pkgfqn
   export LD_LIBRARY_PATH=${QT4DIR}/lib:${LD_LIBRARY_PATH}
