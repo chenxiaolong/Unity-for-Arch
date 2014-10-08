@@ -81,6 +81,9 @@ build() {
   cd "compiz-${_actual_ver}${_extra_ver}"
 #  cd compiz.utopic
 
+  # Fix build on i686
+  export CXXFLAGS+=" -lc"
+
   # Disable '-Bsymbolic-functions' if present so libcompiz_core won't be
   # loaded once per plugin
   export LDFLAGS="$(echo ${LDFLAGS} | sed 's/-B[ ]*symbolic-functions//')"
