@@ -275,6 +275,10 @@ nspawn_args+=("--bind=${cache_dir}")
 sed -i -r "s|^#?\\s*CacheDir.+|CacheDir = ${cache_dir}|g" \
   "${chroot_dir}/etc/pacman.conf"
 
+# Don't install or update the kernel
+sed -i -r "s|^#?\\s*IgnorePkg.+|IgnorePkg = linux|g" \
+  "${chroot_dir}/etc/pacman.conf"
+
 # Copy pacman keyring
 cp -a /etc/pacman.d/gnupg/ "${chroot_dir}/etc/pacman.d/"
 
