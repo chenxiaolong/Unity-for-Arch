@@ -10,34 +10,34 @@
 pkgname=zeitgeist-ubuntu
 pkgver=0.9.14
 _ubuntu_rel=2.2ubuntu2
-pkgrel=5
+pkgrel=6
 pkgdesc="Service logging user activities and events"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="http://zeitgeist-project.com/"
-license=('GPL2' 'LGPL2.1')
-depends=('json-glib' 'telepathy-glib' 'gtk3' 'xapian-core')
-makedepends=('intltool' 'gobject-introspection' 'vala' 'raptor' 'python2-rdflib')
-provides=('zeitgeist-datahub' "zeitgeist=${pkgver}")
-conflicts=('zeitgeist-datahub' 'zeitgeist')
-replaces=('zeitgeist-datahub')
+license=(GPL2 LGPL2.1)
+depends=(json-glib telepathy-glib gtk3 xapian-core)
+makedepends=(intltool gobject-introspection vala raptor python2-rdflib)
+provides=(zeitgeist-datahub "zeitgeist=${pkgver}")
+conflicts=(zeitgeist-datahub zeitgeist)
+replaces=(zeitgeist-datahub)
 source=("https://launchpad.net/zeitgeist/${pkgver%.*}/${pkgver}/+download/zeitgeist-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('9886396ea153fc12de81fdee2acf645b33a2af0c0fa3533c18f6c80c68c506ee9f790f37f99677ce6c3546a0f9ef5e5c251bc9411e0d882df796479edd9e817c'
             '3d1f1728597b44e0f01197963362290fbab9d3fa9b0a70de61e8ba863e0b2ca491a2f23da052627f563d8b321384811df2dcd061eec42bce849be0d5155bd716')
 
 prepare() {
-  cd "${srcdir}/zeitgeist-${pkgver}"
+  cd "zeitgeist-${pkgver}"
 
   sed -i 's/python -/$PYTHON -/' configure configure.ac
 
-  for i in $(grep -v '#' "${srcdir}/debian/patches/series"); do
+  for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i}"
-    patch -p1 -i "${srcdir}/debian/patches/${i}"
+    patch -p1 -i "../debian/patches/${i}"
   done
 }
 
 build() {
-  cd "${srcdir}/zeitgeist-${pkgver}"
+  cd "zeitgeist-${pkgver}"
   export PYTHON=/usr/bin/python2
   autoreconf -vfi
   ./configure \
@@ -52,6 +52,6 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/zeitgeist-${pkgver}"
+  cd "zeitgeist-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
