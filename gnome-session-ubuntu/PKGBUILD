@@ -11,7 +11,7 @@
 pkgname=gnome-session-ubuntu
 _ubuntu='3.9.90-0ubuntu12'
 pkgver=3.14.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
