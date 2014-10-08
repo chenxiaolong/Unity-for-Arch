@@ -10,14 +10,14 @@ pkgname=qt4-ubuntu
 _ubuntu_rel='1ubuntu2'
 _ubuntu_ver='4.8.6+dfsg'
 pkgver=4.8.6
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 url='http://qt-project.org/'
 license=('GPL3' 'LGPL' 'FDL' 'custom')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libtiff' 'libpng' 'sqlite' 'ca-certificates' 'dbus'
         'fontconfig' 'libgl' 'libxrandr' 'libxv' 'libxi' 'alsa-lib'
-        'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libmng' 'mesa')
+        'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libmng')
 makedepends=('postgresql-libs' 'mariadb' 'unixodbc' 'cups' 'gtk2' 'libfbclient'
              'mesa')
 optdepends=('qtchooser: set the default Qt toolkit'
