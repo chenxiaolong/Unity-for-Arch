@@ -9,37 +9,36 @@
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
 _extra_ver=+14.04.20140404
-pkgver=${_actual_ver}daily14.04.04
+pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
+epoch=1
 pkgdesc="An indicator to host the menus from an application"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/indicator-appmenu"
-license=('GPL')
-groups=('unity')
-depends=('dconf' 'libappindicator3' 'libindicator3' 'libdbusmenu-gtk3' 'bamf-ubuntu')
-makedepends=('gtk-doc' 'intltool' 'vala')
+license=(GPL)
+groups=(unity)
+depends=(dconf libappindicator3 libindicator3 libdbusmenu-gtk3 bamf-ubuntu)
+makedepends=(gtk-doc intltool vala)
 optdepends=('unity-gtk-module: support for GTK+ 2 and GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
-provides=('indicator-appmenu-tools')
-conflicts=('indicator-appmenu-tools')
-options=('!emptydirs')
+options=(!emptydirs)
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        '0001_autoconf.patch')
+        0001_autoconf.patch)
 sha512sums=('85796483927124797c9446b801a9efd24fd8ac1a26eea50a83d9ab2e23fe0557eccce7f1bda72c65a6136d07fa961e96159d2da69031b751de064068b9dfa63e'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Autoconf fix
-  patch -p1 -i "${srcdir}/0001_autoconf.patch"
+  patch -p1 -i ../0001_autoconf.patch
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS="${CFLAGS} -Wno-error"
+  export CFLAGS+=" -Wno-error"
 
   gtkdocize
   autoreconf -vfi
@@ -50,9 +49,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}/"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}/"
 
   make DESTDIR="${pkgdir}/" install
 }
-
-# vim:set ts=2 sw=2 et:
