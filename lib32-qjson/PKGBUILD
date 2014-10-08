@@ -6,13 +6,13 @@
 
 pkgname=lib32-qjson
 pkgver=0.8.1
-pkgrel=1
+pkgrel=2
 pkgdesc="A qt-based library that maps JSON data to QVariant objects (32-bit)"
-arch=('x86_64')
-license=('GPL')
+arch=(x86_64)
+license=(GPL)
 url="http://qjson.sourceforge.net"
-depends=('lib32-qt4')
-makedepends=('cmake' 'gcc-multilib')
+depends=(lib32-qt4)
+makedepends=(cmake gcc-multilib)
 source=(qjson-${pkgver}.tar.gz::"https://github.com/flavio/qjson/archive/${pkgver}.tar.gz")
 sha512sums=('8454b33886d6d95f50ecd3fc3066ce9ac1869934499fd2ce4de46664b2cd97884fe8cacd0939c0ac60f4d00dbdb7b17ceab70095e90db6db120ed5464e13d2fa')
 
