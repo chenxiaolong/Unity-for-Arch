@@ -9,26 +9,26 @@ _extra_ver=+14.10.20140730
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="C++11 library providing properties/signals"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/properties-cpp"
-license=('LGPL')
-groups=('unity')
-makedepends=('cmake')
+license=(LGPL)
+groups=(unity)
+makedepends=(cmake)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/properties-cpp_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('44627c548ac31abb191254246006e73bc3e8a0c489062a253c1815e3588b62eb7578d56b1ef7f5016b23ba1e09ab964354e55930b076d9c439ad5484eb7ea6d3')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   sed -i '/tests/d' CMakeLists.txt
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
