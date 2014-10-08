@@ -10,7 +10,7 @@
 
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu2
-pkgver=1.11.9
+pkgver=1.12.0
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
@@ -46,7 +46,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         lightdm.rules
         0001-guest-account-Use-cross-distro-commands.patch
         0002-guest-account-Add-default-GSettings-support.patch)
-sha512sums=('184b38a177f2d7cb64ba841501333a08a756683b5198b26e0c3ee02063df4eae9d9b62489560c469296effb2ab2aba5b9e562eac4410ab411d3bbf4cdeeb9757'
+sha512sums=('f7cec1472f02b877375b4fa20bbe1b95c781e4ab738f1d88e79cc5bfdcb913f4a9f2e54d738f45635d2df7460eb69d6d25a62431b16d1320195516a6eb8254e5'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -66,8 +66,8 @@ prepare() {
     # Do not use Ubuntu's language-tools
       sed -i '/04_language_handling.patch/d' debian/patches/series
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    patch -p1 -i "../debian/patches/${i}"
+  for i in $(grep -v '#' debian/patches/series); do
+    patch -p1 -i "debian/patches/${i}"
   done
 
   # Do not depend on Debian/Ubuntu specific adduser package
