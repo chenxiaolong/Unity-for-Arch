@@ -21,7 +21,6 @@ optdepends=('lib32-libxinerama: Xinerama support'
             'lib32-libxcursor: Xcursor support'
             'lib32-libxfixes: Xfixes support')
 makedepends=(cups gcc-multilib lib32-{mesa,libcups,libxfixes,gtk2})
-makedepends+=(lib32-gstreamer0.10 lib32-gstreamer0.10-base)
 options=('staticlibs') # libQtUiTools builds as static only FS#36606
 provides=(lib32-qtwebkit lib32-qt4)
 replaces=(lib32-qtwebkit 'lib32-qt<=4.8.4')
