@@ -244,43 +244,8 @@ chmod -R 0755 "${cache_dir}"
   mkdir -p "${temp_chroot}/etc/"
   wget "https://projects.archlinux.org/svntogit/packages.git/plain/trunk/pacman.conf.${arch}?h=packages/pacman" -O "${temp_chroot}/etc/pacman.conf"
 
-  pacman --arch "${arch}" --sync --refresh --downloadonly --noconfirm \
-         --root "${temp_chroot}" --cachedir /var/cache/pacman/pkg/ \
-         --config "${temp_chroot}/etc/pacman.conf" \
-         "${chroot_packages[@]}"
-
   cat "${package_dir}/PKGBUILD" > "${temp_pkgbuild}"
   chown nobody:nobody "${temp_pkgbuild}"
-
-  set +x
-
-  depends=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
-                                    echo \${depends[@]}")
-  makedepends=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
-                                        echo \${makedepends[@]}")
-  checkdepends=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
-                                         echo \${checkdepends[@]}")
-  available="$(pacman -Sl core extra community | cut -d' ' -f2)"
-
-  echo "depends: ${depends[*]}"
-  echo "makedepends: ${makedepends[*]}"
-  echo "checkdepends: ${checkdepends[*]}"
-
-  list=()
-  for i in ${depends} ${makedepends} ${checkdepends}; do
-    i=${i%<*}
-    i=${i%>*}
-    i=${i%=*}
-    if echo "${available}" | tr ' ' '\n' | grep -q "^${i}$"; then
-      list+=("${i}")
-    fi
-  done
-
-  set -x
-
-  pacman --arch "${arch}" --sync --refresh --downloadonly --noconfirm \
-         --root "${temp_chroot}" --cachedir /var/cache/pacman/pkg/ \
-         --config "${temp_chroot}/etc/pacman.conf" "${list[@]}"
 
   # Copy or hard link cached packages to the chroot-specific cache directory
   if [[ "$(stat -c '%d' /var/cache/pacman/pkg/)" = \
