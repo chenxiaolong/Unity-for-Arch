@@ -8,24 +8,26 @@
 pkgname=lightdm-unity-greeter
 _ubuntu_rel=0ubuntu1
 pkgver=14.10.2
-pkgrel=2
+pkgrel=3
 pkgdesc="The greeter (login screen) application for Unity. It is implemented as a LightDM greeter."
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/unity-greeter"
-license=('GPL3' 'LGPL3')
-groups=('unity-extra')
-depends=('cantarell-fonts' 'gnome-doc-utils' 'ido' 'libindicator3' 'lightdm-ubuntu' 'libcanberra' 'libxext')
-makedepends=('gnome-common' 'gnome-doc-utils' 'unity-settings-daemon' 'imagemagick' 'intltool' 'librsvg' 'vala')
+license=(GPL3 LGPL3)
+groups=(unity)
+depends=(cantarell-fonts gnome-doc-utils ido libindicator3 lightdm-ubuntu
+         libcanberra libxext)
+makedepends=(gnome-common gnome-doc-utils unity-settings-daemon imagemagick
+             intltool librsvg vala)
 optdepends=("ubuntu-themes: Ubuntu's Ambiance and Radiance themes"
             "ubuntu-wallpapers: Ubuntu's default wallpapers"
             "ttf-ubuntu-font-family: Ubuntu's default font")
 install=unity-greeter.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname#*-}_${pkgver}-${_ubuntu_rel}.tar.xz"
-        'spawn_indicators.patch'
-        'unity-greeter-indicators-start'
-        '10-unity.defaults'
-        '50-unity-greeter.rules'
-        'logo.png')
+        spawn_indicators.patch
+        unity-greeter-indicators-start
+        10-unity.defaults
+        50-unity-greeter.rules
+        logo.png)
 sha512sums=('4b4238731958b40ce166efc25e315e6ded3ee05c6c8fddd83666f03c83ef566ff8bb2a13c15a08a87bb731759a06df2c8813ca9802c5004eefe19fc5cbd214ae'
             '0fa758888e10bbf54bb1e6a4273dd3efc396ce8338aa1ab2e8f794a81c554b394805cf445c6179998786cd3d40d6eb0025382d1a2f028b5887c5b10957c4f34e'
             'e43c177d0255af961bbf9198868e32a1a762bb70e117f80c3c2ce4b54d23f4955cc1c4c32b68751b021116f8e6d26133b24845c03ae459c2209e8313e28a0bc6'
@@ -34,7 +36,7 @@ sha512sums=('4b4238731958b40ce166efc25e315e6ded3ee05c6c8fddd83666f03c83ef566ff8b
             '4cc7e3600a8f5afc7edf574ccdb21dbbff9c7492a46b50c696fb7b38446829f2cc99ae029688e289da2100a9cac6ae0471cc8bac03f8db3799f9929a1e2f2679')
 
 prepare() {
-  cd "${srcdir}/${pkgname#*-}-${pkgver}"
+  cd "${pkgname#*-}-${pkgver}"
 
   # Apply Ubuntu patches
   for i in $(grep -v '#' debian/patches/series); do
@@ -43,7 +45,7 @@ prepare() {
 
   # Patch from unity-gentoo for spawning the indicator services since the
   # DBus activation method is deprecated
-  patch -p1 -i "${srcdir}/spawn_indicators.patch"
+  patch -p1 -i ../spawn_indicators.patch
 
   # Use Arch Linux logo (retain the same 245px height as the Ubuntu logo)
   rm data/logo.png
@@ -51,15 +53,15 @@ prepare() {
   if ! convert -background none -resize 245 \
          /usr/share/archlinux/logos/archlinux-mono-white.svg \
          data/logo.png; then
-    cp "${srcdir}/logo.png" data/logo.png
+    cp ../logo.png data/logo.png
   fi
 }
 
 build() {
-  cd "${srcdir}/${pkgname#*-}-${pkgver}"
+  cd "${pkgname#*-}-${pkgver}"
 
   # Link against libm and libx11
-  export CFLAGS="${CFLAGS} -lm -lX11"
+  export CFLAGS+=" -lm -lX11"
 
   autoreconf -vfi
   intltoolize -f
@@ -76,7 +78,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/unity-greeter-${pkgver}"
+  cd "unity-greeter-${pkgver}"
 
   make DESTDIR="${pkgdir}" install
 
@@ -108,5 +110,3 @@ package() {
   # Use language packs
   rm -r "${pkgdir}/usr/share/locale/"
 }
-
-# vim:set ts=2 sw=2 et:
