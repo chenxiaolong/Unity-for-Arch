@@ -17,7 +17,7 @@ depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu
          hicolor-icon-theme ibus libappindicator3 libcanberra-pulse libnotify
          librsvg libsystemd libwacom libxkbfile mesa pulseaudio pulseaudio-alsa
          upower-compat)
-makedepends=(intltool xf86-input-wacom libxslt docbook-xsl)
+makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 conflicts=(gnome-desktop-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
