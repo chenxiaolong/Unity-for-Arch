@@ -7,24 +7,24 @@ pkgname=dee-qt
 _actual_ver=3.3
 _extra_ver=+14.04.20140317
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Qt5 bindings for dee"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/dee-qt"
-license=('LGPL')
-groups=('unity')
-depends=('dee-ubuntu' 'qt5-base' 'qt5-declarative')
-makedepends=('cmake' 'qtchooser')
+license=(LGPL)
+groups=(unity)
+depends=(dee-ubuntu qt5-base qt5-declarative)
+makedepends=(cmake qtchooser)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('a17968ff3775252f12c72a54b442e852668dfbe197c8a19299669adfc79a24913559315086210a2fd1251a203147fb20a26901cc63afc07fa56a01074664a1f2')
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   cmake . -DCMAKE_INSTALL_PREFIX=/usr -DWITHQT5=1
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
 }
