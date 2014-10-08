@@ -50,6 +50,8 @@ prepare() {
 build() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CXXFLAGS+=" -lc"
+
   rm -rf build && mkdir build && cd build
   cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr \
