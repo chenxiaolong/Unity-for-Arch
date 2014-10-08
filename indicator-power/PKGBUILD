@@ -6,7 +6,7 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+14.10.20140912
+_extra_ver=+14.10.20141006
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -20,7 +20,7 @@ groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('5adcb2e18542986208674f2d8a9b70ca01e5cf9cafcf396f32bf57de970b2df3f12c50e301e7078a40012168e5f04ee8b7391e527b02af95e862e8d0d669a09c'
+sha512sums=('fafdd78dd24690fc028a50f1c3edd880d0b5c8fe6e5e15cba609f9c2efd4fd74bae0523d3be34a777fbe0c57d7246633ca0c63346b375d4c3a45ea323ad363ba'
             '923743f2c174621ed6c48aad77b604c40572e2d532c996375fc46acee54c505b2b89848fb57701e887826a04923f999a382b59c99c2dd55d2bf344f7ffd8cc09')
 
 prepare() {
