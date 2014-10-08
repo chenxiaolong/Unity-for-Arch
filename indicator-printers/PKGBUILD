@@ -9,29 +9,29 @@ _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
 _extra_ver=+14.10.20140527
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Indicator showing active print jobs"
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 url="https://launchpad.net/indicator-printers"
-license=('GPL')
-groups=('unity')
-depends=('cups' 'libdbusmenu-glib' 'libdbusmenu-gtk3' 'libindicator3')
-makedepends=('intltool' 'python2')
+license=(GPL)
+groups=(unity)
+depends=(cups libdbusmenu-glib libdbusmenu-gtk3 libindicator3)
+makedepends=(intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
 sha512sums=('c62e329678403b22f568e1731c2ad13742c67c68ed71267f8dac5fb166c5ab8d7fbf97ccda1ad490d78bf4e07ad67dc468f949cabdab614909d80e8217a933da'
             'd640a91dfba30331c7ede519fd556c33dd5c10c4303eb847eb3d8274e7ded70650f9e0a774de495a63d7e71cdc652dfe45c6dd5848a32c5c0e5193573c96b420')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   # Apply Ubuntu's patches
-  patch -p1 -i "${srcdir}/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+  patch -p1 -i ../indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
   intltoolize -f
@@ -40,11 +40,9 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+  cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   make DESTDIR="${pkgdir}/" install
 
   rm -r "${pkgdir}/usr/share/upstart/"
 }
-
-# vim:set ts=2 sw=2 et:
