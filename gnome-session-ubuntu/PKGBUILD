@@ -18,7 +18,7 @@ license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
          hicolor-icon-theme json-glib libgl libsm libxtst systemd dbus-glib
          polkit-gnome)
-makedepends=(intltool mesa gtk-doc xtrans)
+makedepends=(gnome-common intltool mesa gtk-doc xtrans)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session)
