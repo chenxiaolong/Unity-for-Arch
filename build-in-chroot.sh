@@ -147,8 +147,8 @@ conf_gpgkey="${GPGKEY}"
 conf_makeflags="${MAKEFLAGS}"
 conf_repo="${REPO}"
 conf_localrepo="${LOCALREPO}"
-conf_otherrepos="${OTHERREPOS}"
-conf_otherrepos_pre="${OTHERREPOS_PRE}"
+conf_otherrepos=("${OTHERREPOS[@]}")
+conf_otherrepos_pre=("${OTHERREPOS_PRE[@]}")
 conf_use_ccache="${USE_CCACHE}"
 conf_ccache_dir="${CCACHE_DIR}"
 
