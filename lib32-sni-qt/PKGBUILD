@@ -5,14 +5,14 @@
 
 pkgname=lib32-sni-qt
 pkgver=0.2.6
-pkgrel=1
+pkgrel=2
 pkgdesc="A Qt plugin which turns all QSystemTrayIcon into StatusNotifierItems (appindicators) (32-bit)"
-arch=('x86_64')
+arch=(x86_64)
 url="https://launchpad.net/sni-qt"
-license=('GPL')
-groups=('unity')
-depends=('sni-qt' 'lib32-libdbusmenu-qt' 'lib32-qt4-ubuntu')
-makedepends=('cmake' 'gcc-multilib')
+license=(GPL)
+groups=(unity)
+depends=(sni-qt lib32-libdbusmenu-qt lib32-qt4-ubuntu)
+makedepends=(cmake gcc-multilib)
 source=("http://launchpad.net/sni-qt/trunk/${pkgver}/+download/sni-qt-${pkgver}.tar.bz2")
 sha512sums=('aa4cffeb3a5a70d65bd5ff42dcdd1c8efd107ade32a104b9a91696aecfb39a7a15d151f7491030ac0d7df796f2c7e4e6c3c0b7e32ee07a7cdc949da757147621')
 
