@@ -84,6 +84,8 @@ prepare() {
 build() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
+  export CXXFLAGS+=" -lc"
+
   # (From debian/rules) http://ccache.samba.org/manual.html#_precompiled_headers
   export CCACHE_SLOPPINESS=time_macros
 
