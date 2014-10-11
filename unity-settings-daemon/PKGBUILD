@@ -5,9 +5,9 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=14.04.0
-_extra_ver=+14.10.20140922
+_extra_ver=+14.10.20141010
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -22,26 +22,20 @@ conflicts=(gnome-desktop-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0001-keyboard-Move-code-to-get-the-XkbRF_VarDefsRec-here.patch
         0002-Remove-accountsservice-dependency.patch
         0003-Use-upower-compat.patch
-        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-        0002-Remove-lid-close.patch)
-sha512sums=('dd3dfd96eb25308d46fa1c115b73d3c56d7168e86469fc3ca6e59a2dd2a24557670d83ef867f603fea9edbb89cee42ed07a77d048713141c71557f224138ae36'
-            'f9788d0ca52abd7d0e35dbe84728ef1759093801b44a6a27b2235efb226df5f469610518b2ca41c9a896ef216b33d34000f3f723443a00d65e6522471581cd5e'
-            'acd7f8eb250b69a1092ca8917d8a9304d386b81e53d5a9be7bbd3cf09afa30ba8f5d50a173e8073ea6e38319361f7391225e3190c878a19ff15073d8508cd0c2'
+        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
+sha512sums=('56daade40048e8ba6d8ac1e54b76ab5b889cfee322d27b1c87f6165bac3695e43055b62e720faae3d858eac3a104c469557c4169859a520c00cc5427cc75496d'
+            '60f60c06d7c57093077bfcf458547299c44372984d90ad1cad1057d3b1fa1e0ef4991efb80302f3cf51d02e180db56055cff04de4e47f6456ef61095ba4d5bb8'
             '186f53141b4ce0443709df8a65c4ed6090ee3173f16b079f70e21dba5bc3d7dbba90b87d674b76807b4fba026d842dec95cedbb88f66091fc3cfc38895532a7a'
-            '26f783ec485ac6cdb05bd127fc86af50fe1675cd7c0b7b665f70a427c044e952e3f3d3844c6b67911421efdb951839978c397bfd03737de879d1b61b8a0ec90d'
-            '820f7ff0f073d61b8b5c26d17dd3df458f1c967e36fbd2fa27c959d1be4d2d0652027ac731f3ff2644a8407ec07566f337fcee502a540a3bcfb1d29696201c48')
+            '26f783ec485ac6cdb05bd127fc86af50fe1675cd7c0b7b665f70a427c044e952e3f3d3844c6b67911421efdb951839978c397bfd03737de879d1b61b8a0ec90d')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001-keyboard-Move-code-to-get-the-XkbRF_VarDefsRec-here.patch
   patch -p1 -i ../0002-Remove-accountsservice-dependency.patch
   patch -p1 -i ../0003-Use-upower-compat.patch
   patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-#  patch -p1 -i ../0002-Remove-lid-close.patch
 }
 
 build() {

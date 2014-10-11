@@ -1,7 +1,7 @@
-From 6b370035df389264798bd36e7e541fa761c2812e Mon Sep 17 00:00:00 2001
+From 1de12bc1100a7a26183221fdb11ea16280308198 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:23:30 -0400
-Subject: [PATCH 2/4] Remove accountsservice dependency
+Subject: [PATCH] Remove accountsservice dependency
 
 ---
  configure.ac                            |  2 +-
@@ -9,15 +9,15 @@ Subject: [PATCH 2/4] Remove accountsservice dependency
  2 files changed, 1 insertion(+), 73 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index fc76d2c..552dd79 100644
+index 0727222..325fa01 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -204,7 +204,7 @@ else
  fi
  AM_CONDITIONAL(HAVE_IBUS, test "x$enable_ibus" == "xyes")
  
--PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile xkeyboard-config $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
-+PKG_CHECK_MODULES(KEYBOARD, xkbfile xkeyboard-config $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
+-PKG_CHECK_MODULES(KEYBOARD, accountsservice xkbfile xkeyboard-config  $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
++PKG_CHECK_MODULES(KEYBOARD, xkbfile xkeyboard-config  $IBUS_MODULE gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION)
  
  XKB_BASE=$($PKG_CONFIG --variable xkb_base xkeyboard-config)
  AC_SUBST(XKB_BASE)
@@ -126,5 +126,5 @@ index 219ada1..d103b0b 100644
  
  exit:
 -- 
-2.1.1
+2.1.2
 
