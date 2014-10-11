@@ -9,7 +9,7 @@ pkgname=unity-control-center
 _actual_ver=14.10.0
 _extra_ver=+14.10.20140922
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="The Control Center for Unity"
 arch=(i686 x86_64)
 groups=(unity)
@@ -45,7 +45,7 @@ sha512sums=('77119e01c2e4115680e6080c7c4e063e4c9a311507f9f8244ef3b4bf457e7381585
             '6a741e4654abf78725b49a1cc62fbe803e541fba7bab7c2a959bdcebc5b2a47faafbb3078e590c689b7a5120abfa68f8e96606e5b5fe0d38cc79bde6ed7c406f'
             'cfe96957cec333e171b5ecb34116765e3214534470646c2c541343270900c17bdfedf2df88f3c8536e483ce5375abc02d95dfbef0c7ba773c7c73911b4572d00'
             '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
-            '1118e18b0df7bfaebfdd0f39ff88a44e6e296068562b5a980f5b0de7f750ca6843c812945abb75365df01214ee141c49a64bfcceb5a98f60d5c88808f7cfc16e')
+            '664ddfca6cc0526cf6a058b9cfa0d163d708b397166e9bade15806a43f6175b98430d41f8ef4ce3d33dc571d79013e5b7340df9aeecd2dc37ec89248d2c6fa5a')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
