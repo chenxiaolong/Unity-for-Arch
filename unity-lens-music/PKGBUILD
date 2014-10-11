@@ -8,9 +8,9 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.9.0
-_extra_ver=+13.10.20131011
+_extra_ver=+14.10.20141008
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="Music, in the dash"
 arch=(i686 x86_64)
@@ -22,8 +22,8 @@ makedepends=(vala intltool json-glib)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Remove-Ubuntu-One-support-service-is-dead.patch)
-sha512sums=('3f4479c05655220dc952c58c5b9183d83d144c4b9a72f52de43b6a6d02429fb83b42865a3502b133d5b5f65470cc26744a3a27c6d4c7d29c68f0166caefaee4b'
-            'e50ac27fa317d845d6a9dcf75b022503d666a65e2463e4c535910555875158003db37d25f8ef4399e9657364df4e96398033f3ef75867d41130f691e0d8c6578')
+sha512sums=('fadfafaf1dde12d20972ce33afa56e0da211b7412a7c7f1125195908bc7d13842eae698a7ad8c69eb1c7ad4f697bd49239c2c854d4634b7b0862eafa1fbb7332'
+            'a79f0c3891dce08536f9cf66fa024cc2b920685f4a1fb783ae081da81a0178bc0d6f87c61f4b187ad76d28437e5732fcdff519bff364bf857fee6206d0339d26')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"

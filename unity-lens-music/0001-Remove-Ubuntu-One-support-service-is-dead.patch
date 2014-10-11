@@ -1,4 +1,4 @@
-From f1ce317fdfc6a433a4288f60cb33ac65c8d7ff35 Mon Sep 17 00:00:00 2001
+From 2fd0578939f7ca9387c49012ce39e1a2fcc5f949 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 4 Apr 2014 16:03:27 -0400
 Subject: [PATCH] Remove Ubuntu One support: service is dead
@@ -781,7 +781,7 @@ index 0b15aba..0000000
 -}
 diff --git a/src/musicstore-scope.vala b/src/musicstore-scope.vala
 deleted file mode 100644
-index 1e9df99..0000000
+index 4b8275e..0000000
 --- a/src/musicstore-scope.vala
 +++ /dev/null
 @@ -1,421 +0,0 @@
@@ -824,7 +824,7 @@ index 1e9df99..0000000
 -    private PreferencesManager preferences = PreferencesManager.get_default ();
 -    private HashTable<string, Album> album_map;
 -    private PurchaseService purchase_service;
--    private Notification notification;
+-    private Notify.Notification notification;
 -
 -    public MusicStoreScopeProxy ()
 -    {
@@ -841,7 +841,7 @@ index 1e9df99..0000000
 -      base.initialize ();
 -
 -      Notify.init ("Music Store Scope");
--      notification = new Notification("Album name", _("Purchase started"), "");
+-      notification = new Notify.Notification("Album name", _("Purchase started"), "");
 -      collection = new MusicStoreCollection ();
 -      album_map = new HashTable<string, Album>(str_hash, str_equal);
 -      purchase_service = new PurchaseService ();
@@ -2565,5 +2565,5 @@ index 0e37345..0000000
 -  }
 -}
 -- 
-1.9.1
+2.1.2
 
