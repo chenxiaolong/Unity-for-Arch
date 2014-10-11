@@ -10,9 +10,9 @@
 _use_ppa=true
 
 pkgname=gtk3-ubuntu
-_ppa_rel=0ubuntu1~utopic2
-pkgver=3.14.1
-pkgrel=2
+_ppa_rel=0ubuntu1~utopic1
+pkgver=3.14.2
+pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
@@ -32,8 +32,8 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 fi
 
-sha512sums=('ae754fcaafc801da77b332e4a19e22ae12701811189a15816ba56d7b46ce714be3428f44ee58d978b648825986c5f08f86aeb0a546edf84475723da99e2602ba'
-            '56784dd8be00459e7549ee5923cfe89fb1f3c0703965d91fbf883436c4cf61e50eac318100825d88be3136769275065580330d8f8efbd95ecdbf594ca5dc0f0f')
+sha512sums=('afb320265f6a79ba2d0c72217d16d661b48d07359235bef89af9b6d5061ed28f0d3fa8103d753b13ced2a9b6b0cbc204ea2fc3373dff7d5f7bd31529eeca6235'
+            '8492168bdf84574279e0056af1d7401be3e852c4809db9effa69ea41f36ac2a9d6ae9f3155952fb787aad0d06f71a5b8dd5f4b28fd3f18769d2eee6307600dd3')
 
 prepare() {
   cd "gtk+-${pkgver}"
@@ -49,8 +49,6 @@ prepare() {
         echo '017_no_offscreen_device_grabbing.patch' >> ../debian/patches/series
       # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
         echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
-      # https://bugzilla.gnome.org/show_bug.cgi?id=737818
-        echo 'git-GtkBuilder-Undo-the-type-name-heuristic-changes.patch' >> ../debian/patches/series
 
   for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
