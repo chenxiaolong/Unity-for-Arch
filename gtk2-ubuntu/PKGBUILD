@@ -8,9 +8,10 @@
 # vercheck-gnome: name=gtk+, majorver=2.24
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=2.24.24
-pkgrel=3
+_ubuntu_rel=0ubuntu3
+_ubuntu_ver=2.24.24
+pkgver=2.24.25
+pkgrel=1
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
@@ -25,11 +26,11 @@ replaces=(gtk2-docs)
 backup=(etc/gtk-2.0/gtkrc)
 install=gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${pkgver}-${_ubuntu_rel}.debian.tar.xz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         'gtkrc'
         'xid-collision-debug.patch')
-sha512sums=('75dbeb9aa3546e6fd2861e1d352fa347f6163b25f8292680d53fe13c73c310d90b447fab1ba3bada9e878a1f7c4cef3e279460a698e0282bd13b495606614765'
-            'c55250e62c75f4174db4e035b43fa66d93650dd703a243b910631fb6b3af95414367fc18eb80799d984ddb67e354ea44d909d8fc7dc7d88862e28b163a02f286'
+sha512sums=('e102eabbd86e9e697402b4d915172dd3838374b7b8a16b95369ed602228857a013fdba7b6b8d742f925ff8d340b63a90b56c1ddbd4405d8dc454144c705ac08d'
+            '65e34591b2de130268e873fee91c69e007cc2ee55690e1e236f099fc3700d0f8966ddf6e7442c1a77c2438d7fe0d650b2bc32d302552bb78495ab68ced03c9f2'
             'fb18f1937b117f97da1650fda2561e231cb5da108a9c04f3b27c19205843ea16402b52d9693eca63a8464bdfb1e6a0aedf81958ee3de75ce12aca4cce078bf23'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
@@ -57,10 +58,11 @@ prepare() {
         echo '096_git_gtkprintsettings.patch' >> ../debian/patches/series
       # The list of printers should be searchable/sortable
         echo 'backport_search_printer_location.patch' >> ../debian/patches/series
-      # Upstream segfault fix
-        echo 'git_widget_null_handling.patch' >> ../debian/patches/series
+      # Allow window dragging from empty areas of the menubar
+        echo 'menubar_toolbar_dragging.patch' >> ../debian/patches/series
 
   for i in $(grep -v '#' ../debian/patches/series); do
+    msg "Applying ${i}"
     patch -p1 -i "../debian/patches/${i}"
   done
 }
