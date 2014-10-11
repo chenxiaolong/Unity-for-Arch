@@ -9,7 +9,7 @@ pkgname=unity-control-center
 _actual_ver=14.10.0
 _extra_ver=+14.10.20140922
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=4
+pkgrel=5
 pkgdesc="The Control Center for Unity"
 arch=(i686 x86_64)
 groups=(unity)
@@ -37,6 +37,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         0008-Remove-overlay-scrollbar-from-GTK_MODULES.patch
         system-config-printer-unity.desktop
         unity-bluetooth-panel.desktop
+        unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
 sha512sums=('77119e01c2e4115680e6080c7c4e063e4c9a311507f9f8244ef3b4bf457e73815859574f5616b3928f166153bbc997d043979adeb0b7c8a626a621bc0ff41efb'
             '1b39906307c6776647cb1325c4029806614f5301e0c7fd1fd6c14509daad587ddbf71f5ac60c81e7f4c89ed9598569523a31ec3f07ddc69e8cd5b73e205ec700'
@@ -49,6 +50,7 @@ sha512sums=('77119e01c2e4115680e6080c7c4e063e4c9a311507f9f8244ef3b4bf457e7381585
             'c5da31eb5a4e00420f815b5ce11f12fb27f52d057f75514495d6b7dbec0ffd05ad12937273192e67edbf5728edf0a3637856ac24678c55ef6951dd0e93c4eaf4'
             '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
             '664ddfca6cc0526cf6a058b9cfa0d163d708b397166e9bade15806a43f6175b98430d41f8ef4ce3d33dc571d79013e5b7340df9aeecd2dc37ec89248d2c6fa5a'
+            '287bf010b9a6d9424e2f07f7271cd27fd9a0fb9e29ea704dbb211a67d23558c66c0c654ee2a23456cba69bee725e962fbe79713cc0d2ad0ba4d830b0053777e7'
             '1378c3c15cb8c60575a55c86d400878f021c35adc87618c219496fee086b3c1286d7a46051747312960806330b6bb911a0c3e33814acedb2d83a1ef57d5e7a3a')
 
 prepare() {
@@ -104,6 +106,8 @@ package() {
   install -m644 "${srcdir}/system-config-printer-unity.desktop" \
                 "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/unity-bluetooth-panel.desktop" \
+                "${pkgdir}/usr/share/applications/"
+  install -m644 "${srcdir}/unity-online-accounts-panel.desktop" \
                 "${pkgdir}/usr/share/applications/"
   install -m644 "${srcdir}/unity-region-panel.desktop" \
                 "${pkgdir}/usr/share/applications/"
