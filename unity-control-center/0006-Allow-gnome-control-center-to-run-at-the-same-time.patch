@@ -1,7 +1,7 @@
-From 6c834176c4197625639c8fb74a5556507d7f06ec Mon Sep 17 00:00:00 2001
+From 0b2105932a975fbe25fc98f3fae55fcd9019c7ca Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:54:41 -0400
-Subject: [PATCH 5/7] Allow gnome-control-center to run at the same time
+Subject: [PATCH 6/8] Allow gnome-control-center to run at the same time
 
 ---
  shell/control-center.c | 2 +-
@@ -21,5 +21,5 @@ index 1d57277..a79206b 100644
                      G_CALLBACK (application_startup_cb), shell);
    g_signal_connect (application, "command-line",
 -- 
-2.0.0
+2.1.2
 

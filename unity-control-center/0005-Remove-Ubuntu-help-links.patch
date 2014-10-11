@@ -1,7 +1,7 @@
-From e4b441ef811105f8b01d83fda522431a1eca9310 Mon Sep 17 00:00:00 2001
+From 98db06abc402556595939624ff97cc4e0e5aabec Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:53:27 -0400
-Subject: [PATCH 4/7] Remove Ubuntu help links
+Subject: [PATCH 5/8] Remove Ubuntu help links
 
 ---
  panels/bluetooth/cc-bluetooth-panel.c     | 2 +-
@@ -69,10 +69,10 @@ index 0f4f84e..c1b424e 100644
  
  static void
 diff --git a/panels/display/cc-display-panel.c b/panels/display/cc-display-panel.c
-index 7ffc40f..d592aef 100644
+index ad14379..864e25f 100644
 --- a/panels/display/cc-display-panel.c
 +++ b/panels/display/cc-display-panel.c
-@@ -228,7 +228,7 @@ static const char *
+@@ -227,7 +227,7 @@ static const char *
  cc_display_panel_get_help_uri (CcPanel *panel)
  {
    if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
@@ -221,5 +221,5 @@ index 9925a42..1d57277 100644
    else
      gtk_show_uri (gtk_widget_get_screen (window),
 -- 
-2.0.0
+2.1.2
 
