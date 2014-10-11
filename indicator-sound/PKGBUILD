@@ -8,7 +8,7 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.10.20141007
+_extra_ver=+14.10.20141010
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -26,7 +26,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         0001_Not_a_phone.patch
         0002_Remove_tests.patch
         libpulse.vapi)
-sha512sums=('fcdac4e2cac69ab3474a0509bd8e74c80ec0865525c2039df6ae8ce44503f4aaefb29fc23098f572d0f426952572df6f1e303ee2e6880e6c7434c975dd98fbcc'
+sha512sums=('6dcecbd046ce6871f8fda473f2d07fc7833dcbaec8260c3b0d743e09ba1b960808896ebb17ac8623ab99dcea104dc69196fdbb24f800a816d63ce0a8783bfa19'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
             '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b'
