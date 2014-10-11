@@ -22,7 +22,7 @@ depends=(accountsservice cups-pk-helper libnotify gnome-menus
          grilo clutter-gtk unity-settings-daemon system-config-printer
          webkitgtk)
 makedepends=(gnome-common gnome-doc-utils intltool docbook-xsl modemmanager
-             vala)
+             ttf-ubuntu-font-family vala)
 optdepends=('gnome-control-center: For bluetooth panel')
 options=(!emptydirs)
 install=unity-control-center.install
