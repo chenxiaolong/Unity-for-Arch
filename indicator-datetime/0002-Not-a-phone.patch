@@ -1,16 +1,31 @@
+From 987772cab7feafe6c8f30e46c9e7cffd46895845 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 11 Oct 2014 17:52:55 -0400
+Subject: [PATCH 2/2] Not a phone
+
+---
+ CMakeLists.txt                  |  1 -
+ include/datetime/actions-live.h |  1 -
+ src/actions-live.cpp            | 15 +--------------
+ 3 files changed, 1 insertion(+), 16 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4d2fd95..fad839c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -39,7 +39,6 @@
+@@ -40,7 +40,6 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                     libedataserver-1.2>=3.5
-                    libcanberra>=0.12
+                    gstreamer-1.0>=1.2
                     libnotify>=0.7.6
 -                   url-dispatcher-1>=1
                     properties-cpp>=0.0.1)
  include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
  
+diff --git a/include/datetime/actions-live.h b/include/datetime/actions-live.h
+index 0214d65..4dfa398 100644
 --- a/include/datetime/actions-live.h
 +++ b/include/datetime/actions-live.h
-@@ -54,7 +54,6 @@
+@@ -54,7 +54,6 @@ public:
  
  protected:
      virtual void execute_command(const std::string& command);
@@ -18,6 +33,8 @@
  };
  
  } // namespace datetime
+diff --git a/src/actions-live.cpp b/src/actions-live.cpp
+index 1f4fc8c..89cffb9 100644
 --- a/src/actions-live.cpp
 +++ b/src/actions-live.cpp
 @@ -19,8 +19,6 @@
@@ -29,7 +46,7 @@
  #include <glib.h>
  
  namespace unity {
-@@ -49,12 +47,6 @@
+@@ -49,12 +47,6 @@ void LiveActions::execute_command(const std::string& cmdstr)
      }
  }
  
@@ -42,7 +59,7 @@
  /***
  ****
  ***/
-@@ -131,13 +123,11 @@
+@@ -131,13 +123,11 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
  
  void LiveActions::phone_open_alarm_app()
  {
@@ -57,7 +74,7 @@
      else if (appt.has_alarms)
          phone_open_alarm_app();
      else
-@@ -146,13 +136,10 @@
+@@ -146,13 +136,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
  
  void LiveActions::phone_open_calendar_app(const DateTime&)
  {
@@ -71,32 +88,6 @@
  }
  
  /***
---- a/src/main.cpp
-+++ b/src/main.cpp
-@@ -35,8 +35,6 @@
- #include <glib/gi18n.h> // bindtextdomain()
- #include <gio/gio.h>
- 
--#include <url-dispatcher.h>
--
- #include <locale.h>
- #include <cstdlib> // exit()
- 
-@@ -89,7 +87,6 @@
-                 url = a.url.c_str();
-             else // alarm doesn't have a URl associated with it; use a fallback
-                 url = "appid://com.ubuntu.clock/clock/current-user-version";
--            url_dispatch_send(url, nullptr, nullptr);
-         };
-         auto snap_dismiss = [](const Appointment&){};
-         snap(appt, snap_show, snap_dismiss);
---- a/tests/test-live-actions.cpp
-+++ b/tests/test-live-actions.cpp
-@@ -35,7 +35,6 @@
-     virtual ~MockLiveActions() {}
- 
- protected:
--    void dispatch_url(const std::string& url) { last_url = url; }
-     void execute_command(const std::string& cmd) { last_cmd = cmd; }
- };
- 
+-- 
+2.1.2
+
