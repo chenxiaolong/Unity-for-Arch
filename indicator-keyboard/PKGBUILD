@@ -7,7 +7,7 @@ pkgname=indicator-keyboard
 _actual_ver=0.0.0
 _extra_ver=+14.10.20140620.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="Indicator for switching keyboard layouts and input methods"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-keyboard"
@@ -23,13 +23,15 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard
         0002-Remove-code-depending-on-accountsservices-patch.patch
         0003-Remove-unavailable-DBus-method-activate_input_source.patch
         0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
-        0005-Vala-0.26-fixes.patch)
+        0005-Vala-0.26-fixes.patch
+        0006-Spawn-ibus-daemon-at-startup.patch)
 sha512sums=('82c9ba708a248f654984ae01cebd098905bab75308124d7cfca6f8dbb3a8f838b9239015802853237472ed5ce780a50a09a6f178afecad771baf4ba62f4ee118'
-            '87b34733c0200e092da0fe9329769a3d2fdf3c3702ca1a9ff9fb6023fc8a7cfcfb0176b3df2d5078bb1b0e15d17f9634783397786fc04bf12d498c4f20d1bd35'
-            '730eeb74af9ff202cc739255b1afe35faa7b2cc764a4d39036b6fea4b5c7e689baca6e281202d42a7d8aacf0866b0dd6f31e93f3a557db3d844d6ec0fed72d3f'
-            '792144126c5517bb731dd5f2a25c40825b1cd186c0e0f9edaefcf6f11130c6e674a2d6708ec9594d51fa073b8862b9d7e0f0af93dc0636c2cf8db45faf3811de'
-            '17e8996fce09209a00a6f36bd8a0a1d7369c8897517b37b64dff9cff579a61f93124d83a86eb081eb03c7b96c8b9408ca18eee0c17680426bfb761fdeb99b64b'
-            '64d4bd8a2b4dd920137908295e74cdf508bc43e74345d46da100bd5b42a10827f49ac6039d06272bc2d801ce748dae49ecfe53aa110837cc28aaf5a1ff82b0d7')
+            'efbfc27fe6712e6c8239c70e091976d4e329c06b8199b3a1e9a3a73b4e89acd5641a441f2ba3f74350f7ba2f79bbaa119d2f7f4d939bd7f587e0ff1c6634df76'
+            'c2163462845ba2fedb99fa5e5873877d5a74c056b553e386fd4c115cda340a002df5a582d2519d2bfa379e0fa90ba2b0836f6eea5854256804f8848512439c05'
+            '83e50bdba28bb2a37c10a9bc6ed3718b9fecfc8ee4aaaa65e819ac0928c39bb8ee1a19988067f950c83b6dd3eb6c897725e80c8fffb537ef42d86e1d3f5bdcc6'
+            '4f4da0bbb8e30f34856ed5747b91f314bb3e3c65b468023c9247806793df6cdb5b512696f274768a06c6d6e8552316dc8710a1bf568d4f68bd40ccb76fed581f'
+            '6ea4f757efaa7a5012ca76d309126e603662afa0a215d9d57c049b0cc70deb0c3d37d9da4de717de606a8afd21d681edb1ab2d63ed0f17c5bcaba65327a5e390'
+            '8e595b6021a63f70817cd529fa86c6103532adf0685ef29f3ea765699e6483174d024ac5394e4bbf2c4b22adbb6df5f01e38c3e60a7ab1e9b19c46e5638512e3')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
@@ -38,6 +40,7 @@ prepare() {
   patch -p1 -i ../0003-Remove-unavailable-DBus-method-activate_input_source.patch
   patch -p1 -i ../0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
   patch -p1 -i ../0005-Vala-0.26-fixes.patch
+  patch -p1 -i ../0006-Spawn-ibus-daemon-at-startup.patch
 }
 
 build() {

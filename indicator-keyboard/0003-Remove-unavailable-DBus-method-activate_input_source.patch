@@ -1,7 +1,7 @@
-From 831a1936908fe3adacd8bc3ee534d0b6f7e109f7 Mon Sep 17 00:00:00 2001
+From 06525b652886f1127fc8da3b5b46df04c25a266b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 12 Apr 2014 14:23:53 -0400
-Subject: [PATCH 3/5] Remove unavailable DBus method activate_input_source
+Subject: [PATCH 3/6] Remove unavailable DBus method activate_input_source
 
 ---
  lib/Makefile.am          |  1 -
@@ -172,5 +172,5 @@ index dca3b8b..d6d46a3 100644
  	Test.add_data_func ("/indicator-keyboard-service/activate-keyboard-layout-chart", Fixture.create<Tests> (Tests.test_activate_keyboard_layout_chart));
  	Test.add_data_func ("/indicator-keyboard-service/activate-text-entry-settings", Fixture.create<Tests> (Tests.test_activate_text_entry_settings));
 -- 
-2.1.1
+2.1.2
 

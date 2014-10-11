@@ -1,0 +1,31 @@
+From e26e51b3eb87dd8bd9e53c6c337f888899cbce2f Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 11 Oct 2014 19:23:08 -0400
+Subject: [PATCH 6/6] Spawn ibus-daemon at startup
+
+---
+ lib/main.vala | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/lib/main.vala b/lib/main.vala
+index e9e3228..e9db81a 100644
+--- a/lib/main.vala
++++ b/lib/main.vala
+@@ -1008,6 +1008,14 @@ public class Indicator.Keyboard.Service : Object {
+ 
+ 	[DBus (visible = false)]
+ 	public static int main (string[] args) {
++		// Launch ibus-daemon the same way gnome-shell 3.14 does
++		string[] cmd = {"ibus-daemon", "--xim", "--panel", "disable"};
++		try {
++			new Subprocess.newv (cmd, SubprocessFlags.NONE);
++		} catch (Error e) {
++			warning ("Failed to launch ibus-daemon: %s", e.message);
++		}
++
+ 		Service.service = new Service (ref args);
+ 
+ 		Posix.signal (Posix.SIGTERM, (code) => {
+-- 
+2.1.2
+

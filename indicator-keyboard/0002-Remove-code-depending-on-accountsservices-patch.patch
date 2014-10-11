@@ -1,7 +1,7 @@
-From 4ac676ff62add77c9d71359443fae8b01f443b9c Mon Sep 17 00:00:00 2001
+From 8f7b9afc350fffa126616e7761e46a1e80c0b4b4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:46:47 -0400
-Subject: [PATCH 2/5] Remove code depending on accountsservices patch
+Subject: [PATCH 2/6] Remove code depending on accountsservices patch
 
 ---
  lib/main.vala | 46 +---------------------------------------------
@@ -72,5 +72,5 @@ index 1cb3896..030b51e 100644
  					var layouts = user.xkeyboard_layouts;
  					foreach (var layout in layouts) {
 -- 
-2.1.1
+2.1.2
 

@@ -1,7 +1,7 @@
-From d2f0515945017b8ec898a6d80e2008ca52506ccb Mon Sep 17 00:00:00 2001
+From eb2d041f274327e07bd35fe4467d90a3d23a2db1 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:39:56 -0400
-Subject: [PATCH 1/5] vala build fix
+Subject: [PATCH 1/6] vala build fix
 
 ---
  data/Makefile.am | 2 +-
@@ -35,5 +35,5 @@ index c57725c..88bf389 100644
                 --vapidir $(top_srcdir)/deps
  
 -- 
-2.1.1
+2.1.2
 

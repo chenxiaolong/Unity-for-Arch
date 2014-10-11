@@ -1,7 +1,7 @@
-From fd9808b3708fae64e76e3a3aa58cf8b2c475d751 Mon Sep 17 00:00:00 2001
+From 0638f16c4ef20f1235337db37c05b39f5b4a92c9 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 16 Apr 2014 17:06:46 -0400
-Subject: [PATCH 4/5] Remove unavailable DBus method xkeyboard-layouts
+Subject: [PATCH 4/6] Remove unavailable DBus method xkeyboard-layouts
 
 ---
  deps/accountsservice.vapi |  1 -
@@ -60,5 +60,5 @@ index 57d9bac..e9e3228 100644
  					LightDM.User? light_user = user_list.get_user_by_name (user.user_name);
  
 -- 
-2.1.1
+2.1.2
 

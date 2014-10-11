@@ -1,7 +1,7 @@
-From 5e88a1cce894057db089b54b96c5833624bee856 Mon Sep 17 00:00:00 2001
+From 6af801cfaf5e2fb9be4778a4e70e1ce6c9e62a12 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 30 Sep 2014 23:50:36 -0400
-Subject: [PATCH 5/5] Vala 0.26 fixes
+Subject: [PATCH 5/6] Vala 0.26 fixes
 
 ---
  lib/ibus-menu.vala      | 2 +-
@@ -35,5 +35,5 @@ index 8e5661e..1cd6796 100644
  	}
  
 -- 
-2.1.1
+2.1.2
 
