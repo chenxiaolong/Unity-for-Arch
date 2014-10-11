@@ -3,15 +3,15 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=utopic
+# vercheck-ubuntu: name=libdbusmenu, repo=utopic
 # vercheck-launchpad: name=dbusmenu, tarname=libdbusmenu
 
-pkgbase=libdbusmenu
-pkgname=(libdbusmenu-glib libdbusmenu-gtk2 libdbusmenu-gtk3)
+pkgbase=libdbusmenu-ubuntu
+pkgname=(libdbusmenu-glib-ubuntu libdbusmenu-gtk2-ubuntu libdbusmenu-gtk3-ubuntu)
 _actual_ver=12.10.3
 _extra_ver=+14.10.20140610
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="A small little library that was created by pulling out some comon code out of indicator-applet"
 arch=(i686 x86_64)
@@ -26,13 +26,13 @@ sha512sums=('395bf77c309dab3f731db7ab787596c5fbd1adf49f4d35a93b349f715661f03cce3
             '233865822a6280dbd536db131511648bdf40af042ae8afa1ed813cd2538c4e9f5f1ada8868de27bf60f1bed8830ace9916c097ba3d8d698744a2fac95a6dbabf')
 
 prepare() {
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}"
+  cd "libdbusmenu-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i ../0001_autoconf.patch
 }
 
 build() {
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}"
+  cd "libdbusmenu-${_actual_ver}${_extra_ver}"
 
   gtkdocize
   autoreconf -vfi
@@ -46,23 +46,24 @@ build() {
 
   [[ -d build-gtk2 ]] || mkdir build-gtk2
   pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=2 --disable-static
+  ../configure --prefix=/usr --libexecdir=/usr/lib/libdbusmenu --disable-scrollkeeper --with-gtk=2 --disable-static
   make -j1
   popd
 
   [[ -d build-gtk3 ]] || mkdir build-gtk3
   pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgbase} --disable-scrollkeeper --with-gtk=3 --disable-static
+  ../configure --prefix=/usr --libexecdir=/usr/lib/libdbusmenu --disable-scrollkeeper --with-gtk=3 --disable-static
   make
   popd
 }
 
-package_libdbusmenu-glib() {
+package_libdbusmenu-glib-ubuntu() {
   depends=(json-glib)
-  provides=("libdbusmenu=${epoch}:${pkgver}")
-  conflicts=(libdbusmenu)
+  provides=(libdbusmenu-glib)
+  replaces=(libdbusmenu-glib)
+  conflicts=(libdbusmenu-glib)
 
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
+  cd "libdbusmenu-${_actual_ver}${_extra_ver}/build-gtk3"
 
   make -j1 -C libdbusmenu-glib DESTDIR="${pkgdir}/" install
   make -j1 -C tools DESTDIR="${pkgdir}/" install
@@ -71,21 +72,27 @@ package_libdbusmenu-glib() {
   make -j1 -C po DESTDIR="${pkgdir}/" install
 }
 
-package_libdbusmenu-gtk2() {
+package_libdbusmenu-gtk2-ubuntu() {
   pkgdesc+=" (GTK+ 2 library)"
-  depends=(gtk2 libdbusmenu-glib)
+  depends=(gtk2 libdbusmenu-glib-ubuntu)
+  provides=(libdbusmenu-gtk2)
+  replaces=(libdbusmenu-gtk2)
+  conflicts=(libdbusmenu-gtk2)
 
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2"
+  cd "libdbusmenu-${_actual_ver}${_extra_ver}/build-gtk2"
 
   make -j1 -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
   make -j1 -C docs/libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }
 
-package_libdbusmenu-gtk3(){
+package_libdbusmenu-gtk3-ubuntu() {
   pkgdesc+=" (GTK+ 3 library)"
-  depends=(gtk3 libdbusmenu-glib)
+  depends=(gtk3 libdbusmenu-glib-ubuntu)
+  provides=(libdbusmenu-gtk3)
+  replaces=(libdbusmenu-gtk3)
+  conflicts=(libdbusmenu-gtk3)
 
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3"
+  cd "libdbusmenu-${_actual_ver}${_extra_ver}/build-gtk3"
 
   make -j1 -C libdbusmenu-gtk DESTDIR="${pkgdir}/" install
 }

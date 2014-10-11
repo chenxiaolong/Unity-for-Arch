@@ -37,7 +37,7 @@ To compile from source, just build all of the packages in the following order:
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |
 | qt4-ubuntu                       | Qt 4 toolkit with Ubuntu's patches         |
 | lib32-qt4-ubuntu                 | Qt 4 toolkit (x86-64 only)                 |
-| libdbusmenu                      | Library for passing menus over DBus        |
+| libdbusmenu-ubuntu               | Library for passing menus over DBus        |
 | ido                              | Widgets and objects used for indicators    |
 | libindicator                     | Symbols and functions for indicators       |
 | libindicate                      | Libraries to raise 'flags' on DBus         |
