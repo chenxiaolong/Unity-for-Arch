@@ -1,0 +1,30 @@
+From f5a30b24f75975936d1b06421cf3f54b149a0c72 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 11 Oct 2014 20:46:20 -0400
+Subject: [PATCH] Open new window even if no paths are specified
+
+Otherwise, clicking on the launcher icon won't open a new window when
+running under the Unity desktop.
+---
+ src/nautilus-application.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/nautilus-application.c b/src/nautilus-application.c
+index 88ed0f5..8d7aa22 100644
+--- a/src/nautilus-application.c
++++ b/src/nautilus-application.c
+@@ -543,6 +543,11 @@ nautilus_application_open (GApplication *app,
+ 
+ 	DEBUG ("Open called on the GApplication instance; %d files", n_files);
+ 
++	/* If no locations were specified, open a window to the default location */
++	if (n_files == 0 && force_new) {
++		open_window (self, NULL);
++	}
++
+ 	/* Open windows at each requested location. */
+ 	for (idx = 0; idx < n_files; idx++) {
+ 		file = files[idx];
+-- 
+2.1.2
+
