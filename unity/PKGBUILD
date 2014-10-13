@@ -9,7 +9,7 @@ _actual_ver=7.3.1
 _extra_ver=+14.10.20140915
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -39,7 +39,6 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0008-Remove-xpathselect-dependency.patch
         com.ubuntu.user-interface.gschema.xml
         launcher_bfb.png
-        10_unity.gschema.override
         99unity-panel-service
         unity-debug
         run_this_if_unity_is_on_fire.py
@@ -56,7 +55,6 @@ sha512sums=('491708dd1fe4dbdf37c2a8a7876c95918e65ef466b1a0d8e57e2179e86bec75c09d
             'b7d05067a32d2ec9e9e8b4b5b4f99c02ddeda6917f8c13834bd60ab0127b149cbd43124900633511892e187c08b30cc4e62d8c305cdcc805cf32f2efc1df7702'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
-            '872c48f85350d2d815418afab340946f85ec1f9f3e1ab748fc1199df342df52642447736a5b783fb17eb324a961bbf8badc4e8401512e7182e4ff2e25b53d3a1'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
@@ -139,11 +137,6 @@ package() {
   # Arch Linux logo
   install -m644 "${srcdir}/launcher_bfb.png" \
     "${pkgdir}/usr/share/unity/icons/launcher_bfb.png"
-
-  # Change window dragging key back to Alt. Super conflicts with Unity's other
-  # hotkeys.
-  install -m644 "${srcdir}/10_unity.gschema.override" \
-    "${pkgdir}/usr/share/glib-2.0/schemas/"
 
   install -m644 "${srcdir}/com.ubuntu.user-interface.gschema.xml" \
     "${pkgdir}/usr/share/glib-2.0/schemas/"
