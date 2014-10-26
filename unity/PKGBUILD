@@ -6,10 +6,10 @@
 
 pkgname=unity
 _actual_ver=7.3.1
-_extra_ver=+14.10.20140915
+_extra_ver=+14.10.20141016
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=4
+pkgrel=1
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -30,7 +30,6 @@ install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001-Disable-tests.patch
-        0002-Arch-Linux-branding.patch
         0003-Revert-r3134-Remove-Systray-Whitelist.patch
         0004-Disable-Werror.patch
         0005-Fix-launchers.patch
@@ -43,10 +42,9 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('491708dd1fe4dbdf37c2a8a7876c95918e65ef466b1a0d8e57e2179e86bec75c09d25fcc5f5900d022769589ffa1242aae4e90d712023dfb18a4b95190c90026'
-            '1ce86ffafc71d5c22b26298ee779a6158a1ef30ca3c98ab704c83c9f93d471d1b5230715c38b409c2df9ad42fe1a31b8bda011323b402c17816ac67f8d3c586b'
+sha512sums=('471e73ef74df72e26057b6c12766c8bbc27c0eb1d86c508f4aaf9eb26c0aff84eae0911c8c039f7629b0f920f6c51e65bd862b94452a6351ecbe6dda6d8d3a13'
+            '71c31cd2334d3c38f4bdf0d261f0536f532ac8b7ec724cbfd0e31821958a90746c6034abe38ab01a5364e3a610774c26114487b07e094415dd8dac9ebc026933'
             '8c1ede40177dd7106d8c41b45bae3658d916f73ecd68b1ef47996fc19f0b4109dc58a41aa5444498ad52caecdd14f4dc53b2acfe619e3197d7d24842b9bb0251'
-            '00f679aeb3a416f71ab1a8335c5c019daf09ab2d0b5a1ca45c060e5692dae05222ef90d303ee35442ad74da0f8e72501134fc03b43fa00584a43bea54fdfa4c3'
             'f6789016ad6fd7721a4750a7bf2fab03376dac6a031d73dfa84ec6df54ee9c32fed49dfd00b06f770cf99f0ebfec2ba2c58ce3722517f145352ca9575fc5fdd4'
             'bf905087b763b1f06171ccf22cdbb16bc7c37c2e93443ad42c437fea52a3c9cb6107498915120f9e8caf200951503188c1d7ae6d7642d20eb3da421e4a8ebe41'
             'c73e739ccb2d08d10e6a34a6592e42817c61e4fc2c21631a78e4331fecf40351736e681208b3b7c94aade466ad70904c0065f94fb3205e9cee5cf34bfbdd5293'
@@ -64,7 +62,6 @@ prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i ../0001-Disable-tests.patch
-  patch -p1 -i ../0002-Arch-Linux-branding.patch
   patch -p1 -i ../0003-Revert-r3134-Remove-Systray-Whitelist.patch
   patch -p1 -i ../0004-Disable-Werror.patch
   patch -p1 -i ../0005-Fix-launchers.patch
