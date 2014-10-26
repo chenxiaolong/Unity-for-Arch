@@ -10,9 +10,9 @@
 _use_ppa=true
 
 pkgname=gtk3-ubuntu
-_ppa_rel=0ubuntu1~utopic1
-pkgver=3.14.3
-pkgrel=2
+_ppa_rel=0ubuntu1~utopic3
+pkgver=3.14.4
+pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
@@ -32,8 +32,8 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 fi
 
-sha512sums=('8de475aae8f9efa7aa3750310a498bdd9e9416ca6fd04ee25fa60a4eb41c2fe1a81b7d14c625548f25c68692500097a9adc83dc99620ad97730215b252d5c918'
-            '30e2eca13d802f76a85d92a87e6df20f41e55cde3fa07f97232ef6932f3385a26c0ec47a40a0d5cd0cd7ae07df569c54339b889cfa87d2ad13fc0dc6d23ce05d')
+sha512sums=('98589e5b86a2af6cddabef702486211f103d49f62cc695393011e934e88562522d9db2ecfe917b4f4c3bbd1456887bcaa8c3b3c17f959e0405a40e6ff293c843'
+            '3dd31fb985865e8d02b6f8af37c814f59153bc9d26bcf281f51a7e167d8173b8b1fe3325b9f2a8abc879554524c83395996b2987adc4f77e735128c53c4d0256')
 
 prepare() {
   cd "gtk+-${pkgver}"
