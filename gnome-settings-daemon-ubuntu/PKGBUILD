@@ -10,8 +10,9 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _ppa_rel=1ubuntu1~utopic1
-pkgver=3.14.0
-pkgrel=3
+_ppa_ver=3.14.0
+pkgver=3.14.1
+pkgrel=2
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
 url="http://www.gnome.org"
@@ -27,18 +28,19 @@ options=(!emptydirs)
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
-        0001-Do-not-hide-cursor.patch)
-sha512sums=('9b965d087a3a634907f7bf7878cae585d0d511b701668253b22cedfc45b782f70c18d6b32ab8c5999cb5aa14dc65c6d7b3abd327df59a9c84545037385fabae6'
+        0001-64_restore_terminal_keyboard_shortcut_schema.patch.patch)
+sha512sums=('be89d27cb2be2557f7381c0d11c3cc48346973543b412ba95abdb05d7e60f27074a29a4d7c8083b963400de7769e9025b815b086a832d904ee3a17a43e9d992f'
+            '9299c77626307d20f8d896a7cfee8872ea69e233baf6025f98f2e4251dda03ec8703178638071d715a5dfe0a21e0e7168570713e2a954766109ea54a81b345af')
+sha512sums=('be89d27cb2be2557f7381c0d11c3cc48346973543b412ba95abdb05d7e60f27074a29a4d7c8083b963400de7769e9025b815b086a832d904ee3a17a43e9d992f'
             '9299c77626307d20f8d896a7cfee8872ea69e233baf6025f98f2e4251dda03ec8703178638071d715a5dfe0a21e0e7168570713e2a954766109ea54a81b345af'
-            'f0e4971759ea7553afb998d55124dff7450288d7079057911a61da1b9625272ce19b3dc8f0dbce9b3418e86aaf666954269ed42512e2d1ed37b8b4bf123725e2')
+            '448242b333fd113b5cc19199514ce3d90ed96ef0cc00213ead46751d2bda34f09706c31114d0c36dea1728b70e990c8ab897181035e7029d2265c0780a310161')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
 
-  patch -p1 -i ../0001-Do-not-hide-cursor.patch
-
   # Apply Ubuntu's patches
-  patch -p1 -i ../debian/patches/64_restore_terminal_keyboard_shortcut_schema.patch
+  patch -p1 -i ../0001-64_restore_terminal_keyboard_shortcut_schema.patch.patch
+  #patch -p1 -i ../debian/patches/64_restore_terminal_keyboard_shortcut_schema.patch
   patch -p1 -i ../debian/patches/ubuntu-lid-close-suspend.patch
   patch -p1 -i ../debian/patches/revert_background_dropping.patch
   patch -p1 -i ../debian/patches/revert-gsettings-removals.patch
