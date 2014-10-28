@@ -14,7 +14,7 @@ _extra_ver=+14.10.20140918
 
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=2
+pkgrel=3
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
@@ -36,35 +36,39 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_v
         #"https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.12%2B14.10.20140812-0ubuntu1ppa1.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         compiz.reset
-        0002_Fix_cmake_install_dir.patch
-        0003_Fix_python_install_command.patch
-        0004_Use_python2.patch
-        0005_Disable_Werror.patch)
+        0001-Fix-cmake-install-directory.patch
+        0002-Fix-python-install-command.patch
+        0003-Use-Python-2.patch
+        0004-Disable-Werror.patch
+        0005-Metacity-3.14-support.patch)
 sha512sums=('a28c1a84e8a09b8373d9fdbbb31438c8a98af72516fcc419b143f057907888312182b9d1cf63ded4b7455b7fbac93cecdf66f527250bb6b9718263ee2e5088aa'
             'f4e2dcea99b1fc476bb76ba6dd8d46110e918d4ac47cc089d338091d0442a0e9d8c114d8e4d6436927e2d5ba51f6ad22fe2486076bafd9590b078bb0cb819c35'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
-            'ba80a6e5c3a7b488974046f8c1b906bb178691a9224b5c8f3542e0948099e2291b8888fbd4f591eaa16f9209e7288f11e122d1673731e7f1aa7c84aa6e3207c6'
-            'bd7c8c0bf4cb3767c5b4b6d9c2d79e958ff9f34375a8223b509aec16b3682e219568e17378fa392f6ca4267f695835d83ef1c5db12898ea7b7cc75e1151d02b2'
-            '8ee87a9de58d2ca4c9d64da24ff690dcce3f77aebbc45c6add5d6324b67862472ea7b6260e9019fe2a5ff0accf94e29bb7171cbd6f6982e973eecfeab564cfb3'
-            'c20c1e9b7cd44681c1fa76e6db3861f6ec7539d2047fe6be3be72d86d4d38c173f863f224a1111e36553b0ef38d5b1f0471e355785f6da041e7fb596e1940924')
+            '94b139716f74cfb26276dbc0c5a73aa1d6f591e888b976210e7523de83e782a76992350d08b8054c8a04eeeb5273130cdeaaffd155ee3e9800921b7541cbdd82'
+            '1107fd002e1123fd52535f0016ee241c12d719a62c0a301a97338a230a73267b43982e0d23250ecac09b3a4b0ae78710fa9e04d84d5729ee6ac7293935579706'
+            '247c393a1c84becea57ccae6e1c6ed8c0eae3f874627677f3944dca0197565b6b12912357ad4f025a5a876f294338cb79d498484392aabaf4bfa22e5a2c08b24'
+            '1ec09ac2bbfe242670f9b51842c58bbe9b379f7a1bfeec12157b5ba3ea3142c88eb62462968f4378c64d75fa4148dca6123583399f93e2b6990c094d386f0951'
+            '9ce2a9aa6b014b0e2756847305aaa6f199831dff2dc876880086586fa0d7a6032ddf33a196be1ac88fca387d8ab47b3203c5d68be798afe9b26927c4229e79ab')
 
 prepare() {
   cd "compiz-${_actual_ver}${_extra_ver}"
 #  cd compiz.utopic
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
-  patch -p1 -i ../0002_Fix_cmake_install_dir.patch
+  patch -p1 -i ../0001-Fix-cmake-install-directory.patch
 
   # Compiz's build system appends --install-layout=deb to the python 2 install
   # command (for python-compizconfig and ccsm) whether or not COMPIZ_DEB_BUILD
   # is set to 1
-  patch -p1 -i ../0003_Fix_python_install_command.patch
+  patch -p1 -i ../0002-Fix-python-install-command.patch
 
   # Use python 2
-  patch -p1 -i ../0004_Use_python2.patch
+  patch -p1 -i ../0003-Use-Python-2.patch
 
   # Don't treat warnings as errors
-  patch -p1 -i ../0005_Disable_Werror.patch
+  patch -p1 -i ../0004-Disable-Werror.patch
+
+  patch -p1 -i ../0005-Metacity-3.14-support.patch
 
   # Apply Ubuntu patches
   patch -p1 -i ../compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff

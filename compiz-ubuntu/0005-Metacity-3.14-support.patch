@@ -1,0 +1,79 @@
+From 5b17acefd3b0db7ab9886853c5f81e631d91bdf8 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 27 Oct 2014 21:53:40 -0400
+Subject: [PATCH 5/5] Metacity 3.14 support
+
+---
+ gtk/window-decorator/metacity.c | 34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/gtk/window-decorator/metacity.c b/gtk/window-decorator/metacity.c
+index 66f012c..23e1629 100644
+--- a/gtk/window-decorator/metacity.c
++++ b/gtk/window-decorator/metacity.c
+@@ -525,14 +525,18 @@ meta_get_decoration_geometry (decor_t		*d,
+     if (d->state & WNCK_WINDOW_STATE_ABOVE)
+ 	*flags |= (MetaFrameFlags ) META_FRAME_ABOVE;
+ 
++    MetaFrameBorders borders;
++
+     meta_theme_get_frame_borders (theme,
+ 				  frame_type,
+ 				  d->frame->text_height,
+ 				  *flags,
+-				  &top_height,
+-				  &bottom_height,
+-				  &left_width,
+-				  &right_width);
++                                  &borders);
++
++    top_height = borders.visible.top;
++    bottom_height = borders.visible.bottom;
++    left_width = borders.visible.left;
++    right_width = borders.visible.right;
+ 
+     clip->x = d->context->left_space - left_width;
+     clip->y = d->context->top_space - top_height;
+@@ -1560,14 +1564,18 @@ meta_update_border_extents (decor_frame_t *frame)
+     if (!(frame_type < META_FRAME_TYPE_LAST))
+ 	frame_type = META_FRAME_TYPE_NORMAL;
+ 
++    MetaFrameBorders borders;
++
+     meta_theme_get_frame_borders (theme,
+ 				  frame_type,
+ 				  frame->text_height,
+ 				  0,
+-				  &top_height,
+-				  &bottom_height,
+-				  &left_width,
+-				  &right_width);
++                                  &borders);
++
++    top_height = borders.visible.top;
++    bottom_height = borders.visible.bottom;
++    left_width = borders.visible.left;
++    right_width = borders.visible.right;
+ 
+     frame->win_extents.top    = frame->win_extents.top;
+     frame->win_extents.bottom = bottom_height;
+@@ -1580,10 +1588,12 @@ meta_update_border_extents (decor_frame_t *frame)
+ 				  frame_type,
+ 				  frame->text_height,
+ 				  META_FRAME_MAXIMIZED,
+-				  &top_height,
+-				  &bottom_height,
+-				  &left_width,
+-				  &right_width);
++				  &borders);
++
++    top_height = borders.visible.top;
++    bottom_height = borders.visible.bottom;
++    left_width = borders.visible.left;
++    right_width = borders.visible.right;
+ 
+     frame->max_win_extents.top    = frame->win_extents.top;
+     frame->max_win_extents.bottom = bottom_height;
+-- 
+2.1.2
+
