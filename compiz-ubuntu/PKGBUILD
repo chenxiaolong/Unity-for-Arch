@@ -6,15 +6,24 @@
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-launchpad: name=${pkgname%-*}
 
+_use_ppa=true
+
 pkgname=compiz-ubuntu
 
-_ubuntu_rel=0ubuntu1
 _actual_ver=0.9.12
 _extra_ver=+14.10.20140918
 
+if [[ "${_use_ppa}" != true ]]; then
+  _ubuntu_rel=0ubuntu1
+  _archive_dir="compiz-${_actual_ver}${_extra_ver}"
+else
+  _ppa_rel=0ubuntu1ppa1
+  _archive_dir=compiz.utopic
+fi
+
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=3
+pkgrel=4
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
@@ -32,17 +41,21 @@ options=(emptydirs)
 conflicts=(compiz metacity-ubuntu)
 provides=(compiz-core compiz)
 install=compiz-ubuntu.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        #"https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_0.9.12%2B14.10.20140812-0ubuntu1ppa1.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        compiz.reset
-        0001-Fix-cmake-install-directory.patch
-        0002-Fix-python-install-command.patch
-        0003-Use-Python-2.patch
-        0004-Disable-Werror.patch
-        0005-Metacity-3.14-support.patch)
-sha512sums=('a28c1a84e8a09b8373d9fdbbb31438c8a98af72516fcc419b143f057907888312182b9d1cf63ded4b7455b7fbac93cecdf66f527250bb6b9718263ee2e5088aa'
-            'f4e2dcea99b1fc476bb76ba6dd8d46110e918d4ac47cc089d338091d0442a0e9d8c114d8e4d6436927e2d5ba51f6ad22fe2486076bafd9590b078bb0cb819c35'
+
+if [[ "${_use_ppa}" != true ]]; then
+  source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
+          "https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
+else
+  source=("https://launchpad.net/~townsend/+archive/ubuntu/compiz-nvidia-refresh-test/+files/compiz_${_actual_ver}${_extra_ver}-${_ppa_rel}.tar.gz")
+fi
+
+source+=(compiz.reset
+         0001-Fix-cmake-install-directory.patch
+         0002-Fix-python-install-command.patch
+         0003-Use-Python-2.patch
+         0004-Disable-Werror.patch
+         0005-Metacity-3.14-support.patch)
+sha512sums=('43ba64aa32fbb563a39e94150737546f8b0a61a3af4611fc5276fde56e1463b02ed538ba59f5fc238a1fd0e667cf08a0dbc88cc37746d5bdcf90b30c2635dc95'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '94b139716f74cfb26276dbc0c5a73aa1d6f591e888b976210e7523de83e782a76992350d08b8054c8a04eeeb5273130cdeaaffd155ee3e9800921b7541cbdd82'
             '1107fd002e1123fd52535f0016ee241c12d719a62c0a301a97338a230a73267b43982e0d23250ecac09b3a4b0ae78710fa9e04d84d5729ee6ac7293935579706'
@@ -51,8 +64,7 @@ sha512sums=('a28c1a84e8a09b8373d9fdbbb31438c8a98af72516fcc419b143f05790788831218
             '9ce2a9aa6b014b0e2756847305aaa6f199831dff2dc876880086586fa0d7a6032ddf33a196be1ac88fca387d8ab47b3203c5d68be798afe9b26927c4229e79ab')
 
 prepare() {
-  cd "compiz-${_actual_ver}${_extra_ver}"
-#  cd compiz.utopic
+  cd "${_archive_dir}"
 
   # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
   patch -p1 -i ../0001-Fix-cmake-install-directory.patch
@@ -71,7 +83,9 @@ prepare() {
   patch -p1 -i ../0005-Metacity-3.14-support.patch
 
   # Apply Ubuntu patches
-  patch -p1 -i ../compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+  if [[ "${_use_ppa}" != true ]]; then
+    patch -p1 -i ../compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+  fi
 
   sed -i '/100_workaround_virtualbox_hang.patch/d' debian/patches/series
 
@@ -82,8 +96,7 @@ prepare() {
 }
 
 build() {
-  cd "compiz-${_actual_ver}${_extra_ver}"
-#  cd compiz.utopic
+  cd "${_archive_dir}"
 
   # Fix build on i686
   export CXXFLAGS+=" -lc"
@@ -122,8 +135,7 @@ build() {
 }
 
 package() {
-  cd "compiz-${_actual_ver}${_extra_ver}/build"
-#  cd compiz.utopic/build
+  cd "${_archive_dir}/build"
   make install DESTDIR="${pkgdir}"
 
   # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
