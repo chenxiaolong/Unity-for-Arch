@@ -1,7 +1,7 @@
-From a41fc612e3977c6694bdb3ed6809bd3829d9d043 Mon Sep 17 00:00:00 2001
+From 66558d1081def788fa5f0bd9022079efb7bfc507 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-Date: Thu, 3 Apr 2014 22:50:40 -0400
-Subject: [PATCH] Not a phone
+Date: Tue, 28 Oct 2014 23:19:24 -0400
+Subject: [PATCH 1/4] Not running on Ubuntu Touch
 
 ---
  CMakeLists.txt           | 2 --
@@ -30,10 +30,10 @@ index 8c8d69c..694463e 100644
  include_directories(${PULSEAUDIO_INCLUDE_DIRS})
  
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 98bc7c4..5db4baf 100644
+index c18726c..96eb229 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -33,7 +33,6 @@ vala_init(indicator-sound-service
+@@ -34,7 +34,6 @@ vala_init(indicator-sound-service
      --thread
      --vapidir=${CMAKE_SOURCE_DIR}/vapi/
      --vapidir=.
@@ -42,10 +42,10 @@ index 98bc7c4..5db4baf 100644
  )
  
 diff --git a/src/service.vala b/src/service.vala
-index 4e02769..3643517 100644
+index 2a65492..0995adc 100644
 --- a/src/service.vala
 +++ b/src/service.vala
-@@ -224,7 +224,6 @@ public class IndicatorSound.Service: Object {
+@@ -217,7 +217,6 @@ public class IndicatorSound.Service: Object {
  	}
  
  	void activate_phone_settings (SimpleAction action, Variant? param) {
@@ -69,5 +69,5 @@ index 88f7740..0000000
 -  public static void send (string url, DispatchCallback? func = null);
 -}
 -- 
-1.9.1
+2.1.2
 

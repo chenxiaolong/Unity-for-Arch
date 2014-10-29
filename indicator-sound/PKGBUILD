@@ -23,20 +23,23 @@ groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         com.ubuntu.sound.gschema.xml
-        0001_Not_a_phone.patch
-        0002_Remove_tests.patch
+        0001-Not-running-on-Ubuntu-Touch.patch
+        0002-Remove-tests.patch
+        0003-mpris2-Position-property-should-be-int64.patch
         libpulse.vapi)
 sha512sums=('6dcecbd046ce6871f8fda473f2d07fc7833dcbaec8260c3b0d743e09ba1b960808896ebb17ac8623ab99dcea104dc69196fdbb24f800a816d63ce0a8783bfa19'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
-            '57649313d8bd5e053d95e52882039a39ac505ac26a90c9144fc18705fb618548c3c83aafb2a2fc89f6ed7539720811ffa0e9055566ad612f473b6a427e58ac4f'
-            '95235ea7e399cc88cfe0a682059fc2d3c3536e86f577d16141de8a2532b4236bd9881f1ccc5201b187977075ba1d99180a63e526968f571219f0d6e0573e449b'
+            '1c0b91008f7ec842d1861b0c2f772f3066dd3a4787dc9412caa3671a76a093ec079b423dc6a56b4235e312bcf147400059326952ca9718c49c3825e31c648c36'
+            '553ef1d4af55239cb55fd8cc21ab52f2ea384d869da6ad1828293235975328e929f9642c2ee85059dfbe637bf9cb2102a0eaf065d95d0e907c16c1c8f8e2acb5'
+            'd3fdbfe6fab8bb8e57c2a2168ea9bc42212191791d722bc57640e1c71b72c9080abbd0983d2e7082c1e2db6e3d3c167bd4f0271da4f034b2e3d0f42b0c1600bf'
             '5c8920490356e35f994de15959658d4f6665732aa6a3feba10090791b2cd2233d27cffbab2b29bb165d06f449e96c8a35fc4a0a161baaef81780b9f5585cf52c')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001_Not_a_phone.patch
-  patch -p1 -i ../0002_Remove_tests.patch
+  patch -p1 -i ../0001-Not-running-on-Ubuntu-Touch.patch
+  patch -p1 -i ../0002-Remove-tests.patch
+  patch -p1 -i ../0003-mpris2-Position-property-should-be-int64.patch
 
   cp ../libpulse.vapi vapi/
   sed -i '/libpulse$/iposix' src/CMakeLists.txt

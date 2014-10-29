@@ -1,7 +1,7 @@
-From 52cc91f1f555224527038b80c1d61e722cd04aa0 Mon Sep 17 00:00:00 2001
+From e2c53205afa9f05b16f4ade217bb10ca9bfafac4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
-Date: Thu, 3 Apr 2014 22:52:57 -0400
-Subject: [PATCH] Remove tests
+Date: Tue, 28 Oct 2014 23:19:51 -0400
+Subject: [PATCH 2/4] Remove tests
 
 ---
  CMakeLists.txt | 15 ---------------
@@ -38,5 +38,5 @@ index 694463e..d921b9a 100644
 -add_subdirectory(tests)
 -
 -- 
-1.9.1
+2.1.2
 
