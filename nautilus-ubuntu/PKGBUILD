@@ -12,7 +12,7 @@ pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
 _ppa_rel=0ubuntu1~utopic1
 pkgver=3.14.0
-pkgrel=3
+pkgrel=4
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
 license=(GPL)
@@ -24,15 +24,18 @@ options=(!emptydirs)
 install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
-        0001-Open-new-window-even-if-no-paths-are-specified.patch)
+        git-fixes.patch
+        0001-Fix-the-autostart-command.patch)
 sha512sums=('114e7edebd84e6c3bdc0afdc2822b80c16d361f8417973eaed7bdd3fe3af239dd2eed3f02657b02142ecee36250cec675849518c688ef40b397e5e9b115d692f'
             '100b7a190f9ce3ef2c30900478a842693861fbd761d038095618812a9ac60100e2f79c152a0e57dffe9f29321b2bf0533f8850646ef5aad1a0cbc0a80ab74a0a'
-            'e44792659310cb7c6ac1aa09846a302b213a7b64a7da843c5e275a6f2b0050113da516f102d1ee002d972ff18b9bcad309b237321aa67fa31c3531d7a6b34f08')
+            'd2fbd00b75985b8f2fb14f340920973c7891010da58fd521b48d46d9abacbcd81d5da7dba169906f843cff12dd943dad5181c354e2d4316e22e971d8c59a72ba'
+            '3a4389381ff2ea1db4e479e2be8f53219e8ad9921982b249dce0aca82cd30d21c84d0a095e218c646b3efbb076dbe18bebf7e266a1a925c56162405ca79b4822')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
 
-  patch -p1 -i ../0001-Open-new-window-even-if-no-paths-are-specified.patch
+  patch -p1 -i ../git-fixes.patch
+  patch -p1 -i ../0001-Fix-the-autostart-command.patch
 
   # Apply Ubuntu's patches
 
