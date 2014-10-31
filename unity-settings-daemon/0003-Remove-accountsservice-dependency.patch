@@ -1,7 +1,7 @@
-From 1de12bc1100a7a26183221fdb11ea16280308198 Mon Sep 17 00:00:00 2001
+From 86eb38426a4f5eef1e7bada5df04088eda31e031 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:23:30 -0400
-Subject: [PATCH] Remove accountsservice dependency
+Subject: [PATCH 3/4] Remove accountsservice dependency
 
 ---
  configure.ac                            |  2 +-
@@ -126,5 +126,5 @@ index 219ada1..d103b0b 100644
  
  exit:
 -- 
-2.1.2
+2.1.3
 
