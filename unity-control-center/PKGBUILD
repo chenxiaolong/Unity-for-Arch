@@ -3,13 +3,13 @@
 # Based on Arch's gnome-control-center package
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 
 pkgname=unity-control-center
-_actual_ver=14.10.0
-_extra_ver=+14.10.20140922
+_actual_ver=15.04.0
+_extra_ver=+15.04.20141030
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=5
+pkgrel=1
 pkgdesc="The Control Center for Unity"
 arch=(i686 x86_64)
 groups=(unity)
@@ -17,13 +17,14 @@ url="https://launchpad.net/unity-control-center"
 license=(GPL)
 depends=(accountsservice cups-pk-helper libnotify gnome-menus
          gsettings-desktop-schemas gtk3-ubuntu libgtop libtimezonemap
-         network-manager-applet sound-theme-freedesktop upower-compat
+         network-manager-applet sound-theme-freedesktop upower
          libpwquality gnome-color-manager smbclient libmm-glib libgnomekbd
          grilo clutter-gtk unity-settings-daemon system-config-printer
          webkitgtk)
 makedepends=(gnome-common gnome-doc-utils intltool docbook-xsl modemmanager
              ttf-ubuntu-font-family vala)
 optdepends=('gnome-control-center: For bluetooth panel')
+conflicts=(upower-compat)
 options=(!emptydirs)
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -33,20 +34,18 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         0004-Remove-Ubuntu-specific-language-code.patch
         0005-Remove-Ubuntu-help-links.patch
         0006-Allow-gnome-control-center-to-run-at-the-same-time.patch
-        0007-Use-upower-compat.patch
         0008-Remove-overlay-scrollbar-from-GTK_MODULES.patch
         system-config-printer-unity.desktop
         unity-bluetooth-panel.desktop
         unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
-sha512sums=('77119e01c2e4115680e6080c7c4e063e4c9a311507f9f8244ef3b4bf457e73815859574f5616b3928f166153bbc997d043979adeb0b7c8a626a621bc0ff41efb'
+sha512sums=('c6c63219247687246cb6f5a4e03d7ee92b3107d63af475dfdb0ca026a4589e4cc28d1fd5563c8f52b20e15fb36ed0157e8dac8b4a27a24a4f06cf0b54898d7a8'
             '1b39906307c6776647cb1325c4029806614f5301e0c7fd1fd6c14509daad587ddbf71f5ac60c81e7f4c89ed9598569523a31ec3f07ddc69e8cd5b73e205ec700'
             'ba07ad32de0ebb52e578e53506e7bff3826c6c15dbd415429f60ffa3c2de0884a7fc5866d9e53a064fdd5631d12dbcd925336ae994259cd31f77d5f3f827fc6b'
             '17a8ec0ea635dcc991c6c101a0865c09d6aff344455020272a189af00579451c7fa9348063c30b80cd74b8e624d466a04862915dd0b343d9395e6c2f4e80085e'
             '0eb193899552ae5bfd2d16817993ba1f0db78e9e3cdf141f72766c3a17fc9f73cea1893fe969687c4197cd23fcb93805226d0193cdcb092d02137d93df14b031'
             '57d517491855ffb8db9e872bc99d7eedffdbc77eb864bb7e6dd8ba6ece58565823a93b0ae498b3b5e03f6bda019c96e68866452e6fc5957951a08b032999e4a4'
             '0743d3f89473751557bda5c2a6957c27f36b11b757ec6128d5603f48f6d4626d8097ea0e4e0ebf87d27830cea6364178e471e84b5ed853705dad11be240dc01c'
-            'daaf45de1bd501487765f8c112b4d66c40f703572dbf37e896a036ffc3e1487ef0500dd9a6ba24101a6de582a1eed94c2cbda06d1317ef4b5aff21eac1fb3541'
             'c5da31eb5a4e00420f815b5ce11f12fb27f52d057f75514495d6b7dbec0ffd05ad12937273192e67edbf5728edf0a3637856ac24678c55ef6951dd0e93c4eaf4'
             '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
             '664ddfca6cc0526cf6a058b9cfa0d163d708b397166e9bade15806a43f6175b98430d41f8ef4ce3d33dc571d79013e5b7340df9aeecd2dc37ec89248d2c6fa5a'
@@ -61,7 +60,6 @@ prepare() {
   patch -p1 -i ../0004-Remove-Ubuntu-specific-language-code.patch
   patch -p1 -i ../0005-Remove-Ubuntu-help-links.patch
   patch -p1 -i ../0006-Allow-gnome-control-center-to-run-at-the-same-time.patch
-  patch -p1 -i ../0007-Use-upower-compat.patch
   patch -p1 -i ../0008-Remove-overlay-scrollbar-from-GTK_MODULES.patch
 }
 
