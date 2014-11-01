@@ -1,7 +1,7 @@
-From 343c52c5d648ecfefbc0734e0f7cdb40a626d532 Mon Sep 17 00:00:00 2001
+From dfca5812ec3e9f39ed6ef747388c6ce17d8b3f46 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 31 Oct 2014 15:07:27 -0400
-Subject: [PATCH 1/4] Fix call to g_dbus_proxy_call_sync
+Subject: [PATCH 1/5] Fix call to g_dbus_proxy_call_sync
 
 ---
  plugins/power/gsd-power-manager.c | 1 +

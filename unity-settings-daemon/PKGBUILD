@@ -7,7 +7,7 @@ pkgname=unity-settings-daemon
 _actual_ver=15.04.0
 _extra_ver=+15.10.20141030
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -25,12 +25,14 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-dae
         0001-Fix-call-to-g_dbus_proxy_call_sync.patch
         0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
         0003-Remove-accountsservice-dependency.patch
-        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
+        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+        0005-power-Remove-obsolete-battery-recall-code.patch)
 sha512sums=('ba30c0c43719d6c66c6ba1479c4d1eb2ec7a3b7e4ce4e097d6ef9b50b23927fa5d12dcc59f818069f642b37e0348cc1e5f4434824adf53f477fd5f4b2b97ce2d'
-            '387685bb83077148f662f1b6f3021a2800a2ba84e305d7a8053a3e205974e6c52d51c5c3cb2003411a9647aae89d2bb4062e9022a5783763046b62768aa1e0a6'
-            'cf1a96213713fdd6bbc133473b884b9496f53b299804a8428976c183640b6d384bfae968f51a295495eb89d28d0353186740b2a02fc1917c977d0fc83b688cca'
-            '9b64c18f63bd1597e9d18f14f6e5a19b90b87dad39c96cdee418eff991824186cc4d296625f29122c17fe57760ab95235de7401ece1e62abb8d37bfaa77c1f8f'
-            'c72ee2e56dfc909350c7a8abf8d3827998daba5e56c8e7437f49619065eaa371fb2a4fa74b359200a02a3070a0f26005f6476b34e916f28a2f151e468c78844d')
+            'f955ca01a60b307ae46b18f013e42222394ab7e68ff21dd171f87baaab1172c21834b2e9bc89ab40bf17d4a4ffa05b4fa17d3cc90cd3bb59ac2e04def50e79b9'
+            '8e3346b49504145df7ab27ffaf8493cf5608ab8b99732d14d0a150db33dd6fac6a09506afcdb214449ea3d1381130d2a55a98031aefc377f9ea716bfe80ac4e9'
+            '9301f735af90887e34dbceef1186811ac98f9514779e429c18a69f7eb397fb4a742960046f0cfd782cf6229f8047b86488c76b1d7d1fee2e90c8231e2acfcdd9'
+            'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37'
+            'c031b512868b7c9d416b9ddc4c87c14ddced56d36db5d0e880abeb24ad121c19e06fdebbbe4d54c96071b4fc333e718847db3bbc639a14e57088ac0cfeb7a3e6')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
@@ -39,6 +41,7 @@ prepare() {
   patch -p1 -i ../0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
   patch -p1 -i ../0003-Remove-accountsservice-dependency.patch
   patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+  patch -p1 -i ../0005-power-Remove-obsolete-battery-recall-code.patch
 }
 
 build() {

@@ -1,7 +1,7 @@
-From fa51f2e12253600d8e5e879b027c1c24729a4378 Mon Sep 17 00:00:00 2001
+From 7da7371abeca24176b631cc44243db77cb4fcfca Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 31 Oct 2014 15:20:07 -0400
-Subject: [PATCH 2/4] upower 0.99 doesn't have up_client_enumerate_devices_sync
+Subject: [PATCH 2/5] upower 0.99 doesn't have up_client_enumerate_devices_sync
 
 ---
  plugins/power/gsd-power-manager.c | 4 ++++

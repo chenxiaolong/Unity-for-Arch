@@ -1,7 +1,7 @@
-From 272f4ddb5ff1f5e87b1a551bbe004a668f872b4d Mon Sep 17 00:00:00 2001
+From 21ad28a74d8fe6029f94ff2d5265f87c3a8afa9a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 9 Jun 2014 15:10:08 -0400
-Subject: [PATCH 4/4] Add gnome-settings-daemon 3.12 rfkill plugin
+Subject: [PATCH 4/5] Add gnome-settings-daemon 3.12 rfkill plugin
 
 ---
  configure.ac                                       |  17 +
