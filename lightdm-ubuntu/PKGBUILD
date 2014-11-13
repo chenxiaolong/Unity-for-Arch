@@ -10,7 +10,7 @@
 
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=1.12.1
+pkgver=1.13.0
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
@@ -46,7 +46,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         lightdm.rules
         0001-guest-account-Use-cross-distro-commands.patch
         0002-guest-account-Add-default-GSettings-support.patch)
-sha512sums=('497d8b90f33829c1076d24c20d20a147214ec79eeaf9d528a9fe13b47c33d2e0f69dee1e398bde92f60f7fb51cddb2f4d0cb7dad0dc81afafce9daaffe3934d4'
+sha512sums=('cfe69d614a9fd70a989d82c711244f3e54ee5f8a72ded532a5ac58f660b59ff75eb9fbd2f434299f40546d61a6abafd8467b9c0af95e920b7282464042d3795d'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -135,7 +135,7 @@ package() {
   install -m755 debian/guest-account.sh "${pkgdir}"/usr/bin/guest-account
   install -m755 debian/lightdm-session "${pkgdir}"/usr/bin/
   install -m755 debian/lightdm-greeter-session "${pkgdir}"/usr/lib/lightdm/
-  chmod +x "${pkgdir}"/usr/lib/lightdm/lightdm-greeter-session
+  install -m755 debian/config-error-dialog.sh "${pkgdir}"/usr/lib/lightdm/
 
   # Install systemd service
   install -m644 "${srcdir}"/lightdm.service "${pkgdir}"/usr/lib/systemd/system/
