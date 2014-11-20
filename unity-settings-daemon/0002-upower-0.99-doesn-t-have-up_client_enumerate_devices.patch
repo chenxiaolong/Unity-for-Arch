@@ -1,0 +1,37 @@
+From 7da7371abeca24176b631cc44243db77cb4fcfca Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 31 Oct 2014 15:20:07 -0400
+Subject: [PATCH 2/5] upower 0.99 doesn't have up_client_enumerate_devices_sync
+
+---
+ plugins/power/gsd-power-manager.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/plugins/power/gsd-power-manager.c b/plugins/power/gsd-power-manager.c
+index eeb4425..622ed3c 100644
+--- a/plugins/power/gsd-power-manager.c
++++ b/plugins/power/gsd-power-manager.c
+@@ -1080,16 +1080,20 @@ engine_coldplug (GsdPowerManager *manager)
+         guint i;
+         GPtrArray *array = NULL;
+         UpDevice *device;
++#if 0
+         gboolean ret;
++#endif
+         GError *error = NULL;
+ 
+         /* get devices from UPower */
++#if 0
+         ret = up_client_enumerate_devices_sync (manager->priv->up_client, NULL, &error);
+         if (!ret) {
+                 g_warning ("failed to get device list: %s", error->message);
+                 g_error_free (error);
+                 goto out;
+         }
++#endif
+ 
+         engine_recalculate_state (manager);
+ 
+-- 
+2.1.3
+

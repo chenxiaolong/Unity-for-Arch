@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 
 pkgname=unity-settings-daemon
-_actual_ver=14.04.0
-_extra_ver=+14.10.20141014
+_actual_ver=15.04.0
+_extra_ver=+15.10.20141030
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -16,26 +16,32 @@ groups=(unity)
 depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu
          hicolor-icon-theme ibus libappindicator3 libcanberra-pulse libnotify
          librsvg libsystemd libwacom libxkbfile mesa pulseaudio pulseaudio-alsa
-         upower-compat)
+         upower)
 makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
-conflicts=(gnome-desktop-compat)
+conflicts=(gnome-desktop-compat upower-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0002-Remove-accountsservice-dependency.patch
-        0003-Use-upower-compat.patch
-        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
-sha512sums=('1ac9e3d0bad9cc923834b518aa0eeb813db62e664a25a4a4436752d67ba305a95c7787f9216169f7cfa0f43ce718969e8611da5d80752174766b10b094674f8f'
-            '60f60c06d7c57093077bfcf458547299c44372984d90ad1cad1057d3b1fa1e0ef4991efb80302f3cf51d02e180db56055cff04de4e47f6456ef61095ba4d5bb8'
-            '186f53141b4ce0443709df8a65c4ed6090ee3173f16b079f70e21dba5bc3d7dbba90b87d674b76807b4fba026d842dec95cedbb88f66091fc3cfc38895532a7a'
-            '26f783ec485ac6cdb05bd127fc86af50fe1675cd7c0b7b665f70a427c044e952e3f3d3844c6b67911421efdb951839978c397bfd03737de879d1b61b8a0ec90d')
+        0001-Fix-call-to-g_dbus_proxy_call_sync.patch
+        0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
+        0003-Remove-accountsservice-dependency.patch
+        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+        0005-power-Remove-obsolete-battery-recall-code.patch)
+sha512sums=('ba30c0c43719d6c66c6ba1479c4d1eb2ec7a3b7e4ce4e097d6ef9b50b23927fa5d12dcc59f818069f642b37e0348cc1e5f4434824adf53f477fd5f4b2b97ce2d'
+            'f955ca01a60b307ae46b18f013e42222394ab7e68ff21dd171f87baaab1172c21834b2e9bc89ab40bf17d4a4ffa05b4fa17d3cc90cd3bb59ac2e04def50e79b9'
+            '8e3346b49504145df7ab27ffaf8493cf5608ab8b99732d14d0a150db33dd6fac6a09506afcdb214449ea3d1381130d2a55a98031aefc377f9ea716bfe80ac4e9'
+            '9301f735af90887e34dbceef1186811ac98f9514779e429c18a69f7eb397fb4a742960046f0cfd782cf6229f8047b86488c76b1d7d1fee2e90c8231e2acfcdd9'
+            'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37'
+            'c031b512868b7c9d416b9ddc4c87c14ddced56d36db5d0e880abeb24ad121c19e06fdebbbe4d54c96071b4fc333e718847db3bbc639a14e57088ac0cfeb7a3e6')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0002-Remove-accountsservice-dependency.patch
-  patch -p1 -i ../0003-Use-upower-compat.patch
+  patch -p1 -i ../0001-Fix-call-to-g_dbus_proxy_call_sync.patch
+  patch -p1 -i ../0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
+  patch -p1 -i ../0003-Remove-accountsservice-dependency.patch
   patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+  patch -p1 -i ../0005-power-Remove-obsolete-battery-recall-code.patch
 }
 
 build() {

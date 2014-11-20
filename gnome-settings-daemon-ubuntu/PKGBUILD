@@ -11,8 +11,8 @@
 pkgname=gnome-settings-daemon-ubuntu
 _ppa_rel=1ubuntu1~utopic1
 _ppa_ver=3.14.0
-pkgver=3.14.1
-pkgrel=2
+pkgver=3.14.2
+pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
 url="http://www.gnome.org"
@@ -29,9 +29,7 @@ install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
         0001-64_restore_terminal_keyboard_shortcut_schema.patch.patch)
-sha512sums=('be89d27cb2be2557f7381c0d11c3cc48346973543b412ba95abdb05d7e60f27074a29a4d7c8083b963400de7769e9025b815b086a832d904ee3a17a43e9d992f'
-            '9299c77626307d20f8d896a7cfee8872ea69e233baf6025f98f2e4251dda03ec8703178638071d715a5dfe0a21e0e7168570713e2a954766109ea54a81b345af')
-sha512sums=('be89d27cb2be2557f7381c0d11c3cc48346973543b412ba95abdb05d7e60f27074a29a4d7c8083b963400de7769e9025b815b086a832d904ee3a17a43e9d992f'
+sha512sums=('3cd125ed89d47b03439f473df861d41696f6281c9df84218f3fe29d86570fbcd13dd2bedb3f63b354e06043d7d8fda0d1304e03a6ca39b9bcbd369a908d88ba2'
             '9299c77626307d20f8d896a7cfee8872ea69e233baf6025f98f2e4251dda03ec8703178638071d715a5dfe0a21e0e7168570713e2a954766109ea54a81b345af'
             '448242b333fd113b5cc19199514ce3d90ed96ef0cc00213ead46751d2bda34f09706c31114d0c36dea1728b70e990c8ab897181035e7029d2265c0780a310161')
 

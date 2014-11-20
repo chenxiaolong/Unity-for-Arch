@@ -9,10 +9,9 @@
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.14
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_rel=0ubuntu1
-_ubuntu_ver=3.12.2
+_ubuntu_rel=1ubuntu1
 pkgver=3.14.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
 url="http://live.gnome.org/"
@@ -25,7 +24,7 @@ install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('0cca1d8a94f760dd49395c090d72a204080a684ba7c1d55ee831ee85e4beeb6ea7891eafef79a6d2905557e1015383524c82b93751bdf8c67ca446b4d2a4fc0c'
-            '93ac18052e9666a8597e9c3c7e0fbb42269bdecd630c78de31c93267567e63f653fa8b312c6f137a1f59e02eb779cb387fd7bf3a17478e668019b2d680d4b1bd')
+            'fe99ec3e0497cf27d21a9a00e33ab7e27c1d74863b65a73bd3a88264b54be0f440226279a37dd83dfbb11d9d88f82009406dbedf89f63a9d5fb95b66ee791453')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"

@@ -8,7 +8,7 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+14.10.20141010
+_extra_ver=+15.04.20141105
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=2
 epoch=1
@@ -27,7 +27,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         0002-Remove-tests.patch
         0003-mpris2-Position-property-should-be-int64.patch
         libpulse.vapi)
-sha512sums=('6dcecbd046ce6871f8fda473f2d07fc7833dcbaec8260c3b0d743e09ba1b960808896ebb17ac8623ab99dcea104dc69196fdbb24f800a816d63ce0a8783bfa19'
+sha512sums=('43829ed56caa0e8ec759f68bbaba6ac0066af0f773c61947c0c93eeabf6b94af0d6c8d53e909368dfcd111ce43cae838a42c0e9113a99d4af00e8efcc7544bee'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '1c0b91008f7ec842d1861b0c2f772f3066dd3a4787dc9412caa3671a76a093ec079b423dc6a56b4235e312bcf147400059326952ca9718c49c3825e31c648c36'
             '553ef1d4af55239cb55fd8cc21ab52f2ea384d869da6ad1828293235975328e929f9642c2ee85059dfbe637bf9cb2102a0eaf065d95d0e907c16c1c8f8e2acb5'
