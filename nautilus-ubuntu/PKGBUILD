@@ -11,7 +11,8 @@
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
 _ppa_rel=0ubuntu1~utopic1
-pkgver=3.14.1
+_ppa_ver=3.14.1
+pkgver=3.14.2
 pkgrel=1
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
@@ -25,7 +26,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
         "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/n/nautilus/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
         0001-Open-new-window-even-if-no-paths-are-specified.patch)
-sha512sums=('2ca1bcb1c4cfb1b4daa2b7d02aeac64da509a6eb252c443b42810cd0b2f3f58957e8331d7a021efa51ba3cc7fa98e703935f3fcf5092ddcf88e3e99edd838147'
+sha512sums=('9d07878fc2474c7444fb7c573ce1886514b82ecb386365e608de81473184791daf17875b7ea471a7bef2c84df0d6d06b207223c7b5ec64d195e46865440ceff6'
             '40754ce174bec2bd9b9b63a3c22ab04b21939baf40572ca3057f242f68bec6204367e39ef405b54ebd9eeb73139bb3777f7d78e27e1c38457015d9110394e54f'
             'e44792659310cb7c6ac1aa09846a302b213a7b64a7da843c5e275a6f2b0050113da516f102d1ee002d972ff18b9bcad309b237321aa67fa31c3531d7a6b34f08')
 
