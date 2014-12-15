@@ -1,4 +1,4 @@
-From 987772cab7feafe6c8f30e46c9e7cffd46895845 Mon Sep 17 00:00:00 2001
+From d9d4b650c06fa335b52b1b3a705ad8654277243d Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 17:52:55 -0400
 Subject: [PATCH 2/2] Not a phone
@@ -34,7 +34,7 @@ index 0214d65..4dfa398 100644
  
  } // namespace datetime
 diff --git a/src/actions-live.cpp b/src/actions-live.cpp
-index 1f4fc8c..89cffb9 100644
+index 7efc2b2..0f02ea6 100644
 --- a/src/actions-live.cpp
 +++ b/src/actions-live.cpp
 @@ -19,8 +19,6 @@
@@ -71,7 +71,7 @@ index 1f4fc8c..89cffb9 100644
 -    if (!appt.url.empty())
 -        dispatch_url(appt.url);
 +    if (!appt.url.empty()) {}
-     else if (appt.has_alarms)
+     else if (appt.is_ubuntu_alarm())
          phone_open_alarm_app();
      else
 @@ -146,13 +136,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
@@ -89,5 +89,5 @@ index 1f4fc8c..89cffb9 100644
  
  /***
 -- 
-2.1.2
+2.1.3
 
