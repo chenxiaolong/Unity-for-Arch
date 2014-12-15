@@ -4,10 +4,10 @@
 # vercheck-ubuntu: name=${pkgname}, repo=vivid
 
 pkgname=unity-settings-daemon
-_actual_ver=15.04.0
-_extra_ver=+15.10.20141030
+_actual_ver=15.04.1
+_extra_ver=+15.04.20141128
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -22,26 +22,20 @@ conflicts=(gnome-desktop-compat upower-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0001-Fix-call-to-g_dbus_proxy_call_sync.patch
-        0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
         0003-Remove-accountsservice-dependency.patch
-        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-        0005-power-Remove-obsolete-battery-recall-code.patch)
-sha512sums=('ba30c0c43719d6c66c6ba1479c4d1eb2ec7a3b7e4ce4e097d6ef9b50b23927fa5d12dcc59f818069f642b37e0348cc1e5f4434824adf53f477fd5f4b2b97ce2d'
-            'f955ca01a60b307ae46b18f013e42222394ab7e68ff21dd171f87baaab1172c21834b2e9bc89ab40bf17d4a4ffa05b4fa17d3cc90cd3bb59ac2e04def50e79b9'
-            '8e3346b49504145df7ab27ffaf8493cf5608ab8b99732d14d0a150db33dd6fac6a09506afcdb214449ea3d1381130d2a55a98031aefc377f9ea716bfe80ac4e9'
+        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
+sha512sums=('10187f489859e75cb63e75bb24cf67116fbdc09abb522f15ef354dc10bde129638a42a120ee803f2dadda2e117fc909db1f15234967b4d185ad1ae4aaa6dc5f0'
             '9301f735af90887e34dbceef1186811ac98f9514779e429c18a69f7eb397fb4a742960046f0cfd782cf6229f8047b86488c76b1d7d1fee2e90c8231e2acfcdd9'
-            'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37'
-            'c031b512868b7c9d416b9ddc4c87c14ddced56d36db5d0e880abeb24ad121c19e06fdebbbe4d54c96071b4fc333e718847db3bbc639a14e57088ac0cfeb7a3e6')
+            'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001-Fix-call-to-g_dbus_proxy_call_sync.patch
-  patch -p1 -i ../0002-upower-0.99-doesn-t-have-up_client_enumerate_devices.patch
   patch -p1 -i ../0003-Remove-accountsservice-dependency.patch
   patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-  patch -p1 -i ../0005-power-Remove-obsolete-battery-recall-code.patch
+
+  # Temporarily disable since it fails to link to glib
+  sed -i '/noinst_PROGRAMS += test-wm-button-layout-translations/d' plugins/xsettings/Makefile.am
 }
 
 build() {
