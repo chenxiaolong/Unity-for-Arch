@@ -8,7 +8,7 @@
 
 pkgname=unity-lens-music
 _actual_ver=6.9.0
-_extra_ver=+14.10.20141008
+_extra_ver=+15.04.20141219
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -22,13 +22,13 @@ makedepends=(vala intltool json-glib)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Remove-Ubuntu-One-support-service-is-dead.patch)
-sha512sums=('fadfafaf1dde12d20972ce33afa56e0da211b7412a7c7f1125195908bc7d13842eae698a7ad8c69eb1c7ad4f697bd49239c2c854d4634b7b0862eafa1fbb7332'
+sha512sums=('90103e9140d2a00d50405cc20385538f3e92b10ad67f27d0ddd26c2df9e815abde97c6db19f8b19a64bbf4175e5e99c3482f1ade2eeb5eeb54b7824a2e827f5f'
             'a79f0c3891dce08536f9cf66fa024cc2b920685f4a1fb783ae081da81a0178bc0d6f87c61f4b187ad76d28437e5732fcdff519bff364bf857fee6206d0339d26')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001-Remove-Ubuntu-One-support-service-is-dead.patch
+#  patch -p1 -i ../0001-Remove-Ubuntu-One-support-service-is-dead.patch
 }
 
 build() {
