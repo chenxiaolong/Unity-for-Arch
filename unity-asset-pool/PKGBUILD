@@ -8,8 +8,8 @@
 
 pkgname=unity-asset-pool
 _actual_ver=0.8.24
-_extra_ver=daily13.06.10
-pkgver=${_actual_ver}.${_extra_ver}
+_extra_ver=+15.04.20141217
+pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
 pkgdesc="Design assets for Unity"
@@ -22,7 +22,7 @@ groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-asset-pool_${_actual_ver}${_extra_ver}.orig.tar.gz"
         archlinux-icon-tango-22.png
         archlinux-icon-tango-24.png)
-sha512sums=('52e100598fddb3f0b5d81123667d1693d09c44c96617af1e10a86027e85550be85dea1059459df9df3da73536afe722dd6d8fb5f8e2400b8394b6b9870325ce4'
+sha512sums=('cd7b55b896b71c62f62e43886fc32294ac444b821bf255f725a599dd13558829d8dcb4f0e51c581ae2e232804f1d9a6aa629eb9f015abe313d1d6986bfc23cf2'
             '39d4bdec83581562c17e232b29af92596cd838509983581f5637dc7534e51330c794918df4190dd54b4b5b641a5687aef914f68159ea9ec2ca4e377f707eb681'
             '37021e5f93371cb78ea71d150dee840cb76f4590de79b057a6a72a60d88168b09c2ef7fe96ec552cfe977b3a416437e700efc82876aaefb75c4b4745659e0993')
 
