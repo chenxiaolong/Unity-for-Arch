@@ -6,7 +6,7 @@
 
 pkgname=unity
 _actual_ver=7.3.1
-_extra_ver=+14.10.20141016
+_extra_ver=+15.04.20141216
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -30,27 +30,29 @@ install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001-Disable-tests.patch
-        0003-Revert-r3134-Remove-Systray-Whitelist.patch
-        0004-Disable-Werror.patch
-        0005-Fix-launchers.patch
-        0006-Remove-Upstart-stuff.patch
-        0007-Remove-social.scope.patch
-        0008-Remove-xpathselect-dependency.patch
+        0002-Revert-r3134-Remove-Systray-Whitelist.patch
+        0003-Disable-Werror.patch
+        0004-Fix-launchers.patch
+        0005-Remove-Upstart-stuff.patch
+        0006-Remove-social.scope.patch
+        0007-Remove-xpathselect-dependency.patch
+        0008-Fix-missing-include-for-shared_ptr.patch
         com.ubuntu.user-interface.gschema.xml
         launcher_bfb.png
         99unity-panel-service
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('471e73ef74df72e26057b6c12766c8bbc27c0eb1d86c508f4aaf9eb26c0aff84eae0911c8c039f7629b0f920f6c51e65bd862b94452a6351ecbe6dda6d8d3a13'
-            '71c31cd2334d3c38f4bdf0d261f0536f532ac8b7ec724cbfd0e31821958a90746c6034abe38ab01a5364e3a610774c26114487b07e094415dd8dac9ebc026933'
-            '8c1ede40177dd7106d8c41b45bae3658d916f73ecd68b1ef47996fc19f0b4109dc58a41aa5444498ad52caecdd14f4dc53b2acfe619e3197d7d24842b9bb0251'
-            'f6789016ad6fd7721a4750a7bf2fab03376dac6a031d73dfa84ec6df54ee9c32fed49dfd00b06f770cf99f0ebfec2ba2c58ce3722517f145352ca9575fc5fdd4'
-            'bf905087b763b1f06171ccf22cdbb16bc7c37c2e93443ad42c437fea52a3c9cb6107498915120f9e8caf200951503188c1d7ae6d7642d20eb3da421e4a8ebe41'
-            'c73e739ccb2d08d10e6a34a6592e42817c61e4fc2c21631a78e4331fecf40351736e681208b3b7c94aade466ad70904c0065f94fb3205e9cee5cf34bfbdd5293'
-            'a4a21b215afc4846f4ec6f201516be92b050c9fda763c36d9bc5ed1bdbc818cdf92b4b2cb4abee82de1ee36018e83c4e8ef6f78b40c34ad6cf5cdc1d2361bd35'
-            'feae208b5b63e6c8781c37a186c0efa4a18b81aa1fe5387c63a6668596dac20ee92c37fe512583ba7e125beb3a0ac9f0787e04f0ade1cd6e619f6025f5eedccc'
-            'b7d05067a32d2ec9e9e8b4b5b4f99c02ddeda6917f8c13834bd60ab0127b149cbd43124900633511892e187c08b30cc4e62d8c305cdcc805cf32f2efc1df7702'
+sha512sums=('725fa7371361d14e923a13040ffb877622a1027c72fddd8c4e6decf8160dd9eca9508ab4dd51da02f0dbde40ee0e1a7de3eb1c58d6a5826476262e9e3b9ad5b2'
+            '484231c8275d2ee2adc78efab847b805d5165962eaebda08c1fe2e8982a7222732472f4c956284f5623257d9cd2f338b7ebeed3838e844da8a605738149261b3'
+            'cd6792d69cf9f55f65656c239e6f1d58fe2b4910fb52c4d7b8cf541152894203623a78e16d53d3e5bae16f1f7918b1209d1eb01275db275e353e622dcd910dcb'
+            'a19b60a67581cb568d0115db67b74e8e5d8c927fa260bac6e29cd8f32857525a19a90563b36c1a0ed314dfb2bb73e067e932904d0d0633153d6a8fcae002a9bc'
+            'b06bfce972e86490b5f65c003c0ecc755a86d4d4769d9470be69bec1c19d9d7f52ac91751ef9b5e64712c571853e10a3ef74b0a372db888ff2b31c1fc0d6dacc'
+            '79f94574287e6437d471d08bff47c0184ce793ad686ada3280d0ac59317d7028f7e006b9b4b99ede636a6e21a5b1968a862198b17524084cb86874ba1b16ed84'
+            '49de1aeb539a5dba5e755f14ce9ce9b424eceaf394e47bebeb0039ed8a8e11f9f00fdec47d66eab9248d2cdf1cabc1e69d21df41a55e2cf7cbbd0b73d2279f94'
+            'e3e14e88528f1f84155e84c2fa1be60502eb7ebde856aa747faf0534fb450aecabd49ff51e0313b3bb3be5ad61bda45ca17ac678321c28aeda1928ca6d7f52ab'
+            'da05c181b5c6187fc879c8965646d43b24990eb56c662d3fd36d20aacb3895ae8114918af22e23d1c0ab379a4adb403eceb6e67cf86018e88555301be7d1237b'
+            'd8f4cc8c5d97ad15599fa0bd9f355daf6d22899cdf9d324b3169ed2f2da4f66ce51b3b4714f9e7cb5574c8220478218d15f38675711b0f56440cce6f4683f088'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
@@ -62,12 +64,13 @@ prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   patch -p1 -i ../0001-Disable-tests.patch
-  patch -p1 -i ../0003-Revert-r3134-Remove-Systray-Whitelist.patch
-  patch -p1 -i ../0004-Disable-Werror.patch
-  patch -p1 -i ../0005-Fix-launchers.patch
-  patch -p1 -i ../0006-Remove-Upstart-stuff.patch
-  patch -p1 -i ../0007-Remove-social.scope.patch
-  patch -p1 -i ../0008-Remove-xpathselect-dependency.patch
+  patch -p1 -i ../0002-Revert-r3134-Remove-Systray-Whitelist.patch
+  patch -p1 -i ../0003-Disable-Werror.patch
+  patch -p1 -i ../0004-Fix-launchers.patch
+  patch -p1 -i ../0005-Remove-Upstart-stuff.patch
+  patch -p1 -i ../0006-Remove-social.scope.patch
+  patch -p1 -i ../0007-Remove-xpathselect-dependency.patch
+  patch -p1 -i ../0008-Fix-missing-include-for-shared_ptr.patch
 
   # Apply Ubuntu patches
   patch -p1 -i "../unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"

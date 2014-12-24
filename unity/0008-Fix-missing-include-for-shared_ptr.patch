@@ -1,0 +1,24 @@
+From e3b9924875f4b281d1c5e0a1cc6b1628cef3e71d Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Wed, 24 Dec 2014 17:44:55 -0500
+Subject: [PATCH] Fix missing include for shared_ptr
+
+---
+ unity-shared/DecorationStyle.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/unity-shared/DecorationStyle.h b/unity-shared/DecorationStyle.h
+index d15cd0f..3d8c246 100644
+--- a/unity-shared/DecorationStyle.h
++++ b/unity-shared/DecorationStyle.h
+@@ -23,6 +23,7 @@
+ #include <NuxCore/Property.h>
+ #include <NuxCore/Rect.h>
+ #include <cairo/cairo.h>
++#include <memory>
+ 
+ struct _GtkStyleContext;
+ 
+-- 
+2.2.1
+

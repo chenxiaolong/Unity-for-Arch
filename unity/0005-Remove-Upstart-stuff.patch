@@ -1,0 +1,137 @@
+From 85247a86e51a24589c6f53455734fe0c41b584cf Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 10 Apr 2014 20:17:13 -0400
+Subject: [PATCH 5/7] Remove Upstart stuff
+
+---
+ services/CMakeLists.txt         |  7 -------
+ services/panel-service.c        |  6 ++++--
+ tools/unity.cmake               |  3 +--
+ unity-shared/UpstartWrapper.cpp | 15 ++++++++++++++-
+ 4 files changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
+index df0f767..55accd7 100644
+--- a/services/CMakeLists.txt
++++ b/services/CMakeLists.txt
+@@ -12,7 +12,6 @@ set(UNITY_PANEL_SERVICE_DEPS
+     indicator3-0.4>=12.10.2
+     x11
+     libido3-0.1>=13.0.0
+-    libupstart
+ )
+ 
+ pkg_check_modules(SERVICE_DEPS REQUIRED ${UNITY_PANEL_SERVICE_DEPS})
+@@ -52,9 +51,3 @@ link_directories(${LIB_PATHS})
+ add_executable(unity-panel-service ${PANEL_SOURCES})
+ target_link_libraries(unity-panel-service ${LIBS})
+ install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/unity/)
+-
+-configure_file(unity-panel-service.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+-
+-configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+diff --git a/services/panel-service.c b/services/panel-service.c
+index fb01072..5a545ee 100644
+--- a/services/panel-service.c
++++ b/services/panel-service.c
+@@ -34,8 +34,6 @@
+ #include <X11/XF86keysym.h>
+ #include <X11/extensions/XInput2.h>
+ 
+-#include <upstart/upstart-dbus.h>
+-
+ G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
+ 
+ #define GET_PRIVATE(o) \
+@@ -779,6 +777,9 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
+ static void
+ emit_upstart_event (const gchar *event)
+ {
++#if 1
++  (void) event;
++#else
+   const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
+ 
+   if (!upstartsession)
+@@ -815,6 +816,7 @@ emit_upstart_event (const gchar *event)
+     }
+ 
+   g_object_unref (conn);
++#endif
+ }
+ 
+ 
+diff --git a/tools/unity.cmake b/tools/unity.cmake
+index 15d0368..1e493e2 100755
+--- a/tools/unity.cmake
++++ b/tools/unity.cmake
+@@ -126,9 +126,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
+ 
+     try:
+         debug_mode = 2 if advanced_debug else 1 if debug else 0
+-        subprocess.call(["stop", "unity-panel-service"])
++        subprocess.call(["killall", "unity-panel-service"])
+         unity_instance = process_and_start_unity (verbose, debug_mode, compiz_path, compiz_args, log_file)
+-        subprocess.call(["start", "unity-panel-service"])
+         unity_instance.wait()
+     except KeyboardInterrupt, e:
+         try:
+diff --git a/unity-shared/UpstartWrapper.cpp b/unity-shared/UpstartWrapper.cpp
+index 5ec3add..0c2995e 100644
+--- a/unity-shared/UpstartWrapper.cpp
++++ b/unity-shared/UpstartWrapper.cpp
+@@ -20,7 +20,6 @@
+ #include "UpstartWrapper.h"
+ 
+ #include <UnityCore/GLibDBusProxy.h>
+-#include <upstart/upstart-dbus.h>
+ 
+ namespace unity
+ {
+@@ -36,19 +35,29 @@ public:
+ 
+   void Emit(std::string const& name);
+ 
++#if 0
+ private:
+   glib::DBusProxy::Ptr upstart_proxy_;
++#endif
+ };
+ 
+ UpstartWrapper::Impl::Impl(bool test_mode)
+ {
++#if 1
++  (void) test_mode;
++#else
+   upstart_proxy_ = std::make_shared<unity::glib::DBusProxy>(test_mode ?  "com.canonical.Unity.Test.Upstart" : DBUS_SERVICE_UPSTART,
+                                                             DBUS_PATH_UPSTART, DBUS_INTERFACE_UPSTART);
++#endif
+ }
+ 
+ void UpstartWrapper::Impl::Emit(std::string const& name)
+ {
++#if 1
++  (void) name;
++#else
+   upstart_proxy_->Call("EmitEvent", g_variant_new("(sasb)", name.c_str(), nullptr, 0));
++#endif
+ }
+ 
+ //
+@@ -68,7 +77,11 @@ UpstartWrapper::~UpstartWrapper()
+ 
+ void UpstartWrapper::Emit(std::string const& name)
+ {
++#if 1
++  (void) name;
++#else
+   pimpl_->Emit(name);
++#endif
+ }
+ 
+ }
+-- 
+2.1.3
+

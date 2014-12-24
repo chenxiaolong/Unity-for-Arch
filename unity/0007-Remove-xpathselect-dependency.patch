@@ -1,7 +1,7 @@
-From ea4a5b44355979efc668187e6742a59c33be361e Mon Sep 17 00:00:00 2001
+From b5617b0d2ea3d40ec360c1daa2405c0da630a810 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 8/8] Remove xpathselect dependency
+Subject: [PATCH 7/7] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
@@ -27,7 +27,7 @@ index 17e3d09..5f6b1da 100644
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index f4a7a61..fda47d2 100644
+index aebf862..c56387a 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
 @@ -161,7 +161,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
@@ -59,7 +59,7 @@ index b4ab30d..91ce128 100644
    spread::Filter::Ptr       spread_filter_;
  
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
-index 6dfac60..7dd9ae7 100644
+index ed39e58..475cfb1 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
 @@ -22,7 +22,6 @@ set (UNITY_SHARED_SOURCES
@@ -558,5 +558,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.1.1
+2.1.3
 

@@ -1,7 +1,7 @@
-From e48657eacaec15636c54675c13a2d27b65652335 Mon Sep 17 00:00:00 2001
+From f950098f9c01b04de3a49dfb497166993ddecde6 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 3/8] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 2/7] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -159,7 +159,7 @@ index b2ff8e0..e11fe93 100644
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 50aca16..87b6c94 100644
+index 782ef6e..05d7f36 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -250,7 +250,6 @@ if (ENABLE_X_SUPPORT)
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-2.1.1
+2.1.3
 
