@@ -9,9 +9,9 @@
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=lightdm-ubuntu
-_ubuntu_rel=0ubuntu2
-pkgver=1.13.0
-pkgrel=2
+_ubuntu_rel=0ubuntu1
+pkgver=1.13.1
+pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
 url="https://launchpad.net/lightdm"
@@ -36,7 +36,8 @@ backup=(etc/lightdm/keys.conf
         etc/lightdm/lightdm-gtk-greeter.conf
         etc/lightdm/users.conf)
 install=lightdm.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.diff.gz"
         lightdm.service
         lightdm-gtk-greeter.conf
         lightdm.tmpfiles.d
@@ -46,7 +47,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-
         lightdm.rules
         0001-guest-account-Use-cross-distro-commands.patch
         0002-guest-account-Add-default-GSettings-support.patch)
-sha512sums=('6a2f14bce8f09799dfb1a5aab939c4f07bef15d91e9ffa4e372bd18931c6387b6a195fb8116b437a27b7ef68c034c58e04c709d876cc8698cae399fb3e31cbaf'
+sha512sums=('5f7e6206228caf04280005ddb20d8626f96e4cdc22052a226b8356e70d3798b3046f8f452720b1baeda7e2004ec8ff03e76dbaef45fec5dfd83d849598f0064c'
+            'f3cf7205c6206d2f085453a0cad368aef4f445cda073c9d884fc6528bbe2152ac57e82abf6f52fc97c39f2b4671395a6ec06ee755ac3b0ce1980a587add849cd'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
             'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
@@ -59,6 +61,8 @@ sha512sums=('6a2f14bce8f09799dfb1a5aab939c4f07bef15d91e9ffa4e372bd18931c6387b6a1
 
 prepare() {
   cd "lightdm-${pkgver}"
+
+  patch -p1 -i "../lightdm_${pkgver}-${_ubuntu_rel}.diff"
 
   # Apply Ubuntu patches
 
