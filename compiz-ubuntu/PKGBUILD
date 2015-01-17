@@ -25,7 +25,7 @@ fi
 
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
@@ -128,7 +128,9 @@ build() {
     `# Necessary for new versions of Compiz` \
     `# https://bugs.launchpad.net/compiz/+bug/1070211` \
     -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
-    -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
+    -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so \
+    -Dlibdir=/usr/lib \
+    -Dlibcompizconfig_libdir=/usr/lib
 
   make
 }
