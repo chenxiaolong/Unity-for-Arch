@@ -1,14 +1,14 @@
-From e3b9924875f4b281d1c5e0a1cc6b1628cef3e71d Mon Sep 17 00:00:00 2001
+From 227741202eef1ce9e433002b94b21131a04c1f1a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 24 Dec 2014 17:44:55 -0500
-Subject: [PATCH] Fix missing include for shared_ptr
+Subject: [PATCH 8/8] Fix missing include for shared_ptr
 
 ---
  unity-shared/DecorationStyle.h | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/unity-shared/DecorationStyle.h b/unity-shared/DecorationStyle.h
-index d15cd0f..3d8c246 100644
+index 47a6885..c331f03 100644
 --- a/unity-shared/DecorationStyle.h
 +++ b/unity-shared/DecorationStyle.h
 @@ -23,6 +23,7 @@
@@ -20,5 +20,5 @@ index d15cd0f..3d8c246 100644
  struct _GtkStyleContext;
  
 -- 
-2.2.1
+2.2.2
 

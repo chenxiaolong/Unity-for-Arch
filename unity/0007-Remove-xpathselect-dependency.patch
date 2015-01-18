@@ -1,7 +1,7 @@
-From b5617b0d2ea3d40ec360c1daa2405c0da630a810 Mon Sep 17 00:00:00 2001
+From 1b4f28c6e174328cfedad0a6fd7d1ab99ac406e9 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 7/7] Remove xpathselect dependency
+Subject: [PATCH 7/8] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
@@ -27,10 +27,10 @@ index 17e3d09..5f6b1da 100644
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index aebf862..c56387a 100644
+index 3713ddb..03ca39a 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
-@@ -161,7 +161,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
+@@ -159,7 +159,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
    , sScreen(ScaleScreen::get(screen))
    , menus_(std::make_shared<menu::Manager>(std::make_shared<indicator::DBusIndicators>(), std::make_shared<key::GnomeGrabber>()))
    , deco_manager_(std::make_shared<decoration::Manager>(menus_))
@@ -39,7 +39,7 @@ index aebf862..c56387a 100644
    , super_keypressed_(false)
    , newFocusedWindow(nullptr)
 diff --git a/plugins/unityshell/src/unityshell.h b/plugins/unityshell/src/unityshell.h
-index b4ab30d..91ce128 100644
+index 0dc9334..f974ce8 100644
 --- a/plugins/unityshell/src/unityshell.h
 +++ b/plugins/unityshell/src/unityshell.h
 @@ -63,7 +63,6 @@
@@ -51,9 +51,9 @@ index b4ab30d..91ce128 100644
  #include "ScreenSaverDBusManager.h"
  #include "SwitcherController.h"
 @@ -349,7 +348,6 @@ private:
-   session::Controller::Ptr  session_controller_;
    lockscreen::DBusManager::Ptr screensaver_dbus_manager_;
    lockscreen::Controller::Ptr lockscreen_controller_;
+   ui::EdgeBarrierController::Ptr edge_barriers_;
 -  debug::DebugDBusInterface debugger_;
    std::unique_ptr<BGHash>   bghash_;
    spread::Filter::Ptr       spread_filter_;
@@ -558,5 +558,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.1.3
+2.2.2
 

@@ -1,7 +1,7 @@
-From 85247a86e51a24589c6f53455734fe0c41b584cf Mon Sep 17 00:00:00 2001
+From 81ce36643dda90ee298a2bb06aec449369dfa36a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
-Subject: [PATCH 5/7] Remove Upstart stuff
+Subject: [PATCH 5/8] Remove Upstart stuff
 
 ---
  services/CMakeLists.txt         |  7 -------
@@ -133,5 +133,5 @@ index 5ec3add..0c2995e 100644
  
  }
 -- 
-2.1.3
+2.2.2
 

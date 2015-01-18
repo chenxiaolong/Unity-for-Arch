@@ -1,7 +1,7 @@
-From 48d964a4a5af3bb28d3e5c2cb802ba2a50c73b10 Mon Sep 17 00:00:00 2001
+From 96dd1e1e007952629b29c8d835f9da4774543284 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
-Subject: [PATCH 3/7] Disable -Werror
+Subject: [PATCH 3/8] Disable -Werror
 
 ---
  CMakeLists.txt          | 2 +-
@@ -35,5 +35,5 @@ index b80ec71..df0f767 100644
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.1.3
+2.2.2
 

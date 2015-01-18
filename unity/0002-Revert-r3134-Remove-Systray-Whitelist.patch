@@ -1,7 +1,7 @@
-From f950098f9c01b04de3a49dfb497166993ddecde6 Mon Sep 17 00:00:00 2001
+From e886b547a9d827f40b3d0fcd0d22ae8ba1c29330 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 2/7] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 2/8] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -12,10 +12,10 @@ Subject: [PATCH 2/7] Revert r3134: Remove Systray Whitelist
  5 files changed, 44 insertions(+), 81 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index 331d9f5..26e4b7e 100644
+index 4c26055..1bbc62d 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -122,6 +122,13 @@
+@@ -130,6 +130,13 @@
        <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
      </key>
    </schema>
@@ -30,7 +30,7 @@ index 331d9f5..26e4b7e 100644
      <key type="as" name="blacklist">
          <default>[]</default>
 diff --git a/panel/PanelTray.cpp b/panel/PanelTray.cpp
-index 8c1f169..8d1c782 100644
+index 20be87f..90da16b 100644
 --- a/panel/PanelTray.cpp
 +++ b/panel/PanelTray.cpp
 @@ -17,8 +17,6 @@
@@ -68,8 +68,8 @@ index 8c1f169..8d1c782 100644
 +
    auto gtkwindow = glib::object_cast<GtkWindow>(window_);
    gtk_window_set_type_hint(gtkwindow, GDK_WINDOW_TYPE_HINT_DOCK);
-   gtk_window_set_has_resize_grip(gtkwindow, FALSE);
-@@ -78,6 +82,8 @@ PanelTray::PanelTray(int monitor)
+   gtk_window_set_keep_above(gtkwindow, TRUE);
+@@ -77,6 +81,8 @@ PanelTray::PanelTray(int monitor)
  
  PanelTray::~PanelTray()
  {
@@ -78,7 +78,7 @@ index 8c1f169..8d1c782 100644
    if (gtk_widget_get_realized(window_))
    {
      // We call Release since we're deleting the window here manually,
-@@ -128,13 +134,38 @@ void PanelTray::Sync()
+@@ -127,13 +133,38 @@ void PanelTray::Sync()
  
  gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTray* self)
  {
@@ -118,7 +118,7 @@ index 8c1f169..8d1c782 100644
  
    if (accept)
    {
-@@ -153,15 +184,6 @@ gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTra
+@@ -152,15 +183,6 @@ gboolean PanelTray::FilterTrayCallback(NaTray* tray, NaTrayChild* icon, PanelTra
    return accept ? TRUE : FALSE;
  }
  
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-2.1.3
+2.2.2
 
