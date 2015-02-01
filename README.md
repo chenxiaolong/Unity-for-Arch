@@ -35,7 +35,6 @@ To compile from source, just build all of the packages in the following order:
 | -------------------------------- | ------------------------------------------ |
 | gtk2-ubuntu                      | GTK toolkit 2.0 with Ubuntu's patches      |
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |
-| qt4-ubuntu                       | Qt 4 toolkit with Ubuntu's patches         |
 | libdbusmenu-ubuntu               | Library for passing menus over DBus        |
 | ido                              | Widgets and objects used for indicators    |
 | libindicator                     | Symbols and functions for indicators       |
