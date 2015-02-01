@@ -51,7 +51,6 @@ To compile from source, just build all of the packages in the following order:
 | bamf-ubuntu                      | Application matching framework             |
 | lib32-qjson                      | A lib that maps JSON to QVariant (32-bit)  |
 | lib32-libdbusmenu-qt             | Qt implementation of DBusMenu (32-bit)     |
-| lib32-sni-qt                     | Same description as sni-qt (32-bit)        |
 | libtimezonemap                   | GTK+3 timezone map widget                  |
 | gsettings-desktop-schemas-ubuntu | Shared GSettings schemas for the desktop   |
 | gnome-settings-daemon-ubuntu     | Daemon handling the GNOME session settings |
