@@ -12,10 +12,9 @@
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(network-manager-applet-ubuntu libnm-gtk-ubuntu)
-_ubuntu_rel=0ubuntu6
-_ubuntu_ver=0.9.8.8
-pkgver=0.9.10.0
-pkgrel=3
+_ubuntu_rel=0ubuntu1
+pkgver=0.9.10.1
+pkgrel=1
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
@@ -26,34 +25,22 @@ makedepends=(libnm-glib libsecret gtk3 gnome-icon-theme
              intltool gobject-introspection libappindicator3 python2)
 extrafiles=(network-manager-applet.install)
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*.*}/${pkgbase%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver}-${_ubuntu_rel}.debian.tar.xz"
-        0001-nm-applet-use-indicator.patch)
-sha512sums=('d9472bb6613fa8feb7bbde15932542adcfdb99897d6f1376ea4d511a6ff785debb0b4dd630deb7dc6ba2c244ca2487a00cd8c758274a914d61864370226e2b1d'
-            '68df9d224b77629fb21e6651c815b8b9d36be5f7d2010f6e91a86c67523c364ed8b1a1d798929212d3c43a92824882aa7edd64327474404b50482667d7c6024e'
-            '9d876446ff9199b48702315210f94fba7216411d7d16975ef4677daa6aafd7237bd7370882db546850a9a9e3824bcd8ba6c71756f919376194b2ef5e87d1666f')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+sha512sums=('7f11a01bbc22c201bb41ef6bf4c65a13c1f136d86c6e84c43f8ea6b537379eebaf9512642581988d4a67bb033c918708b53b29edf736460d0744ef41672843f1'
+            '15d98bc4288757d779dfbe6e24e334839f635da01c1db2b6aa54788a5e3a95ba0c076b988d6ce695ba600dd3c822a1fa45897236a2477b60255784ef1f2f45f6')
 
 prepare() {
   cd "${pkgbase%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
 
-  sed -i -e '/git_use_paths_in_vpn_name_files_4867951.patch/d' \
-         -e '/lp289466_always_show_tray_icon.patch/d' \
-         -e '/lp328572-dxteam-connect-text.patch/d' \
-         -e '/lp330571_dxteam_wired_connect_text.patch/d' \
-         -e '/lp330608_dxteam_gsm_connect_text.patch/d' \
-         -e '/lp341684_device_sensitive_disconnect_notify.patch/d' \
-         -e '/applet-wifi-menu-before-vpn.patch/d' \
-         -e '/key-certificate-extensions.patch/d' \
+  sed -i -e '/key-certificate-extensions.patch/d' \
          -e '/lp829673_gconf_hide_applet.patch/d' \
-         -e '/nm-applet-use-indicator.patch/d' \
          -e '/hide_policy_items_env_var.patch/d' \
          -e '/0001_Move_on_with_enter_in_the_country_page_of_the_new_mobile_wizard.patch/d' \
          -e '/set_atk_relations.patch/d' \
          -e '/11-user-connections.patch/d' \
          ../debian/patches/series
-
-  patch -p1 -i ../0001-nm-applet-use-indicator.patch
 
   for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
