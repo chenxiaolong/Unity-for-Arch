@@ -12,8 +12,9 @@ _use_ppa=false
 pkgname=gtk3-ubuntu
 #_ppa_rel=0ubuntu1~utopic3
 #_ppa_ver=3.14.4
-_ubuntu_rel=0ubuntu1
-pkgver=3.14.7
+_ubuntu_rel=0ubuntu3
+_ubuntu_ver=3.14.7
+pkgver=3.14.8
 pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
@@ -21,7 +22,8 @@ url="http://www.gtk.org/"
 install=gtk3.install
 depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama
          libxrandr libxi libxcomposite libxdamage pango shared-mime-info
-         colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme)
+         colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme
+         json-glib rest)
 makedepends=(gobject-introspection python2)
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
@@ -34,8 +36,8 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 fi
 
-sha512sums=('d3d8ac5b65666a53f7c905ff087f460f423532135b7d6cdb9818b414e878193b7395d2eb5ec11ef64dd5495695ca672c4bd91481df53c76b5a155cf7041d6bc7'
-            '0bb748b10aa23a0642e220a932a35c00a20b2994e2a4507095480ed35f8369ee6e9eb4120a622e1bdc3f38cdaa8002132a67c6f5aad8bc9a7d29a4edea14cf92')
+sha512sums=('110f39d0a8ef72bfcb02d8e11000210848da15d7232346277f9755c7918e16af39dce78ba409ddfcb73dd5fa9032cc51843cb658d5ce4a2b32ca401624cc5240'
+            'e67e85f0ee3632c9197267df3fc0b5d5a69486f75af335ee58359106278b81f82cc94e093fa2ccc2453d329ef93302b477062476c272768ee9046f52611f796f')
 
 prepare() {
   cd "gtk+-${pkgver}"
@@ -53,7 +55,6 @@ prepare() {
         echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
       # Other
         echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> ../debian/patches/series
-        echo '0001-Menu-items-force-loading-16x16-icons.patch' >> ../debian/patches/series
 
   for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
