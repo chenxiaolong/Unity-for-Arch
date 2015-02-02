@@ -8,7 +8,7 @@
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+15.04.20150112
+_extra_ver=+15.04.20150126
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -22,7 +22,7 @@ groups=(unity)
 install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         '0001_autoconf.patch')
-sha512sums=('99f825dfbf2c449478716d0d06d783d61fb2ebc76052bda1a45c72996b717223854ecb82775589f5472a648e92cd346f09f38e13db7b1269cdce03ba2e7ef91f'
+sha512sums=('89f5634df3b27d0d8c59ce274c246e570e0863b6677152d0cfaca4469d16fd78019d5164fbd19e20a65005f4950f17d3c656b6d6e50aec2f38e4bf5b6ebe0239'
             '75c5f0c2381b76b053ad980bc371772cbb6626ef5c7e01a3b212d42460ed8a5ea17c82ab8b6146992aca098c3a465b0b1075e460d2d5333ef6de193e5cf73e8a')
 
 prepare() {
