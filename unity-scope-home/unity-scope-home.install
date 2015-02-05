@@ -1,5 +1,5 @@
 post_install() {
-    update-ca-certificates
+    trust extract-compat
 }
 
 post_upgrade() {
