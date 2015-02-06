@@ -7,7 +7,7 @@
 
 pkgname=unity-control-center
 _actual_ver=15.04.0
-_extra_ver=+15.04.20141217
+_extra_ver=+15.04.20150203.2
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="The Control Center for Unity"
@@ -39,7 +39,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         unity-bluetooth-panel.desktop
         unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
-sha512sums=('c94291c838b0ac237bb132c7c7dc2a53d65c23e14a02ec21aa2180b6986bc2631d1ab4b8d61029151681ad05d85a71656156cbbd02644267ae1b5ee6f312bbdf'
+sha512sums=('54ecebe26f2d07041c07e7c9d460ffa3252d2b4ad8209e858b262b93832f8809ccb4fcd9af3b9efaf932b099bd4f4823d819fbbc6702a93e4fe2114bdad484ed'
             '1b39906307c6776647cb1325c4029806614f5301e0c7fd1fd6c14509daad587ddbf71f5ac60c81e7f4c89ed9598569523a31ec3f07ddc69e8cd5b73e205ec700'
             'ba07ad32de0ebb52e578e53506e7bff3826c6c15dbd415429f60ffa3c2de0884a7fc5866d9e53a064fdd5631d12dbcd925336ae994259cd31f77d5f3f827fc6b'
             '17a8ec0ea635dcc991c6c101a0865c09d6aff344455020272a189af00579451c7fa9348063c30b80cd74b8e624d466a04862915dd0b343d9395e6c2f4e80085e'
