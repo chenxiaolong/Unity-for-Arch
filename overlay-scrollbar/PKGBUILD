@@ -7,7 +7,7 @@
 pkgname=(overlay-scrollbar liboverlay-scrollbar liboverlay-scrollbar3)
 pkgbase=overlay-scrollbar
 _actual_ver=0.2.16
-_extra_ver=+r359+15.04.20141126
+_extra_ver=+r359+15.04.20150202
 pkgver=${_actual_ver}${_extra_ver//\+/.}
 pkgrel=1
 epoch=2
@@ -20,7 +20,7 @@ makedepends=(gtk2-ubuntu gtk3)
 options=(!emptydirs)
 extrafiles=(overlay-scrollbar.install)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('3ed7099158989562fc23084d9e0b938ad0a14d7e2e710598010b810540788a656f22edb26b16db8a0ac43ad056de81309cb00175d1ba79678685546930183c35')
+sha512sums=('32c7a86113bb2fae81f2f7b25db98a9bf6f972b915bdeeaa1263a3f93c819c3925ae4f9fbbce18ade3bfe1d1a8d8129a87cc60f7e60224f135359f8bfc4d12a4')
 
 build() {
   cd "${pkgbase}-${_actual_ver}${_extra_ver}"
