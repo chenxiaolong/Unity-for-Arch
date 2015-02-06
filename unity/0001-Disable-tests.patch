@@ -1,4 +1,4 @@
-From 9dbd6fae91fa21e6b64d44c3c52e8f020ecc5e42 Mon Sep 17 00:00:00 2001
+From ef49e806d0793b0fb0e950a6be72229857aa2848 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:06:38 -0400
 Subject: [PATCH 1/8] Disable tests
@@ -69,5 +69,5 @@ index 14cfded..9e26dc5 100644
  add_subdirectory(UnityCore)
  add_subdirectory(guides)
 -- 
-2.1.1
+2.2.2
 

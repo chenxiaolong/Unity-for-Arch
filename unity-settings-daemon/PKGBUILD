@@ -5,7 +5,7 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=15.04.1
-_extra_ver=+15.04.20141128
+_extra_ver=+15.04.20150107
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -24,7 +24,7 @@ install=unity-settings-daemon.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0003-Remove-accountsservice-dependency.patch
         0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
-sha512sums=('10187f489859e75cb63e75bb24cf67116fbdc09abb522f15ef354dc10bde129638a42a120ee803f2dadda2e117fc909db1f15234967b4d185ad1ae4aaa6dc5f0'
+sha512sums=('20c2555df5f5b4844562e11b85591662111eb24d232aaaccab708f8592cb91fcbbcce2080dc6edf0a1ba0ae597c25fd5b0544c3ba619c924180d1f8e294e6220'
             '9301f735af90887e34dbceef1186811ac98f9514779e429c18a69f7eb397fb4a742960046f0cfd782cf6229f8047b86488c76b1d7d1fee2e90c8231e2acfcdd9'
             'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37')
 

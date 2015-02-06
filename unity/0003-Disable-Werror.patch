@@ -1,7 +1,7 @@
-From a4bfd591d66d61b7d17ec460a9b80904b67ffd11 Mon Sep 17 00:00:00 2001
+From 96dd1e1e007952629b29c8d835f9da4774543284 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
-Subject: [PATCH 4/8] Disable -Werror
+Subject: [PATCH 3/8] Disable -Werror
 
 ---
  CMakeLists.txt          | 2 +-
@@ -22,10 +22,10 @@ index 9e26dc5..17e3d09 100644
  option (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS "Disable errors when local typedefs are unused" ON)
  if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
 diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
-index 103c885..4514ff1 100644
+index b80ec71..df0f767 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
-@@ -38,7 +38,7 @@ set(PANEL_SOURCES
+@@ -35,7 +35,7 @@ set(PANEL_SOURCES
  set(CFLAGS
      ${SERVICE_DEPS_CFLAGS}
      ${SERVICE_DEPS_CFLAGS_OTHER}
@@ -35,5 +35,5 @@ index 103c885..4514ff1 100644
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.1.1
+2.2.2
 

@@ -35,8 +35,6 @@ To compile from source, just build all of the packages in the following order:
 | -------------------------------- | ------------------------------------------ |
 | gtk2-ubuntu                      | GTK toolkit 2.0 with Ubuntu's patches      |
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |
-| qt4-ubuntu                       | Qt 4 toolkit with Ubuntu's patches         |
-| lib32-qt4-ubuntu                 | Qt 4 toolkit (x86-64 only)                 |
 | libdbusmenu-ubuntu               | Library for passing menus over DBus        |
 | ido                              | Widgets and objects used for indicators    |
 | libindicator                     | Symbols and functions for indicators       |
@@ -49,10 +47,6 @@ To compile from source, just build all of the packages in the following order:
 | libunity-misc                    | Differently licensed stuff for Unity       |
 | indicator-messages               | Collects messages that need a response     |
 | bamf-ubuntu                      | Application matching framework             |
-| sni-qt                           | Turns Qt 4 tray icons into indicators      |
-| lib32-qjson                      | A lib that maps JSON to QVariant (32-bit)  |
-| lib32-libdbusmenu-qt             | Qt implementation of DBusMenu (32-bit)     |
-| lib32-sni-qt                     | Same description as sni-qt (32-bit)        |
 | libtimezonemap                   | GTK+3 timezone map widget                  |
 | gsettings-desktop-schemas-ubuntu | Shared GSettings schemas for the desktop   |
 | gnome-settings-daemon-ubuntu     | Daemon handling the GNOME session settings |

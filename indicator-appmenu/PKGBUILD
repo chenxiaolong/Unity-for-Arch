@@ -8,7 +8,7 @@
 
 pkgname=indicator-appmenu
 _actual_ver=13.01.0
-_extra_ver=+14.04.20140404
+_extra_ver=+15.04.20150120
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -25,7 +25,7 @@ options=(!emptydirs)
 install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001_autoconf.patch)
-sha512sums=('85796483927124797c9446b801a9efd24fd8ac1a26eea50a83d9ab2e23fe0557eccce7f1bda72c65a6136d07fa961e96159d2da69031b751de064068b9dfa63e'
+sha512sums=('d13ac7772cbdc711da4cf880e38d17420333f64363ff48d785938688374772f9386b2a813a543d6b399f832ebead86d243181d3a12beeb6b21f6ed39278b7591'
             '31b83e433824bd7acd7be93bfd60932114eff344fea77c8ea1125272d5881fd61c1609d4fbf24de0cc8838e76d8ac405e7a19162e3ce2021b6b5b6dbb61c31f8')
 
 prepare() {

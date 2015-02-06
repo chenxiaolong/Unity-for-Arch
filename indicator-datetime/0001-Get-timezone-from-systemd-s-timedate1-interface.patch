@@ -1,4 +1,4 @@
-From 9e90fa7f35af887942d51aef34daa71830da6025 Mon Sep 17 00:00:00 2001
+From 058a0af4d8124201375a57a84a697c8036c6282a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 6 Apr 2014 22:26:15 -0400
 Subject: [PATCH 1/2] Get timezone from systemd's timedate1 interface
@@ -171,7 +171,7 @@ index 512cc5c..50cd7f1 100644
       wakeup-timer-powerd.cpp)
  
 diff --git a/src/main.cpp b/src/main.cpp
-index aa8f829..5cfae97 100644
+index 1761f84..5e9eed8 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
 @@ -32,6 +32,7 @@
@@ -425,5 +425,5 @@ index 4902b76..8e4db27 100644
  
      timezone.set(a.empty() ? b : a);
 -- 
-2.1.2
+2.1.3
 
