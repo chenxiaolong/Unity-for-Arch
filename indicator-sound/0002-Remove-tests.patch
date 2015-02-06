@@ -1,14 +1,14 @@
-From e2c53205afa9f05b16f4ade217bb10ca9bfafac4 Mon Sep 17 00:00:00 2001
+From d6a59ff322b72ba465256745276e17491f2738e9 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 28 Oct 2014 23:19:51 -0400
-Subject: [PATCH 2/4] Remove tests
+Subject: [PATCH 2/3] Remove tests
 
 ---
  CMakeLists.txt | 15 ---------------
  1 file changed, 15 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 694463e..d921b9a 100644
+index b4ffbe3..d921b9a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -45,12 +45,6 @@ pkg_check_modules(
@@ -17,7 +17,7 @@ index 694463e..d921b9a 100644
  
 -pkg_check_modules(
 -  TEST REQUIRED
--  dbustest-1
+-  dbustest-1>=15.04.0
 -)
 -include_directories(${TEST_INCLUDE_DIRS})
 -
@@ -38,5 +38,5 @@ index 694463e..d921b9a 100644
 -add_subdirectory(tests)
 -
 -- 
-2.1.2
+2.3.0
 
