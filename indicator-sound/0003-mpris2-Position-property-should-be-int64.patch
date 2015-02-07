@@ -1,7 +1,7 @@
-From f92c599ba4609d2fc0a03b05e9472363d857b662 Mon Sep 17 00:00:00 2001
+From 0ca8460ea1fdf8e7c84bbb0c7f26628c5ec12df4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 28 Oct 2014 23:30:51 -0400
-Subject: [PATCH 3/4] mpris2 Position property should be int64
+Subject: [PATCH 3/3] mpris2 Position property should be int64
 
 ---
  src/mpris2-interfaces.vala | 2 +-
@@ -21,5 +21,5 @@ index cb68e84..aa95c83 100644
    // methods
    public abstract async void PlayPause() throws IOError;
 -- 
-2.1.2
+2.3.0
 
