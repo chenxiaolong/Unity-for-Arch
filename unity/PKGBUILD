@@ -6,7 +6,7 @@
 
 pkgname=unity
 _actual_ver=7.3.1
-_extra_ver=+15.04.20150205
+_extra_ver=+15.04.20150219.2
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -43,8 +43,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('224c0ae8053a12d00353ed91a4452edc6d123e4bcb59071fad47a32a3d6c0d759f216e5caa1f142bd2e3ac33986f7fc489d9f298d34adc3a3b6de4cf7df45276'
-            'fd38ff6cadef3583ebc380107249b31059211a8bfb6708ab7905d5c2a01b32be824975de479fbc71bbb0cb150e23210ab181b55700699e90e16a54008c6add59'
+sha512sums=('420edb04e5c8f50f08a8fb35b9a9c1a6d3404c3fddb7dee53a9e5ab1d07edc25b397e882f32137347cbc4c4fdbc762111a1ba9ef4d87195c777c81e5e8791e18'
+            'fb1a435f1a44bcecc27cd0f05042d44b7f6be2ac2dfd3ae62ac122f3e5908f6fedb36c6549a2f222c4aa9a3fdb82a33af8002cb88ed1b3f19e7ace319ebc97c1'
             '73a097a9b10ae443cb02425c8cd1d15902db1e99e9f1f2ad601467317a1e09eec5a47d28d8472e825da6a6ededcf02fbc26da96864f6bd0b11df9fd69802da12'
             '8ebc9fa3ac3fb03ac87ab77e3d42d8e4e465c24e0a3adec68f78a10c1aaacd221f641adb40f8d909778388a2f0a0cd18decde79e1f103c5f384d8911c98929c0'
             '799ea8bca5ce8493eaf390232ec2ce6d459e886098431eff5ff072a808f5995d7401e2062bf79365dfdb141cfc044e6ae7204430f530187adfc96b13978b3d91'
