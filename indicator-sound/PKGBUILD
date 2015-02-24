@@ -8,9 +8,9 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+15.04.20150205
+_extra_ver=+15.04.20150219.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="A unified sound menu"
 arch=(i686 x86_64)
@@ -27,7 +27,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${
         0002-Remove-tests.patch
         0003-mpris2-Position-property-should-be-int64.patch
         libpulse.vapi)
-sha512sums=('4a7b5479982b96443fe6dc1d7d3c11e300ef5aead9f3e3219d58a8836fd560c83acc0ff85fea5b6d4610a5b00de3684bee89890f5c51fe71de2fb675ebbb61bc'
+sha512sums=('084da2fba30460b42937e8e178a6e7fad2ee9883445f172731c9f64ffe2ee09a5f802f01e8e57aa9eba139815d241a4fcdccc5e3b6997116460a17b1838b2b21'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '5057e41ee29eb345331c2ba15795d3b365fdc5a13e616f19d820de6713afcf317bb31d5054a36aa1251a0ead4c8f7a6774869bd65dc9fd93683e55cdaefc2edf'
             '9c305542eee8cf907677690d2c8f1a34ff2d131e20833ad419f1775e1d17fc18b58db4b7fb6af942e73fc5d22c3c18477b9bf671a870c165df5bb5dbf65e281b'
