@@ -10,7 +10,7 @@
 
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu4
 pkgver=3.14.2
 pkgrel=3
 pkgdesc="GNOME and Unity file manager"
@@ -25,7 +25,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('9d07878fc2474c7444fb7c573ce1886514b82ecb386365e608de81473184791daf17875b7ea471a7bef2c84df0d6d06b207223c7b5ec64d195e46865440ceff6'
-            '72d027e3573b3de5f7c96230676826e15a509f4e2356bbd31debf71ee9a258a15315ea1897b0ae7ef832a211e46903e23db3ca94b339d53efb0b22785d3124fb')
+            'b48dad4ad48983ff4e39bb54db7d46e745d70579af79fd6b76ef84b7e9def0c229c7ad7d58a2f61f8bf0bcde73719d43ef70163551250758b817d11c33d5ccec')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
