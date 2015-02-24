@@ -9,8 +9,8 @@
 
 pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=2.24.25
-pkgrel=2
+pkgver=2.24.26
+pkgrel=1
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
@@ -28,8 +28,8 @@ source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         gtkrc
         xid-collision-debug.patch)
-sha512sums=('e102eabbd86e9e697402b4d915172dd3838374b7b8a16b95369ed602228857a013fdba7b6b8d742f925ff8d340b63a90b56c1ddbd4405d8dc454144c705ac08d'
-            '8662bdb5d2552860af3ef8ddedcf14e5e3e714af73fc7feabbf92be43063c5740e2467aa5103f46d55963131b6cd2fc8d06c04df5e79cb8dbb5a717547c93673'
+sha512sums=('2a3a366c41214fcacbc2a69719d5b20060e0efbb0576a1fc4f4123f97ea1f5ff1b06296302806655b32c06901629f5d23b91d65de9a01143053f63607d94498d'
+            '155a46a1dcbe96554b1e1de847df2553865f38f7f4891b7028dbbc4331a3017fb738d6733b88dc4588fb2c235a491befe00522175dbb40c262e2fa1282eface1'
             'fb18f1937b117f97da1650fda2561e231cb5da108a9c04f3b27c19205843ea16402b52d9693eca63a8464bdfb1e6a0aedf81958ee3de75ce12aca4cce078bf23'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
