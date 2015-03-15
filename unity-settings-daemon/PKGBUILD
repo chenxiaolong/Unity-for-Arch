@@ -5,7 +5,7 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=15.04.1
-_extra_ver=+15.04.20150205
+_extra_ver=+15.04.20150313
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -13,26 +13,26 @@ arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
 license=(GPL)
 groups=(unity)
-depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu
-         hicolor-icon-theme ibus libappindicator3 libcanberra-pulse libnotify
-         librsvg libsystemd libwacom libxkbfile mesa pulseaudio pulseaudio-alsa
-         upower)
+depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu fcitx
+         gperf hicolor-icon-theme ibus libappindicator3 libcanberra-pulse
+         libnotify librsvg libsystemd libwacom libxkbfile mesa pulseaudio
+         pulseaudio-alsa upower)
 makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 conflicts=(gnome-desktop-compat upower-compat)
 install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0003-Remove-accountsservice-dependency.patch
-        0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
-sha512sums=('b039ad444d94b207d62648e733e5d6d0956167f26c97b47cbfea4443af17f298b211df4182f9b93f5a1a40eebe76f76a8fbaf8b3d1b9861b2944da1c0872e422'
-            '9301f735af90887e34dbceef1186811ac98f9514779e429c18a69f7eb397fb4a742960046f0cfd782cf6229f8047b86488c76b1d7d1fee2e90c8231e2acfcdd9'
-            'bb9bdd60c9df3303746c64b4c96d81043d50bfc49928f06e6a96f0f27f732273fdca76996fdbdc79e2435524d9c413e5c4e7ec17da1805206f195d93d3b09c37')
+        0001-Remove-accountsservice-dependency.patch
+        0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch)
+sha512sums=('b2870d9e02ea813b69dfad602d86e7ac8f0a07a404f8b3b1fe273718fbdb0cd886b8a434b9921fb978fe0f544195f5bf3372f1517a7d4124249913cab2b90968'
+            '4b8e984ac7284239a8e8b42c30b801c40709b107d9e651b9e82d46a6e33d45e2642b02d6027699ba72cb58e67a4f74e94544451f39d537111438354d2b4db082'
+            'bc4c8af6cafbe170e95f9d73ca7848eb13b7a1fe2d4017a50d969258919a52463faac9adb195896d3d38ca47c596f90529be1d03b73cba0eecd7820c4003f70b')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0003-Remove-accountsservice-dependency.patch
-  patch -p1 -i ../0004-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+  patch -p1 -i ../0001-Remove-accountsservice-dependency.patch
+  patch -p1 -i ../0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
 
   # Temporarily disable since it fails to link to glib
   sed -i '/noinst_PROGRAMS += test-wm-button-layout-translations/d' plugins/xsettings/Makefile.am
@@ -50,7 +50,8 @@ build() {
     --localstatedir=/var \
     --libexecdir=/usr/lib/unity-settings-daemon \
     --disable-static \
-    --enable-systemd
+    --enable-systemd \
+    --enable-fcitx
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=656231
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
