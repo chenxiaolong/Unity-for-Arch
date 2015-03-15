@@ -5,9 +5,9 @@
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=+14.10.20140716
+_extra_ver=+15.04.20150118
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=2
 pkgdesc="Unity GTK+ Module"
 arch=(i686 x86_64)
@@ -21,7 +21,7 @@ replaces=(appmenu-gtk2 appmenu-gtk3)
 conflicts=(appmenu-gtk2 appmenu-gtk3)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz"
         80unity-gtk-module)
-sha512sums=('d2e0d299f8b03bf701bdf7595ae4e36edf33012279283761ac3eb018a5ff88a7d7457e09dbf7fc632aac5a8c8bb32555bb244e41efcfa3611e02648787db8f61'
+sha512sums=('a78582f94736184b9f19cbcc795265e38101fb2eeeb0c9089811886de87607c5ac4615c6b46b6dc65e6ede4c8c9c8caca6765ab273c11b99860c01c9b2683833'
             'e30db7e3e1aba0abf100e619c667bac16d0a25ee3d9c67f65af532ab1a512dce5966e3c94f5d938c378dc30d9ed766fc2c9fa62e96235f29d923be5bad7f3a45')
 
 build() {
