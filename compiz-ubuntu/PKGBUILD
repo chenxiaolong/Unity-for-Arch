@@ -25,14 +25,14 @@ fi
 
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=2
+pkgrel=3
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=(boost-libs dbus fuse glibmm glu librsvg libxcomposite libxdamage
          libxinerama libxrandr libxslt libwnck3 mesa metacity
-         startup-notification protobuf pyrex gsettings-desktop-schemas)
+         startup-notification protobuf pygtk pyrex gsettings-desktop-schemas)
 # The schemas from gnome-settings-daemon are needed
 depends+=(gnome-settings-daemon)
 makedepends=(boost cmake intltool)
