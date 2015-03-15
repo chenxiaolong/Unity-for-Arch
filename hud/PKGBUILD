@@ -8,7 +8,7 @@ pkgname=hud
 _actual_ver=14.10
 _extra_ver=+14.10.20140924
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="Backend for the Unity HUD"
 arch=(i686 x86_64)
 url="https://launchpad.net/hud"
@@ -45,6 +45,9 @@ prepare() {
           trap 'kill $\(jobs -pr\)' SIGINT SIGTERM EXIT\n \
           @pkglibexecdir@\/window-stack-bridge &" \
           -i data/dbus-activation-hack.sh.in
+
+  # Work around build issues (gtk-doc will no longer be built)
+  rm cmake/GtkDocScanGObjWrapper.cmake
 }
 
 build() {
