@@ -1,6 +1,5 @@
 #!/bin/bash
 #Todo
-# * add workaround for qt4-ubuntu
 # * add error detection
 # * check for root if installing
 while getopts ednhbp:is: opt; do
@@ -50,7 +49,12 @@ if [ "$NOINSTALL" == true ]; then
 fi
 
 
-packages=($(./What_can_I_update\?.py -l | grep -v qt4-ubuntu))
+packages=($(./What_can_I_update\?.py -l))
+
+if ! [[ "${?}" -eq 0 ]]; then
+    exit 1
+fi
+
 for package in "${packages[@]}"; do
 	if [ "$NOSTART" == "true" ]; then
 		if [ "${package}" != "$STARTPKG" ]; then
@@ -68,16 +72,15 @@ for package in "${packages[@]}"; do
 		continue
 	fi
 	cd "${package}"
-	rm -rf src
 	if [ "$NOCONFIRM" == "true" ];then
-		makepkg --nocheck -fsic --noconfirm
+		makepkg --nocheck -fsicC --noconfirm
 	elif [ "$NOINSTALL" == "true" ]; then
-		makepkg --nocheck -fc
+		makepkg --nocheck -fcC
 	elif [ "$DOWNLOAD" == "true" ]; then
 		echo "Downloading ${package}..."
-		makepkg -g &> /dev/null
+		makepkg -gC &> /dev/null
 	else
-		makepkg --nocheck -fsic
+		makepkg --nocheck -fsicC
 	fi
 	cd ..
 done
