@@ -1,0 +1,37 @@
+diff -Nru indicator-printers-0.1.7+14.10.20140527/src/indicator-printer-state-notifier.c indicator-printers-0.1.7+15.04.20150220/src/indicator-printer-state-notifier.c
+--- indicator-printers-0.1.7+14.10.20140527/src/indicator-printer-state-notifier.c	2014-05-27 14:05:46.000000000 +0000
++++ indicator-printers-0.1.7+15.04.20150220/src/indicator-printer-state-notifier.c	2015-02-20 10:27:28.000000000 +0000
+@@ -72,24 +72,6 @@
+ }
+ 
+ 
+-static gboolean
+-g_strv_contains (gchar **str_array,
+-                 gchar *needle)
+-{
+-    gchar **str;
+-
+-    if (!str_array)
+-        return FALSE;
+-
+-    for (str = str_array; *str; str++) {
+-        if (!strcmp (*str, needle))
+-            return TRUE;
+-    }
+-
+-    return FALSE;
+-}
+-
+-
+ /* returns a list of strings that are in a but not in b; does not copy the
+  * strings */
+ static GList *
+@@ -103,7 +85,7 @@
+         return NULL;
+ 
+     for (p = a; *p; p++) {
+-        if (!g_strv_contains (b, *p))
++        if (!g_strv_contains ((const gchar * const *) b, *p))
+             result = g_list_prepend (result, *p);
+     }
+ 
