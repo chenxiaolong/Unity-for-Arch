@@ -8,7 +8,7 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+15.04.20141103
+_extra_ver=+15.04.20150228
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -24,7 +24,7 @@ install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         indicator-session.service
         0001-There-is-no-help.patch)
-sha512sums=('a0eedd4495fb701eb40de52048379ee246c99a52a7e9c4155c910b6f04b6cf45ee8aad4ae418674756eaf410f4929ef6a38e33a7ab1ed15f5917efbc658dd921'
+sha512sums=('663d0bc0f07b14ce6dceaf43658fa115f3ae3f08ec4900bf32bb66459da859e9a7435c3d3a98fae58880274a0378c3c2abd6f44a45df2be1b408be31f09a1030'
             '540c76c0f68b028194bb1000dd61a0c24f2f16427e79d237b94b8c65fe5e3e16eb6ea645f0fd33d734113727e25b6eb7452cb72f72399c9e8d370f74abba7511'
             'eceaaff3c90cd04bd2f1fd11f987965fdbfdfabf29aff6a258fb426ac0c2c33b2543b92d9e15cb3f7742619817f70c22867aed29978f9ab6dc17490dc4d1654b')
 
