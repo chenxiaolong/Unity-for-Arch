@@ -8,7 +8,7 @@ pkgname=indicator-power
 _actual_ver=12.10.6
 _extra_ver=+15.04.20150212
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -37,7 +37,10 @@ build() {
   export CFLAGS+=" -Wno-error"
 
   rm -rf build; mkdir build; cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=/usr -Denable_tests=OFF
+  cmake .. \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/${pkgname} \
+      -Denable_tests=OFF
   make
 }
 
