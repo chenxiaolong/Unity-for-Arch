@@ -1,31 +1,27 @@
-From 8f7b9afc350fffa126616e7761e46a1e80c0b4b4 Mon Sep 17 00:00:00 2001
+From 4b285746db3e15f4e77215d41ffdf747e77df9db Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:46:47 -0400
-Subject: [PATCH 2/6] Remove code depending on accountsservices patch
+Subject: [PATCH 2/5] Remove code depending on accountsservices patch
 
 ---
- lib/main.vala | 46 +---------------------------------------------
- 1 file changed, 1 insertion(+), 45 deletions(-)
+ lib/main.vala | 38 +-------------------------------------
+ 1 file changed, 1 insertion(+), 37 deletions(-)
 
 diff --git a/lib/main.vala b/lib/main.vala
-index 1cb3896..030b51e 100644
+index d3e063d..7f81d59 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
-@@ -254,29 +254,7 @@ public class Indicator.Keyboard.Service : Object {
+@@ -305,25 +305,7 @@ public class Indicator.Keyboard.Service : Object {
  				Act.User? user = manager.get_user ((!) greeter_user);
  
  				if (user != null && ((!) user).is_loaded) {
--					VariantIter outer;
--					VariantIter inner;
+-					foreach (var outer in ((!) user).input_sources) {
+-						foreach (var inner in (!) outer) {
+-							unowned string key;
+-							unowned string value;
 -
--					var sources = ((!) user).input_sources;
--					sources.get ("aa{ss}", out outer);
+-							((!) inner).get ("{&s&s}", out key, out value);
 -
--					while (outer.next ("a{ss}", out inner)) {
--						unowned string key;
--						unowned string value;
--
--						while (inner.next ("{&s&s}", out key, out value)) {
 -							if (key == "xkb") {
 -								source = value;
 -								break;
@@ -42,21 +38,17 @@ index 1cb3896..030b51e 100644
  						var layouts = ((!) user).xkeyboard_layouts;
  
  						if (layouts.length <= 0) {
-@@ -450,28 +428,6 @@ public class Indicator.Keyboard.Service : Object {
+@@ -495,24 +477,6 @@ public class Indicator.Keyboard.Service : Object {
  			if (user.is_loaded) {
  				var done = false;
  
--				VariantIter outer;
--				VariantIter inner;
+-				foreach (var outer in user.input_sources) {
+-					foreach (var inner in (!) outer) {
+-						unowned string key;
+-						unowned string source;
 -
--				var sources = user.input_sources;
--				sources.get ("aa{ss}", out outer);
+-						((!) inner).get ("{&s&s}", out key, out source);
 -
--				while (outer.next ("a{ss}", out inner)) {
--					unowned string key;
--					unowned string source;
--
--					while (inner.next ("{&s&s}", out key, out source)) {
 -						if (key == "xkb") {
 -							done = true;
 -
@@ -72,5 +64,5 @@ index 1cb3896..030b51e 100644
  					var layouts = user.xkeyboard_layouts;
  					foreach (var layout in layouts) {
 -- 
-2.1.2
+2.3.3
 

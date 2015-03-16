@@ -1,7 +1,7 @@
-From eb2d041f274327e07bd35fe4467d90a3d23a2db1 Mon Sep 17 00:00:00 2001
+From f69ae19e067f318063f1df2eb8d54b2550ded22b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:39:56 -0400
-Subject: [PATCH 1/6] vala build fix
+Subject: [PATCH 1/5] vala build fix
 
 ---
  data/Makefile.am | 2 +-
@@ -9,7 +9,7 @@ Subject: [PATCH 1/6] vala build fix
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/data/Makefile.am b/data/Makefile.am
-index 06ed466..463dfd1 100644
+index 61e5c37..f470d6f 100644
 --- a/data/Makefile.am
 +++ b/data/Makefile.am
 @@ -9,7 +9,7 @@ noinst_PROGRAMS = indicator-keyboard-icon-generator
@@ -22,7 +22,7 @@ index 06ed466..463dfd1 100644
                 --vapidir $(top_srcdir)/deps
  
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index c57725c..88bf389 100644
+index d45b98d..d0a012d 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -2,7 +2,7 @@ pkglibexec_PROGRAMS = indicator-keyboard-service
@@ -35,5 +35,5 @@ index c57725c..88bf389 100644
                 --vapidir $(top_srcdir)/deps
  
 -- 
-2.1.2
+2.3.3
 

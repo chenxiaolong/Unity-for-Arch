@@ -1,30 +1,17 @@
-From 0638f16c4ef20f1235337db37c05b39f5b4a92c9 Mon Sep 17 00:00:00 2001
+From 7a06a6ca8d290e5bf9636f9e4863bfdfb8f11fd5 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 16 Apr 2014 17:06:46 -0400
-Subject: [PATCH 4/6] Remove unavailable DBus method xkeyboard-layouts
+Subject: [PATCH 4/5] Remove unavailable DBus method xkeyboard-layouts
 
 ---
- deps/accountsservice.vapi |  1 -
- lib/main.vala             | 20 ++------------------
- 2 files changed, 2 insertions(+), 19 deletions(-)
+ lib/main.vala | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/deps/accountsservice.vapi b/deps/accountsservice.vapi
-index 809726d..ad16174 100644
---- a/deps/accountsservice.vapi
-+++ b/deps/accountsservice.vapi
-@@ -86,7 +86,6 @@ namespace Act {
- 		public bool xhas_messages { get; }
- 		[CCode (array_length = false, array_null_terminated = true)]
- 		[NoAccessorMethod]
--		public string[] xkeyboard_layouts { owned get; }
- 		public signal void changed ();
- 		public signal void sessions_changed ();
- 	}
 diff --git a/lib/main.vala b/lib/main.vala
-index 57d9bac..e9e3228 100644
+index 317e578..fdd0e46 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
-@@ -248,9 +248,9 @@ public class Indicator.Keyboard.Service : Object {
+@@ -299,9 +299,9 @@ public class Indicator.Keyboard.Service : Object {
  
  				if (user != null && ((!) user).is_loaded) {
  					if (true) {
@@ -36,7 +23,7 @@ index 57d9bac..e9e3228 100644
  							var user_list = LightDM.UserList.get_instance ();
  							LightDM.User? light_user = user_list.get_user_by_name ((!) greeter_user);
  
-@@ -422,22 +422,6 @@ public class Indicator.Keyboard.Service : Object {
+@@ -471,22 +471,6 @@ public class Indicator.Keyboard.Service : Object {
  				var done = false;
  
  				if (!done) {
@@ -60,5 +47,5 @@ index 57d9bac..e9e3228 100644
  					LightDM.User? light_user = user_list.get_user_by_name (user.user_name);
  
 -- 
-2.1.2
+2.3.3
 
