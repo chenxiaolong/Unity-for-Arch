@@ -5,10 +5,10 @@
 
 pkgname=unity-scope-home
 _actual_ver=6.8.2
-_extra_ver=+14.04.20131029.1
+_extra_ver=+15.04.20150311.1
 _sso_ver=13.10
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=1
 epoch=1
 pkgdesc="Home scope that aggregates results from multiple scopes"
 arch=(i686 x86_64)
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-home_$
         0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch
         0003-Show-description-of-error-code.patch
         0004-Fix-vala-0.26-errors.patch)
-sha512sums=('8f94915f4a3f4c70ac244e7974d000626805b2a4217abeed28b2137cce4e7c6c5ed2836b723a6b2e9b7f6fe3cf95cdd151e9c5bac577c3989e10d1367a5aa772'
+sha512sums=('cded77590fe6a20400122a9c7dbb0464b6d876eed434ee77e36afe06a12493b2ee52513fb0cd82e36c68e708cc99dcf02009b1b2faf62c4cf4ec9c82021a3681'
             'c476c0026ca23d7f7ffe5bbf0de6c26b8522d0a785c496b495d8116d63065dc69768a963e05e926326a663e9f50ab2ba3560b349d3912d931eb1b575a8a3f24e'
             'ffca4eaaa84c80239fb5ca531b8782f0be252295e03d3a37bcfb750250e44dfa6c9272cd42438176186d71985d69a138bb28e8ef2bdccc4aedd6c1cb325efd06'
             '711a8cb2f5ba75530913f8f47990f9cbb801579026b96c39a010fa1594ee7e025dfac7d873e917e3b0d78d5cc38edadf0cd601193571e89efb477dc5fb2e1445'
