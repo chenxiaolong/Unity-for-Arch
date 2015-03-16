@@ -1,4 +1,4 @@
-From 47a9f2e33138de3442b7c5e9a77c7cb80c11339e Mon Sep 17 00:00:00 2001
+From 44e3fe3f4fe5c22b78dfe36c6affa9d42c1fb395 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 13 Apr 2014 01:02:42 -0400
 Subject: [PATCH 2/2] guest-account: Add default GSettings support
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] guest-account: Add default GSettings support
  1 file changed, 10 insertions(+)
 
 diff --git a/debian/guest-account.sh b/debian/guest-account.sh
-index e5b0d6d..f8f207a 100644
+index 0fc3daa..38e849c 100644
 --- a/debian/guest-account.sh
 +++ b/debian/guest-account.sh
 @@ -131,6 +131,16 @@ add_account ()
@@ -29,5 +29,5 @@ index e5b0d6d..f8f207a 100644
  
    echo $USER  
 -- 
-2.0.4
+2.3.3
 

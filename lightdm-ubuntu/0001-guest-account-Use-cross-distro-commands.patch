@@ -1,14 +1,14 @@
-From 6fe2d933bfd3e47fb2a468d8769c5284176712a7 Mon Sep 17 00:00:00 2001
+From f79dcd208c2d0e09425cda9535c6881ecf22125c Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 13 Apr 2014 01:01:44 -0400
 Subject: [PATCH 1/2] guest-account: Use cross-distro commands
 
 ---
- debian/guest-account.sh | 45 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 10 deletions(-)
+ debian/guest-account.sh | 41 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 8 deletions(-)
 
 diff --git a/debian/guest-account.sh b/debian/guest-account.sh
-index 6090898..e5b0d6d 100644
+index 6da5687..0fc3daa 100644
 --- a/debian/guest-account.sh
 +++ b/debian/guest-account.sh
 @@ -20,7 +20,12 @@ fi
@@ -48,49 +48,42 @@ index 6090898..e5b0d6d 100644
          umount "$HOME"
          rm -rf "$HOME"
          exit 1
-@@ -125,10 +144,15 @@ remove_account ()
-     echo "Error: invalid user $USER"
-     exit 1
-   }
--  UID=`echo "$PWENT" | cut -f3 -d:`
-+  USERUID=`echo "$PWENT" | cut -f3 -d:`
-   HOME=`echo "$PWENT" | cut -f6 -d:`
+@@ -128,7 +147,12 @@ remove_account ()
+   GUEST_UID=`echo "$PWENT" | cut -f3 -d:`
+   GUEST_HOME=`echo "$PWENT" | cut -f6 -d:`
  
--  if [ "$UID" -ge 500 ]; then
+-  if [ "$GUEST_UID" -ge 500 ]; then
 +  # deluser is provided by the adduser package on Debian/Ubuntu. useradd
 +  # doesn't have a '--system' parameter, which causes deluser to only delete
 +  # system users, so this will be handled using this script.
 +  SYS_UID_MIN="$(cat /etc/login.defs | grep SYS_UID_MIN | awk '{print $2}')"
 +  SYS_UID_MAX="$(cat /etc/login.defs | grep SYS_UID_MAX | awk '{print $2}')"
-+  if [ "$USERUID" -lt "$SYS_UID_MIN" ] || [ "$USERUID" -gt "$SYS_UID_MAX" ]; then
-     echo "Error: user $USER is not a system user."
++  if [ "$GUEST_UID" -lt "$SYS_UID_MIN" ] || [ "$GUEST_UID" -gt "$SYS_UID_MAX" ]; then
+     echo "Error: user $GUEST_USER is not a system user."
      exit 1
    fi
-@@ -148,17 +172,18 @@ remove_account ()
-   rm -rf "$HOME"
- 
+@@ -150,15 +174,16 @@ remove_account ()
    # remove leftovers in /tmp
--  find /tmp -mindepth 1 -maxdepth 1 -uid "$UID" -print0 | xargs -0 rm -rf || true
-+  find /tmp -mindepth 1 -maxdepth 1 -uid "$USERUID" -print0 | xargs -0 rm -rf || true
+   find /tmp -mindepth 1 -maxdepth 1 -uid "$GUEST_UID" -print0 | xargs -0 rm -rf || true
  
 -  # remove possible /media/guest-XXXXXX folder
--  if [ -d /media/"$USER" ]; then
--    for dir in $( find /media/"$USER" -mindepth 1 -maxdepth 1 ); do
+-  if [ -d /media/"$GUEST_USER" ]; then
+-    for dir in $( find /media/"$GUEST_USER" -mindepth 1 -maxdepth 1 ); do
 +  # remove possible /run/media/guest-XXXXXX folder
-+  if [ -d /run/media/"$USER" ]; then
-+    for dir in $( find /run/media/"$USER" -mindepth 1 -maxdepth 1 ); do
++  if [ -d /run/media/"$GUEST_USER" ]; then
++    for dir in $( find /run/media/"$GUEST_USER" -mindepth 1 -maxdepth 1 ); do
        umount "$dir" || true
      done
--    rmdir /media/"$USER" || true
-+    rmdir /run/media/"$USER" || true
+-    rmdir /media/"$GUEST_USER" || true
++    rmdir /run/media/"$GUEST_USER" || true
    fi
  
--  deluser --system "$USER"
-+  #deluser --system "$USER"
-+  userdel "$USER"
+-  deluser --system "$GUEST_USER"
++  #deluser --system "$GUEST_USER"
++  userdel "$GUEST_USER"
  }
  
  case "$1" in
 -- 
-2.0.4
+2.3.3
 
