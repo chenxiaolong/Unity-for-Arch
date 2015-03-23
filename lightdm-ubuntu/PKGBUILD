@@ -11,7 +11,7 @@
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=1.13.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
 url="https://launchpad.net/lightdm"
@@ -29,7 +29,7 @@ optdepends=('accountsservice: DBus interface for querying user information'
             'qt4: To use the qt4 version of liblightdm-qt'
             'qt5-base: To use the qt5 version of liblightdm-qt')
 provides=("lightdm=${pkgver}" "liblightdm-qt4=${pkgver}")
-conflicts=(lightdm liblightdm-qt4)
+conflicts=(lightdm lightdm-gtk-greeter liblightdm-qt4)
 options=(emptydirs)
 backup=(etc/lightdm/keys.conf
         etc/lightdm/lightdm.conf
