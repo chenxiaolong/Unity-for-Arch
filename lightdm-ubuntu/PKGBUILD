@@ -11,7 +11,7 @@
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
 pkgver=1.13.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
 url="https://launchpad.net/lightdm"
@@ -33,14 +33,12 @@ conflicts=(lightdm liblightdm-qt4)
 options=(emptydirs)
 backup=(etc/lightdm/keys.conf
         etc/lightdm/lightdm.conf
-        etc/lightdm/lightdm-gtk-greeter.conf
         etc/lightdm/users.conf)
 install=lightdm.install
 source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}.orig.tar.gz"
         #"https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.diff.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}-${_ubuntu_rel}.tar.gz"
         lightdm.service
-        lightdm-gtk-greeter.conf
         lightdm.tmpfiles.d
         lightdm.pam
         lightdm-autologin.pam
@@ -50,7 +48,6 @@ source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}
         0002-guest-account-Add-default-GSettings-support.patch)
 sha512sums=('7c033414d5478073f7100bc242b4b25efb2010cf034d76f8ca3f14513d730249727467375943b4902bab752325398fccfdee328d145b3eaceb793f1af9f8958f'
             '26bb333e58ee63a6a0d472bb0a7f9006b93c7de629780399b1dff4af3aaccea02aa74ed0410b8fa6ba55b285f7c7bb6180db059928feba56f779c5b8f3ba8b86'
-            'fa35ece114255abfc409f1c9da1eb7129055d8669aad11fe3d69084bf2216e93bf09864ac4e8874e88f166be9735fc55ed899056eb3bd94c5b33d3b2cbd55f4d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
             '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df'
             '6f59d97515b37d53fb4f56de0f65994710e02c197c6d4c096aa7cdb9fe518d29223960018ae4ad8003056fed3210f47f3aa459c85b8efca80089f2046196892c'
@@ -132,7 +129,6 @@ package() {
                 "${pkgdir}"/usr/share/doc/lightdm/
   install -m644 "${pkgdir}"/etc/lightdm/keys.conf \
                 "${pkgdir}"/usr/share/doc/lightdm/
-  install -m644 "${srcdir}"/lightdm-gtk-greeter.conf "${pkgdir}"/etc/lightdm/
 
   # Install binaries and scripts
   install -dm755 "${pkgdir}"/usr/bin/
