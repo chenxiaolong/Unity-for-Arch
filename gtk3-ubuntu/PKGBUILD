@@ -7,24 +7,24 @@
 # vercheck-gnome: name=gtk+, majorver=3.14
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
-_use_ppa=false
+_use_ppa=true
 
 pkgname=gtk3-ubuntu
-#_ppa_rel=0ubuntu1~utopic3
-#_ppa_ver=3.14.4
-_ubuntu_rel=0ubuntu2
-_ubuntu_ver=3.14.8
-pkgver=3.14.9
+_ppa_rel=0ubuntu1~vivid0
+_ppa_ver=3.15.12
+#_ubuntu_rel=0ubuntu2
+#_ubuntu_ver=3.14.8
+pkgver=3.16.0
 pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
 install=gtk3.install
-depends=(atk cairo gtk-update-icon-cache libcups libxcursor libxinerama
+depends=(atk cairo gtk-update-icon-cache libcups libepoxy libxcursor libxinerama
          libxrandr libxi libxcomposite libxdamage pango shared-mime-info
          colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme
          json-glib rest)
-makedepends=(gobject-introspection python2)
+makedepends=(gobject-introspection)
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
@@ -36,58 +36,57 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 fi
 
-sha512sums=('3b64142d65ec4b4e0ed709c2fac629d80b95dac03481a3d6f8e3cc6c351ac779fe172a1edee552df7b3c40287f10c97fa0e99212e5f0e6b4751e3d8efd0896e5'
-            '9743f036eb3425b5b7225773f5ff63243194f1fb31686f8a80818c21418154795c48be95f0e32c667e614f36f3d9b883ebb894edfc755d4e647c3a4201b662f4')
+sha512sums=('113790576f2cbb2e0156c1bfa7a0a0e496bbded026f17158052333cba9f58c851af738d5c05a46ca0f278699fb20101db8dddb6e6c67454b8bf8e9356d3ea5aa'
+            '391d658f513a91ce35b493681dac56d587381873d331ad645318eb1bcb92ff7884ef0cf78a55956dd5ec313d0ebce3312a76f6faf60f2af71e445e621f0d5d23')
 
 prepare() {
-  cd "gtk+-${pkgver}"
+    cd "gtk+-${pkgver}"
 
-  # Apply Ubuntu Patches
+    # Apply Ubuntu Patches
     echo > ../debian/patches/series
-    # Enable patches
-      # https://bugs.launchpad.net/indicator-messages/+bug/1088162
-      # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
-        echo 'ubuntu_gtk_custom_menu_items.patch' >> ../debian/patches/series
-      # Do not allow offscreen widgets to grab the cursor
-        echo '016_no_offscreen_widgets_grabbing.patch' >> ../debian/patches/series
-        echo '017_no_offscreen_device_grabbing.patch' >> ../debian/patches/series
-      # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
-        echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
-      # Unity-specific
-        echo '0001-Add-style-classes-to-the-title-buttons.patch' >> ../debian/patches/series
-        echo 'message-dialog-restore-traditional-look-on-unity.patch' >> ../debian/patches/series
-      # Other
-        echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> ../debian/patches/series
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i} ..."
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    # https://bugs.launchpad.net/indicator-messages/+bug/1088162
+    # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
+    echo 'ubuntu_gtk_custom_menu_items.patch' >> ../debian/patches/series
+    # Do not allow offscreen widgets to grab the cursor
+    echo '016_no_offscreen_widgets_grabbing.patch' >> ../debian/patches/series
+    echo '017_no_offscreen_device_grabbing.patch' >> ../debian/patches/series
+    # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
+    echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
+    # Unity-specific
+    #echo '0001-Add-style-classes-to-the-title-buttons.patch' >> ../debian/patches/series
+    echo 'message-dialog-restore-traditional-look-on-unity.patch' >> ../debian/patches/series
+    # Other
+    echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> ../debian/patches/series
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i} ..."
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "gtk+-${pkgver}"
+    cd "gtk+-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  #CXX=/bin/false ./configure \
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --enable-gtk2-dependency \
-    --disable-schemas-compile \
-    --enable-x11-backend \
-    --enable-broadway-backend \
-    --enable-wayland-backend
+    #CXX=/bin/false ./configure \
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --disable-schemas-compile \
+        --enable-x11-backend \
+        --enable-broadway-backend \
+        --enable-wayland-backend
 
-  #https://bugzilla.gnome.org/show_bug.cgi?id=655517
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+    #https://bugzilla.gnome.org/show_bug.cgi?id=655517
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make
+    make
 }
 
 package() {
-  cd "gtk+-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "gtk+-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+    rm -f "$pkgdir/usr/bin/gtk-update-icon-cache"
 }
