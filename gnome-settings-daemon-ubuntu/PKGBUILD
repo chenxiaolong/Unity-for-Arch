@@ -5,13 +5,16 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-settings-daemon-ubuntu
+_use_ppa=true
+_ppa_rel=0ubuntu1~vivid1
 _ubuntu_rel=2ubuntu2
-pkgver=3.14.2
-pkgrel=3
+_ubuntu_ver=3.14.2
+pkgver=3.16.0
+pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
 url="http://www.gnome.org"
@@ -26,11 +29,16 @@ conflicts=(gnome-settings-daemon)
 options=(!emptydirs)
 install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
-#        "http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz"
 )
-sha512sums=('3cd125ed89d47b03439f473df861d41696f6281c9df84218f3fe29d86570fbcd13dd2bedb3f63b354e06043d7d8fda0d1304e03a6ca39b9bcbd369a908d88ba2'
-            '8a4280e368121ea3080dc6dc631ea96822ba4ce46f9044734a6d846352d66079f1dc32c963bad98e00afce1ff04636b9a196d4d09e0709d4ad51c59be4642fca')
+
+if [[ "${_use_ppa}" == "true" ]]; then
+    source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+else
+    source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+fi
+
+sha512sums=('62c8606134681de0d605a6babf95816ef077b7a3b0dfe172b5600eaea3bd28aecf40f6c30f588181fd383254af38e4671369f3321c77d99f721b189d114b42fc'
+            'd193101165097e48ed4e8613458c94e2ec07c2ba95646c274dd0015d3f3e6f0e61b0a0e5701a79f5151017896d518b32ef77301508af89de0619f1db24531f6b')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
