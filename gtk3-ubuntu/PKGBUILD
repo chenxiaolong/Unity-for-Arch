@@ -11,7 +11,6 @@ _use_ppa=true
 
 pkgname=gtk3-ubuntu
 _ppa_rel=0ubuntu1~vivid0
-_ppa_ver=3.15.12
 #_ubuntu_rel=0ubuntu2
 #_ubuntu_ver=3.14.8
 pkgver=3.16.0
@@ -37,7 +36,7 @@ else
 fi
 
 sha512sums=('113790576f2cbb2e0156c1bfa7a0a0e496bbded026f17158052333cba9f58c851af738d5c05a46ca0f278699fb20101db8dddb6e6c67454b8bf8e9356d3ea5aa'
-            '391d658f513a91ce35b493681dac56d587381873d331ad645318eb1bcb92ff7884ef0cf78a55956dd5ec313d0ebce3312a76f6faf60f2af71e445e621f0d5d23')
+            'a3965ae13aea394567f877cb126552f64038f6df2a22b57eee376fa5ccd2abe5a20c3e6aaec1ded3debbeecf144217012ce8222ced5a4251d1d0a9218553d520')
 
 prepare() {
     cd "gtk+-${pkgver}"
