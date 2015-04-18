@@ -12,7 +12,7 @@ pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
 _ubuntu_rel=0ubuntu4
 _ubuntu_ver=3.14.2
-pkgver=3.16.0
+pkgver=3.16.1
 pkgrel=1
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
@@ -26,7 +26,7 @@ install=nautilus.install
 source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         03_translations_list_update.patch)
-sha512sums=('ea0ed2539fd2b77e6beb68fa9aeffc26673153fef2719b39fbd0741d96772fe969bb3624cdf0ae769d43eb1108db4c780ae0403cd84f2946ce3ec0e5b3cef8b8'
+sha512sums=('ae7356015aefd228736bff61d30a784f2dc9cd7982292716ccd47164614c836085bb11f9cec97057a0c77568a37448294687aff99175b6af0eee3c1cb26b2084'
             'b48dad4ad48983ff4e39bb54db7d46e745d70579af79fd6b76ef84b7e9def0c229c7ad7d58a2f61f8bf0bcde73719d43ef70163551250758b817d11c33d5ccec'
             '6335e92c95b33f2703c4ae43ecc15f41ddd90e83e65108aab82449efafb9c907426eeaaeb1907bea6c1723109c0067958a02a6c50925c67750c1639b20dc9632')
 
