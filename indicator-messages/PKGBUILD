@@ -8,7 +8,7 @@
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+15.04.20150311
+_extra_ver=+15.04.20150403
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -23,7 +23,7 @@ install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-autoconf-fix.patch
         0002-Disable-tests.patch)
-sha512sums=('5697bd7b82d8fbc0b4d60f8cd8945e0e5e514c27cc7676269bcad4ca08fb52681a3f1deb1c98f00b3bbc3908128bd53cfe2525e9b1d6f766012763d5c5717155'
+sha512sums=('4e10f4b82d7328c7bc542d73d26dc71974e65f28a337b6f059fa9d93529281d783e3044cc1a52943b5aff88bd5f8d591a97303f8e26d9ba820928a13fa1d0bfc'
             '2774bcdf64bb3723f674a8d9d10186b6c63e2adbf83b8300f44cf9a199da538b3e058a0c1b3f85eba64b18f03d3fc63424e3c23147811d16c1a7a09bef235d1c'
             '00e4aed73c5a95500c450bbdd6217bcd904df38272577eb9c496d3a19f030f4feb8346a073b9331122ff408b56c5d1e9ea99745cf56a54d6710d33aade881e2f')
 
