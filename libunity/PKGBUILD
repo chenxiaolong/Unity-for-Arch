@@ -11,7 +11,7 @@ _actual_ver=7.1.4
 _extra_ver=+14.10.20140808
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=(i686 x86_64)
 url="https://launchpad.net/libunity"
@@ -23,16 +23,20 @@ groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001_autoconf.patch
-        0002_privacy_by_default.patch)
+        0002_privacy_by_default.patch
+        0003_gtk_liststore.patch)
 sha512sums=('7636894857ca4067dd146659b0c26d0d2a3330fad4628ba4b33660fd889934b87796e29aee099e76e17db6b140ec4ce3bd52d17aa1a8e90e3adabe946435843f'
             'e5e1b435ebe3f9d26e82c4ce62a361d58b675eb4924db76b4ced388b55f77d717a8162a31390c15583bca084564613d604698f29208116fe2d8f709015aaed53'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b'
-            '83769f9f54abb8090d5307affba8f974a23ee11dac74d9c3da389b48c9bd80fac241731017c9dcb05af14d4c644228d67af558e97972fceb144a8fc0deed30f7')
+            '83769f9f54abb8090d5307affba8f974a23ee11dac74d9c3da389b48c9bd80fac241731017c9dcb05af14d4c644228d67af558e97972fceb144a8fc0deed30f7'
+            '1a98d72ad1799d56afce9b4b413c045de67c0f2c2e43204bbffc828352bad007d7714468b886eb1249cbe0f20750610110d32f51825d1dac28773eb9f240865d')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
   find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
+
+  patch -p1 -i ../0003_gtk_liststore.patch
 
   patch -p1 -i ../0001_autoconf.patch
   patch -p1 -i ../0002_privacy_by_default.patch
