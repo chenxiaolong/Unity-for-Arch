@@ -1,0 +1,24 @@
+From bd3b50caab296af1ef6268229457ae1651077c48 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 1 May 2015 18:01:08 -0400
+Subject: [PATCH 3/3] Add support for EDS 3.16 API
+
+---
+ src/engine-eds.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/engine-eds.cpp b/src/engine-eds.cpp
+index 474bac5..fd72985 100644
+--- a/src/engine-eds.cpp
++++ b/src/engine-eds.cpp
+@@ -263,6 +263,7 @@ private:
+             g_debug("%s connecting a client to source %s", G_STRFUNC, source_uid);
+             e_cal_client_connect(source,
+                                  source_type,
++                                 10,
+                                  self->m_cancellable,
+                                  on_client_connected,
+                                  gself);
+-- 
+2.3.7
+

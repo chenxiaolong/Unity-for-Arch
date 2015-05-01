@@ -1,7 +1,7 @@
 From 27eac61bfe762aaf44a08081965d6bbf6f4ad7d3 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 17:52:55 -0400
-Subject: [PATCH 2/2] Not a phone
+Subject: [PATCH 2/3] Not a phone
 
 ---
  CMakeLists.txt                  |  1 -
@@ -89,5 +89,5 @@ index 3cbfb78..86d87b9 100644
  
  /***
 -- 
-2.3.5
+2.3.7
 
