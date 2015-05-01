@@ -1,4 +1,4 @@
-From 81ce36643dda90ee298a2bb06aec449369dfa36a Mon Sep 17 00:00:00 2001
+From e93f3e94c49f0c56c2d58444f01e6827b10b4a9c Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
 Subject: [PATCH 5/8] Remove Upstart stuff
@@ -33,7 +33,7 @@ index df0f767..55accd7 100644
 -configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
 diff --git a/services/panel-service.c b/services/panel-service.c
-index fb01072..5a545ee 100644
+index 5642f12..3ff7eca 100644
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
 @@ -34,8 +34,6 @@
@@ -45,7 +45,7 @@ index fb01072..5a545ee 100644
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -779,6 +777,9 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
+@@ -805,6 +803,9 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
  static void
  emit_upstart_event (const gchar *event)
  {
@@ -55,7 +55,7 @@ index fb01072..5a545ee 100644
    const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
  
    if (!upstartsession)
-@@ -815,6 +816,7 @@ emit_upstart_event (const gchar *event)
+@@ -841,6 +842,7 @@ emit_upstart_event (const gchar *event)
      }
  
    g_object_unref (conn);
@@ -133,5 +133,5 @@ index 5ec3add..0c2995e 100644
  
  }
 -- 
-2.2.2
+2.3.7
 

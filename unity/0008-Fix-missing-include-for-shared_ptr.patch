@@ -1,4 +1,4 @@
-From 227741202eef1ce9e433002b94b21131a04c1f1a Mon Sep 17 00:00:00 2001
+From 04349cdcf0577f576f9078e5a790f8e7d81d4bb2 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 24 Dec 2014 17:44:55 -0500
 Subject: [PATCH 8/8] Fix missing include for shared_ptr
@@ -20,5 +20,5 @@ index 47a6885..c331f03 100644
  struct _GtkStyleContext;
  
 -- 
-2.2.2
+2.3.7
 

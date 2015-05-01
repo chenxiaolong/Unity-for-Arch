@@ -1,4 +1,4 @@
-From 1b4f28c6e174328cfedad0a6fd7d1ab99ac406e9 Mon Sep 17 00:00:00 2001
+From bd67cdf0022363cc262ac7ce0f15c33952d80485 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
 Subject: [PATCH 7/8] Remove xpathselect dependency
@@ -15,7 +15,7 @@ Subject: [PATCH 7/8] Remove xpathselect dependency
  delete mode 100644 unity-shared/DebugDBusInterface.h
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 17e3d09..5f6b1da 100644
+index 94fde93..7d10a0d 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -233,7 +233,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
@@ -27,11 +27,11 @@ index 17e3d09..5f6b1da 100644
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index 3713ddb..03ca39a 100644
+index 3905f02..7c62dad 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
-@@ -159,7 +159,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
-   , sScreen(ScaleScreen::get(screen))
+@@ -160,7 +160,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
+   , WM(PluginAdapter::Initialize(screen))
    , menus_(std::make_shared<menu::Manager>(std::make_shared<indicator::DBusIndicators>(), std::make_shared<key::GnomeGrabber>()))
    , deco_manager_(std::make_shared<decoration::Manager>(menus_))
 -  , debugger_(this)
@@ -39,7 +39,7 @@ index 3713ddb..03ca39a 100644
    , super_keypressed_(false)
    , newFocusedWindow(nullptr)
 diff --git a/plugins/unityshell/src/unityshell.h b/plugins/unityshell/src/unityshell.h
-index 0dc9334..f974ce8 100644
+index 1357351..ead5d6a 100644
 --- a/plugins/unityshell/src/unityshell.h
 +++ b/plugins/unityshell/src/unityshell.h
 @@ -63,7 +63,6 @@
@@ -50,7 +50,7 @@ index 0dc9334..f974ce8 100644
  #include "ScreenIntrospection.h"
  #include "ScreenSaverDBusManager.h"
  #include "SwitcherController.h"
-@@ -349,7 +348,6 @@ private:
+@@ -350,7 +349,6 @@ private:
    lockscreen::DBusManager::Ptr screensaver_dbus_manager_;
    lockscreen::Controller::Ptr lockscreen_controller_;
    ui::EdgeBarrierController::Ptr edge_barriers_;
@@ -558,5 +558,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.2.2
+2.3.7
 
