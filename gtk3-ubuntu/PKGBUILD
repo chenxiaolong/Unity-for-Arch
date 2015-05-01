@@ -4,7 +4,7 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=gtk+3.0, repo=vivid
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
-# vercheck-gnome: name=gtk+, majorver=3.14
+# vercheck-gnome: name=gtk+, majorver=3.16
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
 _use_ppa=true
