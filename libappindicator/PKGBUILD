@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=utopic
+# vercheck-ubuntu: name=${pkgbase}, repo=vivid
 # vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libappindicator

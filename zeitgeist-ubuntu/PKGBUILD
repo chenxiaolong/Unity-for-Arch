@@ -4,7 +4,7 @@
 # Contributor: György Balló <ballogy@freestart.hu>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=zeitgeist-ubuntu

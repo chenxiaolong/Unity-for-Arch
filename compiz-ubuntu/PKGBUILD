@@ -3,7 +3,7 @@
 # Some comments are taken from the Ubuntu packaging files
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
 # vercheck-launchpad: name=${pkgname%-*}
 
 _use_ppa=false

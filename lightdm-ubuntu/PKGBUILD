@@ -5,7 +5,7 @@
 # optdepends.
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=lightdm-ubuntu

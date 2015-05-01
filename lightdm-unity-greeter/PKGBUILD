@@ -2,7 +2,7 @@
 # Taken from M0Rf30 morf3089 at gmail dot com
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname#*-}, repo=utopic
+# vercheck-ubuntu: name=${pkgname#*-}, repo=vivid
 # vercheck-launchpad: name=${pkgname#*-}
 
 pkgname=lightdm-unity-greeter

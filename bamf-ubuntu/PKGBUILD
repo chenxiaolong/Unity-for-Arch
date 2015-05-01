@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=bamf, repo=utopic
+# vercheck-ubuntu: name=bamf, repo=vivid
 # vercheck-launchpad: name=bamf
 
 pkgname=bamf-ubuntu
