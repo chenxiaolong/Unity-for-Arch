@@ -6,7 +6,7 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
 
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_rel=1ubuntu2
