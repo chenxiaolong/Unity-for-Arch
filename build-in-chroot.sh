@@ -205,7 +205,7 @@ trap "cleanup" SIGINT SIGTERM SIGKILL EXIT
 chroot_dir=$(mktemp -d --tmpdir="$(pwd)")
 chroot_dir=$(basename "${chroot_dir}")
 
-result_dir=/tmp/packages
+result_dir=/packages
 
 cache_dir=$(mktemp -d --tmpdir="$(pwd)")
 
@@ -347,8 +347,8 @@ EOF
 fi
 
 # Copy packaging
-mkdir "${chroot_dir}/tmp/${package}/"
-cp -v "${package_dir}/PKGBUILD" "${chroot_dir}/tmp/${package}/"
+mkdir "${chroot_dir}/${package}/"
+cp -v "${package_dir}/PKGBUILD" "${chroot_dir}/${package}/"
 install=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
                                   echo \${install}")
 sources=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
@@ -356,15 +356,15 @@ sources=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
 extrafiles=$(sudo -u nobody bash -c "source \"${temp_pkgbuild}\" && \
                                      echo \${extrafiles[@]}")
 if [[ -f "${package_dir}/${install}" ]]; then
-  cp -v "${package_dir}/${install}" "${chroot_dir}/tmp/${package}/"
+  cp -v "${package_dir}/${install}" "${chroot_dir}/${package}/"
 fi
 for i in ${sources}; do
   if [[ -f "${package_dir}/${i}" ]]; then
-    cp -v "${package_dir}/${i}" "${chroot_dir}/tmp/${package}/"
+    cp -v "${package_dir}/${i}" "${chroot_dir}/${package}/"
   fi
 done
 for i in ${extrafiles}; do
-  cp -v "${package_dir}/${i}" "${chroot_dir}/tmp/${package}/"
+  cp -v "${package_dir}/${i}" "${chroot_dir}/${package}/"
 done
 
 # Create new user
@@ -375,7 +375,7 @@ setarch "${arch}" systemd-nspawn "${nspawn_args[@]}" \
 # Fix permissions
 mkdir "${chroot_dir}${result_dir}/"
 setarch "${arch}" systemd-nspawn "${nspawn_args[@]}" \
-                  chown -R builder:builder "${result_dir}" "/tmp/${package}/"
+                  chown -R builder:builder "${result_dir}" "/${package}/"
 
 # Make sure the builder user can run "pacman" to install the build dependencies
 echo "builder ALL=(ALL) ALL,NOPASSWD: /usr/bin/pacman" \
@@ -417,7 +417,7 @@ fi
 if [[ "${arch}" == "x86_64" ]]; then
   yes | pacman -S gcc-multilib gcc-libs-multilib libtool-multilib
 fi
-su - builder -c 'export CCACHE_DIR="${conf_ccache_dir}" && cd "/tmp/${package}" && \\
+su - builder -c 'export CCACHE_DIR="${conf_ccache_dir}" && cd "/${package}" && \\
                  makepkg --syncdeps --nobuild --noextract --nocolor \\
                          --noconfirm --skipinteg ${progressbar}'
 EOF
@@ -429,7 +429,7 @@ EOF
 cat > "${chroot_dir}/stage2.sh" << EOF
 su - builder -c 'git config --global user.email dummy@dummy'
 su - builder -c 'git config --global user.name dummy'
-su - builder -c 'cd "/tmp/${package}" && \\
+su - builder -c 'cd "/${package}" && \\
                  find -maxdepth 1 -type d -empty -name src \
                       -exec touch {}/stupid-makepkg \\;'
 EOF
@@ -439,7 +439,7 @@ setarch "${arch}" systemd-nspawn "${nspawn_args[@]}" \
 # Build package
 # TODO: Enable signing
 cat > "${chroot_dir}/stage3.sh" << EOF
-su - builder -c 'export CCACHE_DIR="${conf_ccache_dir}" && cd "/tmp/${package}" && \\
+su - builder -c 'export CCACHE_DIR="${conf_ccache_dir}" && cd "/${package}" && \\
                  makepkg --clean --check --noconfirm --nocolor \\
                  ${progressbar}'
 EOF
