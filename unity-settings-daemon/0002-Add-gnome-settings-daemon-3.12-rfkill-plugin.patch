@@ -1,7 +1,7 @@
-From 1262ae7f5bfa5bd66de4b5eb93b033f056bd3714 Mon Sep 17 00:00:00 2001
+From 57caee742aba5c8d8a8832bd9b19598ef7f4eda4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 9 Jun 2014 15:10:08 -0400
-Subject: [PATCH 2/2] Add gnome-settings-daemon 3.12 rfkill plugin
+Subject: [PATCH 2/3] Add gnome-settings-daemon 3.12 rfkill plugin
 
 ---
  configure.ac                                       |  17 +
@@ -1582,5 +1582,5 @@ index 67f6ae0..f1eb354 100644
  [type: gettext/ini]plugins/screensaver-proxy/screensaver-proxy.gnome-settings-plugin.in
  plugins/smartcard/gsd-smartcard.c
 -- 
-2.3.3
+2.3.7
 
