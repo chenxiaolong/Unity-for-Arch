@@ -1,14 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+15.04.20150212
+_extra_ver=+15.04.20150402
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -20,7 +20,7 @@ groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('3e6be9bcb2697b13342844a4ab357dc51a88604db0de26474471b8f18e79d67eee8ff28cf98ed10b142ed57dd5c8d29e75d5a966281c71132d0accec8ee5a7fb'
+sha512sums=('37c3dcecff33ad5f28f8f135b41149d470ad45227068dad2599ea36f9d2c1dde12f3807ec2c7fcce7cdb43858d0bc3b58c9c2531609783ab6bbf01ff67b3497a'
             '923743f2c174621ed6c48aad77b604c40572e2d532c996375fc46acee54c505b2b89848fb57701e887826a04923f999a382b59c99c2dd55d2bf344f7ffd8cc09')
 
 prepare() {

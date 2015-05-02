@@ -1,4 +1,4 @@
-From e886b547a9d827f40b3d0fcd0d22ae8ba1c29330 Mon Sep 17 00:00:00 2001
+From f1ada2355936063018215d0e605b9164163a9889 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
 Subject: [PATCH 2/8] Revert r3134: Remove Systray Whitelist
@@ -12,7 +12,7 @@ Subject: [PATCH 2/8] Revert r3134: Remove Systray Whitelist
  5 files changed, 44 insertions(+), 81 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index 4c26055..1bbc62d 100644
+index 02d13a6..2e404e2 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
 @@ -130,6 +130,13 @@
@@ -241,5 +241,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-2.2.2
+2.3.7
 

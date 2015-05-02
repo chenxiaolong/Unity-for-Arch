@@ -3,7 +3,7 @@
 # Contributor: Jan de Groot <jgc@archlinux.org>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
 # vercheck-archlinux: name=${pkgname%-*}, repo=community, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.6
 

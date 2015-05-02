@@ -1,14 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=dee, repo=utopic
+# vercheck-ubuntu: name=dee, repo=vivid
 # vercheck-launchpad: name=dee
 
 pkgname=dee-ubuntu
 _actual_ver=1.2.7
 _extra_ver=+15.04.20150304
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Model to synchronize multiple instances over DBus"
 arch=(i686 x86_64)

@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 
 pkgname=dee-qt
 _actual_ver=3.3

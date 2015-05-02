@@ -1,4 +1,4 @@
-[![Build Status](http://jenkins.cxl.epac.to/job/ArchLinux_Build_Package/badge/icon)](https://jenkins.cxl.epac.to/job/ArchLinux_Build_Package/)
+[![Build Status](https://jenkins.noobdev.io/job/ArchLinux_Build_Package/badge/icon)](https://jenkins.noobdev.io/job/ArchLinux_Build_Package/)
 
 Unity-for-Arch
 ==============

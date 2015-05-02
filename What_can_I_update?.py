@@ -11,7 +11,7 @@ import textwrap
 try:
     import pyalpm
 except:
-    sys.stderr.write('Please install the pyalpm package!')
+    sys.stderr.write('Please install the pyalpm package!\n')
     sys.exit(1)
 
 from pycman import config

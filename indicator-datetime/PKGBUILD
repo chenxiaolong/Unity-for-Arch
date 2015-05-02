@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+15.04.20150301.1
+_extra_ver=+15.04.20150406
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A very, very simple clock"
@@ -22,10 +22,12 @@ groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Get-timezone-from-systemd-s-timedate1-interface.patch
-        0002-Not-a-phone.patch)
-sha512sums=('ceb70b36a0cf989e1a814ea500ae6456be500c4aff83afd6581b86f196c0785585b7b41bdb47110e172d0e8657d7f2baf7ca45452d600502d408fc3b92f596db'
-            'a1068fb5632d8b713d3487d2e36ce91824c989bb8143878e9ec4d27e8fdd5f515c255fb10c89dd78b3e7e25b4f3a44cb2f958d6bb12ac521172d76e22ff39dd5'
-            '6218303028d7033724461960fe1a2746f5e00206c2b01fa50d55c0b9545ab23b2822c2a40cfa6e82986928bf7f15916aa601359b67189b4b4e7fc3c38f85ae41')
+        0002-Not-a-phone.patch
+        0003-Add-support-for-EDS-3.16-API.patch)
+sha512sums=('62bb299876407be983f14590b7e8732f8c46f9633290368c36d90ce0ab75592dc5e56bd58c50ae2d75b122a18f63be185de5f127feaa9b3f5f29d7e46ae3b2c0'
+            '0a53962469e967142edf43e52a815d9062ca76233299c68c2b345a983dbdf4232d68d9924551a7cea222cdc712eb5f8347960775721bfcba2d99381ba22971cd'
+            '5a13c4da2b8475a684a03cd89a78acf45430e574ad20f2c9f45fca800e456c8077cf870d9d1d53716585a9cb290826f70874101d5c1dbc6912990b0216319a20'
+            '50573f6d3e3fb06999bea186c09b8dfc3a4ecafc245398821918462c92c791ac01cbd04818e22eac43787fb1981e2d15315973b0a40782b9e178cc51aa039ee3')
 
 prepare() {
   cd "${pkgname}-${_actual_ver}${_extra_ver}"
@@ -33,6 +35,7 @@ prepare() {
   # Port to systemd's timedated (because /etc/timezone is no longer used)
   patch -p1 -i ../0001-Get-timezone-from-systemd-s-timedate1-interface.patch
   patch -p1 -i ../0002-Not-a-phone.patch
+  patch -p1 -i ../0003-Add-support-for-EDS-3.16-API.patch
 }
 
 build() {

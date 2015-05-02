@@ -1,4 +1,4 @@
-From d6a59ff322b72ba465256745276e17491f2738e9 Mon Sep 17 00:00:00 2001
+From 7206e0184b93364966b7f20e9dbb763817908432 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 28 Oct 2014 23:19:51 -0400
 Subject: [PATCH 2/3] Remove tests
@@ -38,5 +38,5 @@ index b4ffbe3..d921b9a 100644
 -add_subdirectory(tests)
 -
 -- 
-2.3.0
+2.3.5
 

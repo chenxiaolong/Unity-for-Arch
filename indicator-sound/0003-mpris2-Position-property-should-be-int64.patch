@@ -1,4 +1,4 @@
-From 0ca8460ea1fdf8e7c84bbb0c7f26628c5ec12df4 Mon Sep 17 00:00:00 2001
+From 776957fae18084f2fbd794da7cc777cc927920ea Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 28 Oct 2014 23:30:51 -0400
 Subject: [PATCH 3/3] mpris2 Position property should be int64
@@ -8,7 +8,7 @@ Subject: [PATCH 3/3] mpris2 Position property should be int64
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/mpris2-interfaces.vala b/src/mpris2-interfaces.vala
-index cb68e84..aa95c83 100644
+index a472d5c..46cce71 100644
 --- a/src/mpris2-interfaces.vala
 +++ b/src/mpris2-interfaces.vala
 @@ -36,7 +36,7 @@ public interface MprisRoot : Object {
@@ -17,9 +17,9 @@ index cb68e84..aa95c83 100644
    public abstract HashTable<string, Variant?> Metadata{owned get; set;}
 -  public abstract int32 Position{owned get; set;}
 +  public abstract int64 Position{owned get; set;}
-   public abstract string PlaybackStatus{owned get; set;}  
+   public abstract string? PlaybackStatus{owned get; set;}  
    // methods
    public abstract async void PlayPause() throws IOError;
 -- 
-2.3.0
+2.3.5
 

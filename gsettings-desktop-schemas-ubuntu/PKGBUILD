@@ -4,37 +4,53 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=utopic
+# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.14
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_rel=1ubuntu1
-pkgver=3.14.1
-pkgrel=2
+_ubuntu_rel=1ubuntu2
+_ubuntu_ver=3.14.1
+pkgver=3.16.1
+pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
 url="http://live.gnome.org/"
 license=(GPL)
 depends=(glib2)
-makedepends=(intltool gobject-introspection python2)
+makedepends=(intltool gobject-introspection)
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
 install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('0cca1d8a94f760dd49395c090d72a204080a684ba7c1d55ee831ee85e4beeb6ea7891eafef79a6d2905557e1015383524c82b93751bdf8c67ca446b4d2a4fc0c'
-            'fe99ec3e0497cf27d21a9a00e33ab7e27c1d74863b65a73bd3a88264b54be0f440226279a37dd83dfbb11d9d88f82009406dbedf89f63a9d5fb95b66ee791453')
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
+        git_revert_background_key_removal.patch
+        git_revert_menu_icon_key_removal.patch
+        git_revert_notifications_key_removal.patch
+        ubuntu_lock-on-suspend.patch)
+sha512sums=('1e356dd037dda5fe03f06884e4f1e2fc814717c3836bb696522e7899bc6714dd1c0474546cbdb75f43f71269c7fcec40e560efb9a2024e5067410a8d14b9f2dd'
+            '3b26ece2265da666979a2a912ececd810c12c8ec2b03fdfc676db65748b4d86c999a3b9617e7244f7b4a6bbd35c3ab0b41debca32d41b9befe701595747d7beb'
+            '423c81fefb2eb1580d703499baee449e0dfe88b0d8bb3cbc5815c2668e859f0334bb352d0f58ba312c7fc3257fd8a78f0935c834429b3c7d3986ee5996b5ae5a'
+            'cae6c01833043d9d7d889561a6afb7bae5f9186603552e1277b6a8f792148bd585ac19aac41253223cdeeba4d031f51984ac126fae9c02ceca396cb69e4db75f'
+            '2af269c096d9f15a7e91440a97ee69d08e778b498fd835194d5abca02630bc7a5dcb2c8a2ad3ae21e95b40cbcf0cd6773f34aeb9a2655d25f4b59d231f478b1d'
+            '301830b3f9c9f2aac9e44ea2e2305cfc9d4864f3bd6ac4c5824ce12de45c72329ddca303adfb7948063acbb7ff892b0970767b1b552aff00834c517f25af2c8c')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
 
   # Apply Ubuntu's patches
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i} ..."
-    patch -p1 -i "../debian/patches/${i}"
-  done
+  sed -i '/git_revert_notifications_key_removal.patch/d' ../debian/patches/series
+
+#  for i in $(grep -v '#' ../debian/patches/series); do
+#    msg "Applying ${i} ..."
+#    patch -p1 -i "../debian/patches/${i}"
+#  done
+
+  patch -p1 -i ../git_revert_background_key_removal.patch
+  patch -p1 -i ../git_revert_menu_icon_key_removal.patch
+  patch -p1 -i ../git_revert_notifications_key_removal.patch
+  patch -p1 -i ../ubuntu_lock-on-suspend.patch
 }
 
 build() {

@@ -1,4 +1,4 @@
-From 1069f6f9eb4830d403faf5591eb5357fb9e80038 Mon Sep 17 00:00:00 2001
+From 5004432e6a113d50a8ee42c6ff46db7b287283a5 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:11:47 -0400
 Subject: [PATCH 4/8] Fix launchers
@@ -8,7 +8,7 @@ Subject: [PATCH 4/8] Fix launchers
  1 file changed, 3 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index 1bbc62d..b412cd8 100644
+index 2e404e2..a09e97b 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
 @@ -95,14 +95,11 @@
@@ -16,7 +16,7 @@ index 1bbc62d..b412cd8 100644
      <key type="as" name="favorites">
        <default>[
 -        'application://ubiquity.desktop',
-         'application://nautilus.desktop',
+         'application://org.gnome.Nautilus.desktop',
          'application://firefox.desktop',
          'application://libreoffice-writer.desktop',
          'application://libreoffice-calc.desktop',
@@ -27,5 +27,5 @@ index 1bbc62d..b412cd8 100644
          'unity://running-apps',
          'unity://expo-icon',
 -- 
-2.2.2
+2.3.7
 

@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=utopic
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
-_actual_ver=7.3.1
-_extra_ver=+15.04.20150219.2
+_actual_ver=7.3.2
+_extra_ver=+15.04.20150420
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -43,16 +43,16 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('420edb04e5c8f50f08a8fb35b9a9c1a6d3404c3fddb7dee53a9e5ab1d07edc25b397e882f32137347cbc4c4fdbc762111a1ba9ef4d87195c777c81e5e8791e18'
-            'fb1a435f1a44bcecc27cd0f05042d44b7f6be2ac2dfd3ae62ac122f3e5908f6fedb36c6549a2f222c4aa9a3fdb82a33af8002cb88ed1b3f19e7ace319ebc97c1'
-            '73a097a9b10ae443cb02425c8cd1d15902db1e99e9f1f2ad601467317a1e09eec5a47d28d8472e825da6a6ededcf02fbc26da96864f6bd0b11df9fd69802da12'
-            '8ebc9fa3ac3fb03ac87ab77e3d42d8e4e465c24e0a3adec68f78a10c1aaacd221f641adb40f8d909778388a2f0a0cd18decde79e1f103c5f384d8911c98929c0'
-            '799ea8bca5ce8493eaf390232ec2ce6d459e886098431eff5ff072a808f5995d7401e2062bf79365dfdb141cfc044e6ae7204430f530187adfc96b13978b3d91'
-            '796ac81bf0ae31c18a90ae0e30d1a927d8cc6aafc98e21bc638999e2286c34e7c65e5691d29feecd322e9cec162c1afbf5e12d83c428a3ddfd8b12bb7ea4669a'
-            'd551c5df211f6871559266f9e031f5818a1b0435ef8b21d0b8bb4804ff3a43363dc1aa2773ff9d75c6988cd07b7f561c92fd2e9e901d62d14f06aea6c10a7ee8'
-            'e2c93d43f71f45aecaa85b87d6ec3a3c2380be753f85fd477b0141140dfa1a47dab150f76b90a39874ac75e21aa62113eabd8672362c1a3bdb270054f8b072db'
-            '7d9e21acf6cda3bd51507ecbabe5337086e23be747a5c9c5e4253b7c1ad7cb5b6280af9d32672c1e6128108093617e772bb7227426361450cba53d9daa6759ef'
-            'f961b071cd0106ad96927a563356db45c782921acab4c452b546f3afbb795fa1184b1dd20e0f6dac5f1e2d5b24ff5a6f70d646757dfba001e3d5293f7806f033'
+sha512sums=('c11ec2402517cf77397b6873424fee65b1eaa8677a37482787630e0e2e4bb163c284c4b9c44278c9deba60c284433748d1c28eeecd550c9a0e2ac5859980eed2'
+            '90660c8d76c56969cbe7e1bb23a881ed4cde0a56e10817917f4d79e62314e0bd39c2aeaa1ea15f85649019d6fb9bd67d7be1acb5faaae42ce22ebdae1e24ec84'
+            'ee5fd1b890e47b9cce962bf846d04adf81c62630ced4c5cfe21abe212ae8f134de1f455a25a5d1635a3dcc0fc313842da35997015dbd4e4ef88de5aa89e2ce7d'
+            'b5e75fb4580195cd997af95aad65a21404477a3233546458639f7ea71cd5c4295d9886adc444179866fc5dac9cf1a98e2c56fe7f48aafbab00c6c466a3c99a23'
+            '3b9c0181426356c635be8771a4308e5783165201a446271109990c2f2db2eb586ebb26efc32606360658b552128b28c2f8469a26da58a075cc9b50c36cd5124e'
+            '12f85ee5a223fb329f578efd31cb40737d6522362cd32a0020990826bf63e3982745353a9b62d9cc1a5cc6229efc0d3518c30d72b5c6d020970f8ee0df3a6588'
+            '0d07a8f06f77173776d4db140bac9c6782ef7007b09437164780e8da41d90e9249d98c99d4ffc41a026b7c5b452f943b3121905fc4c990ae6ce8c1e35b100065'
+            'ed2d7c211fa8fda79798e6497eed1763e2a39427d1352df9c93fe1e5eaf30c1db0aaa90012bc52fd5f76823bc0e382cf7d626f8234a632c32ba7ac5ed53ca5a7'
+            '29683377a09509aa3c79cf6072ec44c5c1eeb0ea4ebf571bce5dfa3b7eaa34dea1a7d7a22181b7ac6803b4d6cf939f5979aa283bc4ec4066deb23dc66561f351'
+            '83a50f204967c3ea1c47de5b247a9231903d88188fa41c6f2c305500b54daf8397ad1dc7d036e2a9a25f5fc5c4316a79cfd503b4e3b5361b08e06fd9dfaa0974'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
@@ -100,18 +100,17 @@ build() {
     -DUSE_GSETTINGS=TRUE \
     ..
 
-  make -j1
+  make
 
   # Make sure that the GSettings schema files were created
-  pushd generated/glib-2.0/schemas/
+  gen=generated/glib-2.0/schemas
   if \
-    [ ! -f org.compiz.networkarearegion.gschema.xml ] || \
-    [ ! -f org.compiz.unitydialog.gschema.xml ] || \
-    [ ! -f org.compiz.unitymtgrabhandles.gschema.xml ] ||
-    [ ! -f org.compiz.unityshell.gschema.xml ]; then
+    [ ! -f ${gen}/org.compiz.networkarearegion.gschema.xml ] || \
+    [ ! -f ${gen}/org.compiz.unitydialog.gschema.xml ] || \
+    [ ! -f ${gen}/org.compiz.unitymtgrabhandles.gschema.xml ] ||
+    [ ! -f ${gen}/org.compiz.unityshell.gschema.xml ]; then
     make compiz_gsettings_compile_local
   fi
-  popd
 }
 
 package() {
