@@ -8,12 +8,15 @@
 # vercheck-gnome: name=${pkgbase%-*}, majorver=3.16
 # vercheck-ppa: name=${pkgbase%-*}, url=ppa:gnome3-team/gnome3-staging
 
+_use_ppa=true
+
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-_ubuntu_rel=0ubuntu4
-_ubuntu_ver=3.14.2
+#_ubuntu_rel=0ubuntu4
+#_ubuntu_ver=3.14.2
+_ppa_rel=0ubuntu1~vivid1
 pkgver=3.16.1
-pkgrel=1
+pkgrel=2
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
 license=(GPL)
@@ -23,12 +26,15 @@ makedepends=(intltool gobject-introspection python python2)
 url="http://www.gnome.org"
 options=(!emptydirs)
 install=nautilus.install
-source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
-        03_translations_list_update.patch)
+source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz")
+if [[ "${_use_ppa}" == "true" ]]; then
+    source+=("https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+files/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+else
+    source+=("https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+fi
+
 sha512sums=('ae7356015aefd228736bff61d30a784f2dc9cd7982292716ccd47164614c836085bb11f9cec97057a0c77568a37448294687aff99175b6af0eee3c1cb26b2084'
-            'b48dad4ad48983ff4e39bb54db7d46e745d70579af79fd6b76ef84b7e9def0c229c7ad7d58a2f61f8bf0bcde73719d43ef70163551250758b817d11c33d5ccec'
-            '6335e92c95b33f2703c4ae43ecc15f41ddd90e83e65108aab82449efafb9c907426eeaaeb1907bea6c1723109c0067958a02a6c50925c67750c1639b20dc9632')
+            '89860e2ba7177034c70b2d83470736a66fc76518d288fdedb4cb86700c98d5ab43af24a09aeeddc627363a79c6d077ae5a438fb883762d2c228e4a3471c2e030')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
@@ -40,37 +46,12 @@ prepare() {
          -e '/08_clean_session_capplet.patch/d' \
          ../debian/patches/series
 
-  # Not working
-  sed -i '/revert_remove_unused_GtkActions.patch/d' ../debian/patches/series
-  sed -i '/03_translations_list_update.patch/d' ../debian/patches/series
-  sed -i '/11_copy_skipping_pager.patch/d' ../debian/patches/series
-  sed -i '/12_unity_launcher_support.patch/d' ../debian/patches/series
-  sed -i '/14_bring_del_instead_ctrl_del.patch/d' ../debian/patches/series
-  sed -i '/zg_activity_logging.patch/d' ../debian/patches/series
-  sed -i '/19_unity_open_location_xid.patch/d' ../debian/patches/series
-  sed -i '/ubuntu_revert_no_wallpaper.patch/d' ../debian/patches/series
-  sed -i '/interactive_search.patch/d' ../debian/patches/series
-  sed -i '/ubuntu_sync_background_to_accountsservice.patch/d' ../debian/patches/series
-  sed -i '/0001-Respect-gtk-dialogs-use-header-for-all-dialogs.patch/d' ../debian/patches/series
-  sed -i '/0002-Only-use-a-header-bar-in-GNOME-shell.patch/d' ../debian/patches/series
-  sed -i '/restore-traditional-menu-bar.patch/d' ../debian/patches/series
-  sed -i '/16_unity_new_documents.patch/d' ../debian/patches/series
-  sed -i '/ubuntu_backspace_behaviour.patch/d' ../debian/patches/series
-  sed -i '/git_name_column.patch/d' ../debian/patches/series
-  sed -i '/0001-application-use-correct-order-to-watch-for-GSettings.patch/d' ../debian/patches/series
-  sed -i '/ubuntu_tracker_only_on_GNOME.patch/d' ../debian/patches/series
-  sed -i '/ubuntu_infobars_color.patch/d' ../debian/patches/series
-  sed -i '/dont_wrap_labels_after_dots.patch/d' ../debian/patches/series
-  sed -i '/18_unity_icon_color.patch/d' ../debian/patches/series
-
-  patch -p1 -i ../03_translations_list_update.patch
-
   for i in $(grep -v '#' ../debian/patches/series); do
     msg "Applying ${i} ..."
     patch -p1 -i "../debian/patches/${i}"
   done
 
-  #sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
+  sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
 }
 
 build() {
