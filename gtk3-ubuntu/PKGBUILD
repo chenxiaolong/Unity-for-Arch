@@ -13,7 +13,7 @@ pkgname=gtk3-ubuntu
 _ppa_rel=0ubuntu1~vivid1
 #_ubuntu_rel=0ubuntu2
 #_ubuntu_ver=3.14.8
-pkgver=3.16.2
+pkgver=3.16.3
 pkgrel=1
 pkgdesc="GObject-based multi-platform toolkit (v3)"
 arch=(i686 x86_64)
@@ -27,7 +27,8 @@ makedepends=(gobject-introspection)
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz")
+source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+        settings.ini)
 
 if [[ "${_use_ppa}" != "true" ]]; then
   source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
@@ -35,8 +36,9 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 fi
 
-sha512sums=('8cf865335bce3415173a026ffe50b81ad57749d9665319b498482872564f8d86f1ce1552bcc8eafdbc1bbc94dda4a900dfe4e73609c50428a04f2d65fc3c3eec'
-            '8aee67e848e467d2a2de413b24bcec836e62d62c8649b2209d1ed8818ff18b441cdfc910b238a55d970017f92667764da63d735c83d1acdd4bced04c4c08adef')
+sha512sums=('5ab6ff3f4e4c47dd8532027bfade1420524d48b53f7c7bcef4ee581095ecc53f33ac072076837ed34306d5d84103958b27a3099b10e5cf95c38fb34342fc8aa8'
+            'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
+            '76e849a1e3411423ae084b85dca883a60763dfca3be37db94074bb1a1ae06b8a29e1a170bc6ff448bb56b67222249620ec9ba8ab4ead20ee289b8bfc1db1fc93')
 
 prepare() {
     cd "gtk+-${pkgver}"
@@ -87,5 +89,6 @@ build() {
 package() {
     cd "gtk+-${pkgver}"
     make DESTDIR="${pkgdir}" install
-    rm -f "$pkgdir/usr/bin/gtk-update-icon-cache"
+    install -Dm644 ../settings.ini "${pkgdir}"/usr/share/gtk-3.0/settings.ini
+    rm -f "${pkgdir}"/usr/bin/gtk-update-icon-cache
 }
