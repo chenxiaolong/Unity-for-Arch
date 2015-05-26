@@ -3,13 +3,13 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=gtk+2.0, repo=vivid
+# vercheck-ubuntu: name=gtk+2.0, repo=wily
 # vercheck-archlinux: name=gtk2, repo=extra, arch=x86_64
 # vercheck-gnome: name=gtk+, majorver=2.24
 
 pkgname=gtk2-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=2.24.27
+pkgver=2.24.28
 pkgrel=1
 pkgdesc="GTK+ is a multi-platform toolkit (v2)"
 arch=(i686 x86_64)
@@ -17,19 +17,19 @@ url="http://www.gtk.org/"
 license=(LGPL)
 depends=(atk pango libxcursor libxinerama libxrandr libxi libxcomposite
          libxdamage shared-mime-info cairo libcups gtk-update-icon-cache
-         python2)
-makedepends=(pkg-config gobject-introspection gtk-doc)
+         librsvg)
+makedepends=(gobject-introspection python2)
+optdepends=('gnome-themes-standard: Default widget theme'
+            'adwaita-icon-theme: Default icon theme')
 provides=("gtk2=${pkgver}")
 conflicts=(gtk2)
-replaces=(gtk2-docs)
-backup=(etc/gtk-2.0/gtkrc)
 install=gtk2.install
 source=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         gtkrc
         xid-collision-debug.patch)
-sha512sums=('ffe981a41137302713a411039238604e92d41146e25ea0643857ec40388ddfe69cbb15bdc1aa8300b87ddbb4d6fbcf0054cdb7ba39634fbe4bfd1802f5bc8ac6'
-            '3fb0ff8e69d32bcabc5696d36b1fd3ac15675454f97d83c93499278ad399c608e8c7d7a3ca9bd694a834c3f26c5e9670b0fbb1933571879d302616bd373e1e87'
+sha512sums=('86d563645ca70c1e14afd4b38d925f496e596cbf6181f2e95310f58c2f4152aaecc559e3c513e6d405fcf48d8d413d59a9d72782216529c1280bd8e1947d7760'
+            'a22f331f85d55f2fbf02feca4e736836023b7b938d723560e8a2ccd68f10ebe406fa8424ef9452223057e762d84020a6e48d4ef5e86a64115e1885614391d1a6'
             'fb18f1937b117f97da1650fda2561e231cb5da108a9c04f3b27c19205843ea16402b52d9693eca63a8464bdfb1e6a0aedf81958ee3de75ce12aca4cce078bf23'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
 
