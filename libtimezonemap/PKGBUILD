@@ -4,17 +4,17 @@
 # vercheck-ubuntu: name=${pkgname}, native, repo=vivid
 
 pkgname=libtimezonemap
-pkgver=0.4.3
-pkgrel=2
+pkgver=0.4.4
+pkgrel=1
 pkgdesc="GTK+3 timezone map widget"
 arch=(i686 x86_64)
 url="https://launchpad.net/libtimezonemap"
 license=(GPL)
 groups=(unity)
-depends=(cairo gtk3 json-glib)
+depends=(cairo gtk3 json-glib libsoup)
 makedepends=(gobject-introspection intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.tar.gz")
-sha512sums=('0e93039987ee160eb35d9f5e0fe5e49d5cb5d19d3c2a518f3e7c1aa861abc288c364b89f0c5b6d713b5f610c23453c4e962519d2a0f70d6f6731b3618744ef13')
+sha512sums=('d15ec97d7b4522fbc3acf29d6873c124e321150a14ab00321904445d918cd69b9210d25e5a9b07876a6da31d0a466cf45237e7acacf9e4b37a3427ccfbbe0014')
 
 build() {
   cd "${pkgname}-${pkgver}"
