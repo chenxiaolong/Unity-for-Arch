@@ -4,15 +4,14 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgname%-*}, repo=wily
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.16
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_rel=1ubuntu2
-_ubuntu_ver=3.14.1
+_ubuntu_rel=1ubuntu1
 pkgver=3.16.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
 url="http://live.gnome.org/"
@@ -29,7 +28,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         git_revert_notifications_key_removal.patch
         ubuntu_lock-on-suspend.patch)
 sha512sums=('1e356dd037dda5fe03f06884e4f1e2fc814717c3836bb696522e7899bc6714dd1c0474546cbdb75f43f71269c7fcec40e560efb9a2024e5067410a8d14b9f2dd'
-            '3b26ece2265da666979a2a912ececd810c12c8ec2b03fdfc676db65748b4d86c999a3b9617e7244f7b4a6bbd35c3ab0b41debca32d41b9befe701595747d7beb'
+            '29f3a283505a7952f6471e6a789781fe07c95d0dd791e97d2edb45a7be385ec26890aae53987439b31614b7977d97d1e4a63506b029a23e2a23996a0e76ee782'
             '423c81fefb2eb1580d703499baee449e0dfe88b0d8bb3cbc5815c2668e859f0334bb352d0f58ba312c7fc3257fd8a78f0935c834429b3c7d3986ee5996b5ae5a'
             'cae6c01833043d9d7d889561a6afb7bae5f9186603552e1277b6a8f792148bd585ac19aac41253223cdeeba4d031f51984ac126fae9c02ceca396cb69e4db75f'
             '2af269c096d9f15a7e91440a97ee69d08e778b498fd835194d5abca02630bc7a5dcb2c8a2ad3ae21e95b40cbcf0cd6773f34aeb9a2655d25f4b59d231f478b1d'
