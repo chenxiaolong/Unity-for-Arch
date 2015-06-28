@@ -1,13 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=vivid
-# vercheck-launchpad: name=${pkgbase}
+# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-launchpad: name=${pkgname}
 
-pkgname=(overlay-scrollbar liboverlay-scrollbar liboverlay-scrollbar3)
-pkgbase=overlay-scrollbar
-_actual_ver=0.2.16
-_extra_ver=+r359+15.04.20150319
+pkgname=overlay-scrollbar
+_actual_ver=0.2.17.1
+_extra_ver=+15.10.20150604.1
 pkgver=${_actual_ver}${_extra_ver//\+/.}
 pkgrel=1
 epoch=2
@@ -16,65 +15,29 @@ arch=(i686 x86_64)
 url="https://launchpad.net/ayatana-scrollbar"
 license=(LGPL)
 groups=(unity)
-makedepends=(gtk2-ubuntu gtk3)
+depends=(dconf gtk2-ubuntu)
+conflicts=(liboverlay-scrollbar liboverlay-scrollbar3)
+replaces=(liboverlay-scrollbar liboverlay-scrollbar3)
 options=(!emptydirs)
-extrafiles=(overlay-scrollbar.install)
+install=overlay-scrollbar.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('18b3527af63db3e1bac848db36931c7bc6d6f5b3d0b89df0eb84e3f06be751157d819d606d0466596036ae282079dc767ed981a9e5e532db277d9ed63e8b9d2f')
+sha512sums=('9fcee20e8cb8164e92d56a33b5f88e55d8290ac296e91771310ead72e07653be60470f7a1b0630d8c1f6d4f78732942b3a5b710d9de2ce3aaa1dbbd85a9704a6')
 
 build() {
   cd "${pkgbase}-${_actual_ver}${_extra_ver}"
 
   autoreconf -vfi
-
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=2 --disable-static
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
   make
-  popd
-
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --disable-static
-  make
-  popd
 }
 
-package_overlay-scrollbar() {
-  pkgdesc="Scrollbar overlayed widget"
-  depends=(dconf liboverlay-scrollbar liboverlay-scrollbar3)
-  install=overlay-scrollbar.install
-
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
+package() {
+  cd "${pkgbase}-${_actual_ver}${_extra_ver}"
   make DESTDIR="${pkgdir}/" install
-
-  rm -rvf "${pkgdir}/usr/lib/"
 
   # Put X11 startup script in correct directory
   install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   mv "${pkgdir}/etc/X11/Xsession.d/81overlay-scrollbar" \
     "${pkgdir}/etc/X11/xinit/xinitrc.d/"
   chmod 755 "${pkgdir}/etc/X11/xinit/xinitrc.d/81overlay-scrollbar"
-}
-
-package_liboverlay-scrollbar3() {
-  pkgdesc="Scrollbar overlayed widget - GTK 3 library"
-  depends=(cairo gtk3)
-
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk3/"
-  make DESTDIR="${pkgdir}/" install
-
-  rm -rvf "${pkgdir}/etc/"
-  rm -rvf "${pkgdir}/usr/share/glib-2.0/"
-}
-
-package_liboverlay-scrollbar() {
-  pkgdesc="Scrollbar overlayed widget - GTK 2 library"
-  depends=(gtk2-ubuntu)
-
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}/build-gtk2/"
-  make DESTDIR="${pkgdir}/" install
-
-  rm -rvf "${pkgdir}/etc/"
-  rm -rvf "${pkgdir}/usr/share/glib-2.0/"
 }
