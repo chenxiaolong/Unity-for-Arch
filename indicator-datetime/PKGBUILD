@@ -8,7 +8,7 @@
 
 pkgname=indicator-datetime
 _actual_ver=13.10.0
-_extra_ver=+15.10.20150515
+_extra_ver=+15.10.20150624
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A very, very simple clock"
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actu
         0001-Get-timezone-from-systemd-s-timedate1-interface.patch
         0002-Not-a-phone.patch
         0003-Add-support-for-EDS-3.16-API.patch)
-sha512sums=('cd0d14633de4bb078edda1613571f2e57de348f73f44ce470f42fc74a14fafee59a378507e7fdab93e347b24e0b47f53b2fba9ae7470a8211ce5e218911e1749'
+sha512sums=('635db18d7e41c05d07893a794f1248d5606edea8696f41a8d72af667f4724db6aceef23a027012b8b0ce716362704b45610dd05252ba005847d715cc8dd86eac'
             '0a53962469e967142edf43e52a815d9062ca76233299c68c2b345a983dbdf4232d68d9924551a7cea222cdc712eb5f8347960775721bfcba2d99381ba22971cd'
             '5a13c4da2b8475a684a03cd89a78acf45430e574ad20f2c9f45fca800e456c8077cf870d9d1d53716585a9cb290826f70874101d5c1dbc6912990b0216319a20'
             '50573f6d3e3fb06999bea186c09b8dfc3a4ecafc245398821918462c92c791ac01cbd04818e22eac43787fb1981e2d15315973b0a40782b9e178cc51aa039ee3')
