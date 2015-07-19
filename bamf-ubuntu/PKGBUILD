@@ -7,9 +7,9 @@
 # vercheck-launchpad: name=bamf
 
 pkgname=bamf-ubuntu
-_actual_ver=0.5.1
-_extra_ver=+15.04.20150202
-pkgver=${_actual_ver}${_extra_ver/+/.}
+_actual_ver=0.5.2
+_extra_ver=~bzr0+15.10.20150627.1
+pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
 pkgrel=1
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=(i686 x86_64)
@@ -26,7 +26,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver
         bamfwatcher.c
         update-bamf-index.pl
         bamfwatcher.service)
-sha512sums=('d4156ee69d5f2c6ac26c2c2af76298a3745a69794e66e7b15fd676a2981846c3431dd06327c6d7b14b378c6189863b49c936ced238e6f20157281fd47e6a3306'
+sha512sums=('47eda4364b6cf300512dec1301ed6d5b8f5d79a89151ddea2cf6e0238b4b66ca171184e3aec8005dead128d457317693ced567275e46c42bc58a980ec622005e'
             '8682d60845782449943ebac95dc5648ec5933f244dad8bbb9e77ac1c692fc03ef0c12b6cd15c2b5f5af30358d2b167362a288adb4b3ee7ea047065eec64f28bf'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
             'b2e899e2916efc6e04af34c3bffc14f6254caaf42d2e3cee88277dde4c191dd93cab14246091beb5d4cfb8a242559b8361a7c4c1dc70c31034ade52689322b83')
