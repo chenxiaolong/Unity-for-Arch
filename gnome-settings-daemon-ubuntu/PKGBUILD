@@ -10,7 +10,7 @@
 
 pkgname=gnome-settings-daemon-ubuntu
 _use_ppa=true
-_ppa_rel=0ubuntu1~vivid1
+_ppa_rel=3ubuntu1~wily1
 #_ppa_ver=3.16.0
 #_ubuntu_rel=2ubuntu2
 #_ubuntu_ver=3.14.2
@@ -39,7 +39,7 @@ else
 fi
 
 sha512sums=('04f62429b6f3edf6d7c11b0fbe8b5b74a3be3d6309ec7a9019dc77d2f8557ad26242a210bcfb36b393b99d93c33590c595c6d7dca9c1272f04bdf5cfc7144076'
-            'b067c85045e8d7793dbba89457e8f417c74b279376e7b2f262c856d406018ee7f23239f380b6ccadd2fa06ab6bd157b0c6f244ab46a9ec6ecd19ff56a716cef5')
+            'a722ac45c506108f2bcfcea3f2e32585f593c8bb7443baecdf0f7584d74b3a44bedc481a34ec125bdcde0363551b08345593123105e1ebec528f7320110c6f76')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
