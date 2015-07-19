@@ -15,9 +15,9 @@ pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
 #_ubuntu_rel=0ubuntu4
 #_ubuntu_ver=3.14.2
 _ppa_rel=0ubuntu1~vivid1
-_ppa_ver=3.16.1
+#_ppa_ver=3.16.1
 pkgver=3.16.2
-pkgrel=1
+pkgrel=2
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
 license=(GPL)
@@ -35,7 +35,7 @@ else
 fi
 
 sha512sums=('06b4c338fe2295122b35053d754d8bb797cfeedf736db3a52dd290d7742d79fbbf50c23a3d59e62ef937f3ebf6b67f26f12a652b75d42a8b44462a3e1eef1be1'
-            '89860e2ba7177034c70b2d83470736a66fc76518d288fdedb4cb86700c98d5ab43af24a09aeeddc627363a79c6d077ae5a438fb883762d2c228e4a3471c2e030')
+            '6b6a8f6bb5e834fb6cfa2b3aa4154c8fb7a227b626da7130bfb3c0a1f2648328190ca0ebfc0d98f0c7069545bef672a7a2e2d452178750d96781d85cd4f24bab')
 
 prepare() {
   cd "${pkgname%-*}-${pkgver}"
