@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=overlay-scrollbar
 _actual_ver=0.2.17.1
-_extra_ver=+15.10.20150604.1
+_extra_ver=+16.04.20151117
 pkgver=${_actual_ver}${_extra_ver//\+/.}
 pkgrel=1
 epoch=2
@@ -21,23 +21,23 @@ replaces=(liboverlay-scrollbar liboverlay-scrollbar3)
 options=(!emptydirs)
 install=overlay-scrollbar.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('9fcee20e8cb8164e92d56a33b5f88e55d8290ac296e91771310ead72e07653be60470f7a1b0630d8c1f6d4f78732942b3a5b710d9de2ce3aaa1dbbd85a9704a6')
+sha512sums=('0e718acb39307c6aa92747eb7b353a8468c358c5a25525ae2df830a4b3cb1c1bf7a3ee03410330db12c253be2d09211603cfc7274e67fa19917463b57eda899b')
 
 build() {
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}"
+    cd "${pkgbase}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
-  make
+    autoreconf -vfi
+    ./configure --prefix=/usr --sysconfdir=/etc --disable-static
+    make
 }
 
 package() {
-  cd "${pkgbase}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgbase}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 
-  # Put X11 startup script in correct directory
-  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  mv "${pkgdir}/etc/X11/Xsession.d/81overlay-scrollbar" \
-    "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  chmod 755 "${pkgdir}/etc/X11/xinit/xinitrc.d/81overlay-scrollbar"
+    # Put X11 startup script in correct directory
+    install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    mv "${pkgdir}/etc/X11/Xsession.d/81overlay-scrollbar" \
+        "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    chmod 755 "${pkgdir}/etc/X11/xinit/xinitrc.d/81overlay-scrollbar"
 }
