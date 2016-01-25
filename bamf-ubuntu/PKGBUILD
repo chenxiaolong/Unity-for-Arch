@@ -68,4 +68,7 @@ package() {
     # Install systemd service
     install -dm755 "${pkgdir}/usr/lib/systemd/system/"
     install -m644 "${srcdir}/bamfwatcher.service" "${pkgdir}/usr/lib/systemd/system/"
+
+    # Remove upstart files
+    rm -r "${pkgdir}/usr/share/upstart/"
 }
