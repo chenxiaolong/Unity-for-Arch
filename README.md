@@ -58,6 +58,7 @@ To compile from source, just build all of the packages in the following order:
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
 | libgee06                         | Legacy GObject collection library          |
+| unity-api                        | API for Unity shell integration            |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
 | indicator-datetime               | Indicator to show the date and time        |
