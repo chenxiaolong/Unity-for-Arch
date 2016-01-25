@@ -2,45 +2,53 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=gtk+3.0, repo=wily
+# vercheck-ubuntu: name=gtk+3.0, repo=xenial
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
-# vercheck-gnome: name=gtk+, majorver=3.16
+# vercheck-gnome: name=gtk+, majorver=3.18
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
 _use_ppa=false
 
 pkgname=gtk3-ubuntu
-#_ppa_rel=0ubuntu1~vivid1
-_ubuntu_rel=1ubuntu2
-pkgver=3.16.5
+_ubuntu_rel=1ubuntu1
+pkgver=3.18.6
 pkgrel=1
-pkgdesc="GObject-based multi-platform toolkit (v3)"
+pkgdesc="GObject-based multi-platform toolkit"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
 install=gtk3.install
-depends=(atk cairo gtk-update-icon-cache libcups libepoxy libxcursor libxinerama
-         libxrandr libxi libxcomposite libxdamage pango shared-mime-info
-         colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme
-         json-glib rest)
-makedepends=(gobject-introspection)
+depends=(atk cairo libcups libxcursor libxinerama libxrandr libxi libepoxy
+         gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info colord
+         at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib rest
+         librsvg gtk-update-icon-cache)
+makedepends=(gobject-introspection libcanberra)
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+        0001-x11-Only-do-cursor-name-fallback-for-standard-names.patch
+        0002-wayland-Only-do-cursor-name-fallback-for-standard-na.patch
         settings.ini)
 
 if [[ "${_use_ppa}" != "true" ]]; then
   source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 else
-  source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+  source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('f8dd318d5d72e8c59534bf49e505de3575f7519d57398030f4c47a576c3b37e4f00fec1b5a3ba2a3769e94373504dfb6ca24b1015f1e8f8f7dca6f46114b95f8'
+sha512sums=('a606bfeb7e6991c9c367d6c93d04d70daed6c59b95d1ef14b971acb32b23e71894b0aef16b4c673e1cb2ae0fd08de3f65b7aa5512fd74253efe30f16b0dbac11'
+            'c06718dbd6f5d47001eec85963eb8c7c40c745c601d01f3a94cc282e1c030325458a53886eb32c87a322dc568c0d49720e892e96927afc3c15d39e8ade292316'
+            '85809aa706f9b42899020b1caad906c5becb5bd31a36e4cd65d32ac9fcde00c1a0ac692f8b9aa5accce8d1fc389e3c61caa05c51d8b6d7f8e84594ea5765efa3'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
-            '68045b5aaf1b8ee3265667a50a7d5585b9b6f07523530bb5bb2c46b909d5e7accb6220ff316a0a312453643e989f8d793ee35786eee81d76e9f509883135d913')
+            'd14a0fbc3e109887b2b13539079465b95f00a2e1f23db1b13c1b78861cfe26c633006b56bab8f3b12c7057d8bd0dabba44f780cac3942bdac8f4cf3aa3f62018')
 
 prepare() {
     cd "gtk+-${pkgver}"
+
+    # Fix zoom in/out cursors in GTK3 builds of Firefox
+    # https://bugzilla.gnome.org/show_bug.cgi?id=760141
+    patch -p1 -i ../0001-x11-Only-do-cursor-name-fallback-for-standard-names.patch
+    patch -p1 -i ../0002-wayland-Only-do-cursor-name-fallback-for-standard-na.patch
 
     # Apply Ubuntu Patches
     echo > ../debian/patches/series
@@ -69,8 +77,7 @@ build() {
 
     autoreconf -vfi
 
-    #CXX=/bin/false ./configure \
-    ./configure \
+    CXX=/bin/false ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
         --localstatedir=/var \
