@@ -53,6 +53,7 @@ To compile from source, just build all of the packages in the following order:
 | gnome-session-ubuntu             | GNOME Session Manager                      |
 | gnome-screensaver-ubuntu         | GNOME screen saver and locker              |
 | unity-settings-daemon            | Daemon handling the Unity session settings |
+| libgeonames                      | Library for parsing local geonames.org DB  |
 | unity-control-center             | Utilities to configure the Unity desktop   |
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
