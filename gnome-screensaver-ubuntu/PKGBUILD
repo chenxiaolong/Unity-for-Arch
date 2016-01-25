@@ -24,81 +24,87 @@ conflicts=(gnome-screensaver)
 groups=(unity)
 source=("http://ftp.gnome.org/pub/GNOME/sources/gnome-screensaver/${pkgver%.*}/gnome-screensaver-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gnome-screensaver_${pkgver}-${_ubuntu_rel}.debian.tar.xz"
+        gnome-screensaver.pam
         move-desktop-file.patch
         fix-autoconf.patch
         fix-systemd-support.patch
         lock_screen_on_suspend.patch
         lightdm_switch_user.patch
         use-screensaver-background.patch
-        gnome-screensaver.pam)
+        recenter.patch)
 sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
             '976dd38f9826bf8e4cc9950f049ad4dec8b7f887b98bec878bc947928944363160d51d65f35defced705e7c544461f335209e89bde2273d7ae9ddf97f295e820'
+            '6e6956e24c545b630a8024e9e27a8a54d6cd102ca7c76c46ce90342e90f44dc9bdc6e71384802b18f133529c66f3a2f0fa5ef580058ed22919931301e781a6be'
             '2a1cae465e87dfb731602f8dcf8cfdbdc19374c128c3828950920c01fc81f3bd00a192a6883ac1eb7ca06564f29a1c572ea074e8622fcd56e74ded43c974d4c8'
             'c13d8806ca28b91457cc69d953eb516a642802dbf13dea643778e5e1b6f79d1f9c681138768f46848ed09cf8dc9e61b9aed25d4aa2be22b5730334a5fbeca68f'
             'f2c4903c7793ed7233eff8d7bfa6c2d7515d5ca6d42f8e447593a3687cdd3a99d74c591b401f6ce4b750ac2392ebb013963d8957daddfa75bfbef76f53b28457'
             'f2588a7024bc6b7f8cdb67875107e28a132b06602965870a3d45d5a36dc8ba214ce1d4bb5c71911554e39cc480f3145f70fb022280d04cd1f9b9b284c53bdd57'
             '63b3a87e6f748e0caba65a99f77823b7141c1dc54c834228b6a68986bf42fe25254a9ce07db4df8683dc374c97e58c39678d3305d423e2ca0eb4f2df4e0e84f0'
             '6002bb75d4519f3724ac34a8e4e8ea4e1f3cb063225d8feb9be7b1f38a0e706a0e2818495efd2ecea00302fbecf6d8cecd62689a5414bad06153d27a4e03a879'
-            '6e6956e24c545b630a8024e9e27a8a54d6cd102ca7c76c46ce90342e90f44dc9bdc6e71384802b18f133529c66f3a2f0fa5ef580058ed22919931301e781a6be')
+            'fe22b9a34b9a72038b6867e3bbf9b84cde80969e0f4a5493a6d4fc5e4492763806094920dc7dbe59a418f7a42eaffb3e731e2c3c6bf4e68a5ad74c80040e3d07')
 
 prepare() {
-  cd "gnome-screensaver-${pkgver}"
+    cd "gnome-screensaver-${pkgver}"
 
-  # Upstream patch that moves gnome-screensaver desktop file out of autostart
-  #patch -p1 -i ../move-desktop-file.patch
+    # Upstream patch that moves gnome-screensaver desktop file out of autostart
+    #patch -p1 -i ../move-desktop-file.patch
 
-  # Fix build
-  patch -p1 -i ../fix-autoconf.patch
+    # Fix build
+    patch -p1 -i ../fix-autoconf.patch
 
-  # Fix systemd support
-  patch -p1 -i ../fix-systemd-support.patch
+    # Fix systemd support
+    patch -p1 -i ../fix-systemd-support.patch
 
-  # Lock screen on suspend with systemd
-  patch -p1 -i ../lock_screen_on_suspend.patch
+    # Lock screen on suspend with systemd
+    patch -p1 -i ../lock_screen_on_suspend.patch
 
-  # Add support for user switch with LightDM
-  patch -p1 -i ../lightdm_switch_user.patch
+    # Add support for user switch with LightDM
+    patch -p1 -i ../lightdm_switch_user.patch
 
-  # Honour background setting of the lock screen
-  patch -p1 -i ../use-screensaver-background.patch
+    # Honour background setting of the lock screen
+    patch -p1 -i ../use-screensaver-background.patch
 
-  # Apply Ubuntu's patches
-  sed -i -e '/32_input_sources_switcher.patch/d' \
-         -e '/00git_logind_check.patch/d' \
-         -e '/19_not_autostart_in_unity.patch/d' \
-         -e '/24_use_user_settings.patch/d' \
-         -e '/27_lightdm_switch_user.patch/d' \
-         ../debian/patches/series
+    # Restore the original position after shake
+    patch -Np1 -i "$srcdir/recenter.patch"
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i}"
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    # Apply Ubuntu's patches
+    sed -i -e '/32_input_sources_switcher.patch/d' \
+           -e '/00git_logind_check.patch/d' \
+           -e '/19_not_autostart_in_unity.patch/d' \
+           -e '/24_use_user_settings.patch/d' \
+           -e '/27_lightdm_switch_user.patch/d' \
+           ../debian/patches/series
+
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i}"
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "gnome-screensaver-${pkgver}"
+    cd "gnome-screensaver-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/gnome-screensaver \
-    --with-mit-ext \
-    --with-systemd \
-    --enable-locking # From debian/rules
+    CFLAGS+=" -Wno-error=return-type"
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/gnome-screensaver \
+        --with-mit-ext \
+        --with-systemd \
+        --enable-locking # From debian/rules
 
-  make
+    make
 }
 
 package() {
-  cd "gnome-screensaver-${pkgver}"
+    cd "gnome-screensaver-${pkgver}"
 
-  make DESTDIR="${pkgdir}" install
-  install -Dm644 ../gnome-screensaver.pam "${pkgdir}/etc/pam.d/gnome-screensaver"
+    make DESTDIR="${pkgdir}" install
+    install -Dm644 ../gnome-screensaver.pam "${pkgdir}/etc/pam.d/gnome-screensaver"
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/share/locale/"
 }
