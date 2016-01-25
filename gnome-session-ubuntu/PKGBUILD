@@ -3,22 +3,22 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.18
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-session-ubuntu
 _use_ppa=false
 #_ppa_rel=0ubuntu1~vivid1
 _ubuntu_rel=1ubuntu1
-pkgver=3.16.0
+pkgver=3.18.1.2
 pkgrel=1
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
-         hicolor-icon-theme json-glib libgl libsm libxtst systemd polkit-gnome)
+         json-glib libgl libsm libxtst polkit-gnome)
 makedepends=(gnome-common intltool mesa gtk-doc xtrans)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
@@ -26,7 +26,7 @@ conflicts=(gnome-session)
 options=(!emptydirs)
 install=gnome-session.install
 url="http://www.gnome.org"
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*.*}/${pkgname%-*}-${pkgver}.tar.xz"
         timeout.patch
         polkit-gnome-authentication-agent-1-unity.desktop)
 
@@ -36,55 +36,55 @@ else
     source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('4f02e73ab632ce0c2b961f1d88d93ef62fb6ebfa39d98bf12e672ca7cd9680d07aeffcd3c8792eddcbd9b5e13b0ef87d064352d8f209b3befd8445c1ba17e485'
+sha512sums=('741da4ebdc6eccef35ee3e1be124785ad7e2e6de49c2fbb88568cff91c8cd5133e71064d8c74181052a9ce4df446fad7358bb61fc1d1a5746ab76a655d35f72a'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
-            '4b7be1a2f4946876d94e7c545a96cbfc33502a48bb2f5ab3558009e5e92e5602353cad732a8dccea643da0dbc0c17cb5cb2799db934ae7d2c24f2ba796cff066')
+            '6ed902f2add5f8ca1522268020d2e4568b1bd4da8d2e71c9193588b9756f368f653f6ed097ccef50288a5d29ed02f130a340afbeea58885d4d854cdd285e4187')
 
 prepare() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  # Increase timeout, for slow machines
-  patch -p1 -i ../timeout.patch
+    # Increase timeout, for slow machines
+    patch -p1 -i ../timeout.patch
 
-  sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
+    sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
-  # If you want this, install gnome-session-properties from the AUR
-  sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
-  sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
+    # If you want this, install gnome-session-properties from the AUR
+    sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
+    sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i} ..."
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i} ..."
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/gnome-session \
-    --disable-schemas-compile \
-    --enable-systemd \
-    --disable-gconf
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/gnome-session \
+        --disable-schemas-compile \
+        --enable-systemd \
+        --disable-gconf
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname%-*}-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "${pkgname%-*}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
 
-  # Symlink session files so that KDM can find them
-  install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
-  ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
+    # Symlink session files so that KDM can find them
+    install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
+    ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
 
-  install -dm755 "${pkgdir}/etc/xdg/autostart/"
-  install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
-    "${pkgdir}/etc/xdg/autostart/"
+    install -dm755 "${pkgdir}/etc/xdg/autostart/"
+    install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
+        "${pkgdir}/etc/xdg/autostart/"
 }
