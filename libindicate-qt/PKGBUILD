@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=libindicate-qt
@@ -24,26 +24,26 @@ sha512sums=('62b6ee0a758729f8007d0dfe6c7b9f55264f0bc110cebc8ef9f782c345fb81e45d9
             '9e377d06be8b65f54bceb7fb50f83c9aefae1c5f27ca1a695997d6cd4b39ec3a1d1fe0b39322b276e1c0fc2157d5eb9a89fa3d7cc6879fbaa9d027e255c3cdc3')
 
 prepare() {
-  cd "${pkgname}-${pkgver}"
+    cd "${pkgname}-${pkgver}"
 
-  # Apply Ubuntu patches
-  for i in $(grep -v '#' ../debian/patches/series); do
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    # Apply Ubuntu patches
+    for i in $(grep -v '#' ../debian/patches/series); do
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "${pkgname}-${pkgver}"
+    cd "${pkgname}-${pkgver}"
 
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-  make
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+    make
 }
 
 package() {
-  cd "${pkgname}-${pkgver}"
+    cd "${pkgname}-${pkgver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  # Not present in Ubuntu packages
-  rm -rvf "${pkgdir}/usr/include/libindicate-qt/CMakeFiles"
+    # Not present in Ubuntu packages
+    rm -rvf "${pkgdir}/usr/include/libindicate-qt/CMakeFiles"
 }
