@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=wily
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=geis
-_actual_ver=2.2.16
-_extra_ver=+15.10.20150609
+_actual_ver=2.2.17
+_extra_ver=+15.10.20150728
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -18,18 +18,18 @@ depends=(grail xorg-xinput python3 dbus-core)
 makedepends=(xorg-server-devel)
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('08a87e6e5eb0c245e81b65cd038604f5c2a154162e721bd8e98e7d81be4a9a062dc607c625589fae79de9bb762e5ba648a44d0211660268bb14578b37dbd15ee')
+sha512sums=('9fb43bed0d427f9b43e779256c50c7ce2ad7f018f1f931621a24348e8d91043265a4bb8e3c4c2049f25f4aebbfd36b94dec29852de2202b6049cf9b334ac4f94')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure --prefix=/usr --disable-static
-  make
+    ./configure --prefix=/usr --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 }
