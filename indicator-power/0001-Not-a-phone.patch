@@ -1,41 +1,135 @@
-From 08d077e51cecda056692c0ff78c20d01546f09b4 Mon Sep 17 00:00:00 2001
+From 99925a850352fddfbed879f5a1d4509a5237ae0e Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 9 Aug 2014 14:56:18 -0400
 Subject: [PATCH] Not a phone
 
 ---
- CMakeLists.txt | 3 +--
- src/notifier.c | 2 --
- src/service.c  | 2 --
- 3 files changed, 1 insertion(+), 6 deletions(-)
+ CMakeLists.txt     |  3 +--
+ src/CMakeLists.txt |  4 ----
+ src/notifier.c     | 67 ------------------------------------------------------
+ src/service.c      |  3 ---
+ 4 files changed, 1 insertion(+), 76 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 569100d..30be771 100644
+index e77b41e..bf1f0ed 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -37,8 +37,7 @@ pkg_check_modules(SERVICE_DEPS REQUIRED
-                   gio-2.0>=2.36
+@@ -39,8 +39,7 @@ pkg_check_modules(SERVICE_DEPS REQUIRED
                    gio-unix-2.0>=2.36
                    gudev-1.0>=204
--                  libnotify>=0.7.6
+                   libnotify>=0.7.6
+-                  gstreamer-1.0>=1.2
 -                  url-dispatcher-1>=1)
-+                  libnotify>=0.7.6)
++                  gstreamer-1.0>=1.2)
  
  include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
  
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 324bf2a..2521039 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -32,10 +32,6 @@ add_gdbus_codegen_with_namespace(SERVICE_GENERATED_SOURCES dbus-testing
+                                  com.canonical.indicator.power
+                                  Dbus
+                                  ${CMAKE_SOURCE_DIR}/data/com.canonical.indicator.power.Testing.xml)
+-add_gdbus_codegen_with_namespace(SERVICE_GENERATED_SOURCES dbus-accounts-sound
+-                                 com.ubuntu.touch
+-                                 Dbus
+-                                 /usr/share/accountsservice/interfaces/com.ubuntu.touch.AccountsService.Sound.xml)
+ 
+ # add the bin dir to our include path so the code can find the generated header files
+ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 diff --git a/src/notifier.c b/src/notifier.c
-index 1767146..21678bc 100644
+index d639681..8d531d3 100644
 --- a/src/notifier.c
 +++ b/src/notifier.c
-@@ -21,7 +21,6 @@
+@@ -18,14 +18,11 @@
+  */
+ 
+ #include "datafiles.h"
+-#include "dbus-accounts-sound.h"
+ #include "dbus-battery.h"
  #include "dbus-shared.h"
  #include "notifier.h"
+ #include "sound-player.h"
  
 -#include <url-dispatcher.h>
- 
+-
  #include <libnotify/notify.h>
  
-@@ -171,7 +170,6 @@ on_battery_settings_clicked(NotifyNotification * nn        G_GNUC_UNUSED,
+ #include <glib/gi18n.h>
+@@ -86,8 +83,6 @@ typedef struct
+   IndicatorPowerSoundPlayer * sound_player;
+ 
+   GCancellable * cancellable;
+-  DbusAccountsServiceSound * accounts_service_sound_proxy;
+-  gboolean accounts_service_sound_proxy_pending;
+ }
+ IndicatorPowerNotifierPrivate;
+ 
+@@ -146,50 +141,6 @@ get_battery_power_level (IndicatorPowerDevice * battery)
+ ***/
+ 
+ static void
+-on_sound_proxy_ready (GObject      * source_object G_GNUC_UNUSED,
+-                      GAsyncResult * res,
+-                      gpointer       gself)
+-{
+-  GError * error;
+-  DbusAccountsServiceSound * proxy;
+-
+-  error = NULL;
+-  proxy = dbus_accounts_service_sound_proxy_new_for_bus_finish (res, &error);
+-  if (error != NULL)
+-    {
+-      if (!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+-        {
+-          get_priv(gself)->accounts_service_sound_proxy_pending = FALSE;
+-          g_debug("%s Couldn't find accounts service sound proxy: %s", G_STRLOC, error->message);
+-        }
+-
+-      g_clear_error(&error);
+-    }
+-  else
+-    {
+-      IndicatorPowerNotifier * const self = INDICATOR_POWER_NOTIFIER(gself);
+-      priv_t * const p = get_priv (self);
+-      g_clear_object (&p->accounts_service_sound_proxy);
+-      p->accounts_service_sound_proxy = proxy;
+-      p->accounts_service_sound_proxy_pending = FALSE;
+-    }
+-}
+-
+-static gboolean
+-silent_mode (IndicatorPowerNotifier * self)
+-{
+-  priv_t * const p = get_priv (self);
+-
+-  /* if we don't have a proxy yet, assume we're in silent mode
+-     as a "do no harm" level of response */
+-  if (p->accounts_service_sound_proxy_pending)
+-    return TRUE;
+-
+-  return (p->accounts_service_sound_proxy != NULL)
+-      && dbus_accounts_service_sound_get_silent_mode(p->accounts_service_sound_proxy);
+-}
+-
+-static void
+ play_low_battery_sound (IndicatorPowerNotifier * self)
+ {
+   const gchar * const key = LOW_BATTERY_SOUND;
+@@ -199,10 +150,6 @@ play_low_battery_sound (IndicatorPowerNotifier * self)
+   /* can't play? */
+   g_return_if_fail (p->sound_player != NULL);
+ 
+-  /* won't play? */
+-  if (silent_mode(self))
+-    return;
+-
+   filename = datafile_find(DATAFILE_TYPE_SOUND, key);
+   if (filename != NULL)
+     {
+@@ -259,7 +206,6 @@ on_battery_settings_clicked(NotifyNotification * nn        G_GNUC_UNUSED,
                              char               * action    G_GNUC_UNUSED,
                              gpointer             user_data G_GNUC_UNUSED)
  {
@@ -43,8 +137,35 @@ index 1767146..21678bc 100644
  }
  
  static void
+@@ -467,7 +413,6 @@ my_dispose (GObject * o)
+   notification_clear (self);
+   indicator_power_notifier_set_battery (self, NULL);
+   g_clear_object (&p->dbus_battery);
+-  g_clear_object (&p->accounts_service_sound_proxy);
+ 
+   G_OBJECT_CLASS (indicator_power_notifier_parent_class)->dispose (o);
+ }
+@@ -501,18 +446,6 @@ indicator_power_notifier_init (IndicatorPowerNotifier * self)
+ 
+   if (!instance_count++ && !notify_init("indicator-power-service"))
+     g_critical("Unable to initialize libnotify! Notifications might not be shown.");
+-
+-  p->accounts_service_sound_proxy_pending = TRUE;
+-  gchar* object_path = g_strdup_printf("/org/freedesktop/Accounts/User%lu", (gulong)getuid());
+-  dbus_accounts_service_sound_proxy_new_for_bus(
+-    G_BUS_TYPE_SYSTEM,
+-    G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+-    "org.freedesktop.Accounts",
+-    object_path,
+-    p->cancellable,
+-    on_sound_proxy_ready,
+-    self);
+-  g_clear_pointer(&object_path, g_free);
+ }
+ 
+ static void
 diff --git a/src/service.c b/src/service.c
-index 665151c..bc82a41 100644
+index a3b32ad..56ae34a 100644
 --- a/src/service.c
 +++ b/src/service.c
 @@ -20,7 +20,6 @@
@@ -55,7 +176,15 @@ index 665151c..bc82a41 100644
  
  #include "brightness.h"
  #include "dbus-shared.h"
-@@ -725,7 +724,6 @@ on_phone_settings_activated (GSimpleAction * a      G_GNUC_UNUSED,
+@@ -786,7 +785,6 @@ on_settings_activated (GSimpleAction * a      G_GNUC_UNUSED,
+     {
+       if (g_getenv ("MIR_SOCKET") != NULL)
+         {
+-          url_dispatch_send("settings:///system/battery", NULL, NULL);
+           return;
+         }
+       else if (!g_strcmp0 (g_getenv ("DESKTOP_SESSION"), "xubuntu"))
+@@ -834,7 +832,6 @@ on_phone_settings_activated (GSimpleAction * a      G_GNUC_UNUSED,
                               GVariant      * param  G_GNUC_UNUSED,
                               gpointer        gself  G_GNUC_UNUSED)
  {
@@ -64,5 +193,5 @@ index 665151c..bc82a41 100644
  
  /***
 -- 
-2.1.1
+2.7.0
 
