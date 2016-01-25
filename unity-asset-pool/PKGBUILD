@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity-asset-pool
@@ -27,22 +27,22 @@ sha512sums=('cd7b55b896b71c62f62e43886fc32294ac444b821bf255f725a599dd13558829d8d
             '37021e5f93371cb78ea71d150dee840cb76f4590de79b057a6a72a60d88168b09c2ef7fe96ec552cfe977b3a416437e700efc82876aaefb75c4b4745659e0993')
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  install -dm755 "${pkgdir}/usr/share/unity/themes/"
-  install -m644 launcher/* "${pkgdir}/usr/share/unity/themes/"
-  install -m644 panel/* "${pkgdir}/usr/share/unity/themes/"
+    install -dm755 "${pkgdir}/usr/share/unity/themes/"
+    install -m644 launcher/* "${pkgdir}/usr/share/unity/themes/"
+    install -m644 panel/* "${pkgdir}/usr/share/unity/themes/"
 
-  install -dm755 "${pkgdir}/usr/share/icons/"
-  find unity-icon-theme/ -type f -exec install -Dm644 {} "${pkgdir}"/usr/share/icons/{} \;
-  install -m644 "${srcdir}/archlinux-icon-tango-22.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/22/distributor-logo.png"
-  install -m644 "${srcdir}/archlinux-icon-tango-24.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/24/distributor-logo.png"
+    install -dm755 "${pkgdir}/usr/share/icons/"
+    find unity-icon-theme/ -type f -exec install -Dm644 {} "${pkgdir}"/usr/share/icons/{} \;
+    install -m644 "${srcdir}/archlinux-icon-tango-22.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/22/distributor-logo.png"
+    install -m644 "${srcdir}/archlinux-icon-tango-24.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/24/distributor-logo.png"
 
-  # From debian/rules
-  for i in $(find "${pkgdir}/usr/share/icons" -mindepth 2 -maxdepth 2 -type d); do
-    cd "${i}"
-    for j in *; do
-      /usr/lib/icon-naming-utils/icon-name-mapping -c "${j}"
+    # From debian/rules
+    for i in $(find "${pkgdir}/usr/share/icons" -mindepth 2 -maxdepth 2 -type d); do
+        cd "${i}"
+        for j in *; do
+            /usr/lib/icon-naming-utils/icon-name-mapping -c "${j}"
+        done
     done
-  done
 }
