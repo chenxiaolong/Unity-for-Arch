@@ -1,16 +1,16 @@
-From 27eac61bfe762aaf44a08081965d6bbf6f4ad7d3 Mon Sep 17 00:00:00 2001
+From 274a79a59c1e99414868a06731b4e8453e6f9580 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 17:52:55 -0400
-Subject: [PATCH 2/3] Not a phone
+Subject: [PATCH] Not a phone
 
 ---
  CMakeLists.txt                  |  1 -
  include/datetime/actions-live.h |  1 -
- src/actions-live.cpp            | 13 -------------
- 3 files changed, 15 deletions(-)
+ src/actions-live.cpp            | 14 --------------
+ 3 files changed, 16 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 4d2fd95..fad839c 100644
+index e01cd0e..e11ee1b 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -40,7 +40,6 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
@@ -34,7 +34,7 @@ index 0214d65..4dfa398 100644
  
  } // namespace datetime
 diff --git a/src/actions-live.cpp b/src/actions-live.cpp
-index 3cbfb78..86d87b9 100644
+index 90186c3..a80d295 100644
 --- a/src/actions-live.cpp
 +++ b/src/actions-live.cpp
 @@ -19,8 +19,6 @@
@@ -59,7 +59,15 @@ index 3cbfb78..86d87b9 100644
  /***
  ****
  ***/
-@@ -130,14 +122,12 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
+@@ -63,7 +55,6 @@ void LiveActions::desktop_open_settings_app()
+ {
+     if (g_getenv ("MIR_SOCKET") != nullptr)
+     {
+-        dispatch_url("settings:///system/time-date");
+     }
+     else if ((g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0))
+     {
+@@ -130,14 +121,12 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
  
  void LiveActions::phone_open_alarm_app()
  {
@@ -74,7 +82,7 @@ index 3cbfb78..86d87b9 100644
      }
      else switch (appt.type)
      {
-@@ -152,13 +142,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
+@@ -152,13 +141,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
  
  void LiveActions::phone_open_calendar_app(const DateTime&)
  {
@@ -89,5 +97,5 @@ index 3cbfb78..86d87b9 100644
  
  /***
 -- 
-2.3.7
+2.7.0
 
