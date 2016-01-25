@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=properties-cpp
 _actual_ver=0.0.1
@@ -18,17 +18,17 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/properties-cpp_${_
 sha512sums=('44627c548ac31abb191254246006e73bc3e8a0c489062a253c1815e3588b62eb7578d56b1ef7f5016b23ba1e09ab964354e55930b076d9c439ad5484eb7ea6d3')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  sed -i '/tests/d' CMakeLists.txt
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    sed -i '/tests/d' CMakeLists.txt
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib
-  make
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 }
