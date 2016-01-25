@@ -1,10 +1,10 @@
 [Unit]
 Description=LightDM Display Manager
 Documentation=man:lightdm(1)
-After=systemd-user-sessions.service
+After=systemd-user-sessions.service plymouth-quit.service
 
 [Service]
-ExecStart=/usr/sbin/lightdm
+ExecStart=/usr/bin/lightdm
 StandardOutput=syslog
 # Don't want a continuous loop if X fails to start
 #Restart=always
