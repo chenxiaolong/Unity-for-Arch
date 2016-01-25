@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=nux
-_actual_ver=4.0.7
-_extra_ver=+15.10.20150522
+_actual_ver=4.0.8
+_extra_ver=+16.04.20151210
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
@@ -27,39 +27,39 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}
         0001_autoconf.patch
         01_blacklist_llvmpipe.patch
         50_check_unity_support)
-sha512sums=('d1281c3b188c1ad6e6c3d273596d32e92a10ab6d07fb5e0cef98dc603e3bc0d16239e59362af4ad32abfbd3eaf9148ec0eae1162bbe9e08f5c310d5643550004'
+sha512sums=('e0eca096607c07c219010c32ac6f2083c2fd0339ea05ca7bd3a1af8b0debe7a7d4149b4cf1eed31e8b0cca95a76b643906680f6a3bbab5f089129e3574a068bd'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
             'a6122d47bef574df7e4f3aa3ddff34ca7a6e291878665f3dfdbb9ea071394180ab31aadcb79efd53ebb1ec2a86a15d53c9394478305c3fd5f10ece049265b374'
             '1e82b11357f9db45fa6fff002cef11acaf53a8381e2bc28b84e9e0300502c0b1922d9273b44d4cfbbd51d004a9eb1eb2e780db7a39e2d9153c9c4efafb9314a9')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001_autoconf.patch
-  patch -p1 -i ../01_blacklist_llvmpipe.patch
+    patch -p1 -i ../0001_autoconf.patch
+    patch -p1 -i ../01_blacklist_llvmpipe.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CFLAGS+=" -Wno-error=unused-function"
-  export CXXFLAGS+=" -Wno-error=unused-function"
+    export CFLAGS+=" -Wno-error=unused-function"
+    export CXXFLAGS+=" -Wno-error=unused-function"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static --disable-tests
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}" install
+    make DESTDIR="${pkgdir}" install
 
-  rm -rv "${pkgdir}/usr/share/nux/gputests/"
+    rm -rv "${pkgdir}/usr/share/nux/gputests/"
 
-  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -m755 "${srcdir}/50_check_unity_support" \
-                "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    install -m755 "${srcdir}/50_check_unity_support" \
+                  "${pkgdir}/etc/X11/xinit/xinitrc.d/"
 }
