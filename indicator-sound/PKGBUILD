@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+15.10.20150605
+_extra_ver=+16.04.20160113.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -17,55 +17,49 @@ arch=(i686 x86_64)
 url="https://launchpad.net/indicator-sound"
 license=(GPL)
 depends=(accountsservice dconf libgee06 libnotify libpulse libxml2
-         unity-control-center)
+         pulseaudio qt5-base unity-control-center)
+         # unity-api
 makedepends=(cmake gobject-introspection intltool vala)
 groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         com.ubuntu.sound.gschema.xml
         0001-Not-running-on-Ubuntu-Touch.patch
-        0002-Remove-tests.patch
-        0003-mpris2-Position-property-should-be-int64.patch
-        libpulse.vapi)
-sha512sums=('0473c9b96fe5f12627118a26bb14e4ac0c3d138569451cd9985c7745ca4fd52400d5fc2563656bd6d7bbfda7128dfd9d932ff4c3544b5a2c9a857851d9d70348'
+        0002-Remove-tests.patch)
+sha512sums=('e1734660edfd424d2f046de042041e1a65de156405b77a3ebd7f88742da25dd18ed63bdee78566ee1eecfa9518987065a536d261d591dd94048d2e7c80350212'
             '04e662c9724f983c0b9129e13394937541949d481de3722e72046a68a49772707a145854a09bc7830e10ddd9bcf3b3095c9101fbc0c29fd03cfd267a074aee3c'
             '27a4e03a0f998e28a42a5564b722eb3a6d60412fe1645fb233771a844511a66a401d46137289c9c60fbd348bfb6b0d9756d61b1c5a35e007489503bc192eaeb3'
             '5a4c1b4feb999428c691cc6d7654a4a89567691e0819b57726113f9a3599881c5777446ae4dd4038ab6f0cc8fd55aa7c2943e460ab6ae356b0e4a80f65db712c'
-            '64ec82b50f1db6e219516acee3dde924847a68f9173e43c7fb44b485d1a4217bac40c4c2e9a9b9c381afd4c69b64109275f8933dddf7e4a1890c7cbfdfa1b865'
             '5c8920490356e35f994de15959658d4f6665732aa6a3feba10090791b2cd2233d27cffbab2b29bb165d06f449e96c8a35fc4a0a161baaef81780b9f5585cf52c')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001-Not-running-on-Ubuntu-Touch.patch
-  patch -p1 -i ../0002-Remove-tests.patch
-  patch -p1 -i ../0003-mpris2-Position-property-should-be-int64.patch
-
-  cp ../libpulse.vapi vapi/
-  sed -i '/libpulse$/iposix' src/CMakeLists.txt
+    patch -p1 -i ../0001-Not-running-on-Ubuntu-Touch.patch
+    patch -p1 -i ../0002-Remove-tests.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  [[ -d build ]] || mkdir build
-  pushd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib
-  make
-  popd
+    [[ -d build ]] || mkdir build
+    pushd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib
+    make
+    popd
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
-  install -m644 "${srcdir}/com.ubuntu.sound.gschema.xml" \
-                "${pkgdir}/usr/share/glib-2.0/schemas/"
+    install -dm755 "${pkgdir}/usr/share/glib-2.0/schemas/"
+    install -m644 "${srcdir}/com.ubuntu.sound.gschema.xml" \
+                  "${pkgdir}/usr/share/glib-2.0/schemas/"
 
-  rm -r "${pkgdir}/usr/share/upstart/"
+    rm -r "${pkgdir}/usr/share/upstart/"
 
-  sed -i 's/NotShowIn/OnlyShowIn/g' \
-    "${pkgdir}/etc/xdg/autostart/indicator-sound.desktop"
+    sed -i 's/NotShowIn/OnlyShowIn/g' \
+        "${pkgdir}/etc/xdg/autostart/indicator-sound.desktop"
 }
