@@ -1,7 +1,7 @@
-From f102eb6dd384476a88ea01b3b6cd5f2f05f482fb Mon Sep 17 00:00:00 2001
+From b3e146b2ba8788e2be3da37d878555a1b4c168c9 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 5 Apr 2014 20:25:21 -0400
-Subject: [PATCH 4/8] Remove Ubuntu-specific language code
+Subject: [PATCH 3/8] Remove Ubuntu-specific language code
 
 ---
  panels/common/cc-common-language.c  | 89 ++-----------------------------------
@@ -307,5 +307,5 @@ index 76201c2..32adc44 100644
         if (full_language->len == 0) {
                 g_string_free (full_language, TRUE);
 -- 
-2.1.2
+2.7.0
 

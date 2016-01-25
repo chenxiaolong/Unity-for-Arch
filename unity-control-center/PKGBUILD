@@ -3,11 +3,11 @@
 # Based on Arch's gnome-control-center package
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-control-center
 _actual_ver=15.04.0
-_extra_ver=+15.04.20150410
+_extra_ver=+16.04.20160119
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="The Control Center for Unity"
@@ -20,94 +20,93 @@ depends=(accountsservice cups-pk-helper fcitx libnotify gnome-menus
          network-manager-applet sound-theme-freedesktop upower
          libpwquality gnome-color-manager smbclient libmm-glib libgnomekbd
          grilo clutter-gtk unity-settings-daemon system-config-printer
-         webkitgtk)
+         webkitgtk libgeonames)
 makedepends=(gnome-common gnome-doc-utils intltool docbook-xsl modemmanager
              ttf-ubuntu-font-family vala)
-optdepends=('gnome-control-center: For bluetooth panel')
+optdepends=('gnome-control-center: For online accounts & region panel')
 conflicts=(upower-compat)
 options=(!emptydirs)
 install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
-        0002-Skip-bluetooth-panel.patch
-        0003-Skip-region-panel.patch
-        0004-Remove-Ubuntu-specific-language-code.patch
-        0005-Remove-Ubuntu-help-links.patch
-        0006-Allow-gnome-control-center-to-run-at-the-same-time.patch
-        0008-Remove-overlay-scrollbar-from-GTK_MODULES.patch
+        0002-Skip-region-panel.patch
+        0003-Remove-Ubuntu-specific-language-code.patch
+        0004-Remove-Ubuntu-help-links.patch
+        0005-Allow-gnome-control-center-to-run-at-the-same-time.patch
+        0006-Remove-overlay-scrollbar-from-GTK_MODULES.patch
+        0007-Rename-libgnome-bluetooth-to-libunity-bluetooth.patch
+        0008-Move-faces-images-usr-share-pixmaps-faces-unity.patch
         system-config-printer-unity.desktop
-        unity-bluetooth-panel.desktop
         unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
-sha512sums=('f1a6675ba605daf721a665ab89e438711e130cdcf99806059c47860699b41aa489e727dcbddf43928c3244909bbb7eb973064b9dba24fb0d099a377276c0be14'
-            '1b39906307c6776647cb1325c4029806614f5301e0c7fd1fd6c14509daad587ddbf71f5ac60c81e7f4c89ed9598569523a31ec3f07ddc69e8cd5b73e205ec700'
-            'ba07ad32de0ebb52e578e53506e7bff3826c6c15dbd415429f60ffa3c2de0884a7fc5866d9e53a064fdd5631d12dbcd925336ae994259cd31f77d5f3f827fc6b'
-            '17a8ec0ea635dcc991c6c101a0865c09d6aff344455020272a189af00579451c7fa9348063c30b80cd74b8e624d466a04862915dd0b343d9395e6c2f4e80085e'
-            '0eb193899552ae5bfd2d16817993ba1f0db78e9e3cdf141f72766c3a17fc9f73cea1893fe969687c4197cd23fcb93805226d0193cdcb092d02137d93df14b031'
-            '57d517491855ffb8db9e872bc99d7eedffdbc77eb864bb7e6dd8ba6ece58565823a93b0ae498b3b5e03f6bda019c96e68866452e6fc5957951a08b032999e4a4'
-            '0743d3f89473751557bda5c2a6957c27f36b11b757ec6128d5603f48f6d4626d8097ea0e4e0ebf87d27830cea6364178e471e84b5ed853705dad11be240dc01c'
-            'c5da31eb5a4e00420f815b5ce11f12fb27f52d057f75514495d6b7dbec0ffd05ad12937273192e67edbf5728edf0a3637856ac24678c55ef6951dd0e93c4eaf4'
+sha512sums=('6fc7366ae256a24590d6e84af332cea461ed50ce22e51a61558153ad5314bb92e84d3191bca3b83e941d42f50f8527a3d740b3a04f14e4d6b30685722a694e01'
+            '1bca29b181c409c3d958399a2d71453c1eaaf06aeb73f37c58622dc15ed34cf92f3ec2ef7e1156acd55aa8677e1b3636ef0bdfe9c6dad0a1b80a01f995b0b147'
+            '5c0826789392e14e48c9cead7484cd67e4b41954e46a75cd1e21c9bf94e8665f60afdd105975efad06cf54010393e03b025d26e8eb1026e24f0e2b774eca33fd'
+            '44aad84f62ed70b7142fa191248df1cb3e1e2fb742458f7ee961bf982ef6365852ee5b7e07e01eb6ddb5a35e8c11fcd65d5788803d2283519058597bfca71e6e'
+            '4322e5696b8c60cc29bd08b1bd46e9538d0daa1b25c656436d3c4ee1a0fd237de6fe4c611d9034c5faac8b109459a0b94e8fd1add8ff81503a7bd4a758a2412a'
+            '9cfdc52a53d53c831b0788eab2d2f3304b4de7ffa4af47bb876721ce107909c8d82fe176946d66c6039b2040d20c8bd74b62123f4d6417117f46d00e57d61972'
+            'ba67144b7dc006303b759d3e497472e81acd967dd8ca68a837aad001f796d4b81dd67b95be01904c84485184625d5e1c78f00c03913846f0952d99aa4fcabe57'
+            '5e41cf141402c018454f2d7ca20bce483735d50465d75b0d5b884c631b7a3c3183c2c311b8d6fe2608f1d92c5bad0ec9cc6d3716eab7ab4709239a7920be63e2'
+            '6e92195120dc061ac8c63c237be7c7cf667c186885879da5c8d655375e8d51f16edd6ba269de9a4257ab918d5f00449dd19883a09e19ed14026992913024bfe0'
             '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
-            '664ddfca6cc0526cf6a058b9cfa0d163d708b397166e9bade15806a43f6175b98430d41f8ef4ce3d33dc571d79013e5b7340df9aeecd2dc37ec89248d2c6fa5a'
             '287bf010b9a6d9424e2f07f7271cd27fd9a0fb9e29ea704dbb211a67d23558c66c0c654ee2a23456cba69bee725e962fbe79713cc0d2ad0ba4d830b0053777e7'
             '1378c3c15cb8c60575a55c86d400878f021c35adc87618c219496fee086b3c1286d7a46051747312960806330b6bb911a0c3e33814acedb2d83a1ef57d5e7a3a')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  patch -p1 -i ../0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
-  patch -p1 -i ../0002-Skip-bluetooth-panel.patch
-  patch -p1 -i ../0003-Skip-region-panel.patch
-  patch -p1 -i ../0004-Remove-Ubuntu-specific-language-code.patch
-  patch -p1 -i ../0005-Remove-Ubuntu-help-links.patch
-  patch -p1 -i ../0006-Allow-gnome-control-center-to-run-at-the-same-time.patch
-  patch -p1 -i ../0008-Remove-overlay-scrollbar-from-GTK_MODULES.patch
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    patch -p1 -i ../0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
+    patch -p1 -i ../0002-Skip-region-panel.patch
+    patch -p1 -i ../0003-Remove-Ubuntu-specific-language-code.patch
+    patch -p1 -i ../0004-Remove-Ubuntu-help-links.patch
+    patch -p1 -i ../0005-Allow-gnome-control-center-to-run-at-the-same-time.patch
+    patch -p1 -i ../0006-Remove-overlay-scrollbar-from-GTK_MODULES.patch
+    patch -p1 -i ../0007-Rename-libgnome-bluetooth-to-libunity-bluetooth.patch
+    patch -p1 -i ../0008-Move-faces-images-usr-share-pixmaps-faces-unity.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  intltoolize -f
+    autoreconf -vfi
+    intltoolize -f
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/${pkgname} \
-    --disable-static \
-    --enable-systemd \
-    --enable-fcitx
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/${pkgname} \
+        --disable-static \
+        --enable-systemd \
+        --enable-fcitx
 
-  # https://bugzilla.gnome.org/show_bug.cgi?id=656229
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
-  make
+    # https://bugzilla.gnome.org/show_bug.cgi?id=656229
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}" install
+    make DESTDIR="${pkgdir}" install
 
-  # Fix a warning
-#   chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
-  chmod 700 "${pkgdir}/usr/share/polkit-1/rules.d/"
+    # Fix a warning
+    chown 102:0 "${pkgdir}/usr/share/polkit-1/rules.d/"
+    chmod 750 "${pkgdir}/usr/share/polkit-1/rules.d/"
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/share/locale/"
 
-  panels/info/logo-generator \
-    --logo panels/info/UbuntuLogoBlank.png \
-    --text "Unity for Arch" \
-    --output "${pkgdir}/usr/share/unity-control-center/ui/UbuntuLogo.png"
+    panels/info/logo-generator \
+        --logo panels/info/UbuntuLogoBlank.png \
+        --text "Unity for Arch" \
+        --output "${pkgdir}/usr/share/unity-control-center/ui/UbuntuLogo.png"
 
-  # We'll just ship another desktop file for system-config-printer instead of
-  # providing a patched package
-  install -m644 "${srcdir}/system-config-printer-unity.desktop" \
-                "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/unity-bluetooth-panel.desktop" \
-                "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/unity-online-accounts-panel.desktop" \
-                "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/unity-region-panel.desktop" \
-                "${pkgdir}/usr/share/applications/"
+    # We'll just ship another desktop file for system-config-printer instead of
+    # providing a patched package
+    install -m644 "${srcdir}/system-config-printer-unity.desktop" \
+                  "${pkgdir}/usr/share/applications/"
+    install -m644 "${srcdir}/unity-online-accounts-panel.desktop" \
+                  "${pkgdir}/usr/share/applications/"
+    install -m644 "${srcdir}/unity-region-panel.desktop" \
+                  "${pkgdir}/usr/share/applications/"
 }

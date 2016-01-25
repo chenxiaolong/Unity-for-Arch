@@ -1,7 +1,7 @@
-From 98db06abc402556595939624ff97cc4e0e5aabec Mon Sep 17 00:00:00 2001
+From 6f60c5ee740a557daa76e5adb0eaabac8359a95b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:53:27 -0400
-Subject: [PATCH 5/8] Remove Ubuntu help links
+Subject: [PATCH 4/8] Remove Ubuntu help links
 
 ---
  panels/bluetooth/cc-bluetooth-panel.c     | 2 +-
@@ -21,10 +21,10 @@ Subject: [PATCH 5/8] Remove Ubuntu help links
  14 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/panels/bluetooth/cc-bluetooth-panel.c b/panels/bluetooth/cc-bluetooth-panel.c
-index 16fbb29..5dc3e9e 100644
+index 0024a58..900c78e 100644
 --- a/panels/bluetooth/cc-bluetooth-panel.c
 +++ b/panels/bluetooth/cc-bluetooth-panel.c
-@@ -77,7 +77,7 @@ static const char *
+@@ -78,7 +78,7 @@ static const char *
  cc_bluetooth_panel_get_help_uri (CcPanel *panel)
  {
    if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
@@ -56,10 +56,10 @@ index 9fbfd5c..a85fcdb 100644
  }
  
 diff --git a/panels/datetime/datetime-prefs.c b/panels/datetime/datetime-prefs.c
-index 0f4f84e..c1b424e 100644
+index 671aadf..8e916a1 100644
 --- a/panels/datetime/datetime-prefs.c
 +++ b/panels/datetime/datetime-prefs.c
-@@ -825,7 +825,7 @@ indicator_datetime_panel_class_finalize (IndicatorDatetimePanelClass *klass G_GN
+@@ -956,7 +956,7 @@ indicator_datetime_panel_class_finalize (IndicatorDatetimePanelClass *klass G_GN
  static const char *
  indicator_datetime_panel_get_help_uri (CcPanel *panel G_GNUC_UNUSED)
  {
@@ -95,7 +95,7 @@ index 5deb20d..aefc2be 100644
      return "help:gnome-help/mouse";
  }
 diff --git a/panels/network/cc-network-panel.c b/panels/network/cc-network-panel.c
-index 339c732..37b462b 100644
+index 6b3be10..62c2518 100644
 --- a/panels/network/cc-network-panel.c
 +++ b/panels/network/cc-network-panel.c
 @@ -243,7 +243,7 @@ static const char *
@@ -108,10 +108,10 @@ index 339c732..37b462b 100644
              return "help:gnome-help/net";
  }
 diff --git a/panels/power/cc-power-panel.c b/panels/power/cc-power-panel.c
-index f288eca..9e21e91 100644
+index 3e6a212..834dad7 100644
 --- a/panels/power/cc-power-panel.c
 +++ b/panels/power/cc-power-panel.c
-@@ -131,7 +131,7 @@ static const char *
+@@ -169,7 +169,7 @@ static const char *
  cc_power_panel_get_help_uri (CcPanel *panel)
  {
    if (!g_strcmp0(g_getenv("XDG_CURRENT_DESKTOP"), "Unity"))
@@ -221,5 +221,5 @@ index 9925a42..1d57277 100644
    else
      gtk_show_uri (gtk_widget_get_screen (window),
 -- 
-2.1.2
+2.7.0
 
