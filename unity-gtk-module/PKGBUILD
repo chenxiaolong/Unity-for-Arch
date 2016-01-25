@@ -25,38 +25,38 @@ sha512sums=('a78582f94736184b9f19cbcc795265e38101fb2eeeb0c9089811886de87607c5ac4
             'e30db7e3e1aba0abf100e619c667bac16d0a25ee3d9c67f65af532ab1a512dce5966e3c94f5d938c378dc30d9ed766fc2c9fa62e96235f29d923be5bad7f3a45')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  [ -d build-gtk2 ] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=2 --enable-gtk-doc \
-               --disable-static
-  make
-  popd
+    [ -d build-gtk2 ] || mkdir build-gtk2
+    pushd build-gtk2
+    ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=2 --enable-gtk-doc \
+                 --disable-static
+    make
+    popd
 
-  [ -d build-gtk3 ] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --enable-gtk-doc \
-               --disable-static
-  make
-  popd
+    [ -d build-gtk3 ] || mkdir build-gtk3
+    pushd build-gtk3
+    ../configure --prefix=/usr --sysconfdir=/etc --with-gtk=3 --enable-gtk-doc \
+                 --disable-static
+    make
+    popd
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  pushd build-gtk2
-  make DESTDIR="${pkgdir}/" install
-  popd
+    pushd build-gtk2
+    make DESTDIR="${pkgdir}/" install
+    popd
 
-  pushd build-gtk3
-  make DESTDIR="${pkgdir}/" install
-  popd
+    pushd build-gtk3
+    make DESTDIR="${pkgdir}/" install
+    popd
 
-  install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  install -m755  "${srcdir}/80unity-gtk-module" \
-                 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-  rm -rvf "${pkgdir}/usr/share/upstart/"
+    install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    install -m755  "${srcdir}/80unity-gtk-module" \
+                   "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    rm -rvf "${pkgdir}/usr/share/upstart/"
 }
