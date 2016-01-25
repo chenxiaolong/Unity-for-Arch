@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=indicator-keyboard
 _actual_ver=0.0.0
-_extra_ver=+15.04.20150310
+_extra_ver=+16.04.20151125
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=4
 pkgdesc="Indicator for switching keyboard layouts and input methods"
@@ -13,7 +13,7 @@ arch=(i686 x86_64)
 url="https://launchpad.net/indicator-keyboard"
 license=(GPL)
 groups=(unity)
-depends=(accountsservice gnome-desktop gucharmap ibus libgee06 libgnomekbd
+depends=(accountsservice fcitx gnome-desktop gucharmap ibus libgee libgnomekbd
          lightdm-ubuntu unity-control-center)
 makedepends=(gobject-introspection intltool vala)
 conflicts=(ibus-ubuntu)
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard
         0003-Remove-unavailable-DBus-method-activate_input_source.patch
         0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
         0005-Spawn-ibus-daemon-at-startup.patch)
-sha512sums=('e96c002ad48a4e180895097a03b50756800f9af0f3e6895f5cd891fe61a868707ecbd4530c290e44c9efb15324f7a2bf561946072a3147ae4a24a8301c8fd9da'
+sha512sums=('d79e04be1b9b6e82b3e9d3bf52ee3de58577292a917aeada97b7414938b1df165c7e3fcc8efd59d8f5bf7e1a68cf9488bd7245fe4d62d61a8abc9fd599a90fc2'
             '9ad6fa42272cfd0c21a756411adf14f475e773e5b51faf9fad866e2e158da16ae642d9519f617dd2fc8f6be92e6c7cf0321679615e3ade4fb3c90263338bb3f9'
             'df5ab3b8749dc152bc7d9a185be7421901598fdfaae660a8e13fe8f4a6e09d7141d94a1c5ed8b53347c45060607131fa33a5f04a54461b3d7b2656a1022d9030'
             'f334727da7dc3149213e04ef7a9aed80c48d8de22dff4cc6ec6bf7f7a6d9f3473d9cb482b6d97a6ae73e8919723a556e012558b17c0b0a6148c86775427b8d53'
@@ -32,25 +32,25 @@ sha512sums=('e96c002ad48a4e180895097a03b50756800f9af0f3e6895f5cd891fe61a868707ec
             '308780ed076d9c06a826178a09accb3b36c19b8969dd0475962c4f8c0a45322b6fc23d2eee5a205d6cc4a899eb7e645161c9ef613549d3443c371a2cad17229d')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  patch -p1 -i ../0001-vala-build-fix.patch
-  patch -p1 -i ../0002-Remove-code-depending-on-accountsservices-patch.patch
-  patch -p1 -i ../0003-Remove-unavailable-DBus-method-activate_input_source.patch
-  patch -p1 -i ../0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
-  patch -p1 -i ../0005-Spawn-ibus-daemon-at-startup.patch
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    patch -p1 -i ../0001-vala-build-fix.patch
+    patch -p1 -i ../0002-Remove-code-depending-on-accountsservices-patch.patch
+    patch -p1 -i ../0003-Remove-unavailable-DBus-method-activate_input_source.patch
+    patch -p1 -i ../0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
+    patch -p1 -i ../0005-Spawn-ibus-daemon-at-startup.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  intltoolize -f
-  autoreconf -vfi
-  ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-keyboard
-  make
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    intltoolize -f
+    autoreconf -vfi
+    ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-keyboard
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 
-  rm -r "${pkgdir}"/usr/share/upstart/
+    rm -r "${pkgdir}"/usr/share/upstart/
 }
