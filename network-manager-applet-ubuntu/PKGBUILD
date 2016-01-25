@@ -6,15 +6,14 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase%-*}, repo=wily
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgbase%-*}, majorver=0.9
+# vercheck-gnome: name=${pkgbase%-*}, majorver=1.0
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
-_ubuntu_rel=0ubuntu4
-_ubuntu_ver=0.9.10.1
-pkgver=0.9.10.2
+_ubuntu_rel=1ubuntu1
+pkgver=1.0.10
 pkgrel=1
 epoch=1
 pkgdesc="Applet for managing network connections"
@@ -22,13 +21,12 @@ arch=(i686 x86_64)
 url="http://www.gnome.org/projects/NetworkManager/"
 license=(GPL2 LGPL2.1)
 makedepends=(libnm-glib libsecret gtk3 mobile-broadband-provider-info iso-codes
-             libnotify libmm-glib intltool gobject-introspection
+             libnotify libmm-glib intltool gobject-introspection libgudev
              libappindicator3 python2)
-extrafiles=(network-manager-applet.install nm-connection-editor.install)
-source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*.*}/${pkgbase%-*}-${pkgver}.tar.xz"
+source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*}/${pkgbase%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('c3e67969a4b525e9854cb0a791d11c910de4fcc4b056c76a9ceab5a89f604d2397e6d8117ba572967d3a3a82676f83d23503fca6afcf67a48f07c593641e4adb'
-            '0d90b3778b9a21f69ae4fb5161464f8bf1181c5d48314c4c43f41080e6233e9ca18e29728769d18e94db3ca25e115d4f13655e5f9b5132dbc35d5ff02090910f')
+sha512sums=('dc13881243e5232d0c45563442f906a93c4d196a69c52c45d335f755bbc73c4d3131ba59180a102f65ca2066d40127b9db8cf85da2b41ec18efda482a9d210aa'
+            '0500eb1cb771e48ee04fa736397f0d98c5642f34a290b80d46349046bf3e1f55d42b0a0a2e3cbefca78236ec285ecf6585db69a3750c3c9366cead54220ce4b7')
 
 prepare() {
     mkdir -p nma/etc/xdg nma/usr/bin \
@@ -37,16 +35,6 @@ prepare() {
     cd "${pkgbase%-*}-${pkgver}"
 
     # Apply Ubuntu's patches
-
-    sed -i -e '/key-certificate-extensions.patch/d' \
-           -e '/lp829673_gconf_hide_applet.patch/d' \
-           -e '/hide_policy_items_env_var.patch/d' \
-           -e '/0001_Move_on_with_enter_in_the_country_page_of_the_new_mobile_wizard.patch/d' \
-           -e '/set_atk_relations.patch/d' \
-           -e '/11-user-connections.patch/d' \
-           -e '/clear-notification-actions.patch/d' \
-           ../debian/patches/series
-
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
