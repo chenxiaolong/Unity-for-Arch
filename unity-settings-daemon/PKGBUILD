@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-settings-daemon
 _actual_ver=15.04.1
-_extra_ver=+15.10.20150630.1
+_extra_ver=+16.04.20160121
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -25,51 +25,48 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-dae
         0001-Remove-accountsservice-dependency.patch
         0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
         0003-Use-GNOME-3.16-deprecated-schemas.patch)
-sha512sums=('c45f2db7f946aee2ad182efbb7bb5797bffcffef8721dc62a9a562e5e1fa704a7c8ac7f5f5508c69f6eb58c66f2f406dcd91b318aa368b0f34d51c1a0da24d00'
+sha512sums=('ee93e1b34389cdb4ae5370eb13f5741f145a399f836f0925b57f34b297e4de1235baf9cce729c61b812a2a5d71a038764b8b3363af8184cca080165c0ff3180a'
             'bf62af22a98ed0447509da8b221b19a7f7bd9330fccfd550ae24f9993ee5cb173aa869e56edac303d7d5148da4d6c105d417910a989e5eeb74513b80afed5d34'
             '3cb2735c15c3acb4bcbd78da1c31dddda2f707b48fec46294a705a7688d277040aa1f7891b8c56cbd73b4f138805006bd0a2d569b7b4ac8f4ac3f297d5abb6ac'
             '4dc034674a417680c1d0ed46fe3345a31412a9ffbc6a65242566c55fb4d81b166affb1c32a187706e31dd6b10868b9032431ce846e8e06a4b5949bcc99ec3641')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001-Remove-accountsservice-dependency.patch
-  patch -p1 -i ../0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-  patch -p1 -i ../0003-Use-GNOME-3.16-deprecated-schemas.patch
-
-  # Temporarily disable since it fails to link to glib
-  sed -i '/noinst_PROGRAMS += test-wm-button-layout-translations/d' plugins/xsettings/Makefile.am
+    patch -p1 -i ../0001-Remove-accountsservice-dependency.patch
+    patch -p1 -i ../0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+    #patch -p1 -i ../0003-Use-GNOME-3.16-deprecated-schemas.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  intltoolize -f
+    autoreconf -vfi
+    intltoolize -f
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/unity-settings-daemon \
-    --disable-static \
-    --enable-systemd \
-    --enable-fcitx
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/unity-settings-daemon \
+        --disable-static \
+        --enable-systemd \
+        --enable-fcitx
 
-  # https://bugzilla.gnome.org/show_bug.cgi?id=656231
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+    # https://bugzilla.gnome.org/show_bug.cgi?id=656231
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 
-  install -dm755 "${pkgdir}/usr/bin/"
-  ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
-    "${pkgdir}/usr/bin/unity-settings-daemon"
+    install -dm755 "${pkgdir}/usr/bin/"
+    ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
+        "${pkgdir}/usr/bin/unity-settings-daemon"
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/share/locale/"
 }
