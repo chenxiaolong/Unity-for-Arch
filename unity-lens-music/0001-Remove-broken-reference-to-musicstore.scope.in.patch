@@ -1,0 +1,26 @@
+From eef2b96328e6dc50852b7acbff5559ea84715479 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 25 Jan 2016 21:14:50 -0500
+Subject: [PATCH] Remove broken reference to musicstore.scope.in
+
+---
+ Makefile.am | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 0aca69a..4fd6e84 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -5,8 +5,7 @@ SUBDIRS = src data po tests
+ #
+ scope_in_files = \
+   banshee.scope.in \
+-  rhythmbox.scope.in \
+-  musicstore.scope.in
++  rhythmbox.scope.in
+ scopedir = $(SCOPESDIR)/music
+ scope_DATA = $(scope_in_files:.scope.in=.scope)
+ 
+-- 
+2.7.0
+
