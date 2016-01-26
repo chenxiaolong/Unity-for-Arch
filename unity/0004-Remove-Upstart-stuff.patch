@@ -1,14 +1,14 @@
-From e93f3e94c49f0c56c2d58444f01e6827b10b4a9c Mon Sep 17 00:00:00 2001
+From 201c84455c0c602d46e41d0690dfd241e59b9fff Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
-Subject: [PATCH 5/8] Remove Upstart stuff
+Subject: [PATCH 4/6] Remove Upstart stuff
 
 ---
  services/CMakeLists.txt         |  7 -------
- services/panel-service.c        |  6 ++++--
+ services/panel-service.c        | 39 +--------------------------------------
  tools/unity.cmake               |  3 +--
- unity-shared/UpstartWrapper.cpp | 15 ++++++++++++++-
- 4 files changed, 19 insertions(+), 12 deletions(-)
+ unity-shared/UpstartWrapper.cpp |  9 ++-------
+ 4 files changed, 4 insertions(+), 54 deletions(-)
 
 diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
 index df0f767..55accd7 100644
@@ -33,7 +33,7 @@ index df0f767..55accd7 100644
 -configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
 -install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
 diff --git a/services/panel-service.c b/services/panel-service.c
-index 5642f12..3ff7eca 100644
+index b9b86cd..170c779 100644
 --- a/services/panel-service.c
 +++ b/services/panel-service.c
 @@ -34,8 +34,6 @@
@@ -45,29 +45,55 @@ index 5642f12..3ff7eca 100644
  G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
  
  #define GET_PRIVATE(o) \
-@@ -805,6 +803,9 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
+@@ -804,42 +802,7 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
  static void
  emit_upstart_event (const gchar *event)
  {
-+#if 1
+-  const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
+-
+-  if (!upstartsession)
+-    return;
+-
+-  GError *error = NULL;
+-  GDBusConnection* conn = g_dbus_connection_new_for_address_sync (upstartsession,
+-                                                                  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+-                                                                  NULL, NULL, &error);
+-
+-  if (error)
+-    {
+-      g_warning ("Unable to connect to Upstart session: %s", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  GVariant *result = g_dbus_connection_call_sync (conn, DBUS_SERVICE_UPSTART,
+-                                                  DBUS_PATH_UPSTART,
+-                                                  DBUS_INTERFACE_UPSTART,
+-                                                  "EmitEvent",
+-                                                  g_variant_new ("(sasb)", event, NULL, 0),
+-                                                  NULL, G_DBUS_CALL_FLAGS_NO_AUTO_START, -1,
+-                                                  NULL, &error);
+-
+-  if (error)
+-    {
+-      g_warning ("Unable to emit Upstart event: %s", error->message);
+-      g_error_free (error);
+-    }
+-  else
+-    {
+-      g_variant_unref (result);
+-    }
+-
+-  g_object_unref (conn);
 +  (void) event;
-+#else
-   const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
- 
-   if (!upstartsession)
-@@ -841,6 +842,7 @@ emit_upstart_event (const gchar *event)
-     }
- 
-   g_object_unref (conn);
-+#endif
  }
  
  
 diff --git a/tools/unity.cmake b/tools/unity.cmake
-index 15d0368..1e493e2 100755
+index 787c920..867d6a8 100755
 --- a/tools/unity.cmake
 +++ b/tools/unity.cmake
-@@ -126,9 +126,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
+@@ -125,9 +125,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
  
      try:
          debug_mode = 2 if advanced_debug else 1 if debug else 0
@@ -76,10 +102,10 @@ index 15d0368..1e493e2 100755
          unity_instance = process_and_start_unity (verbose, debug_mode, compiz_path, compiz_args, log_file)
 -        subprocess.call(["start", "unity-panel-service"])
          unity_instance.wait()
-     except KeyboardInterrupt, e:
+     except KeyboardInterrupt as e:
          try:
 diff --git a/unity-shared/UpstartWrapper.cpp b/unity-shared/UpstartWrapper.cpp
-index 5ec3add..0c2995e 100644
+index ea2cd46..7ff2089 100644
 --- a/unity-shared/UpstartWrapper.cpp
 +++ b/unity-shared/UpstartWrapper.cpp
 @@ -20,7 +20,6 @@
@@ -90,48 +116,29 @@ index 5ec3add..0c2995e 100644
  
  namespace unity
  {
-@@ -36,19 +35,29 @@ public:
+@@ -35,20 +34,16 @@ public:
+   Impl(bool test_mode = (!g_getenv("UPSTART_SESSION")));
  
    void Emit(std::string const& name);
- 
-+#if 0
- private:
-   glib::DBusProxy::Ptr upstart_proxy_;
-+#endif
+-
+-private:
+-  glib::DBusProxy::Ptr upstart_proxy_;
  };
  
  UpstartWrapper::Impl::Impl(bool test_mode)
  {
-+#if 1
+-  upstart_proxy_ = std::make_shared<unity::glib::DBusProxy>(test_mode ?  "com.canonical.Unity.Test.Upstart" : DBUS_SERVICE_UPSTART,
+-                                                            DBUS_PATH_UPSTART, DBUS_INTERFACE_UPSTART);
 +  (void) test_mode;
-+#else
-   upstart_proxy_ = std::make_shared<unity::glib::DBusProxy>(test_mode ?  "com.canonical.Unity.Test.Upstart" : DBUS_SERVICE_UPSTART,
-                                                             DBUS_PATH_UPSTART, DBUS_INTERFACE_UPSTART);
-+#endif
  }
  
  void UpstartWrapper::Impl::Emit(std::string const& name)
  {
-+#if 1
+-  upstart_proxy_->Call("EmitEvent", g_variant_new("(sasb)", name.c_str(), nullptr, 0));
 +  (void) name;
-+#else
-   upstart_proxy_->Call("EmitEvent", g_variant_new("(sasb)", name.c_str(), nullptr, 0));
-+#endif
  }
  
  //
-@@ -68,7 +77,11 @@ UpstartWrapper::~UpstartWrapper()
- 
- void UpstartWrapper::Emit(std::string const& name)
- {
-+#if 1
-+  (void) name;
-+#else
-   pimpl_->Emit(name);
-+#endif
- }
- 
- }
 -- 
-2.3.7
+2.7.0
 

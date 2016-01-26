@@ -1,24 +1,24 @@
-From bd67cdf0022363cc262ac7ce0f15c33952d80485 Mon Sep 17 00:00:00 2001
+From ec636ab68fa9e72cc343c2b76d2966c94bcbb38f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 7/8] Remove xpathselect dependency
+Subject: [PATCH 6/6] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
  plugins/unityshell/src/unityshell.cpp |   1 -
  plugins/unityshell/src/unityshell.h   |   2 -
  unity-shared/CMakeLists.txt           |   1 -
- unity-shared/DebugDBusInterface.cpp   | 430 ----------------------------------
+ unity-shared/DebugDBusInterface.cpp   | 431 ----------------------------------
  unity-shared/DebugDBusInterface.h     |  45 ----
- 6 files changed, 480 deletions(-)
+ 6 files changed, 481 deletions(-)
  delete mode 100644 unity-shared/DebugDBusInterface.cpp
  delete mode 100644 unity-shared/DebugDBusInterface.h
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 94fde93..7d10a0d 100644
+index d56088d..e9b38ad 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -233,7 +233,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
+@@ -239,7 +239,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
      nux-4.0>=4.0.5
      sigc++-2.0
      unity-misc>=0.4.0
@@ -27,10 +27,10 @@ index 94fde93..7d10a0d 100644
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index 3905f02..7c62dad 100644
+index 514eb2c..4788b7b 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
-@@ -160,7 +160,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
+@@ -187,7 +187,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
    , WM(PluginAdapter::Initialize(screen))
    , menus_(std::make_shared<menu::Manager>(std::make_shared<indicator::DBusIndicators>(), std::make_shared<key::GnomeGrabber>()))
    , deco_manager_(std::make_shared<decoration::Manager>(menus_))
@@ -39,7 +39,7 @@ index 3905f02..7c62dad 100644
    , super_keypressed_(false)
    , newFocusedWindow(nullptr)
 diff --git a/plugins/unityshell/src/unityshell.h b/plugins/unityshell/src/unityshell.h
-index 1357351..ead5d6a 100644
+index 7235ac1..588fa2a 100644
 --- a/plugins/unityshell/src/unityshell.h
 +++ b/plugins/unityshell/src/unityshell.h
 @@ -63,7 +63,6 @@
@@ -50,7 +50,7 @@ index 1357351..ead5d6a 100644
  #include "ScreenIntrospection.h"
  #include "ScreenSaverDBusManager.h"
  #include "SwitcherController.h"
-@@ -350,7 +349,6 @@ private:
+@@ -351,7 +350,6 @@ private:
    lockscreen::DBusManager::Ptr screensaver_dbus_manager_;
    lockscreen::Controller::Ptr lockscreen_controller_;
    ui::EdgeBarrierController::Ptr edge_barriers_;
@@ -59,7 +59,7 @@ index 1357351..ead5d6a 100644
    spread::Filter::Ptr       spread_filter_;
  
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
-index ed39e58..475cfb1 100644
+index a657031..7afbb06 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
 @@ -22,7 +22,6 @@ set (UNITY_SHARED_SOURCES
@@ -72,10 +72,10 @@ index ed39e58..475cfb1 100644
       DeltaRestrainment.cpp
 diff --git a/unity-shared/DebugDBusInterface.cpp b/unity-shared/DebugDBusInterface.cpp
 deleted file mode 100644
-index 8df3ffc..0000000
+index 73bea0d..0000000
 --- a/unity-shared/DebugDBusInterface.cpp
 +++ /dev/null
-@@ -1,430 +0,0 @@
+@@ -1,431 +0,0 @@
 -// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
 -/*
 - * Copyright (C) 2010-2013 Canonical Ltd
@@ -98,6 +98,7 @@ index 8df3ffc..0000000
 - */
 -
 -#include <fstream>
+-#include <iostream>
 -#include <sstream>
 -#include <boost/algorithm/string.hpp>
 -#include <NuxCore/Logger.h>
@@ -558,5 +559,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.3.7
+2.7.0
 

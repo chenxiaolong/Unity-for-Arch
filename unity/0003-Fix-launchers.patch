@@ -1,17 +1,17 @@
-From 5004432e6a113d50a8ee42c6ff46db7b287283a5 Mon Sep 17 00:00:00 2001
+From d10ff9a519458efe298852c829877ee998af59f3 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:11:47 -0400
-Subject: [PATCH 4/8] Fix launchers
+Subject: [PATCH 3/6] Fix launchers
 
 ---
  com.canonical.Unity.gschema.xml | 3 ---
  1 file changed, 3 deletions(-)
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index 2e404e2..a09e97b 100644
+index 5248235..9f68fb5 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -95,14 +95,11 @@
+@@ -102,14 +102,11 @@
    <schema path="/com/canonical/unity/launcher/" id="com.canonical.Unity.Launcher" gettext-domain="unity">
      <key type="as" name="favorites">
        <default>[
@@ -27,5 +27,5 @@ index 2e404e2..a09e97b 100644
          'unity://running-apps',
          'unity://expo-icon',
 -- 
-2.3.7
+2.7.0
 
