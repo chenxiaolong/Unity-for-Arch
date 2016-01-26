@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-scope-home
 _actual_ver=6.8.2
@@ -32,31 +32,31 @@ sha512sums=('cded77590fe6a20400122a9c7dbb0464b6d876eed434ee77e36afe06a12493b2ee5
             '66cf3e94b1aca5a2e677803ab956e1a24cc29ae6af22c63f2d77a6a73f35c4bfeffdbb838eae8a40ee885a6a396b98ff4761d84d58b7f3de3462ca23dd60c933')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  #patch -p1 -i "${srcdir}/0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch"
-  patch -p1 -i "${srcdir}/0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch"
-  patch -p1 -i "${srcdir}/0003-Show-description-of-error-code.patch"
-  patch -p1 -i "${srcdir}/0004-Fix-vala-0.26-errors.patch"
+    #patch -p1 -i "${srcdir}/0001-Fix-connection-issue-due-to-untrusted-SSL-CA-certifi.patch"
+    patch -p1 -i "${srcdir}/0002-productsearch.ubuntu.com-only-accepts-locale-string-.patch"
+    patch -p1 -i "${srcdir}/0003-Show-description-of-error-code.patch"
+    patch -p1 -i "${srcdir}/0004-Fix-vala-0.26-errors.patch"
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  autoreconf -vfi
-  intltoolize -f
-  ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
-  make
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    autoreconf -vfi
+    intltoolize -f
+    ./configure --prefix=/usr --libexecdir=/usr/lib/unity-scope-home
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 
-  cd "../ubuntu-sso-client-${_sso_ver}/data/"
-  # Ubuntu's Smart Scope server does not use a trusted certificate
-  install -dm755 "${pkgdir}/etc/ssl/certs/"
-  install -m644 UbuntuOne-Go_Daddy_CA.pem \
-                UbuntuOne-Go_Daddy_Class_2_CA.pem \
-                UbuntuOne-ValiCert_Class_2_VA.pem \
-                "${pkgdir}/etc/ssl/certs/"
+    cd "../ubuntu-sso-client-${_sso_ver}/data/"
+    # Ubuntu's Smart Scope server does not use a trusted certificate
+    install -dm755 "${pkgdir}/etc/ssl/certs/"
+    install -m644 UbuntuOne-Go_Daddy_CA.pem \
+                  UbuntuOne-Go_Daddy_Class_2_CA.pem \
+                  UbuntuOne-ValiCert_Class_2_VA.pem \
+                  "${pkgdir}/etc/ssl/certs/"
 }
