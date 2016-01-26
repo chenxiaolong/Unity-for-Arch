@@ -4,54 +4,56 @@
 # Contributor: György Balló <ballogy@freestart.hu>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=zeitgeist-ubuntu
-pkgver=0.9.14
-_ubuntu_rel=2.2ubuntu2
-pkgrel=6
+pkgver=0.9.16
+_ubuntu_rel=0ubuntu3~gcc5.1
+pkgrel=1
 pkgdesc="Service logging user activities and events"
 arch=(i686 x86_64)
 url="http://zeitgeist-project.com/"
 license=(GPL2 LGPL2.1)
 depends=(json-glib telepathy-glib gtk3 xapian-core)
-makedepends=(intltool gobject-introspection vala raptor python2-rdflib)
+makedepends=(intltool gobject-introspection vala raptor python2-rdflib gnome-common)
 provides=(zeitgeist-datahub "zeitgeist=${pkgver}")
 conflicts=(zeitgeist-datahub zeitgeist)
 replaces=(zeitgeist-datahub)
 source=("https://launchpad.net/zeitgeist/${pkgver%.*}/${pkgver}/+download/zeitgeist-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('9886396ea153fc12de81fdee2acf645b33a2af0c0fa3533c18f6c80c68c506ee9f790f37f99677ce6c3546a0f9ef5e5c251bc9411e0d882df796479edd9e817c'
-            '3d1f1728597b44e0f01197963362290fbab9d3fa9b0a70de61e8ba863e0b2ca491a2f23da052627f563d8b321384811df2dcd061eec42bce849be0d5155bd716')
+sha512sums=('eb28215c937b71c8cec12f55236db4281ad529b2854ecb3c093477d45cd8348c6ea764e2cf00a99d41645b27b685a5325f0631b318409735b578a5871087b0f1'
+            '291d126252e6514789507ff0a3b18ec9dad10ffdbba9772022650250bcba750c6bed4cb1061a2c0e43cda70fb336ce7d2155b3b598b8baa0d5e73b0b67a3d547')
 
 prepare() {
-  cd "zeitgeist-${pkgver}"
+    cd "zeitgeist-${pkgver}"
 
-  sed -i 's/python -/$PYTHON -/' configure configure.ac
+    sed -i 's/python -/$PYTHON -/' configure configure.ac
+    sed -i '1s/python$/python2/' data/ontology2code
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i}"
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i}"
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "zeitgeist-${pkgver}"
-  export PYTHON=/usr/bin/python2
-  autoreconf -vfi
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/zeitgeist \
-    --enable-datahub \
-    --enable-fts \
-    --enable-telepathy
-  make
+    cd "zeitgeist-${pkgver}"
+    export PYTHON=/usr/bin/python2
+    autoreconf -vfi
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/zeitgeist \
+        --enable-datahub \
+        --enable-fts \
+        --enable-telepathy
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
+    make
 }
 
 package() {
-  cd "zeitgeist-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "zeitgeist-${pkgver}"
+    make DESTDIR="${pkgdir}" install
 }
