@@ -10,7 +10,7 @@ pkgname=bamf-ubuntu
 _actual_ver=0.5.2
 _extra_ver=~bzr0+16.04.20151217
 pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=(i686 x86_64)
 url="https://launchpad.net/bamf"
@@ -23,13 +23,13 @@ conflicts=(bamf)
 groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        bamfwatcher.c
+        update-bamf-index.hook
         update-bamf-index.pl
-        bamfwatcher.service)
+        update-bamf-index.sh)
 sha512sums=('7bbea305cde87636bea0176e5b5e45b97546645db6e134a03dba6ef92205acb9d0dbdf82e9e30b244c675c26e50e9de2637f04c57a6236760db03f3ce9962e2c'
-            'fdbb6847d05e42c258080a5953903d68f4645fe01eeb7003c70ff706bac9753f34013ebc30b879acc397397b64a2653289b72125a0f7c4a7ba17c02aae3b00ab'
+            '49379121974a6f273084f66c6aa937fd2213e92169040db03f87098d3ca269032603f3dbfec947807e3d4a3c866648b96a2a3bb18f1ad3736a7ceaf011cf901a'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
-            'b2e899e2916efc6e04af34c3bffc14f6254caaf42d2e3cee88277dde4c191dd93cab14246091beb5d4cfb8a242559b8361a7c4c1dc70c31034ade52689322b83')
+            '6dd8079a1dddc787d41fea246809e37de76a6e6daa2e3760c4a6770456fd1d8097597cadeae38fd81f322d44e79f0786e82604d606bc81bae57f39091db0755c')
 
 prepare() {
     cd "bamf-${_actual_ver}${_extra_ver}"
@@ -38,8 +38,6 @@ prepare() {
 }
 
 build() {
-    gcc bamfwatcher.c -lprocps -o bamfwatcher
-
     cd "bamf-${_actual_ver}${_extra_ver}"
 
     gtkdocize
@@ -61,13 +59,10 @@ package() {
 
     make DESTDIR="${pkgdir}/" install
 
-    install -dm755 "${pkgdir}/usr/bin/"
-    install -m755 "${srcdir}/bamfwatcher" "${pkgdir}/usr/bin/"
-    install -m755 "${srcdir}/update-bamf-index.pl" "${pkgdir}/usr/lib/bamf/"
-
-    # Install systemd service
-    install -dm755 "${pkgdir}/usr/lib/systemd/system/"
-    install -m644 "${srcdir}/bamfwatcher.service" "${pkgdir}/usr/lib/systemd/system/"
+    install -m755 ../update-bamf-index.pl "${pkgdir}"/usr/lib/bamf/
+    install -m755 ../update-bamf-index.sh "${pkgdir}"/usr/lib/bamf/
+    install -dm755 "${pkgdir}"/usr/share/libalpm/hooks/
+    install -m644 ../update-bamf-index.hook "${pkgdir}"/usr/share/libalpm/hooks/
 
     # Remove upstart files
     rm -r "${pkgdir}/usr/share/upstart/"
