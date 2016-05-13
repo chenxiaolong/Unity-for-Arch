@@ -16,10 +16,9 @@ pkgdesc="A place on the user's desktop that collects messages that need a respon
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-messages"
 license=(GPL)
-depends=(accountsservice hicolor-icon-theme libindicator3)
+depends=(accountsservice hicolor-icon-theme libindicator-gtk3)
 makedepends=(gobject-introspection gtk-doc intltool vala)
 groups=(unity)
-install=indicator-messages.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-autoconf-fix.patch
         0002-Disable-tests.patch)
