@@ -5,16 +5,16 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.18
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-settings-daemon-ubuntu
-_use_ppa=false
-#_ppa_rel=3ubuntu1~wily1
-#_ppa_ver=3.16.0
-_ubuntu_rel=0ubuntu3
+_use_ppa=true
+_ppa_rel=0ubuntu1~xenial1
+_ppa_ver=3.20.1
+#_ubuntu_rel=0ubuntu3
 #_ubuntu_ver=3.14.2
-pkgver=3.18.2
+pkgver=3.20.1
 pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
@@ -28,7 +28,6 @@ groups=(gnome unity)
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=(gnome-settings-daemon)
 options=(!emptydirs)
-install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
 )
 
@@ -38,8 +37,8 @@ else
     source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('82aa939c485d4fa90ee135d4f987a13c6b1629546f41a1399b2badd166c0cc4e298096d860fafefa1236d3af87484bd8903fb6e39fe971660e553e28768775fc'
-            '238a458dffb1c745e7e30fa64b4bdcac34a0d89870d3a012b20c0505ca7a6cb7fb1e85e0a5e7ccffa5ecb43842c746e5b6bcef9943a758aae3b81ebc739b496e')
+sha512sums=('4d8ec7c8d508a0dead00c08ef591c9814bf1c33d0016626c6cd5153bd2aad601ea1146b0e5617465ee276b44d8d622b664817a83e045cece69c2be76c5e33a84'
+            'e0a75c2bb655a84613008a6f7fbe3d7e33b6ab547b11dbd81e222ea47586134b1578fc92e9148716c466863a83d251a82278d24512bc89564a8c8e414aa7b1c0')
 
 prepare() {
     cd "${pkgname%-*}-${pkgver}"
