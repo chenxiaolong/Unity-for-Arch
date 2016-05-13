@@ -6,11 +6,12 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.18
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
 
 pkgname=gsettings-desktop-schemas-ubuntu
+_ubuntu_ver=3.18.1
 _ubuntu_rel=1ubuntu1
-pkgver=3.18.1
+pkgver=3.20.0
 pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
@@ -20,10 +21,9 @@ depends=(glib2)
 makedepends=(intltool gobject-introspection)
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
-install=${pkgname%-*}.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('8dc3c9890f979860f06efa949c92c699e40f25eedc24eae087d9c70555ec9ef513a873f9a787f10b34208bf11c7be903cbaeecc95a4d93b4e556640be1c21b15'
+sha512sums=('559baf477be9f728c5fea24232218ec4ff17ac97a6db166749fbca4dc1d3995e79824dc977cae5aa10b2197aa9c0e65b884f5c1cb446db109bc15dafe456f7a1'
             '593cbd34d5456ba8790ebd8c600216081f159f754c44969c1cde4f4057044bea53054b260b2f660d8dfc15b344e33f0f7382f336d5ed660047cf8a797c101ab7')
 
 prepare() {
