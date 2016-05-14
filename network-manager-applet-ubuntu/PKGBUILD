@@ -8,31 +8,36 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgbase%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgbase%-*}, majorver=1.0
+# vercheck-gnome: name=${pkgbase%-*}, majorver=1.2
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
-_ubuntu_rel=1ubuntu1
-pkgver=1.0.10
+_ubuntu_rel=0ubuntu0.16.04.1
+_ubuntu_ver=1.2.0
+pkgver=1.2.2
 pkgrel=1
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
 url="http://www.gnome.org/projects/NetworkManager/"
 license=(GPL2 LGPL2.1)
-makedepends=(libnm-glib libsecret gtk3 mobile-broadband-provider-info iso-codes
-             libnotify libmm-glib intltool gobject-introspection libgudev
-             libappindicator3 python2)
+depends=(libnm-glib libgudev gtk3 mobile-broadband-provider-info iso-codes
+         libappindicator-gtk3 python2)
+makedepends=(libsecret libnotify libmm-glib intltool gobject-introspection)
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*}/${pkgbase%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('dc13881243e5232d0c45563442f906a93c4d196a69c52c45d335f755bbc73c4d3131ba59180a102f65ca2066d40127b9db8cf85da2b41ec18efda482a9d210aa'
-            '0500eb1cb771e48ee04fa736397f0d98c5642f34a290b80d46349046bf3e1f55d42b0a0a2e3cbefca78236ec285ecf6585db69a3750c3c9366cead54220ce4b7')
+sha512sums=('1a763acc045b56f56d1faba17ec1523969f9b202a611bef7a52a55c3658a29acf6e9eeee1666274e09b5dbfe2895afc728f119da2a8edca0f11de55c42e1e382'
+            'ce4bb59b066ed8e0c21a52d42f24a4ca22806e2de3e0e9487966af1ffb5e6bf27d4cffd7ee2729a5b37fe4a8afbb71266768bb5a755bfd1e85f7528fe96a4cea')
 
 prepare() {
     mkdir -p nma/etc/xdg nma/usr/bin \
         nma/usr/share/{applications,icons/hicolor/22x22/apps,man/man1,nm-applet}
 
     cd "${pkgbase%-*}-${pkgver}"
+
+    # Does not apply cleanly
+    sed -i '/make_menu_items_insensitive_based_on_permissions.patch/d' ../debian/patches/series
+    sed -i '/hide_policy_items_env_var.patch/d' ../debian/patches/series
 
     # Apply Ubuntu's patches
     for i in $(grep -v '#' ../debian/patches/series); do
@@ -72,11 +77,9 @@ check() {
 
 package_nm-connection-editor-ubuntu() {
     pkgdesc="NetworkManager GUI connection editor"
-    depends=(libnm-glib gtk3 mobile-broadband-provider-info iso-codes)
     provides=("libnm-gtk=${pkgver}-${pkgrel}" "nm-connection-editor=${pkgver}-${pkgrel}")
     conflicts=(libnm-gtk libnm-gtk-ubuntu)
     replaces=(libnm-gtk libnm-gtk-ubuntu)
-    install=nm-connection-editor.install
 
     cd "${pkgbase%-*}-${pkgver}"
     make DESTDIR="${pkgdir}" install
@@ -103,8 +106,8 @@ package_nm-connection-editor-ubuntu() {
 }
 
 package_network-manager-applet-ubuntu() {
-    depends=(nm-connection-editor-ubuntu libmm-glib libnotify libsecret libappindicator3)
-    install=network-manager-applet.install
+    depends=(nm-connection-editor-ubuntu libmm-glib libnotify libsecret
+             libappindicator-gtk3)
     provides=("network-manager-applet=${pkgver}")
     conflicts=(network-manager-applet)
 
