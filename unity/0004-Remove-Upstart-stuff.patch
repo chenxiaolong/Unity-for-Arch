@@ -1,17 +1,16 @@
-From 201c84455c0c602d46e41d0690dfd241e59b9fff Mon Sep 17 00:00:00 2001
+From 667ef76e223ff28a5324dd3c470702e976989f81 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:13 -0400
-Subject: [PATCH 4/6] Remove Upstart stuff
+Subject: [PATCH 4/7] Remove Upstart stuff
 
 ---
  services/CMakeLists.txt         |  7 -------
  services/panel-service.c        | 39 +--------------------------------------
- tools/unity.cmake               |  3 +--
  unity-shared/UpstartWrapper.cpp |  9 ++-------
- 4 files changed, 4 insertions(+), 54 deletions(-)
+ 3 files changed, 3 insertions(+), 52 deletions(-)
 
 diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
-index df0f767..55accd7 100644
+index b48d95a..ae0bdc6 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
 @@ -12,7 +12,6 @@ set(UNITY_PANEL_SERVICE_DEPS
@@ -25,13 +24,13 @@ index df0f767..55accd7 100644
 @@ -52,9 +51,3 @@ link_directories(${LIB_PATHS})
  add_executable(unity-panel-service ${PANEL_SOURCES})
  target_link_libraries(unity-panel-service ${LIBS})
- install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/unity/)
+ install(TARGETS unity-panel-service DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity/)
 -
 -configure_file(unity-panel-service.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf)
--install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/sessions)
 -
 -configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
--install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/share/upstart/sessions)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/sessions)
 diff --git a/services/panel-service.c b/services/panel-service.c
 index b9b86cd..170c779 100644
 --- a/services/panel-service.c
@@ -89,21 +88,6 @@ index b9b86cd..170c779 100644
  }
  
  
-diff --git a/tools/unity.cmake b/tools/unity.cmake
-index 787c920..867d6a8 100755
---- a/tools/unity.cmake
-+++ b/tools/unity.cmake
-@@ -125,9 +125,8 @@ def run_unity (verbose, debug, advanced_debug, compiz_path, compiz_args, log_fil
- 
-     try:
-         debug_mode = 2 if advanced_debug else 1 if debug else 0
--        subprocess.call(["stop", "unity-panel-service"])
-+        subprocess.call(["killall", "unity-panel-service"])
-         unity_instance = process_and_start_unity (verbose, debug_mode, compiz_path, compiz_args, log_file)
--        subprocess.call(["start", "unity-panel-service"])
-         unity_instance.wait()
-     except KeyboardInterrupt as e:
-         try:
 diff --git a/unity-shared/UpstartWrapper.cpp b/unity-shared/UpstartWrapper.cpp
 index ea2cd46..7ff2089 100644
 --- a/unity-shared/UpstartWrapper.cpp
@@ -140,5 +124,5 @@ index ea2cd46..7ff2089 100644
  
  //
 -- 
-2.7.0
+2.8.2
 

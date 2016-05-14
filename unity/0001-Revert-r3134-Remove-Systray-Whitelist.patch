@@ -1,7 +1,7 @@
-From 2226efbccf94b21628d80c390247405afedbad9d Mon Sep 17 00:00:00 2001
+From a87ba7ecf3a1c6ee788b50935aa21a68d625ce56 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
-Subject: [PATCH 1/6] Revert r3134: Remove Systray Whitelist
+Subject: [PATCH 1/7] Revert r3134: Remove Systray Whitelist
 
 ---
  com.canonical.Unity.gschema.xml |  7 +++++
@@ -10,13 +10,14 @@ Subject: [PATCH 1/6] Revert r3134: Remove Systray Whitelist
  tests/CMakeLists.txt            |  1 -
  tests/test_panel_tray.cpp       | 65 -----------------------------------------
  5 files changed, 44 insertions(+), 81 deletions(-)
+ delete mode 100644 tests/test_panel_tray.cpp
 
 diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index b7366e2..5248235 100644
+index 74f0afb..bcd7b95 100644
 --- a/com.canonical.Unity.gschema.xml
 +++ b/com.canonical.Unity.gschema.xml
-@@ -137,6 +137,13 @@
-       <description>This is a detection key for the favorite migration script to know whether the needed migration is done or not.</description>
+@@ -155,6 +155,13 @@
+       <description>The position of launcher.</description>
      </key>
    </schema>
 +  <schema path="/com/canonical/unity/panel/" id="com.canonical.Unity.Panel" gettext-domain="unity">
@@ -159,10 +160,10 @@ index b2ff8e0..e11fe93 100644
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 9bcf0a5..fa812ba 100644
+index 17ea9b7..1483e5a 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -250,7 +250,6 @@ if (ENABLE_X_SUPPORT)
+@@ -251,7 +251,6 @@ if (ENABLE_X_SUPPORT)
                   test_panel_menu_view.cpp
                   test_panel_service.cpp
                   test_panel_style.cpp
@@ -171,9 +172,10 @@ index 9bcf0a5..fa812ba 100644
                   test_places_group.cpp
                   test_preview_player.cpp
 diff --git a/tests/test_panel_tray.cpp b/tests/test_panel_tray.cpp
-index c407576..e69de29 100644
+deleted file mode 100644
+index c407576..0000000
 --- a/tests/test_panel_tray.cpp
-+++ b/tests/test_panel_tray.cpp
++++ /dev/null
 @@ -1,65 +0,0 @@
 -/*
 - * Copyright 2013 Canonical Ltd.
@@ -241,5 +243,5 @@ index c407576..e69de29 100644
 -}
 -
 -- 
-2.7.0
+2.8.2
 

@@ -1,7 +1,7 @@
-From c9417d0470cd0b27130d74f911800cfae346bce4 Mon Sep 17 00:00:00 2001
+From 2240368ff93b5647d82dcbf4b6fa6855d85b243c Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
-Subject: [PATCH 2/6] Disable -Werror
+Subject: [PATCH 2/7] Disable -Werror
 
 ---
  CMakeLists.txt          | 2 +-
@@ -9,10 +9,10 @@ Subject: [PATCH 2/6] Disable -Werror
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index d8da803..d56088d 100644
+index 0b68cdc..9e25830 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -199,7 +199,7 @@ if (BOOT_LOGGER)
+@@ -209,7 +209,7 @@ if (BOOT_LOGGER)
      SET (BOOT_LOGGER_FLAG "-DENABLE_LOGGER")
  endif (BOOT_LOGGER)
  
@@ -22,7 +22,7 @@ index d8da803..d56088d 100644
  option (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS "Disable errors when local typedefs are unused" ON)
  if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
 diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
-index b80ec71..df0f767 100644
+index 13a6171..b48d95a 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
 @@ -35,7 +35,7 @@ set(PANEL_SOURCES
@@ -35,5 +35,5 @@ index b80ec71..df0f767 100644
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.7.0
+2.8.2
 

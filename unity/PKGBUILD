@@ -6,7 +6,7 @@
 
 pkgname=unity
 _actual_ver=7.4.0
-_extra_ver=+16.04.20151218
+_extra_ver=+16.04.20160415
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -16,17 +16,16 @@ pkgdesc="A desktop experience designed for efficiency of space and interaction"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity"
 license=(GPL)
-depends=(bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs gnome-desktop
-         gnome-screensaver gnome-session-ubuntu hud ido libgnomeui libindicator
-         libindicator3 libnotify libunique libunity libunity-misc libxfixes nux
-         unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
-         lightdm-unity-greeter)
+depends=(appstream-glib bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs
+         gnome-desktop gnome-screensaver gnome-session-ubuntu hud ido
+         libgnomeui libindicator-gtk2 libindicator-gtk3 libnotify libunique
+         libunity libunity-misc libxfixes nux unity-asset-pool unity-scope-home
+         libxi zeitgeist-ubuntu lightdm-unity-greeter)
 makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
              python2-distribute)
 groups=(unity)
 
 #options=(!ccache)
-install=unity.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001-Revert-r3134-Remove-Systray-Whitelist.patch
@@ -35,20 +34,22 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0004-Remove-Upstart-stuff.patch
         0005-Remove-social.scope.patch
         0006-Remove-xpathselect-dependency.patch
+        0007-Add-missing-headers.patch
         com.ubuntu.user-interface.gschema.xml
         launcher_bfb.png
         99unity-panel-service
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('462e7f47fa2aed8f712d2737260ffd102efd6756db76c98bcc0a617cc7407ea6e8483fdec039eab37ee043af6e8e45034f63410e7e81cf1d923e2ce558691678'
-            '157777ded0dd1e7fbe90cfc5af63cf300dbfbb5e7d19cad2b742b3cb7c2116a8114c7584d929c33ba38dca35a586e000740b3af0d00ced11a85adba6943ce045'
-            'fcbd6b4a6d0ac0670a1073884529de0f120f8a165bc5a579e4945b40acc0cebf214d5ce2fea126764cf3b18e05ee3d87003fc4959fcc80fdeb1bae7771da9af2'
-            'f13598aa5fd0b66641f482c1a132db53075625243d9838f0214798935f814f3d4e3fbee9237ed94054541706919c05d226805653aa4aaa6a6649db81663ea3ab'
-            '1de30a75fda694167d497769d8fd8382653da5aff6e0c06d47a5a9e352fb5f417a793de59bf81d4ae05a5fd41b4a141a9026186e55a0dcc46db0e03fb1183384'
-            '74567e32d9c838b89a65849338410380aeae7ffc30cf1abcc82caabd56be5822b2ade9094bf5e5dc094680caa386412fb0501597fa2d936a1c60cb7e3dff95a3'
-            '18d29fc30f6c28ba42d6cb548357010bea87eddc624f1ad943b51af5c97030c6920d5bec95dd69e79d7e3d7d836c8cd9064d4e03732d4153ee93dce0d1f1f18e'
-            '3e583056de2f3290eced4a91eddc71da328c3c0e4cf2a075a125851de9662afa588c37db69002dff8501ecdca3bc4904900a0b4bd05941f3302d604353ec5f8d'
+sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390be8e282d5decbdbab772457784e1734f7ce702e0a5b2c19f13f5d67694a594'
+            'a094e95e2e0f158a6f44efa7078988cc637bb6810013eed53c25ca5e2e612e31e4e39508612d6a9c2cc229908ede6740a0cbabc87e569d7afe41520395be4828'
+            '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
+            'ec0d228b4a117883e5dfbca0404614bd107d27d709554cde5a4cbe946a500381ff729a7a5942fbbfc9c449d0d404bde343ff5e536e390c8146df5bca243b781e'
+            '1f1cbd726b17d27ed6b5852c81c12f3e58e25dd381da20e19e4c912ab53de1ebca7a95d8868d615e366c404a9b04d178cb18803d674837e88e77dd0c5524cf2c'
+            'd78bb8fc4687d6d17551dcde996a279afa6621f9a399d457e8288a4f144157359f0372d8d0eaf26e86d876e5eeb821dce553d024688a2fb87cddb1c235ab81d2'
+            'f164ebfbad64eef16276b129d073e9411a511bba974b6c4616cc801c582ead5467cca2944755a3294a4a14d4b38b72c7025562e8cf145c855205193f5cfcb9de'
+            '8ae32bb07dad5bcb264e3de621b29b1bd535fa80c205098990896f1c16f99cfa889234d55b4ce505b5ab5141c64269d9c5775a9666a45f65c699aa4f0382e94d'
+            'd8debb95205f47ef5ce762fcf9bc76306f2e164e711e818e2b1043b9c643cf1c5e43211474dec3689a02e76b5ab66e43a0f5aa2e3e34dd3e8f25a03ca36f4c4a'
             '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
@@ -57,24 +58,25 @@ sha512sums=('462e7f47fa2aed8f712d2737260ffd102efd6756db76c98bcc0a617cc7407ea6e84
             '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-    patch -p1 -i ../0001-Revert-r3134-Remove-Systray-Whitelist.patch
-    patch -p1 -i ../0002-Disable-Werror.patch
-    patch -p1 -i ../0003-Fix-launchers.patch
-    patch -p1 -i ../0004-Remove-Upstart-stuff.patch
-    patch -p1 -i ../0005-Remove-social.scope.patch
-    patch -p1 -i ../0006-Remove-xpathselect-dependency.patch
+    patch -p1 -i 0001-Revert-r3134-Remove-Systray-Whitelist.patch
+    patch -p1 -i 0002-Disable-Werror.patch
+    patch -p1 -i 0003-Fix-launchers.patch
+    patch -p1 -i 0004-Remove-Upstart-stuff.patch
+    patch -p1 -i 0005-Remove-social.scope.patch
+    patch -p1 -i 0006-Remove-xpathselect-dependency.patch
+    patch -p1 -i 0007-Add-missing-headers.patch
 
     # Apply Ubuntu patches
-    patch -p1 -i "../unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
+    patch -p1 -i "unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
     for i in $(grep -v '#' debian/patches/series); do
         patch -p1 -i "debian/patches/${i}"
     done
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     #export CXXFLAGS+=" -lc"
 
@@ -90,7 +92,8 @@ build() {
         -DCOMPIZ_PLUGIN_INSTALL_TYPE=package \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_SYSCONFDIR=/etc \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DCMAKE_INSTALL_SYSCONFDIR=/etc \
         -DUSE_GSETTINGS=TRUE \
         -DENABLE_UNIT_TESTS=FALSE \
         ..
@@ -109,7 +112,8 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    cd build
     make DESTDIR="${pkgdir}/" install
 
     # Install profile convert files

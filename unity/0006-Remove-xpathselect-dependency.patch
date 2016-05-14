@@ -1,7 +1,7 @@
-From ec636ab68fa9e72cc343c2b76d2966c94bcbb38f Mon Sep 17 00:00:00 2001
+From 3201ad591aa31e7826556bfa3110ebd8352a44b7 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 6/6] Remove xpathselect dependency
+Subject: [PATCH 6/7] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
@@ -15,10 +15,10 @@ Subject: [PATCH 6/6] Remove xpathselect dependency
  delete mode 100644 unity-shared/DebugDBusInterface.h
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index d56088d..e9b38ad 100644
+index 9e25830..1500048 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -239,7 +239,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
+@@ -250,7 +250,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
      nux-4.0>=4.0.5
      sigc++-2.0
      unity-misc>=0.4.0
@@ -27,10 +27,10 @@ index d56088d..e9b38ad 100644
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index 514eb2c..4788b7b 100644
+index 5070f37..7e5646f 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
-@@ -187,7 +187,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
+@@ -196,7 +196,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
    , WM(PluginAdapter::Initialize(screen))
    , menus_(std::make_shared<menu::Manager>(std::make_shared<indicator::DBusIndicators>(), std::make_shared<key::GnomeGrabber>()))
    , deco_manager_(std::make_shared<decoration::Manager>(menus_))
@@ -39,7 +39,7 @@ index 514eb2c..4788b7b 100644
    , super_keypressed_(false)
    , newFocusedWindow(nullptr)
 diff --git a/plugins/unityshell/src/unityshell.h b/plugins/unityshell/src/unityshell.h
-index 7235ac1..588fa2a 100644
+index cc714b3..66a648b 100644
 --- a/plugins/unityshell/src/unityshell.h
 +++ b/plugins/unityshell/src/unityshell.h
 @@ -63,7 +63,6 @@
@@ -50,7 +50,7 @@ index 7235ac1..588fa2a 100644
  #include "ScreenIntrospection.h"
  #include "ScreenSaverDBusManager.h"
  #include "SwitcherController.h"
-@@ -351,7 +350,6 @@ private:
+@@ -352,7 +351,6 @@ private:
    lockscreen::DBusManager::Ptr screensaver_dbus_manager_;
    lockscreen::Controller::Ptr lockscreen_controller_;
    ui::EdgeBarrierController::Ptr edge_barriers_;
@@ -59,10 +59,10 @@ index 7235ac1..588fa2a 100644
    spread::Filter::Ptr       spread_filter_;
  
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
-index a657031..7afbb06 100644
+index 7ad243f..01889a5 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
-@@ -22,7 +22,6 @@ set (UNITY_SHARED_SOURCES
+@@ -23,7 +23,6 @@ set (UNITY_SHARED_SOURCES
       CoverArt.cpp
       BackgroundEffectHelper.cpp
       DashStyle.cpp
@@ -559,5 +559,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.7.0
+2.8.2
 
