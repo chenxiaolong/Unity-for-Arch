@@ -57,7 +57,6 @@ To compile from source, just build all of the packages in the following order:
 | unity-control-center             | Utilities to configure the Unity desktop   |
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
-| libgee06                         | Legacy GObject collection library          |
 | unity-api                        | API for Unity shell integration            |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
