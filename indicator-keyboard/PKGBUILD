@@ -17,7 +17,6 @@ depends=(accountsservice fcitx gnome-desktop gucharmap ibus libgee libgnomekbd
          lightdm-ubuntu unity-control-center)
 makedepends=(gobject-introspection intltool vala)
 conflicts=(ibus-ubuntu)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-vala-build-fix.patch
         0002-Remove-code-depending-on-accountsservices-patch.patch
