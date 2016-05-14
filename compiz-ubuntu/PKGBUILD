@@ -13,7 +13,7 @@ pkgname=compiz-ubuntu
 epoch=1
 
 _actual_ver=0.9.12.2
-_extra_ver=+16.04.20151211
+_extra_ver=+16.04.20160415
 
 if [[ "${_use_ppa}" != true ]]; then
     _ubuntu_rel=0ubuntu1
@@ -42,7 +42,6 @@ groups=(unity)
 options=(emptydirs)
 conflicts=(compiz metacity-ubuntu)
 provides=(compiz-core compiz)
-install=compiz-ubuntu.install
 
 if [[ "${_use_ppa}" != true ]]; then
     source=("https://launchpad.net/ubuntu/+archive/primary/+files/compiz_${_actual_ver}${_extra_ver}.orig.tar.gz"
@@ -55,35 +54,40 @@ source+=(compiz.reset
          0001-Fix-cmake-install-directory.patch
          0002-Fix-python-install-command.patch
          0003-Use-Python-2.patch
-         0004-Disable-Werror.patch)
-sha512sums=('ebe2f566c43ab3be76703164965cb2d3f099521e1d66c9fa3696f274b8c7e9e0db1145fce288ff26d60605da9be2921a8c1eac3b477462a8facc36b7793dfcdb'
-            '2b2b4e3db57e79a9474c2c06da4eff0df19e5e2379488e2cffe1b49fb65bfff6e70d128d5efeedd7aa88ffdfb04e3da417292debbb2afa90a3125f42455c6f6d'
+         0004-Disable-Werror.patch
+         0001-Fix-abs-compile-error.patch)
+sha512sums=('911a99cf7f4b1439f82114df5e2cf68da2f821627c96ae0c4583c094c6a8811ffff25b00dc69b56e4d5edea0124ffeacc17ddf06f62c62ae850432b3aa79283c'
+            'dff764efb9237c5b65b9fb48b26039028c629cc516417923f8264187967ccbccd485d3e0e44ef501f0fc41ec4dacd5b12e3a96960ebfb7694209ef7d68d3d84f'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '94b139716f74cfb26276dbc0c5a73aa1d6f591e888b976210e7523de83e782a76992350d08b8054c8a04eeeb5273130cdeaaffd155ee3e9800921b7541cbdd82'
             '1107fd002e1123fd52535f0016ee241c12d719a62c0a301a97338a230a73267b43982e0d23250ecac09b3a4b0ae78710fa9e04d84d5729ee6ac7293935579706'
             '247c393a1c84becea57ccae6e1c6ed8c0eae3f874627677f3944dca0197565b6b12912357ad4f025a5a876f294338cb79d498484392aabaf4bfa22e5a2c08b24'
-            '1ec09ac2bbfe242670f9b51842c58bbe9b379f7a1bfeec12157b5ba3ea3142c88eb62462968f4378c64d75fa4148dca6123583399f93e2b6990c094d386f0951')
+            '1ec09ac2bbfe242670f9b51842c58bbe9b379f7a1bfeec12157b5ba3ea3142c88eb62462968f4378c64d75fa4148dca6123583399f93e2b6990c094d386f0951'
+            '8750772b1b392e3af1e4efe0f76211c84cf18f3123110e37637885b182c3950f545d3a1d8d03b518ba081859a26477b857aa4b931da7e4a057181ea23dce58fb')
 
 prepare() {
-    cd "${_archive_dir}"
+    #cd "${_archive_dir}"
 
     # Fix the directory for FindCompiz.cmake and FindCompizConfig.cmake
-    patch -p1 -i ../0001-Fix-cmake-install-directory.patch
+    patch -p1 -i 0001-Fix-cmake-install-directory.patch
 
     # Compiz's build system appends --install-layout=deb to the python 2 install
     # command (for python-compizconfig and ccsm) whether or not COMPIZ_DEB_BUILD
     # is set to 1
-    patch -p1 -i ../0002-Fix-python-install-command.patch
+    patch -p1 -i 0002-Fix-python-install-command.patch
 
     # Use python 2
-    patch -p1 -i ../0003-Use-Python-2.patch
+    patch -p1 -i 0003-Use-Python-2.patch
 
     # Don't treat warnings as errors
-    patch -p1 -i ../0004-Disable-Werror.patch
+    patch -p1 -i 0004-Disable-Werror.patch
+
+    # Fix ambiguous abs() error
+    patch -p1 -i 0001-Fix-abs-compile-error.patch
 
     # Apply Ubuntu patches
     if [[ "${_use_ppa}" != true ]]; then
-        patch -p1 -i ../compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+        patch -p1 -i compiz_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
     fi
 
     for i in $(grep -v '#' debian/patches/series); do
@@ -93,7 +97,7 @@ prepare() {
 }
 
 build() {
-    cd "${_archive_dir}"
+    #cd "${_archive_dir}"
 
     # Fix build on i686
     export CXXFLAGS+=" -lc"
@@ -133,7 +137,8 @@ build() {
 }
 
 package() {
-    cd "${_archive_dir}/build"
+    #cd "${_archive_dir}/build"
+    cd build
     make install DESTDIR="${pkgdir}"
 
     # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
