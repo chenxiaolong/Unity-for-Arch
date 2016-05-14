@@ -7,8 +7,8 @@
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-datetime
-_actual_ver=13.10.0
-_extra_ver=+15.10.20151005
+_actual_ver=15.10
+_extra_ver=+16.04.20160406
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A very, very simple clock"
@@ -19,20 +19,19 @@ depends=(evolution-data-server gstreamer libtimezonemap properties-cpp
          unity-control-center)
 makedepends=(intltool cmake)
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0002-Not-a-phone.patch)
-sha512sums=('3d28cab736f427c3902460a76b93ef8f7ca5ad3738b909829e4b25a4fb8b356c8ab230d3bb7d0a53c727cd324e681feaa2eb72107415b11d46a402d0bf6672e4'
-            '0b516676392a0e09e16f2529b917db905dfb3404e5fdd758d86444359ac4e0a836e03451c4f8543382adea77b7ee09cc4699fc339f8aa578e9ec504ac4e48c71')
+        0001-Not-a-phone.patch)
+sha512sums=('0e8be3ca123d5bdea1049aaed8dd0089af429c43624be706d7e62cf8ed79362497962ba37f15d3f2b7c0d422588325fe2cc31a748c83b6890ca247d2a3722fc4'
+            '903886cc0c60193d289cbdb99cba5fde50ad476b71830387351369e5dd425277efddd8506bdc32a1597ba690630f0687847ef9816c92b841b4ac74f5659c86ba')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-    patch -p1 -i ../0002-Not-a-phone.patch
+    patch -p1 -i ../0001-Not-a-phone.patch
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     export CFLAGS+=" -Wno-error"
 
@@ -48,7 +47,8 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
+    cd build
 
     make DESTDIR="${pkgdir}/" install
 

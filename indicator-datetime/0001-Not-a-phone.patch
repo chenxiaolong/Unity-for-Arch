@@ -1,4 +1,4 @@
-From 274a79a59c1e99414868a06731b4e8453e6f9580 Mon Sep 17 00:00:00 2001
+From 93b76f95d4637b8721b82522ada83159b5e00f0b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 17:52:55 -0400
 Subject: [PATCH] Not a phone
@@ -6,14 +6,15 @@ Subject: [PATCH] Not a phone
 ---
  CMakeLists.txt                  |  1 -
  include/datetime/actions-live.h |  1 -
- src/actions-live.cpp            | 14 --------------
- 3 files changed, 16 deletions(-)
+ src/actions-live.cpp            | 15 ---------------
+ tests/timedated-fixture.h       |  1 -
+ 4 files changed, 18 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e01cd0e..e11ee1b 100644
+index 4378df4..8459089 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -40,7 +40,6 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
+@@ -46,7 +46,6 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                     libedataserver-1.2>=3.5
                     gstreamer-1.0>=1.2
                     libnotify>=0.7.6
@@ -22,19 +23,19 @@ index e01cd0e..e11ee1b 100644
  include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
  
 diff --git a/include/datetime/actions-live.h b/include/datetime/actions-live.h
-index 0214d65..4dfa398 100644
+index 42315bf..4d5d708 100644
 --- a/include/datetime/actions-live.h
 +++ b/include/datetime/actions-live.h
-@@ -54,7 +54,6 @@ public:
- 
+@@ -55,7 +55,6 @@ public:
  protected:
+     static bool is_unity();
      virtual void execute_command(const std::string& command);
 -    virtual void dispatch_url(const std::string& url);
  };
  
  } // namespace datetime
 diff --git a/src/actions-live.cpp b/src/actions-live.cpp
-index 90186c3..a80d295 100644
+index f23de42..346de03 100644
 --- a/src/actions-live.cpp
 +++ b/src/actions-live.cpp
 @@ -19,8 +19,6 @@
@@ -45,8 +46,8 @@ index 90186c3..a80d295 100644
 -
  #include <glib.h>
  
- namespace unity {
-@@ -49,12 +47,6 @@ void LiveActions::execute_command(const std::string& cmdstr)
+ #include <sstream>
+@@ -51,12 +49,6 @@ void LiveActions::execute_command(const std::string& cmdstr)
      }
  }
  
@@ -59,22 +60,22 @@ index 90186c3..a80d295 100644
  /***
  ****
  ***/
-@@ -63,7 +55,6 @@ void LiveActions::desktop_open_settings_app()
+@@ -91,7 +83,6 @@ void LiveActions::desktop_open_settings_app()
  {
      if (g_getenv ("MIR_SOCKET") != nullptr)
      {
 -        dispatch_url("settings:///system/time-date");
      }
-     else if ((g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0))
+     else if (is_unity())
      {
-@@ -130,14 +121,12 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
+@@ -158,14 +149,12 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
  
  void LiveActions::phone_open_alarm_app()
  {
 -    dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
  }
  
- void LiveActions::phone_open_appointment(const Appointment& appt)
+ void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime& date)
  {
      if (!appt.activation_url.empty())
      {
@@ -82,12 +83,13 @@ index 90186c3..a80d295 100644
      }
      else switch (appt.type)
      {
-@@ -152,13 +141,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
+@@ -182,14 +171,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime
  
- void LiveActions::phone_open_calendar_app(const DateTime&)
+ void LiveActions::phone_open_calendar_app(const DateTime& dt)
  {
--    // does calendar app have a mechanism for specifying dates?
--    dispatch_url("appid://com.ubuntu.calendar/calendar/current-user-version");
+-    const auto utc = dt.to_timezone("UTC");
+-    auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+-    dispatch_url(cmd);
  }
  
  void LiveActions::phone_open_settings_app()
@@ -96,6 +98,18 @@ index 90186c3..a80d295 100644
  }
  
  /***
+diff --git a/tests/timedated-fixture.h b/tests/timedated-fixture.h
+index 5ec425d..0b3e400 100644
+--- a/tests/timedated-fixture.h
++++ b/tests/timedated-fixture.h
+@@ -36,7 +36,6 @@ public:
+     ~MockLiveActions() {}
+ 
+ protected:
+-    void dispatch_url(const std::string& url) override { last_url = url; }
+     void execute_command(const std::string& cmd) override { last_cmd = cmd; }
+ };
+ 
 -- 
-2.7.0
+2.8.2
 
