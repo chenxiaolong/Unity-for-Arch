@@ -7,15 +7,16 @@
 # vercheck-launchpad: name=bamf
 
 pkgname=bamf-ubuntu
-_actual_ver=0.5.2
-_extra_ver=~bzr0+16.04.20151217
+_actual_ver=0.5.3
+_extra_ver=~bzr0+16.04.20160415
 pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
 pkgrel=2
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=(i686 x86_64)
 url="https://launchpad.net/bamf"
 license=(GPL)
-depends=(libgtop libwnck3 glib2 hicolor-icon-theme procps-ng)
+depends=(libgtop libwnck3 glib2 hicolor-icon-theme libdbusmenu-gtk3 procps-ng
+         startup-notification)
 makedepends=(gnome-common gobject-introspection gtk-doc libxml2 libxslt vala)
 provides=("bamf=${pkgver}")
 replaces=(bamf)
@@ -26,19 +27,19 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver
         update-bamf-index.hook
         update-bamf-index.pl
         update-bamf-index.sh)
-sha512sums=('7bbea305cde87636bea0176e5b5e45b97546645db6e134a03dba6ef92205acb9d0dbdf82e9e30b244c675c26e50e9de2637f04c57a6236760db03f3ce9962e2c'
+sha512sums=('297e7a8f3e971d8d547c25bb90a9b13fe3c787699a2429d7fd201f175417ab4d56e78799aeeb33344acfd3c0c673a609bfc24ec69881e046e1cdd298698c0158'
             '49379121974a6f273084f66c6aa937fd2213e92169040db03f87098d3ca269032603f3dbfec947807e3d4a3c866648b96a2a3bb18f1ad3736a7ceaf011cf901a'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
             '6dd8079a1dddc787d41fea246809e37de76a6e6daa2e3760c4a6770456fd1d8097597cadeae38fd81f322d44e79f0786e82604d606bc81bae57f39091db0755c')
 
 prepare() {
-    cd "bamf-${_actual_ver}${_extra_ver}"
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
     sed -i 's/-Werror/-Wno-error/g' configure.ac
 }
 
 build() {
-    cd "bamf-${_actual_ver}${_extra_ver}"
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
     gtkdocize
     autoreconf -vfi
@@ -49,13 +50,14 @@ build() {
         --prefix=/usr \
         --libexecdir=/usr/lib \
         --disable-static \
-        --enable-gtk-doc
+        --enable-gtk-doc \
+        --enable-export-actions-menu=yes
 
     make
 }
 
 package() {
-    cd "bamf-${_actual_ver}${_extra_ver}"
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
     make DESTDIR="${pkgdir}/" install
 
