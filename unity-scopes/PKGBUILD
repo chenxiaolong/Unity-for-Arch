@@ -38,7 +38,7 @@ setver zotero            0.1+13.10.20130723 0ubuntu1
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=12
+pkgrel=13
 pkgdesc="Online scopes for the Unity Dash"
 arch=(any)
 url="https://launchpad.net/unity-scope-NAME"
@@ -61,8 +61,6 @@ depends+=(gtk3 man-db)
 makedepends=(python-distutils-extra)
 # texdoc
 makedepends+=(texlive-bin)
-
-install=icon_cache.install
 
 provides=()
 conflicts=()
