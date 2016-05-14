@@ -16,7 +16,8 @@ pkgdesc="A library and indicator to take menus from applications and place them 
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-application"
 license=(GPL)
-depends=(dbus-glib libappindicator3 libdbusmenu-gtk3 libindicator3 json-glib)
+depends=(dbus-glib libappindicator-gtk3 libdbusmenu-gtk3 libindicator-gtk3
+         json-glib)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001_autoconf.patch)
