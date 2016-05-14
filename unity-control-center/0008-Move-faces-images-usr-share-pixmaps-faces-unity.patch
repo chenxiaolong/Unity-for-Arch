@@ -1,4 +1,4 @@
-From 0e8c85b43bce097770550e9528804ea6d616152a Mon Sep 17 00:00:00 2001
+From 5f52f3573d66730af87ccaababcc828019aebf8f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 25 Jan 2016 17:24:39 -0500
 Subject: [PATCH 8/8] Move faces images /usr/share/pixmaps/faces{,-unity}
@@ -33,5 +33,5 @@ index 81f990a..7bd729b 100644
                  if (dir == NULL) {
                          g_free (path);
 -- 
-2.7.0
+2.8.2
 

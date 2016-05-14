@@ -7,7 +7,7 @@
 
 pkgname=unity-control-center
 _actual_ver=15.04.0
-_extra_ver=+16.04.20160119
+_extra_ver=+16.04.20160413
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="The Control Center for Unity"
@@ -20,13 +20,12 @@ depends=(accountsservice cups-pk-helper fcitx libnotify gnome-menus
          network-manager-applet sound-theme-freedesktop upower
          libpwquality gnome-color-manager smbclient libmm-glib libgnomekbd
          grilo clutter-gtk unity-settings-daemon system-config-printer
-         webkitgtk libgeonames)
+         webkit2gtk libgeonames)
 makedepends=(gnome-common gnome-doc-utils intltool docbook-xsl modemmanager
              ttf-ubuntu-font-family vala)
 optdepends=('gnome-control-center: For online accounts & region panel')
 conflicts=(upower-compat)
 options=(!emptydirs)
-install=unity-control-center.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-center_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
         0002-Skip-region-panel.patch
@@ -39,21 +38,21 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         system-config-printer-unity.desktop
         unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
-sha512sums=('6fc7366ae256a24590d6e84af332cea461ed50ce22e51a61558153ad5314bb92e84d3191bca3b83e941d42f50f8527a3d740b3a04f14e4d6b30685722a694e01'
-            '1bca29b181c409c3d958399a2d71453c1eaaf06aeb73f37c58622dc15ed34cf92f3ec2ef7e1156acd55aa8677e1b3636ef0bdfe9c6dad0a1b80a01f995b0b147'
-            '5c0826789392e14e48c9cead7484cd67e4b41954e46a75cd1e21c9bf94e8665f60afdd105975efad06cf54010393e03b025d26e8eb1026e24f0e2b774eca33fd'
-            '44aad84f62ed70b7142fa191248df1cb3e1e2fb742458f7ee961bf982ef6365852ee5b7e07e01eb6ddb5a35e8c11fcd65d5788803d2283519058597bfca71e6e'
-            '4322e5696b8c60cc29bd08b1bd46e9538d0daa1b25c656436d3c4ee1a0fd237de6fe4c611d9034c5faac8b109459a0b94e8fd1add8ff81503a7bd4a758a2412a'
-            '9cfdc52a53d53c831b0788eab2d2f3304b4de7ffa4af47bb876721ce107909c8d82fe176946d66c6039b2040d20c8bd74b62123f4d6417117f46d00e57d61972'
-            'ba67144b7dc006303b759d3e497472e81acd967dd8ca68a837aad001f796d4b81dd67b95be01904c84485184625d5e1c78f00c03913846f0952d99aa4fcabe57'
-            '5e41cf141402c018454f2d7ca20bce483735d50465d75b0d5b884c631b7a3c3183c2c311b8d6fe2608f1d92c5bad0ec9cc6d3716eab7ab4709239a7920be63e2'
-            '6e92195120dc061ac8c63c237be7c7cf667c186885879da5c8d655375e8d51f16edd6ba269de9a4257ab918d5f00449dd19883a09e19ed14026992913024bfe0'
+sha512sums=('bc6291835e39793616482e383b46832fe07968f2e95966b739690130a38e714eeeeeee5e0a9e6fa56f4aa2892e8b6fe002580893231cde108b43515c8c69bc31'
+            'f6e46818f7d3cda1d6750e49a136b1a04721ba01c7b626d1546d462c26811f9dad4d01cb45283abe8c18d710bb1e038233a052c4d2e8e0d5ccafe334208e2b8d'
+            '6d66849016f418c78676d25d3f4683c67e37d654089f07be73b0284b0551cd66c1ef0520d2779220db079e6979afc3844206c391fff4287b122f745215e27c8a'
+            'e5855a0724863adbf66964e41334a491a219b6e05272a7fd55be72370084e0501ec8d4653297935ea599201145436606f90c974720e18ab2d40087ec4ca82568'
+            '753922be990fa5a9afa14ee09460eba2eac3512aab5d845e325c7be8f9903dbef5402226ba1f0615f09f90c2a3c214d0b60a1d5ff9d877c61ca9965f8228d5e6'
+            '713173a8ebab0bd819ba27407a6ba4105ccf58d0298cc4669154a7058cd9e1e479423bbaa152978be9e7d42c0ce187a8010eea94d66949916344294ab4b0fa71'
+            '57934bc269544e78cb1a5b824f34d326877d270b11af2388eba99858d10f8fa75e6e523bd931f65f3e591fc6d8655afb9e47a788dc7c309a6e988f1942f9ee97'
+            '1025380f062e6583bc41f18d0d56937605603600e50a0a5cc57062e05f526fab3a9815c44973fe54798497a65bd45c080945de1f09e6b805894b6c6fbb7f8f2d'
+            '162338b35119d63e7211fad81f5bf0ee310240168e42a0d6f4f5563be300e3252b3732b199450bc4484b92ee5c0583663a482f45bf7c0d081f86204e3b1a880a'
             '863e47afa95c8b16c8824c311c2b9d97b29f53153ee85a12989c63bbee4abb2e2626ef2d85988ac9d279baa60edcb32b65582acf4541f56fbc7efc22e2565de0'
             '287bf010b9a6d9424e2f07f7271cd27fd9a0fb9e29ea704dbb211a67d23558c66c0c654ee2a23456cba69bee725e962fbe79713cc0d2ad0ba4d830b0053777e7'
             '1378c3c15cb8c60575a55c86d400878f021c35adc87618c219496fee086b3c1286d7a46051747312960806330b6bb911a0c3e33814acedb2d83a1ef57d5e7a3a')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     patch -p1 -i ../0001-Revert-54_enable_alt_tap_in_shortcut.patch.patch
     patch -p1 -i ../0002-Skip-region-panel.patch
     patch -p1 -i ../0003-Remove-Ubuntu-specific-language-code.patch
@@ -65,7 +64,7 @@ prepare() {
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     autoreconf -vfi
     intltoolize -f
@@ -85,7 +84,7 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     make DESTDIR="${pkgdir}" install
 

@@ -1,4 +1,4 @@
-From 973de56c81053d5ff709a06bbf835b8eb1366cb9 Mon Sep 17 00:00:00 2001
+From f76eb169510d94f028001423f759ed4cd142fe59 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 9 Jun 2014 15:32:07 -0400
 Subject: [PATCH 6/8] Remove overlay-scrollbar from GTK_MODULES
@@ -8,10 +8,10 @@ Subject: [PATCH 6/8] Remove overlay-scrollbar from GTK_MODULES
  1 file changed, 23 insertions(+)
 
 diff --git a/shell/control-center.c b/shell/control-center.c
-index a79206b..cca84a8 100644
+index a91eba1..f484351 100644
 --- a/shell/control-center.c
 +++ b/shell/control-center.c
-@@ -307,9 +307,32 @@ application_startup_cb (GApplication       *application,
+@@ -281,9 +281,32 @@ application_startup_cb (GApplication       *application,
     */
  }
  
@@ -45,5 +45,5 @@ index a79206b..cca84a8 100644
    GtkApplication *application;
    int status;
 -- 
-2.7.0
+2.8.2
 

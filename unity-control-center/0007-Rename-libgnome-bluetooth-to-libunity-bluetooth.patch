@@ -1,4 +1,4 @@
-From dafd4234541f011553eabb9a7c12bae5f2dfe69e Mon Sep 17 00:00:00 2001
+From 251777027c92afc71d4d0b5ca4ccd53762b1992c Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 25 Jan 2016 17:21:12 -0500
 Subject: [PATCH 7/8] Rename libgnome-bluetooth to libunity-bluetooth
@@ -63,5 +63,5 @@ index 39f12c4..53d2414 100644
  
  AM_CFLAGS = $(BLUETOOTH_PANEL_CFLAGS) $(WARN_CFLAGS) $(DISABLE_DEPRECATED) -DPKGDATADIR="\"$(pkgdatadir)\""
 -- 
-2.7.0
+2.8.2
 

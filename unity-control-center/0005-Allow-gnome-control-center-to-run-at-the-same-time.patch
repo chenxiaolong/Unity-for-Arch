@@ -1,4 +1,4 @@
-From 5a208dbdaa3ba79b8ff901eec58831558f66f8f0 Mon Sep 17 00:00:00 2001
+From be3be4c5320920a23d7e09fa08ef2a3cf066dda7 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sun, 8 Jun 2014 16:54:41 -0400
 Subject: [PATCH 5/8] Allow gnome-control-center to run at the same time
@@ -8,10 +8,10 @@ Subject: [PATCH 5/8] Allow gnome-control-center to run at the same time
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/shell/control-center.c b/shell/control-center.c
-index 1d57277..a79206b 100644
+index de27113..a91eba1 100644
 --- a/shell/control-center.c
 +++ b/shell/control-center.c
-@@ -334,7 +334,7 @@ main (int argc, char **argv)
+@@ -308,7 +308,7 @@ main (int argc, char **argv)
    shell = gnome_control_center_new ();
  
    /* enforce single instance of this application */
@@ -21,5 +21,5 @@ index 1d57277..a79206b 100644
                      G_CALLBACK (application_startup_cb), shell);
    g_signal_connect (application, "command-line",
 -- 
-2.7.0
+2.8.2
 

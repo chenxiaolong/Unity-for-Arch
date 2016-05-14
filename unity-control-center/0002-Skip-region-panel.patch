@@ -1,4 +1,4 @@
-From 1fe066589e7246779588a5f404e97634eb3e4aff Mon Sep 17 00:00:00 2001
+From 8613c2f04b2343895d993558dab6c678df0f8750 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 18:50:22 -0400
 Subject: [PATCH 2/8] Skip region panel
@@ -20,5 +20,5 @@ index 5ed02c6..5a67273 100644
  	sound \
  	keyboard \
 -- 
-2.7.0
+2.8.2
 
