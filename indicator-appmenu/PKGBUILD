@@ -17,12 +17,12 @@ arch=(i686 x86_64)
 url="https://launchpad.net/indicator-appmenu"
 license=(GPL)
 groups=(unity)
-depends=(dconf libappindicator3 libindicator3 libdbusmenu-gtk3 bamf-ubuntu)
+depends=(dconf libappindicator-gtk3 libindicator-gtk3 libdbusmenu-gtk3
+         bamf-ubuntu)
 makedepends=(gtk-doc intltool vala)
 optdepends=('unity-gtk-module: support for GTK+ 2 and GTK+ 3 apps'
             'appmenu-qt: support for Qt apps')
 options=(!emptydirs)
-install="${pkgname}.install"
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-appmenu_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001_autoconf.patch)
 sha512sums=('b8b027e70a6a6da941fc11fa3d161bdbe27a2d3e2b5b85b6830a76ebe8487612fbe74e171ba3d7b04b814ae55053b07a6807a5cd1df6a280c76a5ad1d4b108aa'
