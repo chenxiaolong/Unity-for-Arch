@@ -4,7 +4,10 @@
 # vercheck-ubuntu: name=geonames, repo=xenial
 
 pkgname=libgeonames
-pkgver=0.1
+_actual_ver=0.2
+_extra_ver=+16.04.20160321
+_ubuntu_rel=0ubuntu1
+pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Library for parsing a local copy of the geonames.org database"
 arch=(i686 x86_64)
@@ -12,16 +15,16 @@ url="https://git.launchpad.net/~larsu/geonames"
 license=(GPL)
 depends=(glib2)
 makedepends=(gtk-doc intltool)
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/geonames_${pkgver}.orig.tar.gz")
-sha512sums=('61d1283770e5fe3c8b55917dfa41f69c1345ccf1d4924b60e729e34e7dfb1c88d26c288da41c0dbf475d2e15aed3c0bea881b669c4a61f549fe73199ee0ba34d')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/geonames_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.tar.xz")
+sha512sums=('70e5ee6926405b4d45aa3479e4de78a9200aea5c17ebe64717bb5be06c4dfd390875e0952e067db4f9e4c792d65e4e96494eb9e2fe294fd59bcfd3ea8b0df8eb')
 
 build() {
-	cd "geonames-${pkgver}"
-	./configure --prefix=/usr
+	cd "geonames-${_actual_ver}${_extra_ver}"
+	./autogen.sh --prefix=/usr
 	make
 }
 
 package() {
-	cd "geonames-${pkgver}"
+	cd "geonames-${_actual_ver}${_extra_ver}"
 	make DESTDIR="${pkgdir}/" install
 }
