@@ -5,12 +5,12 @@
 # optdepends.
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=lightdm-ubuntu
 _ubuntu_rel=0ubuntu1
-pkgver=1.17.4
+pkgver=1.19.0
 pkgrel=1
 pkgdesc="A lightweight display manager"
 arch=(i686 x86_64)
@@ -46,7 +46,7 @@ source=(#"https://launchpad.net/ubuntu/+archive/primary/+files/lightdm_${pkgver}
         lightdm-greeter.pam
         lightdm.rules
         0001-guest-account-Add-default-GSettings-support.patch)
-sha512sums=('df0e299d0a9bd83bd603acb2a287324717b5bc1520ab8fed03d58a5b9c0bf1191e8de34656f8aa1618423ca697d76ed6204cecf6c375e067b8139902a85f4b49'
+sha512sums=('b4395f42adcb2256d877cde0107151a21035f7975975b28749205280e1abc54f0703fea1b59a513b11c612674ee7e8b0d81e86c63858c0f0d9653366f3fe6b4e'
             '3e6f9827da3c69278c175e4bb2d819f4960f2c7ec94debb34075a20ee634d963532750ca78952f5f3de7c725a2c67381afd05e78076142394366137b83a8c08d'
             '81a76a49eb208b1d33f5ac0184d87a377cd37c522d74a93ccd3d96b3d6e32c44872a65873b91fec3daba0846cdb5a938b51944697e636c045d03259bd5424644'
             '3e68365562173ef48de5cce9da3711aff8c1194f1577e3eab86f68c681861fc79b9bc83f8309bd627f5e6070a8f0d4b55e2173f47115f68fa5d31a505f0b4b54'
@@ -138,8 +138,6 @@ package() {
                   "${pkgdir}"/usr/share/lightdm/guest-session/skel/.config/autostart/
     install -m755 debian/guest-session-setup.sh \
                   "${pkgdir}"/usr/share/lightdm/guest-session/setup.sh
-    install -m644 debian/guest-session.profile \
-                  "${pkgdir}"/usr/share/lightdm/guest-session/skel/.profile
 
     # Install systemd service
     install -m644 "${srcdir}"/lightdm.service "${pkgdir}"/usr/lib/systemd/system/
