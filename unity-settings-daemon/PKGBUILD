@@ -5,7 +5,7 @@
 
 pkgname=unity-settings-daemon
 _actual_ver=15.04.1
-_extra_ver=+16.04.20160121
+_extra_ver=+16.04.20160209
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -14,18 +14,17 @@ url="https://launchpad.net/unity-settings-daemon"
 license=(GPL)
 groups=(unity)
 depends=(gnome-settings-daemon-ubuntu gsettings-desktop-schemas-ubuntu fcitx
-         gperf hicolor-icon-theme ibus libappindicator3 libcanberra-pulse
+         gperf hicolor-icon-theme ibus libappindicator-gtk3 libcanberra-pulse
          libnotify librsvg libsystemd libwacom libxkbfile mesa pulseaudio
          pulseaudio-alsa upower)
 makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 conflicts=(gnome-desktop-compat upower-compat)
-install=unity-settings-daemon.install
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Remove-accountsservice-dependency.patch
         0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
         0003-Use-GNOME-3.16-deprecated-schemas.patch)
-sha512sums=('ee93e1b34389cdb4ae5370eb13f5741f145a399f836f0925b57f34b297e4de1235baf9cce729c61b812a2a5d71a038764b8b3363af8184cca080165c0ff3180a'
+sha512sums=('a40ea34883e9a7d1726754c0ee154531296d58faba2b1fba008e0ad50fdf268ce8d055120d98d4be108b3dd31ab83e5aef6cab2cb74d0f6334b9237113f93a83'
             'bf62af22a98ed0447509da8b221b19a7f7bd9330fccfd550ae24f9993ee5cb173aa869e56edac303d7d5148da4d6c105d417910a989e5eeb74513b80afed5d34'
             '3cb2735c15c3acb4bcbd78da1c31dddda2f707b48fec46294a705a7688d277040aa1f7891b8c56cbd73b4f138805006bd0a2d569b7b4ac8f4ac3f297d5abb6ac'
             '4dc034674a417680c1d0ed46fe3345a31412a9ffbc6a65242566c55fb4d81b166affb1c32a187706e31dd6b10868b9032431ce846e8e06a4b5949bcc99ec3641')
