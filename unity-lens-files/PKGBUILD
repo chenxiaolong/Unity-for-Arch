@@ -10,7 +10,7 @@ pkgname=unity-lens-files
 _actual_ver=7.1.0
 _extra_ver=+16.04.20151217
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=(i686 x86_64)
@@ -20,7 +20,6 @@ depends=(zeitgeist-ubuntu libgee libunity libxdg-basedir xdg-user-dirs pyxdg
          dconf)
 makedepends=(vala intltool)
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('d69fca31954867ab377755f19340936bd17b91c7836e200560e4d08ce11bf62c319c07ace4a9acfe5e55521cfd4fe47c4579692c183423a72a2140b956b14606')
 
