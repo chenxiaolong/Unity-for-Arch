@@ -6,7 +6,7 @@
 
 pkgname=geis
 _actual_ver=2.2.17
-_extra_ver=+15.10.20150728
+_extra_ver=+16.04.20160126
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -18,7 +18,7 @@ depends=(grail xorg-xinput python3 dbus-core)
 makedepends=(xorg-server-devel)
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/geis_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('9fb43bed0d427f9b43e779256c50c7ce2ad7f018f1f931621a24348e8d91043265a4bb8e3c4c2049f25f4aebbfd36b94dec29852de2202b6049cf9b334ac4f94')
+sha512sums=('5d50405e0b4520f163239a8d65adc6e71844eaf95d96c3c9683db4de995c8af960991ff29450c1d9ce7bfceb74acd97623274a978e509bf09ac9ba1d3983c0cc')
 
 build() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
