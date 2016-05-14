@@ -1,8 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
+
 pkgname=unity-api
-_actual_ver=7.105
-_extra_ver=+16.04.20160104
+_actual_ver=7.108
+_extra_ver=+16.04.20160322
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="API for Unity shell integration"
@@ -13,7 +16,7 @@ groups=(unity)
 depends=(glib2)
 makedepends=(cmake doxygen graphviz python qt5-base)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('8d9f5e06b1573c6ada39deb33c32fd8dfb5ef1eed748f492303ec8a62e6ce4e37afd83d9a8ffdaecb89da42848e4c1c8f13ef2a418680b441bc7ab48194f7cb5')
+sha512sums=('090cb632a66c6e2d760018f0b529d746146d18d5706d77fdd6c0514fa1aa07d5a3211a6e4638cbb841b40f8e2d0b5e7bd5e664902742d06d36a98a44e8776e5d')
 
 build() {
 	cd "${pkgname}-${_actual_ver}${_extra_ver}"
