@@ -8,7 +8,7 @@
 
 pkgname=unity-lens-applications
 _actual_ver=7.1.0
-_extra_ver=+15.10.20151002
+_extra_ver=+16.04.20160217.2
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -16,13 +16,12 @@ pkgdesc="A daemon that exposes you applications with their usage statistics and 
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-lens-applications"
 license=(GPL)
-depends=(dconf gnome-menus libcolumbus libgee06 libunity libzeitgeist
+depends=(dconf gnome-menus libcolumbus libgee libunity libzeitgeist
          xapian-core zeitgeist-ubuntu)
 makedepends=(vala intltool)
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('611aadbbbbe2eac110e1521d007aeb1cd014130d2edbca52055338aa0d10091c5cbc0de0654f91d136c1f65578474c82cf53412af67ddc1cb73d1c5f980f3b9c')
+sha512sums=('8d5b8bd49104a98bffbfaa6e84693e16495a9c6a9b065a3431311fc03dea1ad1fc1c21d818e6ddab09db17b14d1e974255162c137a606f1fdc54858647fd1594')
 
 build() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
