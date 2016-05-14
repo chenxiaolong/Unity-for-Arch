@@ -1,12 +1,12 @@
-From dc45000c84e57e6bc375e81b65ac83237f59304a Mon Sep 17 00:00:00 2001
+From 947d947a502cdc67d7b6c9f50cd5ec025fef9f3f Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 25 Jan 2016 12:53:01 -0500
 Subject: [PATCH 2/2] Remove url-dispatcher dependency
 
 ---
  CMakeLists.txt             |  3 +--
- src/backend-dbus/actions.c | 13 +++----------
- 2 files changed, 4 insertions(+), 12 deletions(-)
+ src/backend-dbus/actions.c | 15 ++++-----------
+ 2 files changed, 5 insertions(+), 13 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 72d9a5a..3ed483b 100644
@@ -23,7 +23,7 @@ index 72d9a5a..3ed483b 100644
  
  set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
 diff --git a/src/backend-dbus/actions.c b/src/backend-dbus/actions.c
-index 0fcdc08..10be837 100644
+index 06dd2bd..0c54e12 100644
 --- a/src/backend-dbus/actions.c
 +++ b/src/backend-dbus/actions.c
 @@ -19,7 +19,6 @@
@@ -34,7 +34,16 @@ index 0fcdc08..10be837 100644
  
  #include "dbus-end-session-dialog.h"
  #include "dbus-login1-manager.h"
-@@ -863,9 +862,7 @@ have_unity_control_center (void)
+@@ -832,7 +831,7 @@ static void
+ my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+   if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("http://www.askubuntu.com", NULL, NULL);
++    {}
+   else
+     run_outside_app ("yelp");
+ }
+@@ -872,9 +871,7 @@ have_unity_control_center (void)
  static void
  my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
  {
@@ -45,7 +54,7 @@ index 0fcdc08..10be837 100644
      run_outside_app ("unity-control-center");
    else
      run_outside_app ("gnome-control-center");
-@@ -874,9 +871,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
+@@ -883,9 +880,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
  static void
  my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
  {
@@ -56,7 +65,7 @@ index 0fcdc08..10be837 100644
      run_outside_app ("unity-control-center credentials");
    else
      run_outside_app ("gnome-control-center credentials");
-@@ -885,9 +880,7 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+@@ -894,9 +889,7 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
  static void
  my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
  {
@@ -68,5 +77,5 @@ index 0fcdc08..10be837 100644
    else
      run_outside_app ("gnome-control-center info");
 -- 
-2.7.0
+2.8.2
 

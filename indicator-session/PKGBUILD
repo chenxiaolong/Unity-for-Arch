@@ -8,7 +8,7 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+15.10.20150915
+_extra_ver=+16.04.20160412
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -20,25 +20,24 @@ depends=(gnome-settings-daemon)
 makedepends=(cmake intltool python2)
 optdepends=('lightdm: support for lightdm')
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         indicator-session.service
         0001-There-is-no-help.patch
         0002-Remove-url-dispatcher-dependency.patch)
-sha512sums=('31646ca4bd58f5dd3a4b83e103e5c60df2ca687f4bfc23576941f6702c1485cc5b0e5b02e33e2601b3efa274c4eac871491c32eb8316167eabdea57849670243'
+sha512sums=('0142ab02e5dba9a543c6785ea1409fe1d95ed57b395f8ceea526fbe4c2b726088d37a927c1fac6c8a3a31125478c7aa76bc45b8687bd96b1125892f84d329529'
             '540c76c0f68b028194bb1000dd61a0c24f2f16427e79d237b94b8c65fe5e3e16eb6ea645f0fd33d734113727e25b6eb7452cb72f72399c9e8d370f74abba7511'
-            'cc5aef256129d885380a171fecde3ca2cf63332c08fb1701f05acb33c7662e3ae95b729b43ab5e3f56ce8aa7962120cb187c1d06bb10abec8613af0f3f8a50bd'
-            '71c127c6630f237624c2ba02b8ea612aef39280fc79441a0a0fb17a3eac71308104eeee79715343b4e21e10cb58c89e16161b23381808feaddbbda5051f00524')
+            'd6fb693580c921ce397124e12222aeff63734b1a2729f9e661a432613178ed8ff8da6107364e151bbd2bd58c3e70e18b71d8b96988025134f0fee8bc03868135'
+            '8ab2047eae79c01d206811f76efab57ac55161a0c3ba4f7f9e1fa37c80cc619d9571a42af0259b6e32f6597cbab6bc27fc5c5fb50965737065baae6cb546c025')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     patch -p1 -i ../0001-There-is-no-help.patch
     patch -p1 -i ../0002-Remove-url-dispatcher-dependency.patch
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     mkdir build && cd build
     cmake .. \
@@ -51,7 +50,8 @@ build() {
 }
 
 package() {
-    cd "${pkgbase}-${_actual_ver}${_extra_ver}/build"
+    #cd "${pkgbase}-${_actual_ver}${_extra_ver}/build"
+    cd build
 
     make DESTDIR="${pkgdir}/" install
 
