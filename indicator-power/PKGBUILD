@@ -17,7 +17,6 @@ license=(GPL)
 depends=(dconf libnotify upower unity-control-center)
 makedepends=(cmake intltool python2)
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
 sha512sums=('90f6b08d3bc4f86ad429f8dfa6c1cf5a250ab1747d5cab83158b9540810304bf5666d79f51c99f35a2039fcaf8f71b7743b644001a10258174403639db77fd8b'
