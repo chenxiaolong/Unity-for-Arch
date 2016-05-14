@@ -1,0 +1,28 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: kiefer <jorgelmadrid@gmail.com>
+# Contributor: Alessio Sergi <asergi at archlinux dot us>
+
+pkgname=libzeitgeist
+pkgver=0.3.18
+pkgrel=1
+epoch=1
+pkgdesc="Zeitgeist client library"
+arch=(i686 x86_64)
+url="https://launchpad.net/libzeitgeist"
+license=(LGPL2.1)
+depends=(glib2)
+optdepends=("zeitgeist: zeitgeist framework")
+source=("http://launchpad.net/${pkgname}/${pkgver%.*}/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('6ad3f0ed74935c20ce23d80208c5a787e4db2e2d58ae5036c6681c3d531e20cc0981be961d66a408a7e1b03909af0212693feddc515240d724acbd5ac5c8cf6e')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+}

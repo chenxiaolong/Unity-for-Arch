@@ -79,6 +79,7 @@ To compile from source, just build all of the packages in the following order:
 | unity-asset-pool                 | Design assets for Unity                    |
 | nautilus-ubuntu                  | File manager for GNOME and Unity           |
 | zeitgeist-ubuntu                 | Service for logging user activities        |
+| libzeitgeist                     | Zeitgeist client library                   |
 | unity-lens-applications          | Unity lens for searching applications      |
 | unity-lens-files                 | Unity lens for searching files             |
 | unity-lens-music                 | Unity lens for searching music library     |
