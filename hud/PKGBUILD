@@ -6,7 +6,7 @@
 
 pkgname=hud
 _actual_ver=14.10
-_extra_ver=+15.10.20151012
+_extra_ver=+16.04.20160415
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Backend for the Unity HUD"
@@ -19,16 +19,15 @@ depends=(bamf-ubuntu libdbusmenu-gtk3 sqlite gsettings-qt libcolumbus
 makedepends=(cmake gnome-common gnome-doc-utils gobject-introspection gtk-doc
              intltool qt5-base python2-distribute vala)
 optdepends=('indicator-appmenu: HUD support')
-install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Use-Python-2.patch
         0002-Remove-test-dependencies.patch)
-sha512sums=('eedc155fd3914e075994caef6c39efe4f5738fef8679653c838248226add20b27f68395c556df6441aec0cf667d0f75065c7066334b1f67d1c42faa720b2f4e5'
+sha512sums=('84cb695dcaa27be2cf30fdf34eb8bb17089729ce18a663287fc48af0207ba1cf680cbf5df20a4d028e4c3c42fc05fe370be3ab83a3bb3d11dfbe631a6923a9d0'
             '351ce207cc203e5901a20c30ff21cf186e330d7b4799a3bc43abca4039ec6e2de4abfa790266650cab112ad403675e6b926b368b7623ea3ecdb6a3c0c1b00fe5'
             '3b2ed254cea8aa985c2c376a05f4ac496bc8673371d4beccf76b3b234e67bfb447c33ef830a53799df9e1526656a9ea60dc2c3b9ff0cf2e120b3625f84112152')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     patch -p1 -i ../0001-Use-Python-2.patch
     patch -p1 -i ../0002-Remove-test-dependencies.patch
@@ -48,7 +47,7 @@ prepare() {
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     export CXXFLAGS+=" -lc"
 
@@ -67,7 +66,8 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    cd build
     make DESTDIR="${pkgdir}/" install
 
     rm -r "${pkgdir}/usr/share/upstart/"
