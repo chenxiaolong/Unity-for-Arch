@@ -8,7 +8,7 @@ pkgname=overlay-scrollbar
 _actual_ver=0.2.17.1
 _extra_ver=+16.04.20151117
 pkgver=${_actual_ver}${_extra_ver//\+/.}
-pkgrel=1
+pkgrel=2
 epoch=2
 pkgdesc="Overlaid Scrollbars that take up no active screen real-estate"
 arch=(i686 x86_64)
@@ -19,7 +19,6 @@ depends=(dconf gtk2-ubuntu)
 conflicts=(liboverlay-scrollbar liboverlay-scrollbar3)
 replaces=(liboverlay-scrollbar liboverlay-scrollbar3)
 options=(!emptydirs)
-install=overlay-scrollbar.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/overlay-scrollbar_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('0e718acb39307c6aa92747eb7b353a8468c358c5a25525ae2df830a4b3cb1c1bf7a3ee03410330db12c253be2d09211603cfc7274e67fa19917463b57eda899b')
 
