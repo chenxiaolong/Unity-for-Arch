@@ -6,7 +6,7 @@
 
 pkgname=unity-lens-video
 _actual_ver=0.3.15
-_extra_ver=+13.10.20130920
+_extra_ver=+16.04.20160212.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=2
 epoch=1
@@ -14,12 +14,12 @@ pkgdesc="Unity Video lens"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-lens-videos"
 license=(GPL)
-depends=(dee json-glib libgee06 libsoup-gnome libunity libzeitgeist
+depends=(dee json-glib libgee libsoup-gnome libunity libzeitgeist
          unity-lens-music)
 makedepends=(gnome-common intltool vala)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-video_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('8afe4c92d3c85345c9a6e448227b775305afd9605af7ad147a43bec3485334a1b15c4b2ee0620230d25866bf6712d2fc5507cf2a6e90818fa896dca1295913b8')
+sha512sums=('bf23c2a439e309a9b92281511054a67d88efe28d5db462862c8fd27f6805e93d266043ca55c245c4b5699ca964105b3dfe575aef80997e3a56111f3608b711ba')
 
 build() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
