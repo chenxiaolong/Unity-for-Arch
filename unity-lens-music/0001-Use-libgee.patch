@@ -1,0 +1,53 @@
+From e7c00cd5d187b21b6539e77fe4ba56dd15366270 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 13 May 2016 23:00:55 -0400
+Subject: [PATCH] Use libgee
+
+---
+ configure.ac           | 2 +-
+ src/Makefile.am        | 2 +-
+ tests/unit/Makefile.am | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 1f1831b..1fc8f21 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -73,7 +73,7 @@ PKG_CHECK_MODULES(SCOPE_DAEMON,
+                   gio-unix-2.0 >= $GLIB_REQUIRED
+                   dee-1.0 >= 1.2.5
+                   sqlite3 >= 3.7.7
+-                  gee-1.0
++                  gee-0.8
+                   json-glib-1.0
+                   libnotify
+                   libsoup-2.4
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 87a54a1..0c0470e 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -31,7 +31,7 @@ unity_music_daemon_VALAFLAGS = \
+   --pkg sqlite3 \
+   --pkg unity \
+   --pkg unity-extras \
+-  --pkg gee-1.0 \
++  --pkg gee-0.8 \
+   --pkg gio-2.0 \
+   --pkg gio-unix-2.0 \
+   --pkg glib-2.0 \
+diff --git a/tests/unit/Makefile.am b/tests/unit/Makefile.am
+index 667c969..15f4d46 100644
+--- a/tests/unit/Makefile.am
++++ b/tests/unit/Makefile.am
+@@ -15,7 +15,7 @@ AM_LDFLAGS = $(COVERAGE_LDFLAGS)
+ AM_VALAFLAGS = \
+   -C			\
+   --pkg dee-1.0 \
+-  --pkg gee-1.0 \
++  --pkg gee-0.8 \
+   --pkg gio-2.0 \
+   --pkg gio-unix-2.0 \
+   --pkg glib-2.0 \
+-- 
+2.8.2
+

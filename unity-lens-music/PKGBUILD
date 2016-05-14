@@ -10,7 +10,7 @@ pkgname=unity-lens-music
 _actual_ver=6.9.1
 _extra_ver=+16.04
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Music, in the dash"
 arch=(i686 x86_64)
@@ -21,13 +21,16 @@ depends=(gstreamer gst-plugins-base libgee libnotify liboauth libsoup libunity
 makedepends=(vala intltool json-glib)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-music_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0001-Remove-broken-reference-to-musicstore.scope.in.patch)
+        0001-Remove-broken-reference-to-musicstore.scope.in.patch
+        0001-Use-libgee.patch)
 sha512sums=('fb97b3d6472fe2f97365c3fbd0864bab7f19aacaeb9cb3439a4bfc5a0506a26b8ecdb9389189db23549bcede288e04e6af6f6b7b58957ef35e0f8145cda23afc'
-            'a63bb4a0740142d70d4c0855a0011368202efe691c5b047629fcff1d671795ac91bd3cc506786b2849d60463c962c1dfb604c449af70f1902b1e0a0e210a3da5')
+            'a63bb4a0740142d70d4c0855a0011368202efe691c5b047629fcff1d671795ac91bd3cc506786b2849d60463c962c1dfb604c449af70f1902b1e0a0e210a3da5'
+            '2e15bcbd663550a4289a0870d971b71705950a9b23ef1c869396d945a58c0cf5369710229bd268c1e0412916bcaaf15dbe51c153fb8ff6fb35d3b7819b42e8c9')
 
 prepare() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
     patch -p1 -i ../0001-Remove-broken-reference-to-musicstore.scope.in.patch
+    patch -p1 -i ../0001-Use-libgee.patch
 }
 
 build() {
