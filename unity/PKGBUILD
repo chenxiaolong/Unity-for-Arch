@@ -9,7 +9,7 @@ _actual_ver=7.4.0
 _extra_ver=+16.04.20160415
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -17,10 +17,11 @@ arch=(i686 x86_64)
 url="https://launchpad.net/unity"
 license=(GPL)
 depends=(appstream-glib bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs
-         gnome-desktop gnome-screensaver gnome-session-ubuntu hud ido
-         libgnomeui libindicator-gtk2 libindicator-gtk3 libnotify libunique
-         libunity libunity-misc libxfixes nux unity-asset-pool unity-scope-home
-         libxi zeitgeist-ubuntu lightdm-unity-greeter)
+         gnome-desktop gnome-screensaver gnome-session-ubuntu
+         gsettings-ubuntu-schemas hud ido libgnomeui libindicator-gtk2
+         libindicator-gtk3 libnotify libunique libunity libunity-misc libxfixes
+         nux unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
+         lightdm-unity-greeter)
 makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
              python2-distribute)
 groups=(unity)
@@ -35,7 +36,6 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0005-Remove-social.scope.patch
         0006-Remove-xpathselect-dependency.patch
         0007-Add-missing-headers.patch
-        com.ubuntu.user-interface.gschema.xml
         launcher_bfb.png
         99unity-panel-service
         unity-debug
@@ -50,7 +50,6 @@ sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390b
             'f164ebfbad64eef16276b129d073e9411a511bba974b6c4616cc801c582ead5467cca2944755a3294a4a14d4b38b72c7025562e8cf145c855205193f5cfcb9de'
             '8ae32bb07dad5bcb264e3de621b29b1bd535fa80c205098990896f1c16f99cfa889234d55b4ce505b5ab5141c64269d9c5775a9666a45f65c699aa4f0382e94d'
             'd8debb95205f47ef5ce762fcf9bc76306f2e164e711e818e2b1043b9c643cf1c5e43211474dec3689a02e76b5ab66e43a0f5aa2e3e34dd3e8f25a03ca36f4c4a'
-            '126ed309012d60ef51da95b115d877f65c8f8dee415be781ad9f6c0efedc5639227f72218d9c790f5d00937378ba62691d0d29fd9ac757d75dd156fd4f4b7eba'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
@@ -135,9 +134,6 @@ package() {
     # Arch Linux logo
     install -m644 "${srcdir}/launcher_bfb.png" \
         "${pkgdir}/usr/share/unity/icons/launcher_bfb.png"
-
-    install -m644 "${srcdir}/com.ubuntu.user-interface.gschema.xml" \
-        "${pkgdir}/usr/share/glib-2.0/schemas/"
 
     # Fix launching of unity-panel-service (from unity-gentoo project)
     install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
