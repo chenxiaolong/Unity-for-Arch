@@ -7,7 +7,7 @@ pkgname=indicator-keyboard
 _actual_ver=0.0.0
 _extra_ver=+16.04.20151125
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=4
+pkgrel=5
 pkgdesc="Indicator for switching keyboard layouts and input methods"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-keyboard"
@@ -43,13 +43,11 @@ build() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
     intltoolize -f
     autoreconf -vfi
-    ./configure --prefix=/usr --libexecdir=/usr/lib/indicator-keyboard
+    ./configure --prefix=/usr --libexecdir=/usr/lib
     make
 }
 
 package() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
     make DESTDIR="${pkgdir}/" install
-
-    rm -r "${pkgdir}"/usr/share/upstart/
 }
