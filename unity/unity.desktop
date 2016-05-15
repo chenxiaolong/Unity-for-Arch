@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Unity Shell
+Comment=Window management and application launching
+Exec=/usr/bin/unity
+Categories=GNOME;GTK;Core;
+OnlyShowIn=Unity;
+NoDisplay=true
+X-GNOME-Autostart-Phase=DisplayServer
+X-GNOME-Provides=panel;windowmanager;
+X-GNOME-Autostart-Notify=true
+X-GNOME-AutoRestart=false

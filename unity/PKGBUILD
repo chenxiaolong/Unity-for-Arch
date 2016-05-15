@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
@@ -9,7 +9,7 @@ _actual_ver=7.4.0
 _extra_ver=+16.04.20160415
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -40,7 +40,10 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         99unity-panel-service
         unity-debug
         run_this_if_unity_is_on_fire.py
-        unity.pam)
+        unity.pam
+        unity.desktop
+        unity.gnome-session
+        unity.xsession)
 sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390be8e282d5decbdbab772457784e1734f7ce702e0a5b2c19f13f5d67694a594'
             'a094e95e2e0f158a6f44efa7078988cc637bb6810013eed53c25ca5e2e612e31e4e39508612d6a9c2cc229908ede6740a0cbabc87e569d7afe41520395be4828'
             '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
@@ -54,7 +57,10 @@ sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390b
             '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
-            '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df')
+            '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df'
+            '854d89d6a350d0dc5819c0780ba19cb07ba99b394001aef21a9af7da99b4dea8043be42c14563d139bd6568004b4e073d42174245c48a764e6ce1dbb76c5eeac'
+            'dadad4937f998e30d276d8ed06b11f44e7511e05516e70ca1fe53e72617d781ae6de7de4fc054fdd22c3d8f8bc84df14924c7099c0868dd63a2d1bf31ce6a01a'
+            '9210801b38709e40fd1df257f7d1a211b4341c20ccecbb390b38532208318821fd318a26672a30e6e2660c1069dd8bc4ac2f5a717223c6c9b091f3b683ba3a84')
 
 prepare() {
     #cd "${pkgname}-${_actual_ver}${_extra_ver}"
@@ -155,4 +161,17 @@ package() {
     # Install PAM configuration file
     rm "${pkgdir}/etc/pam.d/unity"
     install -m644 "${srcdir}/unity.pam" "${pkgdir}/etc/pam.d/unity"
+
+    # Install desktop and session files
+    install -dm755 "${pkgdir}"/usr/share/applications/
+    install -m644 "${srcdir}"/unity.desktop \
+        "${pkgdir}"/usr/share/applications/
+    install -dm755 "${pkgdir}"/usr/share/gnome-session/sessions/
+    install -m644 "${srcdir}"/unity.gnome-session \
+        "${pkgdir}"/usr/share/gnome-session/sessions/unity.session
+    install -dm755 "${pkgdir}"/usr/share/xsessions/
+    # Named ubuntu.desktop since so many things depend on the
+    # DESKTOP_SESSION environment variable being set to 'ubuntu'
+    install -m644 "${srcdir}"/unity.xsession \
+        "${pkgdir}"/usr/share/xsessions/ubuntu.desktop
 }
