@@ -14,7 +14,7 @@ _ppa_rel=2ubuntu1~xenial1
 _ppa_ver=3.20.0
 #_ubuntu_rel=1ubuntu1
 pkgver=3.20.1
-pkgrel=2
+pkgrel=3
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
@@ -87,4 +87,7 @@ package() {
     install -dm755 "${pkgdir}/etc/xdg/autostart/"
     install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
         "${pkgdir}/etc/xdg/autostart/"
+
+    install -Dm644 "${srcdir}/debian/gnome-session-bin.user-session.upstart" \
+        "${pkgdir}/usr/share/upstart/sessions/gnome-session.conf"
 }
