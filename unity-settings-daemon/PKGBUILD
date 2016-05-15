@@ -4,10 +4,11 @@
 # vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-settings-daemon
+_ubuntu_rel=0ubuntu1
 _actual_ver=15.04.1
 _extra_ver=+16.04.20160209
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -21,16 +22,20 @@ makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 conflicts=(gnome-desktop-compat upower-compat)
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001-Remove-accountsservice-dependency.patch
         0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
         0003-Use-GNOME-3.16-deprecated-schemas.patch)
 sha512sums=('a40ea34883e9a7d1726754c0ee154531296d58faba2b1fba008e0ad50fdf268ce8d055120d98d4be108b3dd31ab83e5aef6cab2cb74d0f6334b9237113f93a83'
+            '2b7ec7a00d52c2a7e0e532ac4b1c9bce51fb41264dce1bf6f8dfb558ca3ec4db6daab56ef3b406c501fe957fd870dee92991c30f517b5955c1343144477775ee'
             'bf62af22a98ed0447509da8b221b19a7f7bd9330fccfd550ae24f9993ee5cb173aa869e56edac303d7d5148da4d6c105d417910a989e5eeb74513b80afed5d34'
             '3cb2735c15c3acb4bcbd78da1c31dddda2f707b48fec46294a705a7688d277040aa1f7891b8c56cbd73b4f138805006bd0a2d569b7b4ac8f4ac3f297d5abb6ac'
             '4dc034674a417680c1d0ed46fe3345a31412a9ffbc6a65242566c55fb4d81b166affb1c32a187706e31dd6b10868b9032431ce846e8e06a4b5949bcc99ec3641')
 
 prepare() {
     cd "${pkgname}-${_actual_ver}${_extra_ver}"
+
+    patch -p1 -i ../unity-settings-daemon_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 
     patch -p1 -i ../0001-Remove-accountsservice-dependency.patch
     patch -p1 -i ../0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
@@ -65,6 +70,11 @@ package() {
     install -dm755 "${pkgdir}/usr/bin/"
     ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
         "${pkgdir}/usr/bin/unity-settings-daemon"
+
+    install -Dm644 debian/unity-settings-daemon.user-session.upstart \
+        "${pkgdir}"/usr/share/upstart/sessions/unity-settings-daemon.conf
+    install -Dm644 debian/unity-settings-daemon.user-session.desktop \
+        "${pkgdir}"/usr/share/upstart/xdg/autostart/unity-settings-daemon.desktop
 
     # Use language packs
     rm -r "${pkgdir}/usr/share/locale/"
