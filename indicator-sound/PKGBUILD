@@ -10,7 +10,7 @@ pkgname=indicator-sound
 _actual_ver=12.10.2
 _extra_ver=+16.04.20160406
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="A unified sound menu"
 arch=(i686 x86_64)
@@ -49,8 +49,6 @@ package() {
     cd build
 
     make DESTDIR="${pkgdir}/" install
-
-    rm -r "${pkgdir}/usr/share/upstart/"
 
     sed -i 's/NotShowIn/OnlyShowIn/g' \
         "${pkgdir}/etc/xdg/autostart/indicator-sound.desktop"
