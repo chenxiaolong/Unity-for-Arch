@@ -122,45 +122,44 @@ package() {
     make DESTDIR="${pkgdir}/" install
 
     # Install profile convert files
-    install -dm755 "${pkgdir}/usr/lib/compiz/migration/"
-    install -m644 ../tools/convert-files/* "${pkgdir}/usr/lib/compiz/migration/"
+    install -dm755 "${pkgdir}"/usr/lib/compiz/migration/
+    install -m644 ../tools/convert-files/* \
+        "${pkgdir}"/usr/lib/compiz/migration/
 
     # Taken from Ubuntu source package's debian/rules file
-    find "${pkgdir}/usr/lib" -name \*.*a -exec rm {} \;
-    rm -vf "${pkgdir}/usr/share/compiz/networkarearegion.xml"
-    rm -vf "${pkgdir}/usr/lib/compiz/libnetworkarearegion.so"
-    rm -vf "${pkgdir}/usr/share/compiz/unitydialog.xml"
-    rm -vf "${pkgdir}/usr/lib/compiz/libunitydialog.so"
+    find "${pkgdir}"/usr/lib -name '*.*a' -exec rm {} \;
 
     # Fix Python 2 scripts
-    sed -i 's|^\(#!.*python$\)|\12|g' \
-        "${pkgdir}/usr/bin/unity" \
-        "${pkgdir}/usr/lib/unity/makebootchart.py"
+    sed -i '1s/^#!.*python$/&2/g' \
+        "${pkgdir}"/usr/bin/unity \
+        "${pkgdir}"/usr/lib/unity/makebootchart.py
 
     # Arch Linux logo
-    install -m644 "${srcdir}/launcher_bfb.png" \
-        "${pkgdir}/usr/share/unity/icons/launcher_bfb.png"
+    install -m644 "${srcdir}"/launcher_bfb.png \
+        "${pkgdir}"/usr/share/unity/icons/launcher_bfb.png
 
     # Fix launching of unity-panel-service (from unity-gentoo project)
-    install -dm755 "${pkgdir}/etc/X11/xinit/xinitrc.d/"
-    install -m755 "${srcdir}/99unity-panel-service" \
-                  "${pkgdir}/etc/X11/xinit/xinitrc.d/"
+    install -dm755 "${pkgdir}"/etc/X11/xinit/xinitrc.d/
+    install -m755 "${srcdir}"/99unity-panel-service \
+                  "${pkgdir}"/etc/X11/xinit/xinitrc.d/
 
     # Install script for running Unity with debug output (from unity-gentoo project)
-    install -m755 "${srcdir}/unity-debug" "${pkgdir}/usr/bin/"
+    install -m755 "${srcdir}"/unity-debug "${pkgdir}"/usr/bin/
 
     # Use language packs
-    rm -r "${pkgdir}/usr/share/locale/"
+    rm -r "${pkgdir}"/usr/share/locale/
   
     # Fix insecure rpath in libunityshell.so
-    chrpath --replace /usr/lib/libunity:/usr/lib/compiz "$pkgdir/usr/lib/compiz/libunityshell.so"
+    chrpath --replace /usr/lib/libunity:/usr/lib/compiz \
+        "${pkgdir}"/usr/lib/compiz/libunityshell.so
 
     # FIRE!
-    install -m755 "${srcdir}/run_this_if_unity_is_on_fire.py" "${pkgdir}/usr/bin/"
+    install -m755 "${srcdir}"/run_this_if_unity_is_on_fire.py \
+        "${pkgdir}"/usr/bin/
 
     # Install PAM configuration file
-    rm "${pkgdir}/etc/pam.d/unity"
-    install -m644 "${srcdir}/unity.pam" "${pkgdir}/etc/pam.d/unity"
+    rm "${pkgdir}"/etc/pam.d/unity
+    install -m644 "${srcdir}"/unity.pam "${pkgdir}"/etc/pam.d/unity
 
     # Install desktop and session files
     install -dm755 "${pkgdir}"/usr/share/applications/
