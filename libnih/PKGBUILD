@@ -1,5 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-launchpad: name=${pkgname}
+
 pkgname=libnih
 _ubuntu_rel=4.3ubuntu1
 pkgver=1.0.3
