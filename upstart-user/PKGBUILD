@@ -1,5 +1,9 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=upstart, repo=yakkety
+# vercheck-launchpad: name=upstart
+
 pkgname=upstart-user
 _ubuntu_rel=0ubuntu24
 pkgver=1.13.2
