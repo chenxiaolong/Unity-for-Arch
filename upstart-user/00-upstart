@@ -1,0 +1,7 @@
+while read -r desktop; do
+    if [ "x${desktop}" = "x${DESKTOP_SESSION}" ]; then
+        export XDG_CONFIG_DIRS="/usr/share/upstart/xdg:/etc/xdg"
+        UPSTART=1
+    fi
+done < /etc/upstart-xsessions
+unset desktop
