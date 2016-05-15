@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=dee, repo=vivid
+# vercheck-ubuntu: name=dee, repo=xenial
 # vercheck-launchpad: name=dee
 
 pkgname=dee-ubuntu
@@ -23,30 +23,30 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}
 sha512sums=('c39980c413934f25c1a754546905cdbb84e0e322aa293d2f9c6b1f2a402bddfa895d576e97e09478c1162323f14c2f639e11d58f97cbf4c0c1220a7f88d6e183')
 
 build() {
-  cd "dee-${_actual_ver}${_extra_ver}"
+    cd "dee-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  [[ -d build-python3 ]] || mkdir build-python3
-  pushd build-python3
-  PYTHON=python3 ../configure --prefix=/usr --enable-gtk-doc
-  make
-  popd
+    [[ -d build-python3 ]] || mkdir build-python3
+    pushd build-python3
+    PYTHON=python3 ../configure --prefix=/usr --enable-gtk-doc
+    make
+    popd
 
-  [[ -d build-python2 ]] || mkdir build-python2
-  pushd build-python2
-  PYTHON=python2 ../configure --prefix=/usr
-  popd
+    [[ -d build-python2 ]] || mkdir build-python2
+    pushd build-python2
+    PYTHON=python2 ../configure --prefix=/usr
+    popd
 }
 
 package() {
-  cd "dee-${_actual_ver}${_extra_ver}"
+    cd "dee-${_actual_ver}${_extra_ver}"
 
-  pushd build-python3/
-  make DESTDIR="${pkgdir}/" install
-  popd
+    pushd build-python3/
+    make DESTDIR="${pkgdir}/" install
+    popd
 
-  pushd build-python2/bindings/python/
-  make DESTDIR="${pkgdir}/" install
-  popd
+    pushd build-python2/bindings/python/
+    make DESTDIR="${pkgdir}/" install
+    popd
 }

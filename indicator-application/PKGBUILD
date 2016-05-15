@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-application
@@ -16,7 +16,8 @@ pkgdesc="A library and indicator to take menus from applications and place them 
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-application"
 license=(GPL)
-depends=(dbus-glib libappindicator3 libdbusmenu-gtk3 libindicator3 json-glib)
+depends=(dbus-glib libappindicator-gtk3 libdbusmenu-gtk3 libindicator-gtk3
+         json-glib)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-application_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001_autoconf.patch)
@@ -24,23 +25,23 @@ sha512sums=('04fa908856e622325eb653501f9023a856b81fcec4c31256d46d1f71aa42eb28c49
             '7ef9f2eab8dd17d8957b706ba479c38f5f9e74a69e77af7c8e318809c67b4aea214433f0364741fc4fcbfaefd6bbff3e370e24048cd23f2e09ebe6bca32b1511')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001_autoconf.patch
+    patch -p1 -i ../0001_autoconf.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+    autoreconf -vfi
+    ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  rm -r "${pkgdir}/usr/share/upstart/"
+    rm -r "${pkgdir}/usr/share/upstart/"
 }

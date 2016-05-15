@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-printers
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _actual_ver=0.1.7
 _extra_ver=+15.04.20150220
 pkgver=${_actual_ver}${_extra_ver/\+/.}
@@ -16,37 +16,36 @@ arch=(i686 x86_64)
 url="https://launchpad.net/indicator-printers"
 license=(GPL)
 groups=(unity)
-depends=(cups libdbusmenu-glib libdbusmenu-gtk3 libindicator3)
+depends=(cups libdbusmenu-glib libdbusmenu-gtk3 libindicator-gtk3)
 makedepends=(intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
-        Remove_g_strv_contains.patch)
+        "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
 sha512sums=('c4aff3d515d64c78085175c5ff807b32c3fcc501dc879247a34545cdfc25d45d445fe7c56b661ce03953020246960b3c55110a44d015807abad9cc90b9c2198d'
-            '2ed2e49bc6a04ea02a7feb229690938aec48a0b4389534a64b95fdbef61bfd0ea3ab0645fc4d8145c5a3c4feca81d83f2beb39a2ab374f088c59efd14108cd89'
-            'f4e782d36037d9e531dc0bb43d83c00ab072ae77dc9c87a5d4c56c77aef2dbd9b4f07825b41e09e9be8a3fbb774c979247343290096bde8b9cde6746e7c9e24e')
+            'ce9865bf8b2421926132ecd066af335eb4a42c50887488b3a9045d19fe159407cd6aa5541f5d563adb47027774cf4eec36ad3c97653b1c42e07e521eaa56ce22')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -R -i ../Remove_g_strv_contains.patch
+    # Apply Ubuntu's patches
+    patch -p1 -i ../indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 
-  # Apply Ubuntu's patches
-  patch -p1 -i ../indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+    sed -i '/SERVICE_LIBS/ i SERVICE_LIBS+=" "' configure.ac
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
-  intltoolize -f
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+    ./autogen.sh --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  rm -r "${pkgdir}/usr/share/upstart/"
+    install -dm755 "${pkgdir}"/usr/share/icons/
+    cp -r debian/local/* "${pkgdir}"/usr/share/icons/
+
+    rm -r "${pkgdir}/usr/share/upstart/"
 }

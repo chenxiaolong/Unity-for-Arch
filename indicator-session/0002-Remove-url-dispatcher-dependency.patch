@@ -1,0 +1,81 @@
+From 947d947a502cdc67d7b6c9f50cd5ec025fef9f3f Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 25 Jan 2016 12:53:01 -0500
+Subject: [PATCH 2/2] Remove url-dispatcher dependency
+
+---
+ CMakeLists.txt             |  3 +--
+ src/backend-dbus/actions.c | 15 ++++-----------
+ 2 files changed, 5 insertions(+), 13 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 72d9a5a..3ed483b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -29,8 +29,7 @@ find_package (PkgConfig REQUIRED)
+ include (FindPkgConfig)
+ pkg_check_modules (SERVICE REQUIRED
+                    glib-2.0>=2.36
+-                   gio-unix-2.0>=2.36
+-                   url-dispatcher-1>=1)
++                   gio-unix-2.0>=2.36)
+ include_directories (${SERVICE_INCLUDE_DIRS})
+ 
+ set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
+diff --git a/src/backend-dbus/actions.c b/src/backend-dbus/actions.c
+index 06dd2bd..0c54e12 100644
+--- a/src/backend-dbus/actions.c
++++ b/src/backend-dbus/actions.c
+@@ -19,7 +19,6 @@
+ 
+ #include <glib.h>
+ #include <glib/gi18n.h>
+-#include <url-dispatcher.h>
+ 
+ #include "dbus-end-session-dialog.h"
+ #include "dbus-login1-manager.h"
+@@ -832,7 +831,7 @@ static void
+ my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+   if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("http://www.askubuntu.com", NULL, NULL);
++    {}
+   else
+     run_outside_app ("yelp");
+ }
+@@ -872,9 +871,7 @@ have_unity_control_center (void)
+ static void
+ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system", NULL, NULL);
+-  else if (have_unity_control_center ())
++  if (have_unity_control_center ())
+     run_outside_app ("unity-control-center");
+   else
+     run_outside_app ("gnome-control-center");
+@@ -883,9 +880,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static void
+ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+-  else if (have_unity_control_center ())
++  if (have_unity_control_center ())
+     run_outside_app ("unity-control-center credentials");
+   else
+     run_outside_app ("gnome-control-center credentials");
+@@ -894,9 +889,7 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static void
+ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system/about", NULL, NULL);
+-  else if (have_unity_control_center ())
++  if (have_unity_control_center ())
+     run_outside_app ("unity-control-center info");
+   else
+     run_outside_app ("gnome-control-center info");
+-- 
+2.8.2
+

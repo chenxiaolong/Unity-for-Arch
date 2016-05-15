@@ -1,29 +1,29 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, native, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, native, repo=xenial
 
 pkgname=libtimezonemap
-pkgver=0.4.3
-pkgrel=2
+pkgver=0.4.5
+pkgrel=1
 pkgdesc="GTK+3 timezone map widget"
 arch=(i686 x86_64)
 url="https://launchpad.net/libtimezonemap"
 license=(GPL)
 groups=(unity)
-depends=(cairo gtk3 json-glib)
+depends=(cairo gtk3 json-glib libsoup)
 makedepends=(gobject-introspection intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.tar.gz")
-sha512sums=('0e93039987ee160eb35d9f5e0fe5e49d5cb5d19d3c2a518f3e7c1aa861abc288c364b89f0c5b6d713b5f610c23453c4e962519d2a0f70d6f6731b3618744ef13')
+sha512sums=('39ebdd2bcc3026c663d18a86dbf178a2cf6435cbc0251897238ac1e2669fd7e4c63ee8355c709f08c0757bafa13dd3a182d1f1d92ad5ad3db837ca367161391c')
 
 build() {
-  cd "${pkgname}-${pkgver}"
-  autoreconf -vfi
-  ./configure --prefix=/usr --enable-introspection --with-gtk=3
-  make
+    cd "${pkgname}-${pkgver}"
+    autoreconf -vfi
+    ./configure --prefix=/usr --enable-introspection --with-gtk=3
+    make
 }
 
 package() {
-  cd "${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${pkgver}"
+    make DESTDIR="${pkgdir}/" install
 }

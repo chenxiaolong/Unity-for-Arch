@@ -3,29 +3,28 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-session-ubuntu
 _use_ppa=true
-_ppa_rel=0ubuntu1~vivid1
-#_ubuntu_rel=2ubuntu4
-#_ubuntu_ver=3.14.0
-pkgver=3.16.0
-pkgrel=1
+_ppa_rel=2ubuntu1~xenial1
+_ppa_ver=3.20.0
+#_ubuntu_rel=1ubuntu1
+pkgver=3.20.1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
-         hicolor-icon-theme json-glib libgl libsm libxtst systemd polkit-gnome)
-makedepends=(gnome-common intltool mesa gtk-doc xtrans)
+         json-glib libgl libsm libxtst systemd polkit-gnome)
+makedepends=(intltool mesa gtk-doc xtrans)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session)
 options=(!emptydirs)
-install=gnome-session.install
 url="http://www.gnome.org"
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         timeout.patch
@@ -34,58 +33,58 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
 if [[ "${_use_ppa}" == "true" ]]; then
     source+=("https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+files/gnome-session_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 else
-    source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.gz")
+    source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('4f02e73ab632ce0c2b961f1d88d93ef62fb6ebfa39d98bf12e672ca7cd9680d07aeffcd3c8792eddcbd9b5e13b0ef87d064352d8f209b3befd8445c1ba17e485'
+sha512sums=('d7ee6738a548644a9a1c8a58eeae7badd0c73e7cf830caa4851c571b38522cc073e3b9357c4e8edb13c4e1526c57d78dc531d3136e29aa30f00db98170404e5e'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
-            '6283e96c913c70029a95aee22db91ecc4378cda47560edec2d286dd0e1c7d6cb934888ebce912f527c31c3a104f564be1912f2ffb1d8922b72bb4255faebc741')
+            'b29521684b255d6d20f75d7a57eb7b9a53624b0ef7707540888137049c0e8749e8db58263184af849f32a73d55151195dc8b3851c27f670953f1851e92e59427')
 
 prepare() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  # Increase timeout, for slow machines
-  patch -p1 -i ../timeout.patch
+    # Increase timeout, for slow machines
+    patch -p1 -i ../timeout.patch
 
-  sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
+    sed -i '/50_ubuntu_sessions.patch/d' ../debian/patches/series
+    sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
-  # If you want this, install gnome-session-properties from the AUR
-  sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
-  sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
+    # If you want this, install gnome-session-properties from the AUR
+    sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
+    sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i} ..."
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    # Already applied in 3.20.1
+    sed -i '/0001-main-fix-starting-gnome-session-via-startx.patch/d' ../debian/patches/series
+
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i} ..."
+        patch -p1 -i "../debian/patches/${i}"
+    done
 }
 
 build() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/gnome-session \
-    --disable-schemas-compile \
-    --enable-systemd \
-    --disable-gconf
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/gnome-session \
+        --disable-schemas-compile \
+        --enable-systemd \
+        --disable-gconf
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname%-*}-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "${pkgname%-*}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
 
-  # Symlink session files so that KDM can find them
-  install -dm755 "${pkgdir}/usr/share/apps/kdm/sessions/"
-  ln -s /usr/share/xsessions/ubuntu.desktop "${pkgdir}/usr/share/apps/kdm/sessions/"
-
-  install -dm755 "${pkgdir}/etc/xdg/autostart/"
-  install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
-    "${pkgdir}/etc/xdg/autostart/"
+    install -dm755 "${pkgdir}/etc/xdg/autostart/"
+    install -m644 "${srcdir}/polkit-gnome-authentication-agent-1-unity.desktop" \
+        "${pkgdir}/etc/xdg/autostart/"
 }

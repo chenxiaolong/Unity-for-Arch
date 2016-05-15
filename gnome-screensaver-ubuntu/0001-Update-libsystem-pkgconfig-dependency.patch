@@ -1,0 +1,25 @@
+From a0f101e68ff24fc19ce6586bb1e3ae910dc9c70e Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 13 May 2016 20:57:28 -0400
+Subject: [PATCH] Update libsystem pkgconfig dependency
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4b329e3..56245d9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -606,7 +606,7 @@ AC_ARG_WITH(systemd,
+             [with_systemd=$withval], [with_systemd=auto])
+ 
+ PKG_CHECK_MODULES(SYSTEMD,
+-                  [libsystemd-login libsystemd-daemon],
++                  [libsystemd],
+                   [have_systemd=yes], [have_systemd=no])
+ 
+ if test "x$with_systemd" = "xauto" ; then
+-- 
+2.8.2
+

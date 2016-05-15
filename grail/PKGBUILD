@@ -2,13 +2,13 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=grail
 _actual_ver=3.1.0
-_extra_ver=daily13.06.05
-pkgver=${_actual_ver}.${_extra_ver}
+_extra_ver=+16.04.20160125
+pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
 pkgdesc="Gesture Recognition And Instantiation Library"
@@ -18,19 +18,19 @@ license=(LGPL)
 depends=(frame libxfixes libxi)
 makedepends=(inputproto)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/grail_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('ad29b099f164d37a126c7fa910f888ec60fe065695208f1cb355afb32b8c6e353d9f4737a406c470b644439837fd8c579b0593b50f9a59464c659d44ed13d878')
+sha512sums=('b54f6681e128a1cf79e1fa74452d4aa674a3eaa5ce3d46386760382c5b754a582022a43b516149fa4f7fc68397c6d80b852550c9ed04e9bdae06ae0713a9de4d')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  # Static library needed for tests
-  ./configure --prefix=/usr --with-x11 --disable-static
-  make -j1
+    # Static library needed for tests
+    ./configure --prefix=/usr --with-x11 --disable-static
+    make -j1
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 }

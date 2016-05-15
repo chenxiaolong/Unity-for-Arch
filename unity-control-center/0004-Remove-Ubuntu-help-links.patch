@@ -1,0 +1,258 @@
+From 81beecbb73f735aae1ace9a4052036e190c19191 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sun, 8 Jun 2014 16:53:27 -0400
+Subject: [PATCH 4/8] Remove Ubuntu help links
+
+---
+ panels/bluetooth/cc-bluetooth-panel.c     | 2 +-
+ panels/color/cc-color-panel.c             | 2 +-
+ panels/color/color.ui                     | 2 +-
+ panels/datetime/datetime-prefs.c          | 2 +-
+ panels/display/cc-display-panel.c         | 2 +-
+ panels/keyboard/cc-keyboard-panel.c       | 2 +-
+ panels/mouse/cc-mouse-panel.c             | 2 +-
+ panels/network/cc-network-panel.c         | 2 +-
+ panels/power/cc-power-panel.c             | 2 +-
+ panels/printers/cc-printers-panel.c       | 2 +-
+ panels/region/cc-region-panel.c           | 2 +-
+ panels/screen/cc-screen-panel.c           | 2 +-
+ panels/universal-access/cc-ua-panel.c     | 2 +-
+ panels/user-accounts/um-password-dialog.c | 2 +-
+ panels/user-accounts/um-user-panel.c      | 2 +-
+ panels/wacom/cc-wacom-panel.c             | 2 +-
+ shell/control-center.c                    | 4 ++--
+ 17 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/panels/bluetooth/cc-bluetooth-panel.c b/panels/bluetooth/cc-bluetooth-panel.c
+index eb26784..bf94f9f 100644
+--- a/panels/bluetooth/cc-bluetooth-panel.c
++++ b/panels/bluetooth/cc-bluetooth-panel.c
+@@ -77,7 +77,7 @@ launch_command (const char *command)
+ static const char *
+ cc_bluetooth_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/bluetooth";
++  return "help:gnome-help/bluetooth";
+ }
+ 
+ static void
+diff --git a/panels/color/cc-color-panel.c b/panels/color/cc-color-panel.c
+index 4323650..18982d2 100644
+--- a/panels/color/cc-color-panel.c
++++ b/panels/color/cc-color-panel.c
+@@ -2390,7 +2390,7 @@ gcm_prefs_window_realize_cb (GtkWidget *widget, CcColorPanel *prefs)
+ static const char *
+ cc_color_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/color";
++  return "help:gnome-help/color";
+ }
+ 
+ static void
+diff --git a/panels/color/color.ui b/panels/color/color.ui
+index 583ea01..3e8cc8f 100644
+--- a/panels/color/color.ui
++++ b/panels/color/color.ui
+@@ -174,7 +174,7 @@
+                 <property name="use_action_appearance">False</property>
+                 <property name="relief">none</property>
+                 <property name="xalign">0.50999999046325684</property>
+-                <property name="uri">help:ubuntu-help/color-whyimportant</property>
++                <property name="uri">help:gnome-help/color-whyimportant</property>
+               </object>
+               <packing>
+                 <property name="expand">False</property>
+diff --git a/panels/datetime/datetime-prefs.c b/panels/datetime/datetime-prefs.c
+index 671aadf..8e916a1 100644
+--- a/panels/datetime/datetime-prefs.c
++++ b/panels/datetime/datetime-prefs.c
+@@ -956,7 +956,7 @@ indicator_datetime_panel_class_finalize (IndicatorDatetimePanelClass *klass G_GN
+ static const char *
+ indicator_datetime_panel_get_help_uri (CcPanel *panel G_GNUC_UNUSED)
+ {
+-  return "help:ubuntu-help/clock";
++  return "help:gnome-help/clock";
+ }
+ 
+ static void
+diff --git a/panels/display/cc-display-panel.c b/panels/display/cc-display-panel.c
+index 0cc5776..a2597cc 100644
+--- a/panels/display/cc-display-panel.c
++++ b/panels/display/cc-display-panel.c
+@@ -226,7 +226,7 @@ cc_display_panel_finalize (GObject *object)
+ static const char *
+ cc_display_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/prefs-display";
++  return "help:gnome-help/prefs-display";
+ }
+ 
+ static void
+diff --git a/panels/keyboard/cc-keyboard-panel.c b/panels/keyboard/cc-keyboard-panel.c
+index 19416d0..5db9ee1 100644
+--- a/panels/keyboard/cc-keyboard-panel.c
++++ b/panels/keyboard/cc-keyboard-panel.c
+@@ -138,7 +138,7 @@ cc_keyboard_panel_constructor (GType                  gtype,
+ static const char *
+ cc_keyboard_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/keyboard";
++  return "help:gnome-help/keyboard";
+ }
+ 
+ static void
+diff --git a/panels/mouse/cc-mouse-panel.c b/panels/mouse/cc-mouse-panel.c
+index 64b1a24..129f90a 100644
+--- a/panels/mouse/cc-mouse-panel.c
++++ b/panels/mouse/cc-mouse-panel.c
+@@ -107,7 +107,7 @@ cc_mouse_panel_dispose (GObject *object)
+ static const char *
+ cc_mouse_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/mouse";
++  return "help:gnome-help/mouse";
+ }
+ 
+ static void
+diff --git a/panels/network/cc-network-panel.c b/panels/network/cc-network-panel.c
+index 095c830..a102377 100644
+--- a/panels/network/cc-network-panel.c
++++ b/panels/network/cc-network-panel.c
+@@ -242,7 +242,7 @@ cc_network_panel_finalize (GObject *object)
+ static const char *
+ cc_network_panel_get_help_uri (CcPanel *panel)
+ {
+-        return "help:ubuntu-help/net";
++        return "help:gnome-help/net";
+ }
+ 
+ static void
+diff --git a/panels/power/cc-power-panel.c b/panels/power/cc-power-panel.c
+index 4340636..ec5041b 100644
+--- a/panels/power/cc-power-panel.c
++++ b/panels/power/cc-power-panel.c
+@@ -168,7 +168,7 @@ on_lock_settings_changed (GSettings     *settings,
+ static const char *
+ cc_power_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/power";
++  return "help:gnome-help/power";
+ }
+ 
+ static void
+diff --git a/panels/printers/cc-printers-panel.c b/panels/printers/cc-printers-panel.c
+index 3618a2b..107290f 100644
+--- a/panels/printers/cc-printers-panel.c
++++ b/panels/printers/cc-printers-panel.c
+@@ -251,7 +251,7 @@ cc_printers_panel_get_permission (CcPanel *panel)
+ static const char *
+ cc_printers_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/printing";
++  return "help:gnome-help/printing";
+ }
+ 
+ static void
+diff --git a/panels/region/cc-region-panel.c b/panels/region/cc-region-panel.c
+index d95c3d2..388c5a1 100644
+--- a/panels/region/cc-region-panel.c
++++ b/panels/region/cc-region-panel.c
+@@ -142,7 +142,7 @@ cc_region_panel_finalize (GObject * object)
+ static const char *
+ cc_region_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/prefs-language";
++  return "help:gnome-help/prefs-language";
+ }
+ 
+ static void
+diff --git a/panels/screen/cc-screen-panel.c b/panels/screen/cc-screen-panel.c
+index db458b7..e1ae0a6 100644
+--- a/panels/screen/cc-screen-panel.c
++++ b/panels/screen/cc-screen-panel.c
+@@ -148,7 +148,7 @@ on_lockdown_settings_changed (GSettings     *settings,
+ static const char *
+ cc_screen_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/prefs-display";
++  return "help:gnome-help/prefs-display";
+ }
+ 
+ static void
+diff --git a/panels/universal-access/cc-ua-panel.c b/panels/universal-access/cc-ua-panel.c
+index a14dc9e..3388d83 100644
+--- a/panels/universal-access/cc-ua-panel.c
++++ b/panels/universal-access/cc-ua-panel.c
+@@ -180,7 +180,7 @@ cc_ua_panel_finalize (GObject *object)
+ static const char *
+ cc_ua_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/a11y";
++  return "help:gnome-help/a11y";
+ }
+ 
+ static void
+diff --git a/panels/user-accounts/um-password-dialog.c b/panels/user-accounts/um-password-dialog.c
+index 3b70e28..218bce0 100644
+--- a/panels/user-accounts/um-password-dialog.c
++++ b/panels/user-accounts/um-password-dialog.c
+@@ -622,7 +622,7 @@ um_password_dialog_new (void)
+         widget = (GtkWidget *) gtk_builder_get_object (builder, "password-normal-strength-hints-label");
+         old_label = gtk_label_get_label (GTK_LABEL (widget));
+         label = g_strdup_printf ("<a href=\"%s\">%s</a>",
+-                                 "help:ubuntu-help/user-goodpassword",
++                                 "help:gnome-help/user-goodpassword",
+                                   old_label);
+         gtk_label_set_markup (GTK_LABEL (widget), label);
+         g_free (label);
+diff --git a/panels/user-accounts/um-user-panel.c b/panels/user-accounts/um-user-panel.c
+index cda837b..adfd8d1 100644
+--- a/panels/user-accounts/um-user-panel.c
++++ b/panels/user-accounts/um-user-panel.c
+@@ -1536,7 +1536,7 @@ cc_user_panel_get_permission (CcPanel *panel)
+ static const char *
+ cc_user_panel_get_help_uri (CcPanel *panel)
+ {
+- return "help:ubuntu-help/user-accounts";
++ return "help:gnome-help/user-accounts";
+ }
+ 
+ static void
+diff --git a/panels/wacom/cc-wacom-panel.c b/panels/wacom/cc-wacom-panel.c
+index 2cea6fb..411e900 100644
+--- a/panels/wacom/cc-wacom-panel.c
++++ b/panels/wacom/cc-wacom-panel.c
+@@ -124,7 +124,7 @@ cc_wacom_panel_dispose (GObject *object)
+ static const char *
+ cc_wacom_panel_get_help_uri (CcPanel *panel)
+ {
+-  return "help:ubuntu-help/wacom";
++  return "help:gnome-help/wacom";
+ }
+ 
+ static void
+diff --git a/shell/control-center.c b/shell/control-center.c
+index 31da6a4..de27113 100644
+--- a/shell/control-center.c
++++ b/shell/control-center.c
+@@ -182,7 +182,7 @@ help_activated (GSimpleAction *action,
+   if (panel)
+     uri = cc_panel_get_help_uri (panel);
+     gtk_show_uri (gtk_widget_get_screen (window),
+-                  uri ? uri : "help:ubuntu-help/prefs",
++                  uri ? uri : "help:gnome-help/prefs",
+                   GDK_CURRENT_TIME, NULL);
+ }
+ 
+@@ -195,7 +195,7 @@ contents_activated (GSimpleAction *action,
+   GtkWidget *window = cc_shell_get_toplevel (CC_SHELL (shell));
+   
+   gtk_show_uri (gtk_widget_get_screen (window),
+-                "help:ubuntu-help/prefs",
++                "help:gnome-help/prefs",
+                 GDK_CURRENT_TIME, NULL);
+ }
+ 
+-- 
+2.8.2
+

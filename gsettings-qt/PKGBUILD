@@ -1,13 +1,15 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-archlinux: name=${pkgname}, repo=community, arch=x86_64
 
 pkgname=gsettings-qt
 _actual_ver=0.1
-_extra_ver=+14.10.20140807
+_extra_ver=+16.04.20160329
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
+epoch=1
 pkgdesc="Library to access GSettings from Qt"
 arch=(i686 x86_64)
 url="https://launchpad.net/gsettings-qt"
@@ -16,17 +18,22 @@ groups=(unity)
 depends=(qt5-base qt5-declarative)
 makedepends=(qtchooser)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('511e65e90bed2aa470b0d29f39a5f017a05473134f02b287e5ee6cb4a16664d36f9b881595c27460234a40cea9a07236474ce38ac1e1b786c068bef5d89311b4')
+sha512sums=('20b3532b351031c56bc8335430dabc882621713ece0844b78308458a084ecf37a756f01beb10809630e4b34e2261bde08b2c187d8d5e5a92ce0cbfa7a91ac680')
+
+prepare() {
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    sed -i -e 's|tests/tests.pro||g' \
+           -e 's|tests/cpptest.pro||g' \
+           gsettings-qt.pro
+}
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  qmake-qt5 gsettings-qt.pro
-  make
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    qmake-qt5 gsettings-qt.pro
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make INSTALL_ROOT="${pkgdir}/" install
-
-  rm -r "${pkgdir}/usr/tests/"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make INSTALL_ROOT="${pkgdir}/" install
 }

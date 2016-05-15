@@ -1,6 +1,6 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-# vercheck-ubuntudb: pkgprefix=unity-scope-, verprefix=_ver_, relprefix=_rel_, skip=home, repo=vivid
+# vercheck-ubuntudb: pkgprefix=unity-scope-, verprefix=_ver_, relprefix=_rel_, skip=home, repo=xenial
 
 # When updating, check if any packages are missing when compared to
 # /usr/share/unity/client-scopes.json
@@ -8,37 +8,37 @@
 packages=()
 setver() { eval "_ver_${1}=${2}"; eval "_rel_${1}=${3}"; packages+=(${1}); }
 
-setver audacious		0.1+13.10.20130927.1	0ubuntu1
-setver calculator		0.1+14.04.20140328	0ubuntu1
-setver chromiumbookmarks	0.1+13.10.20130723	0ubuntu1
-setver clementine		0.1+13.10.20130723	0ubuntu1
-setver colourlovers		0.1+13.10.20130723	0ubuntu1
-setver devhelp			0.1+14.04.20140328	0ubuntu1
-setver deviantart		0.1+13.10.20130723	0ubuntu1
-setver firefoxbookmarks		0.1+13.10.20130809.1	0ubuntu1
-setver gallica			0.1+13.10.20130816.2	0ubuntu1
-setver gdrive			0.9+13.10.20130723	0ubuntu1
-setver github			0.1+13.10.20130723	0ubuntu1
-setver gmusicbrowser		0.1+13.10.20130723	0ubuntu1
-setver googlenews		0.1+13.10.20130723	0ubuntu1
-setver gourmet			0.1+13.10.20130723	0ubuntu1
-setver guayadeque		0.1+13.10.20130927.1	0ubuntu1
-setver manpages			3.0+14.04.20140324	0ubuntu1
-setver musique			0.1+13.10.20130723	0ubuntu1
-setver openclipart		0.1+13.10.20130723	0ubuntu1
-setver openweathermap		0.1+13.10.20130828	0ubuntu1
-setver soundcloud		0.1+13.10.20130723	0ubuntu1
-setver texdoc			0.1+14.04.20140328	0ubuntu1
-setver tomboy			0.1+13.10.20130723	0ubuntu1
-setver virtualbox		0.1+13.10.20130723	0ubuntu1
-setver yahoostock		0.1+13.10.20130723	0ubuntu1
-setver yelp			0.1+13.10.20130723	0ubuntu1
-setver zotero			0.1+13.10.20130723	0ubuntu1
+setver audacious         0.1+13.10.20130927.1 0ubuntu1
+setver calculator        0.1+14.04.20140328 0ubuntu1
+setver chromiumbookmarks 0.1+13.10.20130723 0ubuntu1
+setver clementine        0.1+13.10.20130723 0ubuntu1
+setver colourlovers      0.1+13.10.20130723 0ubuntu1
+setver devhelp           0.1+14.04.20140328 0ubuntu1
+setver deviantart        0.1+13.10.20130723 0ubuntu1
+setver firefoxbookmarks  0.1+13.10.20130809.1 0ubuntu1
+setver gallica           0.1+13.10.20130816.2 0ubuntu1
+setver gdrive            0.9+16.04.20151125 0ubuntu1
+setver github            0.1+13.10.20130723 0ubuntu1
+setver gmusicbrowser     0.1+13.10.20130723 0ubuntu1
+setver googlenews        0.1+13.10.20130723 0ubuntu1
+setver gourmet           0.1+13.10.20130723 0ubuntu1
+setver guayadeque        0.1+13.10.20130927.1 0ubuntu1
+setver manpages          3.0+14.04.20140324 0ubuntu1
+setver musique           0.1+13.10.20130723 0ubuntu1
+setver openclipart       0.1+13.10.20130723 0ubuntu1
+setver openweathermap    0.1+13.10.20130828 0ubuntu1
+setver soundcloud        0.1+13.10.20130723 0ubuntu1
+setver texdoc            0.1+14.04.20140328 0ubuntu1
+setver tomboy            0.1+13.10.20130723 0ubuntu1
+setver virtualbox        0.1+13.10.20130723 0ubuntu1
+setver yahoostock        0.1+13.10.20130723 0ubuntu1
+setver yelp              0.1+13.10.20130723 0ubuntu1
+setver zotero            0.1+13.10.20130723 0ubuntu1
 
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=11
+pkgrel=13
 pkgdesc="Online scopes for the Unity Dash"
 arch=(any)
 url="https://launchpad.net/unity-scope-NAME"
@@ -61,8 +61,6 @@ depends+=(gtk3 man-db)
 makedepends=(python-distutils-extra)
 # texdoc
 makedepends+=(texlive-bin)
-
-install=icon_cache.install
 
 provides=()
 conflicts=()
@@ -126,8 +124,8 @@ sha512sums=('3c19ded6c9a5c63b996a4da37afc93200d6e72906062ce94558fdf3c7aba74975c5
             'a1144f8da5e535c73cd80b408a9695cbe1dd668cc9679ba7c06564575b885ba066f032eb9c7c5763ff313897b0fa51ad0fb8ed0359ebce26751fab3ab592e700'
             '26bbb2f65e93f05fa30338823ede708642a2a5e13cb3769789b33f8a40c08c605c5db2ad9777ab804834ce12d25fe53da82e77ba3f045c4dbedf5092a44eb8c0'
             '3d61f2852b40c7d6435024b46be64469ca4333d2158e8ca82bfc8e8be88976ecf020b581278ad88444b0fa89f51bd3354528dca70214a0f58116f69b576130f3'
-            '2c6aa825e7f9f549086dd577445ac05ef950aac1867bd525d62343cb2b84c0d0598983256e17b3c3e92d22b86661319f86be98a5eeecf359c046eaea869ec48f'
-            '70bb1cbd9edd25e5915dfcc56b01a74e66a36e07478df1254ddd55819c65276ff3f61d5752108d85ca6747efeddfae07c83cf6f6203fbd806a4f6bd16ede0fee'
+            '7fcc3938d3ba0533bf41e24466e8a8181f3f76ed502d41e3b40d821465c0970f0bd1835da3b73dd79947bc22d740604f3667c88346193fca6cd2f3cc6361a8f4'
+            'f7a75ea1a456ab24a762559395e269a32870f817c709854015a06f42d74f2a1f0159336da7e11f36e113c60701dff07dc264a8447e177d3b010e3a120d1c9c20'
             '396dc337c8934a1d99ce2ed02568d1cad559d852bbbd7548acdf2ed3417848565127682a63745c46bcddd0aaa4fa9f10a85650d2651bfac2171c676427d7080e'
             'cb8e890d92d56ab41905f8704fcc3369c8afb08e702be2f5b43307024d3a03dcc5de9a69e2168d1f4f3409eb64a2f16970ac905379bda54c7bdffc821a1e0c0e'
             '2c83828c6143a0f0bc3b0ad95cf9cae013d532d52428a215aac038abd4b0b8a64ab725647c3bc889109264ee89c2b8bfc09217358357b707018ff1a844a1a788'

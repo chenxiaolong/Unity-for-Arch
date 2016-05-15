@@ -2,6 +2,7 @@
 
 from collections import OrderedDict
 import bz2
+import lzma
 import os
 import re
 import subprocess
@@ -313,14 +314,20 @@ def get_ubuntudb_ver(params):
     if 'onlyver' in params:
         onlyver = params['onlyver']
 
-    url = 'http://archive.ubuntu.com/ubuntu/dists/%s/main/source/Sources.bz2' % repo
+    url = 'http://archive.ubuntu.com/ubuntu/dists/%s/main/source/Sources.' % repo
+    if repo[0] >= 'x':
+        url += 'xz'
+        method = lzma
+    else:
+        url += 'bz2'
+        method = bz2
 
     packages = list()
     repovers = list()
     pkgbuildvers = list()
 
     with urllib.request.urlopen(url) as f:
-        with bz2.open(f, 'r') as b:
+        with method.open(f, 'r') as b:
             curpkg = None
 
             for line in b:

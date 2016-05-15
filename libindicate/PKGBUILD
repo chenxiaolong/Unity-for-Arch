@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=vivid
+# vercheck-ubuntu: name=${pkgbase}, repo=xenial
 # vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libindicate
@@ -26,60 +26,62 @@ sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dc
             'a1e090fc1e8e49ad8de3bdc164d52b60fc1ea3dc2dd2da1a856a6943e9e198c2c3843d93872ab076421d8e2fc720bb3c4d919f33d154f107fe9d4bd99e6de66b')
 
 prepare() {
-  cd "${pkgbase}-${pkgver}"
+    cd "${pkgbase}-${pkgver}"
 
-  patch -p1 -i ../0001-Fix-autotools-errors.patch
-  patch -p1 -i ../0002-Python-2-fixes.patch
+    patch -p1 -i ../0001-Fix-autotools-errors.patch
+    patch -p1 -i ../0002-Python-2-fixes.patch
 }
 
 build() {
-  cd "${pkgbase}-${pkgver}"
+    cd "${pkgbase}-${pkgver}"
 
-  export CFLAGS+=" -Wno-error=deprecated-declarations"
+    export CFLAGS+=" -Wno-error=deprecated-declarations"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  [[ -d build-gtk2 ]] || mkdir build-gtk2
-  pushd build-gtk2
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 --disable-static PYTHON=python2
-  make -j1
-  popd
+    [[ -d build-gtk2 ]] || mkdir build-gtk2
+    pushd build-gtk2
+    ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=2 --disable-static \
+        PYTHON=python2 CSC=/usr/bin/mcs
+    make -j1
+    popd
 
-  [[ -d build-gtk3 ]] || mkdir build-gtk3
-  pushd build-gtk3
-  ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static PYTHON=python2
-  make -j1
-  popd
+    [[ -d build-gtk3 ]] || mkdir build-gtk3
+    pushd build-gtk3
+    ../configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --with-gtk=3 --disable-static \
+        PYTHON=python2 CSC=/usr/bin/mcs
+    make -j1
+    popd
 }
 
 package_libindicate() {
-  depends=(libdbusmenu-glib dbus-glib)
+    depends=(libdbusmenu-glib dbus-glib)
 
-  cd "${pkgbase}-${pkgver}/build-gtk2"
+    cd "${pkgbase}-${pkgver}/build-gtk2"
 
-  make -j1 -C libindicate DESTDIR="${pkgdir}" install
-  make -j1 -C bindings/mono/indicate DESTDIR="${pkgdir}" install
-  make -j1 -C tests DESTDIR="${pkgdir}" install
-  make -j1 -C docs DESTDIR="${pkgdir}" install
+    make -j1 -C libindicate DESTDIR="${pkgdir}" install
+    make -j1 -C bindings/mono/indicate DESTDIR="${pkgdir}" install
+    make -j1 -C tests DESTDIR="${pkgdir}" install
+    make -j1 -C docs DESTDIR="${pkgdir}" install
 }
 
 package_libindicate-gtk2() {
-  pkgdesc+=" (GTK+ 2 library)"
-  depends=(cairo libindicate gtk2 python2-gobject2)
+    pkgdesc+=" (GTK+ 2 library)"
+    depends=(cairo libindicate gtk2 python2-gobject2)
 
-  cd "${pkgbase}-${pkgver}/build-gtk2"
+    cd "${pkgbase}-${pkgver}/build-gtk2"
 
-  make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
-  make -j1 -C bindings/python DESTDIR="${pkgdir}" install
-  make -j1 -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
-  make -j1 -C examples DESTDIR="${pkgdir}" install
+    make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
+    make -j1 -C bindings/python DESTDIR="${pkgdir}" install
+    make -j1 -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
+    make -j1 -C examples DESTDIR="${pkgdir}" install
 }
 
 package_libindicate-gtk3(){
-  pkgdesc+=" (GTK+ 3 library)"
-  depends=(cairo libindicate gtk3)
+    pkgdesc+=" (GTK+ 3 library)"
+    depends=(cairo libindicate gtk3)
 
-  cd "${pkgbase}-${pkgver}/build-gtk3"
+    cd "${pkgbase}-${pkgver}/build-gtk3"
 
-  make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
+    make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
 }

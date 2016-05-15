@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity-lens-applications
 _actual_ver=7.1.0
-_extra_ver=+13.10.20131011
+_extra_ver=+16.04.20160217.2
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -16,44 +16,34 @@ pkgdesc="A daemon that exposes you applications with their usage statistics and 
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-lens-applications"
 license=(GPL)
-depends=(dconf gnome-menus libcolumbus libgee06 libunity libzeitgeist
+depends=(dconf gnome-menus libcolumbus libgee libunity libzeitgeist
          xapian-core zeitgeist-ubuntu)
 makedepends=(vala intltool)
 groups=(unity)
-install=${pkgname}.install
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        10-no-db51.patch)
-sha512sums=('f25974a55efdc05291214cc275b58302a88ae493ed37ca047ba7fdb989b41feb1d5f714be7be037c4da1ad65f352f1bcf05e5fc50359b335167fdf55b6b33aa1'
-            '51126591417c1edf29fe7bfcd01ea7f61456505cc6a2a37ca8e67d2b53d8622bdc631765741f2eea36413ab036cfc0e6e0e1dfd7d53e0bf10e50f81bbc9883d9')
-
-prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
-  # Remove check for db version 5.1
-  patch -p1 -i ../10-no-db51.patch
-}
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('8d5b8bd49104a98bffbfaa6e84693e16495a9c6a9b065a3431311fc03dea1ad1fc1c21d818e6ddab09db17b14d1e974255162c137a606f1fdc54858647fd1594')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  aclocal --install --force
-  autoreconf -vfi
-  intltoolize -f
+    aclocal --install --force
+    autoreconf -vfi
+    intltoolize -f
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --disable-static \
-    --libexecdir=/usr/lib/${pkgname} \
-    --disable-schemas-compile
-  make
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --disable-static \
+        --libexecdir=/usr/lib/${pkgname} \
+        --disable-schemas-compile
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/locale/"
 }

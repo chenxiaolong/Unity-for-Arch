@@ -2,7 +2,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=frame
@@ -23,13 +23,13 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ve
 sha512sums=('c8b2a1df86c9ccc6bd17c97a04d94827994fc15737ab933081d73636909148c5f8f1f47a6d4fe3f99ae048261246bb16b2ecdb2e079090e5e68fc90ab1eec98c')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  autoreconf -vfi
-  ./configure --prefix=/usr --disable-static
-  make
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    autoreconf -vfi
+    ./configure --prefix=/usr --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    make DESTDIR="${pkgdir}/" install
 }

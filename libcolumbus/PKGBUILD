@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=libcolumbus
 _actual_ver=1.1.0
-_extra_ver=+14.04.20140325.3
+_extra_ver=+15.10.20150806
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=4
 epoch=1
@@ -18,20 +18,20 @@ groups=(unity)
 depends=(icu)
 makedepends=(boost cmake sparsehash)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libcolumbus_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('510f059dc3e5438c60b1d5fef41c5f0681374a721fe9df286e8bed7147c3268cacb9d588bf36c10169a3460bb25b1cda0ac52c2f7b2880a4f0a28aa1988b738c')
+sha512sums=('72a67115c813ceb575eb237c28eb096232e319524718f8fa4d28dab2fd42bf3eb637366ac829d9fb0999d119413b5259d6802de3beb5dff52983ce80ffe5fe41')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
-  mkdir build
-  cd build
-  cmake .. \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DCMAKE_BUILD_TYPE=''
-  make
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    mkdir -p build
+    cd build
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DCMAKE_BUILD_TYPE=''
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
-  make DESTDIR="${pkgdir}/" install
+    cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    make DESTDIR="${pkgdir}/" install
 }

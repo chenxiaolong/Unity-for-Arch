@@ -3,117 +3,125 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgbase%-*}, majorver=3.16
 # vercheck-ppa: name=${pkgbase%-*}, url=ppa:gnome3-team/gnome3-staging
 
-_use_ppa=true
+_use_ppa=false
 
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-#_ubuntu_rel=0ubuntu4
+_ubuntu_rel=0ubuntu1
 #_ubuntu_ver=3.14.2
-_ppa_rel=0ubuntu1~vivid1
-pkgver=3.16.1
-pkgrel=2
+#_ppa_rel=0ubuntu1~vivid1
+#_ppa_ver=3.16.1
+pkgver=3.18.4
+pkgrel=1
 pkgdesc="GNOME and Unity file manager"
 arch=(i686 x86_64)
 license=(GPL)
 depends=(libexif gnome-desktop exempi gvfs desktop-file-utils dconf
-         libtracker-sparql libnotify nautilus-sendto libunity libzeitgeist)
-makedepends=(intltool gobject-introspection python python2)
+         libtracker-sparql nautilus-sendto libunity libzeitgeist)
+makedepends=(intltool gobject-introspection python packagekit)
 url="http://www.gnome.org"
 options=(!emptydirs)
 install=nautilus.install
-source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz")
+source=("http://ftp.gnome.org/pub/gnome/sources/nautilus/${pkgver%.*}/nautilus-${pkgver}.tar.xz"
+        thumbnail-fix-jp2-crash.patch)
 if [[ "${_use_ppa}" == "true" ]]; then
     source+=("https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+files/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
 else
     source+=("https://launchpad.net/ubuntu/+archive/primary/+files/nautilus_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('ae7356015aefd228736bff61d30a784f2dc9cd7982292716ccd47164614c836085bb11f9cec97057a0c77568a37448294687aff99175b6af0eee3c1cb26b2084'
-            '89860e2ba7177034c70b2d83470736a66fc76518d288fdedb4cb86700c98d5ab43af24a09aeeddc627363a79c6d077ae5a438fb883762d2c228e4a3471c2e030')
+sha512sums=('671abbb45d888260ed8591106a0da5d9703b050d2d962101eecfa6107ad4d0dfb792f6a8215f70d9c7e98898922ed78c4216c5e327bab573773422626d0905f4'
+            '02b0c91ef6999e5ee1e70d12860aa554562aed71477b06a441e0386446d13805b38430b56f6b35c30850c2dda20fac54cac442913900d0e7c93ef392c7ad6aaf'
+            'd93653c505daf6603d1073cf056abe394824eee04e0ae6eb3cd6edf907ff42a5bc6505a820480bdd437874fc8deebddbd5519a2b0c00b0523177c98e1da0c835')
 
 prepare() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  # Apply Ubuntu's patches
+    patch -p1 -i ../thumbnail-fix-jp2-crash.patch
 
-  # Disable patches
-  sed -i -e '/15_use-ubuntu-help.patch/d' \
-         -e '/08_clean_session_capplet.patch/d' \
-         ../debian/patches/series
+    # Apply Ubuntu's patches
 
-  for i in $(grep -v '#' ../debian/patches/series); do
-    msg "Applying ${i} ..."
-    patch -p1 -i "../debian/patches/${i}"
-  done
+    # Disable patches
+    sed -i -e '/15_use-ubuntu-help.patch/d' \
+           -e '/08_clean_session_capplet.patch/d' \
+           ../debian/patches/series
 
-  sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
+    for i in $(grep -v '#' ../debian/patches/series); do
+        msg "Applying ${i} ..."
+        patch -p1 -i "../debian/patches/${i}"
+    done
+
+    sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
 }
 
 build() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --disable-static \
-    --libexecdir=/usr/lib/nautilus \
-    --disable-update-mimedb \
-    --disable-packagekit \
-    --disable-schemas-compile \
-    --disable-appindicator \
-    --enable-unity
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --disable-static \
+        --libexecdir=/usr/lib/nautilus \
+        --disable-update-mimedb \
+        --disable-schemas-compile \
+        --enable-packagekit \
+        --enable-introspection \
+        --enable-tracker \
+        --enable-unity
 
-  make
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' -e 's/    if test "$export_dynamic" = yes && test -n "$export_dynamic_flag_spec"; then/      func_append compile_command " -Wl,-O1,--as-needed"\n      func_append finalize_command " -Wl,-O1,--as-needed"\n\0/' libtool
+    make
 }
 
 package_nautilus-ubuntu() {
-  depends+=(libnautilus-extension-ubuntu)
-  groups=(gnome unity)
-  provides=("nautilus=${pkgver}")
-  conflicts=(nautilus)
+    depends+=(libnautilus-extension-ubuntu)
+    groups=(gnome unity)
+    provides=("nautilus=${pkgver}")
+    conflicts=(nautilus)
 
-  cd "nautilus-${pkgver}"
-  make DESTDIR="${pkgdir}/" install
+    cd "nautilus-${pkgver}"
+    make DESTDIR="${pkgdir}/" install
 
-  # Split libnautilus-extension
-  cd ..
-  mkdir -p n-e/usr/{lib,share}
-  mv "${pkgdir}"/usr/include n-e/usr
-  mv "${pkgdir}"/usr/lib/{girepository-1.0,pkgconfig} n-e/usr/lib
-  mv "${pkgdir}"/usr/lib/libnautilus-extension.so* n-e/usr/lib
-  mv "${pkgdir}"/usr/share/{gir-1.0,gtk-doc} n-e/usr/share
+    # Split libnautilus-extension
+    cd ..
+    mkdir -p n-e/usr/{lib,share}
+    mv "${pkgdir}"/usr/include n-e/usr
+    mv "${pkgdir}"/usr/lib/{girepository-1.0,pkgconfig} n-e/usr/lib
+    mv "${pkgdir}"/usr/lib/libnautilus-extension.so* n-e/usr/lib
+    mv "${pkgdir}"/usr/share/{gir-1.0,gtk-doc} n-e/usr/share
 
-  # Ubuntu specific stuff
-  install -dm755 "${pkgdir}/usr/share/pixmaps/"
-  install -dm755 "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/debian/nautilus.xpm" "${pkgdir}/usr/share/pixmaps/"
-  install -m644 "${srcdir}/debian/mount-archive.desktop" "${pkgdir}/usr/share/applications/"
-  install -m644 "${srcdir}/debian/nautilus-folder-handler.desktop" "${pkgdir}/usr/share/applications/"
+    # Ubuntu specific stuff
+    install -dm755 "${pkgdir}/usr/share/applications/"
+    install -m644 \
+        "${srcdir}/debian/nautilus-home.desktop" \
+        "${srcdir}/debian/mount-archive.desktop" \
+        "${srcdir}/debian/nautilus-folder-handler.desktop" \
+        "${pkgdir}/usr/share/applications/"
 
-  # Use language packs
-  #rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/share/locale/"
 
-  # Make Unity happy
-  cp "${pkgdir}"/usr/share/applications/{org.gnome.Nautilus,nautilus}.desktop
-  sed -i \
-      -e '/DBusActivatable/d' \
-      -e '/MimeType/d' \
-      "${pkgdir}"/usr/share/applications/nautilus.desktop
+    # Make Unity happy
+    cp "${pkgdir}"/usr/share/applications/{org.gnome.Nautilus,nautilus}.desktop
+    sed -i 's/NoDisplay=true/OnlyShowIn=Unity;/' \
+        "${pkgdir}"/usr/share/applications/org.gnome.Nautilus.desktop
+    sed -i 's/\[Desktop Entry\]/\0\nNotShowIn=Unity;/' \
+        "${pkgdir}"/usr/share/applications/nautilus.desktop
 }
 
 package_libnautilus-extension-ubuntu() {
-  pkgdesc="Library for extending the ${pkgdesc}"
-  depends=(cairo gtk3)
-  provides=("libnautilus-extension=${pkgver}")
-  conflicts=(libnautilus-extension)
+    pkgdesc="Library for extending the ${pkgdesc}"
+    depends=(cairo gtk3)
+    provides=("libnautilus-extension=${pkgver}")
+    conflicts=(libnautilus-extension)
 
-  mv n-e/* "${pkgdir}/"
+    mv n-e/* "${pkgdir}/"
 }

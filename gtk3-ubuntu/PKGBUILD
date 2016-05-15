@@ -2,65 +2,81 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=gtk+3.0, repo=vivid
+# vercheck-ubuntu: name=gtk+3.0, repo=xenial
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
-# vercheck-gnome: name=gtk+, majorver=3.16
+# vercheck-gnome: name=gtk+, majorver=3.20
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
 _use_ppa=true
 
 pkgname=gtk3-ubuntu
-_ppa_rel=0ubuntu1~vivid1
-#_ubuntu_rel=0ubuntu2
-#_ubuntu_ver=3.14.8
-pkgver=3.16.2
+_ubuntu_rel=0ubuntu1~xenial0
+pkgver=3.20.4
 pkgrel=1
-pkgdesc="GObject-based multi-platform toolkit (v3)"
+epoch=1
+pkgdesc="GObject-based multi-platform toolkit"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
 install=gtk3.install
-depends=(atk cairo gtk-update-icon-cache libcups libepoxy libxcursor libxinerama
-         libxrandr libxi libxcomposite libxdamage pango shared-mime-info
-         colord at-spi2-atk wayland libxkbcommon adwaita-icon-theme
-         json-glib rest)
-makedepends=(gobject-introspection)
+depends=(atk cairo libcups libxcursor libxinerama libxrandr libxi libepoxy
+         gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info colord
+         at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib rest
+         librsvg wayland-protocols desktop-file-utils gtk-update-icon-cache)
+makedepends=(gobject-introspection libcanberra gtk-doc)
+optdepends=('libcanberra: gtk3-widget-factory demo')
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-source=("http://ftp.gnome.org/pub/GNOME/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz")
+source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+        settings.ini
+        gtk-query-immodules-3.0.hook
+        trap_possible_X_error.diff)
 
 if [[ "${_use_ppa}" != "true" ]]; then
   source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 else
-  source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
+  source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('8cf865335bce3415173a026ffe50b81ad57749d9665319b498482872564f8d86f1ce1552bcc8eafdbc1bbc94dda4a900dfe4e73609c50428a04f2d65fc3c3eec'
-            '8aee67e848e467d2a2de413b24bcec836e62d62c8649b2209d1ed8818ff18b441cdfc910b238a55d970017f92667764da63d735c83d1acdd4bced04c4c08adef')
+sha512sums=('b18bd641cce1eb4ff44fc214888d1564288138f45ad64842a77118f0e459ec035acbaa501c2432a816c97b109a5459d1610849fd1730a73c06c24e4719327c8e'
+            'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
+            'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
+            'b9bd29efc4cbc0b8be378237ec16ab79eb67b7be29bd5f2f3e663e40368bbf0c6564a03c6219e158c1d0d11f0ad03b344054249af0e1400f65a0114f8a0bf272'
+            '99b2bb9502e1aaf3765ba344aa04d7afa72ac686cd192054fbbf3568fb0b20778f5dae402df5b866d08decbc9cf79eccad3aa3fc7cb63fa36b9a69fb4ad47fa0')
 
 prepare() {
     cd "gtk+-${pkgver}"
 
-    # Apply Ubuntu Patches
-    echo > ../debian/patches/series
+    local patches=(
+        0001-DND-Avoid-a-use-after-free.patch
+        016_no_offscreen_widgets_grabbing.patch
+        017_no_offscreen_device_grabbing.patch
+        060_ignore-random-icons.patch
+        073_treeview_almost_fixed.patch
+        074_eventbox_scroll_mask.patch
+        bzg_gtkcellrenderer_grabbing_modifier.patch
+        ubuntu_gtk_custom_menu_items.patch
+        print-dialog-show-options-of-remote-dnssd-printers.patch
+        uimanager-guard-against-nested-node-updates.patch
+        x-canonical-accel.patch
+        message-dialog-restore-traditional-look-on-unity.patch
+        restore_filechooser_typeaheadfind
+        0001-calendar-always-emit-day-selected-once.patch
+        0001-gtkwindow-set-transparent-background-color.patch
+        ubuntu_fileselector_behaviour.patch
+    )
 
-    # https://bugs.launchpad.net/indicator-messages/+bug/1088162
-    # Dependency check: grep -R ubuntu-private.h * | cut -d/ -f1
-    echo 'ubuntu_gtk_custom_menu_items.patch' >> ../debian/patches/series
-    # Do not allow offscreen widgets to grab the cursor
-    echo '016_no_offscreen_widgets_grabbing.patch' >> ../debian/patches/series
-    echo '017_no_offscreen_device_grabbing.patch' >> ../debian/patches/series
-    # Allow printing to printers advertised using Avahi/Bonjour when CUPS 1.6
-    echo 'print-dialog-show-options-of-remote-dnssd-printers.patch' >> ../debian/patches/series
-    # Unity-specific
-    #echo '0001-Add-style-classes-to-the-title-buttons.patch' >> ../debian/patches/series
-    echo 'message-dialog-restore-traditional-look-on-unity.patch' >> ../debian/patches/series
-    # Other
-    echo 'bzg_gtkcellrenderer_grabbing_modifier.patch' >> ../debian/patches/series
-    for i in $(grep -v '#' ../debian/patches/series); do
+    for i in "${patches[@]}"; do
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
     done
+
+    NOCONFIGURE=1 ./autogen.sh
+
+    # upstream fix for crashes with X servers not supporting XI2
+    # https://bugzilla.gnome.org/show_bug.cgi?id=766233
+    # https://github.com/GNOME/gtk/commit/7e7d7991cc8e7c7a2b50ce6530a8ebafd673516b
+    patch -p1 -i ../trap_possible_X_error.diff
 }
 
 build() {
@@ -68,8 +84,7 @@ build() {
 
     autoreconf -vfi
 
-    #CXX=/bin/false ./configure \
-    ./configure \
+    CXX=/bin/false ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
         --localstatedir=/var \
@@ -87,5 +102,11 @@ build() {
 package() {
     cd "gtk+-${pkgver}"
     make DESTDIR="${pkgdir}" install
-    rm -f "$pkgdir/usr/bin/gtk-update-icon-cache"
+
+    install -Dm644 ../settings.ini \
+        "${pkgdir}"/usr/share/gtk-3.0/settings.ini
+    install -Dm644 ../gtk-query-immodules-3.0.hook \
+        "${pkgdir}"/usr/share/libalpm/hooks/gtk-query-immodules-3.0.hook
+
+    rm "${pkgdir}"/usr/bin/gtk-update-icon-cache
 }

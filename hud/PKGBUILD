@@ -1,14 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=hud
 _actual_ver=14.10
-_extra_ver=+14.10.20140924
+_extra_ver=+16.04.20160415
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=3
+pkgrel=1
 pkgdesc="Backend for the Unity HUD"
 arch=(i686 x86_64)
 url="https://launchpad.net/hud"
@@ -19,59 +19,56 @@ depends=(bamf-ubuntu libdbusmenu-gtk3 sqlite gsettings-qt libcolumbus
 makedepends=(cmake gnome-common gnome-doc-utils gobject-introspection gtk-doc
              intltool qt5-base python2-distribute vala)
 optdepends=('indicator-appmenu: HUD support')
-install=hud.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0001_Python_2.patch
-        0002_Remove_tests.patch
-        0003_Remove_voice_recognition.patch)
-sha512sums=('e1718f5e54eb659ab21e65527b858638c17fccd171a91ca0bf54989559c2fe2f35321f728883f909cb6e12b0f030b7ad8889e0eabd7127e8fa6e7601ca45b1e0'
-            '1d560db046c56ecff0d6566c98684962f179326009fb2bfdbaab3fc1df265afa5cb2da202fb13b4889ade0244eaf39f3aea4d7c9e434c2bd1334f75bc969cc90'
-            '546aa6b2c1a6e9f9de8f6c4a5d53fe48af39e0f0a96a2e2c3923d44187046ee7da89cba6b9e043e2cf14fd1b333db18fc0d91cb7530b7bc2394080d2b690e602'
-            '599b9c5e1acbb530bc225a8b0f5e68ff4863b57009da35d75bebbf9b40655903405fe00434b375f1d699d52bdeb4c27ef6539f36634e77ce8c72f09ff4a21805')
+        0001-Use-Python-2.patch
+        0002-Remove-test-dependencies.patch)
+sha512sums=('84cb695dcaa27be2cf30fdf34eb8bb17089729ce18a663287fc48af0207ba1cf680cbf5df20a4d028e4c3c42fc05fe370be3ab83a3bb3d11dfbe631a6923a9d0'
+            '351ce207cc203e5901a20c30ff21cf186e330d7b4799a3bc43abca4039ec6e2de4abfa790266650cab112ad403675e6b926b368b7623ea3ecdb6a3c0c1b00fe5'
+            '3b2ed254cea8aa985c2c376a05f4ac496bc8673371d4beccf76b3b234e67bfb447c33ef830a53799df9e1526656a9ea60dc2c3b9ff0cf2e120b3625f84112152')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001_Python_2.patch
-  patch -p1 -i ../0002_Remove_tests.patch
-  patch -p1 -i ../0003_Remove_voice_recognition.patch
+    patch -p1 -i ../0001-Use-Python-2.patch
+    patch -p1 -i ../0002-Remove-test-dependencies.patch
 
-  sed -i '/mscgen/d;/UseMscgen/d' docs/CMakeLists.txt
-  rm cmake/UseMscgen.cmake
-  rm cmake/FindGMock.cmake
+    #sed -i '/mscgen/d;/UseMscgen/d' docs/CMakeLists.txt
+    #rm cmake/UseMscgen.cmake
+    #rm cmake/FindGMock.cmake
 
-  # Window-stack-bridge service must be running for hud-service to return search results #
-  sed -e "/@pkglibexecdir@\/hud-service/i \
-          trap 'kill $\(jobs -pr\)' SIGINT SIGTERM EXIT\n \
-          @pkglibexecdir@\/window-stack-bridge &" \
-          -i data/dbus-activation-hack.sh.in
+    # Window-stack-bridge service must be running for hud-service to return search results
+    sed -e "/@pkglibexecdir@\/hud-service/i \
+            trap 'kill $\(jobs -pr\)' SIGINT SIGTERM EXIT\n \
+            @pkglibexecdir@\/window-stack-bridge &" \
+            -i data/dbus-activation-hack.sh.in
 
-  # Work around build issues (gtk-doc will no longer be built)
-  rm cmake/GtkDocScanGObjWrapper.cmake
+    # Work around build issues (gtk-doc will no longer be built)
+    #rm cmake/GtkDocScanGObjWrapper.cmake
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  export CXXFLAGS+=" -lc"
+    export CXXFLAGS+=" -lc"
 
-  rm -rf build && mkdir build && cd build
-  cmake .. \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
-    -DENABLE_DOCUMENTATION=ON \
-    -DENABLE_TESTS=OFF \
-    -DENABLE_VOICE_TESTS=OFF \
-    -DENABLE_SCALABILITY_TESTS=OFF \
-    -DFULL_WARNINGS=ON
+    rm -rf build && mkdir build && cd build
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
+        -DENABLE_DOCUMENTATION=ON \
+        -DENABLE_TESTS=OFF \
+        -DENABLE_VOICE_TESTS=OFF \
+        -DENABLE_SCALABILITY_TESTS=OFF \
+        -DFULL_WARNINGS=ON
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
-  make DESTDIR="${pkgdir}/" install
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
+    cd build
+    make DESTDIR="${pkgdir}/" install
 
-  rm -r "${pkgdir}/usr/share/upstart/"
+    rm -r "${pkgdir}/usr/share/upstart/"
 }

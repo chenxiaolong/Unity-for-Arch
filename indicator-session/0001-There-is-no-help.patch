@@ -1,7 +1,7 @@
-From a55b2edd4ce1fab3b4c9746c63e4339572b33f5a Mon Sep 17 00:00:00 2001
+From 5e90c8734bc2fc1e811eeb675eff645cb5bef905 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 9 Aug 2014 15:17:45 -0400
-Subject: [PATCH] There is no help
+Subject: [PATCH 1/2] There is no help
 
 ---
  src/service.c         | 12 ------------
@@ -9,22 +9,26 @@ Subject: [PATCH] There is no help
  2 files changed, 18 deletions(-)
 
 diff --git a/src/service.c b/src/service.c
-index 445f1af..b93f1b0 100644
+index 3caf752..228d346 100644
 --- a/src/service.c
 +++ b/src/service.c
-@@ -408,11 +408,8 @@ static GMenuModel *
- create_admin_section (void)
+@@ -454,15 +454,12 @@ create_admin_section (IndicatorSessionService * self)
  {
    GMenu * menu;
--  gchar * help_label = g_strdup_printf(_("%s Help"), get_distro_name());
+   priv_t * p = self->priv;
+-  gchar * help_label = g_strdup_printf(_("%s Help…"), get_distro_name());
    menu = g_menu_new ();
-   g_menu_append (menu, _("About This Computer"), "indicator.about");
+   if (g_getenv ("MIR_SOCKET") != NULL) {
+       g_menu_append (menu, _("About This Device…"), "indicator.about");
+   } else {
+       g_menu_append (menu, _("About This Computer"), "indicator.about");
+   }
 -  g_menu_append (menu, help_label, "indicator.help");
 -  g_free (help_label);
-   return G_MENU_MODEL (menu);
- }
  
-@@ -877,14 +874,6 @@ on_online_accounts_activated (GSimpleAction * a      G_GNUC_UNUSED,
+   if (p->usage_mode_action && g_getenv ("MIR_SOCKET") != NULL) // only under unity8
+   {
+@@ -939,14 +936,6 @@ on_online_accounts_activated (GSimpleAction * a      G_GNUC_UNUSED,
  }
  
  static void
@@ -39,7 +43,7 @@ index 445f1af..b93f1b0 100644
  on_settings_activated (GSimpleAction * a      G_GNUC_UNUSED,
                         GVariant      * param  G_GNUC_UNUSED,
                         gpointer        gself)
-@@ -975,7 +964,6 @@ init_gactions (IndicatorSessionService * self)
+@@ -1037,7 +1026,6 @@ init_gactions (IndicatorSessionService * self)
  
    GActionEntry entries[] = {
      { "about",                  on_about_activated           },
@@ -72,5 +76,5 @@ index 9ee7236..5885cc8 100644
    ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", NULL, NULL));
    ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-guest", NULL, NULL));
 -- 
-2.0.4
+2.8.2
 

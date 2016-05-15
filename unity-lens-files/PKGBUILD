@@ -3,42 +3,41 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity-lens-files
 _actual_ver=7.1.0
-_extra_ver=+13.10.20130920
+_extra_ver=+16.04.20151217
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="A daemon exposing your files and file history to Unity"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-place-files"
 license=(GPL)
-depends=(zeitgeist-ubuntu libgee06 libunity libxdg-basedir xdg-user-dirs pyxdg
+depends=(zeitgeist-ubuntu libgee libunity libxdg-basedir xdg-user-dirs pyxdg
          dconf)
 makedepends=(vala intltool)
 groups=(unity)
-install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-files_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('88e8cd2e3051bb1ca26b1ff135fc7735c401d59f42625446bbfb66d1a4d39b8d9ef0a7bfe1e20d2ca78655cac100a4820b1b63f9c7dd39374403869ebe459d7f')
+sha512sums=('d69fca31954867ab377755f19340936bd17b91c7836e200560e4d08ce11bf62c319c07ace4a9acfe5e55521cfd4fe47c4579692c183423a72a2140b956b14606')
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  aclocal --install --force
-  autoreconf -vfi
-  intltoolize -f
-  ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
-  make
+    aclocal --install --force
+    autoreconf -vfi
+    intltoolize -f
+    ./configure --prefix=/usr --libexecdir=/usr/lib/${pkgname} --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/locale/"
 }

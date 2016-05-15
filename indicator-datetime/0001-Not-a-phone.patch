@@ -1,0 +1,115 @@
+From 93b76f95d4637b8721b82522ada83159b5e00f0b Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 11 Oct 2014 17:52:55 -0400
+Subject: [PATCH] Not a phone
+
+---
+ CMakeLists.txt                  |  1 -
+ include/datetime/actions-live.h |  1 -
+ src/actions-live.cpp            | 15 ---------------
+ tests/timedated-fixture.h       |  1 -
+ 4 files changed, 18 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4378df4..8459089 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -46,7 +46,6 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
+                    libedataserver-1.2>=3.5
+                    gstreamer-1.0>=1.2
+                    libnotify>=0.7.6
+-                   url-dispatcher-1>=1
+                    properties-cpp>=0.0.1)
+ include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
+ 
+diff --git a/include/datetime/actions-live.h b/include/datetime/actions-live.h
+index 42315bf..4d5d708 100644
+--- a/include/datetime/actions-live.h
++++ b/include/datetime/actions-live.h
+@@ -55,7 +55,6 @@ public:
+ protected:
+     static bool is_unity();
+     virtual void execute_command(const std::string& command);
+-    virtual void dispatch_url(const std::string& url);
+ };
+ 
+ } // namespace datetime
+diff --git a/src/actions-live.cpp b/src/actions-live.cpp
+index f23de42..346de03 100644
+--- a/src/actions-live.cpp
++++ b/src/actions-live.cpp
+@@ -19,8 +19,6 @@
+ 
+ #include <datetime/actions-live.h>
+ 
+-#include <url-dispatcher.h>
+-
+ #include <glib.h>
+ 
+ #include <sstream>
+@@ -51,12 +49,6 @@ void LiveActions::execute_command(const std::string& cmdstr)
+     }
+ }
+ 
+-void LiveActions::dispatch_url(const std::string& url)
+-{
+-    g_debug("Dispatching url '%s'", url.c_str());
+-    url_dispatch_send(url.c_str(), nullptr, nullptr);
+-}
+-
+ /***
+ ****
+ ***/
+@@ -91,7 +83,6 @@ void LiveActions::desktop_open_settings_app()
+ {
+     if (g_getenv ("MIR_SOCKET") != nullptr)
+     {
+-        dispatch_url("settings:///system/time-date");
+     }
+     else if (is_unity())
+     {
+@@ -158,14 +149,12 @@ void LiveActions::desktop_open_calendar_app(const DateTime& dt)
+ 
+ void LiveActions::phone_open_alarm_app()
+ {
+-    dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
+ }
+ 
+ void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime& date)
+ {
+     if (!appt.activation_url.empty())
+     {
+-        dispatch_url(appt.activation_url);
+     }
+     else switch (appt.type)
+     {
+@@ -182,14 +171,10 @@ void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime
+ 
+ void LiveActions::phone_open_calendar_app(const DateTime& dt)
+ {
+-    const auto utc = dt.to_timezone("UTC");
+-    auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+-    dispatch_url(cmd);
+ }
+ 
+ void LiveActions::phone_open_settings_app()
+ {
+-    dispatch_url("settings:///system/time-date");
+ }
+ 
+ /***
+diff --git a/tests/timedated-fixture.h b/tests/timedated-fixture.h
+index 5ec425d..0b3e400 100644
+--- a/tests/timedated-fixture.h
++++ b/tests/timedated-fixture.h
+@@ -36,7 +36,6 @@ public:
+     ~MockLiveActions() {}
+ 
+ protected:
+-    void dispatch_url(const std::string& url) override { last_url = url; }
+     void execute_command(const std::string& cmd) override { last_cmd = cmd; }
+ };
+ 
+-- 
+2.8.2
+

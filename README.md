@@ -49,14 +49,16 @@ To compile from source, just build all of the packages in the following order:
 | bamf-ubuntu                      | Application matching framework             |
 | libtimezonemap                   | GTK+3 timezone map widget                  |
 | gsettings-desktop-schemas-ubuntu | Shared GSettings schemas for the desktop   |
+| gsettings-ubuntu-schemas         | GSettings desktop-wide schemas for Ubuntu  |
 | gnome-settings-daemon-ubuntu     | Daemon handling the GNOME session settings |
 | gnome-session-ubuntu             | GNOME Session Manager                      |
 | gnome-screensaver-ubuntu         | GNOME screen saver and locker              |
 | unity-settings-daemon            | Daemon handling the Unity session settings |
+| libgeonames                      | Library for parsing local geonames.org DB  |
 | unity-control-center             | Utilities to configure the Unity desktop   |
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
-| libgee06                         | Legacy GObject collection library          |
+| unity-api                        | API for Unity shell integration            |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
 | indicator-datetime               | Indicator to show the date and time        |
@@ -78,6 +80,7 @@ To compile from source, just build all of the packages in the following order:
 | unity-asset-pool                 | Design assets for Unity                    |
 | nautilus-ubuntu                  | File manager for GNOME and Unity           |
 | zeitgeist-ubuntu                 | Service for logging user activities        |
+| libzeitgeist                     | Zeitgeist client library                   |
 | unity-lens-applications          | Unity lens for searching applications      |
 | unity-lens-files                 | Unity lens for searching files             |
 | unity-lens-music                 | Unity lens for searching music library     |

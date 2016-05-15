@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=libunity-misc
@@ -25,22 +25,22 @@ sha512sums=('2fc65db5320572cb5d5bcc326759a8e395887d3a408bb2b2823045ade8357d798b9
             'f1f7059f9eb90836383a3742cb4ff701cf1187209a6e7afc23b5efe9a70f20084d4a4d8d499469de79ed0679ead1d9ff45c7b5fc8207a3ba30e624eeadd3be86')
 
 prepare() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  patch -p1 -i ../0001_autotools.patch
+    patch -p1 -i ../0001_autotools.patch
 }
 
 build() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  gtkdocize
-  autoreconf -vfi
-  ./configure --prefix=/usr --disable-static
-  make
+    gtkdocize
+    autoreconf -vfi
+    ./configure --prefix=/usr --disable-static
+    make
 }
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 }

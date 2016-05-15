@@ -1,0 +1,52 @@
+From e8381e748bcb3fe1b2ec80ca9a1de505cb1e4a0b Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 14 May 2016 00:25:58 -0400
+Subject: [PATCH 7/7] Add missing headers
+
+---
+ launcher/LauncherIcon.cpp                                | 2 ++
+ plugins/unityshell/src/WindowMinimizeSpeedController.cpp | 2 ++
+ unity-shared/DecorationStyle.h                           | 1 +
+ 3 files changed, 5 insertions(+)
+
+diff --git a/launcher/LauncherIcon.cpp b/launcher/LauncherIcon.cpp
+index ca2da66..b710121 100644
+--- a/launcher/LauncherIcon.cpp
++++ b/launcher/LauncherIcon.cpp
+@@ -19,6 +19,8 @@
+ 
+ #include <sys/time.h>
+ 
++#include <numeric>
++
+ #include <Nux/Nux.h>
+ #include <NuxCore/Color.h>
+ #include <NuxCore/Logger.h>
+diff --git a/plugins/unityshell/src/WindowMinimizeSpeedController.cpp b/plugins/unityshell/src/WindowMinimizeSpeedController.cpp
+index 29df106..6627b25 100644
+--- a/plugins/unityshell/src/WindowMinimizeSpeedController.cpp
++++ b/plugins/unityshell/src/WindowMinimizeSpeedController.cpp
+@@ -22,6 +22,8 @@
+ #include <gio/gio.h>
+ #include <NuxCore/Logger.h>
+ 
++#include <cmath>
++
+ #include "WindowMinimizeSpeedController.h"
+ 
+ DECLARE_LOGGER(logger, "unity.shell.compiz.minimizer");
+diff --git a/unity-shared/DecorationStyle.h b/unity-shared/DecorationStyle.h
+index 9c48918..3404e6b 100644
+--- a/unity-shared/DecorationStyle.h
++++ b/unity-shared/DecorationStyle.h
+@@ -25,6 +25,7 @@
+ #include <cairo/cairo.h>
+ 
+ #include <memory>
++#include <vector>
+ 
+ struct _GtkStyleContext;
+ 
+-- 
+2.8.2
+

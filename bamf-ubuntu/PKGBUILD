@@ -3,19 +3,20 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=bamf, repo=vivid
+# vercheck-ubuntu: name=bamf, repo=xenial
 # vercheck-launchpad: name=bamf
 
 pkgname=bamf-ubuntu
-_actual_ver=0.5.1
-_extra_ver=+15.04.20150202
-pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+_actual_ver=0.5.3
+_extra_ver=~bzr0+16.04.20160415
+pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
+pkgrel=2
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=(i686 x86_64)
 url="https://launchpad.net/bamf"
 license=(GPL)
-depends=(libgtop libwnck3 glib2 procps-ng)
+depends=(libgtop libwnck3 glib2 hicolor-icon-theme libdbusmenu-gtk3 procps-ng
+         startup-notification)
 makedepends=(gnome-common gobject-introspection gtk-doc libxml2 libxslt vala)
 provides=("bamf=${pkgver}")
 replaces=(bamf)
@@ -23,49 +24,48 @@ conflicts=(bamf)
 groups=(unity)
 install=${pkgname}.install
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        bamfwatcher.c
+        update-bamf-index.hook
         update-bamf-index.pl
-        bamfwatcher.service)
-sha512sums=('d4156ee69d5f2c6ac26c2c2af76298a3745a69794e66e7b15fd676a2981846c3431dd06327c6d7b14b378c6189863b49c936ced238e6f20157281fd47e6a3306'
-            '8682d60845782449943ebac95dc5648ec5933f244dad8bbb9e77ac1c692fc03ef0c12b6cd15c2b5f5af30358d2b167362a288adb4b3ee7ea047065eec64f28bf'
+        update-bamf-index.sh)
+sha512sums=('297e7a8f3e971d8d547c25bb90a9b13fe3c787699a2429d7fd201f175417ab4d56e78799aeeb33344acfd3c0c673a609bfc24ec69881e046e1cdd298698c0158'
+            '49379121974a6f273084f66c6aa937fd2213e92169040db03f87098d3ca269032603f3dbfec947807e3d4a3c866648b96a2a3bb18f1ad3736a7ceaf011cf901a'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
-            'b2e899e2916efc6e04af34c3bffc14f6254caaf42d2e3cee88277dde4c191dd93cab14246091beb5d4cfb8a242559b8361a7c4c1dc70c31034ade52689322b83')
+            '6dd8079a1dddc787d41fea246809e37de76a6e6daa2e3760c4a6770456fd1d8097597cadeae38fd81f322d44e79f0786e82604d606bc81bae57f39091db0755c')
 
 prepare() {
-  cd "bamf-${_actual_ver}${_extra_ver}"
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
-  sed -i 's/-Werror/-Wno-error/g' configure.ac
+    sed -i 's/-Werror/-Wno-error/g' configure.ac
 }
 
 build() {
-  gcc bamfwatcher.c -lprocps -o bamfwatcher
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
-  cd "bamf-${_actual_ver}${_extra_ver}"
+    gtkdocize
+    autoreconf -vfi
 
-  gtkdocize
-  autoreconf -vfi
-
-  export PYTHON=/usr/bin/python2
+    export PYTHON=/usr/bin/python2
   
-  ./configure \
-    --prefix=/usr \
-    --libexecdir=/usr/lib \
-    --disable-static \
-    --enable-gtk-doc
+    ./configure \
+        --prefix=/usr \
+        --libexecdir=/usr/lib \
+        --disable-static \
+        --enable-gtk-doc \
+        --enable-export-actions-menu=yes
 
-  make
+    make
 }
 
 package() {
-  cd "bamf-${_actual_ver}${_extra_ver}"
+    #cd "bamf-${_actual_ver}${_extra_ver}"
 
-  make DESTDIR="${pkgdir}/" install
+    make DESTDIR="${pkgdir}/" install
 
-  install -dm755 "${pkgdir}/usr/bin/"
-  install -m755 "${srcdir}/bamfwatcher" "${pkgdir}/usr/bin/"
-  install -m755 "${srcdir}/update-bamf-index.pl" "${pkgdir}/usr/lib/bamf/"
+    install -m755 ../update-bamf-index.pl "${pkgdir}"/usr/lib/bamf/
+    install -m755 ../update-bamf-index.sh "${pkgdir}"/usr/lib/bamf/
+    install -dm755 "${pkgdir}"/usr/share/libalpm/hooks/
+    install -m644 ../update-bamf-index.hook "${pkgdir}"/usr/share/libalpm/hooks/
 
-  # Install systemd service
-  install -dm755 "${pkgdir}/usr/lib/systemd/system/"
-  install -m644 "${srcdir}/bamfwatcher.service" "${pkgdir}/usr/lib/systemd/system/"
+    # Remove upstart files
+    rm -r "${pkgdir}/usr/share/upstart/"
 }

@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=vivid
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity-lens-photos
@@ -23,21 +23,21 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-photos_
 sha512sums=('8a61f8966dcec0aad69d6134bd67a211a6bc78bc81f997022b2950a556a89b019e9c1d28b5cb1840d85f513d7b8b105f2148903bb03b29647a4302330d4de61d')
 
 package() {
-  cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-  python setup.py install --root="${pkgdir}/" --optimize=1
+    python setup.py install --root="${pkgdir}/" --optimize=1
 
-  # We don't have Ubuntu online accounts
-  rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-facebook.service"
-  rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-flickr.service"
-  rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-picasa.service"
-  rm "${pkgdir}/usr/share/unity-scopes/facebook/unity_facebook_daemon.py"
-  rm "${pkgdir}/usr/share/unity-scopes/flickr/unity_flickr_daemon.py"
-  rm "${pkgdir}/usr/share/unity-scopes/picasa/unity_picasa_daemon.py"
-  rm "${pkgdir}/usr/share/unity/scopes/photos/facebook.scope"
-  rm "${pkgdir}/usr/share/unity/scopes/photos/flickr.scope"
-  rm "${pkgdir}/usr/share/unity/scopes/photos/picasa.scope"
+    # We don't have Ubuntu online accounts
+    rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-facebook.service"
+    rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-flickr.service"
+    rm "${pkgdir}/usr/share/dbus-1/services/unity-scope-picasa.service"
+    rm "${pkgdir}/usr/share/unity-scopes/facebook/unity_facebook_daemon.py"
+    rm "${pkgdir}/usr/share/unity-scopes/flickr/unity_flickr_daemon.py"
+    rm "${pkgdir}/usr/share/unity-scopes/picasa/unity_picasa_daemon.py"
+    rm "${pkgdir}/usr/share/unity/scopes/photos/facebook.scope"
+    rm "${pkgdir}/usr/share/unity/scopes/photos/flickr.scope"
+    rm "${pkgdir}/usr/share/unity/scopes/photos/picasa.scope"
 
-  # Use language packs
-  rm -r "${pkgdir}/usr/share/locale/"
+    # Use language packs
+    rm -r "${pkgdir}/usr/share/locale/"
 }

@@ -3,32 +3,31 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=vivid
+# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.16
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-settings-daemon-ubuntu
 _use_ppa=true
-_ppa_rel=0ubuntu1~vivid1
-#_ppa_ver=3.16.0
-#_ubuntu_rel=2ubuntu2
+_ppa_rel=0ubuntu1~xenial1
+_ppa_ver=3.20.1
+#_ubuntu_rel=0ubuntu3
 #_ubuntu_ver=3.14.2
-pkgver=3.16.1
+pkgver=3.20.1
 pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
 url="http://www.gnome.org"
 license=(GPL)
-depends=(dconf gnome-desktop gsettings-desktop-schemas-ubuntu hicolor-icon-theme
-         libcanberra-pulse libnotify libsystemd libwacom pulseaudio
-         pulseaudio-alsa upower librsvg libgweather geocode-glib geoclue2 nss)
+depends=(dconf gnome-desktop gsettings-desktop-schemas-ubuntu libcanberra-pulse
+         libnotify libsystemd libwacom pulseaudio pulseaudio-alsa upower librsvg
+         libgweather geocode-glib geoclue2 nss libgudev)
 makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 groups=(gnome unity)
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=(gnome-settings-daemon)
 options=(!emptydirs)
-install=gnome-settings-daemon.install
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
 )
 
@@ -38,38 +37,38 @@ else
     source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-settings-daemon_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('10c304f62b4f978e42b9ad6e384d5dc2199225bb281530e2f752aec41a51a3c2c63820fcabf890eaaf1409f84898610c7d9b14847486e9a4a2732558916d4273'
-            '6f237df50f672cf65957898c450770167c006a6273a81f6d49e9da5f8146800b1b12d7f7973028f5e71eb93017e82d00a09766f481d68403e9529fc441debd25')
+sha512sums=('4d8ec7c8d508a0dead00c08ef591c9814bf1c33d0016626c6cd5153bd2aad601ea1146b0e5617465ee276b44d8d622b664817a83e045cece69c2be76c5e33a84'
+            'e0a75c2bb655a84613008a6f7fbe3d7e33b6ab547b11dbd81e222ea47586134b1578fc92e9148716c466863a83d251a82278d24512bc89564a8c8e414aa7b1c0')
 
 prepare() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  # Apply Ubuntu's patches
-  patch -p1 -i ../debian/patches/64_restore_terminal_keyboard_shortcut_schema.patch
-  patch -p1 -i ../debian/patches/ubuntu-lid-close-suspend.patch
-  patch -p1 -i ../debian/patches/revert_background_dropping.patch
-  patch -p1 -i ../debian/patches/revert-gsettings-removals.patch
+    # Apply Ubuntu's patches
+    patch -p1 -i ../debian/patches/64_restore_terminal_keyboard_shortcut_schema.patch
+    patch -p1 -i ../debian/patches/ubuntu-lid-close-suspend.patch
+    patch -p1 -i ../debian/patches/revert_background_dropping.patch
+    patch -p1 -i ../debian/patches/revert-gsettings-removals.patch
 }
 
 build() {
-  cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}-${pkgver}"
 
-  autoreconf -vfi
+    autoreconf -vfi
 
-  ./configure \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --libexecdir=/usr/lib/gnome-settings-daemon \
-    --disable-static
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --libexecdir=/usr/lib/gnome-settings-daemon \
+        --disable-static
       
-  # https://bugzilla.gnome.org/show_bug.cgi?id=656231
-  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+    # https://bugzilla.gnome.org/show_bug.cgi?id=656231
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-  make
+    make
 }
 
 package() {
-  cd "${pkgname%-*}-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+    cd "${pkgname%-*}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
 }
