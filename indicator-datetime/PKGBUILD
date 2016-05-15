@@ -10,13 +10,13 @@ pkgname=indicator-datetime
 _actual_ver=15.10
 _extra_ver=+16.04.20160406
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="A very, very simple clock"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-datetime"
 license=(GPL)
-depends=(evolution-data-server gstreamer libtimezonemap properties-cpp
-         unity-control-center)
+depends=(evolution-data-server gsettings-ubuntu-schemas gstreamer
+         libtimezonemap properties-cpp unity-control-center)
 makedepends=(intltool cmake)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
