@@ -3,7 +3,7 @@
 pkgname=upstart-user
 _ubuntu_rel=0ubuntu24
 pkgver=1.13.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Event-based user sessions service management daemon"
 arch=(i686 x86_64)
 url="http://upstart.ubuntu.com/"
@@ -19,7 +19,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/upstart_${pkgver}.
 sha512sums=('07a3db5547996772bd6fe0ecb323214698634490eec36b7753a6d0a3ee07caa456696d0fbd9c031d61875dd4b27c9f2bbac37c7511acc54b7bb0146662e35520'
             '15c31686e6e7aba0e56e9f3076ef53ccdbf8afbd48c7f882ffbe9847105cb1ff800512c077e28bb1bd38d5cc2c5cbb676d553f4dd4b0f8a6d41b8f234bfdf194'
             '7894335605e1960258ebf2791e1cd37ce9932ed3fbef0ce923454eed69792d7c1a013e22463c99654f4b62ca447a956abd2e01901cbc0f2dcedb370dfe13c9e6'
-            'c4fe5073cca1bfa3c3e04a4a7c8233eafcd69eac069345f859c7f5438ff86fb2f0339210185c086355a6b7682d17f929274d247c6ca8069feeac94d5de38aeb9'
+            '090f53ee2af576745d16b3a1372aefda9ad3c7682f7bd963718076110e54c767e6e9d009d66bc49984e9ffa7be510170dd780ef8e25ba7ccfde2362aa06ecd8b'
             '7e6d1e78975b3b5b368732a19bc9d67520055192efc54951fa8dc1567180a365ae57542272f85acaf59489172c7c7131dd6a73f58825b6f0abc0893c2cd91c12'
             'ebc7745d203ffe7d5f8be7f6b29fe0f08e69b953515f04e9913baffd66f0eb87dd65374e406efa08e410dd7e3a791e3c6da582e187e3da9c137d6d700c68f6ce')
 
