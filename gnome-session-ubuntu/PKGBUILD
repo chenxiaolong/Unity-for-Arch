@@ -14,7 +14,7 @@ _ppa_rel=2ubuntu1~xenial1
 _ppa_ver=3.20.0
 #_ubuntu_rel=1ubuntu1
 pkgver=3.20.1
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
@@ -47,6 +47,7 @@ prepare() {
     # Increase timeout, for slow machines
     patch -p1 -i ../timeout.patch
 
+    sed -i '/50_ubuntu_sessions.patch/d' ../debian/patches/series
     sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
     # If you want this, install gnome-session-properties from the AUR
