@@ -8,7 +8,7 @@ pkgname=indicator-power
 _actual_ver=12.10.6
 _extra_ver=+16.04.20160105
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -38,7 +38,7 @@ build() {
     rm -rf build; mkdir build; cd build
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/${pkgname} \
+        -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib \
         -Denable_tests=OFF
     make
 }
@@ -49,6 +49,4 @@ package() {
     make DESTDIR="${pkgdir}/" install
 
     find "${pkgdir}" -type f -name '*.a' -delete
-
-    rm -r "${pkgdir}/usr/share/upstart/"
 }
