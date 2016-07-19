@@ -10,8 +10,8 @@
 _use_ppa=true
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=0ubuntu1~xenial0
-pkgver=3.20.4
+_ubuntu_rel=2ubuntu1~xenial2
+pkgver=3.20.6
 pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform toolkit"
@@ -29,8 +29,7 @@ conflicts=(gtk3)
 license=(LGPL)
 source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
         settings.ini
-        gtk-query-immodules-3.0.hook
-        trap_possible_X_error.diff)
+        gtk-query-immodules-3.0.hook)
 
 if [[ "${_use_ppa}" != "true" ]]; then
   source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
@@ -38,17 +37,15 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('b18bd641cce1eb4ff44fc214888d1564288138f45ad64842a77118f0e459ec035acbaa501c2432a816c97b109a5459d1610849fd1730a73c06c24e4719327c8e'
+sha512sums=('597d25ec00f83c6ac77784f303458fad03d8ad017a53ee59e067fda61fa79fe6f34e46391f45844df7c4bbb2c8fa032b32f6d1c8f2f324c99681069f4d6d9be4'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
             'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
-            'b9bd29efc4cbc0b8be378237ec16ab79eb67b7be29bd5f2f3e663e40368bbf0c6564a03c6219e158c1d0d11f0ad03b344054249af0e1400f65a0114f8a0bf272'
-            '99b2bb9502e1aaf3765ba344aa04d7afa72ac686cd192054fbbf3568fb0b20778f5dae402df5b866d08decbc9cf79eccad3aa3fc7cb63fa36b9a69fb4ad47fa0')
+            '695e728f5872142df356a0f669d9e526e73253c6c38d0326cbe2b9001ef76c07c690e35d86a1044b9e05b54adf1ee2a150be880ff39104ee105a07a4785d3674')
 
 prepare() {
     cd "gtk+-${pkgver}"
 
     local patches=(
-        0001-DND-Avoid-a-use-after-free.patch
         016_no_offscreen_widgets_grabbing.patch
         017_no_offscreen_device_grabbing.patch
         060_ignore-random-icons.patch
@@ -72,17 +69,10 @@ prepare() {
     done
 
     NOCONFIGURE=1 ./autogen.sh
-
-    # upstream fix for crashes with X servers not supporting XI2
-    # https://bugzilla.gnome.org/show_bug.cgi?id=766233
-    # https://github.com/GNOME/gtk/commit/7e7d7991cc8e7c7a2b50ce6530a8ebafd673516b
-    patch -p1 -i ../trap_possible_X_error.diff
 }
 
 build() {
     cd "gtk+-${pkgver}"
-
-    autoreconf -vfi
 
     CXX=/bin/false ./configure \
         --prefix=/usr \
