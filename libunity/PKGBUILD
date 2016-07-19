@@ -8,10 +8,10 @@
 
 pkgname=libunity
 _actual_ver=7.1.4
-_extra_ver=+15.10.20151002
-_ubuntu_rel=0ubuntu2
+_extra_ver=+16.04.20160701
+_ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="A library for instrumenting and integrating with all aspects of the Unity shell"
 arch=(i686 x86_64)
 url="https://launchpad.net/libunity"
@@ -22,19 +22,17 @@ groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/libunity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001_autoconf.patch)
-sha512sums=('2e3177e1471d51919fbf660d568bac8c39fb81d34f5996530fadeb56d43c75097aacf0538e70ca5ef05a2a94742ae7a4783576efe34abe7470c8fc32c8559838'
-            '2a677979b5b7b617b1731bad5d1bbec8300dd6dbb27ea6c83b6da12d94a4a2a1706f8e7e473c09f92b5b6c1be8f6a7ea0f5455afb8703887fd438c7103e06bb3'
+sha512sums=('66b0a795ec6876c842fe203187bc3650fc5f8f48470f518797e46c2349a5f5844574ed983f91381f04cb7fef2770311317caa13c7d54ef50bfaf06a8385fc47f'
+            '5b35bbd7cddef0dc206aa55f359a1cb4ad43dc5f8dba30dd234fe4ee7aebd2243030aedcf4a3bcd25713782af2bc0595c17821b5ed7b2e8b690e349c2d7a06d8'
             '1570c01f4c8ac53bc7806fad78691844a12625b7142270b5a215d203618acc76ba258c4aa969a120186ba9224b726f20a2a9efad05940ffdaa258be49844fa4b')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     find -type f -name '*.py' -exec sed -i 's|^\(#!.*python$\)|\12|g' {} \+
 
-    patch -p1 -i ../0001_autoconf.patch
+    patch -p1 -i 0001_autoconf.patch
 
     # Apply Ubuntu patches
-    patch -p1 -i ../${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+    patch -p1 -i "${pkgname}_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
 
     for i in $(grep -v '#' debian/patches/series); do
         msg "Applying ${i} ..."
@@ -43,8 +41,6 @@ prepare() {
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     intltoolize -f
     autoreconf -vfi
     ./configure --prefix=/usr --disable-static --enable-headless-tests PYTHON=python2
@@ -52,7 +48,5 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     make DESTDIR="${pkgdir}/" install
 }
