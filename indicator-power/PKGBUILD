@@ -6,9 +6,9 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+16.04.20160105
+_extra_ver=+16.04.20160708
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -19,20 +19,16 @@ makedepends=(cmake intltool python2)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('90f6b08d3bc4f86ad429f8dfa6c1cf5a250ab1747d5cab83158b9540810304bf5666d79f51c99f35a2039fcaf8f71b7743b644001a10258174403639db77fd8b'
+sha512sums=('9e02f250138b2933a080e0abfb5145d0fe6a831a7e1776b8386f8bd412599ab3301bdb46f32221e8bb20ba6e673bcad4539e9c549dfd1de77af1d8450628c96d'
             'd524f0061554d9a06262bad48b8c650229af1cda5189188a5a48ed8cc61c2079e9e00f060d83500020e484e68a8c0b7a47162c64f99615ccdecabb59e79c2489')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
-    patch -p1 -i ../0001-Not-a-phone.patch
+    patch -p1 -i 0001-Not-a-phone.patch
 
     sed -ie '/NotShowIn=/d' data/indicator-power.desktop.in
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     export CFLAGS+=" -Wno-error"
 
     rm -rf build; mkdir build; cd build
@@ -44,7 +40,7 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
+    cd build
 
     make DESTDIR="${pkgdir}/" install
 
