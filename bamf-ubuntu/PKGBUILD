@@ -3,14 +3,14 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=bamf, repo=xenial
+# vercheck-ubuntu: name=bamf, repo=yakkety
 # vercheck-launchpad: name=bamf
 
 pkgname=bamf-ubuntu
 _actual_ver=0.5.3
-_extra_ver=~bzr0+16.04.20160415
+_extra_ver=~bzr0+16.10.20160705
 pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
-pkgrel=3
+pkgrel=1
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
 arch=(i686 x86_64)
 url="https://launchpad.net/bamf"
@@ -27,7 +27,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver
         update-bamf-index.hook
         update-bamf-index.pl
         update-bamf-index.sh)
-sha512sums=('297e7a8f3e971d8d547c25bb90a9b13fe3c787699a2429d7fd201f175417ab4d56e78799aeeb33344acfd3c0c673a609bfc24ec69881e046e1cdd298698c0158'
+sha512sums=('b73a3b634b1bd43e620568f614aa6f58fcfd705355b954feec44dc5c63c8d1ecbd5b45b18e651ff650bfcb1fa196c88ab739fb0d94fc1695123b5612d3d0b696'
             '49379121974a6f273084f66c6aa937fd2213e92169040db03f87098d3ca269032603f3dbfec947807e3d4a3c866648b96a2a3bb18f1ad3736a7ceaf011cf901a'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
             '6dd8079a1dddc787d41fea246809e37de76a6e6daa2e3760c4a6770456fd1d8097597cadeae38fd81f322d44e79f0786e82604d606bc81bae57f39091db0755c')
