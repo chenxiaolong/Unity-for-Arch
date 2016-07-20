@@ -4,18 +4,6 @@ Unity-for-Arch
 ==============
 This project is a port of the Ubuntu Unity desktop and most of its features to Arch Linux. Please see the [Arch Wiki](https://wiki.archlinux.org/index.php/unity) for more information.
 
-Installation from binary repositories
--------------------------------------
-The packages in this repo are automatically built by my Jenkins server whenever a commit is made. To use these packages, just add the following to `/etc/pacman.conf`:
-
-    [Unity-for-Arch]
-    SigLevel = Optional TrustAll
-    Server = http://dl.dropbox.com/u/486665/Repos/$repo/$arch
-
-    [Unity-for-Arch-Extra]
-    SigLevel = Optional TrustAll
-    Server = http://dl.dropbox.com/u/486665/Repos/$repo/$arch
-
 Thanks
 ------
 * thn81
