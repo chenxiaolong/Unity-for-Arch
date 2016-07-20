@@ -7,13 +7,13 @@
 pkgname=upstart-user
 _ubuntu_rel=0ubuntu26
 pkgver=1.13.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Event-based user sessions service management daemon"
 arch=(i686 x86_64)
 url="http://upstart.ubuntu.com/"
 license=(GPL)
 groups=(unity)
-depends=(dconf json-c libnih cgmanager)
+depends=(dconf json-c libnih-ubuntu cgmanager)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/upstart_${pkgver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/upstart_${pkgver}-${_ubuntu_rel}.diff.gz"
 		00-upstart
