@@ -6,16 +6,15 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgbase%-*}, majorver=1.2
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
-_ubuntu_rel=0ubuntu0.16.04.1
-_ubuntu_ver=1.2.0
+_ubuntu_rel=0ubuntu1
 pkgver=1.2.2
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
@@ -27,17 +26,13 @@ makedepends=(libsecret libnotify libmm-glib intltool gobject-introspection)
 source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*}/${pkgbase%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('1a763acc045b56f56d1faba17ec1523969f9b202a611bef7a52a55c3658a29acf6e9eeee1666274e09b5dbfe2895afc728f119da2a8edca0f11de55c42e1e382'
-            'ce4bb59b066ed8e0c21a52d42f24a4ca22806e2de3e0e9487966af1ffb5e6bf27d4cffd7ee2729a5b37fe4a8afbb71266768bb5a755bfd1e85f7528fe96a4cea')
+            '4d0be9c20476a000f9bc4ea57eebacd1526ab70f93ebd4fa1d24fdbc51fab251eb8450559ffe628663ad11075577b6de8e678dbdfe30222c1cc4509e4e3c3d2f')
 
 prepare() {
     mkdir -p nma/etc/xdg nma/usr/bin \
         nma/usr/share/{applications,icons/hicolor/22x22/apps,man/man1,nm-applet}
 
     cd "${pkgbase%-*}-${pkgver}"
-
-    # Does not apply cleanly
-    sed -i '/make_menu_items_insensitive_based_on_permissions.patch/d' ../debian/patches/series
-    sed -i '/hide_policy_items_env_var.patch/d' ../debian/patches/series
 
     # Apply Ubuntu's patches
     for i in $(grep -v '#' ../debian/patches/series); do
@@ -61,13 +56,16 @@ build() {
         --disable-static \
         --disable-maintainer-mode \
         --disable-migration \
-        --enable-indicator \
+        --with-appindicator \
+        --with-wwan \
         --with-modem-manager-1
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=655517
     sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
     make -j1
+
+    cp -rf ../debian/icons/22 icons/
 }
 
 check() {

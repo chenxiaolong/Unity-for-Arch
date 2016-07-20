@@ -3,8 +3,8 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
-# vercheck-launchpad: name=${pkgname}
+# vercheck-ubuntu: name=${pkgbase}, repo=xenial
+# vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libindicator
 pkgname=(libindicator-gtk2 libindicator-gtk3)

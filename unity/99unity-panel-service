@@ -1,6 +1,0 @@
-# This file is sourced by Xsession(5), not executed.
-# Tell 'unity-panel-service' not to start using upstart
-
-if [ "x$DESKTOP_SESSION" = "xubuntu" ]; then
-	export PANEL_USE_LOCAL_SERVICE=1
-fi

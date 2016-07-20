@@ -4,8 +4,9 @@
 # vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-settings-daemon
+_ubuntu_rel=0ubuntu1
 _actual_ver=15.04.1
-_extra_ver=+16.04.20160209
+_extra_ver=+16.04.20160701
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Unity Settings Daemon"
@@ -21,25 +22,28 @@ makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python2)
 conflicts=(gnome-desktop-compat upower-compat)
 #options=('!emptydirs')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/unity-settings-daemon_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz"
         0001-Remove-accountsservice-dependency.patch
         0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-        0003-Use-GNOME-3.16-deprecated-schemas.patch)
-sha512sums=('a40ea34883e9a7d1726754c0ee154531296d58faba2b1fba008e0ad50fdf268ce8d055120d98d4be108b3dd31ab83e5aef6cab2cb74d0f6334b9237113f93a83'
-            'bf62af22a98ed0447509da8b221b19a7f7bd9330fccfd550ae24f9993ee5cb173aa869e56edac303d7d5148da4d6c105d417910a989e5eeb74513b80afed5d34'
-            '3cb2735c15c3acb4bcbd78da1c31dddda2f707b48fec46294a705a7688d277040aa1f7891b8c56cbd73b4f138805006bd0a2d569b7b4ac8f4ac3f297d5abb6ac'
-            '4dc034674a417680c1d0ed46fe3345a31412a9ffbc6a65242566c55fb4d81b166affb1c32a187706e31dd6b10868b9032431ce846e8e06a4b5949bcc99ec3641')
+        0003-Use-GNOME-3.16-deprecated-schemas.patch
+        0001-usd-test-screensaver-proxy-fails-to-compile.patch)
+sha512sums=('d5cbba6ceaf719b085564978fc868942aabb17cbe88e6d80d8225623805beae3eb8763630125d27c0eb40582cb6a147c20fcb014be9bde74abde14d0a2f7fcb3'
+            'b791c9dfafc3e0dcc47ad769817e2608486bd907248551f179f6471e0343b7a40435c28df39a9593b3918bff1f75e287c08112c29efd27236cde4e02ed7df96c'
+            '2394d35355f31a1090c96a38f3e33930d70aa1683f1bc3c4b65fd6a70a9bf9e5a592109ed34dd2d5a07822b401a24d11d80a662aae850236434d89c37a9a9c89'
+            'deafb16a268d660614dfa37cdbccc5ab8489327e7d61d766dd24f3304bebea3f8991d335d4332e33deea66e12ed4efcee6a606d9638c7457fef39b29f71dea77'
+            '4dc034674a417680c1d0ed46fe3345a31412a9ffbc6a65242566c55fb4d81b166affb1c32a187706e31dd6b10868b9032431ce846e8e06a4b5949bcc99ec3641'
+            '0b6fa66ebecef51c54ca04ae5aec6c6e05450668865e544f4c5ed3b142dcb22301bae440f55dfeec8fc5534a3c818d8cba4d019c32f5e3441a588bea9b93dab8')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    patch -p1 -i unity-settings-daemon_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 
-    patch -p1 -i ../0001-Remove-accountsservice-dependency.patch
-    patch -p1 -i ../0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
-    #patch -p1 -i ../0003-Use-GNOME-3.16-deprecated-schemas.patch
+    patch -p1 -i 0001-Remove-accountsservice-dependency.patch
+    patch -p1 -i 0002-Add-gnome-settings-daemon-3.12-rfkill-plugin.patch
+    #patch -p1 -i 0003-Use-GNOME-3.16-deprecated-schemas.patch
+    patch -p1 -i 0001-usd-test-screensaver-proxy-fails-to-compile.patch
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     autoreconf -vfi
     intltoolize -f
 
@@ -59,12 +63,16 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
     make DESTDIR="${pkgdir}/" install
 
     install -dm755 "${pkgdir}/usr/bin/"
     ln -s /usr/lib/unity-settings-daemon/unity-settings-daemon \
         "${pkgdir}/usr/bin/unity-settings-daemon"
+
+    install -Dm644 debian/unity-settings-daemon.user-session.upstart \
+        "${pkgdir}"/usr/share/upstart/sessions/unity-settings-daemon.conf
+    install -Dm644 debian/unity-settings-daemon.user-session.desktop \
+        "${pkgdir}"/usr/share/upstart/xdg/autostart/unity-settings-daemon.desktop
 
     # Use language packs
     rm -r "${pkgdir}/usr/share/locale/"

@@ -11,11 +11,11 @@
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_ver=3.18.1
 _ubuntu_rel=1ubuntu1
-pkgver=3.20.0
-pkgrel=2
+pkgver=3.21.2
+pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
-url="http://live.gnome.org/"
+url="https://www.gnome.org/"
 license=(GPL)
 depends=(glib2)
 makedepends=(intltool gobject-introspection)
@@ -24,7 +24,7 @@ conflicts=("${pkgname%-*}")
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         0001-Revert-schemas-Scroll-method-key-changes.patch)
-sha512sums=('559baf477be9f728c5fea24232218ec4ff17ac97a6db166749fbca4dc1d3995e79824dc977cae5aa10b2197aa9c0e65b884f5c1cb446db109bc15dafe456f7a1'
+sha512sums=('d7d27eb9d4d1d113975e2978fa41375d49c42ea3b72708c714822e406443e36ec86abb223dca570b6d7bfef0dbe31db82fe33a01c058a4744c40687743cf34e7'
             '593cbd34d5456ba8790ebd8c600216081f159f754c44969c1cde4f4057044bea53054b260b2f660d8dfc15b344e33f0f7382f336d5ed660047cf8a797c101ab7'
             '942ea2fa67aa5d5a08bcf7e1fafce4cd4dc49eb536746a948546b46a08578d8422056b32d57d8e552cc2daa42b3493a0cc9a007fb0a36f6d32e85b1443bc94b5')
 

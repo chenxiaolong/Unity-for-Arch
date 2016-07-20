@@ -1,15 +1,15 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
 _actual_ver=7.4.0
-_extra_ver=+16.04.20160415
+_extra_ver=+16.04.20160715
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=5
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -21,7 +21,7 @@ depends=(appstream-glib bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs
          gsettings-ubuntu-schemas hud ido libgnomeui libindicator-gtk2
          libindicator-gtk3 libnotify libunique libunity libunity-misc libxfixes
          nux unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
-         lightdm-unity-greeter)
+         lightdm-unity-greeter upstart-user)
 makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
              python2-distribute)
 groups=(unity)
@@ -32,35 +32,27 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0001-Revert-r3134-Remove-Systray-Whitelist.patch
         0002-Disable-Werror.patch
         0003-Fix-launchers.patch
-        0004-Remove-Upstart-stuff.patch
         0005-Remove-social.scope.patch
         0006-Remove-xpathselect-dependency.patch
-        0007-Add-missing-headers.patch
         launcher_bfb.png
-        99unity-panel-service
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam
-        unity.desktop
-        unity.gnome-session
-        unity.xsession)
-sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390be8e282d5decbdbab772457784e1734f7ce702e0a5b2c19f13f5d67694a594'
-            'a094e95e2e0f158a6f44efa7078988cc637bb6810013eed53c25ca5e2e612e31e4e39508612d6a9c2cc229908ede6740a0cbabc87e569d7afe41520395be4828'
+        ubuntu.gnome-session
+        ubuntu.xsession)
+sha512sums=('26b5cd62109bc08d8aa477266852582358e50ff7e18eb03b58ed0510b8fb4df2e3bef0d5c3a9efb572900e8955383ea43cb61867e1760d54f94189e0e18b2f6b'
+            '79ba62320624a25f5d5f9677addf0260e57fe01a7560b9ab849b3db62a2c37d2e799c58250137e04a0898c215246869b6b9af732c7a6d104c8999264971c0ba7'
             '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
             'ec0d228b4a117883e5dfbca0404614bd107d27d709554cde5a4cbe946a500381ff729a7a5942fbbfc9c449d0d404bde343ff5e536e390c8146df5bca243b781e'
             '1f1cbd726b17d27ed6b5852c81c12f3e58e25dd381da20e19e4c912ab53de1ebca7a95d8868d615e366c404a9b04d178cb18803d674837e88e77dd0c5524cf2c'
-            'd78bb8fc4687d6d17551dcde996a279afa6621f9a399d457e8288a4f144157359f0372d8d0eaf26e86d876e5eeb821dce553d024688a2fb87cddb1c235ab81d2'
             'f164ebfbad64eef16276b129d073e9411a511bba974b6c4616cc801c582ead5467cca2944755a3294a4a14d4b38b72c7025562e8cf145c855205193f5cfcb9de'
             '8ae32bb07dad5bcb264e3de621b29b1bd535fa80c205098990896f1c16f99cfa889234d55b4ce505b5ab5141c64269d9c5775a9666a45f65c699aa4f0382e94d'
-            'd8debb95205f47ef5ce762fcf9bc76306f2e164e711e818e2b1043b9c643cf1c5e43211474dec3689a02e76b5ab66e43a0f5aa2e3e34dd3e8f25a03ca36f4c4a'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
-            '5bd357e03392c6abf76b51df78e59eafb1f04e997465fe1b73c02a8e265306b020bbdb05e66d959fb44a3df1aaf24559d70289aedf6803c917ca689ec848bf66'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
-            '1067bcb25b6d6d01256b176b5854d1ace700ba2b7323b4af257aa95d2f47d5043ac22811f65e99f1e961772cd1e81c153ef69b162918827bd9d7d50d458908df'
-            '854d89d6a350d0dc5819c0780ba19cb07ba99b394001aef21a9af7da99b4dea8043be42c14563d139bd6568004b4e073d42174245c48a764e6ce1dbb76c5eeac'
-            'dadad4937f998e30d276d8ed06b11f44e7511e05516e70ca1fe53e72617d781ae6de7de4fc054fdd22c3d8f8bc84df14924c7099c0868dd63a2d1bf31ce6a01a'
-            '9210801b38709e40fd1df257f7d1a211b4341c20ccecbb390b38532208318821fd318a26672a30e6e2660c1069dd8bc4ac2f5a717223c6c9b091f3b683ba3a84')
+            '08d43702e1e356725096e4dbf9f6b3833b21b5ff88cca4db35097743acba157b37478baad19e66bcc61e01c8d3bfdbe44a4958808860b22d54fb38309bf9f011'
+            '975fa1c67092dc9b9dff639a05891f1a15131e3756d88cfe6534649644a7a09f78ec1151c70d56957906c51c73b29faaf83a33e26eca720867b6742f6bdc588f'
+            '4cfba3ad561cc73b60ae3622b4ee968f283288249c17a541afbb856c24cfad1326ed591dea5fc93e3d2ae93fb59b80db691838905651bd7e4741959461f19978')
 
 prepare() {
     #cd "${pkgname}-${_actual_ver}${_extra_ver}"
@@ -68,10 +60,8 @@ prepare() {
     patch -p1 -i 0001-Revert-r3134-Remove-Systray-Whitelist.patch
     patch -p1 -i 0002-Disable-Werror.patch
     patch -p1 -i 0003-Fix-launchers.patch
-    patch -p1 -i 0004-Remove-Upstart-stuff.patch
     patch -p1 -i 0005-Remove-social.scope.patch
     patch -p1 -i 0006-Remove-xpathselect-dependency.patch
-    patch -p1 -i 0007-Add-missing-headers.patch
 
     # Apply Ubuntu patches
     patch -p1 -i "unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
@@ -138,11 +128,6 @@ package() {
     install -m644 "${srcdir}"/launcher_bfb.png \
         "${pkgdir}"/usr/share/unity/icons/launcher_bfb.png
 
-    # Fix launching of unity-panel-service (from unity-gentoo project)
-    install -dm755 "${pkgdir}"/etc/X11/xinit/xinitrc.d/
-    install -m755 "${srcdir}"/99unity-panel-service \
-                  "${pkgdir}"/etc/X11/xinit/xinitrc.d/
-
     # Install script for running Unity with debug output (from unity-gentoo project)
     install -m755 "${srcdir}"/unity-debug "${pkgdir}"/usr/bin/
 
@@ -161,16 +146,17 @@ package() {
     rm "${pkgdir}"/etc/pam.d/unity
     install -m644 "${srcdir}"/unity.pam "${pkgdir}"/etc/pam.d/unity
 
-    # Install desktop and session files
-    install -dm755 "${pkgdir}"/usr/share/applications/
-    install -m644 "${srcdir}"/unity.desktop \
-        "${pkgdir}"/usr/share/applications/
+    # Install session files
     install -dm755 "${pkgdir}"/usr/share/gnome-session/sessions/
-    install -m644 "${srcdir}"/unity.gnome-session \
-        "${pkgdir}"/usr/share/gnome-session/sessions/unity.session
+    install -m644 "${srcdir}"/ubuntu.gnome-session \
+        "${pkgdir}"/usr/share/gnome-session/sessions/ubuntu.session
     install -dm755 "${pkgdir}"/usr/share/xsessions/
-    # Named ubuntu.desktop since so many things depend on the
-    # DESKTOP_SESSION environment variable being set to 'ubuntu'
-    install -m644 "${srcdir}"/unity.xsession \
+    install -m644 "${srcdir}"/ubuntu.xsession \
         "${pkgdir}"/usr/share/xsessions/ubuntu.desktop
+
+    # Install upstart service
+    install -dm755 "${pkgdir}"/usr/share/upstart/sessions/
+    sed 's/ubuntu\.session/unity.session/g' \
+        < ../debian/unity7.conf \
+        > "${pkgdir}"/usr/share/upstart/sessions/unity7.conf
 }

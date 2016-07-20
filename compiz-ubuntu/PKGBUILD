@@ -13,7 +13,7 @@ pkgname=compiz-ubuntu
 epoch=1
 
 _actual_ver=0.9.12.2
-_extra_ver=+16.04.20160415
+_extra_ver=+16.04.20160714
 
 if [[ "${_use_ppa}" != true ]]; then
     _ubuntu_rel=0ubuntu1
@@ -56,8 +56,8 @@ source+=(compiz.reset
          0003-Use-Python-2.patch
          0004-Disable-Werror.patch
          0001-Fix-abs-compile-error.patch)
-sha512sums=('911a99cf7f4b1439f82114df5e2cf68da2f821627c96ae0c4583c094c6a8811ffff25b00dc69b56e4d5edea0124ffeacc17ddf06f62c62ae850432b3aa79283c'
-            'dff764efb9237c5b65b9fb48b26039028c629cc516417923f8264187967ccbccd485d3e0e44ef501f0fc41ec4dacd5b12e3a96960ebfb7694209ef7d68d3d84f'
+sha512sums=('7d72f0312dd1c846120766a6d15374ec53a8a11c34afd4e25b7596c2f6780ce5a035b3bd97ebfbd217da5fabe864b4234fedbe0d3bef535e4a3f21619f0b4de7'
+            'ff99e6de5e5edf2e2825908e1fdfa0a1b232fbcfb92c70d4ddf4a5da1dc1f3489e68e7988534eaa98683d151f14ab980d3b662dc87aaccb997c5ee6a35251b99'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '94b139716f74cfb26276dbc0c5a73aa1d6f591e888b976210e7523de83e782a76992350d08b8054c8a04eeeb5273130cdeaaffd155ee3e9800921b7541cbdd82'
             '1107fd002e1123fd52535f0016ee241c12d719a62c0a301a97338a230a73267b43982e0d23250ecac09b3a4b0ae78710fa9e04d84d5729ee6ac7293935579706'
@@ -174,7 +174,7 @@ package() {
         "${pkgdir}/etc/X11/xinit/xinitrc.d/"
 
     # Unity Compiz profile configuration file
-    install -m644 ../debian/unity.ini "${pkgdir}/etc/compizconfig/"
+    install -m644 ../debian/unity*.ini "${pkgdir}/etc/compizconfig/"
 
     # Install Compiz profile configuration file
     install -m644 ../debian/compizconfig "${pkgdir}/etc/compizconfig/config"

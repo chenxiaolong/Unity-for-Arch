@@ -10,7 +10,7 @@ pkgname=indicator-session
 _actual_ver=12.10.5
 _extra_ver=+16.04.20160412
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Indicator showing session management, status and user switching"
 arch=(i686 x86_64)
@@ -21,11 +21,9 @@ makedepends=(cmake intltool python2)
 optdepends=('lightdm: support for lightdm')
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        indicator-session.service
         0001-There-is-no-help.patch
         0002-Remove-url-dispatcher-dependency.patch)
 sha512sums=('0142ab02e5dba9a543c6785ea1409fe1d95ed57b395f8ceea526fbe4c2b726088d37a927c1fac6c8a3a31125478c7aa76bc45b8687bd96b1125892f84d329529'
-            '540c76c0f68b028194bb1000dd61a0c24f2f16427e79d237b94b8c65fe5e3e16eb6ea645f0fd33d734113727e25b6eb7452cb72f72399c9e8d370f74abba7511'
             'd6fb693580c921ce397124e12222aeff63734b1a2729f9e661a432613178ed8ff8da6107364e151bbd2bd58c3e70e18b71d8b96988025134f0fee8bc03868135'
             '8ab2047eae79c01d206811f76efab57ac55161a0c3ba4f7f9e1fa37c80cc619d9571a42af0259b6e32f6597cbab6bc27fc5c5fb50965737065baae6cb546c025')
 
@@ -56,12 +54,6 @@ package() {
     make DESTDIR="${pkgdir}/" install
 
     rm -vf "${pkgdir}/test-service"
-
-    install -dm755 "${pkgdir}/usr/share/dbus-1/services/"
-    install -m644 "${srcdir}/indicator-session.service" \
-                  "${pkgdir}/usr/share/dbus-1/services/"
-
-    rm -r "${pkgdir}/usr/share/upstart/"
 
     # Use language packs
     rm -r "${pkgdir}/usr/share/locale/"

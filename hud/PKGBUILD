@@ -8,7 +8,7 @@ pkgname=hud
 _actual_ver=14.10
 _extra_ver=+16.04.20160415
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Backend for the Unity HUD"
 arch=(i686 x86_64)
 url="https://launchpad.net/hud"
@@ -69,6 +69,4 @@ package() {
     #cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
     cd build
     make DESTDIR="${pkgdir}/" install
-
-    rm -r "${pkgdir}/usr/share/upstart/"
 }
