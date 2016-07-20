@@ -48,7 +48,7 @@ To compile from source, just build all of the packages in the following order:
 | indicator-messages               | Collects messages that need a response     |
 | bamf-ubuntu                      | Application matching framework             |
 | libtimezonemap                   | GTK+3 timezone map widget                  |
-| libnih                           | Lightweight library of standard C funcs.   |
+| libnih-ubuntu                    | Lightweight library of standard C funcs.   |
 | upstart-user                     | Event-based user service mgmt. daemon      |
 | gsettings-desktop-schemas-ubuntu | Shared GSettings schemas for the desktop   |
 | gsettings-ubuntu-schemas         | GSettings desktop-wide schemas for Ubuntu  |
