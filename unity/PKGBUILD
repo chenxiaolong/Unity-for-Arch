@@ -1,12 +1,12 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=xenial
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
 _actual_ver=7.4.0
-_extra_ver=+16.04.20160415
+_extra_ver=+16.04.20160715
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=5
@@ -34,21 +34,19 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0003-Fix-launchers.patch
         0005-Remove-social.scope.patch
         0006-Remove-xpathselect-dependency.patch
-        0007-Add-missing-headers.patch
         launcher_bfb.png
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam
         ubuntu.gnome-session
         ubuntu.xsession)
-sha512sums=('9094b63f3b88a3b03256ea093e9af3dcbab154a64eb563791e09dae7facf43c390be8e282d5decbdbab772457784e1734f7ce702e0a5b2c19f13f5d67694a594'
-            'a094e95e2e0f158a6f44efa7078988cc637bb6810013eed53c25ca5e2e612e31e4e39508612d6a9c2cc229908ede6740a0cbabc87e569d7afe41520395be4828'
+sha512sums=('26b5cd62109bc08d8aa477266852582358e50ff7e18eb03b58ed0510b8fb4df2e3bef0d5c3a9efb572900e8955383ea43cb61867e1760d54f94189e0e18b2f6b'
+            '79ba62320624a25f5d5f9677addf0260e57fe01a7560b9ab849b3db62a2c37d2e799c58250137e04a0898c215246869b6b9af732c7a6d104c8999264971c0ba7'
             '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
             'ec0d228b4a117883e5dfbca0404614bd107d27d709554cde5a4cbe946a500381ff729a7a5942fbbfc9c449d0d404bde343ff5e536e390c8146df5bca243b781e'
             '1f1cbd726b17d27ed6b5852c81c12f3e58e25dd381da20e19e4c912ab53de1ebca7a95d8868d615e366c404a9b04d178cb18803d674837e88e77dd0c5524cf2c'
             'f164ebfbad64eef16276b129d073e9411a511bba974b6c4616cc801c582ead5467cca2944755a3294a4a14d4b38b72c7025562e8cf145c855205193f5cfcb9de'
             '8ae32bb07dad5bcb264e3de621b29b1bd535fa80c205098990896f1c16f99cfa889234d55b4ce505b5ab5141c64269d9c5775a9666a45f65c699aa4f0382e94d'
-            'd8debb95205f47ef5ce762fcf9bc76306f2e164e711e818e2b1043b9c643cf1c5e43211474dec3689a02e76b5ab66e43a0f5aa2e3e34dd3e8f25a03ca36f4c4a'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
@@ -64,7 +62,6 @@ prepare() {
     patch -p1 -i 0003-Fix-launchers.patch
     patch -p1 -i 0005-Remove-social.scope.patch
     patch -p1 -i 0006-Remove-xpathselect-dependency.patch
-    patch -p1 -i 0007-Add-missing-headers.patch
 
     # Apply Ubuntu patches
     patch -p1 -i "unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
