@@ -10,7 +10,7 @@ pkgname=indicator-datetime
 _actual_ver=15.10
 _extra_ver=+16.04.20160406
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=3
+pkgrel=4
 pkgdesc="A very, very simple clock"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-datetime"
@@ -20,14 +20,17 @@ depends=(evolution-data-server gsettings-ubuntu-schemas gstreamer
 makedepends=(intltool cmake)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
-        0001-Not-a-phone.patch)
+        0001-Not-a-phone.patch
+        0001-Properly-initialize-timezone-from-timedated.patch)
 sha512sums=('0e8be3ca123d5bdea1049aaed8dd0089af429c43624be706d7e62cf8ed79362497962ba37f15d3f2b7c0d422588325fe2cc31a748c83b6890ca247d2a3722fc4'
-            '903886cc0c60193d289cbdb99cba5fde50ad476b71830387351369e5dd425277efddd8506bdc32a1597ba690630f0687847ef9816c92b841b4ac74f5659c86ba')
+            '903886cc0c60193d289cbdb99cba5fde50ad476b71830387351369e5dd425277efddd8506bdc32a1597ba690630f0687847ef9816c92b841b4ac74f5659c86ba'
+            'd25d24ef61a4e9651654f18fc3b8a1dd407d93d3ad118ac611edd87eccfbc7368e9d94483fbe213fc5f17c02c02c4e14ec0797162f22d430bb6bebc91ff64851')
 
 prepare() {
     #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
-    patch -p1 -i ../0001-Not-a-phone.patch
+    patch -p1 -i 0001-Not-a-phone.patch
+    patch -p1 -i 0001-Properly-initialize-timezone-from-timedated.patch
 }
 
 build() {

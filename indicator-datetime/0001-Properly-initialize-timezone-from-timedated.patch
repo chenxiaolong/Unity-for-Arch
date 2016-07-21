@@ -1,0 +1,73 @@
+From eb17da816d4ef793a904c1da89c5a7aa315752b3 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Thu, 21 Jul 2016 19:35:44 -0400
+Subject: [PATCH] Properly initialize timezone from timedated
+
+---
+ src/timezone-timedated.cpp | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/src/timezone-timedated.cpp b/src/timezone-timedated.cpp
+index fa99cd2..1df6642 100644
+--- a/src/timezone-timedated.cpp
++++ b/src/timezone-timedated.cpp
+@@ -111,6 +111,8 @@ private:
+             return;
+         }
+ 
++        notify_timezone(get_timezone_from_timedated());
++
+         m_signal_subscription_id = g_dbus_connection_signal_subscribe(m_connection,
+                 "org.freedesktop.timedate1",
+                 "org.freedesktop.DBus.Properties",
+@@ -180,6 +182,47 @@ private:
+         return ret;
+     }
+ 
++    std::string get_timezone_from_timedated()
++    {
++        GError *error = nullptr;
++        GDBusProxy *proxy = nullptr;
++        GVariant *variant;
++        const gchar *value = nullptr;
++        std::string ret("Etc/Utc");
++
++        proxy = g_dbus_proxy_new_sync(m_connection,
++                G_DBUS_PROXY_FLAGS_NONE,
++                nullptr,
++                "org.freedesktop.timedate1",
++                "/org/freedesktop/timedate1",
++                "org.freedesktop.timedate1",
++                nullptr,
++                &error);
++
++        if (error)
++        {
++            g_warning("Couldn't get bus connection: '%s'", error->message);
++            g_error_free(error);
++        }
++        else
++        {
++            variant = g_dbus_proxy_get_cached_property(proxy, "Timezone");
++            if (variant)
++            {
++                value = g_variant_get_string(variant, nullptr);
++                if (value)
++                {
++                    ret = value;
++                }
++                g_variant_unref(variant);
++            }
++
++            g_object_unref(proxy);
++        }
++
++        return ret;
++    }
++
+     /***
+     ****
+     ***/
+-- 
+2.9.0
+
