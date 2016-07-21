@@ -4,15 +4,15 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.20
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_ver=3.18.1
-_ubuntu_rel=1ubuntu1
+_ubuntu_ver=3.20.0
+_ubuntu_rel=3ubuntu1
 pkgver=3.21.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
 url="https://www.gnome.org/"
@@ -25,7 +25,7 @@ source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkg
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         0001-Revert-schemas-Scroll-method-key-changes.patch)
 sha512sums=('d7d27eb9d4d1d113975e2978fa41375d49c42ea3b72708c714822e406443e36ec86abb223dca570b6d7bfef0dbe31db82fe33a01c058a4744c40687743cf34e7'
-            '593cbd34d5456ba8790ebd8c600216081f159f754c44969c1cde4f4057044bea53054b260b2f660d8dfc15b344e33f0f7382f336d5ed660047cf8a797c101ab7'
+            '281dce5fa3484f8711235443c83f509cde13a89f3bc88889100d9479711d0b79fcc0a95b05fdb2b422e765adbe1f7b7f1e9154945a5f32d66ce6ecf399da0ce5'
             '942ea2fa67aa5d5a08bcf7e1fafce4cd4dc49eb536746a948546b46a08578d8422056b32d57d8e552cc2daa42b3493a0cc9a007fb0a36f6d32e85b1443bc94b5')
 
 prepare() {
@@ -35,7 +35,7 @@ prepare() {
 
     # Apply Ubuntu's patches
 
-    sed -i '/git_revert_notifications_key_removal.patch/d' ../debian/patches/series
+    sed -i '/legacy-scroll-method.patch/d' ../debian/patches/series
 
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
