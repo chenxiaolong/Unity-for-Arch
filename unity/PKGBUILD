@@ -1,15 +1,15 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity
-_actual_ver=7.4.0
-_extra_ver=+16.04.20160715
+_actual_ver=7.5.0
+_extra_ver=+16.10.20160715
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=5
+pkgrel=1
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -40,8 +40,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         unity.pam
         ubuntu.gnome-session
         ubuntu.xsession)
-sha512sums=('26b5cd62109bc08d8aa477266852582358e50ff7e18eb03b58ed0510b8fb4df2e3bef0d5c3a9efb572900e8955383ea43cb61867e1760d54f94189e0e18b2f6b'
-            '79ba62320624a25f5d5f9677addf0260e57fe01a7560b9ab849b3db62a2c37d2e799c58250137e04a0898c215246869b6b9af732c7a6d104c8999264971c0ba7'
+sha512sums=('aa22adb23cebd2b64f1d1f5b04cf4090d9a20aa769a66cc26c0725798674448ac3d90a30165f587d4d27df4f0d6682f962ee18f029d67ba3ed213a5d5094acdd'
+            '825526aee940d53337aba40b3261d4e64594eefd7b2450798ce8c9a153ac257b27dec588b3a33b5297a3669a9e35883c5f80ef84533c3cbd052bf378cb13708e'
             '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
             'ec0d228b4a117883e5dfbca0404614bd107d27d709554cde5a4cbe946a500381ff729a7a5942fbbfc9c449d0d404bde343ff5e536e390c8146df5bca243b781e'
             '1f1cbd726b17d27ed6b5852c81c12f3e58e25dd381da20e19e4c912ab53de1ebca7a95d8868d615e366c404a9b04d178cb18803d674837e88e77dd0c5524cf2c'
