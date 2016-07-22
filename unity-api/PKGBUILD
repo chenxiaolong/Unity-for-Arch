@@ -4,8 +4,8 @@
 # vercheck-ubuntu: name=${pkgname}, repo=xenial
 
 pkgname=unity-api
-_actual_ver=7.108
-_extra_ver=+16.04.20160322
+_actual_ver=7.116
+_extra_ver=+16.10.20160620
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="API for Unity shell integration"
@@ -16,20 +16,19 @@ groups=(unity)
 depends=(glib2)
 makedepends=(cmake doxygen graphviz python qt5-base)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('090cb632a66c6e2d760018f0b529d746146d18d5706d77fdd6c0514fa1aa07d5a3211a6e4638cbb841b40f8e2d0b5e7bd5e664902742d06d36a98a44e8776e5d')
+sha512sums=('82b8ffd17bd486dfbaa2df0f66a1c6d831106a3e31c765ca91df986079d37414e1da22204d1af0ae86b116f9c76bc4e509673da647ba5f253c0f3629839dc04c')
 
 build() {
-	cd "${pkgname}-${_actual_ver}${_extra_ver}"
     mkdir -p build
     cd build
     cmake .. \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib \
         -DNO_TESTS=TRUE
-	make
+    make
 }
 
 package() {
-	cd "${pkgname}-${_actual_ver}${_extra_ver}/build"
-	make DESTDIR="${pkgdir}/" install
+    cd build
+    make DESTDIR="${pkgdir}/" install
 }
