@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=geonames, repo=xenial
+# vercheck-ubuntu: name=geonames, repo=yakkety
 
 pkgname=libgeonames
 _actual_ver=0.2
-_extra_ver=+16.04.20160321
+_extra_ver=+16.04.20160426
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
@@ -15,16 +15,16 @@ url="https://git.launchpad.net/~larsu/geonames"
 license=(GPL)
 depends=(glib2)
 makedepends=(gtk-doc intltool)
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/geonames_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.tar.xz")
-sha512sums=('70e5ee6926405b4d45aa3479e4de78a9200aea5c17ebe64717bb5be06c4dfd390875e0952e067db4f9e4c792d65e4e96494eb9e2fe294fd59bcfd3ea8b0df8eb')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/geonames_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.tar.gz")
+sha512sums=('c9f6c61d7213ece99d5ddfee7fb262f16541d1820a28b549f1fca5ff51a04e235e8e59901f8f6a69e68385e895d11e6c9987232a58a50b4905ad26c668626d58')
 
 build() {
-	cd "geonames-${_actual_ver}${_extra_ver}"
+	cd geonames
 	./autogen.sh --prefix=/usr
 	make
 }
 
 package() {
-	cd "geonames-${_actual_ver}${_extra_ver}"
+	cd geonames
 	make DESTDIR="${pkgdir}/" install
 }
