@@ -8,7 +8,7 @@
 
 pkgname=bamf-ubuntu
 _actual_ver=0.5.3
-_extra_ver=~bzr0+16.10.20160705
+_extra_ver=~bzr0+16.10.20160726.1
 pkgver=${_actual_ver}${_extra_ver//[\~\+]/.}
 pkgrel=1
 pkgdesc="Removes the headache of applications matching into a simple DBus daemon and c wrapper library"
@@ -27,7 +27,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/bamf_${_actual_ver
         update-bamf-index.hook
         update-bamf-index.pl
         update-bamf-index.sh)
-sha512sums=('b73a3b634b1bd43e620568f614aa6f58fcfd705355b954feec44dc5c63c8d1ecbd5b45b18e651ff650bfcb1fa196c88ab739fb0d94fc1695123b5612d3d0b696'
+sha512sums=('ddb9991ffff78c8283486ff26ad836e2172e22c9b254f7b416afa3c76fdf6ea74db93f98768450bccbe8bb6665f9cef6a777c4f2fe63df530e4c681ea567aa97'
             '49379121974a6f273084f66c6aa937fd2213e92169040db03f87098d3ca269032603f3dbfec947807e3d4a3c866648b96a2a3bb18f1ad3736a7ceaf011cf901a'
             '7db84774b72fb330abe2116f3d1d842c007820c200344d76ff87abab5226488fcc21d2e82cbe5381fb3e7ce0eacc09232f17d64c4e2a5ee8eef0be06808f21ff'
             '6dd8079a1dddc787d41fea246809e37de76a6e6daa2e3760c4a6770456fd1d8097597cadeae38fd81f322d44e79f0786e82604d606bc81bae57f39091db0755c')
@@ -45,7 +45,7 @@ build() {
     autoreconf -vfi
 
     export PYTHON=/usr/bin/python2
-  
+
     ./configure \
         --prefix=/usr \
         --libexecdir=/usr/lib \
@@ -65,4 +65,8 @@ package() {
     install -m755 ../update-bamf-index.sh "${pkgdir}"/usr/lib/bamf/
     install -dm755 "${pkgdir}"/usr/share/libalpm/hooks/
     install -m644 ../update-bamf-index.hook "${pkgdir}"/usr/share/libalpm/hooks/
+
+    # Disable upstart session job when using systemd session service
+    mkdir -p "${pkgdir}"/usr/share/upstart/systemd-session/upstart
+    echo manual > "${pkgdir}"/usr/share/upstart/systemd-session/upstart/bamfdaemon.override
 }
