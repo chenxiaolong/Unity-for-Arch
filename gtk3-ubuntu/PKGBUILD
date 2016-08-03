@@ -7,12 +7,12 @@
 # vercheck-gnome: name=gtk+, majorver=3.20
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
-_use_ppa=true
+_use_ppa=false
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=2ubuntu1~xenial2
+_ubuntu_rel=1ubuntu1
 pkgver=3.20.6
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="GObject-based multi-platform toolkit"
 arch=(i686 x86_64)
@@ -21,7 +21,8 @@ install=gtk3.install
 depends=(atk cairo libcups libxcursor libxinerama libxrandr libxi libepoxy
          gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info colord
          at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib rest
-         librsvg wayland-protocols desktop-file-utils gtk-update-icon-cache)
+         librsvg wayland-protocols desktop-file-utils mesa
+         gtk-update-icon-cache)
 makedepends=(gobject-introspection libcanberra gtk-doc)
 optdepends=('libcanberra: gtk3-widget-factory demo')
 provides=("gtk3=${pkgver}")
@@ -40,7 +41,7 @@ fi
 sha512sums=('597d25ec00f83c6ac77784f303458fad03d8ad017a53ee59e067fda61fa79fe6f34e46391f45844df7c4bbb2c8fa032b32f6d1c8f2f324c99681069f4d6d9be4'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
             'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
-            '695e728f5872142df356a0f669d9e526e73253c6c38d0326cbe2b9001ef76c07c690e35d86a1044b9e05b54adf1ee2a150be880ff39104ee105a07a4785d3674')
+            'f178621894f58b33e06c392f163dadc9c08a8a0f6559009101b854187e7133032d5ee96ed64363fe19744a37d182a628051d8c67a884f44581e9d30310792b22')
 
 prepare() {
     cd "gtk+-${pkgver}"
@@ -61,6 +62,8 @@ prepare() {
         0001-calendar-always-emit-day-selected-once.patch
         0001-gtkwindow-set-transparent-background-color.patch
         ubuntu_fileselector_behaviour.patch
+        unity-border-radius.patch
+        unity-headerbar-maximized-mode.patch
     )
 
     for i in "${patches[@]}"; do
