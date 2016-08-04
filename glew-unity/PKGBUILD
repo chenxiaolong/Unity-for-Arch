@@ -1,0 +1,41 @@
+# Maintainer: Andrew Gunnerson <andrewgunnerson@gmail.com>
+# Original Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Contributor: Stéphane Gaudreault <stephane@archlinux.org>
+# Contributor: SleepyDog
+
+pkgname=glew-unity
+pkgver=1.13.0
+pkgrel=1
+pkgdesc="The OpenGL Extension Wrangler Library"
+arch=(i686 x86_64)
+url="http://glew.sourceforge.net"
+license=(BSD MIT GPL)
+groups=(unity)
+depends=(libxmu libxi glu)
+source=("http://downloads.sourceforge.net/glew/glew-${pkgver}.tgz"
+        0001-Rename-library-to-glew-unity.patch)
+sha512sums=('8fc8d7c0d2cd9235ea51db9972f492701827bff40642fdb3cc54c10b0737dba8e6d8d0dcd8c5aa5bfaaae39c6198ba3d4292cd1662fbe1977eb9a5d187ba635f'
+            '02417e76be699fa4507c82f52cca43e2e4e690696467a3d7e2079afbdb00064657174428bf353de161f6c2bbe10ae30d84b974ae1a164b52b075746a5046a084')
+
+prepare() {
+    cd "glew-${pkgver}"
+
+    patch -p1 -i ../0001-Rename-library-to-glew-unity.patch
+
+    sed -i 's|lib64|lib|' config/Makefile.linux
+    sed -i '/^.PHONY: .*\.pc$/d' Makefile
+}
+
+build() {
+    cd "glew-${pkgver}"
+  
+    make
+}
+
+package() {
+    cd "glew-${pkgver}"
+    make GLEW_DEST="${pkgdir}/usr" install.all
+    install -D -m644 LICENSE.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+    #chmod 0755 "${pkgdir}"/usr/lib/libGLEW*.so.${pkgver}
+}

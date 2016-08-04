@@ -1,0 +1,116 @@
+From 4982425c4fe980bbf308c2e60cca1a9e712c7dfe Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Wed, 3 Aug 2016 21:37:35 -0400
+Subject: [PATCH] Rename library to glew-unity
+
+---
+ Makefile              | 20 ++++++++++----------
+ config/Makefile.linux | 16 ++++++++--------
+ glew.pc.in            |  2 +-
+ 3 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 792e779..e9f55d3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -144,7 +144,7 @@ glew.pc: glew.pc.in
+ 		-e "s|@includedir@|$(INCDIR)|g" \
+ 		-e "s|@version@|$(GLEW_VERSION)|g" \
+ 		-e "s|@cflags@||g" \
+-		-e "s|@libname@|$(NAME)|g" \
++		-e "s|@libname@|$(NAME)-unity|g" \
+ 		-e "s|@requireslib@|$(LIBGLU)|g" \
+ 		< $< > $@
+ 
+@@ -192,20 +192,20 @@ glewmx.pc: glew.pc.in
+ 		-e "s|@includedir@|$(INCDIR)|g" \
+ 		-e "s|@version@|$(GLEW_VERSION)|g" \
+ 		-e "s|@cflags@|-DGLEW_MX|g" \
+-		-e "s|@libname@|$(NAME)mx|g" \
++		-e "s|@libname@|$(NAME)mx-unity|g" \
+ 		-e "s|@requireslib@|$(LIBGLU)|g" \
+ 		< $< > $@
+ 
+ # GLEW utility programs
+ 
+-BIN.LIBS = -Llib $(LDFLAGS.DYNAMIC) -l$(NAME) $(LDFLAGS.EXTRA) $(LDFLAGS.GL)
++BIN.LIBS = -Llib $(LDFLAGS.DYNAMIC) -l$(NAME)-unity $(LDFLAGS.EXTRA) $(LDFLAGS.GL)
+ 
+-GLEWINFO.BIN       := glewinfo$(BIN.SUFFIX)
++GLEWINFO.BIN       := glewinfo-unity$(BIN.SUFFIX)
+ GLEWINFO.BIN.SRC   := src/glewinfo.c
+ GLEWINFO.BIN.OBJ   := $(addprefix tmp/$(SYSTEM)/default/shared/,$(notdir $(GLEWINFO.BIN.SRC)))
+ GLEWINFO.BIN.OBJ   := $(GLEWINFO.BIN.OBJ:.c=.o)
+ 
+-VISUALINFO.BIN     := visualinfo$(BIN.SUFFIX)
++VISUALINFO.BIN     := visualinfo-unity$(BIN.SUFFIX)
+ VISUALINFO.BIN.SRC := src/visualinfo.c
+ VISUALINFO.BIN.OBJ := $(addprefix tmp/$(SYSTEM)/default/shared/,$(notdir $(VISUALINFO.BIN.SRC)))
+ VISUALINFO.BIN.OBJ := $(VISUALINFO.BIN.OBJ:.c=.o)
+@@ -298,19 +298,19 @@ install.bin: glew.bin
+ 
+ install.include:
+ 	$(INSTALL) -d -m 0755 "$(DESTDIR)$(INCDIR)"
+-	$(INSTALL) -m 0644 include/GL/wglew.h "$(DESTDIR)$(INCDIR)/"
+-	$(INSTALL) -m 0644 include/GL/glew.h "$(DESTDIR)$(INCDIR)/"
+-	$(INSTALL) -m 0644 include/GL/glxew.h "$(DESTDIR)$(INCDIR)/"
++	$(INSTALL) -m 0644 include/GL/wglew.h "$(DESTDIR)$(INCDIR)/wglew-unity.h"
++	$(INSTALL) -m 0644 include/GL/glew.h "$(DESTDIR)$(INCDIR)/glew-unity.h"
++	$(INSTALL) -m 0644 include/GL/glxew.h "$(DESTDIR)$(INCDIR)/glxew-unity.h"
+ 
+ install.pkgconfig: glew.pc
+ 	$(INSTALL) -d -m 0755 "$(DESTDIR)$(LIBDIR)"
+ 	$(INSTALL) -d -m 0755 "$(DESTDIR)$(LIBDIR)/pkgconfig"
+-	$(INSTALL) -m 0644 glew.pc "$(DESTDIR)$(LIBDIR)/pkgconfig/"
++	$(INSTALL) -m 0644 glew.pc "$(DESTDIR)$(LIBDIR)/pkgconfig/glew-unity.pc"
+ 
+ install.pkgconfig.mx: glewmx.pc
+ 	$(INSTALL) -d -m 0755 "$(DESTDIR)$(LIBDIR)"
+ 	$(INSTALL) -d -m 0755 "$(DESTDIR)$(LIBDIR)/pkgconfig"
+-	$(INSTALL) -m 0644 glewmx.pc "$(DESTDIR)$(LIBDIR)/pkgconfig/"
++	$(INSTALL) -m 0644 glewmx.pc "$(DESTDIR)$(LIBDIR)/pkgconfig/glewmx-unity.pc"
+ 
+ uninstall:
+ 	$(RM) "$(DESTDIR)$(INCDIR)/wglew.h"
+diff --git a/config/Makefile.linux b/config/Makefile.linux
+index 6b9da03..d73fcf4 100644
+--- a/config/Makefile.linux
++++ b/config/Makefile.linux
+@@ -26,13 +26,13 @@ CFLAGS.EXTRA += -fPIC
+ CFLAGS.EXTRA += -Wcast-qual
+ CFLAGS.EXTRA += -ansi -pedantic
+ BIN.SUFFIX =
+-LIB.SONAME = lib$(NAME).so.$(SO_MAJOR)
+-LIB.DEVLNK = lib$(NAME).so
+-LIB.SHARED = lib$(NAME).so.$(SO_VERSION)
+-LIB.STATIC = lib$(NAME).a
++LIB.SONAME = lib$(NAME)-unity.so.$(SO_MAJOR)
++LIB.DEVLNK = lib$(NAME)-unity.so
++LIB.SHARED = lib$(NAME)-unity.so.$(SO_VERSION)
++LIB.STATIC = lib$(NAME)-unity.a
+ LDFLAGS.SO = -shared -Wl,-soname=$(LIB.SONAME)
+-LIB.SONAME.MX = lib$(NAME)mx.so.$(SO_MAJOR)
+-LIB.DEVLNK.MX = lib$(NAME)mx.so
+-LIB.SHARED.MX = lib$(NAME)mx.so.$(SO_VERSION)
+-LIB.STATIC.MX = lib$(NAME)mx.a
++LIB.SONAME.MX = lib$(NAME)mx-unity.so.$(SO_MAJOR)
++LIB.DEVLNK.MX = lib$(NAME)mx-unity.so
++LIB.SHARED.MX = lib$(NAME)mx-unity.so.$(SO_VERSION)
++LIB.STATIC.MX = lib$(NAME)mx-unity.a
+ LDFLAGS.SO.MX = -shared -Wl,-soname=$(LIB.SONAME.MX)
+diff --git a/glew.pc.in b/glew.pc.in
+index 6d3d070..a1608f4 100644
+--- a/glew.pc.in
++++ b/glew.pc.in
+@@ -3,7 +3,7 @@ exec_prefix=${prefix}
+ libdir=@libdir@
+ includedir=${prefix}/include
+ 
+-Name: glew
++Name: glew-unity
+ Description: The OpenGL Extension Wrangler library
+ Version: @version@
+ Cflags: -I${includedir} @cflags@
+-- 
+2.9.2
+
