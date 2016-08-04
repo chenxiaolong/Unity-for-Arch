@@ -1,6 +1,14 @@
 while read -r desktop; do
     if [ "x${desktop}" = "x${DESKTOP_SESSION}" ]; then
         export XDG_CONFIG_DIRS="/usr/share/upstart/xdg:/etc/xdg"
+
+        # If the session is run through a systemd user target, apply upstart
+        # overrides. This provides a step-by-step migration to systemd unit
+        # counterparts.
+        if [ "${1#*.target}" != "$1" ]; then
+            export XDG_CONFIG_DIRS="/usr/share/upstart/systemd-session:$XDG_CONFIG_DIRS"
+        fi
+
         UPSTART=1
     fi
 done < /etc/upstart-xsessions

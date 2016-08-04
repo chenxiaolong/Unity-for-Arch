@@ -5,9 +5,9 @@
 # vercheck-launchpad: name=upstart
 
 pkgname=upstart-user
-_ubuntu_rel=0ubuntu26
+_ubuntu_rel=0ubuntu28
 pkgver=1.13.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Event-based user sessions service management daemon"
 arch=(i686 x86_64)
 url="http://upstart.ubuntu.com/"
@@ -21,8 +21,8 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/upstart_${pkgver}.
 		upstart-xsessions
         dbus.conf)
 sha512sums=('07a3db5547996772bd6fe0ecb323214698634490eec36b7753a6d0a3ee07caa456696d0fbd9c031d61875dd4b27c9f2bbac37c7511acc54b7bb0146662e35520'
-            'd6bfb694f2d755cd41bfd70ca78c6b442fd457ee1a4ef55929dbcae69eb1c13563faaa76b065238d537bf2f4e0b01c3a34b2c33788a1c9e06e3f93ea30a38c44'
-            '7894335605e1960258ebf2791e1cd37ce9932ed3fbef0ce923454eed69792d7c1a013e22463c99654f4b62ca447a956abd2e01901cbc0f2dcedb370dfe13c9e6'
+            '215d0cde1c3baf1c82c988ceeb488309b76867d713d45805d996932bdcb49ad1d8f7f32d1e5bad1acbd7f0893fb88204c247c02103a360a5809ddca63836f6fb'
+            '1dd7c0ff9ded639e529e5ddaf0155ef75e49b8233f72bf2d325bf47a499940d3617e3e7f33cb3e7a02c978bbf058f1c0780a835fe37ba21a5928c23a0a29546c'
             '090f53ee2af576745d16b3a1372aefda9ad3c7682f7bd963718076110e54c767e6e9d009d66bc49984e9ffa7be510170dd780ef8e25ba7ccfde2362aa06ecd8b'
             '7e6d1e78975b3b5b368732a19bc9d67520055192efc54951fa8dc1567180a365ae57542272f85acaf59489172c7c7131dd6a73f58825b6f0abc0893c2cd91c12'
             '50efd5c917ec6bfaff8af57620518c31f015678efb738bb20bfe0b8dc0c10670f59d0987b858ed152c4c453f7ca284deaee8c69db74ca6fc02132c5ca23da876')
@@ -97,4 +97,9 @@ package() {
     install -dm755 "${pkgdir}"/usr/share/bash-completion/completions/
     install -m644 contrib/bash_completion/upstart \
 		"${pkgdir}"/usr/share/bash-completion/completions/
+
+    # systemd user session
+    install -dm755 "${pkgdir}"/usr/share/upstart/systemd-session/upstart/
+    install -m644 debian/systemd-graphical-session.conf \
+        "${pkgdir}"/usr/share/upstart/systemd-session/upstart/
 }
