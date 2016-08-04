@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=unity-lens-applications
 _actual_ver=7.1.0
-_extra_ver=+16.04.20160701
+_extra_ver=+16.10.20160602
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -21,7 +21,7 @@ depends=(dconf gnome-menus libcolumbus libgee libunity libzeitgeist
 makedepends=(vala intltool)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('d6adf0bcc161d7d3b362faf507d9b4215b48d42421dfbf86b768e472481061e8a99ff43d85425433aedb97f7dfe8316b37a23ea4166fcd533c9b605bdc97fc6b')
+sha512sums=('8c79538a42ac9b756d127f0ad593bddcf77d244fe2290fe47484e6f948b3b0709b31aac630ebfc0a54c2806988693c6f141c7761494cb5d2d78e5a989306ca07')
 
 build() {
     aclocal --install --force
