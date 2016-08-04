@@ -10,12 +10,12 @@ pkgname=nux
 _actual_ver=4.0.8
 _extra_ver=+16.10.20160714
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=(i686 x86_64)
 url="https://launchpad.net/nux"
 license=(LGPL)
-depends=(gdk-pixbuf2 glew pango mesa libsigc++ libxcomposite libxdamage
+depends=(gdk-pixbuf2 glew-unity pango mesa libsigc++ libxcomposite libxdamage
          libxxf86vm geis ibus pciutils)
 makedepends=(boost glproto dri2proto doxygen graphviz)
 
@@ -24,13 +24,16 @@ options=(!emptydirs)
 
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001_autoconf.patch
+        0001-Use-glew-unity.patch
         50_check_unity_support)
 sha512sums=('24b14e8591dcef9ca3271b7440e67e6a8e48035a75f05e36544e7f4d4086ed9c38d47a0d3265ab8b5a860daccc2a9f3865edc26e91fc70a36a7bcb0c1aeacecd'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
+            'c58c0e310915961b5f3b320bb6a2f060dd5531adfae1509e3697712b6aa2880008bdb76266bba32fc62983108ce58b695d05cea72feeffd5925bd3e763645cea'
             '1e82b11357f9db45fa6fff002cef11acaf53a8381e2bc28b84e9e0300502c0b1922d9273b44d4cfbbd51d004a9eb1eb2e780db7a39e2d9153c9c4efafb9314a9')
 
 prepare() {
     patch -p1 -i 0001_autoconf.patch
+    patch -p1 -i 0001-Use-glew-unity.patch
 }
 
 build() {

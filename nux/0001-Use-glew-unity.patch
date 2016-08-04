@@ -1,0 +1,66 @@
+From 97d3dc777fd68beaa53bad92391c231bcffc28a8 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Wed, 3 Aug 2016 23:14:07 -0400
+Subject: [PATCH] Use glew-unity
+
+---
+ NuxGraphics/FreetypeFont.cpp | 2 +-
+ NuxGraphics/GLResource.h     | 8 ++++----
+ configure.ac                 | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/NuxGraphics/FreetypeFont.cpp b/NuxGraphics/FreetypeFont.cpp
+index 5f1721b..e9af785 100644
+--- a/NuxGraphics/FreetypeFont.cpp
++++ b/NuxGraphics/FreetypeFont.cpp
+@@ -27,7 +27,7 @@
+ //#include "OpenGL/GLsdk/GL/gl.h"
+ //#include "OpenGL/GLsdk/GL/glprocs.h"
+ //#include <GL/glu.h>
+-#include <GL/glew.h>
++#include <GL/glew-unity.h>
+ #include "GfxServer.h"
+ #include "OpenGLEngine/GLCheck.h"
+ #include "OpenGLEngine/OpenGLEngine.h"
+diff --git a/NuxGraphics/GLResource.h b/NuxGraphics/GLResource.h
+index fe749a0..be0d32a 100644
+--- a/NuxGraphics/GLResource.h
++++ b/NuxGraphics/GLResource.h
+@@ -72,8 +72,8 @@ namespace nux
+ #define NUX_ENABLE_CG_SHADERS 0
+ 
+ #if defined(NUX_OS_WINDOWS)
+-  #include "GL/glew.h"
+-  #include "GL/wglew.h"
++  #include "GL/glew-unity.h"
++  #include "GL/wglew-unity.h"
+ 
+   GLEWContext *glewGetContext();
+   WGLEWContext *wglewGetContext();
+@@ -96,8 +96,8 @@ namespace nux
+     #ifndef GLEW_MX
+       #define GLEW_MX
+     #endif
+-    #include "GL/glew.h"
+-    #include "GL/glxew.h"
++    #include "GL/glew-unity.h"
++    #include "GL/glxew-unity.h"
+ 
+     GLEWContext *glewGetContext();
+     GLXEWContext *glxewGetContext();
+diff --git a/configure.ac b/configure.ac
+index 75c200e..e81a346 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -115,7 +115,7 @@ AC_CHECK_FUNCS([memset munmap strcasecmp strdup])
+ PKG_PROG_PKG_CONFIG
+ 
+ dnl ===========================================================================
+-GL_PKGS="gl glu glew glewmx xext x11"
++GL_PKGS="gl glu glew-unity glewmx-unity xext x11"
+ MAINTAINER_CFLAGS=""
+ 
+ # X11 build
+-- 
+2.9.2
+
