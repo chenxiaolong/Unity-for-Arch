@@ -7,7 +7,7 @@
 _name=gsettings-ubuntu-touch-schemas
 pkgname=gsettings-ubuntu-schemas
 _actual_ver=0.0.7
-_extra_ver=+16.10.20160701
+_extra_ver=+16.10.20160730
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="GSettings desktop-wide schemas for Ubuntu"
@@ -21,7 +21,7 @@ optdepends=('accountsservice: For accountsservice-related schemas')
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${_name}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         50-com.ubuntu.AccountsService.rules)
-sha512sums=('e5fa9caa174015c1f647db16577f8fd1f6f42f5b55a549489a37e6175287ad11e539ef1c3f6c330c07c52886cb3f918bc3bff4fc85d56089bf308d87f7bd5bc9'
+sha512sums=('623dacb22241722fd395388bab93f3a379d8a9fbad4fdece20298cd698f90ebe80d2bd3e67581789d6aee10ab1d07cfb2b5b50307fdb6bdae4ebed4d05a7e933'
             'f00605ff9a55c5d9c75146d28e2e8296a2e1468a504950c127668440bbe0758026dd1112ce5a91a7b342fb53f6c64211d5b55188642821b1b38dbfc862f248c0')
 
 build() {
