@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
-_extra_ver=+15.04.20150118
+_extra_ver=+16.10.20160805
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=2
 pkgdesc="Unity GTK+ Module"
 arch=(i686 x86_64)
@@ -20,10 +20,10 @@ provides=(appmenu-gtk2 appmenu-gtk3)
 replaces=(appmenu-gtk2 appmenu-gtk3)
 conflicts=(appmenu-gtk2 appmenu-gtk3)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-gtk-module_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('a78582f94736184b9f19cbcc795265e38101fb2eeeb0c9089811886de87607c5ac4615c6b46b6dc65e6ede4c8c9c8caca6765ab273c11b99860c01c9b2683833')
+sha512sums=('ca90aedb76d5f8cfd56cf501e8e885232e37ad623532045c7bc22b129a8ee04f8b220ed70ae5d332f806bb6bcd76a5c1644c8cf7aa1fdb566c874957aec17fd3')
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     autoreconf -vfi
 
@@ -43,7 +43,7 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
 
     pushd build-gtk2
     make DESTDIR="${pkgdir}/" install
