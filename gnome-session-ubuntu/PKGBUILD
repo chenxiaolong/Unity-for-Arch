@@ -3,31 +3,33 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.22
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-session-ubuntu
 _use_ppa=false
 #_ppa_rel=2ubuntu1~xenial1
-_ubuntu_rel=1ubuntu1
-pkgver=3.20.2
+_ubuntu_rel=1ubuntu7
+_ubuntu_ver=3.20.2
+pkgver=3.22.0+3+gab2f4c8
 pkgrel=1
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
          json-glib libgl libsm libxtst systemd polkit-gnome)
-makedepends=(intltool mesa gtk-doc xtrans)
+makedepends=(intltool mesa gtk-doc xtrans git gnome-common python)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session)
 options=(!emptydirs)
 url="http://www.gnome.org"
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+_commit=ab2f4c857763ca2cb610d381c327a1884d20b055
+source=("git://git.gnome.org/gnome-session#commit=${_commit}"
         timeout.patch
-        platformtheme.patch
+        50_ubuntu_sessions.patch
         polkit-gnome-authentication-agent-1-unity.desktop)
 
 if [[ "${_use_ppa}" == "true" ]]; then
@@ -36,40 +38,51 @@ else
     source+=("https://launchpad.net/ubuntu/+archive/primary/+files/gnome-session_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('0973c9763195a79038d99139f56eff8d7ad1fccc4c4e41a6439b5c65c615059a21446545af70f4ed83ec6925fd61a7664e70eec844dfe5e2a1001dffdbbea13a'
+sha512sums=('SKIP'
             '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
-            '6aabb1dd679c3e0cdbc109651fd600b6c50a6ec8a0e445edd37e09163e5a851596aa59ab872f3c61baeeff7b8cc703dbe7450af3450617b8ffd288d4c5497843'
+            '0ddbeff2f9aafc06257f8fbad77cee7d22c73daaa63fa1d7e061a10ed7533bc5fe3306979d949e27d0e7bce9450ee6269e7bd7920e4233944dff78884e423429'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
-            'c5d7b346dea61c35504413fa8c10fbb0cca7cfe3f2a0bac4fd73cb1ec9a0abbc116f21e9abcf4261ac0c26c7f935d2a96f3a00878c4f03b1a4aa01c41f41ac3b')
+            '2a9e4265c659d8806f4c743984abd304bcf4fafefbcd9d1f6d8487e2c9b682b0dff943b17e5f2a97376971b97ec66f8291fa8ab752e0419bb54032177c3812fb')
+
+pkgver() {
+    cd "${pkgname%-*}"
+    git describe --tags | sed 's/-/+/g'
+}
 
 prepare() {
-    cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}"
 
     # Increase timeout, for slow machines
     patch -p1 -i ../timeout.patch
 
-    # FS#49977
-    patch -Np1 -i ../platformtheme.patch
-
     sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
-    # If you want this, install gnome-session-properties from the AUR
-    #sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
-    #sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
+    # Already in 3.22
+    sed -i '/allow_overriding_qt_platformtheme.patch/d' ../debian/patches/series
+    sed -i '/dont_override_IM_variables.patch/d' ../debian/patches/series
 
-    # Already applied in 3.20.1
-    sed -i '/0001-main-fix-starting-gnome-session-via-startx.patch/d' ../debian/patches/series
+    # If you want this, install gnome-session-properties from the AUR
+    sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
+    sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
+    sed -i '/51_remove_session_saving_from_gui.patch/d' ../debian/patches/series
 
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
-        patch -p1 -i "../debian/patches/${i}"
+        case "${i}" in
+        50_ubuntu_sessions.patch)
+            patch -p1 -i "../${i}"
+            ;;
+        *)
+            patch -p1 -i "../debian/patches/${i}"
+            ;;
+        esac
     done
+
+    NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd "${pkgname%-*}-${pkgver}"
-
-    autoreconf -vfi
+    cd "${pkgname%-*}"
 
     ./configure \
         --prefix=/usr \
@@ -84,7 +97,7 @@ build() {
 }
 
 package() {
-    cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}"
     make DESTDIR="${pkgdir}" install
 
     # polkit
