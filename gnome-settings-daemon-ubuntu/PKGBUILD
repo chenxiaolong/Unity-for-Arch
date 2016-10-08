@@ -5,16 +5,16 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.22
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-settings-daemon-ubuntu
-_use_ppa=true
-_ppa_rel=0ubuntu1~xenial1
-_ppa_ver=3.20.1
-#_ubuntu_rel=0ubuntu3
-#_ubuntu_ver=3.14.2
-pkgver=3.20.1+8+g40bf4fd
+_use_ppa=false
+#_ppa_rel=0ubuntu1~xenial1
+#_ppa_ver=3.20.1
+_ubuntu_rel=2ubuntu1
+_ubuntu_ver=3.20.1
+pkgver=3.22.0+2+g84c2c56
 pkgrel=1
 pkgdesc="The GNOME Settings daemon with Ubuntu's patches"
 arch=(i686 x86_64)
@@ -22,13 +22,16 @@ url="http://www.gnome.org"
 license=(GPL)
 depends=(dconf gnome-desktop gsettings-desktop-schemas-ubuntu libcanberra-pulse
          libnotify libsystemd libwacom pulseaudio pulseaudio-alsa upower
-         librsvg libgweather geocode-glib geoclue2 nss libgudev)
+         librsvg libgweather geocode-glib geoclue2 nss libgudev
+         gtk3-print-backends)
 makedepends=(intltool xf86-input-wacom libxslt docbook-xsl python git gnome-common)
 groups=(gnome unity)
 provides=("gnome-settings-daemon=${pkgver}")
 conflicts=(gnome-settings-daemon)
 options=(!emptydirs)
-source=('git://git.gnome.org/gnome-settings-daemon#commit=40bf4fdce0001c662094f47e8edc1b0855ec9632')
+_commit=84c2c56b79e5920c9f831d550e65ab323569f563  # master
+source=("git://git.gnome.org/gnome-settings-daemon#commit=${_commit}"
+        "git://git.gnome.org/libgnome-volume-control")
 
 if [[ "${_use_ppa}" == "true" ]]; then
     source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gnome-settings-daemon/gnome-settings-daemon_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
@@ -37,15 +40,20 @@ else
 fi
 
 sha512sums=('SKIP'
-            'e0a75c2bb655a84613008a6f7fbe3d7e33b6ab547b11dbd81e222ea47586134b1578fc92e9148716c466863a83d251a82278d24512bc89564a8c8e414aa7b1c0')
+            'SKIP'
+            '555b5864cfa120537207c3b15deebd63580ab58c1b99c13a2d021c2d587e86659ed730986231e4c67f1bed9fde5ad531680b01cfdcc4565998fd955b351b5255')
 
 pkgver() {
     cd "${pkgname%-*}"
-    git describe --long | sed -e 's/-/+/g' -e 's/^GNOME_SETTINGS_DAEMON_//' -e 's/_/./g'
+    git describe --tags | sed 's/^GNOME_SETTINGS_DAEMON_//;s/_/./g;s/-/+/g'
 }
 
 prepare() {
     cd "${pkgname%-*}"
+
+    git submodule init
+    git config --local submodule."panels/media-keys/gvc".url "${srcdir}/libgnome-volume-control"
+    git submodule update
 
     # Apply Ubuntu's patches
     patch -p1 -i ../debian/patches/64_restore_terminal_keyboard_shortcut_schema.patch
