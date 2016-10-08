@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=xenial
+# vercheck-ubuntu: name=${pkgbase}, repo=yakkety
 # vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libindicate
