@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-archlinux: name=${pkgname}, repo=community, arch=x86_64
 
 pkgname=gsettings-qt
@@ -16,7 +16,6 @@ url="https://launchpad.net/gsettings-qt"
 license=(LGPL)
 groups=(unity)
 depends=(qt5-base qt5-declarative)
-makedepends=(qtchooser)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('20b3532b351031c56bc8335430dabc882621713ece0844b78308458a084ecf37a756f01beb10809630e4b34e2261bde08b2c187d8d5e5a92ce0cbfa7a91ac680')
 
