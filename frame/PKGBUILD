@@ -2,14 +2,14 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=frame
 _actual_ver=2.5.0
-_extra_ver=daily13.06.05
-pkgver=${_actual_ver}.${_extra_ver}
-pkgrel=1
+_extra_ver=daily13.06.05\+16.10.20160809
+pkgver=${_actual_ver}.${_extra_ver/\+/.}
+pkgrel=2
 epoch=1
 pkgdesc="Touch Frame Library"
 arch=(i686 x86_64)
@@ -20,16 +20,16 @@ makedepends=(asciidoc xorg-server-devel)
 groups=(unity)
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/frame_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('c8b2a1df86c9ccc6bd17c97a04d94827994fc15737ab933081d73636909148c5f8f1f47a6d4fe3f99ae048261246bb16b2ecdb2e079090e5e68fc90ab1eec98c')
+sha512sums=('4f5d5db2760d9a625d98909d214fdeadddf8245b471010f44195be6f46abe3e27d9fec0eefd1d2087675fa3c24ff8a808f4e7841e40cab767bd27a8a5dea64c2')
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     autoreconf -vfi
     ./configure --prefix=/usr --disable-static
     make
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     make DESTDIR="${pkgdir}/" install
 }
