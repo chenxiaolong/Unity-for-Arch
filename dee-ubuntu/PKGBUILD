@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=dee, repo=xenial
+# vercheck-ubuntu: name=dee, repo=yakkety
 # vercheck-launchpad: name=dee
 
 pkgname=dee-ubuntu
@@ -19,8 +19,16 @@ depends=(dbus-glib glib2 icu python python-gobject python2 python2-gobject)
 makedepends=(gnome-common gobject-introspection gtk-doc vala)
 provides=("dee=${pkgver}")
 conflicts=(dee)
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('c39980c413934f25c1a754546905cdbb84e0e322aa293d2f9c6b1f2a402bddfa895d576e97e09478c1162323f14c2f639e11d58f97cbf4c0c1220a7f88d6e183')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        0001-Fix-misleading-indentation.patch)
+sha512sums=('c39980c413934f25c1a754546905cdbb84e0e322aa293d2f9c6b1f2a402bddfa895d576e97e09478c1162323f14c2f639e11d58f97cbf4c0c1220a7f88d6e183'
+            '7704bfc23acb0df8ab9452ec08ccbc8ba3649df774039a55571481dbc6015778c227625fbfe592a3f73136c52acd07a287b61427230cac2f2d5c945e8cd2d40a')
+
+prepare() {
+    cd "dee-${_actual_ver}${_extra_ver}"
+
+    patch -p1 -i ../0001-Fix-misleading-indentation.patch
+}
 
 build() {
     cd "dee-${_actual_ver}${_extra_ver}"

@@ -1,0 +1,27 @@
+From 75760c9beb2a464d5e58ef0cc0c19a02b882878f Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Sat, 8 Oct 2016 17:09:48 -0400
+Subject: [PATCH] Fix misleading indentation
+
+I'm not putting brackets around these lines in an effort to keep the
+upstream behavior (regardless if it's a bug).
+---
+ src/dee-serializable-model.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/dee-serializable-model.c b/src/dee-serializable-model.c
+index 6714201..3118d7a 100644
+--- a/src/dee-serializable-model.c
++++ b/src/dee-serializable-model.c
+@@ -1328,7 +1328,7 @@ dee_serializable_model_get_position (DeeModel     *self,
+   _iter = dee_model_get_first_iter (self);
+   while (!dee_model_is_last (self, iter) && iter != _iter)
+     _iter = dee_model_next (self, _iter);
+-    pos++;
++  pos++;
+ 
+   if (iter == _iter)
+     return pos;
+-- 
+2.10.0
+
