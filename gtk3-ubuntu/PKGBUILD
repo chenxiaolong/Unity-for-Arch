@@ -4,31 +4,34 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=gtk+3.0, repo=xenial
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
-# vercheck-gnome: name=gtk+, majorver=3.20
+# vercheck-gnome: name=gtk+, majorver=3.22
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
 
 _use_ppa=false
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=1ubuntu1
-pkgver=3.20.6
-pkgrel=2
+_ubuntu_rel=0ubuntu2
+_ubuntu_ver=3.20.8
+pkgver=3.22.1
+pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform toolkit"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
 install=gtk3.install
 depends=(atk cairo libcups libxcursor libxinerama libxrandr libxi libepoxy
-         gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info colord
-         at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib rest
+         gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info
+         at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib
          librsvg wayland-protocols desktop-file-utils mesa
          gtk-update-icon-cache)
-makedepends=(gobject-introspection libcanberra gtk-doc)
-optdepends=('libcanberra: gtk3-widget-factory demo')
+makedepends=(gobject-introspection libcanberra gtk-doc git colord rest libcups)
+optdepends=('libcanberra: gtk3-widget-factory demo'
+            'gtk3-print-backends: Printing')
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
+_commit=ae7a1e0d08a19184b659ca38623431b210d0f84a  # tags/3.22.1^0
+source=("git://git.gnome.org/gtk+#commit=${_commit}"
         settings.ini
         gtk-query-immodules-3.0.hook)
 
@@ -38,13 +41,18 @@ else
   source+=("http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/pool/main/g/gtk+3.0/gtk+3.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 fi
 
-sha512sums=('597d25ec00f83c6ac77784f303458fad03d8ad017a53ee59e067fda61fa79fe6f34e46391f45844df7c4bbb2c8fa032b32f6d1c8f2f324c99681069f4d6d9be4'
+sha512sums=('SKIP'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
             'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
-            'f178621894f58b33e06c392f163dadc9c08a8a0f6559009101b854187e7133032d5ee96ed64363fe19744a37d182a628051d8c67a884f44581e9d30310792b22')
+            'dd95a41080c7b6a31c4f69a09e7ea509ee17454f214a77a505d9b730490ac4e7a69d53ee967dcd8b087d3f99b12bf168b505d6416b4d3dba23ad5c4fe0c4d829')
+
+pkgver() {
+    cd gtk+
+    git describe --tags | sed 's/-/+/g'
+}
 
 prepare() {
-    cd "gtk+-${pkgver}"
+    cd gtk+
 
     local patches=(
         016_no_offscreen_widgets_grabbing.patch
@@ -52,18 +60,23 @@ prepare() {
         060_ignore-random-icons.patch
         073_treeview_almost_fixed.patch
         074_eventbox_scroll_mask.patch
+        no-accessibility-dump.patch
+        #wayland-add-extended-state-for-tiled.patch
+        #Don-t-apply-GDK_HINT_RESIZE_INC-to-GDK_WINDOW_STATE_.patch
         bzg_gtkcellrenderer_grabbing_modifier.patch
         ubuntu_gtk_custom_menu_items.patch
         print-dialog-show-options-of-remote-dnssd-printers.patch
         uimanager-guard-against-nested-node-updates.patch
         x-canonical-accel.patch
         message-dialog-restore-traditional-look-on-unity.patch
-        restore_filechooser_typeaheadfind
+        #restore_filechooser_typeaheadfind
         0001-calendar-always-emit-day-selected-once.patch
         0001-gtkwindow-set-transparent-background-color.patch
         ubuntu_fileselector_behaviour.patch
         unity-border-radius.patch
         unity-headerbar-maximized-mode.patch
+        #0001-Improve-external-drives-detection.patch
+        #0001-Update-the-GDK-Mir-backend-to-fix-a-few-problems.patch
     )
 
     for i in "${patches[@]}"; do
@@ -75,7 +88,7 @@ prepare() {
 }
 
 build() {
-    cd "gtk+-${pkgver}"
+    cd gtk+
 
     CXX=/bin/false ./configure \
         --prefix=/usr \
@@ -84,7 +97,8 @@ build() {
         --disable-schemas-compile \
         --enable-x11-backend \
         --enable-broadway-backend \
-        --enable-wayland-backend
+        --enable-wayland-backend \
+        --enable-gtk-doc
 
     #https://bugzilla.gnome.org/show_bug.cgi?id=655517
     sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
@@ -93,7 +107,7 @@ build() {
 }
 
 package() {
-    cd "gtk+-${pkgver}"
+    cd gtk+
     make DESTDIR="${pkgdir}" install
 
     install -Dm644 ../settings.ini \
@@ -102,4 +116,12 @@ package() {
         "${pkgdir}"/usr/share/libalpm/hooks/gtk-query-immodules-3.0.hook
 
     rm "${pkgdir}"/usr/bin/gtk-update-icon-cache
+
+    cd "$pkgdir"
+    for _f in usr/lib/*/*/printbackends/*; do
+        case $_f in
+            *-file.so|*-lpr.so) continue ;;
+            *) rm "${_f}" ;;
+        esac
+    done
 }
