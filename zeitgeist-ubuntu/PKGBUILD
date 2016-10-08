@@ -4,13 +4,13 @@
 # Contributor: György Balló <ballogy@freestart.hu>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-launchpad: name=${pkgname%-*}
 
 pkgname=zeitgeist-ubuntu
 pkgver=0.9.16
-_ubuntu_rel=0ubuntu4
-pkgrel=1
+_ubuntu_rel=0ubuntu5
+pkgrel=2
 pkgdesc="Service logging user activities and events"
 arch=(i686 x86_64)
 url="http://zeitgeist-project.com/"
@@ -23,7 +23,7 @@ replaces=(zeitgeist-datahub)
 source=("https://launchpad.net/zeitgeist/${pkgver%.*}/${pkgver}/+download/zeitgeist-${pkgver}.tar.xz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/zeitgeist_${pkgver}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('eb28215c937b71c8cec12f55236db4281ad529b2854ecb3c093477d45cd8348c6ea764e2cf00a99d41645b27b685a5325f0631b318409735b578a5871087b0f1'
-            '2067a3497beec370f515a4458f2144bd6aae1871a885005fe32a15c167926dd28040f8b67d6779113b31054f19d56c34e55006d7d8280d625bea238acebf7ca7')
+            '52f4d12bd7e8a0fd3e59c1d7fca8257838082cbb5a8cdc2c929224adb513d405de58ae32c651f0a464c6853a5dfa167780999d736be3cab1508e2b747444d407')
 
 prepare() {
     cd "zeitgeist-${pkgver}"
