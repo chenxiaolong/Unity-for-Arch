@@ -4,8 +4,8 @@
 # vercheck-ubuntu: name=${pkgname}, repo=yakkety
 
 pkgname=unity-api
-_actual_ver=7.116
-_extra_ver=+16.10.20160730
+_actual_ver=7.119
+_extra_ver=+16.10.20160909
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="API for Unity shell integration"
@@ -16,7 +16,7 @@ groups=(unity)
 depends=(glib2)
 makedepends=(cmake doxygen graphviz python qt5-base)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('9970a0b2c8521223bb2a200865500c1798eebff848c29b791ac4d2bd1cedae2995d5857134bdbf9bc73301b382edb0c0017f6e53c7071f1e6025542e9c97967f')
+sha512sums=('110d1681f2a88fdf126424d87597ae55f4792fa6fa94fee0be61a0904ca5d365d30850f6cba25b37500d5475c572edca4f09007482e0275b8f63ca2891cd4483')
 
 build() {
     mkdir -p build
