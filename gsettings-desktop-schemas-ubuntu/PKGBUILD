@@ -6,30 +6,36 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgname%-*}, majorver=3.20
+# vercheck-gnome: name=${pkgname%-*}, majorver=3.22
 
 pkgname=gsettings-desktop-schemas-ubuntu
 _ubuntu_ver=3.20.0
 _ubuntu_rel=3ubuntu1
-pkgver=3.21.2
-pkgrel=2
+pkgver=3.22.0+1+g6f52ab5
+pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
 arch=(any)
 url="https://www.gnome.org/"
 license=(GPL)
 depends=(glib2)
-makedepends=(intltool gobject-introspection)
+makedepends=(intltool gobject-introspection git gnome-common)
 provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname%-*}/${pkgver%.*}/${pkgname%-*}-${pkgver}.tar.xz"
+_commit=6f52ab56bcf02c4a7315e433e30f45f106f31c3f
+source=("git://git.gnome.org/gsettings-desktop-schemas#commit=${_commit}"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         0001-Revert-schemas-Scroll-method-key-changes.patch)
-sha512sums=('d7d27eb9d4d1d113975e2978fa41375d49c42ea3b72708c714822e406443e36ec86abb223dca570b6d7bfef0dbe31db82fe33a01c058a4744c40687743cf34e7'
+sha512sums=('SKIP'
             '281dce5fa3484f8711235443c83f509cde13a89f3bc88889100d9479711d0b79fcc0a95b05fdb2b422e765adbe1f7b7f1e9154945a5f32d66ce6ecf399da0ce5'
             '942ea2fa67aa5d5a08bcf7e1fafce4cd4dc49eb536746a948546b46a08578d8422056b32d57d8e552cc2daa42b3493a0cc9a007fb0a36f6d32e85b1443bc94b5')
 
+pkgver() {
+    cd "${pkgname%-*}"
+    git describe --tags | sed 's/-/+/g'
+}
+
 prepare() {
-    cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}"
 
     patch -p1 -i ../0001-Revert-schemas-Scroll-method-key-changes.patch
 
@@ -41,10 +47,12 @@ prepare() {
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
     done
+
+    NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}"
 
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
         --disable-schemas-compile
@@ -52,7 +60,7 @@ build() {
 }
 
 package() {
-    cd "${pkgname%-*}-${pkgver}"
+    cd "${pkgname%-*}"
 
     make DESTDIR="${pkgdir}" install
 }
