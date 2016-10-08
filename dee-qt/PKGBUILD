@@ -1,7 +1,7 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 
 pkgname=dee-qt
 _actual_ver=3.3
@@ -14,7 +14,7 @@ url="https://launchpad.net/dee-qt"
 license=(LGPL)
 groups=(unity)
 depends=(dee-ubuntu qt5-base qt5-declarative)
-makedepends=(cmake qtchooser)
+makedepends=(cmake)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/dee-qt_${_actual_ver}${_extra_ver}.orig.tar.gz")
 sha512sums=('a17968ff3775252f12c72a54b442e852668dfbe197c8a19299669adfc79a24913559315086210a2fd1251a203147fb20a26901cc63afc07fa56a01074664a1f2')
 
