@@ -1,14 +1,14 @@
-From 7a06a6ca8d290e5bf9636f9e4863bfdfb8f11fd5 Mon Sep 17 00:00:00 2001
+From 41e1b2613e6c089a8f893cc44650e2bb59586ba4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Wed, 16 Apr 2014 17:06:46 -0400
-Subject: [PATCH 4/5] Remove unavailable DBus method xkeyboard-layouts
+Subject: [PATCH 4/6] Remove unavailable DBus method xkeyboard-layouts
 
 ---
  lib/main.vala | 20 ++------------------
  1 file changed, 2 insertions(+), 18 deletions(-)
 
 diff --git a/lib/main.vala b/lib/main.vala
-index 317e578..fdd0e46 100644
+index d230d16..aa61a22 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
 @@ -299,9 +299,9 @@ public class Indicator.Keyboard.Service : Object {
@@ -47,5 +47,5 @@ index 317e578..fdd0e46 100644
  					LightDM.User? light_user = user_list.get_user_by_name (user.user_name);
  
 -- 
-2.3.3
+2.9.3
 

@@ -1,7 +1,7 @@
-From fb6a03c546716c6df732f5dd02627b5413abe3b7 Mon Sep 17 00:00:00 2001
+From 65db4152bb88101a5ea205bec7e7593e5d24f440 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 12 Apr 2014 14:23:53 -0400
-Subject: [PATCH 3/5] Remove unavailable DBus method activate_input_source
+Subject: [PATCH 3/6] Remove unavailable DBus method activate_input_source
 
 ---
  lib/Makefile.am          |  1 -
@@ -12,7 +12,7 @@ Subject: [PATCH 3/5] Remove unavailable DBus method activate_input_source
  delete mode 100644 lib/keyboard-plugin.vala
 
 diff --git a/lib/Makefile.am b/lib/Makefile.am
-index d0a012d..db74601 100644
+index 4e5a86a..7fdbcb0 100644
 --- a/lib/Makefile.am
 +++ b/lib/Makefile.am
 @@ -12,7 +12,6 @@ indicator_keyboard_service_SOURCES = main.vala            \
@@ -53,7 +53,7 @@ index 5ee8ea2..0000000
 -	public abstract void activate_input_source (uint index) throws IOError;
 -}
 diff --git a/lib/main.vala b/lib/main.vala
-index 7f81d59..317e578 100644
+index eab8d1c..d230d16 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
 @@ -53,7 +53,6 @@ public class Indicator.Keyboard.Service : Object {
@@ -77,7 +77,7 @@ index 7f81d59..317e578 100644
  			                "com.canonical.Unity",
  			                BusNameWatcherFlags.NONE,
  			                handle_unity_name_appeared,
-@@ -801,14 +794,6 @@ public class Indicator.Keyboard.Service : Object {
+@@ -808,14 +801,6 @@ public class Indicator.Keyboard.Service : Object {
  		if (value != null) {
  			((!) active_action).set_state ((!) value);
  			update_indicator_action ();
@@ -92,7 +92,7 @@ index 7f81d59..317e578 100644
  		}
  	}
  
-@@ -1133,20 +1118,6 @@ public class Indicator.Keyboard.Service : Object {
+@@ -1145,20 +1130,6 @@ public class Indicator.Keyboard.Service : Object {
  	}
  
  	[DBus (visible = false)]
@@ -114,10 +114,10 @@ index 7f81d59..317e578 100644
  		try {
  			var session = Bus.get_proxy_sync<UnitySession> (BusType.SESSION, name, "/com/canonical/Unity/Session");
 diff --git a/tests/main.vala b/tests/main.vala
-index dca3b8b..d6d46a3 100644
+index e2782d1..2d9a265 100644
 --- a/tests/main.vala
 +++ b/tests/main.vala
-@@ -133,45 +133,6 @@ public class Tests : Object, Fixture {
+@@ -137,45 +137,6 @@ public class Tests : Object, Fixture {
  		}
  	}
  
@@ -163,7 +163,7 @@ index dca3b8b..d6d46a3 100644
  	public void test_activate_character_map () {
  		var action_group = DBusActionGroup.get ((!) _connection,
  		                                        "com.canonical.indicator.keyboard",
-@@ -632,7 +593,6 @@ public int main (string[] args) {
+@@ -636,7 +597,6 @@ public int main (string[] args) {
  
  	Test.init (ref args);
  
@@ -172,5 +172,5 @@ index dca3b8b..d6d46a3 100644
  	Test.add_data_func ("/indicator-keyboard-service/activate-keyboard-layout-chart", Fixture.create<Tests> (Tests.test_activate_keyboard_layout_chart));
  	Test.add_data_func ("/indicator-keyboard-service/activate-text-entry-settings", Fixture.create<Tests> (Tests.test_activate_text_entry_settings));
 -- 
-2.3.3
+2.9.3
 

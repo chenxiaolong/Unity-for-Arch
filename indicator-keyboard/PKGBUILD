@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 
 pkgname=indicator-keyboard
 _actual_ver=0.0.0
-_extra_ver=+16.04.20151125
+_extra_ver=+16.10.20160808
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=5
+pkgrel=1
 pkgdesc="Indicator for switching keyboard layouts and input methods"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-keyboard"
@@ -22,25 +22,28 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard
         0002-Remove-code-depending-on-accountsservices-patch.patch
         0003-Remove-unavailable-DBus-method-activate_input_source.patch
         0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
-        0005-Spawn-ibus-daemon-at-startup.patch)
-sha512sums=('d79e04be1b9b6e82b3e9d3bf52ee3de58577292a917aeada97b7414938b1df165c7e3fcc8efd59d8f5bf7e1a68cf9488bd7245fe4d62d61a8abc9fd599a90fc2'
-            '9ad6fa42272cfd0c21a756411adf14f475e773e5b51faf9fad866e2e158da16ae642d9519f617dd2fc8f6be92e6c7cf0321679615e3ade4fb3c90263338bb3f9'
-            'df5ab3b8749dc152bc7d9a185be7421901598fdfaae660a8e13fe8f4a6e09d7141d94a1c5ed8b53347c45060607131fa33a5f04a54461b3d7b2656a1022d9030'
-            'f334727da7dc3149213e04ef7a9aed80c48d8de22dff4cc6ec6bf7f7a6d9f3473d9cb482b6d97a6ae73e8919723a556e012558b17c0b0a6148c86775427b8d53'
-            '57242ae67d7be747133b9f40c85c629c8c1dacf8cb4f705d2d794ea0c799b18d2d87ccea46ed2e4116c7e6aafe2f590fddcddfd4c42121f12a9683c3c9442626'
-            '308780ed076d9c06a826178a09accb3b36c19b8969dd0475962c4f8c0a45322b6fc23d2eee5a205d6cc4a899eb7e645161c9ef613549d3443c371a2cad17229d')
+        0005-Spawn-ibus-daemon-at-startup.patch
+        0006-Remove-url-dispatcher-dependency.patch)
+sha512sums=('cdfb66b313a0045e9aeba1ce912ea92e5eff7480d38dfb12b16a23b82857beb3662fd55ce23ba595a91385c0d14199bf1d7eab010773e330e381f9b30e7a67c1'
+            'e1f60a43b818dc0e57e6aa22f29cfb125c3d420b4c910ed2a5a638bec1fe5456738214a864b447743d4d2f531a43da4265c1d77b95c50ec1f04c9537f883f7ec'
+            '13c7de7533438c624bfccfcce2b23fea3d3c8f371e47eaa269f653c72dc931612cab2b7e9386eb5db4e08ccc7a9f5a7853c230c45c70cd63ad34b2ab86280909'
+            'c89f43cded3e9dbdac62843586bab9a120b858dc36e5b74b5d3d18c33f39fef9706a6d282ca4ede1bdb1789d5f63b8186376324781571b0f4162504b4c712ce2'
+            'b11b1675ff662f4c925800075e9869d7276bd4e345f2681a36b798b9520adb6844c12d8c7cb64dc8695224fe44722ba175b82c318ceb68455cb44f7ccdcbc515'
+            'f9aaf40e00057db27149256c36c5eef89506214d4d2fb91f4526d9371263583a3da9a6838ec057c94aad16e4756a50be0bd5a705d89c7cc9dff8612ada018e13'
+            '07ab8692aebc4aa7b18d27cbc486955cfb061f07911197bcce3a262014efc45f3cd6e490a84eb09809eabe3976062d29fa8ed5d318f8775f27ec4bd891bf9602')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     patch -p1 -i ../0001-vala-build-fix.patch
     patch -p1 -i ../0002-Remove-code-depending-on-accountsservices-patch.patch
     patch -p1 -i ../0003-Remove-unavailable-DBus-method-activate_input_source.patch
     patch -p1 -i ../0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
     patch -p1 -i ../0005-Spawn-ibus-daemon-at-startup.patch
+    patch -p1 -i ../0006-Remove-url-dispatcher-dependency.patch
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     intltoolize -f
     autoreconf -vfi
     ./configure --prefix=/usr --libexecdir=/usr/lib
@@ -48,6 +51,6 @@ build() {
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     make DESTDIR="${pkgdir}/" install
 }

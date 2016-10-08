@@ -1,0 +1,95 @@
+From 82b179d31b28e19f31923047757cda3747e37b89 Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Mon, 22 Aug 2016 13:48:12 -0400
+Subject: [PATCH 6/6] Remove url-dispatcher dependency
+
+---
+ configure.ac             |  1 -
+ deps/url-dispatcher.vapi |  9 ---------
+ lib/Makefile.am          | 11 ++++-------
+ lib/main.vala            |  1 -
+ 4 files changed, 4 insertions(+), 18 deletions(-)
+ delete mode 100644 deps/url-dispatcher.vapi
+
+diff --git a/configure.ac b/configure.ac
+index 0628539..a64f3c3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,7 +46,6 @@ PKG_CHECK_MODULES([IBUS], [ibus-1.0])
+ PKG_CHECK_MODULES([FCITX_GCLIENT], [fcitx-gclient])
+ PKG_CHECK_MODULES([ACCOUNTSSERVICE], [accountsservice])
+ PKG_CHECK_MODULES([LIGHTDM], [liblightdm-gobject-1])
+-PKG_CHECK_MODULES([URLDISPATCHER], [url-dispatcher-1 >= 1])
+ 
+ m4_include([m4/gcov.m4])
+ AC_TDD_GCOV
+diff --git a/deps/url-dispatcher.vapi b/deps/url-dispatcher.vapi
+deleted file mode 100644
+index 88f7740..0000000
+--- a/deps/url-dispatcher.vapi
++++ /dev/null
+@@ -1,9 +0,0 @@
+-[CCode (cprefix="", lower_case_cprefix="", cheader_filename="liburl-dispatcher-1/url-dispatcher.h")]
+-
+-namespace UrlDispatch
+-{
+-  public delegate void DispatchCallback ();
+-
+-  [CCode (cname = "url_dispatch_send")]
+-  public static void send (string url, DispatchCallback? func = null);
+-}
+diff --git a/lib/Makefile.am b/lib/Makefile.am
+index 7fdbcb0..a3bb05d 100644
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -1,7 +1,7 @@
+ pkglibexec_PROGRAMS = indicator-keyboard-service
+ 
+ AM_CFLAGS = -w -DGNOME_DESKTOP_USE_UNSTABLE_API
+-AM_LDFLAGS = -lm -lurl-dispatcher
++AM_LDFLAGS = -lm
+ AM_VALAFLAGS = \
+                --metadatadir $(top_srcdir)/deps \
+                --vapidir $(top_srcdir)/deps
+@@ -27,8 +27,7 @@ indicator_keyboard_service_VALAFLAGS = $(AM_VALAFLAGS)            \
+                                        --pkg ibus-1.0             \
+                                        --pkg Fcitx-1.0            \
+                                        --pkg AccountsService-1.0  \
+-                                       --pkg liblightdm-gobject-1 \
+-                                       --pkg url-dispatcher
++                                       --pkg liblightdm-gobject-1
+ indicator_keyboard_service_CFLAGS = $(AM_CFLAGS)              \
+                                     $(GEE_CFLAGS)             \
+                                     $(PANGOCAIRO_CFLAGS)      \
+@@ -40,8 +39,7 @@ indicator_keyboard_service_CFLAGS = $(AM_CFLAGS)              \
+                                     $(FCITX_GCLIENT_CFLAGS)   \
+                                     $(ACCOUNTSSERVICE_CFLAGS) \
+                                     $(LIGHTDM_CFLAGS)         \
+-                                    $(COVERAGE_CFLAGS)        \
+-                                    $(URLDISPATCHER_CFLAGS)
++                                    $(COVERAGE_CFLAGS)
+ indicator_keyboard_service_LDFLAGS = $(AM_LDFLAGS)           \
+                                      $(GEE_LIBS)             \
+                                      $(PANGOCAIRO_LIBS)      \
+@@ -53,5 +51,4 @@ indicator_keyboard_service_LDFLAGS = $(AM_LDFLAGS)           \
+                                      $(FCITX_GCLIENT_LIBS)   \
+                                      $(ACCOUNTSSERVICE_LIBS) \
+                                      $(LIGHTDM_LIBS)         \
+-                                     $(COVERAGE_LDFLAGS)     \
+-                                     $(URLDISPATCHER_LDFLAGS)
++                                     $(COVERAGE_LDFLAGS)
+diff --git a/lib/main.vala b/lib/main.vala
+index 7f3c0e1..2df5b40 100644
+--- a/lib/main.vala
++++ b/lib/main.vala
+@@ -1086,7 +1086,6 @@ public class Indicator.Keyboard.Service : Object {
+ 	[DBus (visible = false)]
+ 	private void handle_activate_settings (Variant? parameter) {
+ 		if (Environment.get_variable ("MIR_SOCKET") != null) {
+-			UrlDispatch.send ("settings:///system/hw-keyboard-layouts");
+ 			return;
+ 		}
+ 
+-- 
+2.9.3
+

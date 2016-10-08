@@ -1,14 +1,14 @@
-From 4b285746db3e15f4e77215d41ffdf747e77df9db Mon Sep 17 00:00:00 2001
+From 1dadb93567e8607611979c515e8b6152cd36f3f3 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Fri, 11 Apr 2014 15:46:47 -0400
-Subject: [PATCH 2/5] Remove code depending on accountsservices patch
+Subject: [PATCH 2/6] Remove code depending on accountsservices patch
 
 ---
  lib/main.vala | 38 +-------------------------------------
  1 file changed, 1 insertion(+), 37 deletions(-)
 
 diff --git a/lib/main.vala b/lib/main.vala
-index d3e063d..7f81d59 100644
+index fbaf5a1..eab8d1c 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
 @@ -305,25 +305,7 @@ public class Indicator.Keyboard.Service : Object {
@@ -64,5 +64,5 @@ index d3e063d..7f81d59 100644
  					var layouts = user.xkeyboard_layouts;
  					foreach (var layout in layouts) {
 -- 
-2.3.3
+2.9.3
 

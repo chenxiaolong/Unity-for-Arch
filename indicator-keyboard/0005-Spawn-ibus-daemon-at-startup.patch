@@ -1,17 +1,17 @@
-From c788c3974325cc81c5e8de0ba9032b80a588b08b Mon Sep 17 00:00:00 2001
+From 8302afe21f2c953b02d4a028ce0ec7e0d95feec3 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 19:23:08 -0400
-Subject: [PATCH 5/5] Spawn ibus-daemon at startup
+Subject: [PATCH 5/6] Spawn ibus-daemon at startup
 
 ---
  lib/main.vala | 8 ++++++++
  1 file changed, 8 insertions(+)
 
 diff --git a/lib/main.vala b/lib/main.vala
-index fdd0e46..2bcfeae 100644
+index aa61a22..7f3c0e1 100644
 --- a/lib/main.vala
 +++ b/lib/main.vala
-@@ -1171,6 +1171,14 @@ public class Indicator.Keyboard.Service : Object {
+@@ -1183,6 +1183,14 @@ public class Indicator.Keyboard.Service : Object {
  
  	[DBus (visible = false)]
  	public static int main (string[] args) {
@@ -27,5 +27,5 @@ index fdd0e46..2bcfeae 100644
  
  		Posix.signal (Posix.SIGTERM, (code) => {
 -- 
-2.3.3
+2.9.3
 
