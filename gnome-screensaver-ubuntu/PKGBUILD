@@ -3,14 +3,14 @@
 # Contributor: Jan de Groot <jgc@archlinux.org>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=xenial
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgname%-*}, repo=community, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.6
 
 pkgname=gnome-screensaver-ubuntu
 pkgver=3.6.1
-_ubuntu_rel=7ubuntu4
-pkgrel=18
+_ubuntu_rel=7ubuntu5
+pkgrel=19
 pkgdesc="Screensaver designed to integrate well with the GNOME desktop."
 arch=(i686 x86_64)
 license=(GPL)
@@ -34,7 +34,7 @@ source=("http://ftp.gnome.org/pub/GNOME/sources/gnome-screensaver/${pkgver%.*}/g
         recenter.patch
         0001-Update-libsystem-pkgconfig-dependency.patch)
 sha512sums=('daa140c9608859c9291966931deedad50c94dd861916601022cd508f367cdac5db68ea1abb750bbef575d19b8690617900fee9859b880b1466267fd1cbee150f'
-            '1eaadf6f7ef364cc0d3bf523c03d51bbbddd16eba69cb16c9c99850875430e51bb4a224ab6ab63cfe39b39b30cf32677b15f7febc416942ad810d25dc5e1d2dc'
+            'f682871f6958b6521d8e31bdfd8c23411ec105f2630da26f6031b5a1271e90ef4518041b5f56af9d8383b0cf03d01b992becd74fceac3caa416b65dbd9c4d27b'
             '6e6956e24c545b630a8024e9e27a8a54d6cd102ca7c76c46ce90342e90f44dc9bdc6e71384802b18f133529c66f3a2f0fa5ef580058ed22919931301e781a6be'
             '2a1cae465e87dfb731602f8dcf8cfdbdc19374c128c3828950920c01fc81f3bd00a192a6883ac1eb7ca06564f29a1c572ea074e8622fcd56e74ded43c974d4c8'
             'c13d8806ca28b91457cc69d953eb516a642802dbf13dea643778e5e1b6f79d1f9c681138768f46848ed09cf8dc9e61b9aed25d4aa2be22b5730334a5fbeca68f'
