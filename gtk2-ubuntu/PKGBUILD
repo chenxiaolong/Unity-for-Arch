@@ -8,9 +8,9 @@
 # vercheck-gnome: name=gtk+, majorver=2.24
 
 pkgname=gtk2-ubuntu
-_ubuntu_rel=1ubuntu1
+_ubuntu_rel=4ubuntu2
 _ubuntu_ver=2.24.30
-pkgver=2.24.30+95+g876b5f7
+pkgver=2.24.31
 pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit (legacy)"
@@ -26,14 +26,14 @@ optdepends=('gnome-themes-standard: Default widget theme'
 provides=("gtk2=${pkgver}")
 conflicts=(gtk2)
 install=gtk2.install
-_commit=876b5f75faab5d8f3c60c3ec035b2ecd4ac5b67e
+_commit=09c0b9c8a0f3dad599c179829ffb3a2e81f6efde
 source=("git://git.gnome.org/gtk+#commit=${_commit}"
         "https://launchpad.net/ubuntu/+archive/primary/+files/gtk+2.0_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
         gtkrc
         gtk-query-immodules-2.0.hook
         xid-collision-debug.patch)
 sha512sums=('SKIP'
-            'd948b64130e3acc02743b212d7afa96cee0da1f9adb9855989749c33f53e1f5fcc3328e14d83e733699f2f3f9657f79efb01afcea6f06760a1b6eea9c65dbd75'
+            'd6d97558e03dea63b2dfcc4c5a01ab9ceb5b5802b0dcecfd7ac9c52127d4966cc311748066b8f1eb85f489bbb48af7a0316db2074c4c9c40668115eda495320f'
             'b124433dd4b20d1d62f073df87e253ca23b3b51625cce55f29a220a4369eda5108c0de07fdc686f570232322c3ff04f7758383f2be5aeace40f843907aa3696d'
             'be7a807046f27e5796f6069dfd2c88f9b7508e3b9e209d97c1575e0d809b279aacacd0e1247f1f7643fa47eede2d987bf433cd17cea0524526ad31982ae8d90d'
             '89e3223c86731a76b12d39245f1ec4cf8b4860ab1d11d74a10e5deb0db302f20b4bb5d9034da1d8aeb96369dbdeddcdd2f28943270dc501476c694562b960159')
@@ -70,7 +70,7 @@ prepare() {
         backport_search_printer_location.patch
         menubar_toolbar_dragging.patch
         #printing-initialize-auth_info.patch
-        #gdkcairo-Avoid-integer-overflow.patch
+        #099_CVE-2013-7447.patch
     )
 
     for i in "${patches[@]}"; do
