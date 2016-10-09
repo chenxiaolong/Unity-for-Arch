@@ -1,0 +1,162 @@
+# -----------------------------------------------------------------------------
+# NOTE: This package is no longer needed once systemd 232 is released.
+# -----------------------------------------------------------------------------
+
+# Maintainer: Andrew Gunnerson <andrewgunnerson@gmail.com>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
+# vercheck-archlinux: name=${pkgname%-*}, repo=core, arch=x86_64
+
+pkgname=systemd-unity
+pkgver=231
+_ubuntu_rel=9git1
+pkgrel=1
+pkgdesc="system and service manager"
+arch=(i686 x86_64)
+url="http://www.freedesktop.org/wiki/Software/systemd"
+license=(GPL2 LGPL2.1)
+groups=(unity)
+depends=("systemd>=${pkgver}" "systemd<$((pkgver + 1))")
+makedepends=(git)
+source=("git://github.com/systemd/systemd.git#tag=v${pkgver}"
+        "https://launchpad.net/ubuntu/+archive/primary/+files/systemd_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
+sha512sums=('SKIP'
+            '878f16fb5ccfe606aab46a9662852b9ee2673508f87a6294d1ab84e9c134bd2fee052b6a103d93c16cd877b91659e523df617820cd9b4eebbfc109696c45cf4d')
+
+_backports=(
+    # systemctl: suppress errors with "show" for nonexistent units and properties
+    bd5b9f0a12dd9c1947b11534e99c395ddf44caa9
+    # https://github.com/systemd/systemd/pull/3678
+    c92fcc4f4375b0aebc5919311bbf703138b21918
+    # https://github.com/systemd/systemd/pull/3848
+    98d2d46876c08d6f2ae63284ec5a28f90cbbb8ac
+    # https://github.com/systemd/systemd/pull/4098
+    93a0884126146361ca078ec627da2cf766205a1c
+)
+
+prepare() {
+    cd systemd
+
+    if (( "${#_backports[@]}" > 0 )); then
+        git cherry-pick -n "${_backports[@]}"
+    fi
+
+    local patches=(
+        debian/Let-graphical-session-pre.target-be-manually-started.patch
+    )
+
+    for i in "${patches[@]}"; do
+        patch -p1 -i ../debian/patches/"${i}"
+    done
+
+    ./autogen.sh
+}
+
+build() {
+    cd systemd
+
+    local configure_options=(
+        --libexecdir=/usr/lib
+        --localstatedir=/var
+        --sysconfdir=/etc
+
+        --disable-utmp
+        --disable-kmod
+        --disable-xkbcommon
+        --disable-blkid
+        --disable-seccomp
+        --disable-ima
+        --disable-selinux
+        --disable-apparmor
+        --disable-adm-group
+        --disable-wheel-group
+        --disable-xz
+        --disable-zlib
+        --disable-bzip2
+        --disable-lz4
+        --disable-pam
+        --disable-acl
+        --disable-smack
+        --disable-gcrypt
+        --disable-audit
+        --disable-elfutils
+        --disable-libcryptsetup
+        --disable-qrencode
+        --disable-gnutls
+        --disable-microhttpd
+        --disable-libcurl
+        --disable-libidn
+        --disable-libiptc
+        --disable-binfmt
+        --disable-vconsole
+        --disable-quotacheck
+        --disable-tmpfiles
+        --disable-sysusers
+        --disable-firstboot
+        --disable-randomseed
+        --disable-backlight
+        --disable-rfkill
+        --disable-logind
+        --disable-machined
+        --disable-importd
+        --disable-hostnamed
+        --disable-timedated
+        --disable-timesyncd
+        --disable-localed
+        --disable-coredump
+        --disable-polkit
+        --disable-resolved
+        --disable-networkd
+        --disable-efi
+        --disable-gnuefi
+        --disable-tpm
+        --disable-myhostname
+        --disable-hwdb
+        --disable-manpages
+        --disable-hibernate
+        --disable-ldconfig
+
+        --with-support-url='https://github.com/chenxiaolong/Unity-for-Arch'
+    )
+
+    ./configure "${configure_options[@]}"
+
+    make
+}
+
+package() {
+    make -C systemd DESTDIR="${pkgdir:?}" install
+
+    find "${pkgdir:?}/usr/bin/" \
+        -mindepth 1 \
+        ! -name systemctl \
+        -delete
+    find "${pkgdir:?}/usr/lib/" \
+        -maxdepth 1 \
+        -name '*.so*' \
+        -delete
+    find "${pkgdir:?}/usr/lib/systemd/" \
+        -mindepth 1 \
+        -maxdepth 1 \
+        ! -name user \
+        -exec rm -r {} \+
+    find "${pkgdir:?}/usr/lib/systemd/user/" \
+        -mindepth 1 \
+        ! -name graphical-session.target \
+        ! -name graphical-session-pre.target \
+        -delete
+    rm -r \
+        "${pkgdir:?}/etc/" \
+        "${pkgdir:?}/usr/include/" \
+        "${pkgdir:?}/usr/lib/kernel/" \
+        "${pkgdir:?}/usr/lib/modules-load.d/" \
+        "${pkgdir:?}/usr/lib/pkgconfig/" \
+        "${pkgdir:?}/usr/lib/rpm/" \
+        "${pkgdir:?}/usr/lib/sysctl.d/" \
+        "${pkgdir:?}/usr/lib/udev/" \
+        "${pkgdir:?}/usr/share/" \
+        "${pkgdir:?}/var/"
+
+    mv "${pkgdir:?}"/usr/bin/systemctl{,-unity}
+}
