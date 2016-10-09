@@ -1,7 +1,7 @@
-From 3201ad591aa31e7826556bfa3110ebd8352a44b7 Mon Sep 17 00:00:00 2001
+From 1f0b81298629fe94bc7674327b7aa9130f6de89b Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 6/7] Remove xpathselect dependency
+Subject: [PATCH 5/5] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
@@ -15,19 +15,19 @@ Subject: [PATCH 6/7] Remove xpathselect dependency
  delete mode 100644 unity-shared/DebugDBusInterface.h
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 9e25830..1500048 100644
+index f961c7e..62144a0 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -250,7 +250,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
      nux-4.0>=4.0.5
-     sigc++-2.0
+     sigc++-2.0>=2.4.0
      unity-misc>=0.4.0
 -    xpathselect=1.4
      zeitgeist-2.0
  )
  
 diff --git a/plugins/unityshell/src/unityshell.cpp b/plugins/unityshell/src/unityshell.cpp
-index 5070f37..7e5646f 100644
+index ca920df..ff3b476 100644
 --- a/plugins/unityshell/src/unityshell.cpp
 +++ b/plugins/unityshell/src/unityshell.cpp
 @@ -196,7 +196,6 @@ UnityScreen::UnityScreen(CompScreen* screen)
@@ -39,10 +39,10 @@ index 5070f37..7e5646f 100644
    , super_keypressed_(false)
    , newFocusedWindow(nullptr)
 diff --git a/plugins/unityshell/src/unityshell.h b/plugins/unityshell/src/unityshell.h
-index cc714b3..66a648b 100644
+index 43df66e..03a8675 100644
 --- a/plugins/unityshell/src/unityshell.h
 +++ b/plugins/unityshell/src/unityshell.h
-@@ -63,7 +63,6 @@
+@@ -64,7 +64,6 @@
  #include "PanelController.h"
  #include "PanelStyle.h"
  #include "UScreen.h"
@@ -50,16 +50,16 @@ index cc714b3..66a648b 100644
  #include "ScreenIntrospection.h"
  #include "ScreenSaverDBusManager.h"
  #include "SwitcherController.h"
-@@ -352,7 +351,6 @@ private:
+@@ -340,7 +339,6 @@ private:
    lockscreen::DBusManager::Ptr screensaver_dbus_manager_;
    lockscreen::Controller::Ptr lockscreen_controller_;
    ui::EdgeBarrierController::Ptr edge_barriers_;
 -  debug::DebugDBusInterface debugger_;
    std::unique_ptr<BGHash>   bghash_;
-   spread::Filter::Ptr       spread_filter_;
+   spread::Widgets::Ptr      spread_widgets_;
  
 diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
-index 7ad243f..01889a5 100644
+index b0ac7b1..2b61100 100644
 --- a/unity-shared/CMakeLists.txt
 +++ b/unity-shared/CMakeLists.txt
 @@ -23,7 +23,6 @@ set (UNITY_SHARED_SOURCES
@@ -559,5 +559,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.8.2
+2.10.0
 

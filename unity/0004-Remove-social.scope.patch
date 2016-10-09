@@ -1,17 +1,17 @@
-From d7236a057aa4310bbeaeb84c6c2593e01a23e024 Mon Sep 17 00:00:00 2001
+From 5b6d261bff37cafd2c10c015dbdbd042a4a3b827 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:50 -0400
-Subject: [PATCH 5/7] Remove social.scope
+Subject: [PATCH 4/5] Remove social.scope
 
 ---
- com.canonical.Unity.gschema.xml | 2 +-
+ data/com.canonical.Unity.gschema.xml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/com.canonical.Unity.gschema.xml b/com.canonical.Unity.gschema.xml
-index b28d8d9..5c242c7 100644
---- a/com.canonical.Unity.gschema.xml
-+++ b/com.canonical.Unity.gschema.xml
-@@ -169,7 +169,7 @@
+diff --git a/data/com.canonical.Unity.gschema.xml b/data/com.canonical.Unity.gschema.xml
+index 189e705..65c7278 100644
+--- a/data/com.canonical.Unity.gschema.xml
++++ b/data/com.canonical.Unity.gschema.xml
+@@ -188,7 +188,7 @@
    </schema>
    <schema path="/com/canonical/unity/dash/" id="com.canonical.Unity.Dash" gettext-domain="unity">
      <key type="as" name="scopes">
@@ -21,5 +21,5 @@ index b28d8d9..5c242c7 100644
        <description>The scopes listed in the scope bar will be ordered according to this list.</description>
      </key>
 -- 
-2.8.2
+2.10.0
 

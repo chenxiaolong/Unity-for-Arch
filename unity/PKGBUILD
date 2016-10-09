@@ -6,7 +6,7 @@
 
 pkgname=unity
 _actual_ver=7.5.0
-_extra_ver=+16.10.20160727
+_extra_ver=+16.10.20160906.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
@@ -32,19 +32,19 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0001-Revert-r3134-Remove-Systray-Whitelist.patch
         0002-Disable-Werror.patch
         0003-Fix-launchers.patch
-        0005-Remove-social.scope.patch
-        0006-Remove-xpathselect-dependency.patch
+        0004-Remove-social.scope.patch
+        0005-Remove-xpathselect-dependency.patch
         launcher_bfb.png
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
-sha512sums=('895ef4574d65df0bad0008c187726e0b5f79ec3539666ba9cef9c1ea211c6995adfef89d4f5324cc4d275915d2d48c7f69a01afd29dfa464660fd662e551d4a8'
-            'dea5a4817d701d4085ad4942c0a40b9c9f4b0c40255a55e54ca56496cf8c32bd148141cd8d6139cec998e5204736414efb6759d735552e2517ca2b376b1c823f'
-            '7785eabcac75b106a527342786fc8cd0d59a1114d949fb154aa00d58163cbe7a2de030be480474b02e1129fa38bc0393163a519c3180ed918fda6d8e753d92a8'
-            'ec0d228b4a117883e5dfbca0404614bd107d27d709554cde5a4cbe946a500381ff729a7a5942fbbfc9c449d0d404bde343ff5e536e390c8146df5bca243b781e'
-            '1f1cbd726b17d27ed6b5852c81c12f3e58e25dd381da20e19e4c912ab53de1ebca7a95d8868d615e366c404a9b04d178cb18803d674837e88e77dd0c5524cf2c'
-            'f164ebfbad64eef16276b129d073e9411a511bba974b6c4616cc801c582ead5467cca2944755a3294a4a14d4b38b72c7025562e8cf145c855205193f5cfcb9de'
-            '8ae32bb07dad5bcb264e3de621b29b1bd535fa80c205098990896f1c16f99cfa889234d55b4ce505b5ab5141c64269d9c5775a9666a45f65c699aa4f0382e94d'
+sha512sums=('38e149902e96ab18736f475f399fcceaa61c072c05786ea2e187936c0b9f5b1df51216d83e2de76f10d8e6eb8cc0fb4a53365c960df0b09944c7d16c44aaa7f4'
+            'db6bc90116bcc8fcafc5b30803143a71ef53c36e53e31fee10019625765b0808113dab4df5710196e3a9d06770697e06048025956f9c9eae84be5f4189475710'
+            'ac857c13e24d92dcce44d2bda22c8387de2a4744b35ee0286ae6cea94d8f64aa22cfde58546939d0379b19e5b40356fa615ce40e6ab27a14e09d177b2bd2f650'
+            '292eb73c896f0df7a4c67b126d80849fcda36343586903bbde60f6b9fc9de823d6a729e5251825bf091e960f1390fec693d1f12a2538444ccf3a030fae3030c5'
+            '8bd75f389cb01572fd38ce7d5e12ced37ab4911a89a021a3b9fbe9d904ac851da63fb4a7256070c2afb9f536754fcc79aecd7714e406a2586574c79e46d9c2ec'
+            '8ba6f011cc845915619b89615c5ecf7072750984306a39a3f2cae16089f8b71c3910345cb5ff6e13b18c11f3370d207fe35abcb78681b7f8e3b90c64e939a103'
+            'd95303704cad80d9b98515cf980c035ddc5400942e3bcc5b0f0d0345688978d62b767fb15b981e23e0721bbd49cb9229ea69ef0187cc9aa48a3c208b75fb9735'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
@@ -56,8 +56,8 @@ prepare() {
     patch -p1 -i 0001-Revert-r3134-Remove-Systray-Whitelist.patch
     patch -p1 -i 0002-Disable-Werror.patch
     patch -p1 -i 0003-Fix-launchers.patch
-    patch -p1 -i 0005-Remove-social.scope.patch
-    patch -p1 -i 0006-Remove-xpathselect-dependency.patch
+    patch -p1 -i 0004-Remove-social.scope.patch
+    patch -p1 -i 0005-Remove-xpathselect-dependency.patch
 
     # Apply Ubuntu patches
     patch -p1 -i "unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"
@@ -141,4 +141,31 @@ package() {
     # Install PAM configuration file
     rm "${pkgdir}"/etc/pam.d/unity
     install -m644 "${srcdir}"/unity.pam "${pkgdir}"/etc/pam.d/unity
+
+    # systemd service symlinks
+    install -dm755 "${pkgdir}"/usr/lib/systemd/user/ubuntu-session.target.requires/
+    ln -s /usr/lib/systemd/user/unity7.service \
+        "${pkgdir}"/usr/lib/systemd/user/ubuntu-session.target.requires/unity7.service
+
+    install -dm755 "${pkgdir}"/usr/lib/systemd/user/unity-panel-service.service.wants/
+    install -dm755 "${pkgdir}"/usr/lib/systemd/user/unity-panel-service-lockscreen.service.wants/
+    for file in indicator-application.service \
+                indicator-bluetooth.service \
+                indicator-datetime.service \
+                indicator-keyboard.service \
+                indicator-message.service \
+                indicator-power.service \
+                indicator-session.service \
+                indicator-sound.service; do
+        ln -s /usr/lib/systemd/user/"${file}" \
+            "${pkgdir}"/usr/lib/systemd/user/unity-panel-service.service.wants/"${file}"
+    done
+    for file in indicator-datetime.service \
+                indicator-keyboard.service \
+                indicator-power.service \
+                indicator-session.service \
+                indicator-sound.service; do
+        ln -s /usr/lib/systemd/user/"${file}" \
+            "${pkgdir}"/usr/lib/systemd/user/unity-panel-service-lockscreen.service.wants/"${file}"
+    done
 }
