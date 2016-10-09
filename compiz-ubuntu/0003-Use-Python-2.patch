@@ -1,4 +1,4 @@
-From cd5b64f9e21ef886055e11c47314956672c528af Mon Sep 17 00:00:00 2001
+From 5c151d2f74332984ca63ef26628baecafd8ba895 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 27 Oct 2014 21:49:47 -0400
 Subject: [PATCH 3/5] Use Python 2
@@ -61,7 +61,7 @@ index a86f93a..bf37c2b 100644
  clean:
  	rm -rf build/
 diff --git a/compizconfig/ccsm/ccsm b/compizconfig/ccsm/ccsm
-index a112f2d..042bdf4 100755
+index b116596..b5c1ee3 100755
 --- a/compizconfig/ccsm/ccsm
 +++ b/compizconfig/ccsm/ccsm
 @@ -1,4 +1,4 @@
@@ -71,7 +71,7 @@ index a112f2d..042bdf4 100755
  
  # This program is free software; you can redistribute it and/or
 diff --git a/compizconfig/compizconfig-python/CMakeLists.txt b/compizconfig/compizconfig-python/CMakeLists.txt
-index d6125d5..b0f7285 100644
+index cef18a3..46da676 100644
 --- a/compizconfig/compizconfig-python/CMakeLists.txt
 +++ b/compizconfig/compizconfig-python/CMakeLists.txt
 @@ -5,7 +5,7 @@ set (CMAKE_PROJECT_NAME compizconfig-python)
@@ -121,5 +121,5 @@ index a86f93a..bf37c2b 100644
  clean:
  	rm -rf build/
 -- 
-2.1.2
+2.10.0
 

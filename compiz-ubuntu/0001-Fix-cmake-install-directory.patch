@@ -1,4 +1,4 @@
-From 902c47ee870553ebf063f1ac67c11f7397546627 Mon Sep 17 00:00:00 2001
+From 321b926cc28bdfa0cd773b84e3a393e6055700bc Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 27 Oct 2014 21:49:02 -0400
 Subject: [PATCH 1/5] Fix cmake install directory
@@ -8,10 +8,10 @@ Subject: [PATCH 1/5] Fix cmake install directory
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/cmake/base.cmake b/cmake/base.cmake
-index 8d144af..0cd5b4a 100644
+index c15c87f..23c5a5e 100644
 --- a/cmake/base.cmake
 +++ b/cmake/base.cmake
-@@ -53,7 +53,7 @@ function (_check_compiz_cmake_macro)
+@@ -30,7 +30,7 @@ function (_check_compiz_cmake_macro)
  	     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCompiz.cmake
  	     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindOpenGLES2.cmake
  	     DESTINATION
@@ -20,7 +20,7 @@ index 8d144af..0cd5b4a 100644
      add_custom_target (findcompiz_install
  	${CMAKE_COMMAND} -E make_directory ${CMAKE_ROOT}/Modules &&
  	${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/FindCompiz.cmake ${CMAKE_ROOT}/Modules &&
-@@ -70,7 +70,7 @@ function (_check_compiz_cmake_macro)
+@@ -47,7 +47,7 @@ function (_check_compiz_cmake_macro)
      install (FILES
  	     ${CMAKE_CURRENT_SOURCE_DIR}/compizconfig/libcompizconfig/cmake/FindCompizConfig.cmake
  	     DESTINATION
@@ -30,5 +30,5 @@ index 8d144af..0cd5b4a 100644
  	findcompizconfig_install
  	${CMAKE_COMMAND} -E make_directory ${CMAKE_ROOT}/Modules &&
 -- 
-2.1.2
+2.10.0
 

@@ -1,4 +1,4 @@
-From d1a4e6094673431ffc84489c36af979b3a07db3e Mon Sep 17 00:00:00 2001
+From 6ebaca125652d3b76833586781e997469d8fa3e1 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 27 Oct 2014 21:49:22 -0400
 Subject: [PATCH 2/5] Fix python install command
@@ -32,5 +32,5 @@ index 52d787c..e286b96 100644
 +execute_process (COMMAND python2 ${SETUP} install ${EXTRAARGS} --prefix=${PREFIX} --version=${VERSION} ${INSTALL_ROOT_ARGS}
  	 		   WORKING_DIRECTORY ${WDIR})
 -- 
-2.1.2
+2.10.0
 

@@ -13,10 +13,10 @@ pkgname=compiz-ubuntu
 epoch=1
 
 _actual_ver=0.9.13.0
-_extra_ver=+16.10.20160726.4
+_extra_ver=+16.10.20160818.2
 
 if [[ "${_use_ppa}" != true ]]; then
-    _ubuntu_rel=0ubuntu1
+    _ubuntu_rel=0ubuntu2
     _archive_dir="compiz-${_actual_ver}${_extra_ver}"
 else
     _ppa_rel=0ubuntu3\+ppa1
@@ -25,22 +25,24 @@ fi
 
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=(boost-libs dbus fuse glibmm glu librsvg libxcomposite libxdamage
-         libxinerama libxrandr libxslt libwnck3 mesa metacity
+         libxinerama libxrandr libxslt libwnck3 mesa metacity-ubuntu
          startup-notification protobuf pygtk pyrex gsettings-desktop-schemas)
 # The schemas from gnome-settings-daemon are needed
 depends+=(gnome-settings-daemon)
 makedepends=(boost cmake intltool)
+# FIXME: For modifying rpath
+makedepends+=(patchelf)
 optdepends=('gnome-control-center: GNOME Control Center'
             'unity-control-center: Unity Control Center')
 groups=(unity)
 options=(emptydirs)
-conflicts=(compiz metacity-ubuntu)
+conflicts=(compiz) # metacity-ubuntu
 provides=(compiz-core compiz)
 
 if [[ "${_use_ppa}" != true ]]; then
@@ -55,15 +57,15 @@ source+=(compiz.reset
          0002-Fix-python-install-command.patch
          0003-Use-Python-2.patch
          0004-Disable-Werror.patch
-         0001-Fix-abs-compile-error.patch)
-sha512sums=('1ff7dc12efcd0aab31baeda709d17e25770c99dd9cba90602862067850a7ff685222777d2459c506e43a4f47d2ed772dae7b80e33418d9631d554d86276cdbd6'
-            '9d2a1f4a0335ebda2beb6c7c6dfa721b7d6fceef0ff39dbab266ab9a389d6c2af57a7ede17f8a95bec5a12d7b7456d25cc078471e7f53375d15b38f043807c03'
+         0005-Properly-include-metacity-library-directory.patch)
+sha512sums=('72243d63a5237a45a2e9d194270ed1a7657321ab298dc761f15ab85be10a34c630c8b72bfa6fe570a24ae21fd5f22cddba93345133e54d0a0a80bf945a8e3f97'
+            '169a3282903f8032b368c56ca5790f050933039add43908decb39adcc3b25bbacd89ce36be6f4d1b88a485dd51592401bc3788ce377a388dee5cd4f90ad45c36'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
-            '94b139716f74cfb26276dbc0c5a73aa1d6f591e888b976210e7523de83e782a76992350d08b8054c8a04eeeb5273130cdeaaffd155ee3e9800921b7541cbdd82'
-            '1107fd002e1123fd52535f0016ee241c12d719a62c0a301a97338a230a73267b43982e0d23250ecac09b3a4b0ae78710fa9e04d84d5729ee6ac7293935579706'
-            '247c393a1c84becea57ccae6e1c6ed8c0eae3f874627677f3944dca0197565b6b12912357ad4f025a5a876f294338cb79d498484392aabaf4bfa22e5a2c08b24'
-            '1ec09ac2bbfe242670f9b51842c58bbe9b379f7a1bfeec12157b5ba3ea3142c88eb62462968f4378c64d75fa4148dca6123583399f93e2b6990c094d386f0951'
-            '8750772b1b392e3af1e4efe0f76211c84cf18f3123110e37637885b182c3950f545d3a1d8d03b518ba081859a26477b857aa4b931da7e4a057181ea23dce58fb')
+            '64b1a6f3cfc00e9c0c7c32d012d171b7452f8d1ea3afeaadf441316621226bbc85b75237c0726290d8552570ffbc5c4fef5c5cae2663da9369221145623dbdfa'
+            '122b7858413a7114573fdb2a8d8e30f78309b364963f4a45f474409fa3ecdfbe956368a0b014294710a1e4efd19593a6fef55f3e1ce40951d2379501295455e7'
+            '9c2c27af5d36a1f253638fd660755f514edc0712c0e261bea4580f6344788cda229049a514629fd432ea2d82920454f3a8b8d79c9b8849f2ba87efcf70c213bb'
+            '31601ebeaa200671557ff94a54e3518b9af50914ce24004c628b1bacbadd4da418cb2e9cba46cdfe206c83517311f31c6480fc7dc4bf4c7bcea73dde20e88ae5'
+            '88fa698484630c5862f1af688c7e76c9188cb3b4fac440cec1a0d664c1c51652b973af3ea80db88c620d17b3017aa4b0307fbff6effbc54dccf9b196a921a575')
 
 prepare() {
     #cd "${_archive_dir}"
@@ -82,8 +84,8 @@ prepare() {
     # Don't treat warnings as errors
     patch -p1 -i 0004-Disable-Werror.patch
 
-    # Fix ambiguous abs() error
-    patch -p1 -i 0001-Fix-abs-compile-error.patch
+    # Properly include directory for metacity-ubuntu
+    patch -p1 -i 0005-Properly-include-metacity-library-directory.patch
 
     # Apply Ubuntu patches
     if [[ "${_use_ppa}" != true ]]; then
@@ -108,6 +110,9 @@ build() {
 
     # Disable rpath in Python 2 bindings
     export COMPIZ_DISABLE_RPATH=1
+
+    # Allow CMake to find metacity-ubuntu
+    export PKG_CONFIG_PATH=/usr/unity/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
 
     # Compiz will segfault if the CMake built target is set to 'Release'
     # Disable tests since they can't run on a headless build server
@@ -140,6 +145,10 @@ package() {
     #cd "${_archive_dir}/build"
     cd build
     make install DESTDIR="${pkgdir}"
+
+    # FIXME: rpath hack to find metacity-ubuntu
+    patchelf --set-rpath '$ORIGIN/../unity/lib' \
+        "${pkgdir}/usr/bin/gtk-window-decorator"
 
     # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
     #make findcompiz_install
