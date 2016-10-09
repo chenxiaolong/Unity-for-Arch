@@ -8,13 +8,14 @@
 # vercheck-pkgbuild: auto
 # vercheck-ubuntu: name=${pkgbase%-*}, repo=yakkety
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
-# vercheck-gnome: name=${pkgbase%-*}, majorver=1.2
+# vercheck-gnome: name=${pkgbase%-*}, majorver=1.4
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
 _ubuntu_rel=0ubuntu1
-pkgver=1.2.2
-pkgrel=2
+_ubuntu_ver=1.2.4
+pkgver=1.4.2
+pkgrel=1
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
@@ -22,29 +23,39 @@ url="http://www.gnome.org/projects/NetworkManager/"
 license=(GPL2 LGPL2.1)
 depends=(libnm-glib libgudev gtk3 mobile-broadband-provider-info iso-codes
          libappindicator-gtk3 python2)
-makedepends=(libsecret libnotify libmm-glib intltool gobject-introspection)
-source=("http://ftp.gnome.org/pub/GNOME/sources/${pkgbase%-*}/${pkgver%.*}/${pkgbase%-*}-${pkgver}.tar.xz"
+makedepends=(libsecret libnotify libmm-glib intltool gobject-introspection git)
+_commit=e5f280769a7097cdf97789c11fdf3a49c11cf3f6  # tags/1.4.2^0
+source=("git://git.gnome.org/network-manager-applet#commit=$_commit"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
-sha512sums=('1a763acc045b56f56d1faba17ec1523969f9b202a611bef7a52a55c3658a29acf6e9eeee1666274e09b5dbfe2895afc728f119da2a8edca0f11de55c42e1e382'
-            '4d0be9c20476a000f9bc4ea57eebacd1526ab70f93ebd4fa1d24fdbc51fab251eb8450559ffe628663ad11075577b6de8e678dbdfe30222c1cc4509e4e3c3d2f')
+sha512sums=('SKIP'
+            '1853647a236389e448a6b7cb710e3aa790104d67c4506d7c201d043c260a20b539df41cf7c096d25e45d1ed2c16898b1916f93d98225dbb08be8a61c3daf3a6f')
+
+pkgver() {
+    cd "${pkgbase%-*}"
+    git describe --tags | sed 's/-/+/g'
+}
 
 prepare() {
     mkdir -p nma/etc/xdg nma/usr/bin \
         nma/usr/share/{applications,icons/hicolor/22x22/apps,man/man1,nm-applet}
 
-    cd "${pkgbase%-*}-${pkgver}"
+    cd "${pkgbase%-*}"
 
     # Apply Ubuntu's patches
+    sed -i \
+        -e '/Allow-to-create-connections-without-admin-privileges.patch/d' \
+        -e '/applet-fix-handling-of-802.1x-secrets-for-ethernet-c.patch/d' \
+        ../debian/patches/series
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
     done
 
-    sed -i 's/-Werror//g' m4/compiler_warnings.m4
+    NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd "${pkgbase%-*}-${pkgver}"
+    cd "${pkgbase%-*}"
 
     autoreconf -vfi
 
@@ -58,7 +69,8 @@ build() {
         --disable-migration \
         --with-appindicator \
         --with-wwan \
-        --with-modem-manager-1
+        --with-modem-manager-1 \
+        --enable-gtk-doc
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=655517
     sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
@@ -69,17 +81,17 @@ build() {
 }
 
 check() {
-    cd "${pkgbase%-*}-${pkgver}"
+    cd "${pkgbase%-*}"
     make -k check
 }
 
 package_nm-connection-editor-ubuntu() {
-    pkgdesc="NetworkManager GUI connection editor"
+    pkgdesc="NetworkManager GUI connection editor and widgets"
     provides=("libnm-gtk=${pkgver}-${pkgrel}" "nm-connection-editor=${pkgver}-${pkgrel}")
     conflicts=(libnm-gtk libnm-gtk-ubuntu)
     replaces=(libnm-gtk libnm-gtk-ubuntu)
 
-    cd "${pkgbase%-*}-${pkgver}"
+    cd "${pkgbase%-*}"
     make DESTDIR="${pkgdir}" install
 
     ### Split network-manager-applet
