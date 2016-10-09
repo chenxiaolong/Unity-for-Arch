@@ -8,7 +8,7 @@
 
 pkgname=unity-lens-applications
 _actual_ver=7.1.0
-_extra_ver=+16.10.20160602
+_extra_ver=+16.10.20160927
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -21,7 +21,7 @@ depends=(dconf gnome-menus libcolumbus libgee libunity libzeitgeist
 makedepends=(vala intltool)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-lens-applications_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('8c79538a42ac9b756d127f0ad593bddcf77d244fe2290fe47484e6f948b3b0709b31aac630ebfc0a54c2806988693c6f141c7761494cb5d2d78e5a989306ca07')
+sha512sums=('d93d556f2369fbf54b96f42c9c4b4899f3cf029ba22db375bb2549df0e4bd8052d25d77a328330894de7ecab4ae5ab5683bafc6ce6991be050eb1714a9792db5')
 
 build() {
     aclocal --install --force
