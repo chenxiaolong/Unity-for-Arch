@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=xenial
+# vercheck-ubuntu: name=${pkgname}, repo=yakkety
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-appmenu
