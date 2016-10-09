@@ -1,109 +1,281 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
-# vercheck-ubuntudb: pkgprefix=unity-scope-, verprefix=_ver_, relprefix=_rel_, skip=home, repo=xenial
+# vercheck-ubuntudb: pkgprefix=unity-scope-, verprefix=_ver_, relprefix=_rel_, skip=home, repo=yakkety
 
 # When updating, check if any packages are missing when compared to
 # /usr/share/unity/client-scopes.json
 
 packages=()
-setver() { eval "_ver_${1}=${2}"; eval "_rel_${1}=${3}"; packages+=(${1}); }
+badtarballs=()
+depends=()
+makedepends=()
 
-setver audacious         0.1+13.10.20130927.1 0ubuntu1
-setver calculator        0.1+14.04.20140328 0ubuntu1
-setver chromiumbookmarks 0.1+13.10.20130723 0ubuntu1
-setver clementine        0.1+13.10.20130723 0ubuntu1
-setver colourlovers      0.1+13.10.20130723 0ubuntu1
-setver devhelp           0.1+14.04.20140328 0ubuntu1
-setver deviantart        0.1+13.10.20130723 0ubuntu1
-setver firefoxbookmarks  0.1+13.10.20130809.1 0ubuntu1
-setver gallica           0.1+13.10.20130816.2 0ubuntu1
-setver gdrive            0.9+16.04.20151125 0ubuntu1
-setver github            0.1+13.10.20130723 0ubuntu1
-setver gmusicbrowser     0.1+13.10.20130723 0ubuntu1
-setver googlenews        0.1+13.10.20130723 0ubuntu1
-setver gourmet           0.1+13.10.20130723 0ubuntu1
-setver guayadeque        0.1+13.10.20130927.1 0ubuntu1
-setver manpages          3.0+14.04.20140324 0ubuntu1
-setver musique           0.1+13.10.20130723 0ubuntu1
-setver openclipart       0.1+13.10.20130723 0ubuntu1
-setver openweathermap    0.1+13.10.20130828 0ubuntu1
-setver soundcloud        0.1+13.10.20130723 0ubuntu1
-setver texdoc            0.1+14.04.20140328 0ubuntu1
-setver tomboy            0.1+13.10.20130723 0ubuntu1
-setver virtualbox        0.1+13.10.20130723 0ubuntu1
-setver yahoostock        0.1+13.10.20130723 0ubuntu1
-setver yelp              0.1+13.10.20130723 0ubuntu1
-setver zotero            0.1+13.10.20130723 0ubuntu1
+split() {
+    local var="${1}"
+    local delim="${2}"
+    local str="${3}"
+    IFS=${delim} read -a "${var}" <<< "${str}"
+}
+
+add() {
+    local target="${1}"
+    local target_ref="${target}[@]"
+    shift
+    for i in "${@}"; do
+        if ! in_array "${i}" "${!target_ref}"; then
+            declare -g "${target}+=(${i})"
+        fi
+    done
+}
+
+add_package() {
+    local name
+    local version
+    local release
+    local badtarball=false
+    local custom=false
+    local deps=()
+    local makedeps=()
+
+    while [[ "${#}" -gt 0 ]]; do
+        case "${1}" in
+        --name)        name="${2}";     shift 2 ;;
+        --version)     version="${2}";  shift 2 ;;
+        --release)     release="${2}";  shift 2 ;;
+        --badtarball)  badtarball=true; shift   ;;
+        --custom)      custom=true;     shift   ;;
+        --depends)     IFS=',' read -a deps <<< "${2}";     shift 2 ;;
+        --makedepends) IFS=',' read -a makedeps <<< "${2}"; shift 2 ;;
+        *) echo "Invalid option: ${1}" >&2; return 1 ;;
+        esac
+    done
+
+    if [[ -z "${name}" || -z "${version}" || -z "${release}" ]]; then
+        echo "Missing name, version, or release" >&2
+        return 1
+    fi
+
+    packages+=("${name}")
+    declare -g "_ver_${name}=${version}"
+    declare -g "_rel_${name}=${release}"
+    add depends "${deps[@]}"
+    add makedepends "${makedeps[@]}"
+
+    [[ "${badtarball}" == true ]] && badtarballs+=("${name}")
+    [[ "${custom}" == true ]]     && declare -g "_custom_${name}=true"
+}
+
+add_package \
+    --name audacious \
+    --version 0.1+13.10.20130927.1 \
+    --release 0ubuntu1 \
+    --depends python-dbus
+add_package \
+    --name calculator \
+    --version 0.1+14.04.20140328 \
+    --release 0ubuntu1 \
+    --depends gnome-calculator
+add_package \
+    --name chromiumbookmarks \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name clementine \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-dbus
+add_package \
+    --name colourlovers \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name devhelp \
+    --version 0.1+14.04.20140328 \
+    --release 0ubuntu1 \
+    --depends python-lxml
+add_package \
+    --name deviantart \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-feedparser
+add_package \
+    --name firefoxbookmarks \
+    --version 0.1+13.10.20130809.1 \
+    --release 0ubuntu1
+add_package \
+    --name gallica \
+    --version 0.1+13.10.20130816.2 \
+    --release 0ubuntu1 \
+    --depends python-lxml
+add_package \
+    --name gdrive \
+    --version 0.9+16.04.20151125 \
+    --release 0ubuntu1
+add_package \
+    --name github \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name gmusicbrowser \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-dbus
+add_package \
+    --name googlenews \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-feedparser
+add_package \
+    --name gourmet \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name guayadeque \
+    --version 0.1+13.10.20130927.1 \
+    --release 0ubuntu1 \
+    --depends python-dbus
+add_package \
+    --name manpages \
+    --version 3.0+14.04.20140324 \
+    --release 0ubuntu1 \
+    --depends gtk3,man-db
+add_package \
+    --name musique \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-dbus
+add_package \
+    --name openclipart \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-feedparser
+add_package \
+    --name openweathermap \
+    --version 0.1+13.10.20130828 \
+    --release 0ubuntu1
+add_package \
+    --name soundcloud \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name texdoc \
+    --version 0.1+14.04.20140328 \
+    --release 0ubuntu1 \
+    --makedepends texlive-bin
+add_package \
+    --name tomboy \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name virtualbox \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name yahoostock \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1 \
+    --depends python-feedparser
+add_package \
+    --name yelp \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
+add_package \
+    --name zotero \
+    --version 0.1+13.10.20130723 \
+    --release 0ubuntu1
 
 pkgname=unity-scopes
 epoch=1
 pkgver=1.0
-pkgrel=13
+pkgrel=14
 pkgdesc="Online scopes for the Unity Dash"
 arch=(any)
 url="https://launchpad.net/unity-scope-NAME"
 license=(GPL custom)
 groups=(unity)
-
-depends=(dee glib2 libunity python python-gobject unity-scope-home
-         hicolor-icon-theme)
-# audacious, clementine, gmusicbrowser, guayadeque, musique
-depends+=(python-dbus)
-# calculator
-depends+=(gnome-calculator)
-# devhelp, gallica
-depends+=(python-lxml)
-# deviantart, googlenews, openclipart, yahoostock
-depends+=(python-feedparser)
-# manpages
-depends+=(gtk3 man-db)
-
-makedepends=(python-distutils-extra)
-# texdoc
-makedepends+=(texlive-bin)
-
+depends+=(dee glib2 libunity python python-gobject unity-scope-home
+          hicolor-icon-theme)
+makedepends+=(python-distutils-extra)
 provides=()
 conflicts=()
 replaces=()
 source=()
+
 for i in ${packages[@]}; do
-  eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+    _name="${i}"
+    _ver_ref="_ver_${_name}"
+    _rel_ref="_rel_${_name}"
 
-  # Smooth upgrade from old packages
-  provides+=("unity-scope-${_name}=${_ver}")
-  replaces+=("unity-scope-${_name}")
-  conflicts+=("unity-scope-${_name}")
+    # Smooth upgrade from old packages
+    provides+=("unity-scope-${_name}=${!_ver_ref}")
+    replaces+=("unity-scope-${_name}")
+    conflicts+=("unity-scope-${_name}")
 
-  source+=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${_ver}.orig.tar.gz"
-           "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${_ver}-${_rel}.diff.gz")
+    source+=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${!_ver_ref}.orig.tar.gz"
+             "https://launchpad.net/ubuntu/+archive/primary/+files/unity-scope-${_name}_${!_ver_ref}-${!_rel_ref}.diff.gz")
+
+    if in_array "${_name}" "${badtarballs[@]}"; then
+        noextract+=("unity-scope-${_name}_${_version}.orig.tar.gz")
+    fi
 done
 
 prepare() {
-  for i in ${packages[@]}; do
-    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+    for i in ${packages[@]}; do
+        local _name="${i}"
+        local _ver_ref="_ver_${_name}"
+        local _rel_ref="_rel_${_name}"
 
-    cd "${srcdir}/unity-scope-${_name}-${_ver}"
-    patch -p1 -i "${srcdir}/unity-scope-${_name}_${_ver}-${_rel}.diff"
-  done
+        if in_array "${i}" "${badtarballs[@]}"; then
+            mkdir "${srcdir}/unity-scope-${_name}-${!_ver_ref}"
+            cd "${srcdir}/unity-scope-${_name}-${!_ver_ref}"
+            tar xvf "${srcdir}/unity-scope-${_name}_${!_ver_ref}.orig.tar.gz"
+        else
+            cd "${srcdir}/unity-scope-${_name}-${!_ver_ref}"
+        fi
+
+        patch -p1 -i "${srcdir}/unity-scope-${_name}_${!_ver_ref}-${!_rel_ref}.diff"
+    done
+}
+
+build() {
+    for i in ${packages[@]}; do
+        local _name="${i}"
+        local _ver_ref="_ver_${_name}"
+        local _custom_ref="_custom_${_name}"
+
+        cd "${srcdir}/unity-scope-${_name}-${!_ver_ref}"
+
+        if [[ "${!_custom_ref}" == true ]]; then
+            "_build_${_name}"
+        fi
+    done
 }
 
 package() {
-  install -dm755 "${pkgdir}/usr/share/doc/unity-scopes/"
+    install -dm755 "${pkgdir}/usr/share/doc/unity-scopes/"
 
-  for i in ${packages[@]}; do
-    eval "_name=${i}; _ver=\${_ver_${i}}; _rel=\${_rel_${i}}"
+    for i in ${packages[@]}; do
+        local _name="${i}"
+        local _ver_ref="_ver_${_name}"
+        local _rel_ref="_rel_${_name}"
+        local _custom_ref="_custom_${_name}"
 
-    cd "${srcdir}/unity-scope-${_name}-${_ver}"
-    python setup.py install --root="${pkgdir}" --optimize=1
+        cd "${srcdir}/unity-scope-${_name}-${!_ver_ref}"
 
-    # License
-    install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
-    install -m644 debian/copyright \
-                  "${pkgdir}/usr/share/licenses/unity-scopes/${_name}"
+        if [[ "${!_custom_ref}" == true ]]; then
+            "_prepare_${_name}"
+        else
+            python setup.py install --root="${pkgdir}" --optimize=1
 
-    echo "${_name} ${_ver} ${_rel}" >> \
-      "${pkgdir}/usr/share/doc/unity-scopes/VERSIONS"
-  done
+            # License
+            install -dm755 "${pkgdir}/usr/share/licenses/unity-scopes/"
+            install -m644 debian/copyright \
+                          "${pkgdir}/usr/share/licenses/unity-scopes/${_name}"
+
+            echo "${_name} ${!_ver_ref} ${!_rel_ref}" >> \
+                "${pkgdir}/usr/share/doc/unity-scopes/VERSIONS"
+        fi
+    done
 }
 
 sha512sums=('3c19ded6c9a5c63b996a4da37afc93200d6e72906062ce94558fdf3c7aba74975c56fee800d727e4a881e829083f90f29cc6676b16c1207df5365589860133af'
