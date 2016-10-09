@@ -2,7 +2,7 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=gtk+3.0, repo=xenial
+# vercheck-ubuntu: name=gtk+3.0, repo=yakkety
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
 # vercheck-gnome: name=gtk+, majorver=3.22
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
