@@ -14,12 +14,14 @@ _use_ppa=false
 _ubuntu_rel=1ubuntu7
 _ubuntu_ver=3.20.2
 pkgver=3.22.0+3+gab2f4c8
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 arch=(i686 x86_64)
 license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
          json-glib libgl libsm libxtst systemd polkit-gnome)
+# TODO: Temporary until systemd 232 is released
+depends+=(systemd-unity)
 makedepends=(intltool mesa gtk-doc xtrans git gnome-common python)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
@@ -77,6 +79,8 @@ prepare() {
             ;;
         esac
     done
+
+    sed -i '/--wait/ s/systemctl/systemctl-unity/g' ../debian/data/run-systemd-session
 
     NOCONFIGURE=1 ./autogen.sh
 }
