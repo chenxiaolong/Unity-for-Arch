@@ -1,0 +1,22 @@
+# Maintainer: Andrew Gunnerson <andrewgunnerson@gmail.com>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=dbus, repo=zesty
+
+pkgname=dbus-activation-env
+_ubuntu_rel=1ubuntu2
+pkgver=1.10.10
+pkgrel=1
+pkgdesc="Set session variables in dbus/systemd activation environment"
+url="https://launchpad.net/ubuntu/+source/dbus"
+arch=(any)
+license=(GPL)
+depends=(dbus)
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/dbus_${pkgver}-${_ubuntu_rel}.debian.tar.xz")
+sha512sums=('c8004d57a1f9464ab4e490b2f7b8253513edb41a4a3c0eae483062827990efa0c5a1cc82fc9dca494375315ac7b32c292673988a1d391031831eeadfbe3df6af')
+
+package() {
+    install -dm755 "${pkgdir}"/etc/X11/xinit/xinitrc.d/
+    install -m755 debian/95dbus_update-activation-env \
+        "${pkgdir}"/etc/X11/xinit/xinitrc.d/
+}
