@@ -14,7 +14,7 @@ _use_ppa=false
 _ubuntu_rel=1ubuntu7
 _ubuntu_ver=3.20.2
 pkgver=3.22.1
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNOME Session Handler"
 url="https://git.gnome.org/browse/gnome-session"
 arch=(i686 x86_64)
@@ -73,8 +73,6 @@ prepare() {
             ;;
         esac
     done
-
-    sed -i '/--wait/ s/systemctl/systemctl-unity/g' ../debian/data/run-systemd-session
 
     NOCONFIGURE=1 ./autogen.sh
 }
