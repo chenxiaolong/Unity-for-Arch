@@ -13,24 +13,22 @@ _use_ppa=false
 #_ppa_rel=2ubuntu1~xenial1
 _ubuntu_rel=1ubuntu7
 _ubuntu_ver=3.20.2
-pkgver=3.22.0+3+gab2f4c8
-pkgrel=3
+pkgver=3.22.1
+pkgrel=1
 pkgdesc="The GNOME Session Handler"
+url="https://git.gnome.org/browse/gnome-session"
 arch=(i686 x86_64)
 license=(GPL LGPL)
 depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
          json-glib libgl libsm libxtst systemd polkit-gnome)
 # TODO: Temporary until systemd 232 is released
-depends+=(systemd-git)
+depends+=('systemd>231')
 makedepends=(intltool mesa gtk-doc xtrans git gnome-common python)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session systemd-unity)
-options=(!emptydirs)
-url="http://www.gnome.org"
-_commit=ab2f4c857763ca2cb610d381c327a1884d20b055
+_commit=09f44cc50eafa047856d483ee18ebae99f8b8352  # tags/3.22.1^0
 source=("git://git.gnome.org/gnome-session#commit=${_commit}"
-        timeout.patch
         50_ubuntu_sessions.patch
         polkit-gnome-authentication-agent-1-unity.desktop)
 
@@ -41,7 +39,6 @@ else
 fi
 
 sha512sums=('SKIP'
-            '81d28b8f345c3a16dbb443ee8f195f802b572941aeac2dafaf6ea6b231ccb89a280aa855d09744dfc7ef2ad794a5e7b0002b54b14465865441367055514bcb70'
             '0ddbeff2f9aafc06257f8fbad77cee7d22c73daaa63fa1d7e061a10ed7533bc5fe3306979d949e27d0e7bce9450ee6269e7bd7920e4233944dff78884e423429'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
             '2a9e4265c659d8806f4c743984abd304bcf4fafefbcd9d1f6d8487e2c9b682b0dff943b17e5f2a97376971b97ec66f8291fa8ab752e0419bb54032177c3812fb')
@@ -53,9 +50,6 @@ pkgver() {
 
 prepare() {
     cd "${pkgname%-*}"
-
-    # Increase timeout, for slow machines
-    patch -p1 -i ../timeout.patch
 
     sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
