@@ -51,6 +51,8 @@ To compile from source, just build all of the packages in the following order:
 | properties-cpp                   | C++11 library providing properties/signals |
 | lightdm-ubuntu                   | Cross-desktop lightweight display manager  |
 | unity-api                        | API for Unity shell integration            |
+| appmenu-qt                       | Global menus support for Qt4               |
+| appmenu-qt5                      | Global menus support for Qt5               |
 | indicator-application            | Takes menus and puts them in the panel     |
 | indicator-appmenu                | Indicator to host the menus from apps      |
 | indicator-datetime               | Indicator to show the date and time        |

@@ -1,0 +1,26 @@
+# Maintainer: Andrew Gunnerson <andrewgunnerson@gmail.com>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
+
+pkgname=appmenu-qt5
+_actual_ver=0.3.0
+_extra_ver=+16.10.20160628.1
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="Adds support for application menus to Qt5"
+arch=(i686 x86_64)
+url="https://launchpad.net/appmenu-qt5"
+license=(LGPL)
+groups=(unity)
+depends=(libdbusmenu-qt5)
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('4b8c0f26f39c6908bee0e777570f83e590580adc851f68225b16bfd9ff6d99b801fcfd5b415ac899adc96433d2a578400f1e893d7ad2a5c6b6aa959a5690451a')
+
+build() {
+    qmake CONFIG+=enable-by-default
+}
+
+package() {
+    make INSTALL_ROOT="${pkgdir}" install
+}
