@@ -21,7 +21,6 @@ To compile from source, just build all of the packages in the following order:
 
 | Package                          | Description                                |
 | -------------------------------- | ------------------------------------------ |
-| systemd-unity                    | system and service manager                 |
 | gtk2-ubuntu                      | GTK toolkit 2.0 with Ubuntu's patches      |
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |
 | libdbusmenu-ubuntu               | Library for passing menus over DBus        |
