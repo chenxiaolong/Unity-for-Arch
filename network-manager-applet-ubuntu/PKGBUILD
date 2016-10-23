@@ -12,10 +12,10 @@
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
-_ubuntu_rel=0ubuntu1
+_ubuntu_rel=0ubuntu2
 _ubuntu_ver=1.2.4
 pkgver=1.4.2
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
@@ -28,7 +28,7 @@ _commit=e5f280769a7097cdf97789c11fdf3a49c11cf3f6  # tags/1.4.2^0
 source=("git://git.gnome.org/network-manager-applet#commit=$_commit"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('SKIP'
-            '1853647a236389e448a6b7cb710e3aa790104d67c4506d7c201d043c260a20b539df41cf7c096d25e45d1ed2c16898b1916f93d98225dbb08be8a61c3daf3a6f')
+            '6d1cbb49e9a6c09a0739b97b20f757bfa0ab9ad7495a1ae97f423dfdd7f5951d42bf5a1188878c1050878109f10dd3acf7a23979ecf26244ae09dc53cb30a4bc')
 
 pkgver() {
     cd "${pkgbase%-*}"
