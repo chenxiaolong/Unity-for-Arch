@@ -9,7 +9,7 @@ _actual_ver=7.5.0
 _extra_ver=+16.10.20160906.1
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -21,7 +21,7 @@ depends=(appstream-glib bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs
          gsettings-ubuntu-schemas hud ido libgnomeui libindicator-gtk2
          libindicator-gtk3 libnotify libunique libunity libunity-misc libxfixes
          nux unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
-         lightdm-unity-greeter upstart-user)
+         lightdm-unity-greeter upstart-user dbus-activation-env)
 makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
              python2-distribute)
 groups=(unity)
