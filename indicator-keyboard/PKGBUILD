@@ -5,7 +5,7 @@
 
 pkgname=indicator-keyboard
 _actual_ver=0.0.0
-_extra_ver=+16.10.20160808
+_extra_ver=+16.10.20161010
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Indicator for switching keyboard layouts and input methods"
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard
         0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
         0005-Spawn-ibus-daemon-at-startup.patch
         0006-Remove-url-dispatcher-dependency.patch)
-sha512sums=('cdfb66b313a0045e9aeba1ce912ea92e5eff7480d38dfb12b16a23b82857beb3662fd55ce23ba595a91385c0d14199bf1d7eab010773e330e381f9b30e7a67c1'
+sha512sums=('d327619b9ef910c4e8e5f3a75002c8e2497c2451f6a481cc778378b1f8dc0d4be2012e993ffce147e5f39fa0fcc041276f7d7f2d5e4eb9be34722d9f3eadaf71'
             'e1f60a43b818dc0e57e6aa22f29cfb125c3d420b4c910ed2a5a638bec1fe5456738214a864b447743d4d2f531a43da4265c1d77b95c50ec1f04c9537f883f7ec'
             '13c7de7533438c624bfccfcce2b23fea3d3c8f371e47eaa269f653c72dc931612cab2b7e9386eb5db4e08ccc7a9f5a7853c230c45c70cd63ad34b2ab86280909'
             'c89f43cded3e9dbdac62843586bab9a120b858dc36e5b74b5d3d18c33f39fef9706a6d282ca4ede1bdb1789d5f63b8186376324781571b0f4162504b4c712ce2'
