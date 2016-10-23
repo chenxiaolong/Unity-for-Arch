@@ -12,9 +12,9 @@ _use_ppa=true
 
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-_ppa_rel=1ubuntu1~yakkety0
-_ppa_ver=3.22.0
-pkgver=3.22.0.1+22+gd72934b
+_ppa_rel=1ubuntu0~yakkety1
+#_ppa_ver=3.22.0
+pkgver=3.22.1
 pkgrel=1
 pkgdesc="Default file manager for GNOME and Unity"
 url="https://wiki.gnome.org/Apps/Nautilus"
@@ -24,10 +24,9 @@ depends=(libexif gnome-desktop exempi gvfs dconf libtracker-sparql
          nautilus-sendto gnome-autoar libunity libzeitgeist)
 makedepends=(intltool gobject-introspection python packagekit python2 gnome-common git gtk-doc)
 options=(!emptydirs)
-_commit=d72934b3f94dfd7eb109a60bd0b262c4f9cd7ed4
-_libgd=752f65e91ea0d9a2ee8a2d21343bbd97bd0d038a
+_commit=ce0c0bb5510577c9285512d2be52cba119903b96  # tags/3.22.1^0
 source=("git://git.gnome.org/nautilus#commit=$_commit"
-        "git://git.gnome.org/libgd#commit=$_libgd")
+        "git://git.gnome.org/libgd")
 
 if [[ "${_use_ppa}" == "true" ]]; then
     source+=("https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+files/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
@@ -37,7 +36,7 @@ fi
 
 sha512sums=('SKIP'
             'SKIP'
-            '1726fddadab9de5fdf46dc129c317e313f28aa7f18ba6174b4ef01bfbbf8df71d265faedb8c7ce6c30496d1c29d2f3949e802a4f7585743d3a251b2e1a7938f3')
+            'cf5943abe1c7fff5b13174ee9c01a04c42b850903cf7fa5c39d3ec4727a94f575bd9aa640921c9742632970424133ea3758a639dab8f013140f2f61e4ee8a1f8')
 
 pkgver() {
     cd nautilus
@@ -54,17 +53,19 @@ prepare() {
     # Apply Ubuntu's patches
 
     # Disable patches
-    sed -i -e '/15_use-ubuntu-help.patch/d' \
-           -e '/08_clean_session_capplet.patch/d' \
-           `# -e '/0003-Fix-white-desktop.patch/d'` \
-           ../debian/patches/series
+    sed -i \
+        -e '/multiarch_fallback.patch/d' \
+        -e '/15_use-ubuntu-help.patch/d' \
+        -e '/08_clean_session_capplet.patch/d' \
+        `# -e '/0003-Fix-white-desktop.patch/d'` \
+        ../debian/patches/series
 
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
     done
 
-    #sed -i '/gnome_bg_set_draw_background/d' libnautilus-private/nautilus-desktop-background.c
+    sed -i '/gnome_bg_set_draw_background/d' nautilus-desktop/nautilus-desktop-background.c
 
     ln -sf ../debian .
 
