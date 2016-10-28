@@ -1,4 +1,4 @@
-From 1f0b81298629fe94bc7674327b7aa9130f6de89b Mon Sep 17 00:00:00 2001
+From b5a9d3d9635cd01d1263e7f6fdaceb316bc9ed15 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
 Subject: [PATCH 5/5] Remove xpathselect dependency
@@ -15,7 +15,7 @@ Subject: [PATCH 5/5] Remove xpathselect dependency
  delete mode 100644 unity-shared/DebugDBusInterface.h
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index f961c7e..62144a0 100644
+index 4358c3f..7c8fa85 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -250,7 +250,6 @@ set(UNITY_PLUGIN_SHARED_DEPS
@@ -559,5 +559,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.10.0
+2.10.1
 

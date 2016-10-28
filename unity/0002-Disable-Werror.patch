@@ -1,4 +1,4 @@
-From cb96f326eaf5d29f35eaadcb18a54af5eef29b62 Mon Sep 17 00:00:00 2001
+From c4bda95e2da4785b6a49757cedbdc1865958a71a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
 Subject: [PATCH 2/5] Disable -Werror
@@ -9,31 +9,31 @@ Subject: [PATCH 2/5] Disable -Werror
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 90c5998..f961c7e 100644
+index 1c5f7e3..4358c3f 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -209,7 +209,7 @@ if (BOOT_LOGGER)
      SET (BOOT_LOGGER_FLAG "-DENABLE_LOGGER")
  endif (BOOT_LOGGER)
  
--SET (MAINTAINER_CXXFLAGS "-Werror -Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds")
-+SET (MAINTAINER_CXXFLAGS "-Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds")
+-SET (MAINTAINER_CXXFLAGS "-Werror -Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds -Wno-error=deprecated-declarations")
++SET (MAINTAINER_CXXFLAGS "-Wall -Wcast-align -Wempty-body -Wformat-security -Winit-self -Warray-bounds -Wno-error=deprecated-declarations")
  
  option (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS "Disable errors when local typedefs are unused" ON)
  if (DISABLE_ERROR_ON_LOCAL_TYPEDEFS_WARNINGS)
 diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
-index de866c1..5f2e3d6 100644
+index 9a9f9e0..4958dbb 100644
 --- a/services/CMakeLists.txt
 +++ b/services/CMakeLists.txt
 @@ -35,7 +35,7 @@ set(PANEL_SOURCES
  set(CFLAGS
      ${SERVICE_DEPS_CFLAGS}
      ${SERVICE_DEPS_CFLAGS_OTHER}
--    "-Werror -Wall"
-+    "-Wall"
+-    "-Werror -Wall -Wno-error=deprecated-declarations"
++    "-Wall -Wno-error=deprecated-declarations"
      )
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.10.0
+2.10.1
 
