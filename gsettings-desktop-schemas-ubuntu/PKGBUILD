@@ -4,13 +4,13 @@
 # Contributor: Adam Hani Schakaki (krzd) <krzd@krzd.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname%-*}, repo=zesty
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.22
 
 pkgname=gsettings-desktop-schemas-ubuntu
-_ubuntu_ver=3.20.0
-_ubuntu_rel=3ubuntu1
+_ubuntu_ver=3.22.0
+_ubuntu_rel=1ubuntu1
 pkgver=3.22.0+1+g6f52ab5
 pkgrel=1
 pkgdesc="Shared GSettings schemas for the desktop"
@@ -23,11 +23,9 @@ provides=("${pkgname%-*}=${pkgver}")
 conflicts=("${pkgname%-*}")
 _commit=6f52ab56bcf02c4a7315e433e30f45f106f31c3f
 source=("git://git.gnome.org/gsettings-desktop-schemas#commit=${_commit}"
-        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz"
-        0001-Revert-schemas-Scroll-method-key-changes.patch)
+        "https://launchpad.net/ubuntu/+archive/primary/+files/gsettings-desktop-schemas_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('SKIP'
-            '281dce5fa3484f8711235443c83f509cde13a89f3bc88889100d9479711d0b79fcc0a95b05fdb2b422e765adbe1f7b7f1e9154945a5f32d66ce6ecf399da0ce5'
-            '942ea2fa67aa5d5a08bcf7e1fafce4cd4dc49eb536746a948546b46a08578d8422056b32d57d8e552cc2daa42b3493a0cc9a007fb0a36f6d32e85b1443bc94b5')
+            'e71dc5c3b01ecb8156aebe260d450c0f35aa6816a6b3acc43298a5e2e0f9134f8bdef6b19992d31f80d7d5333eec43d125b5c95ca1781dfd13d099ab0745bee4')
 
 pkgver() {
     cd "${pkgname%-*}"
@@ -36,12 +34,6 @@ pkgver() {
 
 prepare() {
     cd "${pkgname%-*}"
-
-    patch -p1 -i ../0001-Revert-schemas-Scroll-method-key-changes.patch
-
-    # Apply Ubuntu's patches
-
-    sed -i '/legacy-scroll-method.patch/d' ../debian/patches/series
 
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
