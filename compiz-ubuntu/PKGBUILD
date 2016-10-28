@@ -3,7 +3,7 @@
 # Some comments are taken from the Ubuntu packaging files
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname%-*}, repo=zesty
 # vercheck-launchpad: name=${pkgname%-*}
 
 _use_ppa=false
@@ -13,10 +13,10 @@ pkgname=compiz-ubuntu
 epoch=1
 
 _actual_ver=0.9.13.0
-_extra_ver=+16.10.20160818.2
+_extra_ver=+17.04.20161026
 
 if [[ "${_use_ppa}" != true ]]; then
-    _ubuntu_rel=0ubuntu2
+    _ubuntu_rel=0ubuntu1
     _archive_dir="compiz-${_actual_ver}${_extra_ver}"
 else
     _ppa_rel=0ubuntu3\+ppa1
@@ -58,8 +58,8 @@ source+=(compiz.reset
          0003-Use-Python-2.patch
          0004-Disable-Werror.patch
          0005-Properly-include-metacity-library-directory.patch)
-sha512sums=('72243d63a5237a45a2e9d194270ed1a7657321ab298dc761f15ab85be10a34c630c8b72bfa6fe570a24ae21fd5f22cddba93345133e54d0a0a80bf945a8e3f97'
-            '169a3282903f8032b368c56ca5790f050933039add43908decb39adcc3b25bbacd89ce36be6f4d1b88a485dd51592401bc3788ce377a388dee5cd4f90ad45c36'
+sha512sums=('8a4a992a61dd81d56a86c7a72d7120409a1fe0c8f37c803702f180f0d211dfc0b267e1a86f15f1c53c516f98c728a923610dd4da4fab5893d204e611a1e60fe8'
+            '064a550219dd21b753b69fb1ffe118b6bf51868d1788f6f9300833cd7f356226222740bc6a21ba066bc5ea3c05666d1fcc987fbb425d482f89dbbb69b7e3e4f7'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '64b1a6f3cfc00e9c0c7c32d012d171b7452f8d1ea3afeaadf441316621226bbc85b75237c0726290d8552570ffbc5c4fef5c5cae2663da9369221145623dbdfa'
             '122b7858413a7114573fdb2a8d8e30f78309b364963f4a45f474409fa3ecdfbe956368a0b014294710a1e4efd19593a6fef55f3e1ce40951d2379501295455e7'
