@@ -2,7 +2,7 @@
 # Contributor: Christopher Reimer <github@creimer.net>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=gtk+3.0, repo=yakkety
+# vercheck-ubuntu: name=gtk+3.0, repo=zesty
 # vercheck-archlinux: name=gtk3, repo=extra, arch=x86_64
 # vercheck-gnome: name=gtk+, majorver=3.22
 # vercheck-ppa: name=gtk+3.0, url=ppa:gnome3-team/gnome3-staging
@@ -10,9 +10,9 @@
 _use_ppa=false
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=1ubuntu2
-_ubuntu_ver=3.20.9
-pkgver=3.22.1+67+gffb1ac5
+_ubuntu_rel=0ubuntu1
+_ubuntu_ver=3.22.2
+pkgver=3.22.2+4+gc54f348
 pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform toolkit"
@@ -30,7 +30,7 @@ optdepends=('libcanberra: gtk3-widget-factory demo'
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-_commit=ffb1ac56a8ae8b0261b9007115faed6206d4b06b  # gtk-3-22
+_commit=c54f348edfb1f8bb798f0060b8190d5bd08c2d9c  # gtk-3-22~2
 source=("git://git.gnome.org/gtk+#commit=${_commit}"
         0001-gdkscreen-x11-Fix-screen-and-monitor-size-calculatio.patch
         settings.ini
@@ -46,7 +46,7 @@ sha512sums=('SKIP'
             '6c41ac66f8e3df4ed630f31733b5dd67fe85db79fe713f3b645a8c16e80bf04eaadb0cb05e18d03d26d72eff39db2d534bb247b5c95190381f22f2f3f673f756'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
             'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
-            '0be2265a5c0c732238871aba967ea36d6f830d78de8ae1062d64f26be33bb351fb304704956445468731991af15374e1d1ce31e718884ee940bd7250166bb861')
+            'b8f88fa3f229ca9366794e19dfd8a446722b0eb00b8becb211d3c3e85607deb829595face9c9f125ee4f3dd0eb374ba29fdac7a6f474a75309f525d47563bca2')
 
 pkgver() {
     cd gtk+
@@ -65,22 +65,20 @@ prepare() {
         073_treeview_almost_fixed.patch
         074_eventbox_scroll_mask.patch
         no-accessibility-dump.patch
-        #wayland-add-extended-state-for-tiled.patch
-        #Don-t-apply-GDK_HINT_RESIZE_INC-to-GDK_WINDOW_STATE_.patch
+        reftest-known-fail.patch
         bzg_gtkcellrenderer_grabbing_modifier.patch
         ubuntu_gtk_custom_menu_items.patch
         print-dialog-show-options-of-remote-dnssd-printers.patch
         uimanager-guard-against-nested-node-updates.patch
         x-canonical-accel.patch
         message-dialog-restore-traditional-look-on-unity.patch
-        #restore_filechooser_typeaheadfind
+        0001-gtk-reftest-Force-icon-theme-to-Adwaita.patch
+        restore_filechooser_typeaheadfind
         0001-calendar-always-emit-day-selected-once.patch
         0001-gtkwindow-set-transparent-background-color.patch
         ubuntu_fileselector_behaviour.patch
         unity-border-radius.patch
         unity-headerbar-maximized-mode.patch
-        #0001-Improve-external-drives-detection.patch
-        #0001-Update-the-GDK-Mir-backend-to-fix-a-few-problems.patch
     )
 
     for i in "${patches[@]}"; do
