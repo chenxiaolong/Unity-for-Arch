@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-printers
-_ubuntu_rel=0ubuntu2
+_ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
-_extra_ver=+15.04.20150220
+_extra_ver=+17.04.20161026
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=3
 epoch=1
@@ -20,28 +20,24 @@ depends=(cups libdbusmenu-glib libdbusmenu-gtk3 libindicator-gtk3)
 makedepends=(intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('c4aff3d515d64c78085175c5ff807b32c3fcc501dc879247a34545cdfc25d45d445fe7c56b661ce03953020246960b3c55110a44d015807abad9cc90b9c2198d'
-            'ce9865bf8b2421926132ecd066af335eb4a42c50887488b3a9045d19fe159407cd6aa5541f5d563adb47027774cf4eec36ad3c97653b1c42e07e521eaa56ce22')
+sha512sums=('5f97e901997bae523c29b96606451afeecbedc92c69047f194acaa508ece02fcabbfa17b6adaf5f6b81c789f85eb7fb06e179c74ce67405a13d42d7f6af8e4c3'
+            'bae6e7a4515aaa94a24e08e3ba7d8a695f589d443300d214549e12452731e960de29ac77969304277e2c8feb73d788772af13828d514994dd786d5f2c9accd60')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     # Apply Ubuntu's patches
-    patch -p1 -i ../indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
+    patch -p1 -i indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff
 
     sed -i '/SERVICE_LIBS/ i SERVICE_LIBS+=" "' configure.ac
+
+    NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
-    ./autogen.sh --prefix=/usr --libexecdir=/usr/lib --disable-static
+    ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
     make
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     make DESTDIR="${pkgdir}/" install
 
     install -dm755 "${pkgdir}"/usr/share/icons/
