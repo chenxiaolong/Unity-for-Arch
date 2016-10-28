@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-datetime
 _actual_ver=15.10
-_extra_ver=+16.10.20160820.1
+_extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A very, very simple clock"
@@ -23,18 +23,14 @@ makedepends=(intltool cmake)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('e8fda06ed98cb6045443728ccaac2f4e91d860c55ca30d5957b943cbe5f45da4703ce670fdf0b6853988a26454b9ccfb314c770fc08d6ce6e4f7b016ffae448d'
-            '9f98bfbf5424550e23e7ca4b72e1abaea68f5fddd98cc90265a23162efcbd2adb4293aab2e3bc0c98c5ec7ab5708bb93e1e01176300e77f65088a6575f5a0cd7')
+sha512sums=('68b86e26971551a1c25a94c37b73b3628245c6e549b15b2516b60b1dd4cf9ec476514dab0166eae526795d0fa8f80cf54ccb8c4d86409f58cc40e6323893bd01'
+            '1d1d7c6d50222fe972e61437f2c3dbfd2dfde1baf36e063e1514ae8afb3aa5c4e02562c0c13cbe8a8b6ce94abe5a0901b2bbbe64c3d0be042b1dbe6931ddd886')
 
 prepare() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     patch -p1 -i 0001-Not-a-phone.patch
 }
 
 build() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     export CFLAGS+=" -Wno-error"
 
     mkdir -p build
@@ -49,7 +45,6 @@ build() {
 }
 
 package() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}/build/"
     cd build
 
     make DESTDIR="${pkgdir}/" install

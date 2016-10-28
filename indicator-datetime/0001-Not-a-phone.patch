@@ -1,4 +1,4 @@
-From fbcdcd971f0b86dab8685e1bda5a2c669c2874f2 Mon Sep 17 00:00:00 2001
+From 6ec09e49cab89511ccedcf8f9d539d51a3afb6d6 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Sat, 11 Oct 2014 17:52:55 -0400
 Subject: [PATCH] Not a phone
@@ -7,9 +7,9 @@ Subject: [PATCH] Not a phone
  CMakeLists.txt                  |  4 +---
  include/datetime/actions-live.h |  1 -
  src/actions-live.cpp            | 12 ------------
- src/notifications.cpp           |  9 +--------
+ src/notifications.cpp           | 11 +----------
  tests/test-live-actions.cpp     |  1 -
- 5 files changed, 2 insertions(+), 25 deletions(-)
+ 5 files changed, 2 insertions(+), 27 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index c0d2fba..2f857e6 100644
@@ -100,23 +100,25 @@ index 00278ef..a0babd2 100644
      else switch (appt.type)
      {
 diff --git a/src/notifications.cpp b/src/notifications.cpp
-index 4e9ebff..3f7457d 100644
+index cf4d4c7..3f7457d 100644
 --- a/src/notifications.cpp
 +++ b/src/notifications.cpp
-@@ -24,8 +24,6 @@
+@@ -24,9 +24,6 @@
  #include <messaging-menu/messaging-menu-app.h>
  #include <messaging-menu/messaging-menu-message.h>
  
 -#include <libubuntu-app-launch-2/ubuntu-app-launch/appid.h>
+-#include <libubuntu-app-launch-2/ubuntu-app-launch/registry.h>
 -
  #include <uuid/uuid.h>
  
  #include <gio/gdesktopappinfo.h>
-@@ -460,12 +458,7 @@ private:
+@@ -461,13 +458,7 @@ private:
  
      static std::string calendar_app_id()
      {
--        auto app_id = ubuntu::app_launch::AppID::discover("com.ubuntu.calendar");
+-        auto registry = std::make_shared<ubuntu::app_launch::Registry>();
+-        auto app_id = ubuntu::app_launch::AppID::discover(registry, "com.ubuntu.calendar");
 -        if (!app_id.empty())
 -            // Due the use of old API by messaging_menu we need append a extra ".desktop" to the app_id.
 -            return std::string(app_id) + ".desktop";
@@ -139,5 +141,5 @@ index fbc3baa..6be6fb6 100644
  };
  
 -- 
-2.9.0
+2.10.1
 
