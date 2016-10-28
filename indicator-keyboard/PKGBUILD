@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 
 pkgname=indicator-keyboard
 _actual_ver=0.0.0
-_extra_ver=+16.10.20161010
+_extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Indicator for switching keyboard layouts and input methods"
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-keyboard
         0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
         0005-Spawn-ibus-daemon-at-startup.patch
         0006-Remove-url-dispatcher-dependency.patch)
-sha512sums=('d327619b9ef910c4e8e5f3a75002c8e2497c2451f6a481cc778378b1f8dc0d4be2012e993ffce147e5f39fa0fcc041276f7d7f2d5e4eb9be34722d9f3eadaf71'
+sha512sums=('2d85c1667cc4377eee258f16b3e514ef1216836eeb33e1431e84043891fba531fa565d21bdc4f5176ad49abd3b6dddbc21f3bd553d8c366bb9e260cb7672c4d9'
             'e1f60a43b818dc0e57e6aa22f29cfb125c3d420b4c910ed2a5a638bec1fe5456738214a864b447743d4d2f531a43da4265c1d77b95c50ec1f04c9537f883f7ec'
             '13c7de7533438c624bfccfcce2b23fea3d3c8f371e47eaa269f653c72dc931612cab2b7e9386eb5db4e08ccc7a9f5a7853c230c45c70cd63ad34b2ab86280909'
             'c89f43cded3e9dbdac62843586bab9a120b858dc36e5b74b5d3d18c33f39fef9706a6d282ca4ede1bdb1789d5f63b8186376324781571b0f4162504b4c712ce2'
@@ -33,24 +33,22 @@ sha512sums=('d327619b9ef910c4e8e5f3a75002c8e2497c2451f6a481cc778378b1f8dc0d4be20
             '07ab8692aebc4aa7b18d27cbc486955cfb061f07911197bcce3a262014efc45f3cd6e490a84eb09809eabe3976062d29fa8ed5d318f8775f27ec4bd891bf9602')
 
 prepare() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     patch -p1 -i ../0001-vala-build-fix.patch
     patch -p1 -i ../0002-Remove-code-depending-on-accountsservices-patch.patch
     patch -p1 -i ../0003-Remove-unavailable-DBus-method-activate_input_source.patch
     patch -p1 -i ../0004-Remove-unavailable-DBus-method-xkeyboard-layouts.patch
     patch -p1 -i ../0005-Spawn-ibus-daemon-at-startup.patch
     patch -p1 -i ../0006-Remove-url-dispatcher-dependency.patch
+
+    intltoolize -f
+    autoreconf -vfi
 }
 
 build() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
-    intltoolize -f
-    autoreconf -vfi
     ./configure --prefix=/usr --libexecdir=/usr/lib
     make
 }
 
 package() {
-    #cd "${pkgname}-${_actual_ver}${_extra_ver}"
     make DESTDIR="${pkgdir}/" install
 }
