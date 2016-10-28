@@ -3,12 +3,12 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=indicator-messages
 _actual_ver=13.10.1
-_extra_ver=+15.10.20150505
+_extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 epoch=1
@@ -22,29 +22,24 @@ groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-messages_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-autoconf-fix.patch
         0002-Disable-tests.patch)
-sha512sums=('f054af8084b2313c61dce8e3c6fa677d00e2a607a121ac2ca5fddd57deeed6ed22e55b9761a8f48adaa6c4d78821e4d8dcff22e3b82c789ccc08f17806dd7dc4'
+sha512sums=('0ce216c5edab2cd91c34e78c1d0f7a31cbf9e78af6043fc06154db27124061b51415c5fc1215d96625de3c32ed2850505863229a44429842bc1bbd73b07bd3aa'
             '2774bcdf64bb3723f674a8d9d10186b6c63e2adbf83b8300f44cf9a199da538b3e058a0c1b3f85eba64b18f03d3fc63424e3c23147811d16c1a7a09bef235d1c'
             '00e4aed73c5a95500c450bbdd6217bcd904df38272577eb9c496d3a19f030f4feb8346a073b9331122ff408b56c5d1e9ea99745cf56a54d6710d33aade881e2f')
 
 prepare() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
-    patch -p1 -i ../0001-autoconf-fix.patch
-    patch -p1 -i ../0002-Disable-tests.patch
-}
-
-build() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
+    patch -p1 -i 0001-autoconf-fix.patch
+    patch -p1 -i 0002-Disable-tests.patch
 
     gtkdocize
     intltoolize -f
     autoreconf -vfi
+}
+
+build() {
     ./configure --prefix=/usr --libexecdir=/usr/lib --disable-static
     make
 }
 
 package() {
-    cd "${pkgname}-${_actual_ver}${_extra_ver}"
-
     make DESTDIR="${pkgdir}/" install
 }
