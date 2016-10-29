@@ -1,7 +1,7 @@
-From f661369cf4b006e2cef61e3562129e821e8fa1de Mon Sep 17 00:00:00 2001
+From 180538a4d6f465ed47596ef422a5d978c2af2a12 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:11:47 -0400
-Subject: [PATCH 3/5] Fix launchers
+Subject: [PATCH 3/6] Fix launchers
 
 ---
  data/com.canonical.Unity.gschema.xml | 2 --

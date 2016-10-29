@@ -10,7 +10,7 @@ pkgname=indicator-messages
 _actual_ver=13.10.1
 _extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="A place on the user's desktop that collects messages that need a response"
 arch=(i686 x86_64)
@@ -42,4 +42,6 @@ build() {
 
 package() {
     make DESTDIR="${pkgdir}/" install
+
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

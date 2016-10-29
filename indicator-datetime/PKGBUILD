@@ -10,7 +10,7 @@ pkgname=indicator-datetime
 _actual_ver=15.10
 _extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="A very, very simple clock"
 arch=(i686 x86_64)
 url="https://launchpad.net/indicator-datetime"
@@ -51,4 +51,6 @@ package() {
 
     # Use language packs
     rm -r "${pkgdir}/usr/share/locale/"
+
+    rm -rv "${pkgdir}"/usr/share/upstart
 }

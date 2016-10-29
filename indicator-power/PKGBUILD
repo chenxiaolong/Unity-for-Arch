@@ -8,7 +8,7 @@ pkgname=indicator-power
 _actual_ver=12.10.6
 _extra_ver=+17.04.20161021
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -45,4 +45,6 @@ package() {
     make DESTDIR="${pkgdir}/" install
 
     find "${pkgdir}" -type f -name '*.a' -delete
+
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

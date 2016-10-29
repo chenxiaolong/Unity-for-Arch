@@ -1,7 +1,7 @@
-From c4bda95e2da4785b6a49757cedbdc1865958a71a Mon Sep 17 00:00:00 2001
+From cdac83c979f07041b17624b6031395a1e9df8380 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
-Subject: [PATCH 2/5] Disable -Werror
+Subject: [PATCH 2/6] Disable -Werror
 
 ---
  CMakeLists.txt          | 2 +-

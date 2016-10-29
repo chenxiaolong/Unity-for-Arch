@@ -66,7 +66,5 @@ package() {
     install -dm755 "${pkgdir}"/usr/share/libalpm/hooks/
     install -m644 ../update-bamf-index.hook "${pkgdir}"/usr/share/libalpm/hooks/
 
-    # Disable upstart session job when using systemd session service
-    mkdir -p "${pkgdir}"/usr/share/upstart/systemd-session/upstart
-    echo manual > "${pkgdir}"/usr/share/upstart/systemd-session/upstart/bamfdaemon.override
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

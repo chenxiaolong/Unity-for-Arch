@@ -9,7 +9,7 @@ _actual_ver=7.5.0
 _extra_ver=+17.04.20161027
 _ubuntu_rel=0ubuntu1
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=3
 epoch=1
 
 pkgdesc="A desktop experience designed for efficiency of space and interaction"
@@ -21,7 +21,7 @@ depends=(appstream-glib bamf-ubuntu boost cairo compiz-ubuntu clutter-gtk gjs
          gsettings-ubuntu-schemas hud ido libgnomeui libindicator-gtk2
          libindicator-gtk3 libnotify libunique libunity libunity-misc libxfixes
          nux unity-asset-pool unity-scope-home libxi zeitgeist-ubuntu
-         lightdm-unity-greeter upstart-user dbus-activation-env)
+         lightdm-unity-greeter dbus-activation-env)
 makedepends=(chrpath cmake doxygen intltool patchutils pkg-config
              python2-distribute)
 groups=(unity)
@@ -34,17 +34,19 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity_${_actual_ve
         0003-Fix-launchers.patch
         0004-Remove-social.scope.patch
         0005-Remove-xpathselect-dependency.patch
+        0006-Remove-upstart-user-session-support.patch
         launcher_bfb.png
         unity-debug
         run_this_if_unity_is_on_fire.py
         unity.pam)
 sha512sums=('cc57531eaf2e42052bc647ceb431bc0825452ae540a83ea295110b0c5b2ad743e3ea448594e43d55e8210c5e44f3966ef9f4f0f07e376094a2e84435737cd756'
             '5d2f5b2388479cf627904b32a1816bbfbc5fa18816725472826462af612b21d87416ccae10d8059a89c7656b077dc74b2e5afc694ffe9295cb70b5fb7dcdd13d'
-            'be2905053504eaa7b4a52fe9485a97a9548585b37a1750ffa15b71ce659243b7395c70b479baea20fcf207356a085230e71d38a9e0bd39fb26c08f05cb1d4555'
-            '30f7066a077850479e5411aebb015c8b00d1ff52c02ccfb1ad0b86dc43dc690ab6b9667e94f9f9e4658e0d3c8890c101b049bf19a80d6cdb765a514f5aa2eafd'
-            'a0891cf93316fc6e488bf2d7eee33c3dad8c1ac39edfadf3bbf6730f7ee66afc8a84c981e7ec483e81f7c5b5937244e5f6d83ad8d9c7f6135707d10303feb4f4'
-            '716955f50fce28bc81f035191a89deec1507151c0a1b310b2cd5ffc615b2465bb170f0f708df5cf004ae08bfa1682ae33c39c0667c550a60a6b602c8629dfb6e'
-            '97f888482f4eb312ef3c350c118ac8b7e4e2c2a3eb3f89d0bf1b84cb1587ecd184bbfe15d6fca5a856c7279c893a5ab909c0de66fcbb492ad15ff033ea1c3ff0'
+            '6f9c6ebc6c771873a1f0b94359b38ed059c2923a34b03164718fc082b864e807bf5c9b599741088ca90c0d77e6a748d4cd5a5ce3af0ec2d57e666a8d116bfed2'
+            'b6463f6511f556ed035be4944e5e8fdf1d29f0b277e452ca1d223f9287d2a511edfc447947b9e1800c8d1d0dc48e191ffd88de9e3306bcbde8fe0b7924e8cadd'
+            '801daa46cbe945bfcd4a9e31467d941f787b4bd0fcb87e0f54b367555dfbc11f980f885fdc9b58f06e30c777f1bb1eaa2395b933f3949bc5a37ffe000aa28958'
+            'b7df75d9b0ecdaf49c15899608de56b0bb3efebdbd596efad4aa718219a3db6cd39c47b817f913d09f6b5ccb6f10cd41f9bf3159e8722d36caf6a3743e6fc304'
+            '82a174c0c70938623bb2f768bc508b62ecfbce7095724b9b0a7ee4995d179ae487c348bcf73d71a3c51f8ac33edfc49bf83d5f27e7ff9c59a1f9b777e37e249e'
+            '38a3b41d49cdaa4ae23c440a0647caec4da3981950e8f541aca2565c3aceb02cfdb1413ac385bdf45fff70c2f366da0ff70ac20a74cc38e317bd6c77cce00e56'
             'ec9ea91d79129b23aae6c4b9584fb396ecc572a0bafcac6229cc413ee441f610cb51ffce9383544c9fc62e747d5718be9be050850943eac4820095f190dc0ed0'
             'b217490bf5eb5b0e83dbc9737b80b2ab9d7288362f370625f3c99d5a862c0e1947376b9fab4fdc9c2ddd4e8bd6e8d2ff5763a3a4391732f0781abbc60b159db5'
             'f76ce70ee8ad4a83c94a5919fcabadf7f82e90cf3c70079344e8ab4069dd41f9055f86e01ee5d96ff52819ed9979bdbe85c59e0d50aa4c511e5a20e19a9ea06d'
@@ -58,6 +60,7 @@ prepare() {
     patch -p1 -i 0003-Fix-launchers.patch
     patch -p1 -i 0004-Remove-social.scope.patch
     patch -p1 -i 0005-Remove-xpathselect-dependency.patch
+    patch -p1 -i 0006-Remove-upstart-user-session-support.patch
 
     # Apply Ubuntu patches
     patch -p1 -i "unity_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff"

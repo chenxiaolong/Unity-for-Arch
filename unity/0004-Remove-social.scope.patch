@@ -1,7 +1,7 @@
-From d078c42da6537aebb282eae3e2f2018536de2329 Mon Sep 17 00:00:00 2001
+From 03faf0843df735f2700d299a153b6ae7be5b33d2 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:17:50 -0400
-Subject: [PATCH 4/5] Remove social.scope
+Subject: [PATCH 4/6] Remove social.scope
 
 ---
  data/com.canonical.Unity.gschema.xml | 2 +-

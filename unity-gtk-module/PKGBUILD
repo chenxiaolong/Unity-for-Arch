@@ -1,13 +1,13 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 
 pkgname=unity-gtk-module
 _actual_ver=0.0.0
 _extra_ver=+16.10.20160913
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 epoch=2
 pkgdesc="Unity GTK+ Module"
 arch=(i686 x86_64)
@@ -52,4 +52,6 @@ package() {
     pushd build-gtk3
     make DESTDIR="${pkgdir}/" install
     popd
+
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

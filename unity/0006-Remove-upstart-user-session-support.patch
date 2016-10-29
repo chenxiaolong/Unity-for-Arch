@@ -1,0 +1,792 @@
+From de3ead6000e0b472b8b55d3f0225b5f80f0a358e Mon Sep 17 00:00:00 2001
+From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+Date: Fri, 28 Oct 2016 19:36:48 -0400
+Subject: [PATCH 6/6] Remove upstart user session support
+
+---
+ data/CMakeLists.txt                              |  5 --
+ data/unity7.conf.in                              | 13 ----
+ data/unity7.override                             |  1 -
+ lockscreen/LockScreenController.cpp              |  4 --
+ lockscreen/LockScreenController.h                |  3 -
+ services/CMakeLists.txt                          | 19 -----
+ services/panel-service.c                         | 51 --------------
+ services/unity-panel-service-lockscreen.conf.in  | 10 ---
+ services/unity-panel-service-lockscreen.override |  1 -
+ services/unity-panel-service.conf.in             | 20 ------
+ services/unity-panel-service.override            |  1 -
+ tests/CMakeLists.txt                             |  3 +-
+ tests/test_lockscreen_controller.cpp             |  7 +-
+ tests/test_main.cpp                              |  1 -
+ tests/test_upstart_wrapper.cpp                   | 90 ------------------------
+ tools/CMakeLists.txt                             |  1 -
+ tools/compiz-profile-selector.in                 |  4 --
+ tools/systemd-prestart-check                     | 12 ----
+ tools/unity.cmake                                | 27 ++-----
+ tools/upstart-prestart-check                     | 17 -----
+ unity-shared/CMakeLists.txt                      |  1 -
+ unity-shared/UpstartWrapper.cpp                  | 79 ---------------------
+ unity-shared/UpstartWrapper.h                    | 53 --------------
+ 23 files changed, 8 insertions(+), 415 deletions(-)
+ delete mode 100644 data/unity7.conf.in
+ delete mode 100644 data/unity7.override
+ delete mode 100644 services/unity-panel-service-lockscreen.conf.in
+ delete mode 100644 services/unity-panel-service-lockscreen.override
+ delete mode 100644 services/unity-panel-service.conf.in
+ delete mode 100644 services/unity-panel-service.override
+ delete mode 100644 tests/test_upstart_wrapper.cpp
+ delete mode 100644 tools/upstart-prestart-check
+ delete mode 100644 unity-shared/UpstartWrapper.cpp
+ delete mode 100644 unity-shared/UpstartWrapper.h
+
+diff --git a/data/CMakeLists.txt b/data/CMakeLists.txt
+index adc5f9c..355c4f8 100644
+--- a/data/CMakeLists.txt
++++ b/data/CMakeLists.txt
+@@ -32,12 +32,7 @@ configure_file (${CMAKE_SOURCE_DIR}/data/${UNITY_SCHEMAS} ${CMAKE_BINARY_DIR}/se
+ configure_file (${CMAKE_SOURCE_DIR}/tests/data/${UNITY_TEST_SCHEMAS} ${CMAKE_BINARY_DIR}/settings/${UNITY_TEST_SCHEMAS})
+ execute_process (COMMAND ${_glib_comple_schemas} ${CMAKE_BINARY_DIR}/settings)
+ 
+-# Upstart
+-configure_file(unity7.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity7.conf @ONLY)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity7.conf DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/sessions)
+-
+ # Systemd
+ configure_file(unity7.service.in ${CMAKE_CURRENT_BINARY_DIR}/unity7.service @ONLY)
+ pkg_get_variable(SYSTEMD_USER_DIR systemd systemduserunitdir)
+ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity7.service DESTINATION ${SYSTEMD_USER_DIR})
+-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/unity7.override DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/systemd-session/upstart)
+diff --git a/data/unity7.conf.in b/data/unity7.conf.in
+deleted file mode 100644
+index 1c19582..0000000
+--- a/data/unity7.conf.in
++++ /dev/null
+@@ -1,13 +0,0 @@
+-description "Unity Shell v7"
+-author "Ted Gould <ted@ubuntu.com>, Marco Trevisan <marco@ubuntu.com>"
+-
+-start on xsession SESSION=ubuntu and started unity-settings-daemon
+-stop on desktop-end
+-
+-pre-start script
+-  @UNITY_LIBDIR@/upstart-prestart-check
+-  @UNITY_LIBDIR@/compiz-profile-selector
+-end script
+-
+-respawn
+-exec compiz
+diff --git a/data/unity7.override b/data/unity7.override
+deleted file mode 100644
+index 2905494..0000000
+--- a/data/unity7.override
++++ /dev/null
+@@ -1 +0,0 @@
+-manual
+diff --git a/lockscreen/LockScreenController.cpp b/lockscreen/LockScreenController.cpp
+index 10df852..b3cf0c3 100644
+--- a/lockscreen/LockScreenController.cpp
++++ b/lockscreen/LockScreenController.cpp
+@@ -58,7 +58,6 @@ Controller::Controller(DBusManager::Ptr const& dbus_manager,
+                        session::Manager::Ptr const& session_manager,
+                        key::Grabber::Ptr const& key_grabber,
+                        SystemdWrapper::Ptr const& systemd_wrapper,
+-                       UpstartWrapper::Ptr const& upstart_wrapper,
+                        ShieldFactoryInterface::Ptr const& shield_factory,
+                        bool test_mode)
+   : opacity([this] { return fade_animator_.GetCurrentValue(); })
+@@ -66,7 +65,6 @@ Controller::Controller(DBusManager::Ptr const& dbus_manager,
+   , session_manager_(session_manager)
+   , key_grabber_(key_grabber)
+   , systemd_wrapper_(systemd_wrapper)
+-  , upstart_wrapper_(upstart_wrapper)
+   , shield_factory_(shield_factory)
+   , suspend_inhibitor_manager_(std::make_shared<SuspendInhibitorManager>())
+   , fade_animator_(unity::Settings::Instance().low_gfx() ? 0 : LOCK_FADE_DURATION)
+@@ -131,7 +129,6 @@ Controller::Controller(DBusManager::Ptr const& dbus_manager,
+ 
+       shields_.clear();
+ 
+-      upstart_wrapper_->Emit("desktop-unlock");
+       systemd_wrapper_->Stop(SYSTEMD_LOCK_TARGET);
+       accelerator_controller_.reset();
+       menu_manager_.reset();
+@@ -467,7 +464,6 @@ void Controller::OnScreenSaverActivationRequest(bool activate)
+ void Controller::LockScreen()
+ {
+   menu_manager_ = std::make_shared<menu::Manager>(std::make_shared<indicator::LockScreenDBusIndicators>(), key_grabber_);
+-  upstart_wrapper_->Emit("desktop-lock");
+   systemd_wrapper_->Start(SYSTEMD_LOCK_TARGET);
+ 
+   accelerator_controller_ = std::make_shared<AcceleratorController>(key_grabber_);
+diff --git a/lockscreen/LockScreenController.h b/lockscreen/LockScreenController.h
+index 552dba0..1f25758 100644
+--- a/lockscreen/LockScreenController.h
++++ b/lockscreen/LockScreenController.h
+@@ -31,7 +31,6 @@
+ #include "ScreenSaverDBusManager.h"
+ #include "unity-shared/BackgroundEffectHelper.h"
+ #include "unity-shared/SystemdWrapper.h"
+-#include "unity-shared/UpstartWrapper.h"
+ 
+ namespace unity
+ {
+@@ -47,7 +46,6 @@ public:
+ 
+   Controller(DBusManager::Ptr const&, session::Manager::Ptr const&, key::Grabber::Ptr const&,
+              SystemdWrapper::Ptr const& systemd_wrapper = std::make_shared<SystemdWrapper>(),
+-             UpstartWrapper::Ptr const& upstart_wrapper = std::make_shared<UpstartWrapper>(),
+              ShieldFactoryInterface::Ptr const& shield_factory = std::make_shared<ShieldFactory>(),
+              bool test_mode = false);
+ 
+@@ -90,7 +88,6 @@ private:
+   key::Grabber::Ptr key_grabber_;
+   AcceleratorController::Ptr accelerator_controller_;
+   SystemdWrapper::Ptr systemd_wrapper_;
+-  UpstartWrapper::Ptr upstart_wrapper_;
+   ShieldFactoryInterface::Ptr shield_factory_;
+   SuspendInhibitorManager::Ptr suspend_inhibitor_manager_;
+ 
+diff --git a/services/CMakeLists.txt b/services/CMakeLists.txt
+index 4958dbb..1fab8bb 100644
+--- a/services/CMakeLists.txt
++++ b/services/CMakeLists.txt
+@@ -12,7 +12,6 @@ set(UNITY_PANEL_SERVICE_DEPS
+     indicator3-0.4>=12.10.2
+     x11
+     libido3-0.1>=13.0.0
+-    libupstart
+ )
+ 
+ pkg_check_modules(SERVICE_DEPS REQUIRED ${UNITY_PANEL_SERVICE_DEPS})
+@@ -53,12 +52,6 @@ add_executable(unity-panel-service ${PANEL_SOURCES})
+ target_link_libraries(unity-panel-service ${LIBS})
+ install(TARGETS unity-panel-service DESTINATION ${UNITY_INSTALL_LIBDIR})
+ 
+-configure_file(unity-panel-service.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service.conf DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/sessions)
+-
+-configure_file(unity-panel-service-lockscreen.conf.in ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.conf DESTINATION ${CMAKE_INSTALL_DATADIR}/upstart/sessions)
+-
+ ##
+ ##  Systemd Unit Files
+ ##
+@@ -77,15 +70,3 @@ install( FILES
+          "${CMAKE_CURRENT_BINARY_DIR}/unity-panel-service-lockscreen.service"
+          "${CMAKE_CURRENT_SOURCE_DIR}/unity-screen-locked.target"
+          DESTINATION "${SYSTEMD_USER_DIR}")
+-
+-##
+-##  Upstart systemd override Job File
+-##
+-
+-set (UPSTART_SYSTEMD_OVERRIDE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/upstart/systemd-session/upstart")
+-message (STATUS "${UPSTART_SYSTEMD_OVERRIDE_DIR} is the Upstart override Job File for systemd dir")
+-
+-install (FILES 
+-		 unity-panel-service.override
+-		 unity-panel-service-lockscreen.override
+-         DESTINATION "${UPSTART_SYSTEMD_OVERRIDE_DIR}")
+diff --git a/services/panel-service.c b/services/panel-service.c
+index 4451fff..1e1a787 100644
+--- a/services/panel-service.c
++++ b/services/panel-service.c
+@@ -34,8 +34,6 @@
+ #include <X11/XF86keysym.h>
+ #include <X11/extensions/XInput2.h>
+ 
+-#include <upstart/upstart-dbus.h>
+-
+ G_DEFINE_TYPE (PanelService, panel_service, G_TYPE_OBJECT);
+ 
+ #define GET_PRIVATE(o) \
+@@ -139,7 +137,6 @@ static void load_indicators_from_indicator_files (PanelService *);
+ static void sort_indicators (PanelService *);
+ static void notify_object (IndicatorObject *object);
+ static void update_keybinding (GSettings *, const gchar *, gpointer);
+-static void emit_upstart_event (const gchar *);
+ static void menu_shell_deactivate_override (GtkMenuShell *menu_shell);
+ static gchar * get_indicator_entry_id_by_entry (IndicatorObjectEntry *entry);
+ static IndicatorObjectEntry * get_indicator_entry_by_id (PanelService *self, const gchar *entry_id);
+@@ -158,9 +155,6 @@ panel_service_class_dispose (GObject *self)
+   g_idle_remove_by_data (self);
+   gdk_window_remove_filter (NULL, (GdkFilterFunc)event_filter, self);
+ 
+-  if (!lockscreen_mode)
+-    emit_upstart_event ("indicator-services-end");
+-
+   if (GTK_IS_WIDGET (priv->last_menu) &&
+       gtk_widget_get_realized (GTK_WIDGET (priv->last_menu)))
+     {
+@@ -730,9 +724,6 @@ initial_resync (PanelService *self)
+ static gboolean
+ ready_signal (PanelService *self)
+ {
+-  if (!lockscreen_mode)
+-    emit_upstart_event ("indicator-services-start");
+-
+   return G_SOURCE_REMOVE;
+ }
+ 
+@@ -824,48 +815,6 @@ parse_string_keybinding (const char *str, KeyBinding *kb)
+ }
+ 
+ static void
+-emit_upstart_event (const gchar *event)
+-{
+-  const gchar *upstartsession = g_getenv ("UPSTART_SESSION");
+-
+-  if (!upstartsession)
+-    return;
+-
+-  GError *error = NULL;
+-  GDBusConnection* conn = g_dbus_connection_new_for_address_sync (upstartsession,
+-                                                                  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+-                                                                  NULL, NULL, &error);
+-
+-  if (error)
+-    {
+-      g_warning ("Unable to connect to Upstart session: %s", error->message);
+-      g_error_free (error);
+-      return;
+-    }
+-
+-  GVariant *result = g_dbus_connection_call_sync (conn, DBUS_SERVICE_UPSTART,
+-                                                  DBUS_PATH_UPSTART,
+-                                                  DBUS_INTERFACE_UPSTART,
+-                                                  "EmitEvent",
+-                                                  g_variant_new ("(sasb)", event, NULL, 0),
+-                                                  NULL, G_DBUS_CALL_FLAGS_NO_AUTO_START, -1,
+-                                                  NULL, &error);
+-
+-  if (error)
+-    {
+-      g_warning ("Unable to emit Upstart event: %s", error->message);
+-      g_error_free (error);
+-    }
+-  else
+-    {
+-      g_variant_unref (result);
+-    }
+-
+-  g_object_unref (conn);
+-}
+-
+-
+-static void
+ panel_service_init (PanelService *self)
+ {
+   PanelServicePrivate *priv;
+diff --git a/services/unity-panel-service-lockscreen.conf.in b/services/unity-panel-service-lockscreen.conf.in
+deleted file mode 100644
+index 1b954a1..0000000
+--- a/services/unity-panel-service-lockscreen.conf.in
++++ /dev/null
+@@ -1,10 +0,0 @@
+-description "Backing Service for the Unity Panel"
+-author "Andrea Azzarone <andrea.azzarone@canonical.com>"
+-
+-start on desktop-lock
+-stop on desktop-unlock
+-
+-pre-start exec @UNITY_LIBDIR@/upstart-prestart-check
+-
+-respawn
+-exec @UNITY_LIBDIR@/unity-panel-service --lockscreen-mode
+diff --git a/services/unity-panel-service-lockscreen.override b/services/unity-panel-service-lockscreen.override
+deleted file mode 100644
+index 2905494..0000000
+--- a/services/unity-panel-service-lockscreen.override
++++ /dev/null
+@@ -1 +0,0 @@
+-manual
+diff --git a/services/unity-panel-service.conf.in b/services/unity-panel-service.conf.in
+deleted file mode 100644
+index b803f6a..0000000
+--- a/services/unity-panel-service.conf.in
++++ /dev/null
+@@ -1,20 +0,0 @@
+-description "Backing Service for the Unity Panel"
+-author "Ted Gould <ted@ubuntu.com>"
+-
+-# These should be used when we have Unity full under upstart, but while
+-# we have the pre-start work around for gnome-session starting it we're
+-# going to comment them out.
+-#
+-# start on started unity7
+-# stop on stopped unity7
+-
+-start on desktop-start DESKTOP_SESSION=ubuntu
+-stop on desktop-end
+-
+-pre-start exec @UNITY_LIBDIR@/upstart-prestart-check
+-
+-emits indicator-services-start
+-emits indicator-services-end
+-
+-respawn
+-exec @UNITY_LIBDIR@/unity-panel-service
+diff --git a/services/unity-panel-service.override b/services/unity-panel-service.override
+deleted file mode 100644
+index 2905494..0000000
+--- a/services/unity-panel-service.override
++++ /dev/null
+@@ -1 +0,0 @@
+-manual
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index c6f0e0b..31721c8 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -8,7 +8,7 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_BINARY_DIR}/test
+ #
+ # Unit tests
+ #
+-set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;libupstart;xtst")
++set (TEST_DEPS "${UNITY_PLUGIN_DEPS};unity>=4.99.0;xtst")
+ pkg_check_modules (TEST_UNIT_DEPS REQUIRED ${TEST_DEPS})
+ 
+ string (REPLACE ";" " " TEST_UNIT_DEPS_CFLAGS_OTHER "${TEST_UNIT_CFLAGS_OTHER}")
+@@ -294,7 +294,6 @@ if (ENABLE_X_SUPPORT)
+                  test_unity_settings.cpp
+                  test_unity_window_style.cpp
+                  test_unity_window_view.cpp
+-                 test_upstart_wrapper.cpp
+                  test_user_authenticator_pam.cpp
+                  test_volume_launcher_icon.cpp
+                  test_window_buttons.cpp
+diff --git a/tests/test_lockscreen_controller.cpp b/tests/test_lockscreen_controller.cpp
+index c7db68f..b5c565b 100644
+--- a/tests/test_lockscreen_controller.cpp
++++ b/tests/test_lockscreen_controller.cpp
+@@ -84,9 +84,8 @@ struct TestLockScreenController : Test
+     , key_grabber(std::make_shared<key::MockGrabber::Nice>())
+     , dbus_manager(std::make_shared<DBusManager>(session_manager))
+     , systemd_wrapper(std::make_shared<SystemdWrapper>())
+-    , upstart_wrapper(std::make_shared<UpstartWrapper>())
+     , shield_factory(std::make_shared<ShieldFactoryMock>())
+-    , controller(dbus_manager, session_manager, key_grabber, systemd_wrapper, upstart_wrapper, shield_factory)
++    , controller(dbus_manager, session_manager, key_grabber, systemd_wrapper, shield_factory)
+   {}
+ 
+   struct ControllerWrap : Controller
+@@ -95,9 +94,8 @@ struct TestLockScreenController : Test
+                    session::Manager::Ptr const& session_manager,
+                    key::Grabber::Ptr const& key_grabber,
+                    SystemdWrapper::Ptr const& systemd_wrapper,
+-                   UpstartWrapper::Ptr const& upstart_wrapper,
+                    ShieldFactoryInterface::Ptr const& shield_factory)
+-      : Controller(dbus_manager, session_manager, key_grabber, systemd_wrapper, upstart_wrapper, shield_factory, /* test_mode */ true)
++      : Controller(dbus_manager, session_manager, key_grabber, systemd_wrapper, shield_factory, /* test_mode */ true)
+     {}
+ 
+     using Controller::shields_;
+@@ -115,7 +113,6 @@ struct TestLockScreenController : Test
+   key::MockGrabber::Ptr key_grabber;
+   DBusManager::Ptr dbus_manager;
+   unity::SystemdWrapper::Ptr systemd_wrapper;
+-  unity::UpstartWrapper::Ptr upstart_wrapper;
+ 
+   ShieldFactoryMock::Ptr shield_factory;
+   ControllerWrap controller;
+diff --git a/tests/test_main.cpp b/tests/test_main.cpp
+index 5ce3aec..5321f8e 100644
+--- a/tests/test_main.cpp
++++ b/tests/test_main.cpp
+@@ -18,7 +18,6 @@ int main(int argc, char** argv)
+   const std::string LOCAL_DATA_DIR = BUILDDIR"/tests/data:/usr/share";
+   g_setenv("XDG_DATA_DIRS", LOCAL_DATA_DIR.c_str(), TRUE);
+   g_setenv("LC_ALL", "C", TRUE);
+-  g_unsetenv("UPSTART_SESSION");
+   Utils::init_gsettings_test_environment();
+ 
+   gtk_init(&argc, &argv);
+diff --git a/tests/test_upstart_wrapper.cpp b/tests/test_upstart_wrapper.cpp
+deleted file mode 100644
+index 95b17d3..0000000
+--- a/tests/test_upstart_wrapper.cpp
++++ /dev/null
+@@ -1,90 +0,0 @@
+-// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
+-/*
+-* Copyright (C) 2014 Canonical Ltd
+-*
+-* This program is free software: you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License version 3 as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-* GNU General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*
+-* Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+-*/
+-
+-#include <gtest/gtest.h>
+-using namespace testing;
+-
+-#include "unity-shared/UpstartWrapper.h"
+-
+-#include <UnityCore/GLibDBusServer.h>
+-#include <UnityCore/Variant.h>
+-
+-#include "test_utils.h"
+-
+-namespace
+-{
+-
+-const std::string UPSTART =
+-R"(<node>
+-  <interface name="com.ubuntu.Upstart0_6">
+-    <method name="EmitEvent">
+-      <arg name="name" type="s" direction="in" />
+-      <arg name="env" type="as" direction="in" />
+-      <arg name="wait" type="b" direction="in" />
+-    </method>
+-
+-    <signal name="EventEmitted">
+-      <arg name="name" type="s" />
+-      <arg name="env" type="as" />
+-    </signal>
+-  </interface>
+-</node>)";
+-
+-struct MockUpstartWrapper : unity::UpstartWrapper {
+-  MockUpstartWrapper()
+-    : UpstartWrapper(UpstartWrapper::TestMode())
+-  {}
+-};
+-
+-struct TestUpstartWrapper : public Test
+-{
+-  TestUpstartWrapper()
+-  {
+-    upstart_server_ = std::make_shared<unity::glib::DBusServer>("com.canonical.Unity.Test.Upstart");
+-    upstart_server_->AddObjects(UPSTART, "/com/ubuntu/Upstart");
+-
+-    Utils::WaitUntilMSec([this] { return upstart_server_->IsConnected(); });
+-  }
+-
+-  unity::glib::DBusServer::Ptr upstart_server_;
+-  MockUpstartWrapper upstart_wrapper_;
+-};
+-
+-
+-TEST_F(TestUpstartWrapper, Emit)
+-{
+-  bool event_emitted = false;
+-
+-  upstart_server_->GetObjects().front()->SetMethodsCallsHandler([&] (std::string const& method, GVariant* par) -> GVariant* {
+-    if (method == "EmitEvent")
+-    {
+-      event_emitted = true;
+-
+-      std::string event_name = glib::Variant(g_variant_get_child_value(par, 0)).GetString();
+-      EXPECT_EQ("desktop-lock", event_name);
+-    }
+-
+-    return nullptr;
+-  });
+-
+-  upstart_wrapper_.Emit("desktop-lock");
+-  Utils::WaitUntil(event_emitted);
+-}
+-
+-}
+diff --git a/tools/CMakeLists.txt b/tools/CMakeLists.txt
+index a9a5bc2..45855d1 100644
+--- a/tools/CMakeLists.txt
++++ b/tools/CMakeLists.txt
+@@ -33,4 +33,3 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/compiz-profile-selector.in ${CMAKE_C
+ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/compiz-profile-selector DESTINATION ${UNITY_INSTALL_LIBDIR})
+ 
+ install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/systemd-prestart-check DESTINATION ${UNITY_INSTALL_LIBDIR})
+-install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/upstart-prestart-check DESTINATION ${UNITY_INSTALL_LIBDIR})
+diff --git a/tools/compiz-profile-selector.in b/tools/compiz-profile-selector.in
+index 8041f10..783f262 100755
+--- a/tools/compiz-profile-selector.in
++++ b/tools/compiz-profile-selector.in
+@@ -9,10 +9,6 @@ fi
+ 
+ echo "Using compiz profile '$compiz_profile'"
+ 
+-if [ -n "$UPSTART_SESSION" ]; then
+-  initctl set-env -g COMPIZ_CONFIG_PROFILE="$compiz_profile"
+-fi
+-
+ dbus-update-activation-environment --verbose --systemd COMPIZ_CONFIG_PROFILE="$compiz_profile"
+ 
+ export COMPIZ_CONFIG_PROFILE="$compiz_profile"
+diff --git a/tools/systemd-prestart-check b/tools/systemd-prestart-check
+index 191ff4f..38f4101 100644
+--- a/tools/systemd-prestart-check
++++ b/tools/systemd-prestart-check
+@@ -14,16 +14,4 @@ if grep -q compiz /usr/share/gnome-session/sessions/ubuntu.session; then
+   exit 1
+ fi
+ 
+-if [ -z "$UPSTART_SESSION" ]; then
+-  exit 0
+-fi
+-
+-upstart_status=$(initctl status unity7) || true
+-
+-if (echo "$upstart_status" | grep -q "start/running"); then
+-  echo "Unity is managed by Upstart"
+-  [ -n "$this_job" ] && systemctl --user cancel $this_job
+-  exit 1
+-fi
+-
+ exit 0
+diff --git a/tools/unity.cmake b/tools/unity.cmake
+index 72f646a..6439a42 100755
+--- a/tools/unity.cmake
++++ b/tools/unity.cmake
+@@ -79,19 +79,8 @@ def call_silently(cmd):
+     return subprocess.call(cmd.split(), stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT) == 0
+ 
+ def session_manager_command(service, what):
+-    if is_systemd_session() and not is_running_in_upstart(service):
++    if is_systemd_session():
+         return "systemctl --user {} {}.service".format(what, service)
+-    elif is_upstart_session():
+-        return "{} {}".format(what, service)
+-
+-def is_upstart_session():
+-    return 'UPSTART_SESSION' in os.environ.keys() and len(os.environ['UPSTART_SESSION'])
+-
+-def is_running_in_upstart(service):
+-    return is_upstart_session() and b'start/running' in subprocess.check_output("status {}".format(service).split())
+-
+-def is_unity_running_in_upstart():
+-    return is_running_in_upstart("unity7")
+ 
+ def is_systemd_session():
+     try:
+@@ -100,11 +89,11 @@ def is_systemd_session():
+         return False
+ 
+ def is_unity_running_in_systemd():
+-    return is_systemd_session() and not is_unity_running_in_upstart() and \
++    return is_systemd_session() and \
+            call_silently(session_manager_command("unity7", "is-active"))
+ 
+ def is_unity_running_in_session_manager():
+-    return is_unity_running_in_systemd() or is_unity_running_in_upstart()
++    return is_unity_running_in_systemd()
+ 
+ def start_with_session_manager():
+     return subprocess.Popen(session_manager_command("unity7", "start").split())
+@@ -153,12 +142,9 @@ def process_and_start_unity (compiz_args):
+     run_command = " ".join(cli)
+ 
+     if run_command == DEFAULT_COMMAND and not options.ignore_session_manager and \
+-       (is_upstart_session() or is_systemd_session()):
++       is_systemd_session():
+         return restart_with_session_manager()
+ 
+-    if is_unity_running_in_upstart():
+-        stop_with_session_manager()
+-
+     # kill a previous compiz if was there (this is a hack as compiz can
+     # sometimes get stuck and not exit on --replace)
+     display = "DISPLAY=" + os.environ["DISPLAY"]
+@@ -241,12 +227,9 @@ if __name__ == '__main__':
+                       help="Store log under filename.")
+     parser.add_option("--replace", action="store_true",
+                       help="Run unity /!\ This is for compatibility with other desktop interfaces and acts the same as running unity without --replace")
+-    if is_systemd_session() and not is_unity_running_in_upstart():
++    if is_systemd_session():
+         parser.add_option("--ignore-systemd", action="store_true", dest="ignore_session_manager",
+                           help="Run unity without systemd support")
+-    elif is_upstart_session():
+-        parser.add_option("--ignore-upstart", action="store_true", dest="ignore_session_manager",
+-                          help="Run unity without upstart support")
+     parser.add_option("--reset", action="store_true",
+                       help="(deprecated: provided for backwards compatibility)")
+     parser.add_option("--reset-icons", action="store_true",
+diff --git a/tools/upstart-prestart-check b/tools/upstart-prestart-check
+deleted file mode 100644
+index e846c47..0000000
+--- a/tools/upstart-prestart-check
++++ /dev/null
+@@ -1,17 +0,0 @@
+-#!/bin/bash
+-
+-# If gnome-session is going to start compiz,
+-# we don't want to be the ones doing it.
+-if grep -q compiz /usr/share/gnome-session/sessions/ubuntu.session ; then
+-  echo "GNOME Session is starting Compiz"
+-  stop
+-  exit 1
+-fi
+-
+-if (systemctl --user is-active unity7 &> /dev/null); then
+-  echo "Unity instance is managed by Systemd, ignoring request..."
+-  stop
+-  exit 1
+-fi
+-
+-exit 0
+diff --git a/unity-shared/CMakeLists.txt b/unity-shared/CMakeLists.txt
+index 2b61100..9259014 100644
+--- a/unity-shared/CMakeLists.txt
++++ b/unity-shared/CMakeLists.txt
+@@ -72,7 +72,6 @@ set (UNITY_SHARED_SOURCES
+      UnitySettings.cpp
+      UnityWindowStyle.cpp
+      UnityWindowView.cpp
+-     UpstartWrapper.cpp
+      UserThumbnailProvider.cpp
+      WindowButtons.cpp
+      WindowManager.cpp
+diff --git a/unity-shared/UpstartWrapper.cpp b/unity-shared/UpstartWrapper.cpp
+deleted file mode 100644
+index 284668b..0000000
+--- a/unity-shared/UpstartWrapper.cpp
++++ /dev/null
+@@ -1,79 +0,0 @@
+-// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
+-/*
+-* Copyright (C) 2014 Canonical Ltd
+-*
+-* This program is free software: you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License version 3 as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-* GNU General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*
+-* Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+-*/
+-
+-#include "UpstartWrapper.h"
+-
+-#include <UnityCore/GLibDBusProxy.h>
+-#include <upstart/upstart-dbus.h>
+-
+-namespace unity
+-{
+-
+-//
+-// Start private implementation
+-//
+-
+-class UpstartWrapper::Impl
+-{
+-public:
+-  Impl(bool test_mode = (!g_getenv("UPSTART_SESSION")));
+-
+-  void Emit(std::string const& name);
+-
+-private:
+-  bool test_mode_;
+-};
+-
+-UpstartWrapper::Impl::Impl(bool test_mode)
+-  : test_mode_(test_mode)
+-{}
+-
+-void UpstartWrapper::Impl::Emit(std::string const& name)
+-{
+-  auto flags = static_cast<GDBusProxyFlags>(G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
+-                                            G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS);
+-
+-  auto proxy = std::make_shared<unity::glib::DBusProxy>(test_mode_ ?  "com.canonical.Unity.Test.Upstart" : DBUS_SERVICE_UPSTART,
+-                                                        DBUS_PATH_UPSTART, DBUS_INTERFACE_UPSTART,
+-                                                        G_BUS_TYPE_SESSION, flags);
+-
+-  proxy->CallBegin("EmitEvent", g_variant_new("(sasb)", name.c_str(), nullptr, 0), [proxy] (GVariant*, glib::Error const&) {});
+-}
+-
+-//
+-// End private implementation
+-//
+-
+-UpstartWrapper::UpstartWrapper()
+-  : pimpl_(new Impl)
+-{}
+-
+-UpstartWrapper::UpstartWrapper(UpstartWrapper::TestMode const& tm)
+-  : pimpl_(new Impl(true))
+-{}
+-
+-UpstartWrapper::~UpstartWrapper()
+-{}
+-
+-void UpstartWrapper::Emit(std::string const& name)
+-{
+-  pimpl_->Emit(name);
+-}
+-
+-}
+diff --git a/unity-shared/UpstartWrapper.h b/unity-shared/UpstartWrapper.h
+deleted file mode 100644
+index 3be88d9..0000000
+--- a/unity-shared/UpstartWrapper.h
++++ /dev/null
+@@ -1,53 +0,0 @@
+-// -*- Mode: C++; indent-tabs-mode: nil; tab-width: 2 -*-
+-/*
+-* Copyright (C) 2014 Canonical Ltd
+-*
+-* This program is free software: you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License version 3 as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-* GNU General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-*
+-* Authored by: Andrea Azzarone <andrea.azzarone@canonical.com>
+-*/
+-
+-#ifndef UNITY_UPSTART_WRAPPER
+-#define UNITY_UPSTART_WRAPPER
+-
+-#include <memory>
+-
+-namespace unity
+-{
+-
+-class UpstartWrapper
+-{
+-public:
+-  typedef std::shared_ptr<UpstartWrapper> Ptr;
+-
+-  UpstartWrapper();
+-  ~UpstartWrapper();
+-
+-  void Emit(std::string const& name);
+-
+-protected:
+-  struct TestMode {};
+-  UpstartWrapper(TestMode const&);
+-
+-private:
+-  // Noncopyable
+-  UpstartWrapper(UpstartWrapper const&) = delete;
+-  UpstartWrapper& operator=(UpstartWrapper const&) = delete;
+-
+-  class Impl;
+-  std::unique_ptr<Impl> pimpl_;
+-};
+-
+-}
+-
+-#endif
+-- 
+2.10.1
+

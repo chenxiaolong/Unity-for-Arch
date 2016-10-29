@@ -14,7 +14,7 @@ _use_ppa=false
 _ubuntu_rel=1ubuntu7
 _ubuntu_ver=3.20.2
 pkgver=3.22.1
-pkgrel=2
+pkgrel=3
 pkgdesc="The GNOME Session Handler"
 url="https://git.gnome.org/browse/gnome-session"
 arch=(i686 x86_64)
@@ -124,4 +124,6 @@ package() {
     install -dm755 "${pkgdir}/usr/lib/gnome-session/"
     install -m755 "${srcdir}/debian/data/run-systemd-session" \
         "${pkgdir}/usr/lib/gnome-session/"
+
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

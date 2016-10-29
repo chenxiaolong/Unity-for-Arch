@@ -1,14 +1,14 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 
 pkgname=unity-settings-daemon
 _ubuntu_rel=0ubuntu1
 _actual_ver=15.04.1
 _extra_ver=+16.10.20161003
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=1
+pkgrel=2
 pkgdesc="Unity Settings Daemon"
 arch=(i686 x86_64)
 url="https://launchpad.net/unity-settings-daemon"
@@ -89,4 +89,6 @@ package() {
 
     # Use language packs
     rm -r "${pkgdir}/usr/share/locale/"
+
+    rm -rv "${pkgdir}"/usr/share/upstart/
 }

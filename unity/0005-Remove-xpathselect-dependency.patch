@@ -1,7 +1,7 @@
-From b5a9d3d9635cd01d1263e7f6fdaceb316bc9ed15 Mon Sep 17 00:00:00 2001
+From 3ce675db7aa37f8bd612b84f836e3e5acb32d2a4 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
-Subject: [PATCH 5/5] Remove xpathselect dependency
+Subject: [PATCH 5/6] Remove xpathselect dependency
 
 ---
  CMakeLists.txt                        |   1 -
