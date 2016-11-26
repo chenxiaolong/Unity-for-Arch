@@ -1,27 +1,25 @@
-From 947d947a502cdc67d7b6c9f50cd5ec025fef9f3f Mon Sep 17 00:00:00 2001
+From f50568d56222734ed2a2f601d00dc2de12228687 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 25 Jan 2016 12:53:01 -0500
-Subject: [PATCH 2/2] Remove url-dispatcher dependency
+Subject: [PATCH 2/3] Remove url-dispatcher dependency
 
 ---
- CMakeLists.txt             |  3 +--
+ CMakeLists.txt             |  1 -
  src/backend-dbus/actions.c | 15 ++++-----------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ 2 files changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 72d9a5a..3ed483b 100644
+index cb87195..6c0be0c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -29,8 +29,7 @@ find_package (PkgConfig REQUIRED)
- include (FindPkgConfig)
+@@ -30,7 +30,6 @@ include (FindPkgConfig)
  pkg_check_modules (SERVICE REQUIRED
                     glib-2.0>=2.36
--                   gio-unix-2.0>=2.36
--                   url-dispatcher-1>=1)
-+                   gio-unix-2.0>=2.36)
- include_directories (${SERVICE_INCLUDE_DIRS})
+                    gio-unix-2.0>=2.36
+-                   url-dispatcher-1>=1
+                    libwhoopsie)
+ include_directories(SYSTEM ${SERVICE_INCLUDE_DIRS})
  
- set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
 diff --git a/src/backend-dbus/actions.c b/src/backend-dbus/actions.c
 index 06dd2bd..0c54e12 100644
 --- a/src/backend-dbus/actions.c
@@ -77,5 +75,5 @@ index 06dd2bd..0c54e12 100644
    else
      run_outside_app ("gnome-control-center info");
 -- 
-2.8.2
+2.10.2
 

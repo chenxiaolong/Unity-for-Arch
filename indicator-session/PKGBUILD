@@ -8,9 +8,9 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+17.04.20161021
+_extra_ver=+17.04.20161114
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="Indicator showing session management, status and user switching"
 arch=(i686 x86_64)
@@ -22,14 +22,17 @@ optdepends=('lightdm: support for lightdm')
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-There-is-no-help.patch
-        0002-Remove-url-dispatcher-dependency.patch)
-sha512sums=('cdc7049ea79820b746fe293bd430b2ed561fcc803e483ccc9d1b5744d92058a9983e4f81bf34190a6829ee389234cdd5b27ffab71e06ed97a9a72211023d9a56'
-            'd6fb693580c921ce397124e12222aeff63734b1a2729f9e661a432613178ed8ff8da6107364e151bbd2bd58c3e70e18b71d8b96988025134f0fee8bc03868135'
-            '8ab2047eae79c01d206811f76efab57ac55161a0c3ba4f7f9e1fa37c80cc619d9571a42af0259b6e32f6597cbab6bc27fc5c5fb50965737065baae6cb546c025')
+        0002-Remove-url-dispatcher-dependency.patch
+        0003-Remove-libwhoopsie-dependency.patch)
+sha512sums=('6ca52336c1f48df04beb20b2b37e53d1f9554a8ac08ab967da1e76ef170c42b00b7024e5a3769d6832e5abf12b762edc569e5ecd54761d073f2d39151fa47e9f'
+            '96abc04783bd66affd976c3dd4ddeaedff244170b17c6a570b15bb30984b2a659c933e01fe28b3acc019a0dcd025c4035d1bf2d0b6c111f054bdb110029e5e05'
+            '2814334e66b44b2cc8db91ca72dbd2ac108f1a0b3e3770f3ada5ead83b65560e2c09e4168a405f4b3dc17c259b228668175526980deb1163e3ba359ca2d09a5a'
+            'fa069cf23804fbc29e01435c53619d95c755b0d3a674f90e7713d34ec70d92a9ef9e9cc8e2d4e1b2521580cf7f8d9a2961510de07a979ec1ba43bab98211e3b2')
 
 prepare() {
     patch -p1 -i ../0001-There-is-no-help.patch
     patch -p1 -i ../0002-Remove-url-dispatcher-dependency.patch
+    patch -p1 -i ../0003-Remove-libwhoopsie-dependency.patch
 }
 
 build() {
