@@ -56,8 +56,8 @@ index 75c200e..e81a346 100644
  PKG_PROG_PKG_CONFIG
  
  dnl ===========================================================================
--GL_PKGS="gl glu glew glewmx xext x11"
-+GL_PKGS="gl glu glew-unity glewmx-unity xext x11"
+-GL_PKGS="gl glu glewmx xext x11"
++GL_PKGS="gl glu glewmx-unity xext x11"
  MAINTAINER_CFLAGS=""
  
  # X11 build

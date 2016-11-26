@@ -3,14 +3,14 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 # vercheck-launchpad: name=${pkgname}
 
 pkgname=nux
 _actual_ver=4.0.8
-_extra_ver=+16.10.20160714
+_extra_ver=+17.04.20161107
 pkgver=${_actual_ver}${_extra_ver/+/.}
-pkgrel=2
+pkgrel=1
 pkgdesc="Graphical user interface toolkit for applications that mixes OpenGL hardware acceleration with high quality visual rendering"
 arch=(i686 x86_64)
 url="https://launchpad.net/nux"
@@ -26,9 +26,9 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/nux_${_actual_ver}
         0001_autoconf.patch
         0001-Use-glew-unity.patch
         50_check_unity_support)
-sha512sums=('24b14e8591dcef9ca3271b7440e67e6a8e48035a75f05e36544e7f4d4086ed9c38d47a0d3265ab8b5a860daccc2a9f3865edc26e91fc70a36a7bcb0c1aeacecd'
+sha512sums=('01b60c8595f936d57837906b981265073bb2fa3710a8604ca5a0c480b74c9608595440a11d4ec4e7c871b290bde7a62d0a442887ae04eda1e597e0e073014beb'
             'e0a3d3d9cf7d4ba7da541a6383e5c545b37ce4099c1e7b716b18c47e68f0068d522ab06658f759df9c717503a46f0ca946ef2f256264c5c3fbb03fc7635038e2'
-            'c58c0e310915961b5f3b320bb6a2f060dd5531adfae1509e3697712b6aa2880008bdb76266bba32fc62983108ce58b695d05cea72feeffd5925bd3e763645cea'
+            'b0ef5513ac97f427139ae989544e56d7368e919b56dee5663932aab8691ae0308a41807f57bdc9704b4c518cc1bab3f5c8175538c833e89c321bd165024f3e8f'
             '1e82b11357f9db45fa6fff002cef11acaf53a8381e2bc28b84e9e0300502c0b1922d9273b44d4cfbbd51d004a9eb1eb2e780db7a39e2d9153c9c4efafb9314a9')
 
 prepare() {
