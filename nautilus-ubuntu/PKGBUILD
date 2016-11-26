@@ -3,7 +3,7 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase%-*}, repo=yakkety
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=zesty
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgbase%-*}, majorver=3.22
 # vercheck-ppa: name=${pkgbase%-*}, url=ppa:gnome3-team/gnome3-staging
@@ -12,10 +12,9 @@ _use_ppa=true
 
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-_ppa_rel=1ubuntu0~yakkety1
-#_ppa_ver=3.22.0
+_ppa_rel=1ubuntu0~yakkety3
 pkgver=3.22.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Default file manager for GNOME and Unity"
 url="https://wiki.gnome.org/Apps/Nautilus"
 arch=(i686 x86_64)
@@ -36,7 +35,7 @@ fi
 
 sha512sums=('SKIP'
             'SKIP'
-            'cf5943abe1c7fff5b13174ee9c01a04c42b850903cf7fa5c39d3ec4727a94f575bd9aa640921c9742632970424133ea3758a639dab8f013140f2f61e4ee8a1f8')
+            'f1a3cbe911cba370027022c8a4e3a142da4693ffa38ef5b5791e772270a6777d0ac42b8ec6249b53472f7a2e9b7729ec11840ee9aafa2acfe49469f2949ef87c')
 
 pkgver() {
     cd nautilus
