@@ -81,7 +81,6 @@ To compile from source, just build all of the packages in the following order:
 | unity-lens-video                 | Unity lens for searching videos            |
 | unity-scope-home                 | Unity lens for aggregating search results  |
 | unity-scopes                     | Unity scopes for searching online sources  |
-| metacity-ubuntu                  | Window manager of GNOME Flashback          |
 | compiz-ubuntu                    | Compositing window manager                 |
 | lightdm-unity-greeter            | LightDM greeter for Unity                  |
 | unity                            | Desktop shell designed for efficiency      |
