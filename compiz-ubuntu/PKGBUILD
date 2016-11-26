@@ -12,8 +12,8 @@ pkgname=compiz-ubuntu
 
 epoch=1
 
-_actual_ver=0.9.13.0
-_extra_ver=+17.04.20161026
+_actual_ver=0.9.13.1
+_extra_ver=+17.04.20161114.1
 
 if [[ "${_use_ppa}" != true ]]; then
     _ubuntu_rel=0ubuntu1
@@ -25,13 +25,13 @@ fi
 
 pkgver=${_actual_ver}${_extra_ver/+/.}
 
-pkgrel=2
+pkgrel=1
 pkgdesc="OpenGL window and compositing manager"
 url="http://www.compiz.org/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=(boost-libs dbus fuse glibmm glu librsvg libxcomposite libxdamage
-         libxinerama libxrandr libxslt libwnck3 mesa metacity-ubuntu
+         libxinerama libxrandr libxslt libwnck3 mesa metacity
          startup-notification protobuf pygtk pyrex gsettings-desktop-schemas)
 # The schemas from gnome-settings-daemon are needed
 depends+=(gnome-settings-daemon)
@@ -42,7 +42,7 @@ optdepends=('gnome-control-center: GNOME Control Center'
             'unity-control-center: Unity Control Center')
 groups=(unity)
 options=(emptydirs)
-conflicts=(compiz) # metacity-ubuntu
+conflicts=(compiz metacity-ubuntu)
 provides=(compiz-core compiz)
 
 if [[ "${_use_ppa}" != true ]]; then
@@ -56,16 +56,14 @@ source+=(compiz.reset
          0001-Fix-cmake-install-directory.patch
          0002-Fix-python-install-command.patch
          0003-Use-Python-2.patch
-         0004-Disable-Werror.patch
-         0005-Properly-include-metacity-library-directory.patch)
-sha512sums=('8a4a992a61dd81d56a86c7a72d7120409a1fe0c8f37c803702f180f0d211dfc0b267e1a86f15f1c53c516f98c728a923610dd4da4fab5893d204e611a1e60fe8'
-            '064a550219dd21b753b69fb1ffe118b6bf51868d1788f6f9300833cd7f356226222740bc6a21ba066bc5ea3c05666d1fcc987fbb425d482f89dbbb69b7e3e4f7'
+         0004-Disable-Werror.patch)
+sha512sums=('26d3414556244aba6f3e38578d053ed62be0147a06d0e099cd56f98396b5ff07f632669161754341ac779d4ac8f955a24880a48cebb962df24c17e0a58ad5abd'
+            'a6ffd5f16ef767b1cc0d8d2acbf92ef8feab825895ace7547be6459ab690d46f4a52e1cd76c6e55629fa68a060a5500c4c19aae1cc7f807a86feda5340695245'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '64b1a6f3cfc00e9c0c7c32d012d171b7452f8d1ea3afeaadf441316621226bbc85b75237c0726290d8552570ffbc5c4fef5c5cae2663da9369221145623dbdfa'
             '122b7858413a7114573fdb2a8d8e30f78309b364963f4a45f474409fa3ecdfbe956368a0b014294710a1e4efd19593a6fef55f3e1ce40951d2379501295455e7'
             '9c2c27af5d36a1f253638fd660755f514edc0712c0e261bea4580f6344788cda229049a514629fd432ea2d82920454f3a8b8d79c9b8849f2ba87efcf70c213bb'
-            '31601ebeaa200671557ff94a54e3518b9af50914ce24004c628b1bacbadd4da418cb2e9cba46cdfe206c83517311f31c6480fc7dc4bf4c7bcea73dde20e88ae5'
-            '88fa698484630c5862f1af688c7e76c9188cb3b4fac440cec1a0d664c1c51652b973af3ea80db88c620d17b3017aa4b0307fbff6effbc54dccf9b196a921a575')
+            '31601ebeaa200671557ff94a54e3518b9af50914ce24004c628b1bacbadd4da418cb2e9cba46cdfe206c83517311f31c6480fc7dc4bf4c7bcea73dde20e88ae5')
 
 prepare() {
     #cd "${_archive_dir}"
@@ -83,9 +81,6 @@ prepare() {
 
     # Don't treat warnings as errors
     patch -p1 -i 0004-Disable-Werror.patch
-
-    # Properly include directory for metacity-ubuntu
-    patch -p1 -i 0005-Properly-include-metacity-library-directory.patch
 
     # Apply Ubuntu patches
     if [[ "${_use_ppa}" != true ]]; then
@@ -110,9 +105,6 @@ build() {
 
     # Disable rpath in Python 2 bindings
     export COMPIZ_DISABLE_RPATH=1
-
-    # Allow CMake to find metacity-ubuntu
-    export PKG_CONFIG_PATH=/usr/unity/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
 
     # Compiz will segfault if the CMake built target is set to 'Release'
     # Disable tests since they can't run on a headless build server
@@ -145,10 +137,6 @@ package() {
     #cd "${_archive_dir}/build"
     cd build
     make install DESTDIR="${pkgdir}"
-
-    # FIXME: rpath hack to find metacity-ubuntu
-    patchelf --set-rpath '$ORIGIN/../unity/lib' \
-        "${pkgdir}/usr/bin/gtk-window-decorator"
 
     # Stupid findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
     #make findcompiz_install
