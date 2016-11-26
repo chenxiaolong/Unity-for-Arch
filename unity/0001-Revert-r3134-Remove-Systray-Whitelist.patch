@@ -1,4 +1,4 @@
-From 83625efa73e93029dc804d31f0f46ffd7a5163c4 Mon Sep 17 00:00:00 2001
+From a235841b79e92f57f17bb6e08f02d15ac1990c97 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:09:48 -0400
 Subject: [PATCH 1/6] Revert r3134: Remove Systray Whitelist
@@ -160,10 +160,10 @@ index b2ff8e0..e11fe93 100644
    glib::Signal<void, GSettings*, gchar*> whitelist_changed_;
    glib::Signal<gboolean, GtkWidget*, cairo_t*> draw_signal_;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 4d949ae..c6f0e0b 100644
+index a19a151..dab3b7d 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -251,7 +251,6 @@ if (ENABLE_X_SUPPORT)
+@@ -252,7 +252,6 @@ if (ENABLE_X_SUPPORT)
                   test_panel_menu_view.cpp
                   test_panel_service.cpp
                   test_panel_style.cpp
@@ -243,5 +243,5 @@ index c407576..0000000
 -}
 -
 -- 
-2.10.1
+2.10.2
 

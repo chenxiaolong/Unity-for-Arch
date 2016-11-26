@@ -1,4 +1,4 @@
-From 3ce675db7aa37f8bd612b84f836e3e5acb32d2a4 Mon Sep 17 00:00:00 2001
+From 46aaa3f1bb103cea0cc8da7c9b1b8715f0f2971a Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Mon, 29 Sep 2014 14:49:09 -0400
 Subject: [PATCH 5/6] Remove xpathselect dependency
@@ -559,5 +559,5 @@ index 4083a61..0000000
 -
 -#endif /* _DEBUG_DBUS_INTERFACE_H */
 -- 
-2.10.1
+2.10.2
 

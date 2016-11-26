@@ -1,4 +1,4 @@
-From 180538a4d6f465ed47596ef422a5d978c2af2a12 Mon Sep 17 00:00:00 2001
+From 9f6907520fff6a91ebd97ecc0b073f2610540b51 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:11:47 -0400
 Subject: [PATCH 3/6] Fix launchers
@@ -27,5 +27,5 @@ index 9c8c3e9..189e705 100644
          'unity://running-apps',
          'unity://expo-icon',
 -- 
-2.10.1
+2.10.2
 

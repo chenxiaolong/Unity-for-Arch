@@ -1,4 +1,4 @@
-From cdac83c979f07041b17624b6031395a1e9df8380 Mon Sep 17 00:00:00 2001
+From e1801ae9ad94753672b3e8973e39bbc9e30ad3b1 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Thu, 10 Apr 2014 20:10:51 -0400
 Subject: [PATCH 2/6] Disable -Werror
@@ -35,5 +35,5 @@ index 9a9f9e0..4958dbb 100644
  
  string (REPLACE ";" " " CFLAGS "${CFLAGS}")
 -- 
-2.10.1
+2.10.2
 
