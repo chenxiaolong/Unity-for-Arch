@@ -1,4 +1,0 @@
-if [ -n "${UPSTART}" ]; then
-    export SESSIONTYPE=gnome-session
-    exec /usr/bin/upstart --user
-fi
