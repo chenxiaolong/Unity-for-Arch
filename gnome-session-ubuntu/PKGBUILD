@@ -3,18 +3,16 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname%-*}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname%-*}, repo=zesty
 # vercheck-archlinux: name=${pkgname%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgname%-*}, majorver=3.22
 # vercheck-ppa: name=${pkgname%-*}, url=ppa:gnome3-team/gnome3-staging
 
 pkgname=gnome-session-ubuntu
 _use_ppa=false
-#_ppa_rel=2ubuntu1~xenial1
-_ubuntu_rel=1ubuntu7
-_ubuntu_ver=3.20.2
+_ubuntu_rel=1ubuntu1
 pkgver=3.22.1
-pkgrel=3
+pkgrel=4
 pkgdesc="The GNOME Session Handler"
 url="https://git.gnome.org/browse/gnome-session"
 arch=(i686 x86_64)
@@ -29,7 +27,6 @@ provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session systemd-unity)
 _commit=09f44cc50eafa047856d483ee18ebae99f8b8352  # tags/3.22.1^0
 source=("git://git.gnome.org/gnome-session#commit=${_commit}"
-        50_ubuntu_sessions.patch
         polkit-gnome-authentication-agent-1-unity.desktop)
 
 if [[ "${_use_ppa}" == "true" ]]; then
@@ -39,9 +36,8 @@ else
 fi
 
 sha512sums=('SKIP'
-            '0ddbeff2f9aafc06257f8fbad77cee7d22c73daaa63fa1d7e061a10ed7533bc5fe3306979d949e27d0e7bce9450ee6269e7bd7920e4233944dff78884e423429'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
-            '2a9e4265c659d8806f4c743984abd304bcf4fafefbcd9d1f6d8487e2c9b682b0dff943b17e5f2a97376971b97ec66f8291fa8ab752e0419bb54032177c3812fb')
+            '4111e4c7ca950e266aab7eb69dbd6fc7ccc383eec8e24093360d121a34039bef4c9d6e04a53f3c98f94875e16813f7290cf5d50f1d9e63acc756dc1b38b0835e')
 
 pkgver() {
     cd "${pkgname%-*}"
@@ -53,25 +49,15 @@ prepare() {
 
     sed -i '/53_add_sessionmigration.patch/d' ../debian/patches/series
 
-    # Already in 3.22
-    sed -i '/allow_overriding_qt_platformtheme.patch/d' ../debian/patches/series
-    sed -i '/dont_override_IM_variables.patch/d' ../debian/patches/series
-
     # If you want this, install gnome-session-properties from the AUR
-    sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
-    sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
-    sed -i '/51_remove_session_saving_from_gui.patch/d' ../debian/patches/series
+    #sed -i '/13_display_session_properties.patch/d' ../debian/patches/series
+    #sed -i '/revert_remove_gnome_session_properties.patch/d' ../debian/patches/series
+    #sed -i '/revert_remove_gnome_session_properties2.patch/d' ../debian/patches/series
+    #sed -i '/51_remove_session_saving_from_gui.patch/d' ../debian/patches/series
 
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
-        case "${i}" in
-        50_ubuntu_sessions.patch)
-            patch -p1 -i "../${i}"
-            ;;
-        *)
-            patch -p1 -i "../debian/patches/${i}"
-            ;;
-        esac
+        patch -p1 -i "../debian/patches/${i}"
     done
 
     NOCONFIGURE=1 ./autogen.sh
