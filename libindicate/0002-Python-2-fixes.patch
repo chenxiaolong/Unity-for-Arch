@@ -1,7 +1,7 @@
-From 8d6d508d37eb7a8a5273e95668f120bb9541d9a5 Mon Sep 17 00:00:00 2001
+From 407d295fafa5593f95571ba0bccb16733f6b01b8 Mon Sep 17 00:00:00 2001
 From: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 Date: Tue, 7 Oct 2014 17:13:46 -0400
-Subject: [PATCH 2/2] Python 2 fixes
+Subject: [PATCH 2/3] Python 2 fixes
 
 ---
  configure.ac                 | 2 +-
@@ -43,5 +43,5 @@ index 5058599..9d0cde8 100644
  #Copyright 2009 Canonical Ltd.
  #
 -- 
-2.1.2
+2.10.2
 

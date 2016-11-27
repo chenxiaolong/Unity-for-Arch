@@ -3,13 +3,13 @@
 # Contributor: thn81 <root@scrat>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase}, repo=yakkety
+# vercheck-ubuntu: name=${pkgbase}, repo=zesty
 # vercheck-launchpad: name=${pkgbase}
 
 pkgbase=libindicate
 pkgname=(libindicate libindicate-gtk2 libindicate-gtk3)
 pkgver=12.10.1
-pkgrel=1
+pkgrel=3
 epoch=1
 pkgdesc="Library for raising indicators via DBus"
 arch=(i686 x86_64)
@@ -20,16 +20,21 @@ makedepends=(libdbusmenu-glib dbus-glib gtk2 gtk3 gobject-introspection vala
 groups=(unity)
 source=("http://launchpad.net/${pkgbase}/12.10/${pkgver}/+download/${pkgbase}-${pkgver}.tar.gz"
         0001-Fix-autotools-errors.patch
-        0002-Python-2-fixes.patch)
+        0002-Python-2-fixes.patch
+        0003-Remove-mono-bindings.patch)
 sha512sums=('4dcb5f292153210bc15a05f117101429da77a60b8b05b569baddf0e9043d852c2dccb0d5a6adbdf4d4a1b6f06b33c61e242bb4bcb376e3d96563bda591685c06'
-            'd6e644a074d47f309b771572df7a86b748d76ef1d8263bc193f27dd5bf5d576c6ffc6ad9eddfe247d3ed93cf88773435af18705e51073033b98850dcd69541b5'
-            'a1e090fc1e8e49ad8de3bdc164d52b60fc1ea3dc2dd2da1a856a6943e9e198c2c3843d93872ab076421d8e2fc720bb3c4d919f33d154f107fe9d4bd99e6de66b')
+            '021c71f7c4573fab2d11a9f71c2c7f75d1e9ea7c518a266d64bce04a7dfc5e8fca5467050baac27abd196afb179acf4e01b0d2dc2d09806c8131535a101d2aaa'
+            '9ca2663d8fb29e6dfc0232792537191ba4643a2dec989041cba725f9239c76e6b3f69dcc1b26560c6e8590f1e3b8ac49fb4a7c2f37e1f72eac5a7a9dc0198f99'
+            '5cf6d9d447e98398081d762457db2b921dc0ae18fc1c4242edb81b29bc2cf2fbe0bdaad3fab20fd2d34a85301a0b4eeb2eb159e05ef4e87cb45e8f6e0d98d1da')
 
 prepare() {
     cd "${pkgbase}-${pkgver}"
 
     patch -p1 -i ../0001-Fix-autotools-errors.patch
     patch -p1 -i ../0002-Python-2-fixes.patch
+    patch -p1 -i ../0003-Remove-mono-bindings.patch
+
+    autoreconf -vfi
 }
 
 build() {
@@ -60,7 +65,7 @@ package_libindicate() {
     cd "${pkgbase}-${pkgver}/build-gtk2"
 
     make -j1 -C libindicate DESTDIR="${pkgdir}" install
-    make -j1 -C bindings/mono/indicate DESTDIR="${pkgdir}" install
+    #make -j1 -C bindings/mono/indicate DESTDIR="${pkgdir}" install
     make -j1 -C tests DESTDIR="${pkgdir}" install
     make -j1 -C docs DESTDIR="${pkgdir}" install
 }
@@ -73,7 +78,7 @@ package_libindicate-gtk2() {
 
     make -j1 -C libindicate-gtk DESTDIR="${pkgdir}" install
     make -j1 -C bindings/python DESTDIR="${pkgdir}" install
-    make -j1 -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
+    #make -j1 -C bindings/mono/indicate-gtk DESTDIR="${pkgdir}" install
     make -j1 -C examples DESTDIR="${pkgdir}" install
 }
 
