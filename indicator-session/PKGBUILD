@@ -8,7 +8,7 @@
 
 pkgname=indicator-session
 _actual_ver=12.10.5
-_extra_ver=+17.04.20161114
+_extra_ver=+17.04.20161201
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -24,7 +24,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-session_
         0001-There-is-no-help.patch
         0002-Remove-url-dispatcher-dependency.patch
         0003-Remove-libwhoopsie-dependency.patch)
-sha512sums=('6ca52336c1f48df04beb20b2b37e53d1f9554a8ac08ab967da1e76ef170c42b00b7024e5a3769d6832e5abf12b762edc569e5ecd54761d073f2d39151fa47e9f'
+sha512sums=('f891ebd9172fa0177fd7a8f4c812a348927be331b78aa62cff2f2dc2b4d16137af4072b78d44507b0cb090c80986cc0a9741c94e439a1c2fb1a90bc68eaee37c'
             '96abc04783bd66affd976c3dd4ddeaedff244170b17c6a570b15bb30984b2a659c933e01fe28b3acc019a0dcd025c4035d1bf2d0b6c111f054bdb110029e5e05'
             '2814334e66b44b2cc8db91ca72dbd2ac108f1a0b3e3770f3ada5ead83b65560e2c09e4168a405f4b3dc17c259b228668175526980deb1163e3ba359ca2d09a5a'
             'fa069cf23804fbc29e01435c53619d95c755b0d3a674f90e7713d34ec70d92a9ef9e9cc8e2d4e1b2521580cf7f8d9a2961510de07a979ec1ba43bab98211e3b2')
