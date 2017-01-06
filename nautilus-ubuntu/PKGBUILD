@@ -23,9 +23,9 @@ depends=(libexif gnome-desktop exempi gvfs dconf libtracker-sparql
          nautilus-sendto gnome-autoar libunity libzeitgeist)
 makedepends=(intltool gobject-introspection python packagekit python2 gnome-common git gtk-doc)
 options=(!emptydirs)
-_commit=ce0c0bb5510577c9285512d2be52cba119903b96  # tags/3.22.1^0
-source=("git://git.gnome.org/nautilus#commit=$_commit"
-        "git://git.gnome.org/libgd")
+_commit=2c7e8d3e3cd019e6938be643e8991414190344d8  # tags/3.22.2^0
+source=("git+https://git.gnome.org/browse/nautilus#commit=${_commit}"
+        "git+https://git.gnome.org/browse/libgd")
 
 if [[ "${_use_ppa}" == "true" ]]; then
     source+=("https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+files/nautilus_${_ppa_ver:-${pkgver}}-${_ppa_rel}.debian.tar.xz")
