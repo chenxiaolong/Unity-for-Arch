@@ -11,8 +11,8 @@
 pkgname=gnome-session-ubuntu
 _use_ppa=false
 _ubuntu_rel=1ubuntu1
-pkgver=3.22.1
-pkgrel=4
+pkgver=3.22.2
+pkgrel=1
 pkgdesc="The GNOME Session Handler"
 url="https://git.gnome.org/browse/gnome-session"
 arch=(i686 x86_64)
@@ -25,7 +25,7 @@ makedepends=(intltool mesa gtk-doc xtrans git gnome-common python)
 groups=(gnome unity)
 provides=("gnome-session=${pkgver}")
 conflicts=(gnome-session systemd-unity)
-_commit=09f44cc50eafa047856d483ee18ebae99f8b8352  # tags/3.22.1^0
+_commit=f5d6a6da547e048c0f4a5a13e5113abbed9cbcb3  # tags/3.22.2^0
 source=("git://git.gnome.org/gnome-session#commit=${_commit}"
         polkit-gnome-authentication-agent-1-unity.desktop)
 
@@ -37,7 +37,7 @@ fi
 
 sha512sums=('SKIP'
             '34e32d1c3fd7c417b5dc70737b9dff9c9b0b660a6c99cb8c29e944818df0cb643fcac01c6c5252849bb8595a348aaf4d2a24985560c6b8a9653544e146e5b4af'
-            '4111e4c7ca950e266aab7eb69dbd6fc7ccc383eec8e24093360d121a34039bef4c9d6e04a53f3c98f94875e16813f7290cf5d50f1d9e63acc756dc1b38b0835e')
+            'f5345f732bbb859658e4d0257dfd51bbc40e8ded4d61862644a2651fe958624fc13933f76c99ddee157c237e4b0fe2de4026c76294009de5f8f42b38089d62a1')
 
 pkgver() {
     cd "${pkgname%-*}"
