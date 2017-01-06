@@ -12,9 +12,9 @@ _use_ppa=true
 
 pkgbase=nautilus-ubuntu
 pkgname=(nautilus-ubuntu libnautilus-extension-ubuntu)
-_ppa_rel=1ubuntu0~yakkety3
-pkgver=3.22.1
-pkgrel=2
+_ppa_rel=1ubuntu0~yakkety1
+pkgver=3.22.2
+pkgrel=1
 pkgdesc="Default file manager for GNOME and Unity"
 url="https://wiki.gnome.org/Apps/Nautilus"
 arch=(i686 x86_64)
@@ -35,7 +35,7 @@ fi
 
 sha512sums=('SKIP'
             'SKIP'
-            'f1a3cbe911cba370027022c8a4e3a142da4693ffa38ef5b5791e772270a6777d0ac42b8ec6249b53472f7a2e9b7729ec11840ee9aafa2acfe49469f2949ef87c')
+            '19589338d45b363a96435ac3b0bc672b7ec339282b158e33335981919d8a2683fc5a3bbb12933a1cdd60a37496de7f0d7340c03363503c264972d854bdac6a53')
 
 pkgver() {
     cd nautilus
