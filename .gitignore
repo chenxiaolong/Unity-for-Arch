@@ -5,6 +5,7 @@ src/
 *.tar.gz
 *.tar.xz
 *.tar.Z
+*.tar
 *.tgz
 *.zip
 .*.swp
