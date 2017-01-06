@@ -8,7 +8,7 @@
 
 pkgname=indicator-datetime
 _actual_ver=15.10
-_extra_ver=+17.04.20161116.1
+_extra_ver=+17.04.20161201
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="A very, very simple clock"
@@ -23,7 +23,7 @@ makedepends=(intltool cmake)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('a0ef9e8152ce3eb78115d913e5db9f27034ae8aae640adaa9605858eadaadc20e5cfdac024862c080100a84099d43d9d51842b69e7651371c0e21ad8703e288f'
+sha512sums=('1f94bdcebe71cd5b4388c0ff2c50a14285b6c9da28b7439a1ea8ad187a728f7ae9f61d6995a2e3dd1c4cf9e4c15f02c6029a8c5dc74015ec08bace42b4995f99'
             '1d1d7c6d50222fe972e61437f2c3dbfd2dfde1baf36e063e1514ae8afb3aa5c4e02562c0c13cbe8a8b6ce94abe5a0901b2bbbe64c3d0be042b1dbe6931ddd886')
 
 prepare() {
