@@ -7,9 +7,9 @@
 pkgname=indicator-printers
 _ubuntu_rel=0ubuntu1
 _actual_ver=0.1.7
-_extra_ver=+17.04.20161026
+_extra_ver=+17.04.20161201
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=4
+pkgrel=1
 epoch=1
 pkgdesc="Indicator showing active print jobs"
 arch=(i686 x86_64)
@@ -20,8 +20,8 @@ depends=(cups libdbusmenu-glib libdbusmenu-gtk3 libindicator-gtk3)
 makedepends=(intltool python2)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}.orig.tar.gz"
         "https://launchpad.net/ubuntu/+archive/primary/+files/indicator-printers_${_actual_ver}${_extra_ver}-${_ubuntu_rel}.diff.gz")
-sha512sums=('5f97e901997bae523c29b96606451afeecbedc92c69047f194acaa508ece02fcabbfa17b6adaf5f6b81c789f85eb7fb06e179c74ce67405a13d42d7f6af8e4c3'
-            'bae6e7a4515aaa94a24e08e3ba7d8a695f589d443300d214549e12452731e960de29ac77969304277e2c8feb73d788772af13828d514994dd786d5f2c9accd60')
+sha512sums=('1cfe199ab6bf5b322336b8284e966e4191b098545c20a2b23f68fe2f0f6c47d2a627b1ea6e5ef3e517418c3f7f7d52667c36c27434f87469e061a020e5e435db'
+            '10f6973ca46d43e978b32eaef8507aaa0d614524e70a2b6b99ddfe0d9996d2a9e9a81abfed397cd822b6f562dec7f56d0a84b3453f9310ec93050e3a0e7053d3')
 
 prepare() {
     # Apply Ubuntu's patches
