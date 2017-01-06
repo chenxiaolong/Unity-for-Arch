@@ -6,16 +6,15 @@
 # Contributor: Will Rea <sillywilly@gmail.com>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgbase%-*}, repo=yakkety
+# vercheck-ubuntu: name=${pkgbase%-*}, repo=zesty
 # vercheck-archlinux: name=${pkgbase%-*}, repo=extra, arch=x86_64
 # vercheck-gnome: name=${pkgbase%-*}, majorver=1.4
 
 pkgbase=network-manager-applet-ubuntu
 pkgname=(nm-connection-editor-ubuntu network-manager-applet-ubuntu)
-_ubuntu_rel=0ubuntu2
-_ubuntu_ver=1.2.4
+_ubuntu_rel=1ubuntu1
 pkgver=1.4.2
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="Applet for managing network connections"
 arch=(i686 x86_64)
@@ -28,7 +27,7 @@ _commit=e5f280769a7097cdf97789c11fdf3a49c11cf3f6  # tags/1.4.2^0
 source=("git://git.gnome.org/network-manager-applet#commit=$_commit"
         "https://launchpad.net/ubuntu/+archive/primary/+files/${pkgbase%-*}_${_ubuntu_ver:-${pkgver}}-${_ubuntu_rel}.debian.tar.xz")
 sha512sums=('SKIP'
-            '6d1cbb49e9a6c09a0739b97b20f757bfa0ab9ad7495a1ae97f423dfdd7f5951d42bf5a1188878c1050878109f10dd3acf7a23979ecf26244ae09dc53cb30a4bc')
+            'b981ce3bf663b1effbd96fa40161c45f444ea1112662a98cad37c8fc07b48128c76302e137928623ef6fd9dcb67ff6181f0ce9ea84031185fcb644b113373533')
 
 pkgver() {
     cd "${pkgbase%-*}"
@@ -44,7 +43,6 @@ prepare() {
     # Apply Ubuntu's patches
     sed -i \
         -e '/Allow-to-create-connections-without-admin-privileges.patch/d' \
-        -e '/applet-fix-handling-of-802.1x-secrets-for-ethernet-c.patch/d' \
         ../debian/patches/series
     for i in $(grep -v '#' ../debian/patches/series); do
         msg "Applying ${i} ..."
