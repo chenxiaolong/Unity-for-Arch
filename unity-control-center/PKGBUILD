@@ -3,11 +3,11 @@
 # Based on Arch's gnome-control-center package
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 
 pkgname=unity-control-center
 _actual_ver=15.04.0
-_extra_ver=+16.10.20161003.1
+_extra_ver=+17.04.20161125.1
 pkgver=${_actual_ver}${_extra_ver/+/.}
 pkgrel=1
 pkgdesc="The Control Center for Unity"
@@ -38,7 +38,7 @@ source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-control-cent
         system-config-printer-unity.desktop
         unity-online-accounts-panel.desktop
         unity-region-panel.desktop)
-sha512sums=('666bc0b76c37abbbe1f2fc5f7a2f6a8531f43ccc4778bcb2c3a251c93f825e37178a9eb49261b0ea6066bb607a8341e6c277b343acfc132953cde136b8734c6c'
+sha512sums=('b076f1e554a0a6d4c9085c483e1dc7eb8a928fc198ac79daa8a0380a595cba84c221a2011d444d1643a5eea85dcf516edb2abca94230848fdffd38dc7d20b0ca'
             'f6e46818f7d3cda1d6750e49a136b1a04721ba01c7b626d1546d462c26811f9dad4d01cb45283abe8c18d710bb1e038233a052c4d2e8e0d5ccafe334208e2b8d'
             '6d66849016f418c78676d25d3f4683c67e37d654089f07be73b0284b0551cd66c1ef0520d2779220db079e6979afc3844206c391fff4287b122f745215e27c8a'
             'e5855a0724863adbf66964e41334a491a219b6e05272a7fd55be72370084e0501ec8d4653297935ea599201145436606f90c974720e18ab2d40087ec4ca82568'
