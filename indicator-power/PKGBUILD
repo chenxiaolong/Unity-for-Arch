@@ -6,9 +6,9 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+17.04.20161021
+_extra_ver=+17.04.20161201
 pkgver=${_actual_ver}${_extra_ver/\+/.}
-pkgrel=2
+pkgrel=1
 epoch=1
 pkgdesc="An indicator to show the power status of your devices"
 arch=(i686 x86_64)
@@ -19,7 +19,7 @@ makedepends=(cmake intltool python2)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('29027e5f6ce1ce83f0bff8042cfc45e935124d320e73b901a46cb275b67550a88396616948a38a5da52a58ec814bedd6adc2e1b3927fa46a61347cd49e559db2'
+sha512sums=('ec35a4f9bcd38b962cabd2062f086dda7c81534f4c394c917457a0d57b447ee3fb4ec3a8eb669622d8cfaf2bb1727f267f678629816a0c45225a502915b9ffa0'
             'f7dc02d696025d28a2dcd1773e996b5b8303de63de6f3e4653f75494ca363d2b76ef4cb9debb2cc20f4a9a27a7957d1ff0110a0d5d1e0635f03b5d4a02272cd0')
 
 prepare() {
