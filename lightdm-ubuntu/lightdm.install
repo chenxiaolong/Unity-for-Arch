@@ -8,8 +8,6 @@ post_install() {
     fi
 
     passwd -l lightdm > /dev/null
-
-    systemd-tmpfiles --create /usr/lib/tmpfiles.d/lightdm.conf
 }
 
 post_upgrade() {
