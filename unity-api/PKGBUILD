@@ -1,11 +1,11 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
 
 # vercheck-pkgbuild: auto
-# vercheck-ubuntu: name=${pkgname}, repo=yakkety
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
 
 pkgname=unity-api
-_actual_ver=7.119
-_extra_ver=+16.10.20160909
+_actual_ver=8.2
+_extra_ver=+17.04.20170206
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="API for Unity shell integration"
@@ -16,7 +16,7 @@ groups=(unity)
 depends=(glib2)
 makedepends=(cmake doxygen graphviz python qt5-base)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${_actual_ver}${_extra_ver}.orig.tar.gz")
-sha512sums=('110d1681f2a88fdf126424d87597ae55f4792fa6fa94fee0be61a0904ca5d365d30850f6cba25b37500d5475c572edca4f09007482e0275b8f63ca2891cd4483')
+sha512sums=('897a003a47a286a2c226c216b21c9b1b73603be5520a2ffa7ff0e5f76403bb765a56f6e2202fccd3a5d71a14bfbaa9930bcee92483bd37e43f0bff101004cc1e')
 
 build() {
     mkdir -p build
