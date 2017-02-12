@@ -6,7 +6,7 @@
 
 pkgname=indicator-power
 _actual_ver=12.10.6
-_extra_ver=+17.04.20161201
+_extra_ver=+17.04.20170116
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -19,7 +19,7 @@ makedepends=(cmake intltool python2)
 groups=(unity)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-power_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-a-phone.patch)
-sha512sums=('ec35a4f9bcd38b962cabd2062f086dda7c81534f4c394c917457a0d57b447ee3fb4ec3a8eb669622d8cfaf2bb1727f267f678629816a0c45225a502915b9ffa0'
+sha512sums=('294cfdd81b1221ebd91ef47c4a6a58074cacc9468ea9b66917a58b278c1551b4e3bd6e1e5e7a52e5b695410314e599ca4e7c1bdf8b316d27521203abee23e58b'
             'f7dc02d696025d28a2dcd1773e996b5b8303de63de6f3e4653f75494ca363d2b76ef4cb9debb2cc20f4a9a27a7957d1ff0110a0d5d1e0635f03b5d4a02272cd0')
 
 prepare() {
