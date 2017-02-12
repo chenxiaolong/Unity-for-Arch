@@ -10,26 +10,27 @@
 _use_ppa=false
 
 pkgname=gtk3-ubuntu
-_ubuntu_rel=1ubuntu2
-pkgver=3.22.4
-pkgrel=2
+_ubuntu_rel=1ubuntu4
+pkgver=3.22.7
+pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform toolkit"
 arch=(i686 x86_64)
 url="http://www.gtk.org/"
 install=gtk3.install
-depends=(atk cairo libcups libxcursor libxinerama libxrandr libxi libepoxy
+depends=(atk cairo libxcursor libxinerama libxrandr libxi libepoxy
          gdk-pixbuf2 libxcomposite libxdamage pango shared-mime-info
          at-spi2-atk wayland libxkbcommon adwaita-icon-theme json-glib
          librsvg wayland-protocols desktop-file-utils mesa
          gtk-update-icon-cache)
-makedepends=(gobject-introspection libcanberra gtk-doc git colord rest libcups)
+makedepends=(gobject-introspection libcanberra gtk-doc git colord rest
+             libcups glib2-docs)
 optdepends=('libcanberra: gtk3-widget-factory demo'
             'gtk3-print-backends: Printing')
 provides=("gtk3=${pkgver}")
 conflicts=(gtk3)
 license=(LGPL)
-_commit=4569bb372f838a9a68c9b134ef18865abe77001c  # tags/3.22.4^0
+_commit=a22e80122ede660844742fd7e41f16ef8e070510  # tags/3.22.7^0
 source=("git://git.gnome.org/gtk+#commit=${_commit}"
         settings.ini
         gtk-query-immodules-3.0.hook)
@@ -43,7 +44,7 @@ fi
 sha512sums=('SKIP'
             'ad2c0b0388f4169592b9574f0b3db673a969b7c4721548c4ac7c438eddbcdc378fcaac04e2b6c858a1562cc23ddf4804e5f7be08068340b7c9365e2b11ddcfb8'
             'f0ffd95544863f2e10fda81488b4727aa9a8a35a7d39fb96872db6664d03442db2b58af788b5990825c7b3a83681f7220ca481409cca5421dfb39b9a3bbac9ac'
-            '42e83d787e81658c71fdc05e7a2a04b591b5d56cad4f3cecf596476d26192950982722f6e8904a4516772ab3d7075e5fa39ca24a7735eef268a046414f18daba')
+            'e086602515d7703fcf84b4fbb28a2cdbd5295b20cd5deb8ba11d2ee29cdf8c980c47c307c541ca788723bbef2bb19b3f8cee5f463770ec7f10cee4aa95455dd8')
 
 pkgver() {
     cd gtk+
@@ -81,6 +82,9 @@ prepare() {
         msg "Applying ${i} ..."
         patch -p1 -i "../debian/patches/${i}"
     done
+
+    # WTF: Work around an issue building i686 on soyuz
+    echo >git.mk
 
     NOCONFIGURE=1 ./autogen.sh
 }
