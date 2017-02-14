@@ -8,7 +8,7 @@
 
 pkgname=indicator-sound
 _actual_ver=12.10.2
-_extra_ver=+17.04.20161201
+_extra_ver=+17.04.20170109
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 epoch=1
@@ -18,13 +18,13 @@ url="https://launchpad.net/indicator-sound"
 license=(GPL)
 depends=(accountsservice dconf gsettings-ubuntu-schemas libgee libnotify
          libpulse libxml2 pulseaudio qt5-base unity-api unity-control-center)
-makedepends=(cmake gobject-introspection intltool vala)
+makedepends=(cmake cmake-extras gobject-introspection intltool vala)
 groups=(unity)
 options=(!emptydirs)
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/indicator-sound_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Not-running-on-Ubuntu-Touch.patch
         0002-Remove-tests.patch)
-sha512sums=('459589ca90b50570518663b61c03372ac65d746a5fa8f5554028b12b42c4bf87042e7f9db02936b99ad7dece15379d12b8138a301176bd779e37b1a07e2108e5'
+sha512sums=('3c76d8808c31d16752828580f6651eb49e78e19968c5407fd00de00fa3ebbe8e9f513e43bc5c43c4438271204fff652e00e5e5d832bd79e10c1646f0b01dc111'
             '3c57829cd55b1aea14b5bc2f66e8b015d28ccdd8a7d56c5d445efb61d149a49159e6be0c267d8eded5884d53361705373837cfe789d39ced9d262a5fa630491f'
             'a2c8b9f23419c8554a38ac6e3128841e38d15e6ca2f1c70a28a01546ca61090059304974a2d5d8ed5e7c9cc68a2762c6b856d575bae3d74e81b45c0b13e517ce')
 
