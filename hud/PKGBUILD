@@ -6,7 +6,7 @@
 
 pkgname=hud
 _actual_ver=14.10
-_extra_ver=+17.04.20161202
+_extra_ver=+17.04.20170106.1
 pkgver=${_actual_ver}${_extra_ver/\+/.}
 pkgrel=1
 pkgdesc="Backend for the Unity HUD"
@@ -16,13 +16,14 @@ license=(GPL)
 groups=(unity)
 depends=(bamf-ubuntu libdbusmenu-gtk3 sqlite gsettings-qt libcolumbus
          libdbusmenu-qt5 dee-qt)
-makedepends=(cmake gnome-common gnome-doc-utils gobject-introspection gtk-doc
-             intltool qt5-base python2-distribute vala)
+makedepends=(cmake cmake-extras gnome-common gnome-doc-utils
+             gobject-introspection gtk-doc intltool qt5-base python2-distribute
+             vala)
 optdepends=('indicator-appmenu: HUD support')
 source=("https://launchpad.net/ubuntu/+archive/primary/+files/hud_${_actual_ver}${_extra_ver}.orig.tar.gz"
         0001-Use-Python-2.patch
         0002-Remove-test-dependencies.patch)
-sha512sums=('63d6456f9035b6ad1361b68b9553fbf94756a468ef46e98917d721cca78b1a241e3bbd2e7f444daf9ad82c6a479fcac73a93bba927c2518047b91092a4d55a18'
+sha512sums=('0c1f86148d4e0863a52ac03f489e7f23532f43de7364b41d2968c1f14bb9ec6be302b59978c7a50af912f074c8324a37a9e01b22b971467453dc4185509f15ab'
             '351ce207cc203e5901a20c30ff21cf186e330d7b4799a3bc43abca4039ec6e2de4abfa790266650cab112ad403675e6b926b368b7623ea3ecdb6a3c0c1b00fe5'
             '3b2ed254cea8aa985c2c376a05f4ac496bc8673371d4beccf76b3b234e67bfb447c33ef830a53799df9e1526656a9ea60dc2c3b9ff0cf2e120b3625f84112152')
 
