@@ -13,7 +13,7 @@ pkgname=compiz-ubuntu
 epoch=1
 
 _actual_ver=0.9.13.1
-_extra_ver=+17.04.20161114.1
+_extra_ver=+17.04.20170109
 
 if [[ "${_use_ppa}" != true ]]; then
     _ubuntu_rel=0ubuntu1
@@ -57,8 +57,8 @@ source+=(compiz.reset
          0002-Fix-python-install-command.patch
          0003-Use-Python-2.patch
          0004-Disable-Werror.patch)
-sha512sums=('26d3414556244aba6f3e38578d053ed62be0147a06d0e099cd56f98396b5ff07f632669161754341ac779d4ac8f955a24880a48cebb962df24c17e0a58ad5abd'
-            'a6ffd5f16ef767b1cc0d8d2acbf92ef8feab825895ace7547be6459ab690d46f4a52e1cd76c6e55629fa68a060a5500c4c19aae1cc7f807a86feda5340695245'
+sha512sums=('5abd6e8c9aaabeed52f64879d34b353b05b868b502052014ae46d36d8f0db0b564f36cc55b03cc98979fcbedd8e3add6d4b322a3d7eaf08e9daeba41d6d42d32'
+            '102573e176aff682175d82204d71a87d2ac278aea87ed4e6b414ebdbea2b47aacab70e5844ea2919c2a692c38d4a5e9664a9ae105c1a98e8bfb246765e7d8340'
             '5f4b38c5fe3af9de0fe7897b9fdd04184dff9bf448f21ef19d9ae1b224c972061d8b183aa01cf8dcdf4fb37bb3466233ce53a6dfbbe51b0ff04f17568d2dc7ff'
             '64b1a6f3cfc00e9c0c7c32d012d171b7452f8d1ea3afeaadf441316621226bbc85b75237c0726290d8552570ffbc5c4fef5c5cae2663da9369221145623dbdfa'
             '122b7858413a7114573fdb2a8d8e30f78309b364963f4a45f474409fa3ecdfbe956368a0b014294710a1e4efd19593a6fef55f3e1ce40951d2379501295455e7'
