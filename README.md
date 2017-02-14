@@ -21,6 +21,7 @@ To compile from source, just build all of the packages in the following order:
 
 | Package                          | Description                                |
 | -------------------------------- | ------------------------------------------ |
+| cmake-extras                     | Extra CMake utility modules                |
 | dbus-activation-env              | Push session env vars to dbus/systemd      |
 | gtk2-ubuntu                      | GTK toolkit 2.0 with Ubuntu's patches      |
 | gtk3-ubuntu                      | GTK toolkit 3.0 with Ubuntu's patches      |

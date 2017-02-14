@@ -1,0 +1,30 @@
+# Maintainer: Andrew Gunnerson <andrewgunnerson@gmail.com>
+
+# vercheck-pkgbuild: auto
+# vercheck-ubuntu: name=${pkgname}, repo=zesty
+
+pkgname=cmake-extras
+_actual_ver=1.1
+_extra_ver=+17.04.20170209
+pkgver=${_actual_ver}${_extra_ver/\+/.}
+pkgrel=1
+pkgdesc="Extra CMake utility modules"
+arch=(any)
+url="https://launchpad.net/cmake-extras"
+license=(LGPL)
+groups=(unity)
+depends=(cmake)
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/cmake-extras_${_actual_ver}${_extra_ver}.orig.tar.gz")
+sha512sums=('7cf41031149c70b32cce2e32f0d6e4b2b0a4e1632d6e0b0a418ada3243132e91768d47b2adb549f3602d1a58965355377a65c01d2f991689ead1b6ca1ad78e23')
+
+build() {
+    mkdir -p build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+	make
+}
+
+package() {
+    cd build
+	make DESTDIR="${pkgdir}/" install
+}
